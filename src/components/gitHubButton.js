@@ -4,11 +4,11 @@ import GitHubButton from "react-github-btn";
 const GhButton = ({ children, href }) => {
     return (
         <GitHubButton
-            href="https://github.com/karmada-io/karmada"
+            href="https://github.com/Project-HAMi/HAMi"
             data-icon="octicon-star"
             data-size="large"
             data-show-count="true"
-            aria-label="Star Karmada on GitHub">
+            aria-label="Star HAMi on GitHub">
             Star
         </GitHubButton>
     );

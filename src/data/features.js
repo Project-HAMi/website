@@ -7,8 +7,7 @@ const features = [
         // imgUrl: 'img/logo.svg',
         description: (
             <Translate>
-                Zero change upgrade: from single-cluster to multi-cluster; Seamless integration of existing K8s tool
-                chain
+                Zero change upgrade: compatible with default behaviour from Kubernetes.
             </Translate>
         ),
     },
@@ -17,7 +16,7 @@ const features = [
         // imgUrl: 'img/logo.svg',
         description: (
             <Translate>
-                Jointly initiated by Internet, finance, manufacturing, teleco, cloud providers, etc. Target for open
+                Jointly initiated by Internet, finance, manufacturing, cloud providers, etc. Target for open
                 governance with CNCF
             </Translate>
         ),
@@ -28,37 +27,35 @@ const features = [
         // imgUrl: 'img/logo.svg',
         description: (
             <Translate>
-                Integration with mainstream cloud providers; Automatic allocation, migration across clusters; Not
-                tied to proprietary vendor orchestration
+                Integration with mainstream cloud providers; Not tied to proprietary vendor orchestration
             </Translate>
         ),
     },
     {
-        title: <Translate>Out of the Box</Translate>,
+        title: <Translate>In container Resource Control</Translate>,
         // imgUrl: 'img/logo.svg',
         description: (
             <Translate>
-                Built-in policy sets for scenarios: Active-active, Remote DR, Geo Redundant
+                Provides hard isolation of resources within containers, task in containers can't use resources that exceed their quota
             </Translate>
         ),
         reverse: true,
     },
     {
-        title: <Translate>Fruitful Scheduling Policies</Translate>,
+        title: <Translate>Supports a variety of heterogeneous computing devices</Translate>,
         // imgUrl: 'img/logo.svg',
         description: (
             <Translate>
-                Cluster Affinity; Multi Cluster Splitting/Rebalancing; Multi-Dimension HA:
-                Region/AZ/Cluster/Provider
+                Provides device-sharing on GPU, MLU, NPU from a variety of manufacturers
             </Translate>
         ),
     },
     {
-        title: <Translate>Centralized Management</Translate>,
+        title: <Translate>Unified Management</Translate>,
         // imgUrl: 'img/logo.svg',
         description: (
             <Translate>
-                Cluster location agnostic; Support clusters in public cloud, on-prem or edge
+                Unified monitoring system, Configurable scheduling policies(binpack,spread,etc...)
             </Translate>
         ),
         reverse: true,

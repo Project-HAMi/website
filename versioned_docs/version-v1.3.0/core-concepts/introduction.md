@@ -36,6 +36,5 @@ HAMi is a landscape project of the [Cloud Native Computing Foundation](https://c
 
 Here are some recommended next steps:
 
-- Learn HAMi's [core concepts](./concepts.md).
 - Learn HAMi's [architecture](./architecture.md).
 - Start to [install HAMi](../installation/prequisities.md).

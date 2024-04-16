@@ -126,7 +126,7 @@ module.exports = {
           position: "right",
         },
         {
-          href: "https://github.com/karmada-io/karmada",
+          href: "https://github.com/Project-HAMi/HAMi",
           className: "header-github-link",
           position: "right",
         },
@@ -147,7 +147,7 @@ module.exports = {
           title: "Community",
           items: [
             {
-              label: "CNCF Slack ( #karmada channel )",
+              label: "CNCF Slack ",
               href: "https://slack.cncf.io/",
             },
           ],

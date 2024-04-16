@@ -22,13 +22,6 @@
     },
     {
       "type": "category",
-      "label": "Tutorials",
-      "items": [
-        "version-v1.3.0/tutorials/karmada-search"
-      ]
-    },
-    {
-      "type": "category",
       "label": "Installation",
       "items": [
         "version-v1.3.0/installation/prequisities",
@@ -43,6 +36,7 @@
       "label": "User Guide",
       "items": [
         "version-v1.3.0/userguide/configure",
+        "version-v1.3.0/userguide/support-devices",
         {
           "type": "category",
           "label": "Monitoring",
@@ -93,63 +87,6 @@
     },
     {
       "type": "category",
-      "label": "Administrator Guide",
-      "items": [
-        {
-          "type": "category",
-          "label": "Karmadactl Manual",
-          "items": [
-            "version-v1.3.0/administrator/karmadactl/init"
-          ]
-        },
-        {
-          "type": "category",
-          "label": "Configuration",
-          "items": [
-            "version-v1.3.0/administrator/configuration/configure-controllers"
-          ]
-        },
-        {
-          "type": "category",
-          "label": "Migration",
-          "items": [
-            "version-v1.3.0/administrator/migration/promote-legacy-workload",
-            "version-v1.3.0/administrator/migration/migration-from-kubefed"
-          ]
-        },
-        {
-          "type": "category",
-          "label": "Monitoring",
-          "items": [
-            "version-v1.3.0/administrator/monitoring/working-with-filebeat",
-            "administrator/monitoring/working-with-prometheus-in-control-plane",
-            "version-v1.3.0/administrator/monitoring/working-with-prometheus"
-          ]
-        },
-        {
-          "type": "category",
-          "label": "Upgrading",
-          "items": [
-            "version-v1.3.0/administrator/upgrading/README",
-            "version-v1.3.0/administrator/upgrading/v0.8-v0.9",
-            "version-v1.3.0/administrator/upgrading/v0.9-v0.10",
-            "version-v1.3.0/administrator/upgrading/v0.10-v1.0",
-            "version-v1.3.0/administrator/upgrading/v1.0-v1.1",
-            "version-v1.3.0/administrator/upgrading/v1.1-v1.2",
-            "version-v1.3.0/administrator/upgrading/v1.2-v1.3"
-          ]
-        },
-        {
-          "type": "category",
-          "label": "Backup",
-          "items": [
-            "version-v1.3.0/administrator/backup/working-with-velero"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "category",
       "label": "Developer Guide",
       "items": [
         "version-v1.3.0/developers/profiling-karmada",
@@ -163,15 +100,6 @@
         "version-v1.3.0/contributor/cherry-picks",
         "version-v1.3.0/contributor/github-workflow",
         "version-v1.3.0/contributor/lifted"
-      ]
-    },
-    {
-      "type": "category",
-      "label": "Case Study",
-      "items": [
-        "version-v1.3.0/casestudies/adopters",
-        "version-v1.3.0/casestudies/vipkid",
-        "version-v1.3.0/casestudies/ci123"
       ]
     },
     {
