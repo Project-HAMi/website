@@ -1,7 +1,7 @@
 {
   "name": "karmada-io",
   "version": "0.0.1",
-  "private": true,
+  "private": false,
   "scripts": {
     "docusaurus": "docusaurus",
     "start": "docusaurus start",
