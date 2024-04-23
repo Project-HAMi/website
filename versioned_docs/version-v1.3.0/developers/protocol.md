@@ -1,9 +1,16 @@
 ---
-title: Build HAMi
+title: Protocol design
 ---
 
-## Make Binary
+## Background
 
+The kube-scheduler calls device-plugin to mount devices during the `bind` process, but only the `UUID` of the device is provided to device-plugin. Therefore, in the scenario of device-sharing, device-plugin cannot obtain the specifications of the corresponding device, such as the `device memory` and `computing cores` requested by the task.
+
+Therefore, it is necessary to develop a protocol for the scheduler layer to communicate with device-plugin to pass this information
+
+## Protocol Implementation
+
+### Protocol 
 ### prequisities
 
 The following tools are required:

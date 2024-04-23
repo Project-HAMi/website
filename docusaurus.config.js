@@ -51,8 +51,8 @@ module.exports = {
       tagName: "link",
       attributes: {
         rel: "shortcut icon",
-        type: "image/x-icon",
-        href: "/favicons/favicon.ico",
+        type: "image/png",
+        href: "/favicons/favicon-16x16.png",
       },
     },
     {

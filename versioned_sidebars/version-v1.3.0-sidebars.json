@@ -89,8 +89,8 @@
       "type": "category",
       "label": "Developer Guide",
       "items": [
-        "version-v1.3.0/developers/profiling-karmada",
-        "version-v1.3.0/developers/bash-auto-completion-on-linux"
+        "version-v1.3.0/developers/build",
+        "version-v1.3.0/developers/protocol"
       ]
     },
     {
@@ -109,14 +109,6 @@
     {
       "type": "doc",
       "id": "version-v1.3.0/faq/faq"
-    },
-    {
-      "type": "category",
-      "label": "Reference",
-      "items": [
-        "version-v1.3.0/reference/reserved-namespaces",
-        "version-v1.3.0/reference/object-association-mapping"
-      ]
     }
   ]
 }

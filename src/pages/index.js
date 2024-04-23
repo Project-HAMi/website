@@ -21,7 +21,7 @@ export default function Home() {
       <header className={clsx('hero', styles.hero)}>
         <div className="container text--center">
           <div className={styles.heroLogoWrapper}>
-            <img className={styles.heroLogo} src={useBaseUrl('img/karmada-icon-color.png')} alt="Karmada Logo" />
+            <img className={styles.heroLogo} src={useBaseUrl('img/hami-icon-color.png')} alt="HAMi Logo" />
           </div>
           <h1 className={clsx('hero__title', styles.heroTitle)}>{siteConfig.title}</h1>
 
@@ -62,7 +62,7 @@ export default function Home() {
             <Translate>How It Works</Translate>
           </h2>
         <div className={styles.heroHowItWorks}>
-        <img className={styles.heroHowItWorksImg} src={useBaseUrl('img/how-it-works.png')} alt="Karmada Control Plane" />
+        <img className={styles.heroHowItWorksImg} src={useBaseUrl('img/architect.jpg')} alt="Karmada Control Plane" />
         </div>
         <h2 className="title">
             <Translate>Supporters</Translate>
