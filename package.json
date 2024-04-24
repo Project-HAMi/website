@@ -1,5 +1,5 @@
 {
-  "name":"@project-hami/website",
+  "name": "@project-hami/website",
   "repository": {
     "type": "git",
     "url": "https://github.com/Project-HAMi/website.git"
@@ -41,5 +41,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "gh-pages": "^6.1.1"
   }
 }
