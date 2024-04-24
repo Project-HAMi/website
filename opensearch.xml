@@ -4,7 +4,7 @@
   <ShortName>HAMi</ShortName>
   <Description>Search HAMi</Description>
   <InputEncoding>UTF-8</InputEncoding>
-  <Url type="text/html" method="get" template="https://karmada.io/search?q={searchTerms}"/>
-  <Url type="application/opensearchdescription+xml" rel="self" template="https://karmada.io/opensearch.xml" />
-  <moz:SearchForm>https://karmada.io/</moz:SearchForm>
+  <Url type="text/html" method="get" template="https://hami.io/search?q={searchTerms}"/>
+  <Url type="application/opensearchdescription+xml" rel="self" template="https://hami.io/opensearch.xml" />
+  <moz:SearchForm>https://hami.io/</moz:SearchForm>
 </OpenSearchDescription>
