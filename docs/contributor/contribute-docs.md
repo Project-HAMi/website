@@ -159,7 +159,7 @@ If you add a document, you must add it to `sidebars.js` to make it display prope
 There are two situations about the Chinese version of the document:
 * You want to translate our existing English docs to Chinese. In this case, you need to modify the corresponding file content from <https://github.com/karmada-io/website/tree/main/i18n/zh/docusaurus-plugin-content-docs/current>. 
   The organization of this directory is exactly the same as the outer layer. `current.json` holds translations for the documentation directory. You can edit it if you want to translate the name of directory.
-* You want to contribute Chinese docs without English version. Any articles of any kind are welcomed. In this case, you can add articles and titles to the main directory first. Article content can be TBD first, like [this](../tutorials/karmada-search.md). 
+* You want to contribute Chinese docs without English version. Any articles of any kind are welcomed. In this case, you can add articles and titles to the main directory first. Article content can be TBD first, like this. 
   Then add the corresponding Chinese content to the Chinese directory.
 
 ## Debugging docs
@@ -168,11 +168,7 @@ Now you have already completed docs. After you start a PR to `karmada.io/website
 
 Click **Details** marked in red, and you will enter the preview view of the website.
 
-![Docs CI](../resources/contributor/debug-docs.png)
-
 Click **Next** and you can see the corresponding changes. If you have changes related to the Chinese version, click the language drop-down box next to it to switch to Chinese.
-
-![Click next](../resources/contributor/click-next.png)
 
 If the previewed page is not what you expected, please check your docs again.
 

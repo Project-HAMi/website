@@ -117,11 +117,6 @@ module.exports = {
           position: "left",
         },
         {
-          to: "blog",
-          label: "Blog",
-          position: "left",
-        },
-        {
           type: "localeDropdown",
           position: "right",
         },
@@ -161,7 +156,7 @@ module.exports = {
             },
             {
               label: "Blog",
-              to: "blog",
+              to: "/docs",
             },
           ],
         },
