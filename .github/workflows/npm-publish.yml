@@ -23,7 +23,7 @@ jobs:
           registry-url: https://npm.pkg.github.com/
           scope: '@project-hami'
       - run: npm ci
-      - run: npm build
+      - run: npm run build
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
