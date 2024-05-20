@@ -2,12 +2,6 @@
 title: Protocol design
 ---
 
-## Background
-
-The kube-scheduler calls device-plugin to mount devices during the `bind` process, but only the `UUID` of the device is provided to device-plugin. Therefore, in the scenario of device-sharing, device-plugin cannot obtain the specifications of the corresponding device, such as the `device memory` and `computing cores` requested by the task.
-
-Therefore, it is necessary to develop a protocol for the scheduler layer to communicate with device-plugin to pass this information
-
 ## Protocol Implementation
 
 ### Device Registration
@@ -16,103 +10,29 @@ In order to perform more accurate scheduling, the HAMI scheduler needs to percei
 
 However, the device-plugin device registration API does not provide corresponding parameter acquisition, so HAMi-device-plugin stores these supplementary information in the node annotations during registering for the scheduler to read, as the following figure shows:
 
-<img src="https://github.com/Project-HAMi/HAMi/raw/master/HAMi.jpg" width="100px"/> 
-<img src="../resources/sample-nginx.svg" width="100px"/> 
+<img src="https://github.com/Project-HAMi/website/blob/master/versioned_docs/version-v1.3.0/resources/device_registration.png?raw=true" width="600px"/>
+
+Here you need to use two annotations, one of which is the timestamp, if it exceeds the specified threshold, the device on the corresponding node will be considered invalid. The other information for device registration. A node with 2 32G-V100 GPUs can be registered as shown below:
+
+```
+hami.io/node-handshake: Requesting_2024.05.14 07:07:33
+hami.io/node-nvidia-register: 'GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec,10,32768,100,NVIDIA-Tesla V100-PCIE-32GB,0,true:GPU-0fc3eda5-e98b-a25b-5b0d-cf5c855d1448,10,32768,100,NVIDIA-Tesla V100-PCIE-32GB,0,true:'
+```
+
 
 ### Schedule Decision Making 
 
+The kube-scheduler calls device-plugin to mount devices during the `bind` process, but only the `UUID` of the device is provided to device-plugin. Therefore, in the scenario of device-sharing, device-plugin cannot obtain the specifications of the corresponding device, such as the `device memory` and `computing cores` requested by the task.
 
+Therefore, it is necessary to develop a protocol for the scheduler layer to communicate with device-plugin to pass information about task dispatch. The scheduler passes this information by patching the scheduling result to the pod's annotations and reading it in device-plugin, as the figure below:
 
-### prequisities
+<img src="https://github.com/Project-HAMi/website/blob/master/versioned_docs/version-v1.3.0/resources/task_dispatch.png?raw=true" width="600px"/>
 
-The following tools are required:
+In this process, there are 3 annotations that need to be set, which are the `timestamp`, `devices to be assigned`, and the `devices allocated`. The content of `devices to be assigned` and the `devices allocated` are the same when the scheduler creates them, but device-plugin will determine the current device allocation by the content of `devices to be assigned`, and when the assignment is successful, the corresponding device will be removed from the annotation, so the content of `device to be assigned` will be empty when the task is successfully run.
 
-- go v1.20+
-- make
-
-### build
-
-```bash
-make
+An example of a task requesting a GPU with 3000M device memory will generate the corresponding annotations as follows
 ```
-
-If everything are successfully built, the following output are printed
-
+hami.io/bind-time: 1716199325
+hami.io/vgpu-devices-allocated: GPU-0fc3eda5-e98b-a25b-5b0d-cf5c855d1448,NVIDIA,3000,0:;
+hami.io/vgpu-devices-to-allocate: ;
 ```
-go build -ldflags '-s -w -X github.com/Project-HAMi/HAMi/pkg/version.version=v0.0.1' -o bin/scheduler ./cmd/scheduler
-go build -ldflags '-s -w -X github.com/Project-HAMi/HAMi/pkg/version.version=v0.0.1' -o bin/vGPUmonitor ./cmd/vGPUmonitor
-go build -ldflags '-s -w -X github.com/Project-HAMi/HAMi/pkg/version.version=v0.0.1' -o bin/nvidia-device-plugin ./cmd/device-plugin/nvidia
-```
-
-
-## Make Image
-
-### prequisities
-
-The following tools are required:
-
-- docker
-- make
-
-### build
-
-```bash
-make docker
-```
-
-If everything are successfully built, the following output are printed
-
-```
-go build -ldflags '-s -w -X github.com/Project-HAMi/HAMi/pkg/version.version=v0.0.1' -o bin/scheduler ./cmd/scheduler
-go build -ldflags '-s -w -X github.com/Project-HAMi/HAMi/pkg/version.version=v0.0.1' -o bin/vGPUmonitor ./cmd/vGPUmonitor
-go build -ldflags '-s -w -X github.com/Project-HAMi/HAMi/pkg/version.version=v0.0.1' -o bin/nvidia-device-plugin ./cmd/device-plugin/nvidia
-[+] Building 146.4s (28/28)
-FINISHED                                                                                                                                                                                                                                                                     docker:default
- => [internal] load build definition from Dockerfile                                                                                                                                                                                                                                                                     0.0s
- => => transferring dockerfile: 1.30kB                                                                                                                                                                                                                                                                                   0.0s
- => [internal] load metadata for docker.io/nvidia/cuda:12.2.0-base-ubuntu22.04                                                                                                                                                                                                                                           5.5s
- => [internal] load metadata for docker.io/library/golang:1.21-bullseye                                                                                                                                                                                                                                                  4.5s
- => [internal] load metadata for docker.io/nvidia/cuda:12.2.0-devel-ubuntu20.04                                                                                                                                                                                                                                          0.0s
- => [auth] nvidia/cuda:pull token for registry-1.docker.io                                                                                                                                                                                                                                                               0.0s
- => [auth] library/golang:pull token for registry-1.docker.io                                                                                                                                                                                                                                                            0.0s
- => [internal] load .dockerignore                                                                                                                                                                                                                                                                                        0.0s
- => => transferring context: 2B                                                                                                                                                                                                                                                                                          0.0s
- => [internal] load build context                                                                                                                                                                                                                                                                                        1.3s
- => => transferring context: 119.90MB                                                                                                                                                                                                                                                                                    1.3s
- => [stage-3 1/6] FROM docker.io/nvidia/cuda:12.2.0-base-ubuntu22.04@sha256:ecdf8549dd5f12609e365217a64dedde26ecda26da8f3ff3f82def6749f53051                                                                                                                                                                             0.0s
- => CACHED [gobuild 1/4] FROM docker.io/library/golang:1.21-bullseye@sha256:311468bffa9fa4747a334b94e6ce3681b564126d653675a6adc46698b2b88d35                                                                                                                                                                             0.0s
- => [nvbuild 1/9] FROM docker.io/nvidia/cuda:12.2.0-devel-ubuntu20.04                                                                                                                                                                                                                                                    0.0s
- => [gobuild 2/4] ADD . /k8s-vgpu                                                                                                                                                                                                                                                                                        0.8s
- => [nvbuild 2/9] COPY ./libvgpu /libvgpu                                                                                                                                                                                                                                                                                0.3s
- => [nvbuild 3/9] WORKDIR /libvgpu                                                                                                                                                                                                                                                                                       0.2s
- => [nvbuild 4/9] RUN apt-get -y update && apt-get -y install wget                                                                                                                                                                                                                                                      21.9s
- => [gobuild 3/4] RUN apt-get update && apt-get -y install libhwloc-dev libdrm-dev                                                                                                                                                                                                                                      18.8s
- => [gobuild 4/4] RUN cd /k8s-vgpu && make all                                                                                                                                                                                                                                                                          83.5s
- => [nvbuild 5/9] RUN wget https://cmake.org/files/v3.19/cmake-3.19.8-Linux-x86_64.tar.gz                                                                                                                                                                                                                               99.8s
- => CACHED [stage-3 2/6] COPY ./LICENSE /k8s-vgpu/LICENSE                                                                                                                                                                                                                                                                0.0s
- => [stage-3 3/6] COPY --from=GOBUILD /k8s-vgpu/bin /k8s-vgpu/bin                                                                                                                                                                                                                                                        0.5s
- => [stage-3 4/6] COPY ./docker/entrypoint.sh /k8s-vgpu/bin/entrypoint.sh                                                                                                                                                                                                                                                0.2s
- => [stage-3 5/6] COPY ./lib /k8s-vgpu/lib                                                                                                                                                                                                                                                                               0.2s
- => [nvbuild 6/9] RUN tar -xf cmake-3.19.8-Linux-x86_64.tar.gz                                                                                                                                                                                                                                                           2.1s 
- => [nvbuild 7/9] RUN cp /libvgpu/cmake-3.19.8-Linux-x86_64/bin/cmake /libvgpu/cmake-3.19.8-Linux-x86_64/bin/cmake3                                                                                                                                                                                                      1.3s 
- => [nvbuild 8/9] RUN apt-get -y install openssl libssl-dev                                                                                                                                                                                                                                                              7.7s 
- => [nvbuild 9/9] RUN bash ./build.sh                                                                                                                                                                                                                                                                                    4.0s 
- => [stage-3 6/6] COPY --from=NVBUILD /libvgpu/build/libvgpu.so /k8s-vgpu/lib/nvidia/                                                                                                                                                                                                                                    0.3s 
- => exporting to image                                                                                                                                                                                                                                                                                                   1.8s 
- => => exporting layers                                                                                                                                                                                                                                                                                                  1.8s 
- => => writing image sha256:fc0ce42b41f9a177921c9bfd239babfa06fc77cf9e4087e8f2d959d749e8039f                                                                                                                                                                                                                             0.0s 
- => => naming to docker.io/projecthami/hami:master-103b2b677e018a40af6322a56c2e9d5d5c62cccf                                                                                                                                                                                                                              0.0s 
-The push refers to repository [docker.io/projecthami/hami]    
-```
-
-## Make HAMi-Core
-
-HAMi-Core is recommended to be built in a nvidia/cuda image:
-
-```bash
-git clone https://github.com/Project-HAMi/HAMi-core.git
-docker build . -f dockerfiles/Dockerfile.{arch}
-```
-
-
-
