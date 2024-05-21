@@ -32,7 +32,7 @@ const features = [
         ),
     },
     {
-        title: <Translate>In container Resource Control</Translate>,
+        title: <Translate>Resource Isolation</Translate>,
         // imgUrl: 'img/logo.svg',
         description: (
             <Translate>
