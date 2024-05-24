@@ -62,7 +62,7 @@ export default function Home() {
             <Translate>How It Works</Translate>
           </h2>
         <div className={styles.heroHowItWorks}>
-        <img className={styles.heroHowItWorksImg} src={useBaseUrl('img/construct.png')} alt="HAMi Control Plane" />
+        <img className={styles.heroHowItWorksImg} src={useBaseUrl('img/construct.JPG')} alt="HAMi Control Plane" />
         </div>
         <div className={styles.heroHowItWorks}>
         <img className={styles.heroHowItWorksImg} src={useBaseUrl('img/architect.jpg')} alt="HAMi Control Plane" />
