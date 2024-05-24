@@ -36,7 +36,7 @@
       "label": "User Guide",
       "items": [
         "version-v1.3.0/userguide/configure",
-        "version-v1.3.0/userguide/support-devices",
+        "version-v1.3.0/userguide/Device-supported",
         {
           "type": "category",
           "label": "Monitoring",
@@ -78,7 +78,8 @@
               "type": "category",
               "label": "Examples",
               "items": [
-                "version-v1.3.0/userguide/monitoring/globalview"
+                "version-v1.3.0/userguide/Cambricon-device/examples/allocate-core-and-memory",
+                "version-v1.3.0/userguide/Cambricon-device/examples/allocate-exclusive"
               ]
             }
           ]
