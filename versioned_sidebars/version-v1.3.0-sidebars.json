@@ -83,6 +83,22 @@
               ]
             }
           ]
+        },
+        {
+          "type": "category",
+          "label": "Share Ascend devices",
+          "items": [
+            "version-v1.3.0/userguide/Ascend-device/enable-ascend-910b-sharing",
+            "version-v1.3.0/userguide/Ascend-device/specify-device-memory",
+            {
+              "type": "category",
+              "label": "Examples",
+              "items": [
+                "version-v1.3.0/userguide/Ascend-device/examples/allocate-device-memory",
+                "version-v1.3.0/userguide/Ascend-device/examples/allocate-exclusive-910b"
+              ]
+            }
+          ] 
         }  
       ]
     },
