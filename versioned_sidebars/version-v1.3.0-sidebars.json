@@ -41,7 +41,8 @@
           "type": "category",
           "label": "Monitoring",
           "items": [
-            "version-v1.3.0/userguide/monitoring/globalview"
+            "version-v1.3.0/userguide/monitoring/device-allocation",
+            "version-v1.3.0/userguide/monitoring/real-time-device-usage"
           ]
         },
         {
@@ -88,18 +89,40 @@
           "type": "category",
           "label": "Share Ascend devices",
           "items": [
-            "version-v1.3.0/userguide/Ascend-device/enable-ascend-910b-sharing",
-            "version-v1.3.0/userguide/Ascend-device/specify-device-memory",
+            "version-v1.3.0/userguide/Ascend-device/enable-ascend-sharing",
             {
               "type": "category",
               "label": "Examples",
               "items": [
-                "version-v1.3.0/userguide/Ascend-device/examples/allocate-device-memory",
-                "version-v1.3.0/userguide/Ascend-device/examples/allocate-exclusive-910b"
+                "version-v1.3.0/userguide/Ascend-device/examples/allocate-310p",
+                "version-v1.3.0/userguide/Ascend-device/examples/allocate-910b",
+                "version-v1.3.0/userguide/Ascend-device/examples/allocate-exclusive"
               ]
             }
           ] 
-        }  
+        },
+        {
+          "type": "category",
+          "label": "Volcano vgpu support",
+          "items": [
+            {
+              "type": "category",
+              "label": "NVIDIA GPU",
+              "items": [
+                "version-v1.3.0/userguide/volcano-vgpu/NVIDIA GPU/how-to-use-volcano-vgpu",
+                "version-v1.3.0/userguide/volcano-vgpu/NVIDIA GPU/monitor",
+                {
+                  "type": "category",
+                  "label": "Examples",
+                  "items": [
+                    "version-v1.3.0/userguide/volcano-vgpu/NVIDIA GPU/examples/default_use",
+                    "version-v1.3.0/userguide/volcano-vgpu/NVIDIA GPU/examples/use_exclusive_gpu"
+                  ] 
+                }
+              ]
+            }
+          ] 
+        } 
       ]
     },
     {

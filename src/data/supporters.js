@@ -5,6 +5,7 @@ import CAIH from "../../static/img/supporters/CAIH.png"
 import CNCR from "../../static/img/supporters/CNCR.png"
 import XW from "../../static/img/supporters/XW.png"
 import iFly from "../../static/img/supporters/iFly.png"
+import huawei from "../../static/img/supporters/huawei.png"
 
 const supportersData = [
     {
@@ -34,6 +35,10 @@ const supportersData = [
     {
         logo: iFly,
         alt: 'iFly',
+    },
+    {
+        logo: huawei,
+        alt: 'huawei',
     }
 ]
 

@@ -4,7 +4,7 @@ title: Allocate exclusive device
 
 ## Allocate exclusive device
 
-To allocate a whole Ascend 910b device, you need to only assign `huawei.com/ascend910` without other fields.
+To allocate a whole Ascend device, you need to only assign `huawei.com/ascend910` or `huawei.com/310p` without other fields.
 
 ```
 apiVersion: v1

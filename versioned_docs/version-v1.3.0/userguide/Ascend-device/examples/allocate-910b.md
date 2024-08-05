@@ -1,12 +1,21 @@
 ---
-title: Allocate certain device memory
+title: Allocate 910b slice
 ---
 
-## Allocate certain device memory to container
+## Allocate a ascend-910b slice to container
 
 To allocate a certain size of GPU device memory, you need only to assign `huawei.com/ascend910-memory` besides `huawei.com/ascend910`.
 
 ```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: gpu-pod
+spec:
+  containers:
+    - name: ubuntu-container
+      image: ascendhub.huawei.com/public-ascendhub/ascend-mindspore:23.0.RC3-centos7
+      command: ["bash", "-c", "sleep 86400"]
       resources:
         limits:
           huawei.com/Ascend910: 1 # requesting 1 NPU

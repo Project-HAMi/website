@@ -9,6 +9,6 @@ The view of device supported by HAMi is shown in this table below:
 | GPU         | NVIDIA     | All         | ✅              | ✅            | ✅                |
 | MLU         | Cambricon  | 370, 590    | ✅              | ❌            | ❌                |
 | DCU         | Hygon      | Z100, Z100L | ✅              | ✅            | ❌                |
-| Ascend      | Huawei     | 910B        | ✅              | ✅            | ❌                |
+| Ascend      | Huawei     | 910B, 310P  | ✅              | ✅            | ❌                |
 | GPU         | iluvatar   | All         | ✅              | ✅            | ❌                |
 | DPU         | Teco       | Checking    | In progress     | In progress   | ❌                |
