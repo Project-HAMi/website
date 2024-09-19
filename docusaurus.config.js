@@ -102,8 +102,8 @@ module.exports = {
       title: "HAMi",
       logo: {
         alt: "HAMi",
-        src: "img/logo.svg",
-        srcDark: "img/artwork/karmada-icon-white.svg",
+        src: "img/hami-graph-color.svg",
+        srcDark: "img/hami-graph-color.svg",
       },
       items: [
         {
