@@ -10,8 +10,12 @@
       ]
     },
     {
-      "type": "doc",
-      "id": "version-v1.3.0/key-features/features"
+      "type": "category",
+      "label": "Key Features",
+      "items": [
+        "version-v1.3.0/key-features/device-sharing",
+        "version-v1.3.0/key-features/device-resource-isolation"
+      ]
     },
     {
       "type": "category",
@@ -28,7 +32,8 @@
         "version-v1.3.0/installation/online-installation",
         "version-v1.3.0/installation/offline-installation",
         "version-v1.3.0/installation/upgrade",
-        "version-v1.3.0/installation/uninstall"
+        "version-v1.3.0/installation/uninstall",
+        "version-v1.3.0/installation/how-to-use-volcano-vgpu"
       ]
     },
     {
@@ -90,6 +95,7 @@
           "label": "Share Ascend devices",
           "items": [
             "version-v1.3.0/userguide/Ascend-device/enable-ascend-sharing",
+            "version-v1.3.0/userguide/Ascend-device/device-template",
             {
               "type": "category",
               "label": "Examples",
@@ -130,16 +136,18 @@
       "label": "Developer Guide",
       "items": [
         "version-v1.3.0/developers/build",
-        "version-v1.3.0/developers/protocol"
+        "version-v1.3.0/developers/protocol",
+        "version-v1.3.0/developers/scheduling",
+        "version-v1.3.0/developers/HAMi-core-design"
       ]
     },
     {
       "type": "category",
       "label": "Contributor Guide",
       "items": [
-        "version-v1.3.0/contributor/cherry-picks",
-        "version-v1.3.0/contributor/github-workflow",
-        "version-v1.3.0/contributor/lifted"
+        "version-v1.3.0/contributor/contributing",
+        "version-v1.3.0/contributor/goverance",
+        "version-v1.3.0/contributor/ladder"
       ]
     },
     {
