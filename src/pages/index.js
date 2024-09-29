@@ -74,7 +74,7 @@ export default function Home() {
         <SupportersList />
 
           <h2 className="hero__subtitle">
-            <Translate>HAMi is a</Translate> <a href="https://cncf.io/">CNCF (Cloud Native Computing Foundation)</a> <Translate>landscape project</Translate>
+            <Translate>HAMi is a</Translate> <a href="https://cncf.io/">CNCF (Cloud Native Computing Foundation)</a> <Translate>sandbox project</Translate>
           </h2>
           <div className={clsx('cncf-logo', styles.cncfLogo)} />
         </div>
