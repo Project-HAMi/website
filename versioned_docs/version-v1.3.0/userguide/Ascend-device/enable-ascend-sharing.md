@@ -4,27 +4,46 @@ title: Enable Ascend sharing
 
 ## Introduction
 
-**We now support huawei.com/Ascend910 by implementing most device-sharing features as nvidia-GPU**, including:
-
-***Multi arch support*** Support Ascend310P and Ascend 910B
-
-***NPU sharing***: Each task can allocate a portion of Ascend NPU instead of a whole NLU card, thus NPU can be shared among multiple tasks.
-
-***Device Memory Control***: Ascend NPUs can be allocated with certain device memory size and guarantee it that it does not exceed the boundary.
-
-***Device Core Control***: Ascend NPUs can be allocated with certain compute cores and guarantee it that it does not exceed the boundary.
+Memory slicing is supported based on virtualization template, lease available template is automatically used. For detailed information, check [device-template]
 
 ## Prerequisites
 
-* Ascend device type: 910B(300T A2)
+* Ascend device type: 910B,910A,310P
 * driver version >= 24.1.rc1
 * Ascend docker runtime
 
 ## Enabling Ascend-sharing Support
 
-* Tag Ascend-910B node with the following command
+* Due to dependencies with HAMi, you need to set 
+
 ```
-kubectl label node {ascend-node} accelerator=huawei-Ascend
+devices.ascend.enabled=true
+``` 
+
+during HAMi installation. For more details, see 'devices' section in values.yaml.
+
+```yaml
+devices:
+  ascend:
+    enabled: true
+    image: "ascend-device-plugin:master"
+    imagePullPolicy: IfNotPresent
+    extraArgs: []
+    nodeSelector:
+      ascend: "on"
+    tolerations: []
+    resources:
+      - huawei.com/Ascend910A
+      - huawei.com/Ascend910A-memory
+      - huawei.com/Ascend910B
+      - huawei.com/Ascend910B-memory
+      - huawei.com/Ascend310P
+      - huawei.com/Ascend310P-memory
+```
+
+* Tag Ascend node with the following command
+```
+kubectl label node {ascend-node} ascend=on
 ```
 
 * Install [Ascend docker runtime](https://gitee.com/ascend/ascend-docker-runtime)
@@ -32,8 +51,8 @@ kubectl label node {ascend-node} accelerator=huawei-Ascend
 * Download yaml for Ascend-vgpu-device-plugin from HAMi Project [here](https://github.com/Project-HAMi/ascend-device-plugin/blob/master/build/ascendplugin-hami.yaml), and deploy
 
 ```
-wget https://raw.githubusercontent.com/Project-HAMi/ascend-device-plugin/master/build/ascendplugin-hami.yaml
-kubectl apply -f ascendplugin-hami.yaml
+wge https://raw.githubusercontent.com/Project-HAMi/ascend-device-plugin/refs/heads/main/ascend-device-plugin.yaml
+kubectl apply -f ascend-device-plugin.yaml
 ```
 
 ## Running Ascend jobs
@@ -41,7 +60,7 @@ kubectl apply -f ascendplugin-hami.yaml
 ### Ascend 910B
 
 Ascend 910Bs can now be requested by a container
-using the `huawei.com/ascend910` and `huawei.com/ascend910-memory` resource type:
+using the `huawei.com/ascend910B` and `huawei.com/ascend910B-memory` resource type:
 
 ```
 apiVersion: v1
@@ -55,8 +74,8 @@ spec:
       command: ["bash", "-c", "sleep 86400"]
       resources:
         limits:
-          huawei.com/Ascend910: 1 # requesting 1 Ascend
-          huawei.com/Ascend910-memory: 2000 # requesting 2000m device memory
+          huawei.com/Ascend910B: 1 # requesting 1 Ascend
+          huawei.com/Ascend910B-memory: 2000 # requesting 2000m device memory
 ```
 
 ### Ascend 310P
@@ -76,7 +95,7 @@ spec:
       command: ["bash", "-c", "sleep 86400"]
       resources:
         limits:
-          huawei.com/Ascend310: 1 # requesting 1 Ascend
+          huawei.com/Ascend310P: 1 # requesting 1 Ascend
           huawei.com/Ascend310P-memory: 1024 # requesting 1024m device memory
 ```
 
@@ -84,6 +103,6 @@ spec:
 
 1. Currently, the Ascend 910b supports only two sharding strategies, which are 1/4 and 1/2. Ascend 310p supports 3 sharding strategies, 1/7,2/7,4/7. The memory request of the job will automatically align with the most close sharding strategy. In this example, the task will allocate 16384M device memory.
 
-1. Ascend-910B-sharing and Ascend-310P-sharing in init container is not supported.
+1. Ascend-sharing in init container is not supported.
 
-2. `huawei.com/Ascend910-memory` only work when `huawei.com/Ascend910=1`, `huawe.com/Ascend310P-memory` only work when `huawei.com/Ascend310P=1`.
+2. `huawei.com/Ascend910B-memory` only work when `huawei.com/Ascend91B0=1`, `huawe.com/Ascend310P-memory` only work when `huawei.com/Ascend310P=1`,etc..
