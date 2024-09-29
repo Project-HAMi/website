@@ -7,7 +7,8 @@ slug: /
 ## HAMi: Heterogeneous AI Computing Virtualization Middleware
 
 Heterogeneous AI Computing Virtualization Middleware (HAMi), formerly known as k8s-vGPU-scheduler, is an "all-in-one" chart designed to manage Heterogeneous AI Computing Devices in a k8s cluster. It can provide the ability to share Heterogeneous AI devices among tasks.
-HAMi is a landscape project of the [Cloud Native Computing Foundation](https://cncf.io/) (CNCF).
+
+HAMi is a [Cloud Native Computing Foundation](https://cncf.io/) sandbox project & [Landscape project](https://landscape.cncf.io/?item=orchestration-management--scheduling-orchestration--hami) & [CNAI Landscape project](https://landscape.cncf.io/?group=cnai&item=cnai--general-orchestration--hami).
 
 ## Why HAMi:
 - __Device sharing__
