@@ -92,6 +92,23 @@
         },
         {
           "type": "category",
+          "label": "Share Mthreads GPU devices",
+          "items": [
+            "version-v1.3.0/userguide/Mthreads-device/enable-mthreads-gpu-sharing",
+            "version-v1.3.0/userguide/Mthreads-device/specify-device-memory-usage",
+            "version-v1.3.0/userguide/Mthreads-device/specify-device-core-usage",
+            {
+              "type": "category",
+              "label": "Examples",
+              "items": [
+                "version-v1.3.0/userguide/Mthreads-device/examples/allocate-core-and-memory",
+                "version-v1.3.0/userguide/Mthreads-device/examples/allocate-exclusive"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "category",
           "label": "Share Ascend devices",
           "items": [
             "version-v1.3.0/userguide/Ascend-device/enable-ascend-sharing",
