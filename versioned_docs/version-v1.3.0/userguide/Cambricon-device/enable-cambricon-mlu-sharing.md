@@ -58,7 +58,7 @@ spec:
       command: ["bash", "-c", "sleep 86400"]
       resources:
         limits:
-          cambricon.com/mlunum: 1 # requesting 1 MLU
+          cambricon.com/vmlu: 1 # requesting 1 MLU
           cambricon.com/mlu.smlu.vmemory: 20 # each MLU requesting 20% MLU device memory
           cambricon.com/mlu.smlu.vcore: 10 # each MLU requesting 10% MLU device core
 ```
