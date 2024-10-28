@@ -109,6 +109,24 @@
         },
         {
           "type": "category",
+          "label": "Optimize Metax GPU scheduling",
+          "items": [
+            "version-v1.3.0/userguide/Metax-device/enable-metax-gpu-schedule",
+            "version-v1.3.0/userguide/Metax-device/specify-binpack-task",
+            "version-v1.3.0/userguide/Metax-device/specify-spread-task",
+            {
+              "type": "category",
+              "label": "Examples",
+              "items": [
+                "version-v1.3.0/userguide/Metax-device/examples/default-use",
+                "version-v1.3.0/userguide/Metax-device/examples/allocate-binpack",
+                "version-v1.3.0/userguide/Metax-device/examples/allocate-spread"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "category",
           "label": "Share Ascend devices",
           "items": [
             "version-v1.3.0/userguide/Ascend-device/enable-ascend-sharing",
