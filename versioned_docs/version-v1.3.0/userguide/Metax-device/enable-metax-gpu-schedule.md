@@ -62,6 +62,6 @@ spec:
           metax-tech.com/gpu: 1 # requesting 1 vGPUs
 ```
 
-> **NOTICE2:** *You can find more examples in [examples/metax folder](../examples/metax/)*
+> **NOTICE2:** *You can find more examples in examples folder
 
    
