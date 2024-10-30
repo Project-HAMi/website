@@ -33,6 +33,7 @@
         "version-v1.3.0/installation/offline-installation",
         "version-v1.3.0/installation/upgrade",
         "version-v1.3.0/installation/uninstall",
+        "version-v1.3.0/installation/webui-installation",
         "version-v1.3.0/installation/how-to-use-volcano-vgpu"
       ]
     },
