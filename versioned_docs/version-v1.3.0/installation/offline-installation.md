@@ -30,7 +30,7 @@ docker push {your_inner_registry}/kube-scheduler:{your kubernetes version}
 
 ## Prepare HAMi chart
 
-Download the charts folder from [github](https://github.com/Project-HAMi/HAMi/tree/master/charts), place it into ${CHART_PATH} inside cluser, then edit the following fields in ${CHART_PATH}/hami/values.yaml. 
+Download the charts folder from [github](https://github.com/Project-HAMi/HAMi/tree/master/charts), place it into $\{CHART_PATH\} inside cluser, then edit the following fields in $\{CHART_PATH\}/hami/values.yaml. 
 
 ```
 scheduler.kubeScheduler.image
@@ -41,7 +41,7 @@ scheduler.devicePlugin.image
 scheduler.devicePlugin.monitorimage
 ```
 
-## Execute the following command in your ${CHART_PATH} folder
+## Execute the following command in your $\{CHART_PATH\} folder
 
 ```
 helm install hami hami --set scheduler.kubeScheduler.imageTag={your k8s server version} -n kube-system

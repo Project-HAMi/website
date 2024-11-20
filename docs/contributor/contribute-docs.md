@@ -4,7 +4,7 @@ title: How to contribute docs
 
 Starting from version 1.3, the community documentation will be available on the Karmada website.
 This document explains how to contribute docs to
-the `karmada-io/website` repository.
+the `Project-HAMi/website` repository.
 
 ## Prerequisites
 
@@ -21,7 +21,7 @@ the `karmada-io/website` repository.
 You can set up your local environment by cloning our website repository.
 
 ```shell
-git clone https://github.com/karmada-io/website.git
+git clone https://github.com/Project-HAMi/website.git
 cd website
 ```
 
@@ -111,7 +111,7 @@ Creating a sidebar is useful to:
 * Display a sidebar on each of those documents
 * Provide paginated navigation, with next/previous button
 
-For our docs, you can know how our documents are organized from <https://github.com/karmada-io/website/blob/main/sidebars.js>.
+For our docs, you can know how our documents are organized from [https://github.com/Project-HAMi/website/blob/main/sidebars.js](https://github.com/Project-HAMi/website/blob/main/sidebars.js).
 
 ```
 module.exports = {
@@ -157,14 +157,14 @@ If you add a document, you must add it to `sidebars.js` to make it display prope
 ### About Chinese docs
 
 There are two situations about the Chinese version of the document:
-* You want to translate our existing English docs to Chinese. In this case, you need to modify the corresponding file content from <https://github.com/karmada-io/website/tree/main/i18n/zh/docusaurus-plugin-content-docs/current>. 
+* You want to translate our existing English docs to Chinese. In this case, you need to modify the corresponding file content from [https://github.com/Project-HAMi/website/tree/main/i18n/zh/docusaurus-plugin-content-docs/current](https://github.com/Project-HAMi/website/tree/main/i18n/zh/docusaurus-plugin-content-docs/current). 
   The organization of this directory is exactly the same as the outer layer. `current.json` holds translations for the documentation directory. You can edit it if you want to translate the name of directory.
 * You want to contribute Chinese docs without English version. Any articles of any kind are welcomed. In this case, you can add articles and titles to the main directory first. Article content can be TBD first, like this. 
   Then add the corresponding Chinese content to the Chinese directory.
 
 ## Debugging docs
 
-Now you have already completed docs. After you start a PR to `karmada.io/website`, if you have passed CI, you can get a preview of your document on the website.
+Now you have already completed docs. After you start a PR to `Project-HAMi/website`, if you have passed CI, you can get a preview of your document on the website.
 
 Click **Details** marked in red, and you will enter the preview view of the website.
 

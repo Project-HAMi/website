@@ -4,7 +4,7 @@ title:  Releases
 
 ## Release Notes and Assets
 
-Release notes are available on GitHub at https://github.com/karmada-io/karmada/releases.
+Release notes are available on GitHub at https://github.com/Project-HAMi/HAMi/releases.
 
 ## Release Management
 
@@ -61,7 +61,7 @@ Release branches and PRs are managed as follows:
 
 A minor release will contain a mix of features, enhancements, and bug fixes.
 
-Major features follow the Karmada Design Proposal process. You can refer to [here](https://github.com/karmada-io/karmada/tree/master/docs/proposals/resource-interpreter-webhook) as a proposal example.
+Major features follow the Karmada Design Proposal process. You can refer to [here](https://github.com/Project-HAMi/HAMi/tree/master/docs/proposals/resource-interpreter-webhook) as a proposal example.
 
 During the start of a release, there may be many issues assigned to the release milestone. The priorities for the release are discussed in the bi-weekly community meetings. 
 As the release progresses several issues may be moved to the next milestone. Hence, if an issue is important it is important to advocate its priority early in the release cycle.
@@ -75,7 +75,7 @@ For example, [here](https://hub.docker.com/r/karmada/karmada-controller-manager)
 Since v1.2.0, the following artifacts are uploaded:
 
 * crds.tar.gz
-* karmada-chart-v<version_number>.tgz
+* karmada-chart-v\<version_number\>.tgz
 * karmadactl-darwin-amd64.tgz
 * karmadactl-darwin-amd64.tgz.sha256
 * karmadactl-darwin-arm64.tgz
@@ -95,10 +95,10 @@ Since v1.2.0, the following artifacts are uploaded:
 * Source code(zip)
 * Source code(tar.gz)
 
-You can visit `https://github.com/karmada-io/karmada/releases/download/v<version_number>/<artifact_name>` to download the artifacts above.
+You can visit `https://github.com/Project-HAMi/HAMi/releases/download/v<version_number>/<artifact_name>` to download the artifacts above.
 
 For example:
 
 ```shell
-wget https://github.com/karmada-io/karmada/releases/download/v1.3.0/karmadactl-darwin-amd64.tgz
+wget https://github.com/Project-HAMi/HAMi/releases/download/v1.3.0/karmadactl-darwin-amd64.tgz
 ```
