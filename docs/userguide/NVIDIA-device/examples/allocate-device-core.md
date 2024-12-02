@@ -19,7 +19,7 @@ spec:
       resources:
         limits:
           nvidia.com/gpu: 2 # requesting 2 vGPUs
-	  nvidia.com/gpucores: 50 # requesting 50% of each vGPU's core resources
+          nvidia.com/gpucores: 50 # requesting 50% of each vGPU's core resources
 ```
 
 > **NOTICE:** *HAMi implements `nvidia.com/gpucores` using time-slice, Therefore, when the core utilization is queried through the nvidia-smi command, there will be fluctuations*
