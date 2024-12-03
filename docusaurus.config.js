@@ -1,8 +1,12 @@
+const {themes} = require('prism-react-renderer');
+const lightTheme = themes.github;
+const darkTheme = themes.dracula;
+
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
   title: "HAMi",
   tagline: "Open, Device Virtualization, VGPU, Heterogeneous AI Computing",
-  url: "https://karmada.io",
+  url: "https://project-hami.io",
   baseUrl: "/",
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "throw",
@@ -170,7 +174,7 @@ module.exports = {
       `,
     },
     prism: {
-      theme: require("prism-react-renderer/themes/dracula"),
+      additionalLanguages: ['bash', 'diff', 'json'],
     },
   },
   presets: [
@@ -180,7 +184,7 @@ module.exports = {
         docs: {
           sidebarPath: require.resolve("./sidebars.js"),
           editUrl: function ({ locale, docPath }) {
-            return `https://github.com/karmada-io/website/edit/main/docs/${docPath}`;
+            return `https://github.com/Project-HAMi/website/edit/main/docs/${docPath}`;
           },
           showLastUpdateAuthor: true,
           showLastUpdateTime: true,
@@ -192,7 +196,7 @@ module.exports = {
         },
         blog: {
           showReadingTime: true,
-          editUrl: "https://github.com/karmada-io/website/tree/main/",
+          editUrl: "https://github.com/Project-HAMi/website/tree/main/",
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),

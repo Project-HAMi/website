@@ -1,74 +1,74 @@
 {
-  "version-v1.3.0/docs": [
+  "docs": [
     {
       "type": "category",
       "label": "Core Concepts",
       "collapsed": false,
       "items": [
-        "version-v1.3.0/core-concepts/introduction",
-        "version-v1.3.0/core-concepts/architecture"
+        "core-concepts/introduction",
+        "core-concepts/architecture"
       ]
     },
     {
       "type": "category",
       "label": "Key Features",
       "items": [
-        "version-v1.3.0/key-features/device-sharing",
-        "version-v1.3.0/key-features/device-resource-isolation"
+        "key-features/device-sharing",
+        "key-features/device-resource-isolation"
       ]
     },
     {
       "type": "category",
       "label": "Get Started",
       "items": [
-        "version-v1.3.0/get-started/nginx-example"
+        "get-started/nginx-example"
       ]
     },
     {
       "type": "category",
       "label": "Installation",
       "items": [
-        "version-v1.3.0/installation/prequisities",
-        "version-v1.3.0/installation/online-installation",
-        "version-v1.3.0/installation/offline-installation",
-        "version-v1.3.0/installation/upgrade",
-        "version-v1.3.0/installation/uninstall",
-        "version-v1.3.0/installation/webui-installation",
-        "version-v1.3.0/installation/how-to-use-volcano-vgpu"
+        "installation/prequisities",
+        "installation/online-installation",
+        "installation/offline-installation",
+        "installation/upgrade",
+        "installation/uninstall",
+        "installation/webui-installation",
+        "installation/how-to-use-volcano-vgpu"
       ]
     },
     {
       "type": "category",
       "label": "User Guide",
       "items": [
-        "version-v1.3.0/userguide/configure",
-        "version-v1.3.0/userguide/Device-supported",
+        "userguide/configure",
+        "userguide/Device-supported",
         {
           "type": "category",
           "label": "Monitoring",
           "items": [
-            "version-v1.3.0/userguide/monitoring/device-allocation",
-            "version-v1.3.0/userguide/monitoring/real-time-device-usage"
+            "userguide/monitoring/device-allocation",
+            "userguide/monitoring/real-time-device-usage"
           ]
         },
         {
           "type": "category",
           "label": "Share NVIDIA GPU devices",
           "items": [
-            "version-v1.3.0/userguide/NVIDIA-device/specify-device-memory-usage",
-            "version-v1.3.0/userguide/NVIDIA-device/specify-device-core-usage",
-            "version-v1.3.0/userguide/NVIDIA-device/specify-device-type-to-use",
-            "version-v1.3.0/userguide/NVIDIA-device/specify-device-uuid-to-use",
+            "userguide/NVIDIA-device/specify-device-memory-usage",
+            "userguide/NVIDIA-device/specify-device-core-usage",
+            "userguide/NVIDIA-device/specify-device-type-to-use",
+            "userguide/NVIDIA-device/specify-device-uuid-to-use",
             {
               "type": "category",
               "label": "Examples",
               "items": [
-                "version-v1.3.0/userguide/NVIDIA-device/examples/use-exclusive-card",
-                "version-v1.3.0/userguide/NVIDIA-device/examples/allocate-device-memory",
-                "version-v1.3.0/userguide/NVIDIA-device/examples/allocate-device-memory2",
-		            "version-v1.3.0/userguide/NVIDIA-device/examples/allocate-device-core",
-                "version-v1.3.0/userguide/NVIDIA-device/examples/specify-card-type-to-use",
-                "version-v1.3.0/userguide/NVIDIA-device/examples/specify-certain-card"
+                "userguide/NVIDIA-device/examples/use-exclusive-card",
+                "userguide/NVIDIA-device/examples/allocate-device-memory",
+                "userguide/NVIDIA-device/examples/allocate-device-memory2",
+		            "userguide/NVIDIA-device/examples/allocate-device-core",
+                "userguide/NVIDIA-device/examples/specify-card-type-to-use",
+                "userguide/NVIDIA-device/examples/specify-certain-card"
               ]
             } 
           ]
@@ -77,16 +77,16 @@
           "type": "category",
           "label": "Share Cambricon MLU devices",
           "items": [
-            "version-v1.3.0/userguide/Cambricon-device/enable-cambricon-mlu-sharing",
-            "version-v1.3.0/userguide/Cambricon-device/specify-device-memory-usage",
-            "version-v1.3.0/userguide/Cambricon-device/specify-device-core-usage",
-            "version-v1.3.0/userguide/Cambricon-device/specify-device-type-to-use",
+            "userguide/Cambricon-device/enable-cambricon-mlu-sharing",
+            "userguide/Cambricon-device/specify-device-memory-usage",
+            "userguide/Cambricon-device/specify-device-core-usage",
+            "userguide/Cambricon-device/specify-device-type-to-use",
             {
               "type": "category",
               "label": "Examples",
               "items": [
-                "version-v1.3.0/userguide/Cambricon-device/examples/allocate-core-and-memory",
-                "version-v1.3.0/userguide/Cambricon-device/examples/allocate-exclusive"
+                "userguide/Cambricon-device/examples/allocate-core-and-memory",
+                "userguide/Cambricon-device/examples/allocate-exclusive"
               ]
             }
           ]
@@ -95,15 +95,15 @@
           "type": "category",
           "label": "Share Mthreads GPU devices",
           "items": [
-            "version-v1.3.0/userguide/Mthreads-device/enable-mthreads-gpu-sharing",
-            "version-v1.3.0/userguide/Mthreads-device/specify-device-memory-usage",
-            "version-v1.3.0/userguide/Mthreads-device/specify-device-core-usage",
+            "userguide/Mthreads-device/enable-mthreads-gpu-sharing",
+            "userguide/Mthreads-device/specify-device-memory-usage",
+            "userguide/Mthreads-device/specify-device-core-usage",
             {
               "type": "category",
               "label": "Examples",
               "items": [
-                "version-v1.3.0/userguide/Mthreads-device/examples/allocate-core-and-memory",
-                "version-v1.3.0/userguide/Mthreads-device/examples/allocate-exclusive"
+                "userguide/Mthreads-device/examples/allocate-core-and-memory",
+                "userguide/Mthreads-device/examples/allocate-exclusive"
               ]
             }
           ]
@@ -112,16 +112,16 @@
           "type": "category",
           "label": "Optimize Metax GPU scheduling",
           "items": [
-            "version-v1.3.0/userguide/Metax-device/enable-metax-gpu-schedule",
-            "version-v1.3.0/userguide/Metax-device/specify-binpack-task",
-            "version-v1.3.0/userguide/Metax-device/specify-spread-task",
+            "userguide/Metax-device/enable-metax-gpu-schedule",
+            "userguide/Metax-device/specify-binpack-task",
+            "userguide/Metax-device/specify-spread-task",
             {
               "type": "category",
               "label": "Examples",
               "items": [
-                "version-v1.3.0/userguide/Metax-device/examples/default-use",
-                "version-v1.3.0/userguide/Metax-device/examples/allocate-binpack",
-                "version-v1.3.0/userguide/Metax-device/examples/allocate-spread"
+                "userguide/Metax-device/examples/default-use",
+                "userguide/Metax-device/examples/allocate-binpack",
+                "userguide/Metax-device/examples/allocate-spread"
               ]
             }
           ]
@@ -130,15 +130,15 @@
           "type": "category",
           "label": "Share Ascend devices",
           "items": [
-            "version-v1.3.0/userguide/Ascend-device/enable-ascend-sharing",
-            "version-v1.3.0/userguide/Ascend-device/device-template",
+            "userguide/Ascend-device/enable-ascend-sharing",
+            "userguide/Ascend-device/device-template",
             {
               "type": "category",
               "label": "Examples",
               "items": [
-                "version-v1.3.0/userguide/Ascend-device/examples/allocate-310p",
-                "version-v1.3.0/userguide/Ascend-device/examples/allocate-910b",
-                "version-v1.3.0/userguide/Ascend-device/examples/allocate-exclusive"
+                "userguide/Ascend-device/examples/allocate-310p",
+                "userguide/Ascend-device/examples/allocate-910b",
+                "userguide/Ascend-device/examples/allocate-exclusive"
               ]
             }
           ] 
@@ -151,14 +151,14 @@
               "type": "category",
               "label": "NVIDIA GPU",
               "items": [
-                "version-v1.3.0/userguide/volcano-vgpu/NVIDIA GPU/how-to-use-volcano-vgpu",
-                "version-v1.3.0/userguide/volcano-vgpu/NVIDIA GPU/monitor",
+                "userguide/volcano-vgpu/NVIDIA GPU/how-to-use-volcano-vgpu",
+                "userguide/volcano-vgpu/NVIDIA GPU/monitor",
                 {
                   "type": "category",
                   "label": "Examples",
                   "items": [
-                    "version-v1.3.0/userguide/volcano-vgpu/NVIDIA GPU/examples/default_use",
-                    "version-v1.3.0/userguide/volcano-vgpu/NVIDIA GPU/examples/use_exclusive_gpu"
+                    "userguide/volcano-vgpu/NVIDIA GPU/examples/default_use",
+                    "userguide/volcano-vgpu/NVIDIA GPU/examples/use_exclusive_gpu"
                   ] 
                 }
               ]
@@ -171,28 +171,28 @@
       "type": "category",
       "label": "Developer Guide",
       "items": [
-        "version-v1.3.0/developers/build",
-        "version-v1.3.0/developers/protocol",
-        "version-v1.3.0/developers/scheduling",
-        "version-v1.3.0/developers/HAMi-core-design"
+        "developers/build",
+        "developers/protocol",
+        "developers/scheduling",
+        "developers/HAMi-core-design"
       ]
     },
     {
       "type": "category",
       "label": "Contributor Guide",
       "items": [
-        "version-v1.3.0/contributor/contributing",
-        "version-v1.3.0/contributor/goverance",
-        "version-v1.3.0/contributor/ladder"
+        "contributor/contributing",
+        "contributor/goverance",
+        "contributor/ladder"
       ]
     },
     {
       "type": "doc",
-      "id": "version-v1.3.0/troubleshooting/troubleshooting"
+      "id": "troubleshooting/troubleshooting"
     },
     {
       "type": "doc",
-      "id": "version-v1.3.0/faq/faq"
+      "id": "faq/faq"
     }
   ]
 }

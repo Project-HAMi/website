@@ -1,7 +1,7 @@
 # HAMi Docs & Website
 
-This repo contains the source code of [HAMi website](http://Karmada.io/) and all of the docs for HAMi.
-It's built by [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
+This repo contains the source code of [HAMi website](https://project-hami.io/) and all of the docs for HAMi.
+It's built by [Docusaurus 3](https://docusaurus.io/), a modern static website generator.
 
 Welcome to join us and you are more than appreciated to contribute!
 
