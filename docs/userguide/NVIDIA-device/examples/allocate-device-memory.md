@@ -19,7 +19,7 @@ spec:
       resources:
         limits:
           nvidia.com/gpu: 2 # requesting 2 vGPUs
-	  nvidia.com/gpumem: 3000 # each vGPU requests 3G device memory
+          nvidia.com/gpumem: 3000 # each vGPU requests 3G device memory
 ```
 
 > **NOTICE:** *`nvidia.com/gpumem` can't be used together with `nvidia.com/gpumem-percentage`*
