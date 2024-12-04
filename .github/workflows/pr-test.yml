@@ -9,17 +9,28 @@ on:
       - master
 
 jobs:
-  publish-npm:
+  build:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 18
-          registry-url: https://npm.pkg.github.com/
-          scope: "@project-hami"
-      - run: npm ci
-      - run: npm run build
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          name: github-pages
+          path: ./build/
+          retention-days: 1
