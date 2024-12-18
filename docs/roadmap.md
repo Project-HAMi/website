@@ -1,12 +1,12 @@
 ---
-title:  Karmada Roadmap
+title:  HAMi Roadmap
 ---
 
-# Karmada Roadmap
+# HAMi Roadmap
 
-This document defines a high level roadmap for Karmada development and upcoming releases.
+This document defines a high level roadmap for HAMi development and upcoming releases.
 Community and contributor involvement is vital for successfully implementing all desired items for each release.
-We hope that the items listed below will inspire further engagement from the community to keep karmada progressing and shipping exciting and valuable features.
+We hope that the items listed below will inspire further engagement from the community to keep hami progressing and shipping exciting and valuable features.
 
 
 ## 2022 H1
@@ -18,15 +18,15 @@ We hope that the items listed below will inspire further engagement from the com
 - Multi-cluster HPA (Horizontal Pod Autoscaling)
 - Federated resource quota
 - API reference
-- [Karmada website](https://karmada.io/) refactor
+- [HAMi website](https://hami.io/) refactor
 - Policy-based governance, risk, and compliance
 - Multi-cluster DNS (cluster identity)
 - Global search across clusters
 - Scheduling re-balancing
 
 ## 2022 H2
-- Karmada Dashboard - alpha release
-- Karmada scalability baseline (performance report)
+- HAMi Dashboard - alpha release
+- HAMi scalability baseline (performance report)
 - Cluster addons
 - Helm chart propagation
 - Multi-cluster events

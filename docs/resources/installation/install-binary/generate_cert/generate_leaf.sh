@@ -11,7 +11,7 @@ readonly server_ca_leaf_certs=(
   "admin"
   "kube-apiserver"
   "kube-controller-manager"
-  "karmada"
+  "hami"
 )
 
 function parse_parameter() {

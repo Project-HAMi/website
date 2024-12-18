@@ -1,6 +1,6 @@
 {
     "name": "Open, Multi-Cloud, Multi-Cluster Kubernetes Orchestration",
-    "short_name": "Karmada",
+    "short_name": "HAMi",
     "icons": [
         {
             "src": "/favicons/android-chrome-192x192.png",

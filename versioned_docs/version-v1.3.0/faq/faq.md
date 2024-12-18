@@ -14,27 +14,27 @@ Both of them are used to hold the propagation declaration, but they have differe
 ## What is the difference between 'Push' and 'Pull' mode of a cluster?
 
 
-## Why Karmada requires `kube-controller-manager`?
+## Why HAMi requires `kube-controller-manager`?
 
-`kube-controller-manager` is composed of a bunch of controllers, Karmada inherits some controllers from it
+`kube-controller-manager` is composed of a bunch of controllers, HAMi inherits some controllers from it
 to keep a consistent user experience and behavior.
 
-It's worth noting that not all controllers are needed by Karmada, for the recommended controllers please
+It's worth noting that not all controllers are needed by HAMi, for the recommended controllers please
 
 
-## Can I install Karmada in a Kubernetes cluster and reuse the kube-apiserver as Karmada apiserver?
+## Can I install HAMi in a Kubernetes cluster and reuse the kube-apiserver as HAMi apiserver?
 
 The quick answer is `yes`. In that case, you can save the effort to deploy
-[karmada-apiserver](https://github.com/karmada-io/karmada/blob/master/artifacts/deploy/karmada-apiserver.yaml) and just
-share the APIServer between Kubernetes and Karmada. In addition, the high availability capabilities in the origin clusters
-can be inherited seamlessly. We do have some users using Karmada in this way.
+[hami-apiserver](https://github.com/hami-io/hami/blob/master/artifacts/deploy/hami-apiserver.yaml) and just
+share the APIServer between Kubernetes and HAMi. In addition, the high availability capabilities in the origin clusters
+can be inherited seamlessly. We do have some users using HAMi in this way.
 
 There are some things you should consider before doing so:
 
-- This approach hasn't been fully tested by the Karmada community and no plan for it yet.
-- This approach will increase computation costs for the Karmada system. E.g.
+- This approach hasn't been fully tested by the HAMi community and no plan for it yet.
+- This approach will increase computation costs for the HAMi system. E.g.
   After you apply a `resource template`, take `Deployment` as an example, the `kube-controller` will create `Pods` for the
-  Deployment and update the status persistently, Karmada system will reconcile these changes too, so there might be
+  Deployment and update the status persistently, HAMi system will reconcile these changes too, so there might be
   conflicts.
 
 TODO: Link to adoption use case once it gets on board.

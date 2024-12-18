@@ -12,7 +12,7 @@ This section provides guidelines on release timelines and release branch mainten
 
 ### Release Timelines
 
-Karmada uses the Semantic Versioning schema. Karmada v1.0.0 was released in December 2021. This project follows a given version number MAJOR.MINOR.PATCH.
+HAMi uses the Semantic Versioning schema. HAMi v1.0.0 was released in December 2021. This project follows a given version number MAJOR.MINOR.PATCH.
 
 ### MAJOR release 
 
@@ -20,7 +20,7 @@ Major releases contain large features, design and architectural changes, and may
 
 ### MINOR release
 
-Minor releases contain features, enhancements, and fixes that are introduced in a backwards-compatible manner. Since Karmada is a fast growing project and features continue to iterate rapidly, having a minor release approximately every few months helps balance speed and stability.
+Minor releases contain features, enhancements, and fixes that are introduced in a backwards-compatible manner. Since HAMi is a fast growing project and features continue to iterate rapidly, having a minor release approximately every few months helps balance speed and stability.
 
 * Roughly every 3 months
 
@@ -32,9 +32,9 @@ Patch releases are for backwards-compatible bug fixes and very minor enhancement
 
 ### Versioning
 
-Karmada uses GitHub tags to manage versions. New releases and release candidates are published using the wildcard tag`v<major>.<minor>.<patch>`.
+HAMi uses GitHub tags to manage versions. New releases and release candidates are published using the wildcard tag`v<major>.<minor>.<patch>`.
 
-Whenever a PR is merged into the master branch, CI will pull the latest code, generate an image and upload it to the mirror repository. The latest image of Karmada components can usually be downloaded online using the latest tag. 
+Whenever a PR is merged into the master branch, CI will pull the latest code, generate an image and upload it to the mirror repository. The latest image of HAMi components can usually be downloaded online using the latest tag. 
 Whenever a release is released, the image will also be released, and the tag is the same as the tag of the release above.
 
 ### Issues
@@ -52,7 +52,7 @@ Release branches and PRs are managed as follows:
 * The branch name will contain the version, for example release-1.2.
 * Patch releases are created from a release branch.
 * For critical fixes that need to be included in a patch release, PRs should always be first merged to master and then cherry-picked to the release branch. PRs need to be guaranteed to have a release note written and these descriptions will be reflected in the next patch release.
-  The cherry-pick process of PRs is executed through the script. See usage [here](https://karmada.io/docs/contributor/cherry-picks).
+  The cherry-pick process of PRs is executed through the script. See usage [here](https://hami.io/docs/contributor/cherry-picks).
 * For complex changes, specially critical bugfixes, separate PRs may be required for master and release branches.
 * The milestone mark (for example v1.4) will be added to PRs which means changes in PRs are one of the contents of the corresponding release.
 * During PR review, the Assignee selection is used to indicate the reviewer.
@@ -61,37 +61,37 @@ Release branches and PRs are managed as follows:
 
 A minor release will contain a mix of features, enhancements, and bug fixes.
 
-Major features follow the Karmada Design Proposal process. You can refer to [here](https://github.com/Project-HAMi/HAMi/tree/master/docs/proposals/resource-interpreter-webhook) as a proposal example.
+Major features follow the HAMi Design Proposal process. You can refer to [here](https://github.com/Project-HAMi/HAMi/tree/master/docs/proposals/resource-interpreter-webhook) as a proposal example.
 
 During the start of a release, there may be many issues assigned to the release milestone. The priorities for the release are discussed in the bi-weekly community meetings. 
 As the release progresses several issues may be moved to the next milestone. Hence, if an issue is important it is important to advocate its priority early in the release cycle.
 
 ### Release Artifacts
 
-The Karmada container images are availble at `dockerHub`. 
-You can visit `https://hub.docker.com/r/karmada/<component_name>` to see the details of images.
-For example, [here](https://hub.docker.com/r/karmada/karmada-controller-manager) for karmada-controller-manager.
+The HAMi container images are availble at `dockerHub`. 
+You can visit `https://hub.docker.com/r/hami/<component_name>` to see the details of images.
+For example, [here](https://hub.docker.com/r/hami/hami-controller-manager) for hami-controller-manager.
 
 Since v1.2.0, the following artifacts are uploaded:
 
 * crds.tar.gz
-* karmada-chart-v\<version_number\>.tgz
-* karmadactl-darwin-amd64.tgz
-* karmadactl-darwin-amd64.tgz.sha256
-* karmadactl-darwin-arm64.tgz
-* karmadactl-darwin-arm64.tgz.sha256
-* karmadactl-linux-amd64.tgz
-* karmadactl-linux-amd64.tgz.sha256
-* karmadactl-linux-arm64.tgz
-* karmadactl-linux-arm64.tgz.sha256
-* kubectl-karmada-darwin-amd64.tgz
-* kubectl-karmada-darwin-amd64.tgz.sha256
-* kubectl-karmada-darwin-arm64.tgz
-* kubectl-karmada-darwin-arm64.tgz.sha256
-* kubectl-karmada-linux-amd64.tgz
-* kubectl-karmada-linux-amd64.tgz.sha256
-* kubectl-karmada-linux-arm64.tgz
-* kubectl-karmada-linux-arm64.tgz.sha256
+* hami-chart-v\<version_number\>.tgz
+* hamictl-darwin-amd64.tgz
+* hamictl-darwin-amd64.tgz.sha256
+* hamictl-darwin-arm64.tgz
+* hamictl-darwin-arm64.tgz.sha256
+* hamictl-linux-amd64.tgz
+* hamictl-linux-amd64.tgz.sha256
+* hamictl-linux-arm64.tgz
+* hamictl-linux-arm64.tgz.sha256
+* kubectl-hami-darwin-amd64.tgz
+* kubectl-hami-darwin-amd64.tgz.sha256
+* kubectl-hami-darwin-arm64.tgz
+* kubectl-hami-darwin-arm64.tgz.sha256
+* kubectl-hami-linux-amd64.tgz
+* kubectl-hami-linux-amd64.tgz.sha256
+* kubectl-hami-linux-arm64.tgz
+* kubectl-hami-linux-arm64.tgz.sha256
 * Source code(zip)
 * Source code(tar.gz)
 
@@ -100,5 +100,5 @@ You can visit `https://github.com/Project-HAMi/HAMi/releases/download/v<version_
 For example:
 
 ```shell
-wget https://github.com/Project-HAMi/HAMi/releases/download/v1.3.0/karmadactl-darwin-amd64.tgz
+wget https://github.com/Project-HAMi/HAMi/releases/download/v1.3.0/hamictl-darwin-amd64.tgz
 ```

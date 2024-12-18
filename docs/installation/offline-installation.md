@@ -2,22 +2,22 @@
 title: Offline Installation
 ---
 
-This document describes how you can use the `hack/remote-up-karmada.sh` script to install Karmada on
+This document describes how you can use the `hack/remote-up-hami.sh` script to install HAMi on
 your clusters based on the codebase.
 
-## Select a way to expose karmada-apiserver
+## Select a way to expose hami-apiserver
 
-The `hack/remote-up-karmada.sh` will install `karmada-apiserver` and provide two ways to expose the server:
+The `hack/remote-up-hami.sh` will install `hami-apiserver` and provide two ways to expose the server:
 
 ### 1. expose by `HostNetwork` type
 
-By default, the `hack/remote-up-karmada.sh` will expose `karmada-apiserver` by `HostNetwork`.
+By default, the `hack/remote-up-hami.sh` will expose `hami-apiserver` by `HostNetwork`.
 
 No extra operations needed with this type.
 
 ### 2. expose by service with `LoadBalancer` type
 
-If you don't want to use the `HostNetwork`, you can ask `hack/remote-up-karmada.sh` to expose `karmada-apiserver`
+If you don't want to use the `HostNetwork`, you can ask `hack/remote-up-hami.sh` to expose `hami-apiserver`
 by a service with `LoadBalancer` type that *requires your cluster have deployed the `Load Balancer`*.
 All you need to do is set an environment:
 ```bash
@@ -25,16 +25,16 @@ export LOAD_BALANCER=true
 ```
 
 ## Install
-From the `root` directory the `karmada` repo, install Karmada by command:
+From the `root` directory the `hami` repo, install HAMi by command:
 ```bash
-hack/remote-up-karmada.sh <kubeconfig> <context_name>
+hack/remote-up-hami.sh <kubeconfig> <context_name>
 ```
 - `kubeconfig` is your cluster's kubeconfig that you want to install to
 - `context_name` is the name of context in 'kubeconfig'
 
 For example:
 ```bash
-hack/remote-up-karmada.sh $HOME/.kube/config mycluster
+hack/remote-up-hami.sh $HOME/.kube/config mycluster
 ```
 
 If everything goes well, at the end of the script output, you will see similar messages as follows:
@@ -49,11 +49,11 @@ If everything goes well, at the end of the script output, you will see similar m
 █████ ░░████ █████   █████ █████   █████ █████     █████ █████   █████ ██████████   █████   █████
 ░░░░░   ░░░░ ░░░░░   ░░░░░ ░░░░░   ░░░░░ ░░░░░     ░░░░░ ░░░░░   ░░░░░ ░░░░░░░░░░   ░░░░░   ░░░░░
 ------------------------------------------------------------------------------------------------------
-Karmada is installed successfully.
+HAMi is installed successfully.
 
-Kubeconfig for karmada in file: /root/.kube/karmada.config, so you can run:
-  export KUBECONFIG="/root/.kube/karmada.config"
-Or use kubectl with --kubeconfig=/root/.kube/karmada.config
-Please use 'kubectl config use-context karmada-apiserver' to switch the cluster of karmada control plane
-And use 'kubectl config use-context your-host' for debugging karmada installation
+Kubeconfig for hami in file: /root/.kube/hami.config, so you can run:
+  export KUBECONFIG="/root/.kube/hami.config"
+Or use kubectl with --kubeconfig=/root/.kube/hami.config
+Please use 'kubectl config use-context hami-apiserver' to switch the cluster of hami control plane
+And use 'kubectl config use-context your-host' for debugging hami installation
 ```

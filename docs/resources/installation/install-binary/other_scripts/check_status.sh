@@ -6,17 +6,17 @@
 # Updating curl version may fix this problem, but it needs to update CentOS version.
 
 readonly -A services_standard=(
-  [karmada-aggregated-apiserver]='https://127.0.0.1:7443/livez?verbose'
-  [karmada-controller-manager]='http://127.0.0.1:10357/healthz?verbose'
-  [karmada-scheduler-estimator]='http://127.0.0.1:10351/healthz?verbose'
-  [karmada-scheduler]='http://127.0.0.1:10511/healthz?verbose'
-  [karmada-search]='https://127.0.0.1:9443/livez?verbose'
+  [hami-aggregated-apiserver]='https://127.0.0.1:7443/livez?verbose'
+  [hami-controller-manager]='http://127.0.0.1:10357/healthz?verbose'
+  [hami-scheduler-estimator]='http://127.0.0.1:10351/healthz?verbose'
+  [hami-scheduler]='http://127.0.0.1:10511/healthz?verbose'
+  [hami-search]='https://127.0.0.1:9443/livez?verbose'
   [kube-apiserver]='https://127.0.0.1:6443/livez?verbose'
   [kube-controller-manager]='https://127.0.0.1:10257/healthz?verbose'
 )
 
 readonly -A services_tls1_3=(
-  [karmada-webhook]='https://127.0.0.1:8443/readyz/'
+  [hami-webhook]='https://127.0.0.1:8443/readyz/'
 )
 
 check_pass=1
@@ -28,9 +28,9 @@ check_pass=1
 function health_check() {
   local http_code
   http_code="$(curl --silent $2 --output /dev/stderr --write-out "%{http_code}" \
-    --cacert "/etc/karmada/pki/server-ca.crt" \
-    --cert "/etc/karmada/pki/admin.crt" \
-    --key "/etc/karmada/pki/admin.key" \
+    --cacert "/etc/hami/pki/server-ca.crt" \
+    --cert "/etc/hami/pki/admin.crt" \
+    --key "/etc/hami/pki/admin.key" \
     "$1")"
   test $? -eq '0' && test ${http_code} -eq '200'
   return $?

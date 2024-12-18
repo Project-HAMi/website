@@ -25,7 +25,7 @@ readonly leaf_certs=(
 
 function gen_etcd_ca() {
   openssl genrsa -out ca.key 2048
-  openssl req -x509 -new -nodes -key ca.key -subj "/C=CN/ST=Guangdong/L=Guangzhou/O=karmada/OU=System/CN=etcd-ca" -days 3650 -out ca.crt
+  openssl req -x509 -new -nodes -key ca.key -subj "/C=CN/ST=Guangdong/L=Guangzhou/O=hami/OU=System/CN=etcd-ca" -days 3650 -out ca.crt
 }
 
 function generate_leaf_certs() {
