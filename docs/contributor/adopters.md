@@ -4,7 +4,7 @@ So you and your organisation are using HAMi? That's great. We would love to hear
 
 ## Adding yourself
 
-[Here](../src/pages/adopters.mdx) lists the organisations who adopted the HAMi project in production.
+[Here](https://github.com/Project-HAMi/website/blob/master/src/pages/adopters.mdx) lists the organisations who adopted the HAMi project in production.
 
 You just need to add an entry for your company and upon merging it will automatically be added to our website.
 
@@ -14,7 +14,7 @@ To add your organisation follow these steps:
 2. Clone it locally with `git clone https://github.com/<YOUR-GH-USERNAME>/website.git`.
 3. (Optional) Add the logo of your organisation to `static/img/supporters`. Good practice is for the logo to be called e.g. `<company>.png`.
    This will not be used for commercial purposes.
-4. Edit the list of adopters in [adopters.mdx](../src/pages/adopters.mdx).
+4. Edit the list of adopters in [adopters.mdx](https://github.com/Project-HAMi/website/blob/master/src/pages/adopters.mdx).
    You can refer to the following sample table for the format.
 
    | Organization/Company Name | Website                  | Usage Scenario                       | CaseStudy                            |
