@@ -1,4 +1,4 @@
-const {themes} = require('prism-react-renderer');
+const { themes } = require("prism-react-renderer");
 const lightTheme = themes.github;
 const darkTheme = themes.dracula;
 
@@ -96,9 +96,9 @@ module.exports = {
         '⭐️ If you like HAMi, give it a star on <a target="_blank" rel="noopener noreferrer" href="https://github.com/Project-HAMi/HAMi">GitHub</a>! ⭐️',
     },
     algolia: {
-      appId: '5IDBLUX6VJ',
-      apiKey: '0544ead27838375d12530a88e31fcce8',
-      indexName: 'hami',
+      appId: "5IDBLUX6VJ",
+      apiKey: "0544ead27838375d12530a88e31fcce8",
+      indexName: "hami",
       // contextualSearch ensures that search results are relevant to the current language and version.
       contextualSearch: true,
     },
@@ -118,6 +118,12 @@ module.exports = {
           to: "docs/",
           activeBasePath: "docs",
           label: "Documentation",
+          position: "left",
+        },
+        {
+          to: "adopters",
+          activeBasePath: "adopters",
+          label: "Adopters",
           position: "left",
         },
         {
@@ -174,7 +180,7 @@ module.exports = {
       `,
     },
     prism: {
-      additionalLanguages: ['bash', 'diff', 'json'],
+      additionalLanguages: ["bash", "diff", "json"],
     },
   },
   presets: [
