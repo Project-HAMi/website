@@ -1,6 +1,6 @@
 ---
 title: "GitHub Workflow"
-description: An overview of the GitHub workflow used by the Karmada project. It includes some tips and suggestions on things such as keeping your local environment in sync with upstream and commit hygiene.
+description: An overview of the GitHub workflow used by the HAMi project. It includes some tips and suggestions on things such as keeping your local environment in sync with upstream and commit hygiene.
 ---
 
 > This doc is lifted from [Kubernetes github-workflow](https://github.com/kubernetes/community/blob/master/contributors/guide/github-workflow.md).
@@ -9,12 +9,12 @@ description: An overview of the GitHub workflow used by the Karmada project. It 
 
 ### 1 Fork in the cloud
 
-1. Visit https://github.com/karmada-io/karmada
+1. Visit https://github.com/hami-io/hami
 2. Click `Fork` button (top right) to establish a cloud-based fork.
 
 ### 2 Clone fork to local storage
 
-Per Go's [workspace instructions][go-workspace], place Karmada' code on your
+Per Go's [workspace instructions][go-workspace], place HAMi' code on your
 `GOPATH` using the following cloning procedure.
 
 [go-workspace]: https://golang.org/doc/code.html#Workspaces
@@ -27,7 +27,7 @@ Define a local working directory:
 # You must follow exactly this pattern,
 # neither `$GOPATH/src/github.com/${your github profile name/`
 # nor any other pattern will work.
-export working_dir="$(go env GOPATH)/src/github.com/karmada-io"
+export working_dir="$(go env GOPATH)/src/github.com/hami-io"
 ```
 
 Set `user` to match your github profile name:
@@ -43,12 +43,12 @@ Create your clone:
 ```sh
 mkdir -p $working_dir
 cd $working_dir
-git clone https://github.com/$user/karmada.git
-# or: git clone git@github.com:$user/karmada.git
+git clone https://github.com/$user/hami.git
+# or: git clone git@github.com:$user/hami.git
 
-cd $working_dir/karmada
-git remote add upstream https://github.com/karmada-io/karmada.git
-# or: git remote add upstream git@github.com:karmada-io/karmada.git
+cd $working_dir/hami
+git remote add upstream https://github.com/hami-io/hami.git
+# or: git remote add upstream git@github.com:hami-io/hami.git
 
 # Never push to upstream master
 git remote set-url --push upstream no_push
@@ -65,7 +65,7 @@ Get your local master up to date:
 # Depending on which repository you are working from,
 # the default branch may be called 'main' instead of 'master'.
 
-cd $working_dir/karmada
+cd $working_dir/hami
 git fetch upstream
 git checkout master
 git rebase upstream/master
@@ -116,7 +116,7 @@ git push -f ${your_remote_name} myfeature
 
 ### 7 Create a pull request
 
-1. Visit your fork at `https://github.com/$user/karmada`
+1. Visit your fork at `https://github.com/$user/hami`
 2. Click the `Compare & Pull Request` button next to your `myfeature` branch.
 
 _If you have upstream write access_, please refrain from using the GitHub UI for

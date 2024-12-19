@@ -3,7 +3,7 @@ title: How to cherry-pick PRs
 ---
 
 This document explains how cherry picks are managed on release branches within
-the `karmada-io/karmada` repository.
+the `hami-io/hami` repository.
 A common use case for this task is backporting PRs from master to release
 branches.
 
@@ -19,11 +19,11 @@ branches.
 ## Prerequisites
 
 - A pull request merged against the `master` branch.
-- The release branch exists (example: [`release-1.0`](https://github.com/karmada-io/karmada/tree/release-1.0))
+- The release branch exists (example: [`release-1.0`](https://github.com/hami-io/hami/tree/release-1.0))
 - The normal git and GitHub configured shell environment for pushing to your
-  karmada `origin` fork on GitHub and making a pull request against a
+  hami `origin` fork on GitHub and making a pull request against a
   configured remote `upstream` that tracks
-  `https://github.com/karmada-io/karmada.git`, including `GITHUB_USER`.
+  `https://github.com/hami-io/hami.git`, including `GITHUB_USER`.
 - Have GitHub CLI (`gh`) installed following [installation instructions](https://github.com/cli/cli#installation).
 - A github personal access token which has permissions "repo" and "read:org".
   Permissions are required for [gh auth login](https://cli.github.com/manual/gh_auth_login)
@@ -80,7 +80,7 @@ patch release branches.
   ```
 
   - Be aware the cherry pick script assumes you have a git remote called
-    `upstream` that points at the Karmada github org.
+    `upstream` that points at the HAMi github org.
 
   - You will need to run the cherry pick script separately for each patch
     release you want to cherry pick to. Cherry picks should be applied to all
@@ -118,4 +118,4 @@ cherry pick.
 
 The community supports & patches releases need to be discussed.
 
-[cherry-pick-script]: https://github.com/karmada-io/karmada/blob/master/hack/cherry_pick_pull.sh
+[cherry-pick-script]: https://github.com/hami-io/hami/blob/master/hack/cherry_pick_pull.sh

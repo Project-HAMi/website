@@ -1,12 +1,12 @@
 ---
-title: Profiling Karmada
+title: Profiling HAMi
 ---
 
 ## Enable profiling
 
-To profile Karmada components running inside a Kubernetes pod, set --enable-pprof flag to true in the yaml of Karmada components. 
+To profile HAMi components running inside a Kubernetes pod, set --enable-pprof flag to true in the yaml of HAMi components. 
 The default profiling address is 127.0.0.1:6060, and it can be configured via `--profiling-bind-address`.
-The components which are compiled by the Karmada source code support the flag above, including `Karmada-agent`, `Karmada-aggregated-apiserver`, `Karmada-controller-manager`, `Karmada-descheduler`, `Karmada-search`, `Karmada-scheduler`, `Karmada-scheduler-estimator`, `Karmada-webhook`.
+The components which are compiled by the HAMi source code support the flag above, including `HAMi-agent`, `HAMi-aggregated-apiserver`, `HAMi-controller-manager`, `HAMi-descheduler`, `HAMi-search`, `HAMi-scheduler`, `HAMi-scheduler-estimator`, `HAMi-webhook`.
 
 ```
 --enable-pprof                                                                                                                                                                
@@ -21,14 +21,14 @@ The components which are compiled by the Karmada source code support the flag ab
 You can get at the application in the pod by port forwarding with kubectl, for example:
 
 ```shell
-$ kubectl -n karmada-system get pod
+$ kubectl -n hami-system get pod
 NAME                                          READY   STATUS    RESTARTS   AGE
-karmada-controller-manager-7567b44b67-8kt59   1/1     Running   0          19s
+hami-controller-manager-7567b44b67-8kt59   1/1     Running   0          19s
 ...
 ```
 
 ```shell
-$ kubectl -n karmada-system port-forward karmada-controller-manager-7567b44b67-8kt59 6060
+$ kubectl -n hami-system port-forward hami-controller-manager-7567b44b67-8kt59 6060
 Forwarding from 127.0.0.1:6060 -> 6060
 Forwarding from [::1]:6060 -> 6060
 ```

@@ -91,8 +91,8 @@ module.exports = {
             type: "category",
             label: "Developer Guide",
             items: [
-                "developers/profiling-karmada",
-                "developers/performance-test-setup-for-karmada",
+                "developers/profiling-hami",
+                "developers/performance-test-setup-for-hami",
             ],
         },
         {

@@ -1,13 +1,13 @@
 #!/bin/bash
 
 # Reference:
-# 1. https://karmada.io/zh/docs/installation/install-binary
+# 1. https://hami.io/zh/docs/installation/install-binary
 # 2. https://kubernetes.io/docs/tasks/administer-cluster/certificates/#openssl
 # 3. https://kubernetes.io/docs/setup/best-practices/certificates/
 # 4. https://kubernetes.io/docs/tasks/extend-kubernetes/configure-aggregation-layer/#ca-reusage-and-conflicts
 
 # util::get_random_serial_number generates a 64 bit signed positive integer.
-# karmadactl also uses [0, 2^63 -1] integers as serial_number for cert.
+# hamictl also uses [0, 2^63 -1] integers as serial_number for cert.
 #
 # There are two ways of handling certificate serial number:
 # 1. Use `-CAcreateserial`, let openssl record the latest generated certificate's serial number, and increment

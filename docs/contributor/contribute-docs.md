@@ -2,7 +2,7 @@
 title: How to contribute docs
 ---
 
-Starting from version 1.3, the community documentation will be available on the Karmada website.
+Starting from version 1.3, the community documentation will be available on the HAMi website.
 This document explains how to contribute docs to
 the `Project-HAMi/website` repository.
 
@@ -99,7 +99,7 @@ You can easily route to other places by adding any of the following links:
   You can use relative paths to index the corresponding files.
 * Link to pictures or other resources.
   If your article contains images or other resources, you may create a corresponding directory in `/docs/resources`, and article related files are placed in that directory.
-  Now we store public pictures about Karmada in `/docs/resources/general`. You can use the following to link the pictures:
+  Now we store public pictures about HAMi in `/docs/resources/general`. You can use the following to link the pictures:
   * `![Git workflow](../resources/contributor/git_workflow.png)`
 
 ### Directory organization 

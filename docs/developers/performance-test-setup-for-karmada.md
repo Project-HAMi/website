@@ -1,10 +1,10 @@
 ---
-title: Performance Test Setup for Karmada
+title: Performance Test Setup for HAMi
 ---
 
 ## Abstract
 
-As Karmada is being implemented in more and more enterprises and organizations, scalability and scale of Karmada is gradually becoming new concerns for the community. In this article, we will introduce how to conduct large-scale testing for Karmada and how to monitor metrics from Karmada control plane.
+As HAMi is being implemented in more and more enterprises and organizations, scalability and scale of HAMi is gradually becoming new concerns for the community. In this article, we will introduce how to conduct large-scale testing for HAMi and how to monitor metrics from HAMi control plane.
 
 ## Build large scale environment
 
@@ -121,7 +121,7 @@ fake-pod-78884479b7-h2fv6   1/1     Running   0          6s    10.0.0.31   fake-
 
 ### ClusterLoader2
 
-[ClusterLoader2](https://github.com/kubernetes/perf-tests/tree/master/clusterloader2) is an open source Kubernetes cluster testing tool. It tests against Kubernetes-defined SLIs/SLOs metrics to verify that clusters meet various quality of service standards. ClusterLoader2 is a tool oriented single cluster, it is complex to test karmada control plane meanwhile distribute resouces to member clusters. Therefore, we just use the ClusterLoader2 to distribute resources to clusters managed by karmada.
+[ClusterLoader2](https://github.com/kubernetes/perf-tests/tree/master/clusterloader2) is an open source Kubernetes cluster testing tool. It tests against Kubernetes-defined SLIs/SLOs metrics to verify that clusters meet various quality of service standards. ClusterLoader2 is a tool oriented single cluster, it is complex to test hami control plane meanwhile distribute resouces to member clusters. Therefore, we just use the ClusterLoader2 to distribute resources to clusters managed by hami.
 
 ### Prepare a simple config
 
@@ -264,7 +264,7 @@ spec:
 
 ```yaml
 # policy.yaml
-apiVersion: policy.karmada.io/v1alpha1
+apiVersion: policy.hami.io/v1alpha1
 kind: PropagationPolicy
 metadata:
   name: test
@@ -285,31 +285,31 @@ spec:
 To distributing resources,  run:
 
 ```shell
-export KARMADA_APISERVERCONFIG=your_config
-export KARMADA-APISERVERIP=your_ip
+export HAMI_APISERVERCONFIG=your_config
+export HAMI-APISERVERIP=your_ip
 cd clusterloader2/
-go run cmd/clusterloader.go --testconfig=config.yaml --provider=local --kubeconfig=$KARMADA_APISERVERCONFIG --v=2 --k8s-clients-number=1 --skip-cluster-verification=true --masterip=$KARMADA-APISERVERIP --enable-exec-service=false
+go run cmd/clusterloader.go --testconfig=config.yaml --provider=local --kubeconfig=$HAMI_APISERVERCONFIG --v=2 --k8s-clients-number=1 --skip-cluster-verification=true --masterip=$HAMI-APISERVERIP --enable-exec-service=false
 ```
 
 The meaning of args above shows as following:
 
-- k8s-clients-number: the number of karmada apiserver client number.
+- k8s-clients-number: the number of hami apiserver client number.
 - skip-cluster-verification: whether to skip the cluster verification, which expects at least one schedulable node in the cluster.
 - enable-exec-service: whether to enable exec service that allows executing arbitrary commands from a pod running in the cluster.
 
-Since the resources of member cluster cannot be accessed in karmada control plane, we have to turn off enable-exec-service and cluster-verification.
+Since the resources of member cluster cannot be accessed in hami control plane, we have to turn off enable-exec-service and cluster-verification.
 
 
 
-## Monitor Karmada control plane using Prometheus and Grafana
+## Monitor HAMi control plane using Prometheus and Grafana
 
 ### Deploy Prometheus and Grafana
 
-> Follow the [Prometheus and Grafana Deploy Guide](https://karmada.io/docs/administrator/monitoring/working-with-prometheus-in-control-plane)
+> Follow the [Prometheus and Grafana Deploy Guide](https://hami.io/docs/administrator/monitoring/working-with-prometheus-in-control-plane)
 
-### Create Grafana DashBoards to observe Karmada control plane metrics
+### Create Grafana DashBoards to observe HAMi control plane metrics
 
-Here's an example to monitor the mutating api call latency for works and resourcebindings of the karmada apiserver through grafana. Monitor the metrics you want by modifying the Query statement.
+Here's an example to monitor the mutating api call latency for works and resourcebindings of the hami apiserver through grafana. Monitor the metrics you want by modifying the Query statement.
 
 #### Create a dashboard
 
