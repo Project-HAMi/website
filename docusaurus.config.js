@@ -96,9 +96,9 @@ module.exports = {
         '⭐️ If you like HAMi, give it a star on <a target="_blank" rel="noopener noreferrer" href="https://github.com/Project-HAMi/HAMi">GitHub</a>! ⭐️',
     },
     algolia: {
-      appId: '5IDBLUX6VJ',
-      apiKey: '0544ead27838375d12530a88e31fcce8',
-      indexName: 'hami',
+      appId: "IWSUKSVX6L",
+      apiKey: "30ef663a029bb4c66929ac376ae3624c",
+      indexName: "project-hami",
       // contextualSearch ensures that search results are relevant to the current language and version.
       contextualSearch: true,
     },
