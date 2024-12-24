@@ -12,6 +12,7 @@ module.exports = {
   onBrokenMarkdownLinks: "throw",
   organizationName: "hami-io",
   projectName: "website",
+  favicon: "img/favicon.ico",
   i18n: {
     defaultLocale: "en",
     locales: ["en", "zh"],
