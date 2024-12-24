@@ -55,6 +55,7 @@
           "type": "category",
           "label": "Share NVIDIA GPU devices",
           "items": [
+            "userguide/NVIDIA-device/dynamic-mig-support",
             "userguide/NVIDIA-device/specify-device-memory-usage",
             "userguide/NVIDIA-device/specify-device-core-usage",
             "userguide/NVIDIA-device/specify-device-type-to-use",
@@ -68,7 +69,8 @@
                 "userguide/NVIDIA-device/examples/allocate-device-memory2",
 		            "userguide/NVIDIA-device/examples/allocate-device-core",
                 "userguide/NVIDIA-device/examples/specify-card-type-to-use",
-                "userguide/NVIDIA-device/examples/specify-certain-card"
+                "userguide/NVIDIA-device/examples/specify-certain-card",
+                "userguide/NVIDIA-device/examples/dynamic-mig-example"
               ]
             } 
           ]
@@ -174,7 +176,8 @@
         "developers/build",
         "developers/protocol",
         "developers/scheduling",
-        "developers/HAMi-core-design"
+        "developers/HAMi-core-design",
+        "developers/Dynamic-mig"
       ]
     },
     {
