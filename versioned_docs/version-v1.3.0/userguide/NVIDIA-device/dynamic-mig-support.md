@@ -1,6 +1,6 @@
-----
+---
 title: Enable dynamic-mig feature
-----
+---
 
 ## Introduction
 
