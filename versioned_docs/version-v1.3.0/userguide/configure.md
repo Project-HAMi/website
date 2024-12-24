@@ -15,7 +15,7 @@ You can update these configurations using one of the following methods:
     kubectl edit configmap hami-scheduler-device -n <namespace>
     ```
     After making changes, restart the related HAMi components to apply the updated configurations.
-2. Modify Helm Chart: Update the corresponding values in the [ConfigMap](../charts/hami/templates/scheduler/device-configmap.yaml), then reapply the Helm Chart to regenerate the ConfigMap.
+2. Modify Helm Chart: Update the corresponding values in the [ConfigMap](https://raw.githubusercontent.com/archlitchi/HAMi/refs/heads/master/charts/hami/templates/scheduler/device-configmap.yaml), then reapply the Helm Chart to regenerate the ConfigMap.
 
 * `nvidia.deviceMemoryScaling:` 
   Float type, by default: 1. The ratio for NVIDIA device memory scaling, can be greater than 1 (enable virtual device memory, experimental feature). For NVIDIA GPU with *M* memory, if we set `nvidia.deviceMemoryScaling` argument to *S*, vGPUs splitted by this GPU will totally get `S * M` memory in Kubernetes with our device plugin.
