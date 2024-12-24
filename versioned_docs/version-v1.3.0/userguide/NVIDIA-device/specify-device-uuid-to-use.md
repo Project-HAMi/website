@@ -8,7 +8,7 @@ Sometimes a task may wish to run on a certain GPU, it can fill the `nvidia.com/u
 
 For example, a task with the following annotation will be assigned to the device with uuid `GPU-123456`
 
-```
+```yaml
 metadata:
   annotations:
     nvidia.com/use-gpuuuid: "GPU-123456"

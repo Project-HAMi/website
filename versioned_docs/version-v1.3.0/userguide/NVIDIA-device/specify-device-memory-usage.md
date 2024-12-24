@@ -7,7 +7,7 @@ title: Allocate device memory
 Allocate a certain size of device memory by specify resources such as `nvidia.com/gpumem`.
 Optional, Each unit of `nvidia.com/gpumem` equals to 1M.
 
-```
+```yaml
       resources:
         limits:
           nvidia.com/gpu: 1 # requesting 1 GPU
@@ -17,7 +17,7 @@ Optional, Each unit of `nvidia.com/gpumem` equals to 1M.
 Allocate a percentage of device memory by specify resource `nvidia.com/gpumem-percentage`.
 Optional, each unit of `nvidia.com/gpumem-percentage` equals to 1% percentage of device memory.
 
-```
+```yaml
       resources:
         limits:
           nvidia.com/gpu: 1 # requesting 1 GPU

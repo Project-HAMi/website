@@ -6,7 +6,7 @@ title: Default vgpu job
 
 VGPU can be requested by both set "volcano.sh/vgpu-number" , "volcano.sh/vgpu-cores" and "volcano.sh/vgpu-memory" in resource.limit
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
