@@ -1,4 +1,4 @@
-const {themes} = require('prism-react-renderer');
+const { themes } = require("prism-react-renderer");
 const lightTheme = themes.github;
 const darkTheme = themes.dracula;
 
@@ -122,6 +122,11 @@ module.exports = {
           position: "left",
         },
         {
+          to: "blog",
+          label: "Blog",
+          position: "left",
+        },
+        {
           type: "localeDropdown",
           position: "right",
         },
@@ -138,7 +143,7 @@ module.exports = {
           title: "Documentation",
           items: [
             {
-              label: "Getting Started",
+              label: "Documentation",
               to: "/docs/",
             },
           ],
@@ -161,7 +166,7 @@ module.exports = {
             },
             {
               label: "Blog",
-              to: "/docs",
+              to: "/blog",
             },
           ],
         },
@@ -175,7 +180,7 @@ module.exports = {
       `,
     },
     prism: {
-      additionalLanguages: ['bash', 'diff', 'json'],
+      additionalLanguages: ["bash", "diff", "json"],
     },
   },
   presets: [
