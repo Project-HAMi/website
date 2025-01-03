@@ -17,9 +17,9 @@
 4. 编辑 [adopters.mdx](https://github.com/Project-HAMi/website/blob/master/src/pages/adopters.mdx) 中的采用者列表。
    您可以参考下面的示例表格格式。
 
-   | 组织/公司名称 | 网站                     | 使用场景                  | 案例研究（可选）    |
-   | ------------- | ------------------------ | ------------------------- | ------------------- |
-   | 我的公司      | https://mycompanywebsite | 使用 HAMi 提高 GPU 利用率 | (可选) 生产实践案例 |
+   | 公司名称 | 联系方式                          | 环境 | 场景描述                       |
+   | -------- | --------------------------------- | ---- | ------------------------------ |
+   | 我的公司 | [email](mailto:email@company.com) | 生产 | We use HAMi to manage our GPU. |
 
 5. 保存文件，然后执行 `git add -A` 并使用 `git commit -s -m "Add MY-ORG to adopters"` 提交。
 6. 使用 `git push origin main` 推送提交。
