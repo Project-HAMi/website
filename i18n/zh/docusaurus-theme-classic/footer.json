@@ -1,7 +1,7 @@
 {
   "link.item.label.Documentation": {
     "message": "文档",
-    "description": "The label of footer link with label=Documentation linking to docs"
+    "description": "The label of footer link with label=Documentation linking to /docs/"
   },
   "link.title.Community": {
     "message": "社区",
@@ -17,10 +17,22 @@
   },
   "link.item.label.Blog": {
     "message": "博客",
-    "description": "The label of footer link with label=Blog linking to blog"
+    "description": "The label of footer link with label=Blog linking to /blog"
   },
   "link.item.label.Adopters": {
     "message": "采用者",
-    "description": "The label of footer link with label=Adopters linking to Adopters"
+    "description": "底部链接标签，指向 Adopters"
+  },
+  "link.title.Documentation": {
+    "message": "文档",
+    "description": "The title of the footer links column with title=Documentation in the footer"
+  },
+  "link.item.label.CNCF Slack ": {
+    "message": "CNCF Slack ",
+    "description": "The label of footer link with label=CNCF Slack  linking to https://slack.cncf.io/"
+  },
+  "copyright": {
+    "message": "\n        <br />\n        <strong>© HAMi Authors 2025 | Documentation Distributed under <a href=\"https://creativecommons.org/licenses/by/4.0\">CC-BY-4.0</a> </strong> <strong>| Powered by <a href=\"https://www.netlify.com\">Netlify</a></strong>\n        <br />\n        <br />\n        © 2025 The Linux Foundation. All rights reserved. The Linux Foundation has registered trademarks and uses trademarks. For a list of trademarks of The Linux Foundation, please see our <a href=\"https://www.linuxfoundation.org/trademark-usage/\"> Trademark Usage</a> page.\n      ",
+    "description": "The footer copyright"
   }
 }
