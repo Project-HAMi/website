@@ -95,6 +95,23 @@
         },
         {
           "type": "category",
+          "label": "Share Hygon DCU devices",
+          "items": [
+            "userguide/Hygon-device/enable-hygon-dcu-sharing",
+            "userguide/Hygon-device/specify-device-memory-usage",
+            "userguide/Hygon-device/specify-device-core-usage",
+            {
+              "type": "category",
+              "label": "Examples",
+              "items": [
+                "userguide/Hygon-device/examples/allocate-core-and-memory",
+                "userguide/Hygon-device/examples/allocate-exclusive"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "category",
           "label": "Share Mthreads GPU devices",
           "items": [
             "userguide/Mthreads-device/enable-mthreads-gpu-sharing",
