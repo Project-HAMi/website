@@ -6,7 +6,7 @@ title: HAMi Roadmap
 
 This document defines a high level roadmap for HAMi development and upcoming releases.
 Community and contributor involvement is vital for successfully implementing all desired items for each release.
-We hope that the items listed below will inspire further engagement from the community to keep karmada progressing and shipping exciting and valuable features.
+We hope that the items listed below will inspire further engagement from the community to keep HAMi progressing and shipping exciting and valuable features.
 
 Heterogeneous AI Computing device to support:
 
