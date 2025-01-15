@@ -6,11 +6,7 @@ module.exports = {
       type: "category",
       label: "Core Concepts",
       collapsed: false,
-      items: ["core-concepts/introduction", "core-concepts/architecture"],
-    },
-    {
-      type: "doc",
-      id: "key-features/features",
+      items: ["core-concepts/introduction"],
     },
     {
       type: "category",
@@ -22,8 +18,7 @@ module.exports = {
       label: "Installation",
       items: [
         "installation/prequisities",
-        "installation/online-installation",
-        "installation/offline-installation",
+        "installation/webui-installation",
         "installation/upgrade",
         "installation/uninstall",
       ],
@@ -34,11 +29,6 @@ module.exports = {
       items: [
         "userguide/configure",
         "userguide/support-devices",
-        {
-          type: "category",
-          label: "Monitoring",
-          items: ["userguide/monitoring/globalview"],
-        },
         {
           type: "category",
           label: "Share NVIDIA GPU devices",
@@ -69,21 +59,8 @@ module.exports = {
             "userguide/Cambricon-device/specify-device-memory-usage",
             "userguide/Cambricon-device/specify-device-core-usage",
             "userguide/Cambricon-device/specify-device-type-to-use",
-            {
-              type: "category",
-              label: "Examples",
-              items: ["userguide/monitoring/globalview"],
-            },
           ],
         },
-      ],
-    },
-    {
-      type: "category",
-      label: "Developer Guide",
-      items: [
-        "developers/profiling-karmada",
-        "developers/performance-test-setup-for-karmada",
       ],
     },
     {
@@ -99,14 +76,6 @@ module.exports = {
     {
       type: "doc",
       id: "contributor/adopters",
-    },
-    {
-      type: "doc",
-      id: "troubleshooting/troubleshooting",
-    },
-    {
-      type: "doc",
-      id: "faq/faq",
     },
     {
       type: "doc",
