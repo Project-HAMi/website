@@ -80,14 +80,6 @@ module.exports = {
     },
     {
       type: "category",
-      label: "Developer Guide",
-      items: [
-        "developers/profiling-karmada",
-        "developers/performance-test-setup-for-karmada",
-      ],
-    },
-    {
-      type: "category",
       label: "Contributor Guide",
       items: [
         "contributor/contribute-docs",
