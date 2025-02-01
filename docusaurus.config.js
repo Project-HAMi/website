@@ -182,7 +182,7 @@ module.exports = {
         <strong>© HAMi Authors ${new Date().getFullYear()} | Documentation Distributed under <a href="https://creativecommons.org/licenses/by/4.0">CC-BY-4.0</a> </strong> <strong>| Powered by <a href="https://www.netlify.com">Netlify</a></strong>
         <br />
         <br />
-        © ${new Date().getFullYear()} The Linux Foundation. All rights reserved. The Linux Foundation has registered trademarks and uses trademarks. For a list of trademarks of The Linux Foundation, please see our <a href="https://www.linuxfoundation.org/trademark-usage/"> Trademark Usage</a> page.
+        Copyright © HAMi \n For website terms of use, trademark policy and other project policies please see lfprojects.org/policies/.
       `,
     },
     prism: {
