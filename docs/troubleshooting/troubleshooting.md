@@ -2,40 +2,10 @@
 title: Troubleshooting
 ---
 
-## I can't access some resources when installing Karmada
-
-- Pull images from Google Container Registry (k8s.gcr.io).
-
-  You can run the following commands to change the image registry in Mainland China.
-
-  ```shell
-  sed -i'' -e "s#k8s.gcr.io#registry.aliyuncs.com/google_containers#g" artifacts/deploy/karmada-etcd.yaml
-  sed -i'' -e "s#k8s.gcr.io#registry.aliyuncs.com/google_containers#g" artifacts/deploy/karmada-apiserver.yaml
-  sed -i'' -e "s#k8s.gcr.io#registry.aliyuncs.com/google_containers#g" artifacts/deploy/kube-controller-manager.yaml
-  ```
-
-- Download the Golang package in Mainland China and run the following command before installation.
-
-  ```shell
-  export GOPROXY=https://goproxy.cn
-  ```
-  
-  
-## Member cluster healthy checking does not work
-If your environment is similar to the following.
->
-> After registering member cluster to karmada with push mode, and using `kubectl get cluster`, found the cluster status was ready.
-> Then, by opening the firewall between the member cluster and karmada, after waiting for a long time, the cluster status was also ready, not change to fail.
-
-
-The cause of the problem was that the firewall did not close the already existing TCP connection between the member cluster and karmada.
-
-- login to the node where the member cluster apiserver is located
-- use the `tcpkill` command to close the tcp connection. 
-
-```
-# ens192 is the name of the network-card used by the member cluster to communicate with karmada.
-tcpkill -9  -i ens192 src host ${KARMADA_APISERVER_IP} and dst port ${MEMBER_CLUTER_APISERVER_IP}
-```
-
-
+- If you don't request vGPUs when using the device plugin with NVIDIA images all the GPUs on the machine may be exposed inside your container
+- Currently, A100 MIG can be supported in only "none" and "mixed" modes.
+- Tasks with the "nodeName" field cannot be scheduled at the moment; please use "nodeSelector" instead.
+- Only computing tasks are currently supported; video codec processing is not supported.
+- We change `device-plugin` env var name from `NodeName` to `NODE_NAME`, if you use the image version `v2.3.9`, you may encounter the situation that `device-plugin` cannot start, there are two ways to fix it:
+  - Manually execute `kubectl edit daemonset` to modify the `device-plugin` env var from `NodeName` to `NODE_NAME`.
+  - Upgrade to the latest version using helm, the latest version of `device-plugin` image version is `v2.3.10`, execute `helm upgrade hami hami/hami -n kube-system`, it will be fixed automatically.

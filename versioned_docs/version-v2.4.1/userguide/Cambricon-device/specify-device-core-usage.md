@@ -10,7 +10,7 @@ Optional, each unit of `cambricon.com/mlu.smlu.vcore` equals to 1% device cores.
 ```
       resources:
         limits:
-          cambricon.com/mlu: 1 # requesting 1 MLU
+          cambricon.com/vmlu: 1 # requesting 1 MLU
           cambricon.com/mlu.smlu.vcore: "10" # Each MLU contains 10% device cores
 ```
 

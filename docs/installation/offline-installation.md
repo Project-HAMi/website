@@ -2,58 +2,56 @@
 title: Offline Installation
 ---
 
-This document describes how you can use the `hack/remote-up-karmada.sh` script to install Karmada on
-your clusters based on the codebase.
+If your cluster does not have direct access to the external network, you can use offline deployment to install HAMi
 
-## Select a way to expose karmada-apiserver
+## Prepare your images
 
-The `hack/remote-up-karmada.sh` will install `karmada-apiserver` and provide two ways to expose the server:
-
-### 1. expose by `HostNetwork` type
-
-By default, the `hack/remote-up-karmada.sh` will expose `karmada-apiserver` by `HostNetwork`.
-
-No extra operations needed with this type.
-
-### 2. expose by service with `LoadBalancer` type
-
-If you don't want to use the `HostNetwork`, you can ask `hack/remote-up-karmada.sh` to expose `karmada-apiserver`
-by a service with `LoadBalancer` type that *requires your cluster have deployed the `Load Balancer`*.
-All you need to do is set an environment:
-```bash
-export LOAD_BALANCER=true
+You need to save the following images into a tarball and copy it into the cluster.
+Image list:
+```
+projecthami/hami:{HAMi version} 
+docker.io/jettech/kube-webhook-certgen:v1.5.2
+liangjw/kube-webhook-certgen:v1.1.1
+registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:{your kubernetes version}
 ```
 
-## Install
-From the `root` directory the `karmada` repo, install Karmada by command:
-```bash
-hack/remote-up-karmada.sh <kubeconfig> <context_name>
-```
-- `kubeconfig` is your cluster's kubeconfig that you want to install to
-- `context_name` is the name of context in 'kubeconfig'
+Load these images, tag these images with your inner registry, and push them into your registry
 
-For example:
-```bash
-hack/remote-up-karmada.sh $HOME/.kube/config mycluster
+```
+docker load -i {HAMi_image}.tar
+docker tag projecthami/hami:{HAMi version} {your_inner_registry}/hami:{HAMi version} 
+docker push {your_inner_registry}/hami:{HAMi version}
+docker tag docker.io/jettech/kube-webhook-certgen:v1.5.2 {your inner_regisry}/kube-webhook-certgen:v1.5.2
+docker push {your inner_regisry}/kube-webhook-certgen:v1.5.2
+docker tag liangjw/kube-webhook-certgen:v1.1.1 {your_inner_registry}/kube-webhook-certgen:v1.1.1
+docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:{your kubernetes version} {your_inner_registry}/kube-scheduler:{your kubernetes version}
+docker push {your_inner_registry}/kube-scheduler:{your kubernetes version}  
 ```
 
-If everything goes well, at the end of the script output, you will see similar messages as follows:
-```
-------------------------------------------------------------------------------------------------------
-█████   ████   █████████   ███████████   ██████   ██████   █████████   ██████████     █████████
-░░███   ███░   ███░░░░░███ ░░███░░░░░███ ░░██████ ██████   ███░░░░░███ ░░███░░░░███   ███░░░░░███
-░███  ███    ░███    ░███  ░███    ░███  ░███░█████░███  ░███    ░███  ░███   ░░███ ░███    ░███
-░███████     ░███████████  ░██████████   ░███░░███ ░███  ░███████████  ░███    ░███ ░███████████
-░███░░███    ░███░░░░░███  ░███░░░░░███  ░███ ░░░  ░███  ░███░░░░░███  ░███    ░███ ░███░░░░░███
-░███ ░░███   ░███    ░███  ░███    ░███  ░███      ░███  ░███    ░███  ░███    ███  ░███    ░███
-█████ ░░████ █████   █████ █████   █████ █████     █████ █████   █████ ██████████   █████   █████
-░░░░░   ░░░░ ░░░░░   ░░░░░ ░░░░░   ░░░░░ ░░░░░     ░░░░░ ░░░░░   ░░░░░ ░░░░░░░░░░   ░░░░░   ░░░░░
-------------------------------------------------------------------------------------------------------
-Karmada is installed successfully.
+## Prepare HAMi chart
 
-Kubeconfig for karmada in file: /root/.kube/karmada.config, so you can run:
-  export KUBECONFIG="/root/.kube/karmada.config"
-Or use kubectl with --kubeconfig=/root/.kube/karmada.config
-Please use 'kubectl config use-context karmada-apiserver' to switch the cluster of karmada control plane
-And use 'kubectl config use-context your-host' for debugging karmada installation
+Download the charts folder from [github](https://github.com/Project-HAMi/HAMi/tree/master/charts), place it into $\{CHART_PATH\} inside cluser, then edit the following fields in $\{CHART_PATH\}/hami/values.yaml. 
+
 ```
+scheduler.kubeScheduler.image
+scheduler.extender.image
+scheduler.patch.image
+scheduler.patch.imageNew
+scheduler.devicePlugin.image
+scheduler.devicePlugin.monitorimage
+```
+
+## Execute the following command in your $\{CHART_PATH\} folder
+
+```
+helm install hami hami --set scheduler.kubeScheduler.imageTag={your k8s server version} -n kube-system
+```
+
+7. Verify your installation
+
+execute the following command
+```
+kubectl get pods -n kube-system
+```
+
+If you can see both the 'device-plugin' and 'schduler' running, then HAMi is installed successfully,
