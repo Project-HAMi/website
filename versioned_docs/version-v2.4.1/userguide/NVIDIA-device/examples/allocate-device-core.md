@@ -6,7 +6,7 @@ title: Allocate device core resource
 
 To allocate a certain part of device core resource, you need only to assign the `nvidia.com/gpucores` without other resource fields.
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:

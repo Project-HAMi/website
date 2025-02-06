@@ -34,9 +34,11 @@ title: Enable cambricon MLU sharing
 
 * Install the chart using helm, See 'enabling vGPU support in kubernetes' section [here](https://github.com/Project-HAMi/HAMi#enabling-vgpu-support-in-kubernetes)
 
-* Tag MLU node with the following command
+* Activate the smlu mode for each MLUs on that node
 ```
-kubectl label node {mlu-node} mlu=on
+cnmon set -c 0 -smlu on
+cnmon set -c 1 -smlu on
+...
 ```
 
 ## Running MLU jobs
@@ -56,7 +58,7 @@ spec:
       command: ["bash", "-c", "sleep 86400"]
       resources:
         limits:
-          cambricon.com/mlunum: 1 # requesting 1 MLU
+          cambricon.com/vmlu: 1 # requesting 1 MLU
           cambricon.com/mlu.smlu.vmemory: 20 # each MLU requesting 20% MLU device memory
           cambricon.com/mlu.smlu.vcore: 10 # each MLU requesting 10% MLU device core
 ```

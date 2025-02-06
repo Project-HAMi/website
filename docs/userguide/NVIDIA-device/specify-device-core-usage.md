@@ -7,7 +7,7 @@ title: Allocate device core usage
 Allocate a percentage of device core resources by specify resource `nvidia.com/gpucores`.
 Optional, each unit of `nvidia.com/gpucores` equals to 1% device cores.
 
-```
+```yaml
       resources:
         limits:
           nvidia.com/gpu: 1 # requesting 1 GPU

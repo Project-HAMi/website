@@ -6,7 +6,7 @@ title: Use exclusive GPU
 
 To use GPU in an exclusive mode, which is the default behaviour of nvidia-k8s-device-plugin, you need only to assign the `nvidia.com/gpu` without other resource fields.
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:

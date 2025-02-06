@@ -10,7 +10,7 @@ Optional, Each unit of `cambricon.com/mlu.smlu.vmemory` equals to 1% of device m
 ```
       resources:
         limits:
-          cambricon.com/mlu: 1 # requesting 1 MLU
+          cambricon.com/vmlu: 1 # requesting 1 MLU
           cambricon.com/mlu.smlu.vmemory: "20" # Each GPU contains 20% device memory
 ```
 
