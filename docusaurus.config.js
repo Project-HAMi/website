@@ -1,6 +1,7 @@
 const { themes } = require("prism-react-renderer");
 const lightTheme = themes.github;
 const darkTheme = themes.dracula;
+const defaultLocale = 'en';
 
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
@@ -14,7 +15,7 @@ module.exports = {
   projectName: "website",
   favicon: "img/favicon.ico",
   i18n: {
-    defaultLocale: "en",
+    defaultLocale: defaultLocale,
     locales: ["en", "zh"],
     localeConfigs: {
       en: {
@@ -90,6 +91,24 @@ module.exports = {
       },
     },
   ],
+  plugins: [
+    [
+      './src/plugins/changelog/index.js',
+      {
+        blogTitle: 'HAMi Changelog',
+        blogDescription:
+          'Keep yourself up-to-date about new features in every release',
+        blogSidebarCount: 'ALL',
+        blogSidebarTitle: 'Changelog',
+        routeBasePath: '/changelog',
+        showReadingTime: false,
+        postsPerPage: 20,
+        archiveBasePath: null,
+        authorsMapPath: 'authors.json',
+        onInlineAuthors: 'warn',
+      },
+    ],
+  ],
   themeConfig: {
     announcementBar: {
       id: "start",
@@ -124,6 +143,11 @@ module.exports = {
         {
           to: "blog",
           label: "Blog",
+          position: "left",
+        },
+        {
+          label: 'Changelog',
+          to: '/changelog',
           position: "left",
         },
         {
