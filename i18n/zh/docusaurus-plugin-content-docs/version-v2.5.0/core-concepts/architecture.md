@@ -4,7 +4,7 @@ title: Architecture
 
 The overall architecture of HAMi is shown as below:
 
-![Architecture](../resources//architecture.png)
+![Architecture](../resources/architect.jpg)
 
 The HAMi consists of the following components:
 
