@@ -1,12 +1,13 @@
 ---
-title: Allocate certain device memory
+title: 为容器分配特定设备内存
+translated: true
 ---
 
-## Allocate certain device memory to container
+## 为容器分配特定设备内存
 
-To allocate a certain size of GPU device memory, you need only to assign `nvidia.com/gpumem` besides `nvidia.com/gpu`.
+要分配特定大小的 GPU 设备内存，您只需在 `nvidia.com/gpu` 之外分配 `nvidia.com/gpumem`。
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -18,8 +19,8 @@ spec:
       command: ["bash", "-c", "sleep 86400"]
       resources:
         limits:
-          nvidia.com/gpu: 2 # requesting 2 vGPUs
-	  nvidia.com/gpumem: 3000 # each vGPU requests 3G device memory
+          nvidia.com/gpu: 2 # 请求 2 个 vGPU
+          nvidia.com/gpumem: 3000 # 每个 vGPU 请求 3G 设备内存
 ```
 
-> **NOTICE:** *`nvidia.com/gpumem` can't be used together with `nvidia.com/gpumem-percentage`*
+> **注意：** *`nvidia.com/gpumem` 不能与 `nvidia.com/gpumem-percentage` 一起使用*

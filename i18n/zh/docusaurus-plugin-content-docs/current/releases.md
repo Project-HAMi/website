@@ -1,104 +1,67 @@
 ---
-title:  Releases
+title: Releases
+translated: true
 ---
 
-## Release Notes and Assets
+## 发布说明和资源
 
-Release notes are available on GitHub at https://github.com/Project-HAMi/HAMi/releases.
+发布说明可在 GitHub 上查看：https://github.com/Project-HAMi/HAMi/releases
 
-## Release Management
+## 发布管理
 
-This section provides guidelines on release timelines and release branch maintenance.
+本节提供了有关发布时间表和发布分支维护的指南。
 
-### Release Timelines
+### 发布时间表
 
-Karmada uses the Semantic Versioning schema. Karmada v1.0.0 was released in December 2021. This project follows a given version number MAJOR.MINOR.PATCH.
+HAMi 使用语义版本控制模式。HAMi v2.4.0 于 2024 年 9 月发布。
+该项目遵循给定的版本号 MAJOR.MINOR.PATCH。
 
-### MAJOR release 
+### MAJOR 版本
 
-Major releases contain large features, design and architectural changes, and may include incompatible API changes. Major releases are low frequency and stable over a long period of time.
+主要版本包含大型功能、设计和架构更改，并可能包括不兼容的 API 更改。主要版本发布频率低，并在较长时间内保持稳定。
 
-### MINOR release
+### MINOR 版本
 
-Minor releases contain features, enhancements, and fixes that are introduced in a backwards-compatible manner. Since Karmada is a fast growing project and features continue to iterate rapidly, having a minor release approximately every few months helps balance speed and stability.
+次要版本包含以向后兼容方式引入的功能、增强和修复。由于 HAMi 是一个快速增长的项目，功能不断快速迭代，每隔几个月发布一个次要版本有助于平衡速度和稳定性。
 
-* Roughly every 3 months
+* 大约每 3 个月
 
-### PATCH release
+### PATCH 版本
 
-Patch releases are for backwards-compatible bug fixes and very minor enhancements which do not impact stability or compatibility. Typically only critical fixes are selected for patch releases. Usually there will be at least one patch release in a minor release cycle.
+补丁版本用于向后兼容的错误修复和不影响稳定性或兼容性的非常小的增强。通常只有关键修复会被选入补丁版本。通常在一个次要版本周期中至少会有一个补丁版本。
 
-* When critical fixes are required, or roughly each month
+* 当需要关键修复时，或大约每月
 
-### Versioning
+### 版本控制
 
-Karmada uses GitHub tags to manage versions. New releases and release candidates are published using the wildcard tag`v<major>.<minor>.<patch>`.
+HAMi 使用 GitHub 标签来管理版本。新版本和候选版本使用通配符标签 `v<major>.<minor>.<patch>` 发布。
 
-Whenever a PR is merged into the master branch, CI will pull the latest code, generate an image and upload it to the mirror repository. The latest image of Karmada components can usually be downloaded online using the latest tag. 
-Whenever a release is released, the image will also be released, and the tag is the same as the tag of the release above.
+每当 PR 合并到主分支时，CI 将提取最新代码，生成镜像并上传到镜像库。通常可以在线使用最新标签下载 HAMi 组件的最新镜像。每当发布版本时，镜像也会发布，标签与上述发布的标签相同。
 
-### Issues
+### 问题
 
-Non-critical issues and features are always added to the next minor release milestone, by default.
+非关键问题和功能默认总是添加到下一个次要版本里程碑。
 
-Critical issues, with no work-arounds, are added to the next patch release.
+没有解决方法的关键问题会被添加到下一个补丁版本。
 
-### Branches and PRs
+### 分支和 PR
 
-Release branches and PRs are managed as follows:
+发布分支和 PR 的管理如下：
 
-* All changes are always first committed to `master`.
-* Branches are created for each major or minor release.
-* The branch name will contain the version, for example release-1.2.
-* Patch releases are created from a release branch.
-* For critical fixes that need to be included in a patch release, PRs should always be first merged to master and then cherry-picked to the release branch. PRs need to be guaranteed to have a release note written and these descriptions will be reflected in the next patch release.
-  The cherry-pick process of PRs is executed through the script. See usage [here](https://karmada.io/docs/contributor/cherry-picks).
-* For complex changes, specially critical bugfixes, separate PRs may be required for master and release branches.
-* The milestone mark (for example v1.4) will be added to PRs which means changes in PRs are one of the contents of the corresponding release.
-* During PR review, the Assignee selection is used to indicate the reviewer.
+* 所有更改总是首先提交到 `master`。
+* 为每个主要或次要版本创建分支。
+* 分支名称将包含版本，例如 release-1.2。
+* 补丁版本从发布分支创建。
+* 对于需要包含在补丁版本中的关键修复，PR 应始终首先合并到 master，然后再挑选到发布分支。PR 需要确保有发布说明撰写，这些描述将在下一个补丁版本中反映。
+  PR 的挑选过程通过脚本执行。使用方法请参见[此处](https://project-hami.io/docs/contributor/cherry-picks)。
+* 对于复杂的更改，特别是关键错误修复，可能需要为 master 和发布分支分别创建 PR。
+* 里程碑标记（例如 v1.4）将添加到 PR 中，这意味着 PR 中的更改是相应版本的内容之一。
+* 在 PR 审查期间，分配选择用于指示审阅者。
 
-### Release Planning
+### 发布计划
 
-A minor release will contain a mix of features, enhancements, and bug fixes.
+次要版本将包含功能、增强和错误修复的混合。
 
-Major features follow the Karmada Design Proposal process. You can refer to [here](https://github.com/Project-HAMi/HAMi/tree/master/docs/proposals/resource-interpreter-webhook) as a proposal example.
+主要功能遵循 HAMi 设计提案流程。您可以参考[此处](https://github.com/Project-HAMi/HAMi/tree/master/docs/proposals/resource-interpreter-webhook)作为提案示例。
 
-During the start of a release, there may be many issues assigned to the release milestone. The priorities for the release are discussed in the bi-weekly community meetings. 
-As the release progresses several issues may be moved to the next milestone. Hence, if an issue is important it is important to advocate its priority early in the release cycle.
-
-### Release Artifacts
-
-The Karmada container images are availble at `dockerHub`. 
-You can visit `https://hub.docker.com/r/karmada/<component_name>` to see the details of images.
-For example, [here](https://hub.docker.com/r/karmada/karmada-controller-manager) for karmada-controller-manager.
-
-Since v1.2.0, the following artifacts are uploaded:
-
-* crds.tar.gz
-* karmada-chart-v\<version_number\>.tgz
-* karmadactl-darwin-amd64.tgz
-* karmadactl-darwin-amd64.tgz.sha256
-* karmadactl-darwin-arm64.tgz
-* karmadactl-darwin-arm64.tgz.sha256
-* karmadactl-linux-amd64.tgz
-* karmadactl-linux-amd64.tgz.sha256
-* karmadactl-linux-arm64.tgz
-* karmadactl-linux-arm64.tgz.sha256
-* kubectl-karmada-darwin-amd64.tgz
-* kubectl-karmada-darwin-amd64.tgz.sha256
-* kubectl-karmada-darwin-arm64.tgz
-* kubectl-karmada-darwin-arm64.tgz.sha256
-* kubectl-karmada-linux-amd64.tgz
-* kubectl-karmada-linux-amd64.tgz.sha256
-* kubectl-karmada-linux-arm64.tgz
-* kubectl-karmada-linux-arm64.tgz.sha256
-* Source code(zip)
-* Source code(tar.gz)
-
-You can visit `https://github.com/Project-HAMi/HAMi/releases/download/v<version_number>/<artifact_name>` to download the artifacts above.
-
-For example:
-
-```shell
-wget https://github.com/Project-HAMi/HAMi/releases/download/v1.3.0/karmadactl-darwin-amd64.tgz
-```
+在发布开始时，可能会有许多问题分配给发布里程碑。发布的优先级在每两周一次的社区会议中讨论。随着发布的进展，几个问题可能会被移到下一个里程碑。因此，如果一个问题很重要，重要的是在发布周期的早期倡导其优先级。

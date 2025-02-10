@@ -1,17 +1,17 @@
 ---
-title: Allocate device core usage
+title: 分配设备核心给容器
+translated: true
 ---
 
-## Allocate device core to container
+## 分配设备核心给容器
 
-Allocate a percentage of device core resources by specify resource `nvidia.com/gpucores`.
-Optional, each unit of `nvidia.com/gpucores` equals to 1% device cores.
+通过指定资源 `nvidia.com/gpucores` 来分配设备核心资源的百分比。可选项，每个单位的 `nvidia.com/gpucores` 等于设备核心的 1%。
 
-```
+```yaml
       resources:
         limits:
-          nvidia.com/gpu: 1 # requesting 1 GPU
-          nvidia.com/gpucores: 50 # Each GPU allocates 50% device cores.
+          nvidia.com/gpu: 1 # 请求 1 个 GPU
+          nvidia.com/gpucores: 50 # 每个 GPU 分配 50% 的设备核心。
 ```
 
-> **NOTICE:** * HAMi-core uses time-slice to limit device core usage. Therefore, there will be fluctuations when looking at GPU utilization through nvidia-smi*
+> **注意：** *HAMi-core 使用时间片来限制设备核心的使用。因此，通过 nvidia-smi 查看 GPU 利用率时会有波动*

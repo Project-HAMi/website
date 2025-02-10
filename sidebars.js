@@ -210,10 +210,6 @@ module.exports = {
     {
       "type": "doc",
       "id": "troubleshooting/troubleshooting"
-    },
-    {
-      "type": "doc",
-      "id": "faq/faq"
     }
   ]
 }

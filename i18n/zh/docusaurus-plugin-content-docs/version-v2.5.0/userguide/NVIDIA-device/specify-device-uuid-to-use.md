@@ -1,17 +1,18 @@
 ---
-title: Assign to certain device
+title: 分配到特定设备
+translated: true
 ---
 
-## Assign to certain device type
+## 分配到特定设备类型
 
-Sometimes a task may wish to run on a certain GPU, it can fill the `nvidia.com/use-gpuuuid` field in pod annotation. HAMi scheduler will try to fit in device with that uuid.
+有时任务可能希望在某个特定的GPU上运行，可以在pod注释中填写`nvidia.com/use-gpuuuid`字段。HAMi调度器将尝试匹配具有该UUID的设备。
 
-For example, a task with the following annotation will be assigned to the device with uuid `GPU-123456`
+例如，具有以下注释的任务将被分配到UUID为`GPU-123456`的设备上
 
-```
+```yaml
 metadata:
   annotations:
     nvidia.com/use-gpuuuid: "GPU-123456"
 ```
 
-> **NOTICE:** *Each GPU UUID is unique in a cluster, so assign a certain UUID means assigning this task to certain node with that GPU*
+> **注意：** *每个GPU UUID在集群中是唯一的，因此分配某个UUID意味着将此任务分配到具有该GPU的特定节点上*

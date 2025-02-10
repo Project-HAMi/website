@@ -1,25 +1,23 @@
 ---
-title: Architecture
+title: 架构设计
+translated: true
 ---
 
-The overall architecture of HAMi is shown as below:
+HAMi 的整体架构如下所示：
 
 ![Architecture](../resources/architect.jpg)
 
-The HAMi consists of the following components:
+HAMi 由以下组件组成：
 
 - HAMi MutatingWebhook
 - HAMi scheduler-extender
-- Device-plugin (HAMi-device-plugin)
-- In container resource control (HAMi-Core)
+- 设备插件 (HAMi-device-plugin)
+- 容器内资源控制 (HAMi-Core)
 
-HAMi MutatingWebhook checks if this task can be handled by HAMi, it scans the resource field of each pod submitted, if each resource these pod requires is either 'cpu', 'memory' or a HAMi-resource, then it will set the schedulerName field of this pod to 'HAMi-scheduler'
+HAMi MutatingWebhook 检查该任务是否可以由 HAMi 处理，它扫描每个提交的 pod 的资源字段，如果这些 pod 所需的每个资源是 'cpu'、'memory' 或 HAMi 资源，则会将该 pod 的 schedulerName 字段设置为 'HAMi-scheduler'。
 
-The HAMi scheduler is responsible for assigning tasks to the appropriate nodes and devices. At the same time, the scheduler needs to maintain a global view of heterogeneous computing devices for monitoring.
+HAMi 调度器负责将任务分配给适当的节点和设备。同时，调度器需要维护异构计算设备的全局视图以进行监控。
 
-The device-plugin layer obtains the scheduling result from the annotations field of the task and maps the corresponding device to the container。
+设备插件层从任务的注释字段获取调度结果，并将相应的设备映射到容器。
 
-The In container resource control is responsible for monitoring the resource usage within the container and providing hard isolation capabilities.
-
-
-
+容器内资源控制负责监控容器内的资源使用情况，并提供硬隔离能力。

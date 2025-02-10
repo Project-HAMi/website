@@ -1,19 +1,20 @@
 ---
-title: Assign task to a certain type
+title: 分配任务到特定类型
+translated: true
 ---
 
-## Assign task to a certain type
+## 分配任务到特定类型
 
-To assign a task to a certain GPU type, you need only to assign the `nvidia.com/use-gputype` in annotations field.
+要将任务分配到特定的 GPU 类型，只需在注释字段中分配 `nvidia.com/use-gputype`。
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
   name: gpu-pod
   annotations:
     nvidia.com/use-gputype: "A100,V100"
-    #In this example, we want to run this job on A100 or V100
+    #在此示例中，我们希望在 A100 或 V100 上运行此作业
 spec:
   containers:
     - name: ubuntu-container
@@ -21,7 +22,7 @@ spec:
       command: ["bash", "-c", "sleep 86400"]
       resources:
         limits:
-          nvidia.com/gpu: 2 # requesting 2 vGPUs
+          nvidia.com/gpu: 2 # 请求 2 个 vGPU
 ```
 
-> **NOTICE:** * You can assign this task to multiple GPU types, use comma to seperate,In this example, we want to run this job on A100 or V100*
+> **注意：** *您可以将此任务分配给多种 GPU 类型，使用逗号分隔。在此示例中，我们希望在 A100 或 V100 上运行此作业*

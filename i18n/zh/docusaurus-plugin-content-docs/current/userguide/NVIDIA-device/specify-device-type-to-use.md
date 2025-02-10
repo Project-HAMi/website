@@ -1,23 +1,23 @@
 ---
-title: Assign to certain device type
+title: 分配到特定设备类型
+translated: true
 ---
 
-## Assign to certain device type
+## 分配到特定设备类型
 
-Sometimes a task may wish to run on a certain type of GPU, it can fill the `nvidia.com/use-gputype` field in pod annotation. HAMi scheduler will check if the device type returned from `nvidia-smi -L` contains the content of annotation.
+有时任务可能希望在某种类型的 GPU 上运行，可以在 pod 注释中填写 `nvidia.com/use-gputype` 字段。HAMi 调度器将检查 `nvidia-smi -L` 返回的设备类型是否包含注释的内容。
 
-For example, a task with the following annotation will be assigned to A100 or V100 GPU
+例如，具有以下注释的任务将被分配到 A100 或 V100 GPU
 
-```
+```yaml
 metadata:
   annotations:
-    nvidia.com/use-gputype: "A100,V100" # Specify the card type for this job, use comma to seperate, will not launch job on non-specified card
+    nvidia.com/use-gputype: "A100,V100" # 为此作业指定卡类型，使用逗号分隔，不会在未指定的卡上启动作业
 ```
 
-A task may use `nvidia.com/nouse-gputype` to evade certain type of GPU. In this following example, that job won't be assigned to 1080(include 1080Ti) or 2080(include 2080Ti) type of card. 
+任务可以使用 `nvidia.com/nouse-gputype` 来避开某种类型的 GPU。在以下示例中，该作业不会被分配到 1080（包括 1080Ti）或 2080（包括 2080Ti）类型的卡。
 
-```
+```yaml
 metadata:
   annotations:
-    nvidia.com/nouse-gputype: "1080,2080" # Specify the blacklist card type for this job, use comma to seperate, will not launch job on specified card
-```
+    nvidia.com/nouse-gputype: "1080,2080" # 为此作业指定黑名单卡类型，使用逗号分隔，不会在指定的卡上启动作业

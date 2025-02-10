@@ -1,5 +1,6 @@
 ---
-title: Real-time usage
+title: 实时使用情况
+translated: true
 ---
 
-To be improved.
+待改进。

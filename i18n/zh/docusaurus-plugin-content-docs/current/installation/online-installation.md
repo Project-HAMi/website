@@ -1,53 +1,42 @@
 ---
-title: Online Installation from Helm (Recommended)
+title: 通过 Helm 在线安装（推荐）
+translated: true
 ---
 
-You can install `kubectl-karmada` plug-in in any of the following ways:
+最佳实践是使用 helm 部署 HAMi。
 
-- Download from the release.
-- Install using Krew.
-- Build from source code.
+## 添加 HAMi 仓库
 
-## Prerequisites
+您可以使用以下命令添加 HAMi 图表仓库：
 
-### kubectl
-`kubectl` is the Kubernetes command line tool lets you control Kubernetes clusters.
-For installation instructions see [installing kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl).
-
-## Download from the release
-
-Karmada provides `kubectl-karmada` plug-in download service since v0.9.0. You can choose proper plug-in version which fits your operator system form [karmada release](https://github.com/karmada-io/karmada/releases).
-
-Take v1.2.1 that working with linux-amd64 os as an example:
-
-```bash
-wget https://github.com/karmada-io/karmada/releases/download/v1.2.1/kubectl-karmada-linux-amd64.tgz
-
-tar -zxf kubectl-karmada-linux-amd64.tgz
+```
+helm repo add hami-charts https://project-hami.github.io/HAMi/
 ```
 
-Next, move `kubectl-karmada` executable file to `PATH` path, reference from [Installing kubectl plugins](https://kubernetes.io/docs/tasks/extend-kubectl/kubectl-plugins/#installing-kubectl-plugins).
+## 获取您的 Kubernetes 版本
 
-## Install using Krew
+安装时需要 Kubernetes 版本。您可以使用以下命令获取此信息：
 
-Krew is the plugin manager for `kubectl` command-line tool.
-
-[Install and set up](https://krew.sigs.k8s.io/docs/user-guide/setup/install/) Krew on your machine.
-
-Then install `kubectl-karmada` plug-in:
-
-```bash
-kubectl krew install karmada
+```
+kubectl version
 ```
 
-You can refer to [Quickstart of Krew](https://krew.sigs.k8s.io/docs/user-guide/quickstart/) for more information.
+## 安装
 
-## Build from source code
+在安装过程中，将 Kubernetes 调度器镜像版本设置为与您的 Kubernetes 服务器版本匹配。例如，如果您的集群服务器版本是 1.16.8，请使用以下命令进行部署：
 
-Clone karmada repo and run `make` cmd from the repository:
-
-```bash
-make kubectl-karmada
+```
+helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag=v1.16.8 -n kube-system
 ```
 
-Next, move the `kubectl-karmada` executable file under the `_output` folder in the project root directory to the `PATH` path.
+您可以通过调整[配置](../userguide/configure.md)来自定义安装。
+
+## 验证您的安装
+
+您可以使用以下命令验证您的安装：
+
+```
+kubectl get pods -n kube-system
+```
+
+如果 hami-device-plugin 和 hami-scheduler pods 都处于 Running 状态，则说明您的安装成功。

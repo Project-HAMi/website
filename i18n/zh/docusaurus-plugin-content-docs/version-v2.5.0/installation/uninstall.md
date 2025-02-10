@@ -1,11 +1,12 @@
 ---
-title: Uninstall
+title: 卸载 HAMi
+translated: true
 ---
 
-The step to uninstall hami is simple:
+卸载 hami 的步骤很简单：
 
 ```
 helm uninstall hami -n kube-system
 ```
 
-> **NOTICE:** *Uninstallation won't kill running tasks.*
+> **注意：** *卸载不会终止正在运行的任务。*

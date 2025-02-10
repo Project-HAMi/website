@@ -1,25 +1,26 @@
 ---
-title: Prequisities
+title: 前提条件
+translated: true
 ---
 
-## Prerequisites
+## 先决条件
 
-- [Helm](https://helm.sh/zh/docs/) version v3+
-- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) version v1.16+
-- [CUDA](https://developer.nvidia.com/cuda-toolkit) version v10.2+
+- [Helm](https://helm.sh/zh/docs/) 版本 v3+
+- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) 版本 v1.16+
+- [CUDA](https://developer.nvidia.com/cuda-toolkit) 版本 v10.2+
 - [NvidiaDriver](https://www.nvidia.cn/drivers/unix/) v440+
 
-## Preparing your GPU Nodes
+## 准备您的 GPU 节点
 
-Execute the following steps on all your GPU nodes.
+在所有 GPU 节点上执行以下步骤。
 
-This README assumes pre-installation of NVIDIA drivers and the `nvidia-container-toolkit`. Additionally, it assumes configuration of the `nvidia-container-runtime` as the default low-level runtime.
+本 README 假设已预安装 NVIDIA 驱动程序和 `nvidia-container-toolkit`。此外，还假设将 `nvidia-container-runtime` 配置为默认的低级运行时。
 
-Please see: [https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)
+请参阅：[https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)
 
-### Example for debian-based systems with `Docker` and `containerd`
+### 适用于基于 Debian 系统的 `Docker` 和 `containerd` 示例
 
-#### Install the `nvidia-container-toolkit`
+#### 安装 `nvidia-container-toolkit`
 
 ```bash
 distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
@@ -29,9 +30,9 @@ curl -s -L https://nvidia.github.io/libnvidia-container/$distribution/libnvidia-
 sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
 ```
 
-#### Configure `Docker`
+#### 配置 `Docker`
 
-When running `Kubernetes` with `Docker`, edit the configuration file, typically located at `/etc/docker/daemon.json`, to set up `nvidia-container-runtime` as the default low-level runtime:
+在使用 `Docker` 运行 `Kubernetes` 时，编辑配置文件，通常位于 `/etc/docker/daemon.json`，以设置 `nvidia-container-runtime` 作为默认的低级运行时：
 
 ```json
 {
@@ -45,17 +46,16 @@ When running `Kubernetes` with `Docker`, edit the configuration file, typically 
 }
 ```
 
-And then restart `Docker`:
+然后重启 `Docker`：
 
 ```
 sudo systemctl daemon-reload && systemctl restart docker
 ```
 
+#### 配置 `containerd`
 
-#### Configure `containerd`
-
-When running `Kubernetes` with `containerd`, modify the configuration file typically located at `/etc/containerd/config.toml`, to set up
-`nvidia-container-runtime` as the default low-level runtime:
+在使用 `containerd` 运行 `Kubernetes` 时，修改配置文件，通常位于 `/etc/containerd/config.toml`，以设置
+`nvidia-container-runtime` 作为默认的低级运行时：
 
 ```
 version = 2
@@ -74,16 +74,15 @@ version = 2
             BinaryName = "/usr/bin/nvidia-container-runtime"
 ```
 
-And then restart `containerd`:
+然后重启 `containerd`：
 
 ```
 sudo systemctl daemon-reload && systemctl restart containerd
 ```
 
-### Label your nodes
+### 给节点打标签
 
-Label your GPU nodes for scheduling with HAMi by adding the label "gpu=on". Without this label, the nodes cannot be managed by our scheduler.
+通过添加标签 "gpu=on" 来为 HAMi 调度标记您的 GPU 节点。没有此标签，节点无法被我们的调度器管理。
 
 ```
 kubectl label nodes {nodeid} gpu=on
-```
