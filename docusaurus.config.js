@@ -1,6 +1,6 @@
 const { themes } = require("prism-react-renderer");
-const lightTheme = themes.github;
-const darkTheme = themes.dracula;
+//const lightTheme = themes.github;
+//const darkTheme = themes.dracula;
 const defaultLocale = 'en';
 
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
@@ -91,6 +91,7 @@ module.exports = {
       },
     },
   ],
+  /*
   plugins: [
     [
       './src/plugins/changelog/index.js',
@@ -108,7 +109,7 @@ module.exports = {
         onInlineAuthors: 'warn',
       },
     ],
-  ],
+  ],*/
   themeConfig: {
     announcementBar: {
       id: "start",

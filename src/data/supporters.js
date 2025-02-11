@@ -6,6 +6,8 @@ import CNCR from "../../static/img/supporters/CNCR.png";
 import XW from "../../static/img/supporters/XW.png";
 import iFly from "../../static/img/supporters/iFly.png";
 import huawei from "../../static/img/supporters/huawei.png";
+import qxzg from "../../static/img/supporters/qxzg-ai.jpg";
+import riseunion from "../../static/img/supporters/riseunion.png"
 
 const supportersData = [
   {
@@ -39,6 +41,14 @@ const supportersData = [
   {
     logo: huawei,
     alt: "huawei",
+  },
+  {
+    logo: qxzg,
+    alt: "qxzg",
+  },
+  {
+    logo: riseunion,
+    alt: "riseunion",
   },
 ];
 
