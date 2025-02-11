@@ -1,27 +1,26 @@
 ---
-title: Allocate device memory
+title: 为容器分配设备内存
+translated: true
 ---
 
-## Allocate device memory to container
+## 为容器分配设备内存
 
-Allocate a certain size of device memory by specify resources such as `nvidia.com/gpumem`.
-Optional, Each unit of `nvidia.com/gpumem` equals to 1M.
+通过指定资源如 `nvidia.com/gpumem` 来分配一定大小的设备内存。可选项，每个 `nvidia.com/gpumem` 单位等于 1M。
 
-```
+```yaml
       resources:
         limits:
-          nvidia.com/gpu: 1 # requesting 1 GPU
-          nvidia.com/gpumem: 3000 # Each GPU contains 3000m device memory
+          nvidia.com/gpu: 1 # 请求 1 个 GPU
+          nvidia.com/gpumem: 3000 # 每个 GPU 包含 3000m 设备内存
 ```
 
-Allocate a percentage of device memory by specify resource `nvidia.com/gpumem-percentage`.
-Optional, each unit of `nvidia.com/gpumem-percentage` equals to 1% percentage of device memory.
+通过指定资源 `nvidia.com/gpumem-percentage` 来分配设备内存的百分比。可选项，每个 `nvidia.com/gpumem-percentage` 单位等于设备内存的 1% 百分比。
 
-```
+```yaml
       resources:
         limits:
-          nvidia.com/gpu: 1 # requesting 1 GPU
-          nvidia.com/gpumem-percentage: 50 # Each GPU contains 50% device memory
+          nvidia.com/gpu: 1 # 请求 1 个 GPU
+          nvidia.com/gpumem-percentage: 50 # 每个 GPU 包含 50% 设备内存
 ```
 
-> **NOTICE:** *`nvidia.com/gpumem` and `nvidia.com/gpumem-percentage` can't be assigned together*
+> **注意：** *`nvidia.com/gpumem` 和 `nvidia.com/gpumem-percentage` 不能同时分配*

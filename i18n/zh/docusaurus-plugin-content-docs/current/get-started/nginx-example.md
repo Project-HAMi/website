@@ -1,33 +1,34 @@
 ---
-title: Deploy HAMi using helm
+title: 使用 Helm 部署 HAMi
+translated: true
 ---
 
-This guide will cover:
-- Configure nvidia container runtime in each GPU nodes
-- Install HAMi using helm
-- Launch a vGPU task
-- Check if the corresponding device resources are limited inside container
+本指南将涵盖：
+- 在每个 GPU 节点中配置 nvidia 容器运行时
+- 使用 helm 安装 HAMi
+- 启动 vGPU 任务
+- 检查容器内相应的设备资源是否受限
 
-### Prerequisites
-- [Helm](https://helm.sh/zh/docs/) version v3+
-- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) version v1.16+
-- [CUDA](https://developer.nvidia.com/cuda-toolkit) version v10.2+
+### 前提条件
+- [Helm](https://helm.sh/zh/docs/) 版本 v3+
+- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) 版本 v1.16+
+- [CUDA](https://developer.nvidia.com/cuda-toolkit) 版本 v10.2+
 - [NvidiaDriver](https://www.nvidia.cn/drivers/unix/) v440+
 
-### Installation
+### 安装
 
-#### 1. Configure nvidia-container-toolkit
-<summary> Configure nvidia-container-toolkit </summary>
+#### 1. 配置 nvidia-container-toolkit
+<summary> 配置 nvidia-container-toolkit </summary>
 
-Execute the following steps on all your GPU nodes.
+在所有 GPU 节点上执行以下步骤。
 
-This README assumes pre-installation of NVIDIA drivers and the `nvidia-container-toolkit`. Additionally, it assumes configuration of the `nvidia-container-runtime` as the default low-level runtime.
+此 README 假设已预安装 NVIDIA 驱动程序和 `nvidia-container-toolkit`。此外，假设已将 `nvidia-container-runtime` 配置为默认的低级运行时。
 
-Please see: [https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)
+请参阅：[https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)
 
-#### Example for debian-based systems with `Docker` and `containerd`
+#### 适用于基于 debian 系统的 `Docker` 和 `containerd` 示例
 
-##### Install the `nvidia-container-toolkit`
+##### 安装 `nvidia-container-toolkit`
 
 ```bash
 distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
@@ -37,9 +38,9 @@ curl -s -L https://nvidia.github.io/libnvidia-container/$distribution/libnvidia-
 sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
 ```
 
-##### Configure `Docker`
+##### 配置 `Docker`
 
-When running `Kubernetes` with `Docker`, edit the configuration file, typically located at `/etc/docker/daemon.json`, to set up `nvidia-container-runtime` as the default low-level runtime:
+在使用 `Docker` 运行 `Kubernetes` 时，编辑配置文件，通常位于 `/etc/docker/daemon.json`，以设置 `nvidia-container-runtime` 为默认的低级运行时：
 
 ```json
 {
@@ -53,16 +54,15 @@ When running `Kubernetes` with `Docker`, edit the configuration file, typically 
 }
 ```
 
-And then restart `Docker`:
+然后重启 `Docker`：
 
 ```
 sudo systemctl daemon-reload && systemctl restart docker
 ```
 
-##### Configure `containerd`
+##### 配置 `containerd`
 
-When running `Kubernetes` with `containerd`, modify the configuration file typically located at `/etc/containerd/config.toml`, to set up
-`nvidia-container-runtime` as the default low-level runtime:
+在使用 `containerd` 运行 `Kubernetes` 时，修改配置文件，通常位于 `/etc/containerd/config.toml`，以设置 `nvidia-container-runtime` 为默认的低级运行时：
 
 ```
 version = 2
@@ -81,46 +81,46 @@ version = 2
             BinaryName = "/usr/bin/nvidia-container-runtime"
 ```
 
-And then restart `containerd`:
+然后重启 `containerd`：
 
 ```
 sudo systemctl daemon-reload && systemctl restart containerd
 ```
 
-#### 2. Label your nodes
-Label your GPU nodes for scheduling with HAMi by adding the label "gpu=on". Without this label, the nodes cannot be managed by our scheduler.
+#### 2. 给节点打标签
+通过添加标签 "gpu=on" 来为调度 HAMi 标记您的 GPU 节点。没有此标签，节点无法被我们的调度器管理。
 
 ```
 kubectl label nodes {nodeid} gpu=on
 ```
 
-#### 3. Deploy HAMi using helm:
+#### 3. 使用 helm 部署 HAMi：
 
-First, you need to check your Kubernetes version by using the following command:
+首先，您需要使用以下命令检查您的 Kubernetes 版本：
 
 ```
 kubectl version
 ```
 
-Then, add our repo in helm
+然后，在 helm 中添加我们的仓库
 
 ```
 helm repo add hami-charts https://project-hami.github.io/HAMi/
 ```
 
-During installation, set the Kubernetes scheduler image version to match your Kubernetes server version. For instance, if your cluster server version is 1.16.8, use the following command for deployment:
+在安装过程中，将 Kubernetes 调度器镜像版本设置为与您的 Kubernetes 服务器版本匹配。例如，如果您的集群服务器版本是 1.16.8，使用以下命令进行部署：
 
 ```
 helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag=v1.16.8 -n kube-system
 ```
 
-If everything goes well, you will see both vgpu-device-plugin and vgpu-scheduler pods are in the Running state
+如果一切顺利，您将看到 vgpu-device-plugin 和 vgpu-scheduler pods 处于运行状态
 
-### Demo
+### 演示
 
-#### 1. Submit demo task:
+#### 1. 提交演示任务：
 
-Containers can now request NVIDIA vGPUs using the `nvidia.com/gpu`` resource type.
+容器现在可以使用 `nvidia.com/gpu` 资源类型请求 NVIDIA vGPUs。
 
 ```
 apiVersion: v1
@@ -134,19 +134,19 @@ spec:
       command: ["bash", "-c", "sleep 86400"]
       resources:
         limits:
-          nvidia.com/gpu: 1 # requesting 1 vGPUs
-          nvidia.com/gpumem: 10240 # Each vGPU contains 3000m device memory （Optional,Integer）
+          nvidia.com/gpu: 1 # 请求 1 个 vGPUs
+          nvidia.com/gpumem: 10240 # 每个 vGPU 包含 3000m 设备内存（可选，整数）
 ```
 
-#### Verify in container resouce control
+#### 在容器资源控制中验证
 
-Execute the following query command:
+执行以下查询命令：
 
 ```
 kubectl exec -it gpu-pod nvidia-smi
 ```
 
-The result should be 
+结果应为
 
 ```
 [HAMI-core Msg(28:140561996502848:libvgpu.c:836)]: Initializing.....
@@ -171,6 +171,3 @@ Wed Apr 10 09:28:58 2024
 |  No running processes found                                                             |
 +-----------------------------------------------------------------------------------------+
 [HAMI-core Msg(28:140561996502848:multiprocess_memory_limit.c:434)]: Calling exit handler 28
-```
-
-

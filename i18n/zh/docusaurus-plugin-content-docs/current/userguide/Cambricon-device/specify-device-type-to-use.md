@@ -1,16 +1,16 @@
 ---
-title: Assign to certain device type
+title: 分配到特定设备类型
+translated: true
 ---
 
-## Assign to certain device type
+## 分配到特定设备类型
 
-You need to add parameters `- --enable-device-type` in `cambricon-device-plugin` in order to support device type specification.When this option is set, different types of MLUs will generate different resource names，such as `cambricon.com/mlu370.smlu.vcore` and `cambricon.com/mlu370.smlu.vmemory`.
+您需要在 `cambricon-device-plugin` 中添加参数 `- --enable-device-type` 以支持设备类型规范。当设置此选项时，不同类型的 MLU 将生成不同的资源名称，例如 `cambricon.com/mlu370.smlu.vcore` 和 `cambricon.com/mlu370.smlu.vmemory`。
 
 ```
       resources:
         limits:
-          cambricon.com/mlu: 1 # requesting 1 MLU
-          cambricon.com/mlu370.smlu.vmemory: "20" # Each GPU contains 20% device memory
-          cambricon.com/mlu370.smlu.vcore: "10" # Each GPU contains 10% compute cores
+          cambricon.com/vmlu: 1 # 请求 1 个 MLU
+          cambricon.com/mlu370.smlu.vmemory: "20" # 每个 GPU 包含 20% 的设备内存
+          cambricon.com/mlu370.smlu.vcore: "10" # 每个 GPU 包含 10% 的计算核心
 ```
-

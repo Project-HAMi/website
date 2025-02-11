@@ -1,12 +1,13 @@
 ---
-title: Assign task to a certain GPU
+title: 将任务分配给特定的 GPU
+translated: true
 ---
 
-## Assign task to a certain GPU 
+## 将任务分配给特定的 GPU
 
-To assign a task to a certain GPU, you need only to assign the `nvidia.com/use-gpuuuid` in annotations field.
+要将任务分配给特定的 GPU，只需在注释字段中分配 `nvidia.com/use-gpuuuid`。
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -20,5 +21,5 @@ spec:
       command: ["bash", "-c", "sleep 86400"]
       resources:
         limits:
-          nvidia.com/gpu: 2 # requesting 2 vGPUs
+          nvidia.com/gpu: 2 # 请求 2 个 vGPU
 ```

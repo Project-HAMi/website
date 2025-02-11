@@ -1,12 +1,13 @@
 ---
-title: Allocate device core resource
+title: 为容器分配设备核心资源
+translated: true
 ---
 
-## Allocate device core to container
+## 将设备核心分配给容器
 
-To allocate a certain part of device core resource, you need only to assign the `nvidia.com/gpucores` without other resource fields.
+要分配设备核心资源的某一部分，您只需分配 `nvidia.com/gpucores`，无需其他资源字段。
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -18,8 +19,8 @@ spec:
       command: ["bash", "-c", "sleep 86400"]
       resources:
         limits:
-          nvidia.com/gpu: 2 # requesting 2 vGPUs
-	  nvidia.com/gpucores: 50 # requesting 50% of each vGPU's core resources
+          nvidia.com/gpu: 2 # 请求2个vGPU
+          nvidia.com/gpucores: 50 # 请求每个vGPU核心资源的50%
 ```
 
-> **NOTICE:** *HAMi implements `nvidia.com/gpucores` using time-slice, Therefore, when the core utilization is queried through the nvidia-smi command, there will be fluctuations*
+> **注意：** *HAMi 使用时间片实现 `nvidia.com/gpucores`，因此，当通过 nvidia-smi 命令查询核心利用率时，会有波动*

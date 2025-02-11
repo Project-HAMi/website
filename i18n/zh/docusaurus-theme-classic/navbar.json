@@ -18,5 +18,9 @@
   "logo.alt": {
     "message": "HAMi",
     "description": "The alt text of navbar logo"
+  },
+  "item.label.Changelog": {
+    "message": "更新日志",
+    "description": "Navbar item with label Changelog"
   }
 }

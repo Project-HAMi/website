@@ -1,12 +1,13 @@
 ---
-title: Use exclusive GPU
+title: 使用独占 GPU
+translated: true
 ---
 
-## Allocate device core to container
+## 将设备核心分配给容器
 
-To use GPU in an exclusive mode, which is the default behaviour of nvidia-k8s-device-plugin, you need only to assign the `nvidia.com/gpu` without other resource fields.
+要以独占模式使用 GPU，这是 nvidia-k8s-device-plugin 的默认行为，您只需分配 `nvidia.com/gpu` 而无需其他资源字段。
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -18,5 +19,5 @@ spec:
       command: ["bash", "-c", "sleep 86400"]
       resources:
         limits:
-          nvidia.com/gpu: 2 # requesting 2 vGPUs
+          nvidia.com/gpu: 2 # 请求 2 个 vGPU
 ```

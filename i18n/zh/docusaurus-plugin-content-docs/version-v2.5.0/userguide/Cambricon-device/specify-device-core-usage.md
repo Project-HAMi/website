@@ -1,17 +1,18 @@
 ---
-title: Allocate device core usage
+title: 分配设备核心给容器
+translated: true
 ---
 
-## Allocate device core to container
+## 分配设备核心给容器
 
-Allocate a percentage of device core resources by specify resource `cambricon.com/mlu.smlu.vcore`.
-Optional, each unit of `cambricon.com/mlu.smlu.vcore` equals to 1% device cores.
+通过指定资源 `cambricon.com/mlu.smlu.vcore` 来分配设备核心资源的百分比。
+可选项，每个 `cambricon.com/mlu.smlu.vcore` 单位等于设备核心的 1%。
 
 ```
       resources:
         limits:
-          cambricon.com/mlu: 1 # requesting 1 MLU
-          cambricon.com/mlu.smlu.vcore: "10" # Each MLU contains 10% device cores
+          cambricon.com/vmlu: 1 # 请求 1 个 MLU
+          cambricon.com/mlu.smlu.vcore: "10" # 每个 MLU 包含 10% 的设备核心
 ```
 
-> **NOTICE:** *Depending on the parameters of cambricon-device-plugin, resource name can be `cambricon.com/mlu370.smlu.vcore` or other types*
+> **注意：** *根据 cambricon-device-plugin 的参数，资源名称可以是 `cambricon.com/mlu370.smlu.vcore` 或其他类型*

@@ -1,8 +1,9 @@
 ---
-title: Upgrade
+title: 升级 HAMi
+translated: true
 ---
 
-Upgrading HAMi to the latest version is a simple process, update the repository and restart the chart:
+将HAMi升级到最新版本是一个简单的过程，更新仓库并重新启动图表：
 
 ```
 helm uninstall hami -n kube-system
@@ -10,4 +11,4 @@ helm repo update
 helm install hami hami-charts/hami -n kube-system
 ```
 
-> **WARNING:** *If you upgrade HAMi without clearing your submitted tasks, it may result in segmentation fault.*
+> **警告：** *如果在不清除已提交任务的情况下升级HAMi，可能会导致分段错误。*

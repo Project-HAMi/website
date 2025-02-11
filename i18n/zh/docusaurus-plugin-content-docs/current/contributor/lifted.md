@@ -1,68 +1,73 @@
 ---
-title: How to manage lifted codes
+title: 如何管理提升的代码
+translated: true
 ---
 
-This document explains how lifted code is managed.
-A common user case for this task is developer lifting code from other repositories to `pkg/util/lifted` directory.
+本文档解释了如何管理提升的代码。此任务的一个常见用户案例是开发人员从其他代码库中提升代码到 `pkg/util/lifted` 目录。
 
-- [Steps of lifting code](#steps-of-lifting-code)
-- [How to write lifted comments](#how-to-write-lifted-comments)
-- [Examples](#examples)
+- [提升代码的步骤](#steps-of-lifting-code)
+- [如何编写提升注释](#how-to-write-lifted-comments)
+- [示例](#examples)
 
-## Steps of lifting code
-- Copy code from another repository and save it to a go file under `pkg/util/lifted`.
-- Optionally change the lifted code.
-- Add lifted comments for the code [as guided](#how-to-write-lifted-comments).
-- Run `hack/update-lifted.sh` to update the lifted doc `pkg/util/lifted/doc.go`.
+## 提升代码的步骤
 
-## How to write lifted comments
-Lifted comments shall be placed just before the lifted code (could be a func, type, var or const). Only empty lines and comments are allowed between lifted comments and lifted code.
+- 从另一个代码库中复制代码并将其保存到 `pkg/util/lifted` 下的一个 go 文件中。
+- 可选择性地更改提升的代码。
+- 为代码添加提升注释 [如指导](#how-to-write-lifted-comments)。
+- 运行 `hack/update-lifted.sh` 来更新提升文档 `pkg/util/lifted/doc.go`。
 
-Lifted comments are composed by one or multi comment lines, each in the format of `+lifted:KEY[=VALUE]`. Value is optional for some keys.
+## 如何编写提升注释
 
-Valid keys are as follow：
+提升注释应放置在提升代码之前（可以是函数、类型、变量或常量）。
+在提升注释和提升代码之间只允许有空行和注释。
+
+提升注释由一行或多行注释组成，每行格式为 `+lifted:KEY[=VALUE]`。对于某些键，值是可选的。
+
+有效的键如下：
 
 - source:
 
-  Key `source` is required. Its value indicates where the code is lifted from.
+  键 `source` 是必需的。其值指示代码从何处提升。
 
 - changed:
 
-  Key `changed` is optional. It indicates whether the code is changed. Value is optional (`true` or `false`, defaults to `true`). Not adding this key or setting it to `false` means no code change.
+  键 `changed` 是可选的。它指示代码是否已更改。
+  值是可选的（`true` 或 `false`，默认为 `true`）。
+  不添加此键或将其设置为 `false` 表示没有代码更改。
 
-## Examples
-### Lifting function
+## 示例
 
-Lift function `IsQuotaHugePageResourceName` to `corehelpers.go`:
+### 提升函数
+
+将函数 `IsQuotaHugePageResourceName` 提升到 `corehelpers.go`：
 
 ```go
 // +lifted:source=https://github.com/kubernetes/kubernetes/blob/release-1.23/pkg/apis/core/helper/helpers.go#L57-L61
 
-// IsQuotaHugePageResourceName returns true if the resource name has the quota
-// related huge page resource prefix.
+// IsQuotaHugePageResourceName 返回 true 如果资源名称具有与配额相关的大页资源前缀。
 func IsQuotaHugePageResourceName(name corev1.ResourceName) bool {
 	return strings.HasPrefix(string(name), corev1.ResourceHugePagesPrefix) || strings.HasPrefix(string(name), corev1.ResourceRequestsHugePagesPrefix)
 }
 ```
 
-Added in `doc.go`:
+在 `doc.go` 中添加：
 
 ```markdown
-| lifted file              | source file                                                                                                                   | const/var/type/func                     | changed |
-|--------------------------|-------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------|---------|
-| corehelpers.go           | https://github.com/kubernetes/kubernetes/blob/release-1.23/pkg/apis/core/helper/helpers.go#L57-L61                            | func IsQuotaHugePageResourceName        | N       |
+| 提升文件 | 源文件 | 常量/变量/类型/函数 | 更改 |
+| ----------- | ----------- | ------------------- | ------- |
+| corehelpers.go | https://github.com/kubernetes/kubernetes/blob/release-1.23/pkg/apis/core/helper/helpers.go#L57-L61 | func IsQuotaHugePageResourceName | N |
 ```
 
-### Changed lifting function
+### 更改提升函数
 
-Lift and change function `GetNewReplicaSet` to `deployment.go`
+提升并更改函数 `GetNewReplicaSet` 到 `deployment.go`
 
 ```go
 // +lifted:source=https://github.com/kubernetes/kubernetes/blob/release-1.22/pkg/controller/deployment/util/deployment_util.go#L536-L544
 // +lifted:changed
 
-// GetNewReplicaSet returns a replica set that matches the intent of the given deployment; get ReplicaSetList from client interface.
-// Returns nil if the new replica set doesn't exist yet.
+// GetNewReplicaSet 返回与给定部署意图匹配的副本集；从客户端接口获取 ReplicaSetList。
+// 如果新的副本集尚不存在，则返回 nil。
 func GetNewReplicaSet(deployment *appsv1.Deployment, f ReplicaSetListFunc) (*appsv1.ReplicaSet, error) {
 	rsList, err := ListReplicaSetsByDeployment(deployment, f)
 	if err != nil {
@@ -72,46 +77,45 @@ func GetNewReplicaSet(deployment *appsv1.Deployment, f ReplicaSetListFunc) (*app
 }
 ```
 
-Added in `doc.go`:
+在 `doc.go` 中添加：
 
 ```markdown
-| lifted file              | source file                                                                                                                   | const/var/type/func                     | changed |
-|--------------------------|-------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------|---------|
-| deployment.go            | https://github.com/kubernetes/kubernetes/blob/release-1.22/pkg/controller/deployment/util/deployment_util.go#L536-L544        | func GetNewReplicaSet                   | Y       |
+| 提升文件 | 源文件 | 常量/变量/类型/函数 | 更改 |
+| ----------- | ----------- | ------------------- | ------- |
+| deployment.go | https://github.com/kubernetes/kubernetes/blob/release-1.22/pkg/controller/deployment/util/deployment_util.go#L536-L544 | func GetNewReplicaSet | Y |
 ```
 
-### Lifting const
+### 提升常量
 
-Lift const `isNegativeErrorMsg` to `corevalidation.go  `:
+将常量 `isNegativeErrorMsg` 提升到 `corevalidation.go `：
 
 ```go
 // +lifted:source=https://github.com/kubernetes/kubernetes/blob/release-1.22/pkg/apis/core/validation/validation.go#L59
 const isNegativeErrorMsg string = apimachineryvalidation.IsNegativeErrorMsg
 ```
 
-Added in `doc.go`:
+在 `doc.go` 中添加：
 
 ```markdown
-| lifted file              | source file                                                                                                                   | const/var/type/func                     | changed |
-|--------------------------|-------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------|---------|
-| corevalidation.go        | https://github.com/kubernetes/kubernetes/blob/release-1.22/pkg/apis/core/validation/validation.go#L59                         | const isNegativeErrorMsg                | N       |
+| 提升文件 | 源文件 | 常量/变量/类型/函数 | 更改 |
+| ----------- | ----------- | ------------------- | ------- |
+| corevalidation.go | https://github.com/kubernetes/kubernetes/blob/release-1.22/pkg/apis/core/validation/validation.go#L59 | const isNegativeErrorMsg | N |
 ```
 
-### Lifting type
+### 提升类型
 
-Lift type `Visitor` to `visitpod.go`:
+将类型 `Visitor` 提升到 `visitpod.go`：
 
 ```go
 // +lifted:source=https://github.com/kubernetes/kubernetes/blob/release-1.23/pkg/api/v1/pod/util.go#L82-L83
 
-// Visitor is called with each object name, and returns true if visiting should continue
+// Visitor 被调用时传入每个对象名称，并返回 true 如果访问应继续
 type Visitor func(name string) (shouldContinue bool)
 ```
 
-Added in `doc.go`:
+在 `doc.go` 中添加：
 
 ```markdown
-| lifted file              | source file                                                                                                                   | const/var/type/func                     | changed |
-|--------------------------|-------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------|---------|
-| visitpod.go              | https://github.com/kubernetes/kubernetes/blob/release-1.23/pkg/api/v1/pod/util.go#L82-L83                                     | type Visitor                            | N       |
-```
+| 提升文件 | 源文件 | 常量/变量/类型/函数 | 更改 |
+| ----------- | ----------- | ------------------- | ------- |
+| visitpod.go | https://github.com/kubernetes/kubernetes/blob/release-1.23/pkg/api/v1/pod/util.go#L82-L83 | type Visitor | N |

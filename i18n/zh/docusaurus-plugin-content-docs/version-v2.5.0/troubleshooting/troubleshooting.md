@@ -1,41 +1,12 @@
 ---
-title: Troubleshooting
+title: 排障手册
+translated: true
 ---
 
-## I can't access some resources when installing Karmada
-
-- Pull images from Google Container Registry (k8s.gcr.io).
-
-  You can run the following commands to change the image registry in Mainland China.
-
-  ```shell
-  sed -i'' -e "s#k8s.gcr.io#registry.aliyuncs.com/google_containers#g" artifacts/deploy/karmada-etcd.yaml
-  sed -i'' -e "s#k8s.gcr.io#registry.aliyuncs.com/google_containers#g" artifacts/deploy/karmada-apiserver.yaml
-  sed -i'' -e "s#k8s.gcr.io#registry.aliyuncs.com/google_containers#g" artifacts/deploy/kube-controller-manager.yaml
-  ```
-
-- Download the Golang package in Mainland China and run the following command before installation.
-
-  ```shell
-  export GOPROXY=https://goproxy.cn
-  ```
-  
-  
-## Member cluster healthy checking does not work
-If your environment is similar to the following.
->
-> After registering member cluster to karmada with push mode, and using `kubectl get cluster`, found the cluster status was ready.
-> Then, by opening the firewall between the member cluster and karmada, after waiting for a long time, the cluster status was also ready, not change to fail.
-
-
-The cause of the problem was that the firewall did not close the already existing TCP connection between the member cluster and karmada.
-
-- login to the node where the member cluster apiserver is located
-- use the `tcpkill` command to close the tcp connection. 
-
-```
-# ens192 is the name of the network-card used by the member cluster to communicate with karmada.
-tcpkill -9  -i ens192 src host ${KARMADA_APISERVER_IP} and dst port ${MEMBER_CLUTER_APISERVER_IP}
-```
-
-
+- 如果在使用 NVIDIA 镜像的设备插件时不请求 vGPU，机器上的所有 GPU 可能会在容器内暴露。
+- 目前，A100 MIG 仅支持 "none" 和 "mixed" 模式。
+- 目前无法调度带有 "nodeName" 字段的任务；请改用 "nodeSelector"。
+- 目前仅支持计算任务；不支持视频编解码处理。
+- 我们将 `device-plugin` 环境变量名称从 `NodeName` 更改为 `NODE_NAME`，如果您使用镜像版本 `v2.3.9`，可能会遇到 `device-plugin` 无法启动的情况，有两种方法可以解决：
+  - 手动执行 `kubectl edit daemonset` 修改 `device-plugin` 环境变量从 `NodeName` 为 `NODE_NAME`。
+  - 使用 helm 升级到最新版本，`device-plugin` 镜像的最新版本是 `v2.3.10`，执行 `helm upgrade hami hami/hami -n kube-system`，它将自动修复。

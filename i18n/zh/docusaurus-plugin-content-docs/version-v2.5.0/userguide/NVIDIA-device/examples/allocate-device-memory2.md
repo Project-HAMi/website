@@ -1,12 +1,13 @@
 ---
-title: Allocate device memory by percentage
+title: 按百分比分配设备内存给容器
+translated: true
 ---
 
-## Allocate a part of device memory by percentage to container
+## 按百分比分配设备内存给容器
 
-To allocate a certain size of GPU device memory by percentage, you need only to assign `nvidia.com/gpumem-percentage` besides `nvidia.com/gpu`.
+要按百分比分配一定大小的 GPU 设备内存，您只需在 `nvidia.com/gpu` 之外分配 `nvidia.com/gpumem-percentage`。
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -18,8 +19,8 @@ spec:
       command: ["bash", "-c", "sleep 86400"]
       resources:
         limits:
-          nvidia.com/gpu: 2 # requesting 2 vGPUs
-	  nvidia.com/gpumem-percentage: 50 # each vGPU requests 50% of device memory
+          nvidia.com/gpu: 2 # 请求 2 个 vGPU
+          nvidia.com/gpumem-percentage: 50 # 每个 vGPU 请求 50% 的设备内存
 ```
 
-> **NOTICE:** *`nvidia.com/gpumem` can't be used together with `nvidia.com/gpumem-percentage`*
+> **注意：** *`nvidia.com/gpumem` 不能与 `nvidia.com/gpumem-percentage` 一起使用*

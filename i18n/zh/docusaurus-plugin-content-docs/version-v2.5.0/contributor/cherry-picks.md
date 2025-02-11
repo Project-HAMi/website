@@ -1,121 +1,86 @@
 ---
-title: How to cherry-pick PRs
+title: 如何 cherry-pick PRs
+translated: true
 ---
 
-This document explains how cherry picks are managed on release branches within
-the `karmada-io/karmada` repository.
-A common use case for this task is backporting PRs from master to release
-branches.
+本文档解释了如何在 `Project-HAMi/HAMi` 仓库的发布分支上管理 cherry pick。一个常见的用例是将 PR 从 master 分支回移到发布分支。
 
-> This doc is lifted from [Kubernetes cherry-pick](https://github.com/kubernetes/community/blob/master/contributors/devel/sig-release/cherry-picks.md).
+> 本文档摘自 [Kubernetes cherry-pick](https://github.com/kubernetes/community/blob/master/contributors/devel/sig-release/cherry-picks.md)。
 
-- [Prerequisites](#prerequisites)
-- [What Kind of PRs are Good for Cherry Picks](#what-kind-of-prs-are-good-for-cherry-picks)
-- [Initiate a Cherry Pick](#initiate-a-cherry-pick)
-- [Cherry Pick Review](#cherry-pick-review)
-- [Troubleshooting Cherry Picks](#troubleshooting-cherry-picks)
-- [Cherry Picks for Unsupported Releases](#cherry-picks-for-unsupported-releases)
+- [先决条件](#prerequisites)
+- [哪些 PR 适合进行 Cherry Pick](#what-kind-of-prs-are-good-for-cherry-picks)
+- [发起 Cherry Pick](#initiate-a-cherry-pick)
+- [Cherry Pick 审核](#cherry-pick-review)
+- [Cherry Pick 故障排除](#troubleshooting-cherry-picks)
+- [不支持版本的 Cherry Pick](#cherry-picks-for-unsupported-releases)
 
-## Prerequisites
+## 先决条件
 
-- A pull request merged against the `master` branch.
-- The release branch exists (example: [`release-1.0`](https://github.com/karmada-io/karmada/tree/release-1.0))
-- The normal git and GitHub configured shell environment for pushing to your
-  karmada `origin` fork on GitHub and making a pull request against a
-  configured remote `upstream` that tracks
-  `https://github.com/karmada-io/karmada.git`, including `GITHUB_USER`.
-- Have GitHub CLI (`gh`) installed following [installation instructions](https://github.com/cli/cli#installation).
-- A github personal access token which has permissions "repo" and "read:org".
-  Permissions are required for [gh auth login](https://cli.github.com/manual/gh_auth_login)
-  and not used for anything unrelated to cherry-pick creation process
-  (creating a branch and initiating PR).
+- 一个已合并到 `master` 分支的拉取请求。
+- 发布分支已存在（例如：[`release-2.4`](https://github.com/Project-HAMi/HAMi/releases)）
+- 正常配置的 git 和 GitHub shell 环境，用于推送到 GitHub 上的 HAMi `origin` fork，并对配置的远程 `upstream` 提交拉取请求，该 `upstream` 跟踪 `https://github.com/Project-HAMi/HAMi`，包括 `GITHUB_USER`。
+- 按照[安装说明](https://github.com/cli/cli#installation)安装 GitHub CLI (`gh`)。
+- 一个具有 "repo" 和 "read:org" 权限的 GitHub 个人访问令牌。权限是为 [gh auth login](https://cli.github.com/manual/gh_auth_login) 所需，与 cherry-pick 创建过程无关（创建分支和发起 PR）。
 
-## What Kind of PRs are Good for Cherry Picks
+## 哪些 PR 适合进行 Cherry Pick
 
-Compared to the normal master branch's merge volume across time,
-the release branches see one or two orders of magnitude less PRs.
-This is because there is an order or two of magnitude higher scrutiny.
-Again, the emphasis is on critical bug fixes, e.g.,
+与正常的 master 分支的合并量相比，发布分支的 PR 数量要少一个或两个数量级。这是因为发布分支的审查更为严格。重点在于关键的错误修复，例如：
 
-- Loss of data
-- Memory corruption
-- Panic, crash, hang
-- Security
+- 数据丢失
+- 内存损坏
+- 崩溃、挂起
+- 安全问题
 
-A bugfix for a functional issue (not a data loss or security issue) that only
-affects an alpha feature does not qualify as a critical bug fix.
+仅影响 alpha 功能的功能性问题的错误修复（不是数据丢失或安全问题）不符合关键错误修复的标准。
 
-If you are proposing a cherry pick and it is not a clear and obvious critical
-bug fix, please reconsider. If upon reflection you wish to continue, bolster
-your case by supplementing your PR with e.g.,
+如果您提议进行 cherry pick，但它不是一个明显的关键错误修复，请重新考虑。如果在反思后您仍希望继续，请通过补充您的 PR 来加强您的理由，例如：
 
-- A GitHub issue detailing the problem
+- 详细描述问题的 GitHub issue
 
-- Scope of the change
+- 变更的范围
 
-- Risks of adding a change
+- 添加变更的风险
 
-- Risks of associated regression
+- 相关回归的风险
 
-- Testing performed, test cases added
+- 执行的测试，添加的测试用例
 
-- Key stakeholder reviewers/approvers attesting to their confidence in the
-  change being a required backport
+- 关键利益相关者的审阅者/批准者对变更为必要的回移的信心的证明
 
-It is critical that our full community is actively engaged on enhancements in
-the project. If a released feature was not enabled on a particular provider's
-platform, this is a community miss that needs to be resolved in the `master`
-branch for subsequent releases. Such enabling will not be backported to the
-patch release branches.
+确保我们的整个社区积极参与项目的增强是至关重要的。如果某个已发布的功能未在特定提供商的平台上启用，这是一个需要在 `master` 分支中解决的社区失误，以便后续发布。这样的启用不会被回移到补丁发布分支。
 
-## Initiate a Cherry Pick
+## 发起 Cherry Pick
 
-- Run the [cherry pick script][cherry-pick-script]
+- 运行 [cherry pick 脚本][cherry-pick-script]
 
-  This example applies a master branch PR #1206 to the remote branch
-  `upstream/release-1.0`:
+  此示例将 master 分支的 PR #1206 应用于远程分支 `upstream/release-1.0`：
 
   ```shell
   hack/cherry_pick_pull.sh upstream/release-1.0 1206
   ```
 
-  - Be aware the cherry pick script assumes you have a git remote called
-    `upstream` that points at the Karmada github org.
+  - 请注意，cherry pick 脚本假定您有一个名为 `upstream` 的 git 远程指向 HAMi GitHub 组织。
 
-  - You will need to run the cherry pick script separately for each patch
-    release you want to cherry pick to. Cherry picks should be applied to all
-    active release branches where the fix is applicable.
+  - 您需要为每个想要进行 cherry pick 的补丁发布单独运行 cherry pick 脚本。cherry pick 应应用于所有适用修复的活动发布分支。
 
-  - If `GITHUB_TOKEN` is not set you will be asked for your github password:
-    provide the github [personal access token](https://github.com/settings/tokens) rather than your actual github
-    password. If you can securely set the environment variable `GITHUB_TOKEN`
-    to your personal access token then you can avoid an interactive prompt.
-    Refer [https://github.com/github/hub/issues/2655#issuecomment-735836048](https://github.com/github/hub/issues/2655#issuecomment-735836048)
+  - 如果未设置 `GITHUB_TOKEN`，您将被要求输入 GitHub 密码：提供 GitHub [个人访问令牌](https://github.com/settings/tokens) 而不是实际的 GitHub 密码。如果您可以安全地将环境变量 `GITHUB_TOKEN` 设置为您的个人访问令牌，则可以避免交互式提示。参考 [https://github.com/github/hub/issues/2655#issuecomment-735836048](https://github.com/github/hub/issues/2655#issuecomment-735836048)
 
-## Cherry Pick Review
+## Cherry Pick 审核
 
-As with any other PR, code OWNERS review (`/lgtm`) and approve (`/approve`) on
-cherry pick PRs as they deem appropriate.
+与其他 PR 一样，代码 OWNERS 会根据需要对 cherry pick PR 进行审核 (`/lgtm`) 和批准 (`/approve`)。
 
-The same release note requirements apply as normal pull requests, except the
-release note stanza will auto-populate from the master branch pull request from
-which the cherry pick originated.
+与正常的拉取请求相同，发布说明要求适用，除了发布说明部分将自动从发起 cherry pick 的 master 分支拉取请求中填充。
 
-## Troubleshooting Cherry Picks
+## Cherry Pick 故障排除
 
-Contributors may encounter some of the following difficulties when initiating a
-cherry pick.
+贡献者在发起 cherry pick 时可能会遇到以下一些困难。
 
-- A cherry pick PR does not apply cleanly against an old release branch. In
-  that case, you will need to manually fix conflicts.
+- cherry pick PR 无法干净地应用于旧的发布分支。在这种情况下，您需要手动修复冲突。
 
-- The cherry pick PR includes code that does not pass CI tests. In such a case
-  you will have to fetch the auto-generated branch from your fork, amend the
-  problematic commit and force push to the auto-generated branch.
-  Alternatively, you can create a new PR, which is noisier.
+- cherry pick PR 包含无法通过 CI 测试的代码。在这种情况下，您需要从您的 fork 中获取自动生成的分支，修改有问题的提交并强制推送到自动生成的分支。或者，您可以创建一个新的 PR，这样会更繁琐。
 
-## Cherry Picks for Unsupported Releases
+## 不支持版本的 Cherry Pick
 
-The community supports & patches releases need to be discussed.
+社区支持和补丁的版本需要讨论。
 
-[cherry-pick-script]: https://github.com/karmada-io/karmada/blob/master/hack/cherry_pick_pull.sh
+[cherry-pick-script]: https://github.com/Project-HAMi/HAMi/blob/master/hack/cherry_pick_pull.sh
