@@ -3,11 +3,9 @@ title: 为容器分配 Ascend-910B 切片
 translated: true
 ---
 
-## 为容器分配 Ascend-910B 切片
+要分配一定大小的 GPU 设备内存，您只需在 `huawei.com/ascend910` 之外分配 `huawei.com/ascend910-memory`。
 
-要分配一定大小的GPU设备内存，您只需在`huawei.com/ascend910`之外分配`huawei.com/ascend910-memory`。
-
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -23,4 +21,4 @@ spec:
           huawei.com/Ascend910-memory: 2000 # 请求2000m设备内存
 ```
 
-> **注意：** * Ascend910B的计算资源也受`huawei.com/Ascend910-memory`限制，等于分配的设备内存的百分比。 *
+> **注意：** *Ascend910B 的计算资源也受 `huawei.com/Ascend910-memory` 限制，等于分配的设备内存的百分比。*
