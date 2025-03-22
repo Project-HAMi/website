@@ -3,11 +3,9 @@ title: 分配独占设备
 translated: true
 ---
 
-## 分配独占设备
+要分配整个 Ascend 设备，您只需分配 `huawei.com/ascend910` 或 `huawei.com/310p`，无需其他字段。
 
-要分配整个Ascend设备，您只需分配`huawei.com/ascend910`或`huawei.com/310p`，无需其他字段。
-
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -19,4 +17,5 @@ spec:
       command: ["bash", "-c", "sleep 86400"]
       resources:
         limits:
-          huawei.com/Ascend910B: 2 # 请求2个完整的Ascend 910b设备
+          huawei.com/Ascend910B: 2 # 请求 2 个完整的 Ascend 910b 设备
+```

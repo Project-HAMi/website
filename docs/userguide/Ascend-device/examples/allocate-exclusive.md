@@ -2,11 +2,9 @@
 title: Allocate exclusive device
 ---
 
-## Allocate exclusive device
-
 To allocate a whole Ascend device, you need to only assign `huawei.com/ascend910` or `huawei.com/310p` without other fields.
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:

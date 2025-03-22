@@ -2,11 +2,9 @@
 title: Allocate 310p slice
 ---
 
-## Allocate a Ascend-310p slice to container
-
 To allocate a certain size of GPU device memory, you need only to assign `huawei.com/ascend310P-memory` besides `huawei.com/ascend310P`.
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -26,4 +24,4 @@ spec:
           huawei.com/Ascend310P-memory: 1024
 ```
 
-> **NOTICE:** * compute resource of Ascend910B is also limited with `huawei.com/Ascend310P-memory`, equals to the percentage of device memory allocated. *
+> **NOTICE:** *compute resource of Ascend910B is also limited with `huawei.com/Ascend310P-memory`, equals to the percentage of device memory allocated.*
