@@ -220,7 +220,7 @@ module.exports = {
         docs: {
           sidebarPath: require.resolve("./sidebars.js"),
           editUrl: function ({ locale, docPath }) {
-            return `https://github.com/Project-HAMi/website/edit/main/docs/${docPath}`;
+            return `https://github.com/Project-HAMi/website/edit/master/docs/${docPath}`;
           },
           showLastUpdateAuthor: true,
           showLastUpdateTime: true,
@@ -232,7 +232,7 @@ module.exports = {
         },
         blog: {
           showReadingTime: true,
-          editUrl: "https://github.com/Project-HAMi/website/tree/main/",
+          editUrl: "https://github.com/Project-HAMi/website/tree/master/",
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
