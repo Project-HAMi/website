@@ -48,6 +48,8 @@ tag: [Kubernetes, GPU, AI]
 
 介于此，展开这部分代码的粗略走读，旨在说明调度过程中各组件的交互，以及资源的计算方式，其他细节会有所遗漏
 
+<!-- truncate -->
+
 ## 2. 调度流程
 
 看代码之前可以先看下官方文档说明，大体上比较明确 ![flowchart](https://github.com/Project-HAMi/HAMi/blob/master/docs/develop/imgs/flowchart.jpeg?raw=true)
