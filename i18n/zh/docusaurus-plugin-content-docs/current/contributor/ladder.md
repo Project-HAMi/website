@@ -61,9 +61,9 @@ translated: true
   * 受邀参加贡献者活动
   * 有资格成为组织成员
 
-特别感谢[长长的名单](https://github.com/Project-HAMi/HAMi/blob/master/AUTHORS)中那些为项目做出贡献并帮助维护项目的人。没有你们的贡献，我们不会有今天的成就。谢谢！💖
+特别感谢[长长的名单](https://github.com/Project-HAMi/HAMi/blob/master/AUTHORS.md)中那些为项目做出贡献并帮助维护项目的人。没有你们的贡献，我们不会有今天的成就。谢谢！💖
 
-只要您为 HAMi 做出贡献，您的名字将被添加到[这里](https://github.com/Project-HAMi/HAMi/blob/master/AUTHORS)。如果您没有找到您的名字，请联系我们添加。
+只要您为 HAMi 做出贡献，您的名字将被添加到[这里](https://github.com/Project-HAMi/HAMi/blob/master/AUTHORS.md)。如果您没有找到您的名字，请联系我们添加。
 
 ### 组织成员
 
