@@ -4,3 +4,4 @@ node_modules
 .hugo_build.lock
 .idea
 build
+.DS_Store
