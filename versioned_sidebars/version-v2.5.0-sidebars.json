@@ -53,7 +53,7 @@
         },
         {
           "type": "category",
-          "label": "Share NVIDIA GPU devices",
+          "label": "NVIDIA GPU",
           "items": [
             "userguide/NVIDIA-device/dynamic-mig-support",
             "userguide/NVIDIA-device/specify-device-memory-usage",
@@ -77,7 +77,7 @@
         },
         {
           "type": "category",
-          "label": "Share Cambricon MLU devices",
+          "label": "Cambricon MLU",
           "items": [
             "userguide/Cambricon-device/enable-cambricon-mlu-sharing",
             "userguide/Cambricon-device/specify-device-memory-usage",
@@ -95,7 +95,7 @@
         },
         {
           "type": "category",
-          "label": "Share Hygon DCU devices",
+          "label": "Hygon DCU",
           "items": [
             "userguide/Hygon-device/enable-hygon-dcu-sharing",
             "userguide/Hygon-device/specify-device-memory-usage",
@@ -112,7 +112,7 @@
         },
         {
           "type": "category",
-          "label": "Share Mthreads GPU devices",
+          "label": "Mthreads GPU",
           "items": [
             "userguide/Mthreads-device/enable-mthreads-gpu-sharing",
             "userguide/Mthreads-device/specify-device-memory-usage",
@@ -129,25 +129,42 @@
         },
         {
           "type": "category",
-          "label": "Optimize Metax GPU scheduling",
+          "label": "Metax GPU",
           "items": [
             "userguide/Metax-device/enable-metax-gpu-schedule",
+            "userguide/Metax-device/enable-metax-gpu-sharing",
             "userguide/Metax-device/specify-binpack-task",
             "userguide/Metax-device/specify-spread-task",
             {
               "type": "category",
               "label": "Examples",
               "items": [
-                "userguide/Metax-device/examples/default-use",
-                "userguide/Metax-device/examples/allocate-binpack",
-                "userguide/Metax-device/examples/allocate-spread"
+                {
+                  "type": "category",
+                  "label": "gpu",
+                  "items": [
+                    "userguide/Metax-device/examples/gpu/default-use",
+                    "userguide/Metax-device/examples/gpu/allocate-binpack",
+                    "userguide/Metax-device/examples/gpu/allocate-spread" 
+                  ] 
+                },
+                {
+                  "type": "category",
+                  "label": "sgpu",
+                  "items": [
+                    "userguide/Metax-device/examples/sgpu/allocate_vmemory_MiB",
+                    "userguide/Metax-device/examples/sgpu/allocate_specific_gpu",
+                    "userguide/Metax-device/examples/sgpu/allocate_exclusive", 
+                    "userguide/Metax-device/examples/sgpu/multi-containers" 
+                  ] 
+                }
               ]
             }
           ]
         },
         {
           "type": "category",
-          "label": "Share Ascend devices",
+          "label": "Ascend NPU",
           "items": [
             "userguide/Ascend-device/enable-ascend-sharing",
             "userguide/Ascend-device/device-template",
@@ -158,6 +175,38 @@
                 "userguide/Ascend-device/examples/allocate-310p",
                 "userguide/Ascend-device/examples/allocate-910b",
                 "userguide/Ascend-device/examples/allocate-exclusive"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "category",
+          "label": "Enflame GCU",
+          "items": [
+            "userguide/Enflame-device/enable-enflame-gpu-sharing",
+            "userguide/Enflame-device/specify-device-slice",
+            {
+              "type": "category",
+              "label": "Examples",
+              "items": [
+                "userguide/Enflame-device/examples/use_exclusive",
+                "userguide/Enflame-device/examples/default_use"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "category",
+          "label": "Iluvatar GPU",
+          "items": [
+            "userguide/Iluvatar-device/enable-iluvatar-gpu-sharing",
+            "userguide/Iluvatar-device/device-uuid-specification",
+            {
+              "type": "category",
+              "label": "Examples",
+              "items": [
+                "userguide/Iluvatar-device/examples/default_use",
+                "userguide/Iluvatar-device/examples/use_exclusive"
               ]
             }
           ]
