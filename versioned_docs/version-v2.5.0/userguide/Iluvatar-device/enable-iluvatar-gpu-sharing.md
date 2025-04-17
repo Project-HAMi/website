@@ -97,7 +97,7 @@ spec:
 
 > **NOTICE1:** *Each unit of vcuda-memory indicates 256M device memory*
 
-> **NOTICE2:** *You can find more examples in [examples/iluvatar folder](../examples/iluvatar/)*
+> **NOTICE2:** *You can find more examples in examples folder*
 
 ## Notes
 

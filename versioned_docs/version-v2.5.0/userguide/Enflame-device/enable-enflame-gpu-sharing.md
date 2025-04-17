@@ -77,7 +77,7 @@ spec:
           enflame.com/vgcu-percentage: 22
 ```
 
-> **NOTICE:** *You can find more examples in [examples/enflame folder](../examples/enflame/)*
+> **NOTICE:** *You can find more examples in examples folder*
 
 ## Device UUID Selection
 
