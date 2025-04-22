@@ -6,94 +6,69 @@ title: Configuration
 
 ## Device Configs: ConfigMap
 
-**Note:**
+:::note
 All the configurations listed below are managed within the hami-scheduler-device ConfigMap.
+:::
+
 You can update these configurations using one of the following methods:
 
-1. Directly edit the ConfigMap: If HAMi has already been successfully installed, you can manually update the hami-scheduler-device ConfigMap using the kubectl edit command to manually update the hami-scheduler-device ConfigMap.
-    ```bash
-    kubectl edit configmap hami-scheduler-device -n <namespace>
-    ```
-    After making changes, restart the related HAMi components to apply the updated configurations.
-2. Modify Helm Chart: Update the corresponding values in the [ConfigMap](https://raw.githubusercontent.com/archlitchi/HAMi/refs/heads/master/charts/hami/templates/scheduler/device-configmap.yaml), then reapply the Helm Chart to regenerate the ConfigMap.
+1. Directly edit the ConfigMap: If HAMi has already been successfully installed, you can manually update
+   the hami-scheduler-device ConfigMap using the kubectl edit command to manually update the hami-scheduler-device ConfigMap.
 
-* `nvidia.deviceMemoryScaling:` 
-  Float type, by default: 1. The ratio for NVIDIA device memory scaling, can be greater than 1 (enable virtual device memory, experimental feature). For NVIDIA GPU with *M* memory, if we set `nvidia.deviceMemoryScaling` argument to *S*, vGPUs splitted by this GPU will totally get `S * M` memory in Kubernetes with our device plugin.
-* `nvidia.deviceSplitCount:` 
-  Integer type, by default: equals 10. Maximum tasks assigned to a simple GPU device.
-* `nvidia.migstrategy:`
-  String type, "none" for ignoring MIG features or "mixed" for allocating MIG device by seperate resources. Default "none"
-* `nvidia.disablecorelimit:`
-  String type, "true" for disable core limit, "false" for enable core limit, default: false
-* `nvidia.defaultMem:` 
-  Integer type, by default: 0. The default device memory of the current task, in MB.'0' means use 100% device memory
-* `nvidia.defaultCores:` 
-  Integer type, by default: equals 0. Percentage of GPU cores reserved for the current task. If assigned to 0, it may fit in any GPU with enough device memory. If assigned to 100, it will use an entire GPU card exclusively.
-* `nvidia.defaultGPUNum:`
-  Integer type, by default: equals 1, if configuration value is 0, then the configuration value will not take effect and will be filtered. when a user does not set nvidia.com/gpu this key in pod resource, webhook should check nvidia.com/gpumem、resource-mem-percentage、nvidia.com/gpucores this three key, anyone a key having value, webhook should add nvidia.com/gpu key and this default value to resources limits map.
-* `nvidia.resourceCountName:`
-  String type, vgpu number resource name, default: "nvidia.com/gpu"
-* `nvidia.resourceMemoryName:`
-  String type, vgpu memory size resource name, default: "nvidia.com/gpumem"
-* `nvidia.resourceMemoryPercentageName:`
-  String type, vgpu memory fraction resource name, default: "nvidia.com/gpumem-percentage" 
-* `nvidia.resourceCoreName:`
-  String type, vgpu cores resource name, default: "nvidia.com/cores"
-* `nvidia.resourcePriorityName:`
-  String type, vgpu task priority name, default: "nvidia.com/priority"
+   ```bash
+   kubectl edit configmap hami-scheduler-device -n <namespace>
+   ```
+  
+   After making changes, restart the related HAMi components to apply the updated configurations.
 
-## Chart Configs: parameters
+2. Modify Helm Chart: Update the corresponding values in the
+   [ConfigMap](https://raw.githubusercontent.com/archlitchi/HAMi/refs/heads/master/charts/hami/templates/scheduler/device-configmap.yaml),
+   then reapply the Helm Chart to regenerate the ConfigMap.
 
-you can customize your vGPU support by setting the following parameters using `-set`, for example
+   | Argument | Type | Description | Default |
+   |----------|------|-------------|---------|
+   | `nvidia.deviceMemoryScaling` | Float | The ratio for NVIDIA device memory scaling, can be greater than 1 (enables virtual device memory, experimental feature). For an NVIDIA GPU with *M* memory, if set to *S*, vGPUs split from this GPU will get `S * M` memory in Kubernetes. | `1` |
+   | `nvidia.deviceSplitCount` | Integer | Maximum jobs assigned to a single GPU device. | `10` |
+   | `nvidia.migstrategy` | String | "none" for ignoring MIG features, "mixed" for allocating MIG devices by separate resources. | `"none"` |
+   | `nvidia.disablecorelimit` | String | "true" to disable core limit, "false" to enable core limit. | `"false"` |
+   | `nvidia.defaultMem` | Integer | The default device memory of the current job, in MB. '0' means using 100% of the device memory. | `0` |
+   | `nvidia.defaultCores` | Integer | Percentage of GPU cores reserved for the current job. `0` allows any GPU with enough memory; `100` reserves the entire GPU exclusively. | `0` |
+   | `nvidia.defaultGPUNum` | Integer | Default number of GPUs. If set to `0`, it will be filtered out. If `nvidia.com/gpu` is not set in the pod resource, the webhook checks `nvidia.com/gpumem`, `resource-mem-percentage`, and `nvidia.com/gpucores`, adding `nvidia.com/gpu` with this default value if any of them are set. | `1` |
+   | `nvidia.resourceCountName` | String | vGPU number resource name. | `"nvidia.com/gpu"` |
+   | `nvidia.resourceMemoryName` | String | vGPU memory size resource name. | `"nvidia.com/gpumem"` |
+   | `nvidia.resourceMemoryPercentageName` | String | vGPU memory fraction resource name. | `"nvidia.com/gpumem-percentage"` |
+   | `nvidia.resourceCoreName` | String | vGPU core resource name. | `"nvidia.com/cores"` |
+   | `nvidia.resourcePriorityName` | String | vGPU job priority name. | `"nvidia.com/priority"` |
 
-```
+## Chart Configs: arguments
+
+You can customize your vGPU support by setting the following arguments using `-set`, for example
+
+```bash
 helm install hami hami-charts/hami --set devicePlugin.deviceMemoryScaling=5 ...
 ```
 
-* `devicePlugin.service.schedulerPort:`
-  Integer type, by default: 31998, scheduler webhook service nodePort.
-* `scheduler.defaultSchedulerPolicy.nodeSchedulerPolicy:` String type, default value is "binpack", representing the GPU node scheduling policy. "binpack" means trying to allocate tasks to the same GPU node as much as possible, while "spread" means trying to allocate tasks to different GPU nodes as much as possible.
-* `scheduler.defaultSchedulerPolicy.gpuSchedulerPolicy:` String type, default value is "spread", representing the GPU scheduling policy. "binpack" means trying to allocate tasks to the same GPU as much as possible, while "spread" means trying to allocate tasks to different GPUs as much as possible.
+| Argument | Type | Description | Default |
+|----------|------|-------------|---------|
+| `devicePlugin.service.schedulerPort` | Integer | Scheduler webhook service nodePort. | `31998` |
+| `scheduler.defaultSchedulerPolicy.nodeSchedulerPolicy` | String | GPU node scheduling policy: `"binpack"` allocates jobs to the same GPU node as much as possible. `"spread"` allocates jobs to different GPU nodes as much as possible. | `"binpack"` |
+| `scheduler.defaultSchedulerPolicy.gpuSchedulerPolicy` | String | GPU scheduling policy: `"binpack"` allocates jobs to the same GPU as much as possible. `"spread"` allocates jobs to different GPUs as much as possible. | `"spread"` |
 
 ## Pod configs: annotations
 
-* `nvidia.com/use-gpuuuid:` 
-  String type, ie: "GPU-AAA,GPU-BBB"
-  If set, devices allocated by this pod must be one of UUIDs defined in this string.
-* `nvidia.com/nouse-gpuuuid`
-  String type, ie: "GPU-AAA,GPU-BBB"
-  If set, devices allocated by this pod will NOT in UUIDs defined in this string.
-* `nvidia.com/nouse-gputype:`
-  String type, ie: "Tesla V100-PCIE-32GB, NVIDIA A10"
-  If set, devices allocated by this pod will NOT in types defined in this string.
-* `nvidia.com/use-gputype`
-  String type, ie: "Tesla V100-PCIE-32GB, NVIDIA A10"
-  If set, devices allocated by this pod MUST be one of types defined in this string.
-* `hami.io/node-scheduler-policy`
-  String type, "binpack" or "spread"
-  binpack: the scheduler will try to allocate the pod to used GPU nodes for execution. 
-  spread: the scheduler will try to allocate the pod to different GPU nodes for execution.
-* `hami.io/gpu-scheduler-policy`
-  String type, "binpack" or "spread"
-  binpack: the scheduler will try to allocate the pod to the same GPU card for execution.
-  spread:the scheduler will try to allocate the pod to different GPU card for execution. 
-* `nvidia.com/vgpu-mode`
-  String type, "hami-core" or "mig"
-  Which type of vgpu instance this pod wish to use
-
+| Argument | Type | Description | Example |
+|----------|------|-------------|---------|
+| `nvidia.com/use-gpuuuid` | String | If set, devices allocated by this pod must be one of the UUIDs defined in this string. | `"GPU-AAA,GPU-BBB"` |
+| `nvidia.com/nouse-gpuuuid` | String | If set, devices allocated by this pod will NOT be in the UUIDs defined in this string. | `"GPU-AAA,GPU-BBB"` |
+| `nvidia.com/nouse-gputype` | String | If set, devices allocated by this pod will NOT be in the types defined in this string. | `"Tesla V100-PCIE-32GB, NVIDIA A10"` |
+| `nvidia.com/use-gputype` | String | If set, devices allocated by this pod MUST be one of the types defined in this string. | `"Tesla V100-PCIE-32GB, NVIDIA A10"` |
+| `hami.io/node-scheduler-policy` | String | GPU node scheduling policy: `"binpack"` allocates the pod to used GPU nodes for execution. `"spread"` allocates the pod to different GPU nodes for execution. | `"binpack"` or `"spread"` |
+| `hami.io/gpu-scheduler-policy` | String | GPU scheduling policy: `"binpack"` allocates the pod to the same GPU card for execution. `"spread"` allocates the pod to different GPU cards for execution. | `"binpack"` or `"spread"` |
+| `nvidia.com/vgpu-mode` | String | The type of vGPU instance this pod wishes to use. | `"hami-core"` or `"mig"` |
 
 ## Container configs: env
 
-* `GPU_CORE_UTILIZATION_POLICY:`
-  String type, "default", "force", "disable"
-  default: "default"
-  "default" means the dafault utilization policy
-  "force" means the container will always limit the core utilization below "nvidia.com/gpucores"
-  "disable" means the container will ignore the utilization limitation set by "nvidia.com/gpucores" during task execution
-* `CUDA_DISABLE_CONTROL`
-  Bool type, "true","false"
-  default: false
-  "true" means the HAMi-core will not be used inside container, as a result, there will be no resource isolation and limitaion in that container, only for debug. 
-
-
-  
+| Argument | Type | Description | Default |
+|----------|------|-------------|---------|
+| `GPU_CORE_UTILIZATION_POLICY` | String | Defines GPU core utilization policy: <ul><li>`"default"`: Default utilization policy.</li><li>`"force"`: Limits core utilization below `"nvidia.com/gpucores"`.</li><li>`"disable"`: Ignores the utilization limitation set by `"nvidia.com/gpucores"` during job execution.</li></ul> | `"default"` |
+| `CUDA_DISABLE_CONTROL` | Boolean | If `"true"`, HAMi-core will not be used inside the container, leading to no resource isolation and limitation (for debugging purposes). | `false` |
