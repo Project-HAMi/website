@@ -1,11 +1,10 @@
 ---
-title: 使用独占 GPU
-translated: true
+title: Default vgpu job
 ---
 
-## 职位描述
+## Job description
 
-要分配一个独占的GPU，您只需分配`volcano.sh/vgpu-number`，而无需其他`volcano.sh/xxx`字段，如下例所示：
+vGPU can be requested by both set "volcano.sh/vgpu-number", "volcano.sh/vgpu-cores" and "volcano.sh/vgpu-memory" in resources.limits
 
 ```yaml
 apiVersion: v1
@@ -22,5 +21,6 @@ spec:
     args: ["100000"]
     resources:
       limits:
+        volcano.sh/vgpu-memory: 1024
         volcano.sh/vgpu-number: 1
 ```

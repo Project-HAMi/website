@@ -60,7 +60,7 @@
     "description": "The label for category Optimize Metax GPU scheduling in sidebar docs"
   },
   "sidebar.docs.category.Volcano vgpu support": {
-    "message": "Volcano vGPU 支持",
+    "message": "Volcano vGPU",
     "description": "The label for category Volcano vgpu support in sidebar docs"
   },
   "sidebar.docs.category.Share Ascend devices": {

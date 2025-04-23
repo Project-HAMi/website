@@ -1,11 +1,11 @@
 ---
-title: 默认 vgpu 作业
+title: 使用独占 GPU
 translated: true
 ---
 
-## 职位描述
+## Job 描述
 
-VGPU 可以通过在 resource.limit 中设置 "volcano.sh/vgpu-number"、"volcano.sh/vgpu-cores" 和 "volcano.sh/vgpu-memory" 来请求。
+要分配一个独占的 GPU，您只需分配 `volcano.sh/vgpu-number`，而无需其他 `volcano.sh/xxx` 字段，如下例所示：
 
 ```yaml
 apiVersion: v1
@@ -22,6 +22,5 @@ spec:
     args: ["100000"]
     resources:
       limits:
-        volcano.sh/vgpu-memory: 1024
         volcano.sh/vgpu-number: 1
 ```
