@@ -1,25 +1,27 @@
 ---
-title: How to use volcano vgpu
+title: Use volcano vgpu
 ---
 
-# Volcano vgpu device plugin for Kubernetes
+# Volcano vGPU device plugin for Kubernetes
 
-**Note**:
+:::note
 
 You *DON'T* need to install HAMi when using volcano-vgpu, only use  
-[Volcano vgpu device-plugin](https://github.com/Project-HAMi/volcano-vgpu-device-plugin) is good enough. It can provide device-sharing mechanism for NVIDIA devices managed by volcano.
+[Volcano vGPU device-plugin](https://github.com/Project-HAMi/volcano-vgpu-device-plugin) is good enough. It can provide device-sharing mechanism for NVIDIA devices managed by volcano.
 
-This is based on [Nvidia Device Plugin](https://github.com/NVIDIA/k8s-device-plugin), it uses [HAMi-core](https://github.com/Project-HAMi/HAMi-core) to support hard isolation of GPU card.
+This is based on [Nvidia Device Plugin](https://github.com/NVIDIA/k8s-device-plugin), it uses [HAMi-core](https://github.com/Project-HAMi/HAMi-core) to support hard isolation of GPU cards.
 
-Volcano vgpu is only available in volcano > 1.9
+Volcano vGPU is only available in Volcano > v1.9.
+
+:::
 
 ## Quick Start
 
 ### Configure scheduler
 
-update the scheduler configuration:
+Update the scheduler configuration:
 
-```shell script
+```shell
 kubectl edit cm -n volcano-system volcano-scheduler-configmap
 ```
 
@@ -51,18 +53,21 @@ data:
 ### Enabling GPU Support in Kubernetes
 
 Once you have enabled this option on *all* the GPU nodes you wish to use,
-you can then enable GPU support in your cluster by deploying the following Daemonset:
+you can then enable GPU support in your cluster by deploying the following DaemonSet:
 
-```
-$ kubectl create -f https://raw.githubusercontent.com/Project-HAMi/volcano-vgpu-device-plugin/main/volcano-vgpu-device-plugin.yml
+```shell
+kubectl create -f https://raw.githubusercontent.com/Project-HAMi/volcano-vgpu-device-plugin/main/volcano-vgpu-device-plugin.yml
 ```
 
 ### Verify environment is ready
 
 Check the node status, it is ok if `volcano.sh/vgpu-number` is included in the allocatable resources.
 
-```shell script
-$ kubectl get node {node name} -oyaml
+```shell
+kubectl get node {node name} -oyaml
+```
+
+```yaml
 ...
 status:
   addresses:
@@ -89,12 +94,12 @@ status:
     volcano.sh/gpu-number: "10"   # vGPU resource
 ```
 
-### Running VGPU Jobs
+### Running vGPU Jobs
 
-VGPU can be requested by both set "volcano.sh/vgpu-number" , "volcano.sh/vgpu-cores" and "volcano.sh/vgpu-memory" in resource.limit
+vGPU can be requested by both set "volcano.sh/vgpu-number" , "volcano.sh/vgpu-cores" and "volcano.sh/vgpu-memory" in resources.limits.
 
-```shell script
-$ cat <<EOF | kubectl apply -f -
+```shell
+cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
 metadata:
@@ -109,21 +114,24 @@ spec:
         limits:
           volcano.sh/vgpu-number: 2 # requesting 2 gpu cards
           volcano.sh/vgpu-memory: 3000 # (optinal)each vGPU uses 3G device memory
-          volcano.sh/vgpu-cores: 50 # (optional)each vGPU uses 50% core  
+          volcano.sh/vgpu-cores: 50 # (optional)each vGPU uses 50% core
 EOF
 ```
 
 You can validate device memory using nvidia-smi inside container:
 
-> **WARNING:** *if you don't request GPUs when using the device plugin with NVIDIA images all
-> the GPUs on the machine will be exposed inside your container.
-> The number of vgpu used by a container can not exceed the number of gpus on that node.*
+:::warning
+
+If you don't request GPUs when using the device plugin with NVIDIA images, all
+the GPUs on the machine will be exposed inside your container.
+The number of vgpu used by a container can not exceed the number of gpus on that node.
+
+:::
 
 ### Monitor
 
-volcano-scheduler-metrics records every GPU usage and limitation, visit the following address to get these metrics.
+volcano-scheduler-metrics records all GPU usage and limits. Visit the following address to get the metrics.
 
-```
+```shell
 curl {volcano scheduler cluster ip}:8080/metrics
 ```
-

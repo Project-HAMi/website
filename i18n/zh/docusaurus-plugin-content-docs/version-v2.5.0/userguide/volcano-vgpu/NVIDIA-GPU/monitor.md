@@ -7,7 +7,7 @@ translated: true
 
 volcano-scheduler-metrics 记录每个 GPU 的使用情况和限制，访问以下地址获取这些指标。
 
-```
+```shell
 curl {volcano scheduler cluster ip}:8080/metrics
 ```
 

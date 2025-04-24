@@ -164,20 +164,20 @@ module.exports = {
         },
         {
           "type": "category",
-          "label": "Volcano vgpu support",
+          "label": "Volcano vGPU",
           "items": [
             {
               "type": "category",
               "label": "NVIDIA GPU",
               "items": [
-                "userguide/volcano-vgpu/NVIDIA GPU/how-to-use-volcano-vgpu",
-                "userguide/volcano-vgpu/NVIDIA GPU/monitor",
+                "userguide/volcano-vgpu/NVIDIA-GPU/how-to-use-volcano-vgpu",
+                "userguide/volcano-vgpu/NVIDIA-GPU/monitor",
                 {
                   "type": "category",
                   "label": "Examples",
                   "items": [
-                    "userguide/volcano-vgpu/NVIDIA GPU/examples/default_use",
-                    "userguide/volcano-vgpu/NVIDIA GPU/examples/use_exclusive_gpu"
+                    "userguide/volcano-vgpu/NVIDIA-GPU/examples/default_use",
+                    "userguide/volcano-vgpu/NVIDIA-GPU/examples/use_exclusive_gpu"
                   ] 
                 }
               ]
