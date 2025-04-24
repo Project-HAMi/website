@@ -12,4 +12,6 @@ The table below lists the devices supported by HAMi:
 | NPU | Huawei Ascend | 910B, 910B3, 310P | ✅ | ✅ | ❌ |
 | GPU | Iluvatar | All | ✅ | ✅ | ❌ |
 | GPU | Mthreads | MTT S4000 | ✅ | ✅ | ❌ |
+| GPU | Metax    | MXC500 | ✅ | ✅ | ❌ |
+| GCU | Enflame  | S60    | ✅ | ✅ | ❌ |
 | DPU | Teco | Checking | In progress | In progress | ❌ |
