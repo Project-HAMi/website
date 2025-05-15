@@ -1,4 +1,46 @@
 {
+  "archlitchi": {
+    "alias": "archlitchi",
+    "name": "archlitchi",
+    "url": "https://github.com/archlitchi",
+    "imageURL": "https://github.com/archlitchi.png"
+  },
+  "dependabot": {
+    "alias": "dependabot",
+    "name": "dependabot",
+    "url": "https://github.com/dependabot",
+    "imageURL": "https://github.com/dependabot.png"
+  },
+  "flpanbin": {
+    "alias": "flpanbin",
+    "name": "flpanbin",
+    "url": "https://github.com/flpanbin",
+    "imageURL": "https://github.com/flpanbin.png"
+  },
+  "HJJ256": {
+    "alias": "HJJ256",
+    "name": "HJJ256",
+    "url": "https://github.com/HJJ256",
+    "imageURL": "https://github.com/HJJ256.png"
+  },
+  "Nimbus318": {
+    "alias": "Nimbus318",
+    "name": "Nimbus318",
+    "url": "https://github.com/Nimbus318",
+    "imageURL": "https://github.com/Nimbus318.png"
+  },
+  "Shouren": {
+    "alias": "Shouren",
+    "name": "Shouren",
+    "url": "https://github.com/Shouren",
+    "imageURL": "https://github.com/Shouren.png"
+  },
+  "yxxhero": {
+    "alias": "yxxhero",
+    "name": "yxxhero",
+    "url": "https://github.com/yxxhero",
+    "imageURL": "https://github.com/yxxhero.png"
+  },
   "chinaran": {
     "alias": "chinaran",
     "name": "chinaran",
@@ -10,12 +52,6 @@
     "name": "elrondwong",
     "url": "https://github.com/elrondwong",
     "imageURL": "https://github.com/elrondwong.png"
-  },
-  "flpanbin": {
-    "alias": "flpanbin",
-    "name": "flpanbin",
-    "url": "https://github.com/flpanbin",
-    "imageURL": "https://github.com/flpanbin.png"
   },
   "for800000": {
     "alias": "for800000",
@@ -112,11 +148,5 @@
     "name": "yt-huang",
     "url": "https://github.com/yt-huang",
     "imageURL": "https://github.com/yt-huang.png"
-  },
-  "yxxhero": {
-    "alias": "yxxhero",
-    "name": "yxxhero",
-    "url": "https://github.com/yxxhero",
-    "imageURL": "https://github.com/yxxhero.png"
   }
 }

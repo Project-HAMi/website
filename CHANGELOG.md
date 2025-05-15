@@ -1,4 +1,52 @@
-# Docusaurus Changelog
+# Changelog
+
+## v2.5.1 (2025-05-06)
+
+#### :rocket: Major features
+
+- No major features in this release.
+
+#### :bug: Major bug fixes:
+
+- Fix: Update handling of version strings in Helm template and helpers.tpl by ([@HJJ256](https://github.com/HJJ256)) in [#845](https://github.com/Project-HAMi/HAMi/pull/845)
+- fix: Set passDeviceSpecsEnabled to false by default in device plugin by ([@Nimbus318](https://github.com/Nimbus318)) in [#872](https://github.com/Project-HAMi/HAMi/pull/872)
+- fix: scheduler ignore KUBECONFIG env even if this environment variable is set [@Shouren](https://github.com/Shouren) in [#681](https://github.com/Project-HAMi/HAMi/pull/681)
+- fix: correct device filter initialization order by ([@Nimbus318](https://github.com/Nimbus318)) in [#857](https://github.com/Project-HAMi/HAMi/pull/857)
+- fix parseNvidiaNumaInfo index out of range by ([@flpanbin](https://github.com/flpanbin)) in [#889](https://github.com/Project-HAMi/HAMi/pull/889)
+- Fix cambricon pods not been recognized by HAMi scheduler by ([@archlitchi](https://github.com/archlitchi)) in [#947](https://github.com/Project-HAMi/HAMi/pull/947)
+- fix ubuntu base image in Dockerfile.withlib by ([@flpanbin](https://github.com/flpanbin)) in [#944](https://github.com/Project-HAMi/HAMi/pull/944)
+- fix: Add error handling for nvml.Init in NvidiaDevicePlugin by ([@yxxhero](https://github.com/yxxhero)) in [#982](https://github.com/Project-HAMi/HAMi/pull/982)
+- Fix device memory count error on cuMallocAsync by ([@archlitchi](https://github.com/archlitchi)) in [#1029](https://github.com/Project-HAMi/HAMi/pull/1029)
+
+#### :memo: What's Changed
+
+### 🔨 Other Changes
+
+- Release v2.5 by ([@archlitchi](https://github.com/archlitchi)) in [#1034](https://github.com/Project-HAMi/HAMi/pull/1034)
+- Update tag to v2.5.1 by ([@archlitchi](https://github.com/archlitchi)) in [#1035](https://github.com/Project-HAMi/HAMi/pull/1035)
+- Fix: Update handling of version strings in Helm template and helpers.tpl by ([@HJJ256](https://github.com/HJJ256)) in [#845](https://github.com/Project-HAMi/HAMi/pull/845)
+- Update libvgpu.so by ([@archlitchi](https://github.com/archlitchi)) in [#876](https://github.com/Project-HAMi/HAMi/pull/876)
+- fix: Set passDeviceSpecsEnabled to false by default in device plugin by ([@Nimbus318](https://github.com/Nimbus318)) in [#872](https://github.com/Project-HAMi/HAMi/pull/872)
+- fix: scheduler ignore KUBECONFIG env even if this environment variable is set [@Shouren](https://github.com/Shouren) in [#681](https://github.com/Project-HAMi/HAMi/pull/681)
+- fix: correct device filter initialization order by ([@Nimbus318](https://github.com/Nimbus318)) in [#857](https://github.com/Project-HAMi/HAMi/pull/857)
+- fix parseNvidiaNumaInfo index out of range by ([@flpanbin](https://github.com/flpanbin)) in [#889](https://github.com/Project-HAMi/HAMi/pull/889)
+- Fix cambricon pods not been recognized by HAMi scheduler by ([@archlitchi](https://github.com/archlitchi)) in [#947](https://github.com/Project-HAMi/HAMi/pull/947)
+- fix ubuntu base image in Dockerfile.withlib by ([@flpanbin](https://github.com/flpanbin)) in [#944](https://github.com/Project-HAMi/HAMi/pull/944)
+- fix: Add error handling for nvml.Init in NvidiaDevicePlugin by ([@yxxhero](https://github.com/yxxhero)) in [#982](https://github.com/Project-HAMi/HAMi/pull/982)
+- Fix device memory count error on cuMallocAsync by ([@archlitchi](https://github.com/archlitchi)) in [#1029](https://github.com/Project-HAMi/HAMi/pull/1029)
+- Bump golang.org/x/net from 0.26.0 to 0.33.0 by ([@dependabot](https://github.com/dependabot)) in [#839](https://github.com/Project-HAMi/HAMi/pull/839)
+
+#### Committers: Contributors
+
+- archlitchi ([@archlitchi](https://github.com/archlitchi))
+- HJJ256 ([@HJJ256](https://github.com/HJJ256))
+- Nimbus318 ([@Nimbus318](https://github.com/Nimbus318))
+- Shouren ([@Shouren](https://github.com/Shouren))
+- flpanbin ([@flpanbin](https://github.com/flpanbin))
+- yxxhero ([@yxxhero](https://github.com/yxxhero))
+- dependabot ([@dependabot](https://github.com/dependabot))
+
+**Full Changelog**: https://github.com/Project-HAMi/HAMi/compare/v2.5.0...v2.5.1
 
 ## v2.5.0 (2025-02-06)
 
@@ -34,7 +82,7 @@
 - docs(issue-tmpl): add FAQ link to issue templates by ([@Nimbus318](https://github.com/Nimbus318)) in [#647](https://github.com/Project-HAMi/HAMi/pull/647)
 - fix: filter device registry to node by ([@lengrongfu](https://github.com/lengrongfu)) in [#639](https://github.com/Project-HAMi/HAMi/pull/639)
 - Add self-hosted runner by ([@archlitchi](https://github.com/archlitchi)) in [#659](https://github.com/Project-HAMi/HAMi/pull/659)
-- fix-example-yaml  by ([@WQL782795](https://github.com/WQL782795)) in [#667](https://github.com/Project-HAMi/HAMi/pull/667)
+- fix-example-yaml by ([@WQL782795](https://github.com/WQL782795)) in [#667](https://github.com/Project-HAMi/HAMi/pull/667)
 - update docs by ([@yangshiqi](https://github.com/yangshiqi)) in [#668](https://github.com/Project-HAMi/HAMi/pull/668)
 - add ut for ascend by ([@shijinye](https://github.com/shijinye)) in [#664](https://github.com/Project-HAMi/HAMi/pull/664)
 - optimization map init in test by ([@lengrongfu](https://github.com/lengrongfu)) in [#678](https://github.com/Project-HAMi/HAMi/pull/678)
@@ -60,7 +108,7 @@
 - add ut for github.com/Project-HAMi/HAMi/pkg/scheduler/pod.go by ([@yt-huang](https://github.com/yt-huang)) in [#673](https://github.com/Project-HAMi/HAMi/pull/673)
 - Add design document to 'dynamic-mig' feature by ([@archlitchi](https://github.com/archlitchi)) in [#725](https://github.com/Project-HAMi/HAMi/pull/725)
 - fix(doc): fix a typo and resolve markdown warnings in the tasklist by ([@elrondwong](https://github.com/elrondwong)) in [#724](https://github.com/Project-HAMi/HAMi/pull/724)
-- add ut for  pkg/util/nodelock/nodelock.go by ([@learner0810](https://github.com/learner0810)) in [#719](https://github.com/Project-HAMi/HAMi/pull/719)
+- add ut for pkg/util/nodelock/nodelock.go by ([@learner0810](https://github.com/learner0810)) in [#719](https://github.com/Project-HAMi/HAMi/pull/719)
 - test: add ut for pkg/version/version.go by ([@Penguin-zlh](https://github.com/Penguin-zlh)) in [#677](https://github.com/Project-HAMi/HAMi/pull/677)
 - Update on mig mode by ([@archlitchi](https://github.com/archlitchi)) in [#726](https://github.com/Project-HAMi/HAMi/pull/726)
 - Update documents for config & config_cn by ([@archlitchi](https://github.com/archlitchi)) in [#729](https://github.com/Project-HAMi/HAMi/pull/729)
@@ -83,11 +131,11 @@
 - Optimize the time format layout by ([@learner0810](https://github.com/learner0810)) in [#741](https://github.com/Project-HAMi/HAMi/pull/741)
 - fix: nvidia-device-plugin no version info by ([@chaunceyjiang](https://github.com/chaunceyjiang)) in [#779](https://github.com/Project-HAMi/HAMi/pull/779)
 - HAMi supports e2e by ([@Rei1010](https://github.com/Rei1010)) in [#775](https://github.com/Project-HAMi/HAMi/pull/775)
-- Proposal:  enable E2E test by ([@Rei1010](https://github.com/Rei1010)) in [#633](https://github.com/Project-HAMi/HAMi/pull/633)
+- Proposal: enable E2E test by ([@Rei1010](https://github.com/Rei1010)) in [#633](https://github.com/Project-HAMi/HAMi/pull/633)
 - add ut for device/iluvatar by ([@shijinye](https://github.com/shijinye)) in [#795](https://github.com/Project-HAMi/HAMi/pull/795)
 - add ut for device/hygon by ([@shijinye](https://github.com/shijinye)) in [#787](https://github.com/Project-HAMi/HAMi/pull/787)
 - add ut for pkg/monitor/nvidia/v1 by ([@shijinye](https://github.com/shijinye)) in [#780](https://github.com/Project-HAMi/HAMi/pull/780)
-- refactor(logging): enhance log messages for device resource counting  by ([@haitwang-cloud](https://github.com/haitwang-cloud)) in [#778](https://github.com/Project-HAMi/HAMi/pull/778)
+- refactor(logging): enhance log messages for device resource counting by ([@haitwang-cloud](https://github.com/haitwang-cloud)) in [#778](https://github.com/Project-HAMi/HAMi/pull/778)
 - Enrich pod health check by ([@Rei1010](https://github.com/Rei1010)) in [#801](https://github.com/Project-HAMi/HAMi/pull/801)
 - docs: fix broken link by ([@lixd](https://github.com/lixd)) in [#802](https://github.com/Project-HAMi/HAMi/pull/802)
 - Optimize the E2E execution logic by ([@Rei1010](https://github.com/Rei1010)) in [#803](https://github.com/Project-HAMi/HAMi/pull/803)
@@ -97,7 +145,7 @@
 - fix: Resolve formatting issue in ConfigMap causing display anomalies by ([@lixd](https://github.com/lixd)) in [#814](https://github.com/Project-HAMi/HAMi/pull/814)
 - [docs] Update ascend910b-support.md by ([@windsonsea](https://github.com/windsonsea)) in [#816](https://github.com/Project-HAMi/HAMi/pull/816)
 - Refine metrics logs by ([@haitwang-cloud](https://github.com/haitwang-cloud)) in [#817](https://github.com/Project-HAMi/HAMi/pull/817)
-- Update mig-related logics and refine logs  by ([@archlitchi](https://github.com/archlitchi)) in [#833](https://github.com/Project-HAMi/HAMi/pull/833)
+- Update mig-related logics and refine logs by ([@archlitchi](https://github.com/archlitchi)) in [#833](https://github.com/Project-HAMi/HAMi/pull/833)
 - Add 910B4 config to device-configmap for ascend by ([@lijm87](https://github.com/lijm87)) in [#828](https://github.com/Project-HAMi/HAMi/pull/828)
 - [docs] fix: glibc version requirement in README by ([@chinaran](https://github.com/chinaran)) in [#826](https://github.com/Project-HAMi/HAMi/pull/826)
 - Update HAMi-core for v2.5.0 by ([@archlitchi](https://github.com/archlitchi)) in [#834](https://github.com/Project-HAMi/HAMi/pull/834)
