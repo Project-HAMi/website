@@ -15,7 +15,7 @@ translated: true
 
 这是一个 GPU 集群，拥有两个节点，以下故事以此集群为前提。
 
-![scheduler-policy-story.png](http://localhost:3000/assets/images/scheduler-policy-story-c8b8a69578c15360f5811f8274ef4de6.png)
+![scheduler-policy-story.png](https://github.com/Project-HAMi/HAMi/raw/master/docs/develop/imgs/scheduler-policy-story.png)
 
 #### 故事 1
 
@@ -82,7 +82,7 @@ GPU spread，尽可能使用不同的 GPU 卡，例如：
 
 ### Node-scheduler-policy
 
-![node-shceduler-policy-demo.png](http://localhost:3000/assets/images/node-shceduler-policy-demo-d1de7f7b138c241dd5ed981c1376874b.png)
+![node-shceduler-policy-demo.png](https://github.com/Project-HAMi/HAMi/raw/master/docs/develop/imgs/node-shceduler-policy-demo.png)
 
 #### Binpack
 
@@ -128,7 +128,7 @@ Node2 score: ((1+2)/4) * 10= 7.5
 
 ### GPU-scheduler-policy
 
-![gpu-scheduler-policy-demo.png](http://localhost:3000/assets/images/gpu-scheduler-policy-demo-f83f2c9f01fa4e517a65f1d352fbc1d1.png)
+![gpu-scheduler-policy-demo.png](https://github.com/Project-HAMi/HAMi/raw/master/docs/develop/imgs/gpu-scheduler-policy-demo.png)
 
 #### Binpack
 
