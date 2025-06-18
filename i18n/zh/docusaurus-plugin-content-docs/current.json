@@ -66,5 +66,13 @@
   "sidebar.docs.category.Share Ascend devices": {
     "message": "共享昇腾 GPU 设备",
     "description": "The label for category Share Ascend devices in sidebar docs"
+  },
+  "sidebar.docs.category.Share Illuvatar GPU devices": {
+    "message": "共享天数 GPU 设备",
+    "description": "The label for category Share Illuvatar GPU devices in sidebar docs"
+  },
+  "sidebar.docs.category.Share Enflame GCU devices": {
+    "message": "共享燧原 GCU 设备",
+    "description": "The label for category Share Enflame GCU devices in sidebar docs"
   }
 }

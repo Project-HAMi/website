@@ -129,9 +129,32 @@ module.exports = {
         },
         {
           "type": "category",
+          "label": "Share Illuvatar GPU devices",
+          "items": [
+            "userguide/Iluvatar-device/enable-illuvatar-gpu-sharing",
+            {
+              "type": "category",
+              "label": "Examples",
+              "items": [
+                "userguide/Iluvatar-device/examples/allocate-device-core-and-memory-to-container",
+                "userguide/Iluvatar-device/examples/allocate-exclusive"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "category",
+          "label": "Share Enflame GCU devices",
+          "items": [
+            "userguide/Enflame-device/enable-enflame-gcu-sharing",
+          ]
+        },
+        {
+          "type": "category",
           "label": "Optimize Metax GPU scheduling",
           "items": [
             "userguide/Metax-device/enable-metax-gpu-schedule",
+            "userguide/Metax-device/enable-metax-gpu-sharing",
             "userguide/Metax-device/specify-binpack-task",
             "userguide/Metax-device/specify-spread-task",
             {
@@ -210,7 +233,10 @@ module.exports = {
     {
       "type": "doc",
       "id": "troubleshooting/troubleshooting"
+    },
+    {
+      "type": "doc",
+      "id": "FAQ/FAQ"
     }
   ]
 }
-
