@@ -7,7 +7,7 @@ translated: true
 
 当在单个服务器上配置多个 GPU 时，GPU 卡根据它们是否连接到同一个 PCIe 交换机或 MetaXLink 而存在近远关系。这在服务器上的所有卡之间形成了一个拓扑，如下图所示：
 
-![img](../../resources/metax_topo.jpg)
+![img](../../../resources/metax_topo.jpg)
 
 用户作业请求一定数量的 metax-tech.com/gpu 资源，Kubernetes 将 pod 调度到适当的节点。gpu-device 进一步处理在资源节点上分配剩余资源的逻辑，遵循以下标准：
 1. MetaXLink 在两种情况下优先于 PCIe 交换机：
@@ -16,11 +16,11 @@ translated: true
 
 2. 使用 `node-scheduler-policy=spread` 时，尽可能将 Metax 资源分配在同一个 Metaxlink 或 Paiswich 下，如下图所示：
 
-![img](../../resources/metax_spread.jpg)
+![img](../../../resources/metax_spread.jpg)
 
 3. 使用 `node-scheduler-policy=binpack` 时，分配 GPU 资源，以尽量减少对 MetaxXLink 拓扑的破坏，如下图所示：
 
-![img](../../resources/metax_binpack.jpg)
+![img](../../../resources/metax_binpack.jpg)
 
 ## 重要说明
 
@@ -41,9 +41,9 @@ translated: true
 
 ## 运行 Metax 作业
 
-现在可以通过容器使用 `metax-tech.com/gpu` 资源类型请求 Mthreads GPU：
+现在可以通过容器使用 `metax-tech.com/gpu` 资源类型请求 Metax GPU：
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -57,7 +57,7 @@ spec:
       command: ["sleep","infinity"]
       resources:
         limits:
-          metax-tech.com/gpu: 1 # 请求 1 个 vGPU
+          metax-tech.com/gpu: 1 # 请求 1 个 GPU
 ```
 
-> **注意2：** *您可以在 examples 文件夹中找到更多示例。
+> **注意：** 您可以在 examples 文件夹中找到更多示例。

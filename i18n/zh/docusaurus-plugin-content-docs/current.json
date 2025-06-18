@@ -74,5 +74,13 @@
   "sidebar.docs.category.Share Enflame GCU devices": {
     "message": "共享燧原 GCU 设备",
     "description": "The label for category Share Enflame GCU devices in sidebar docs"
+  },
+  "sidebar.docs.category.Share Metax GPU devices": {
+    "message": "共享沐曦 GPU 设备",
+    "description": "The label for category Share Metax GPU devices in sidebar docs"
+  },
+  "sidebar.docs.category.Metax GPU topology-aware scheduling": {
+    "message": "Metax GPU 拓扑感知调度",
+    "description": "The label for category Metax GPU topology-aware scheduling in sidebar docs"
   }
 }
