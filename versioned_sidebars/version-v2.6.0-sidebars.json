@@ -153,17 +153,37 @@
           "type": "category",
           "label": "Optimize Metax GPU scheduling",
           "items": [
-            "userguide/Metax-device/enable-metax-gpu-schedule",
-            "userguide/Metax-device/enable-metax-gpu-sharing",
-            "userguide/Metax-device/specify-binpack-task",
-            "userguide/Metax-device/specify-spread-task",
             {
               "type": "category",
-              "label": "Examples",
+              "label": "Share Metax GPU devices",
               "items": [
-                "userguide/Metax-device/examples/default-use",
-                "userguide/Metax-device/examples/allocate-binpack",
-                "userguide/Metax-device/examples/allocate-spread"
+                "userguide/Metax-device/Metax-sGPU/enable-metax-gpu-sharing",
+                {
+                  "type": "category",
+                  "label": "Examples",
+                  "items": [
+                    "userguide/Metax-device/Metax-sGPU/examples/default-use",
+                    "userguide/Metax-device/Metax-sGPU/examples/allocate-exclusive"
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "category",
+              "label": "Metax GPU topology-aware scheduling",
+              "items": [
+                "userguide/Metax-device/Metax-GPU/enable-metax-gpu-schedule",
+                "userguide/Metax-device/Metax-GPU/specify-binpack-task",
+                "userguide/Metax-device/Metax-GPU/specify-spread-task",
+                {
+                  "type": "category",
+                  "label": "Examples",
+                  "items": [
+                    "userguide/Metax-device/Metax-GPU/examples/default-use",
+                    "userguide/Metax-device/Metax-GPU/examples/allocate-binpack",
+                    "userguide/Metax-device/Metax-GPU/examples/allocate-spread"
+                  ]
+                }
               ]
             }
           ]
