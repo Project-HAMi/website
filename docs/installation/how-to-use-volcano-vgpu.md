@@ -1,5 +1,5 @@
 ---
-title: Use volcano vgpu
+title: Use Volcano vGPU
 ---
 
 # Volcano vGPU device plugin for Kubernetes
@@ -7,7 +7,7 @@ title: Use volcano vgpu
 :::note
 
 You *DON'T* need to install HAMi when using volcano-vgpu, only use  
-[Volcano vGPU device-plugin](https://github.com/Project-HAMi/volcano-vgpu-device-plugin) is good enough. It can provide device-sharing mechanism for NVIDIA devices managed by volcano.
+[Volcano vGPU device-plugin](https://github.com/Project-HAMi/volcano-vgpu-device-plugin) is good enough. It can provide device-sharing mechanism for NVIDIA devices managed by Volcano.
 
 This is based on [Nvidia Device Plugin](https://github.com/NVIDIA/k8s-device-plugin), it uses [HAMi-core](https://github.com/Project-HAMi/HAMi-core) to support hard isolation of GPU cards.
 
@@ -96,7 +96,7 @@ status:
 
 ### Running vGPU Jobs
 
-vGPU can be requested by both set "volcano.sh/vgpu-number" , "volcano.sh/vgpu-cores" and "volcano.sh/vgpu-memory" in resources.limits.
+vGPU can be requested by both set "volcano.sh/vgpu-number", "volcano.sh/vgpu-cores" and "volcano.sh/vgpu-memory" in resources.limits.
 
 ```shell
 cat <<EOF | kubectl apply -f -
@@ -124,7 +124,7 @@ You can validate device memory using nvidia-smi inside container:
 
 If you don't request GPUs when using the device plugin with NVIDIA images, all
 the GPUs on the machine will be exposed inside your container.
-The number of vgpu used by a container can not exceed the number of gpus on that node.
+The number of vGPUs used by a container can not exceed the number of GPUs on that node.
 
 :::
 
