@@ -2,7 +2,7 @@
 title: Online Installation from Helm (Recommended)
 ---
 
-The best practice to deploy HAMi is using helm.
+The recommended way to deploy HAMi is via Helm.
 
 ## Add HAMi repo
 
@@ -14,15 +14,15 @@ helm repo add hami-charts https://project-hami.github.io/HAMi/
 
 ## Get your Kubernetes version
 
-A Kubernetes version is required for proper installation. You can retrieve it using the following command:
+A Kubernetes version is required for proper installation. You can retrieve your Kubernetes server version with:
 
 ```bash
-kubectl version
+kubectl version --short
 ```
 
 ## Installation
 
-Ensure the Kubernetes scheduler image version matches your Kubernetes server version.
+Ensure the `scheduler.kubeScheduler.imageTag` matches your Kubernetes server version.
 For instance, if your cluster server is v1.16.8, use the following command to deploy:
 
 ```bash
