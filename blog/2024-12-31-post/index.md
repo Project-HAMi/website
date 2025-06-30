@@ -1,136 +1,135 @@
 ---
 layout: post
-title: HAMI项目GPU POD调度流程源码走读
+title: Source Code Walkthrough of the GPU Pod Scheduling Process in HAMI
 catalog: true
 tag: [Kubernetes, GPU, AI]
+author: elrond.wang
 ---
 
-<!-- TOC depthFrom:2 orderedList:true -->
-
-- [1. 概述](#1-概述)
-- [2. 调度流程](#2-调度流程)
-- [3. Pod调度流程](#3-pod调度流程)
-  - [常见的几个问题排查及处理](#常见的几个问题排查及处理)
+- [Scheduling Process](#scheduling-process)
+- [Pod Scheduling Process](#pod-scheduling-process)
+  - [Common Issue Troubleshooting](#common-issue-troubleshooting)
     - [Pod UnexpectedAdmissionError](#pod-unexpectedadmissionerror)
-    - [调度问题](#调度问题)
-  - [3.1. MutatingWebhook](#31-mutatingwebhook)
-    - [3.1.1. webhook配置](#311-webhook配置)
-    - [3.1.2. webhook Server实现](#312-webhook-server实现)
-  - [3.2. 拓展k8s scheduler](#32-拓展k8s-scheduler)
-    - [3.2.1. KubeSchedulerConfiguration](#321-kubeschedulerconfiguration)
-    - [3.2.2. 拓展调度器Http Server启动](#322-拓展调度器http-server启动)
-    - [3.2.3. filter实现](#323-filter实现)
-      - [3.2.3.1. 获取节点资源信息](#3231-获取节点资源信息)
-        - [3.2.3.1.1. Node缓存](#32311-node缓存)
-        - [3.2.3.1.2. device](#32312-device)
-      - [3.2.3.2. 根据节点资源信息打分](#3232-根据节点资源信息打分)
-      - [3.2.3.3. 计算出节点的分数](#3233-计算出节点的分数)
-      - [3.2.3.4. 计算每个容器对应的设备的分数](#3234-计算每个容器对应的设备的分数)
-    - [3.2.4. binding实现](#324-binding实现)
-  - [3.3. Node将设备情况写入node annotation](#33-node将设备情况写入node-annotation)
-    - [3.3.1. 启动device-plugin服务](#331-启动device-plugin服务)
-    - [3.3.2. 启动plugin](#332-启动plugin)
-    - [3.3.3. nvidia插件的实现](#333-nvidia插件的实现)
-- [4. 参考](#4-参考)
+    - [Scheduling Issues](#scheduling-issues)
+  - [MutatingWebhook](#mutatingwebhook)
+    - [Webhook Configuration](#webhook-configuration)
+    - [Webhook Server Implementation](#webhook-server-implementation)
+  - [Extending the Kubernetes Scheduler](#extending-the-kubernetes-scheduler)
+    - [KubeSchedulerConfiguration](#kubeschedulerconfiguration)
+    - [Starting the Extended Scheduler HTTP Server](#starting-the-extended-scheduler-http-server)
+    - [filter implementation](#filter-implementation)
+      - [Retrieving Node Resource Information](#retrieving-node-resource-information)
+        - [Node Cache](#node-cache)
+        - [device](#device)
+      - [Scoring Based on Node Resource Information](#scoring-based-on-node-resource-information)
+      - [Calculating Node Scores](#calculating-node-scores)
+      - [Calculating Device Scores for Each Container](#calculating-device-scores-for-each-container)
+    - [Binding Implementation](#binding-implementation)
+  - [Node Writes Device Information to Node Annotation](#node-writes-device-information-to-node-annotation)
+    - [Starting the Device-Plugin Service](#starting-the-device-plugin-service)
+    - [Starting the Plugin](#starting-the-plugin)
+    - [Implement nvidia plugins](#implement-nvidia-plugins)
+- [References](#references)
 
-<!-- /TOC -->
+During the use of HAMi, it is common for Pods to be created and remain in a Pending state, particularly due to the following two issues:
 
-## Author： 
-
-@elrond.wang
-
-## 1. 概述
-
-使用hami的过程中经常会出现Pod被创建出来Pending的问题，犹以如下两个问题为著
-
-- Pod UnexpectedAdmissionError
+- Pod UnexpectedAdmissionError  
 - Pod Pending
 
-介于此，展开这部分代码的粗略走读，旨在说明调度过程中各组件的交互，以及资源的计算方式，其他细节会有所遗漏
+This section provides a rough walkthrough of the related code to explain the interactions between components during scheduling and how resources are calculated. Other details may be omitted.
 
-## 2. 调度流程
+## Scheduling Process
 
-看代码之前可以先看下官方文档说明，大体上比较明确 ![flowchart](https://github.com/Project-HAMi/HAMi/blob/master/docs/develop/imgs/flowchart.jpeg?raw=true)
+Before diving into the code, it's helpful to first check the official documentation, which provides a clear overview:
 
-细节上可以分为三个阶段
+![flowchart](https://github.com/Project-HAMi/HAMi/blob/master/docs/develop/imgs/flowchart.jpeg?raw=true)
 
-- 准备阶段: 图上可以看出有一些依赖条件，例如要有mutating webhook， device-plugin等等，所以这个阶段主要分析下依赖条件的准备， 只有在服务首次启动时需要
+The process can be broken down into three phases:
 
-![pod创建前的准备工作](https://github.com/elrondwong/elrond.wang/raw/master/img/posts/Hami-GPU-Pod-Scheduler/%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C.png)
+- **Preparation Phase**: From the diagram, we can see some prerequisites, such as the need for a Mutating Webhook, device-plugin, etc.  
+  This phase primarily analyzes the preparation of dependencies, which are only needed during the initial service startup.
 
-- pod调度阶段: 准备过程完成之后pod进入处理流程，完成调度
-- Pod启动阶段: pod如何与node上的gpu进行交互等
+  ![Preparation before Pod creation](https://github.com/elrondwong/elrond.wang/raw/master/img/posts/Hami-GPU-Pod-Scheduler/%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C.png)
 
-本文会着重分析准备阶段，主要内容为调度分析
+- **Pod Scheduling Phase**: After preparation, the Pod enters the scheduling process.
+- **Pod Startup Phase**: How the Pod interacts with the GPU on the Node.
 
-## 3. Pod调度流程
+This article focuses on analyzing the preparation phase, mainly around the scheduling logic.
 
-- 用户发送创建Pod请求到kube-apiserver
-- 触发adminssion webhook，更新pod中schedulerName
-- kube-apiserver根据schedulerName将请求发送给调度器处理
-- 调度器处理
-  - 收集Node device信息 -- 通过node annotation收集，数据来自daemonSet `hami-device-plugin` 定时写入
-  - 根据设备信息以及pod的limit信息进行打分，选出最高分的node
-  - 将pod和node进行绑定完成绑定，进行pod创建
+## Pod Scheduling Process
 
-### 常见的几个问题排查及处理
+- The user sends a request to create a Pod to the kube-apiserver.
+- The Admission Webhook is triggered, updating the `schedulerName` in the Pod.
+- The kube-apiserver sends the request to the scheduler based on the `schedulerName`.
+- The scheduler processes the request:
+  - Collects node device information — collected via node annotations, with data periodically written by the `hami-device-plugin` DaemonSet.
+  - Scores nodes based on device information and the Pod’s resource limits, selecting the highest-scoring node.
+  - Binds the Pod to the node and completes the Pod creation.
+
+### Common Issue Troubleshooting
 
 #### Pod UnexpectedAdmissionError
 
-pod创建状态显示 `UnexpectedAdmissionError`
+The Pod creation status shows `UnexpectedAdmissionError`.
 
-了解流程之后，可以知道这个错误代表kube-apiserver调用拓展调度器失败，可能有两个原因，其他情况具体排查需要看 kube-apiserver日志
+From the process, this error indicates the kube-apiserver failed to call the extended scheduler. There are two common causes; other cases require checking the kube-apiserver logs.
 
-- 通信异常： 从kube-apiserver到拓展调度器的https端口不通，有几种可能
-  - dns无法解析
-  - 跨节点通信有问题
-  - 拓展调度器的服务异常
-- TLS验证错误: 一般会显示 `webhook x509: certificate signed by unknown authority`，helmchart部署时有一个 `jobs.batch` `hami-vgpu.admission-pathch`, 如果没有运行完成会出现这样的问题
+- **Communication Failure**: The kube-apiserver cannot reach the HTTPS port of the extended scheduler. Possible reasons:
+  - DNS resolution failure.
+  - Cross-node communication issues.
+  - Extended scheduler service failure.
+- **TLS Verification Error**: Typically shows `webhook x509: certificate signed by unknown authority`.  
+  During Helm chart deployment, there's a `jobs.batch` job called `hami-vgpu.admission-patch`. If it hasn't completed, this issue may occur.
 
-#### 调度问题
+#### Scheduling Issues
 
-容器一直在 pending 状态，使用 kubectl describe命令可以看到具体原因，主要有以下几个
+The container remains in the `Pending` state. Use the `kubectl describe` command to see specific reasons, commonly:
 
 - `card Insufficient remaining memory`
-- `calcScore:node not fit pod`
+- `calcScore: node not fit pod`
 
-主要原因一般会是确实资源不足，或者配置错误，配置错误是指 devicememoryscaling 配置未符合预期，有两个地方可以配置, 优先级为节点配置大于全局配置，容易发生问题的地方在于 name需要和kubectl get node显示的nodename一致才能生效
+The main causes are usually either actual resource shortage or misconfiguration.  
+Misconfiguration often refers to an incorrect `devicememoryscaling` setting. This can be configured in two places, with node-level config taking precedence over global config. A common pitfall is that the `name` must exactly match the nodename shown by `kubectl get node`.
 
-- 全局配置 `k get cm hami-scheduler-device`
+- **Global Configuration**: `kubectl get cm hami-scheduler-device`
 
-```yaml
+  ```yaml
   deviceMemoryScaling: 3
-```
+  ```
 
-- 节点配置 `k get cm hami-device-plugin`
+- **Node Configuration**: `kubectl get cm hami-device-plugin`
 
-```json
-{
-  "nodeconfig": [
-    {
-      "name": "node1",
-      "devicememoryscaling": 3,
-      "devicesplitcount": 10,
-      "migstrategy":"none",
-      "filterdevices": {
-        "uuid": [],
-        "index": []
+  ```json
+  {
+    "nodeconfig": [
+      {
+        "name": "node1",
+        "devicememoryscaling": 3,
+        "devicesplitcount": 10,
+        "migstrategy": "none",
+        "filterdevices": {
+          "uuid": [],
+          "index": []
+        }
       }
-    }
-  ]
-}
+    ]
+  }
+  ```
+
+### MutatingWebhook
+
+Kubernetes provides the `admissionWebhook` resource, which is triggered by resource operations in Kubernetes.  
+Its most common use is intercepting Pod creation and injecting YAML content into the Pod — for example, adding an init container to inject files.
+
+#### Webhook Configuration
+
+hami-webhook:
+
+```bash
+kubectl get mutatingwebhookconfigurations.admissionregistration.k8s.io hami-webhook -o yaml
 ```
-
-### 3.1. MutatingWebhook
-
-K8s提供了adminssionWebhook资源, 以k8s资源操作为触发器，触发hook，用途最广泛的为针对Pod创建做拦截，对Pod做yaml注入，具体的例如增加init容器注入文件等等
-
-#### 3.1.1. webhook配置
-
-hami-webhook
 
 ```yaml
-k get mutatingwebhookconfigurations.admissionregistration.k8s.io hami-webhook -o yaml
 apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingWebhookConfiguration
 metadata:
@@ -184,12 +183,12 @@ webhooks:
   timeoutSeconds: 10
 ```
 
-当pod创建时，调用 `https://hami-scheduler.kube-system:443/webhook` 做tls校验，CA为 `caBundle` 配置
-当命名空间有 `hami.io/webhook: ignore` 的标签时不触发
+When a Pod is created, `https://hami-scheduler.kube-system:443/webhook` is called for TLS verification, with the CA certificate configured via `caBundle`.  
+If the namespace has the label `hami.io/webhook: ignore`, the webhook is not triggered.
 
-#### 3.1.2. webhook Server实现
+#### Webhook Server Implementation
 
-需要实现一个tls的Http Server, 且提供 `/webhook` 接口
+A TLS-enabled HTTP server must be implemented and expose the `/webhook` endpoint.
 
 cmd/scheduler/main.go:84
 
@@ -199,7 +198,7 @@ func start() {
  router.POST("/webhook", routes.WebHookRoute())
 ```
 
-`WebHookRoute` 需要实现 `sigs.k8s.io/controller-runtime@v0.16.3/pkg/webhook/admission/webhook.go:98`
+`WebHookRoute` needs to implement `sigs.k8s.io/controller-runtime@v0.16.3/pkg/webhook/admission/webhook.go:98`
 
 pkg/scheduler/webhook.go:52
 
@@ -252,7 +251,7 @@ pkg/scheduler/webhook.go:52
  return admission.PatchResponseFromRaw(req.Object.Raw, marshaledPod)
 ```
 
-主要通过pod中容器的resource来判断是否要不要走拓展调度器
+The decision to use the extended scheduler is mainly based on the container resource specifications in the Pod.
 
 pkg/device/nvidia/device.go:246
 
@@ -293,9 +292,10 @@ func (dev *NvidiaGPUDevices) MutateAdmission(ctr *corev1.Container, p *corev1.Po
 }
 ```
 
-主要比对pod的 Resources Limit中有没有包含 `device-config.yaml` 的配置，如果有走hami调度流程
+The scheduler mainly checks whether the `Resources Limit` section of the Pod includes configurations defined in `device-config.yaml`.  
+If such configurations are present, the HAMI scheduling process is used.
 
-`deivce-config` 以英伟达显卡为例
+An example of `device-config` for NVIDIA GPUs:
 
 ```yaml
 nvidia:
@@ -313,16 +313,19 @@ nvidia:
   deviceCoreScaling: 3
 ```
 
-确定走hami调度流程之后，通过Patch修改Pod `schedulerName` 为hami调度器的名称
+Once it is determined that the Pod should follow the HAMi scheduling process, the Pod's `schedulerName` is modified to the HAMi scheduler name via a Patch.
 
-### 3.2. 拓展k8s scheduler
+### Extending the Kubernetes Scheduler
 
-[KubeSchedulerConfiguration](https://kubernetes.io/docs/reference/config-api/kube-scheduler-config.v1/) 拓展调度器可以通过实现拓展点进行调度器的拓展
+The [KubeSchedulerConfiguration](https://kubernetes.io/docs/reference/config-api/kube-scheduler-config.v1/) allows the Kubernetes scheduler to be extended by implementing extension points.
 
-#### 3.2.1. KubeSchedulerConfiguration
+#### KubeSchedulerConfiguration
 
 ```yaml
-k get cm hami-scheduler-newversion -o yaml
+kubectl get cm hami-scheduler-newversion -o yaml
+```
+
+```yaml
 apiVersion: v1
 data:
   config.yaml: |
@@ -383,16 +386,16 @@ metadata:
   uid: 3a61a72c-0bab-432f-b4d7-5c1ae46ee14d
 ```
 
-拓展调度器通过[拓展点](https://kubernetes.io/docs/reference/scheduling/config/#extension-points)进行拓展, 这里拓展了filter和bind
+The extended scheduler is customized through [extension points](https://kubernetes.io/docs/reference/scheduling/config/#extension-points).  
+In this case, the `filter` and `bind` extension points are implemented:
 
-- filter: 找到最合适的node
-- bind: 为pod创建一个binding资源
+- **filter**: Identifies the most suitable node.
+- **bind**: Creates a `binding` resource for the Pod.
 
-调度时会根据拓展点顺序来调用拓展调度器的实现，这里会先调用
+During scheduling, the extended scheduler's implementations are invoked in the order of the extension points.  
+Here, it first calls `https://127.0.0.1:443/filter`, followed by `https://127.0.0.1:443/bind`.
 
-`https://127.0.0.1:443/filter` 再调用 `https://127.0.0.1:443/filter`
-
-#### 3.2.2. 拓展调度器Http Server启动
+#### Starting the Extended Scheduler HTTP Server
 
 `cmd/scheduler/main.go:70`
 
@@ -413,7 +416,7 @@ func start() {
  router.POST("/bind", routes.Bind(sher))
 ```
 
-#### 3.2.3. filter实现
+#### filter implementation
 
 `pkg/scheduler/routes/route.go:41`
 
@@ -533,9 +536,9 @@ func (s *Scheduler) Filter(args extenderv1.ExtenderArgs) (*extenderv1.ExtenderFi
 }
 ```
 
-这里核心逻辑主要有两步, 获取节点资源、根据节点已分配资源与总资源计算分数并选出一个最高分
+The core logic here consists of two main steps: retrieving node resources and calculating the score based on allocated resources and total resources to select the highest-scoring node.
 
-##### 3.2.3.1. 获取节点资源信息
+##### Retrieving Node Resource Information
 
 `pkg/scheduler/scheduler.go:241`
 
@@ -639,7 +642,7 @@ func (s *Scheduler) getNodesUsage(nodes *[]string, task *corev1.Pod) (*map[strin
 }
 ```
 
-获取node总的资源与已分配的资源, 首先获取node信息
+To retrieve the total resources and allocated resources of a Node, the first step is to gather the Node information.
 
 `pkg/scheduler/nodes.go:120`
 
@@ -651,9 +654,9 @@ func (m *nodeManager) ListNodes() (map[string]*util.NodeInfo, error) {
 }
 ```
 
-这里用到了缓存，缓存节点信息，由 `addNode` 添加缓存
+Caching is used here to store Node information, which is added to the cache by the `addNode` function.
 
-###### 3.2.3.1.1. Node缓存
+###### Node Cache
 
 `pkg/scheduler/nodes.go:46`
 
@@ -689,7 +692,7 @@ func (m *nodeManager) addNode(nodeID string, nodeInfo *util.NodeInfo) {
 }
 ```
 
-这里的主要逻辑在于 `device.GetDevices()` 获取设备信息
+The main logic here involves using `device.GetDevices()` to retrieve device information.
 
 `pkg/device/devices.go:81`
 
@@ -699,9 +702,7 @@ func GetDevices() map[string]Devices {
 }
 ```
 
-device也是个缓存，后面再分析，首先看Node缓存是什么时候被调用的
-
-`pkg/scheduler/scheduler.go:155`
+The `device` is also cached, which will be analyzed later. First, let's look at when the Node cache is called.
 
 ```golang
 func (s *Scheduler) RegisterFromNodeAnnotations() {
@@ -784,11 +785,12 @@ func (s *Scheduler) RegisterFromNodeAnnotations() {
 }
 ```
 
-启动了一个15s的定时任务，获取node信息维护node缓存
+A 15-second periodic task is started to retrieve Node information and maintain the Node cache.
 
-这里的核心逻辑在于 `for devhandsk, devInstance := range device.GetDevices()` 获取所有的device，主要是一些根据不同的设备注册了不同的handler, 根据注册的device获取显卡的资源信息 `devInstance.GetNodeDevices`
+The core logic here is in `for devhandsk, devInstance := range device.GetDevices()`, which retrieves all devices.  
+Different handlers are registered for each device type, and the corresponding device is used to get GPU resource information through `devInstance.GetNodeDevices`.
 
-这里会通过注册的device(此环境为nvidia)，调用到不同显卡的`GetNodeDevices`实现， device后面再做具体说明
+In this case, the registered device is NVIDIA, and the `GetNodeDevices` implementation for each GPU is called. The specifics of the `device` will be explained later.
 
 `pkg/device/nvidia/device.go:209`
 
@@ -831,7 +833,7 @@ ffunc (dev *NvidiaGPUDevices) GetNodeDevices(n corev1.Node) ([]*util.DeviceInfo,
 }
 ```
 
-看到这里基本逻辑是 scheduler 通过定时器去读取node的annotation信息并将其维护再node缓存中，以供调度时使用
+At this point, the basic logic is that the scheduler uses a timer to read the node's annotation information and maintains it in the node cache for use during scheduling.
 
 ```yaml
 apiVersion: v1
@@ -843,7 +845,7 @@ metadata:
       GeForce RTX 3090,0,true:
 ```
 
-又调用到了 device，这个我们待会儿再看，继续看谁调用的 `RegisterFromNodeAnnotations`
+The `device` is called again here, which we will look into later. For now, let's continue to examine who calls `RegisterFromNodeAnnotations`.
 
 `cmd/scheduler/main.go:70`
 
@@ -859,11 +861,11 @@ func start() {
  go initMetrics(config.MetricsBindAddress)
 ```
 
-调度器启动的时候就会调用，这里逻辑明确了，继续看刚刚的device
+The scheduler calls this during startup, which clarifies the logic. Let's now continue by looking at the `device` from earlier.
 
-###### 3.2.3.1.2. device
+###### device
 
-device通过 `pkg/device/devices.go:85` 进行初始化
+The `device` is initialized through `pkg/device/devices.go:85`.
 
 ```golang
 func InitDevicesWithConfig(config *Config) {
@@ -889,7 +891,7 @@ func InitDevicesWithConfig(config *Config) {
 }
 ```
 
-这里用的是nvidia所以主要看 `InitNvidiaDevice` 即可
+Since NVIDIA is used here, we mainly need to focus on `InitNvidiaDevice`.
 
 `pkg/device/devices.go:42`
 
@@ -915,11 +917,11 @@ type Devices interface {
 }
 ```
 
-这里定义了一些接口，不同的设备进行不同的实现，在scheduler启动时进行初始化，以供运行中调用
+Here, some interfaces are defined, and different devices implement them. During the scheduler startup, these are initialized for use during runtime.
 
-获取到各个节点的各个设备的资源情况之后开始进行打分
+Once the resource information for each device on each node is retrieved, scoring begins.
 
-##### 3.2.3.2. 根据节点资源信息打分
+##### Scoring Based on Node Resource Information
 
 `pkg/scheduler/scheduler.go:458`
 
@@ -989,9 +991,9 @@ func (s *Scheduler) calcScore(nodes *map[string]*NodeUsage, nums util.PodDeviceR
 }
 ```
 
-这块逻辑主要分为遍历节点打分，遍历pod的容器计算每个容器对应的设备的分数，返回所有可以承载limits所需资源的node返回
+This logic is mainly divided into two parts: iterating through the nodes to score them, and iterating through the Pod's containers to calculate the score for each container's corresponding device. Finally, all nodes that can accommodate the resource limits required by the Pod are returned.
 
-##### 3.2.3.3. 计算出节点的分数
+##### Calculating Node Scores
 
 `pkg/scheduler/policy/node_policy.go:68`
 
@@ -1019,9 +1021,9 @@ func (ns *NodeScore) ComputeDefaultScore(devices DeviceUsageList) {
 }
 ```
 
-节点打分规则比较简单
+The node scoring rule is relatively simple.
 
-##### 3.2.3.4. 计算每个容器对应的设备的分数
+##### Calculating Device Scores for Each Container
 
 `pkg/scheduler/score.go:149`
 
@@ -1076,9 +1078,9 @@ func fitInDevices(node *NodeUsage, requests util.ContainerDeviceRequests, annos 
 }
 ```
 
-主要逻辑为
+The main logic is as follows:
 
-- 给容器对应的每个设备打分、遍历不同的容器对应的limit资源，找到可以承载容器limits资源的设备
+- Score each device corresponding to a container. Iterate through the limits of the different containers to find the devices that can accommodate the container's resource limits.
 
 `pkg/scheduler/policy/gpu_policy.go:58`
 
@@ -1105,7 +1107,7 @@ func (ds *DeviceListsScore) ComputeScore(requests util.ContainerDeviceRequests) 
 }
 ```
 
-打分规则与节点类似
+The scoring rule is similar to the one used for nodes.
 
 `pkg/scheduler/score.go:65`
 
@@ -1195,7 +1197,7 @@ func fitInCertainDevice(node *NodeUsage, request util.ContainerDeviceRequest, an
 }
 ```
 
-遍历设备，主要根据设备资源余量来判断是否够container分配，返回所有够分配的设备
+Devices are iterated through, primarily checking the remaining device resources to determine if they can accommodate the container's resource allocation. All devices that can accommodate the allocation are returned.
 
 `pkg/scheduler/scheduler.go:458`
 
@@ -1241,7 +1243,7 @@ func fitInCertainDevice(node *NodeUsage, request util.ContainerDeviceRequest, an
  return &res, nil
 ```
 
-遍历完成之后选择分数最高的, 给pod打标签
+After iterating through the devices, the one with the highest score is selected, and the Pod is labeled accordingly.
 
 ```yaml
 apiVersion: v1
@@ -1254,9 +1256,9 @@ metadata:
     hami.io/vgpu-devices-to-allocate: ;
 ```
 
-#### 3.2.4. binding实现
+#### Binding Implementation
 
-bind逻辑比较简单，将pod绑定到node
+The bind logic is straightforward: it simply binds the Pod to the Node.
 
 `pkg/scheduler/routes/route.go:82`
 
@@ -1293,9 +1295,7 @@ func Bind(s *scheduler.Scheduler) httprouter.Handle {
 }
 ```
 
-路由处理
-
-``
+Handle the routes:
 
 ```golang
 func (s *Scheduler) Bind(args extenderv1.ExtenderBindingArgs) (*extenderv1.ExtenderBindingResult, error) {
@@ -1359,11 +1359,11 @@ ReleaseNodeLocks:
 }
 ```
 
-### 3.3. Node将设备情况写入node annotation
+### Node Writes Device Information to Node Annotation
 
-scheduler获取node的设备信息主要是通过读取node的annotation，主要有如下几步
+The scheduler retrieves node device information primarily by reading the node's annotation, which involves the following steps:
 
-- 启动插件
+- Start the plugin
 
 ```yaml
 apiVersion: v1
@@ -1372,13 +1372,14 @@ metadata:
   annotations:
     hami.io/node-handshake: Requesting_2024.12.24 03:31:30
     hami.io/node-handshake-dcu: Deleted_2024.12.06 07:43:49
-    hami.io/node-nvidia-register: 'GPU-7aebc545-cbd3-18a0-afce-76cae449702a,10,73728,300,NVIDIA-NVIDIA
-      GeForce RTX 3090,0,true:'
+    hami.io/node-nvidia-register:
+      "GPU-7aebc545-cbd3-18a0-afce-76cae449702a,10,73728,300,NVIDIA-NVIDIA
+      GeForce RTX 3090,0,true:"
 ```
 
-#### 3.3.1. 启动device-plugin服务
+#### Starting the Device-Plugin Service
 
-这里用到了 `github.com/urfave/cli/v2` 作为command启动服务，需要注意 -v不是日志等级而是是否显示版本
+The `github.com/urfave/cli/v2` package is used to start the service via a command. It's important to note that the `-v` flag is not for log level but rather for displaying the version.
 
 `cmd/device-plugin/nvidia/main.go:40`
 
@@ -1395,9 +1396,10 @@ func main() {
  }
 ```
 
-#### 3.3.2. 启动plugin
+#### Starting the Plugin
 
-这里的plugin主要是针对不同厂家的设备需要实现不同的方法，这里定义了pluigin的控制器，例如start、restart、exit等，这里我们主要关注`plugins, restartPlugins, err := startPlugins(c, flags, restarting)`
+The plugin here is designed to implement different methods for devices from different vendors. The plugin controller defines operations such as start, restart, exit, etc.  
+Our main focus here is on `plugins, restartPlugins, err := startPlugins(c, flags, restarting)`.
 
 `cmd/device-plugin/nvidia/main.go:156`
 
@@ -1488,7 +1490,7 @@ exit:
 
 `cmd/device-plugin/nvidia/main.go:239`
 
-启动插件，主要方法 `p.Start()`
+Start the plugin with `p.Start()`:
 
 ```golang
 func startPlugins(c *cli.Context, flags []cli.Flag, restarting bool) ([]plugin.Interface, bool, error) {
@@ -1561,7 +1563,7 @@ func startPlugins(c *cli.Context, flags []cli.Flag, restarting bool) ([]plugin.I
 }
 ```
 
-其中p(plugin)需要实现几个方法来管理插件
+Where, the `p` (plugin) needs to implement several methods to manage the plugin.
 
 `pkg/device-plugin/nvidiadevice/nvinternal/plugin/api.go:37`
 
@@ -1573,7 +1575,9 @@ type Interface interface {
 }
 ```
 
-同时如果需要kubelet能够识别 resource中的类似 `nvidia.com/gpu: 1` 这样的拓展字段需要启动一个grpc服务挂载 `/var/lib/kubelet/device-plugins/` 且实现如下方法， 这块跟调度相关性不大，暂且不展开 [device-plugins](https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/device-plugins/)
+Additionally, to allow kubelet to recognize extended fields like `nvidia.com/gpu: 1` in the resource, a GRPC service needs to be started and mounted to `/var/lib/kubelet/device-plugins/`, implementing the necessary methods.  
+This is not closely related to scheduling, so it will not be expanded upon here.  
+For more details, refer to [device-plugins](https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/device-plugins/).
 
 `k8s.io/kubelet@v0.28.3/pkg/apis/deviceplugin/v1beta1/api.pb.go:1419`
 
@@ -1603,9 +1607,9 @@ type DevicePluginServer interface {
 }
 ```
 
-#### 3.3.3. nvidia插件的实现
+#### Implement nvidia plugins
 
-主要看`plugin.WatchAndRegister()`
+Mainly consider `plugin.WatchAndRegister()`
 
 `pkg/device-plugin/nvidiadevice/nvinternal/plugin/server.go:196`
 
@@ -1666,7 +1670,7 @@ func (plugin *NvidiaDevicePlugin) Start() error {
 }
 ```
 
-这里是个定时器，每30s收集一次该node的设备信息，并写入node annotation
+This is a timer that collects the device information of the node every 30 seconds and writes it to the node's annotation.
 
 ```golang
 func (plugin *NvidiaDevicePlugin) WatchAndRegister() {
@@ -1710,7 +1714,7 @@ func (plugin *NvidiaDevicePlugin) RegistrInAnnotation() error {
 }
 ```
 
-具体数据收集逻辑
+The specific data collection logic.
 
 `pkg/device-plugin/nvidiadevice/nvinternal/plugin/register.go:110`
 
@@ -1784,12 +1788,13 @@ func (plugin *NvidiaDevicePlugin) getAPIDevices() *[]*util.DeviceInfo {
 }
 ```
 
-这里通过nvidia驱动获取设备信息，需要注意的是这里有配置DeviceMemoryScaling, 内存超分配置，这里是通过命令行启动的--config-file 参数指定的schduler配置和代码中固化的`config/config.json` 来取值的，其中config/config.json 优先级大于--config-file
+The device information is obtained through the NVIDIA driver. It's important to note that there is a configuration for DeviceMemoryScaling, which is an overcommit configuration for memory.  
+The values for this configuration are taken from the scheduler configuration specified via the `--config-file` parameter when the service is started, and the `config/config.json` file in the code. The `config.json` file takes precedence over the `--config-file` parameter.
 
-到这里，调度所需的所有东西就准备好了，pod可以顺利被分配到合适的节点上
+At this point, everything required for scheduling is prepared, and the Pod can be successfully assigned to the appropriate node.
 
-## 4. 参考
+## References
 
-- [kubernetes.io](https://kubernetes.io/)
-- [自定义 Kubernetes 调度器](https://www.qikqiak.com/post/custom-kube-scheduler/)
-- [https://www.lixueduan.com/posts/kubernetes/21-device-plugin/](https://www.lixueduan.com/posts/kubernetes/21-device-plugin/)
+- [Kubernetes Official Website](https://kubernetes.io/)
+- [Custom Kubernetes Scheduler](https://www.qikqiak.com/post/custom-kube-scheduler/)
+- [Custom Resource Support: From Principle to Implementation of K8s Device Plugin](https://www.lixueduan.com/posts/kubernetes/21-device-plugin/)
