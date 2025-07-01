@@ -151,6 +151,13 @@ module.exports = {
         },
         {
           "type": "category",
+          "label": "Optimize Kunlunxin devices scheduling",
+          "items": [
+            "userguide/Kunlunxin-device/enable-kunlunxin-schedule",
+          ] 
+        },
+        {
+          "type": "category",
           "label": "Optimize Metax GPU scheduling",
           "items": [
             {
@@ -239,6 +246,7 @@ module.exports = {
         "developers/scheduling",
         "developers/HAMi-core-design",
         "developers/Dynamic-mig",
+        "developers/kunlunxin-topology",
         "developers/mindmap"
       ]
     },
