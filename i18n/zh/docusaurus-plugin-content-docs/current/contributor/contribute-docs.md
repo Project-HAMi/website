@@ -129,7 +129,7 @@ module.exports = {
             type: "category",
             label: "入门",
             items: [
-                "get-started/nginx-example"
+                "get-started/deploy-with-helm"
             ],
         },
 ....
