@@ -17,7 +17,7 @@ registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:{your kuberne
 
 Load the images, tag them with your internal registry, and push them to your registry.
 
-```
+```shell
 docker load -i {HAMi_image}.tar
 docker tag projecthami/hami:{HAMi version} {your_inner_registry}/hami:{HAMi version}
 docker push {your_inner_registry}/hami:{HAMi version}
