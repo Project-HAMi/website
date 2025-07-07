@@ -1,41 +1,55 @@
 ---
 title: What is HAMi?
 slug: /
-
 ---
 
-## HAMi: Heterogeneous AI Computing Virtualization Middleware
+## TOC {#toc}
 
-Heterogeneous AI Computing Virtualization Middleware (HAMi), formerly known as k8s-vGPU-scheduler, is an "all-in-one" chart designed to manage Heterogeneous AI Computing Devices in a k8s cluster. It can provide the ability to share Heterogeneous AI devices among tasks.
+- [HAMi: Heterogeneous AI Computing Virtualization Middleware](#hami-heterogeneous-ai-computing-virtualization-middleware)
+- [Why HAMi](#why-hami)
+- [What's Next](#whats-next)
 
-HAMi is a [Cloud Native Computing Foundation](https://cncf.io/) sandbox project & [Landscape project](https://landscape.cncf.io/?item=orchestration-management--scheduling-orchestration--hami) & [CNAI Landscape project](https://landscape.cncf.io/?group=cnai&item=cnai--general-orchestration--hami).
+## HAMi: Heterogeneous AI Computing Virtualization Middleware {#hami-heterogeneous-ai-computing-virtualization-middleware}
 
-## Why HAMi:
-- __Device sharing__
-    - Support multiple Heterogeneous AI Computing devices
-    - Support device-sharing for multi-device containers
+Heterogeneous AI Computing Virtualization Middleware (HAMi), formerly known as
+k8s-vGPU-scheduler is an "All-in-One" chart designed to manage Heterogeneous
+AI Computing Devices in a k8s cluster. It can provide the ability to share
+Heterogeneous AI devices among tasks.
 
-- __Device Memory Control__
-    - Hard limit inside container
-    - Support dynamic device memory allocation
-    - Support memory allocation by MB or by percentage
+HAMi is a [Cloud Native Computing Foundation](https://cncf.io/) SandBox project
+  & [Landscape project](https://landscape.cncf.io/?item=orchestration-management--scheduling-orchestration--hami)
+  & [CNAI Landscape project](https://landscape.cncf.io/?group=cnai&item=cnai--general-orchestration--hami).
 
-- __Device Specification__
-    - Support specify a type of certain heterogeneous AI computing devices  
-    - Support specify a certain heterogeneous AI computing devices using device UUID
+## Why HAMi {#why-hami}
 
-- __Easy to try__
-    - Transparent to tasks inside container
-    - Install/Uninstall using helm, easy and green
+- **Device sharing**
 
-- __Open and Neutral__
-    - Jointly initiated by Internet, finance, manufacturing, cloud providers, etc.
-    - Target for open governance with CNCF
+  - Support multiple Heterogeneous AI Computing devices
+  - Support device-sharing for multi-device containers
 
+- **Device Memory Control**
 
-## What's Next
+  - Hard limit inside container
+  - Support dynamic device memory allocation
+  - Support memory allocation by MB or by percentage
+
+- **Device Specification**
+
+  - Support specify a type of certain heterogeneous AI computing devices
+  - Support specify a certain heterogeneous AI computing devices using device UUID
+
+- **Easy to try**
+
+  - Transparent to tasks inside container
+  - Install/Uninstall using helm, easy and green
+
+- **Open and Neutral**
+  - Jointly initiated by Internet, finance, manufacturing, cloud providers, etc.
+  - Target for open governance with CNCF
+
+## What's Next {#whats-next}
 
 Here are some recommended next steps:
 
-- Learn HAMi's [architecture](./architecture.md).
-- Start to [install HAMi](../installation/prequisities.md).
+- Learn HAMi's [architecture](./architecture.md)
+- Start to [install HAMi](../installation/prequisities.md)

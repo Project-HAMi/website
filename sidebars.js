@@ -21,7 +21,7 @@ module.exports = {
       "type": "category",
       "label": "Get Started",
       "items": [
-        "get-started/nginx-example"
+        "get-started/deploy-with-helm"
       ]
     },
     {
