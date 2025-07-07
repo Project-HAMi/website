@@ -40,6 +40,21 @@ You can update these configurations using one of the following methods:
    | `nvidia.resourceCoreName` | String | vGPU core resource name. | `"nvidia.com/cores"` |
    | `nvidia.resourcePriorityName` | String | vGPU job priority name. | `"nvidia.com/priority"` |
 
+## Node Configs: ConfigMap
+HAMi allows configuring per-node behavior for device plugin. Edit 
+```sh
+kubectl -n <namespace> edit cm hami-device-plugin
+```
+* `name`: Name of the node.
+* `operatingmode`: Operating mode of the node, can be "hami-core" or "mig", default: "hami-core".
+* `devicememoryscaling`: Overcommit ratio of device memory.
+* `devicecorescaling`: Overcommit ratio of device core.
+* `devicesplitcount`: Allowed number of tasks sharing a device.
+* `filterdevices`: Devices that are not registered to HAMi.
+  * `uuid`: UUIDs of devices to ignore
+  * `index`: Indexes of devices to ignore.
+  * A device is ignored by HAMi if it's in `uuid` or `index` list.
+
 ## Chart Configs: arguments
 
 You can customize your vGPU support by setting the following arguments using `-set`, for example
