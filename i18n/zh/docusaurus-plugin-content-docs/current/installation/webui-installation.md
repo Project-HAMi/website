@@ -11,7 +11,7 @@ WebUI 只能通过本地主机访问，因此您需要通过配置 `~/.kube/conf
 
 [Helm](https://helm.sh/) 是一个用于管理 Kubernetes 应用程序的开源命令行工具。它是 [CNCF Landscape](https://www.cncf.io/projects/helm/) 中的一个毕业项目。
 
-HAMi-WebUI 开源社区提供了在 Kubernetes 上运行的 Helm Charts。请注意，代码不提供任何担保。如果您遇到任何问题，可以在 [官方 GitHub 仓库](https://github.com/hami-webui/helm-charts/)报告。
+HAMi-WebUI 开源社区提供了在 Kubernetes 上运行的 Helm Charts。请注意，代码不提供任何担保。如果您遇到任何问题，可以在 [官方 GitHub 仓库](https://github.com/Project-HAMi/HAMi-WebUI/tree/main/charts/hami-webui)报告。
 
 ## 先决条件
 
