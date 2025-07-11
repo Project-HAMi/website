@@ -10,7 +10,7 @@ The WebUI can only be accessed by your localhost, so you need to connect your lo
 
 [Helm](https://helm.sh/) is an open-source command line tool used for managing Kubernetes applications. It is a graduate project in the [CNCF Landscape](https://www.cncf.io/projects/helm/).
 
-The HAMi-WebUI open-source community offers Helm Charts for running it on Kubernetes. Please be aware that the code is provided without any warranties. If you encounter any problems, you can report them to the [Official GitHub repository](https://github.com/hami-webui/helm-charts/).
+The HAMi-WebUI open-source community offers Helm Charts for running it on Kubernetes. Please be aware that the code is provided without any warranties. If you encounter any problems, you can report them to the [Official GitHub repository](https://github.com/Project-HAMi/HAMi-WebUI/tree/main/charts/hami-webui).
 
 ## Prequisities
 
