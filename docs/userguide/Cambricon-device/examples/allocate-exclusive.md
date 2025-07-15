@@ -2,11 +2,9 @@
 title: Allocate exclusive device
 ---
 
-## Allocate exclusive device
-
 To allocate a whole cambricon device, you need to only assign `cambricon.com/vmlu` without other fields.
 
-```
+```yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -30,5 +28,5 @@ spec:
           args: ["100000"]
           resources:
             limits:
-              cambricon.com/vmlu: "1" #allocates a whole MLU
+              cambricon.com/vmlu: "1" # allocates a whole MLU
 ```

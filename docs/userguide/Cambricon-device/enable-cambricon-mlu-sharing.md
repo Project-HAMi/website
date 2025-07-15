@@ -1,53 +1,65 @@
 ---
-title: Enable cambricon MLU sharing
+title: Enable Cambricon MLU Sharing
 ---
 
-## Introduction
+**HAMi now supports `cambricon.com/mlu` by implementing most device-sharing features similar to NVIDIA GPUs**, including:
 
-**We now support cambricon.com/mlu by implementing most device-sharing features as nvidia-GPU**, including:
+* **MLU Sharing**: Tasks can request a fraction of an MLU instead of an entire MLU card.
+  This enables multiple tasks to share the same MLU device.
 
-***MLU sharing***: Each task can allocate a portion of MLU instead of a whole MLU card, thus MLU can be shared among multiple tasks.
+* **Device Memory Control**: You can allocate MLUs with a specified memory size, with
+  guaranteed enforcement to ensure usage does not exceed the requested limit.
 
-***Device Memory Control***: MLUs can be allocated with certain device memory size and guarantee it that it does not exceed the boundary.
+* **Device Core Control**: MLUs can be assigned a specific number of compute cores,
+  and enforcement ensures core usage remains within bounds.
 
-***Device Core Control***: MLUs can be allocated with certain compute cores and guarantee it that it does not exceed the boundary.
-
-***MLU Type Specification***: You can specify which type of MLU to use or to avoid for a certain task, by setting "cambricon.com/use-mlutype" or "cambricon.com/nouse-mlutype" annotations. 
-
+* **MLU Type Selection**: You can use annotations to specify which MLU types a task *must use* or
+  *must avoid* by setting `cambricon.com/use-mlutype` or `cambricon.com/nouse-mlutype`.
 
 ## Prerequisites
 
 * neuware-mlu370-driver > 5.10
 * cntoolkit > 2.5.3
 
-## Enabling MLU-sharing Support
+## Enabling MLU Sharing
 
-* Install the chart using helm, See 'enabling vGPU support in kubernetes' section [here](https://github.com/Project-HAMi/HAMi#enabling-vgpu-support-in-kubernetes)
+1. **Install HAMi via Helm**
 
-* Activate the smlu mode for each MLUs on that node
+   Follow the instructions under the *Enabling vGPU Support in Kubernetes* section
+   in the [HAMi README](https://github.com/Project-HAMi/HAMi#enabling-vgpu-support-in-kubernetes).
 
-```sh
-cnmon set -c 0 -smlu on
-cnmon set -c 1 -smlu on
-# ...
-```
+2. **Enable SMLU mode on each MLU device**
 
-* Get cambricon-device-plugin from your device provider and specify the following parameters during deployment:
+   ```sh
+   cnmon set -c 0 -smlu on
+   cnmon set -c 1 -smlu on
+   # Repeat for all devices...
+   ```
 
-`mode=dynamic-smlu`, `min-dsmlu-unit=256`
+3. **Deploy the Cambricon device plugin**
 
-These two parameters represent enabling the dynamic smlu function and setting the minimum allocable memory unit to 256 MB, respectively. You can refer to the document from device provider for more details
+   Get the `cambricon-device-plugin` from your device provider, and configure it with the following parameters:
 
-* Deploy the cambricon-device-plugin you just specified
+   * `mode=dynamic-smlu`: Enables dynamic SMLU support.
+   * `min-dsmlu-unit=256`: Sets the minimum allocatable memory unit to 256 MB.
 
-```
-kubectl apply -f cambricon-device-plugin-daemonset.yaml
-```
+   Refer to your provider’s documentation for additional details.
 
-## Running MLU jobs
+4. **Apply the configured plugin**
 
-Cambricon MLUs can now be requested by a container
-using the `cambricon.com/vmlu` ,`cambricon.com/mlu.smlu.vmemory` and `cambricon.com/mlu.smlu.vcore` resource type:
+   ```sh
+   kubectl apply -f cambricon-device-plugin-daemonset.yaml
+   ```
+
+## Running MLU Jobs
+
+To request shared MLU resources in a container, use the following resource types:
+
+* `cambricon.com/vmlu`
+* `cambricon.com/mlu.smlu.vmemory`
+* `cambricon.com/mlu.smlu.vcore`
+
+Here is an YAML example:
 
 ```yaml
 apiVersion: apps/v1
@@ -78,8 +90,16 @@ spec:
               cambricon.com/mlu.smlu.vcore: "10"
 ```
 
-## Notes
+:::note
 
-1. Mlu-sharing in init container is not supported, pods with "combricon.com/mlumem" in init container will never be scheduled.
+1. **Init containers are not supported for MLU sharing.**
 
-2. `cambricon.com/mlu.smlu.vmemory`, `cambricon.com/mlu.smlu.vcore` only work when `cambricon.com/vmlu=1`, otherwise, whole MLUs are allocated when `cambricon.com/vmlu>1` regardless of `cambricon.com/mlu.smlu.vmemory` and `cambricon.com/mlu.smlu.vcore`.
+   Pods with the `cambricon.com/mlumem` resource specified in an init container will not be scheduled.
+
+2. **Resource constraints only apply to shared mode (`vmlu=1`).**
+  
+   The `cambricon.com/mlu.smlu.vmemory` and `cambricon.com/mlu.smlu.vcore` resources are only effective
+   when `cambricon.com/vmlu` is set to `1`. If `vmlu > 1`, a full MLU device will be allocated
+   regardless of `vmemory` and `vcore` values.
+
+:::
