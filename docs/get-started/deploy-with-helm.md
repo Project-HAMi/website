@@ -157,7 +157,7 @@ spec:
       resources:
         limits:
           nvidia.com/gpu: 1 # requesting 1 vGPUs
-          nvidia.com/gpumem: 10240 # Each vGPU contains 3000m device memory （Optional,Integer）
+          nvidia.com/gpumem: 10240 # Each vGPU contains 10240m device memory （Optional,Integer）
 ```
 
 #### Verify in container resouce control {#verify-in-container-resouce-control}

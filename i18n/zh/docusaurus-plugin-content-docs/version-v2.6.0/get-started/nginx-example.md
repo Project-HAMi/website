@@ -135,7 +135,7 @@ spec:
       resources:
         limits:
           nvidia.com/gpu: 1 # 请求 1 个 vGPUs
-          nvidia.com/gpumem: 10240 # 每个 vGPU 包含 3000m 设备内存（可选，整数）
+          nvidia.com/gpumem: 10240 # 每个 vGPU 包含 10240 MiB 设备内存（可选，整数）
 ```
 
 #### 在容器资源控制中验证
