@@ -2,25 +2,29 @@
 title: HAMi-core design
 ---
 
-## Introduction
+HAMi-core is a hook library designed for the CUDA environment.
+It functions as an in-container GPU resource controller and has been adopted by projects
+like [HAMi](https://github.com/HAMi-project/HAMi) and [Volcano](https://github.com/volcano-sh/devices).
 
-HAMi-core is a hook library for CUDA environment, it is the in-container gpu resource controller, it has beed adopted by [HAMi](https://github.com/HAMi-project/HAMi), [volcano](https://github.com/volcano-sh/devices)
-
-![img](../resources/hami-arch.png) 
+![img](../resources/hami-arch.png)
 
 ## Features
 
-HAMi-core has the following features:
-1. Virtualize device meory
+HAMi-core offers the following key features:
 
-![image](../resources/sample_nvidia-smi.png)
+1. Virtualize the device memory
 
-2. Limit device utilization by self-implemented time shard
+   ![image](../resources/sample_nvidia-smi.png)
 
-3. Real-time device utilization monitor 
+2. Limit the device utilization  
+
+   Implements a custom time-slicing mechanism to control GPU usage.
+
+3. Monitor the device utilization in real time
 
 ## Design
 
-HAMi-core operates by Hijacking the API-call between CUDA-Runtime(libcudart.so) and CUDA-Driver(libcuda.so), as the figure below:
+HAMi-core works by intercepting API calls between the CUDA Runtime (`libcudart.so`) and
+the CUDA Driver (`libcuda.so`), as shown below:
 
 ![img](../resources/hami-core-position.png)
