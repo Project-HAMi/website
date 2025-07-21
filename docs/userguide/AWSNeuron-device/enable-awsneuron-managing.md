@@ -101,9 +101,9 @@ metadata:
   name: poddemo
   annotations:
     # Use specific GPU devices (comma-separated list)
-    enflame.com/use-gpuuuid: "node1-AWSNeuron-0,node1-AWSNeuron-1"
+    aws.amazon.com/use-gpuuuid: "node1-AWSNeuron-0,node1-AWSNeuron-1"
     # Or exclude specific GPU devices (comma-separated list)
-    enflame.com/nouse-gpuuuid: "node1-AWSNeuron-2,node1-AWSNeuron-3"
+    aws.amazon.com/nouse-gpuuuid: "node1-AWSNeuron-2,node1-AWSNeuron-3"
 spec:
   # ... rest of pod spec
 ```
