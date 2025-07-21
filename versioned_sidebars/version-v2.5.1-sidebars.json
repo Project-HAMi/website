@@ -132,6 +132,7 @@
           "label": "Optimize Metax GPU scheduling",
           "items": [
             "userguide/Metax-device/enable-metax-gpu-schedule",
+            "userguide/Metax-device/enable-metax-gpu-sharing",
             "userguide/Metax-device/specify-binpack-task",
             "userguide/Metax-device/specify-spread-task",
             {
