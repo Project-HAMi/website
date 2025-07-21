@@ -1,17 +1,15 @@
 ---
-title: Allocate specific Qos policy devices
+title: Allocate specific QoS policy devices
 translated: true
 ---
 
-## Allocate specific Qos policy devices
+Users can configure the QoS policy for tasks using the `metax-tech.com/sgpu-qos-policy` annotation to specify the scheduling policy used by the shared GPU (sGPU). The available sGPU scheduling policies are described in the table below:
 
-Users can configure the Qos Policy parameter for tasks via `metax-tech.com/sgpu-qos-policy` to specify the scheduling policy used by the sGPU. The specific sGPU scheduling policy description can be found in the following table.
-
-| scheduling policy   | description |
-| --- | --- |
-| `best-effort`   | sGPU is no limit on computing power   |
-| `fixed-share`   | sGPU is a fixed computing power quota, and it cannot be used beyond the fixed quota  |
-| `burst-share`   | sGPU is a fixed computing power quota. If the GPU card still has idle computing power, it can be used by the sGPU |
+| Scheduling Policy | Description |
+|-------------------|-------------|
+| `best-effort`     | The sGPU has no restriction on compute usage. |
+| `fixed-share`     | The sGPU is assigned a fixed compute quota and cannot exceed this limit. |
+| `burst-share`     | The sGPU is assigned a fixed compute quota, but may utilize additional GPU compute resources when they are idle. |
 
 ```yaml
 apiVersion: v1
