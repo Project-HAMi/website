@@ -2,11 +2,9 @@
 title: Allocate metax device
 ---
 
-## Allocate metax device
-
 To allocate metax device, you need to only assign `metax-tech.com/gpu` without other fields.
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:

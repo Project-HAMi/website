@@ -3,32 +3,30 @@ title: Enable Metax GPU sharing
 translated: true
 ---
 
-## Introduction
+**HAMi now supports metax.com/gpu by implementing most device-sharing features as nvidia-GPU**, device-sharing features include the following:
 
-**we now support metax.com/gpu by implementing most device-sharing features as nvidia-GPU**, device-sharing features include the following:
+- **GPU Sharing**: Tasks can request a fraction of a GPU rather than the entire GPU card, allowing multiple tasks to share the same GPU.
 
-***GPU sharing***: Each task can allocate a portion of GPU instead of a whole GPU card, thus GPU can be shared among multiple tasks.
+- **Device Memory Control**: Tasks can be allocated a specific amount of GPU memory, with strict enforcement to ensure usage does not exceed the assigned limit.
 
-***Device Memory Control***: GPUs can be allocated with certain device memory size and have made it that it does not exceed the boundary.
+- **Compute Core Limiting**: Tasks can be allocated a specific percentage of GPU compute cores (e.g., `60` means the container can use 60% of the GPU’s compute cores).
 
-***Device compute core limitation***: GPUs can be allocated with certain percentage of device core(60 indicate this container uses 60% compute cores of this device)
-
-### Prerequisites
+## Prerequisites
 
 * Metax Driver >= 2.32.0
 * Metax GPU Operator >= 0.10.2
 * Kubernetes >= 1.23
 
-### Enabling GPU-sharing Support
+## Enabling GPU-sharing support
 
-* Deploy Metax GPU Operator on metax nodes (Please consult your device provider to aquire its package and document)
+* Deploy Metax GPU Operator on metax nodes (Please consult your device provider to obtain the installation package and documentation)
 
 * Deploy HAMi according to README.md
 
-### Running Metax jobs
+## Running Metax jobs
 
 Metax GPUs can now be requested by a container
-using the `metax-tech.com/sgpu`  resource type:
+using the `metax-tech.com/sgpu` resource type:
 
 ```yaml
 apiVersion: v1

@@ -2,28 +2,30 @@
 title: Enable Metax GPU topology-aware scheduling
 ---
 
-## Introduction
+**HAMi now supports metax.com/gpu by implementing topo-awareness among metax GPUs.**
 
-**we now support metax.com/gpu by implementing topo-awareness among metax GPUs**
-
-When multiple GPUs are configured on a single server, the GPU cards are connected to the same PCIe Switch or MetaXLink depending on whether they are connected
-, there is a near-far relationship. This forms a topology among all the cards on the server, as shown in the following figure:
+When multiple GPUs are configured on a single server, the GPU cards are connected to the same PCIe Switch or MetaXLink.
+Depending on the connection type, a near-far relationship is formed among the GPUs.
+Together, these connections define the topology of the GPU cards on the server, as shown below:
 
 ![img](https://github.com/Project-HAMi/HAMi/raw/master/imgs/metax_topo.png)
 
-A user job requests a certain number of metax-tech.com/gpu resources, Kubernetes schedule pods to the appropriate node. gpu-device further processes the logic of allocating the remaining resources on the resource node following criterias below:
-1. MetaXLink takes precedence over PCIe Switch in two way:
-– A connection is considered a MetaXLink connection when there is a MetaXLink connection and a PCIe Switch connection between the two cards.
-– When both the MetaXLink and the PCIe Switch can meet the job request
-Equipped with MetaXLink interconnected resources.
+When a user job requests a specific number of `metax-tech.com/gpu` resources,
+Kubernetes schedules the pod to a suitable node. On that node,
+the GPU device plugin (gpu-device) handles fine-grained allocation based on the following criteria:
 
-2. When using `node-scheduler-policy=spread` , Allocate Metax resources to be under the same Metaxlink or Paiswich as much as possible, as the following figure shows:
+1. MetaXLink takes precedence over PCIe Switch in two ways:
 
-![img](https://github.com/Project-HAMi/HAMi/raw/master/imgs/metax_spread.png)
+   - A connection is considered a MetaXLink connection when there is a MetaXLink connection and a PCIe Switch connection between the two cards.
+   - When both the MetaXLink and the PCIe Switch can meet the job request, equipped with MetaXLink interconnected resources.
 
-3. When using `node-scheduler-policy=binpack`, Assign GPU resources, so minimize the damage to MetaxXLink topology, as the following figure shows:
+2. When using `node-scheduler-policy=spread`, allocate Metax resources to be under the same Metaxlink or Paiswich as much as possible, as shown below:
 
-![img](https://github.com/Project-HAMi/HAMi/raw/master/imgs/metax_binpack.png)
+   ![img](https://github.com/Project-HAMi/HAMi/raw/master/imgs/metax_spread.png)
+
+3. When using `node-scheduler-policy=binpack`, assign GPU resources, so minimize the damage to MetaxXLink topology, as shown below:
+
+   ![img](https://github.com/Project-HAMi/HAMi/raw/master/imgs/metax_binpack.png)
 
 ## Important Notes
 
@@ -45,7 +47,7 @@ Equipped with MetaXLink interconnected resources.
 ## Running Metax jobs
 
 Metax GPUs can now be requested by a container
-using the `metax-tech.com/gpu`  resource type:
+using the `metax-tech.com/gpu` resource type:
 
 ```yaml
 apiVersion: v1

@@ -2,11 +2,9 @@
 title: Binpack schedule policy
 ---
 
-## Allocate metax device using binpack schedule policy
+To allocate metax device with mininum damage to topology, you need to only assign `metax-tech.com/gpu` with annotations `hami.io/node-scheduler-policy: "binpack"`.
 
-To allocate metax device with mininum damage to topology, you need to only assign `metax-tech.com/gpu` with annotations `hami.io/node-scheduler-policy`=`binpack`
-
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
