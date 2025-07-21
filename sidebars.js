@@ -100,12 +100,14 @@ module.exports = {
             "userguide/Hygon-device/enable-hygon-dcu-sharing",
             "userguide/Hygon-device/specify-device-memory-usage",
             "userguide/Hygon-device/specify-device-core-usage",
+            "userguide/Hygon-device/specify-device-uuid-to-use",
             {
               "type": "category",
               "label": "Examples",
               "items": [
                 "userguide/Hygon-device/examples/allocate-core-and-memory",
-                "userguide/Hygon-device/examples/allocate-exclusive"
+                "userguide/Hygon-device/examples/allocate-exclusive",
+                "userguide/Hygon-device/examples/specify-certain-cards",
               ]
             }
           ]
