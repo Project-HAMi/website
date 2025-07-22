@@ -6,11 +6,11 @@ title: Enable AWS-Neuron device Sharing
 
 AWS Neuron devices are specialized hardware accelerators designed by AWS to optimize machine learning workloads, particularly for deep learning inference and training. They are part of the AWS Inferentia and Trainium families, which provide high performance, cost-effective, and scalable solutions for AI applications on AWS.
 
-HAMi have now integrated with [my-scheduler](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/containers/kubernetes-getting-started.html#deploy-neuron-scheduler-extension), and providing the following abilities:
+HAMi now integrates with [my-scheduler](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/containers/kubernetes-getting-started.html#deploy-neuron-scheduler-extension), providing the following capabilities:
 
-***Neuron sharing***: HAMi now support sharing on aws.amazon.com/neuron by allocating device cores(aws.amazon.com/neuroncore), each Neuron core equals to 1/2 neuron device.
+* **Neuron sharing**: HAMi now supports sharing on aws.amazon.com/neuron by allocating device cores(aws.amazon.com/neuroncore), each Neuron core equals to 1/2 neuron device.
 
-***Topology awareness***: When allocating multiple aws-neuron devices in a container, hami will make sure these devices are connected with one another, so to minimize the communication cost between neuron devices. Information about how these devices are connected can be found [here](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/containers/kubernetes-getting-started.html#container-device-allocation-on-different-instance-types)
+* **Topology awareness**: When allocating multiple aws-neuron devices in a container, HAMi will make sure these devices are connected with one another, so to minimize the communication cost between neuron devices. For details about how these devices are connected, refer to [Container Device Allocation On Different Instance Types](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/containers/kubernetes-getting-started.html#container-device-allocation-on-different-instance-types).
 
 
 ## Prerequisites
@@ -20,7 +20,7 @@ HAMi have now integrated with [my-scheduler](https://awsdocs-neuron.readthedocs-
 
 ## Enabling GCU-sharing Support
 
-* Deploy neuron-device-plugin on EC2 neuron nodes according to document [here](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/containers/kubernetes-getting-started.html#neuron-device-plugin)
+* Deploy neuron-device-plugin on EC2 neuron nodes according to document the AWS document: [Neuro Device Plugin](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/containers/kubernetes-getting-started.html#neuron-device-plugin)
 
 * Deploy HAMi
 
