@@ -46,7 +46,7 @@ by either using `aws.amazon.com/neuron` or `aws.amazon.com/neuroncore` resource 
 
 More examples can be found in examples folder
 
-Allocate A whole device:
+Allocate a whole device:
 ```yaml
 apiVersion: v1
 kind: Pod
@@ -90,7 +90,7 @@ spec:
           memory: 1Gi
 ```
 
-## Device UUID Selection
+## Selecting by Device UUID
 
 You can specify which GPU devices to use or exclude using annotations:
 
