@@ -128,6 +128,6 @@ Look for annotations containing device information in the node status.
 
 ## Notes
 
-1. AWS Neuron sharing takes effect only for containers that apply for one AWS Neuron device(i.e aws.amazon.com/neuroncore=1 ).
+1. AWS Neuron sharing takes effect only for containers that apply for one AWS Neuron device(i.e `aws.amazon.com/neuroncore`=1 ).
 
-3. `neuron-ls` inside container shows the total device memory, which is NOT a bug, device memory will be properly limited when running tasks.
+2. `neuron-ls` inside container shows the total device memory, which is NOT a bug. Device memory will be properly limited when tasks are running.
