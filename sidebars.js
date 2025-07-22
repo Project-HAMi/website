@@ -148,14 +148,29 @@ module.exports = {
           "type": "category",
           "label": "Share Enflame GCU devices",
           "items": [
-            "userguide/Enflame-device/enable-enflame-gcu-sharing",
+            "userguide/Enflame-device/enable-enflame-gcu-sharing"
+          ]
+        },
+        {
+          "type": "category",
+          "label": "Managing AWS Neuron devices",
+          "items": [
+            "userguide/AWSNeuron-device/enable-awsneuron-managing",
+            {
+              "type": "category",
+              "label": "Examples",
+              "items": [
+                "userguide/AWSNeuron-device/examples/allocate-neuron-core",
+                "userguide/AWSNeuron-device/examples/allocate-neuron-device"
+              ]
+            }
           ]
         },
         {
           "type": "category",
           "label": "Optimize Kunlunxin devices scheduling",
           "items": [
-            "userguide/Kunlunxin-device/enable-kunlunxin-schedule",
+            "userguide/Kunlunxin-device/enable-kunlunxin-schedule"
           ] 
         },
         {
