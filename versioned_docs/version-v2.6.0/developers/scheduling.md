@@ -8,8 +8,9 @@ Current in a cluster with many GPU nodes, nodes are not `binpack` or `spread` wh
 
 ## Proposal
 
-We add a `node-scheduler-policy` and `gpu-scheduler-policy` to config, then scheduler to use this policy can impl node `binpack` or `spread` or GPU `binpack` or `spread`. and
-use can set Pod annotation to change this default policy, use `hami.io/node-scheduler-policy` and `hami.io/gpu-scheduler-policy` to overlay scheduler config.
+We add a `node-scheduler-policy` and `gpu-scheduler-policy` to config, then scheduler to use this policy can impl node `binpack` or `spread` or GPU `binpack` or `spread` or `topology-aware`. The `topology-aware` policy only takes effect with Nvidia GPUs.
+
+User can set Pod annotation to change this default policy, use `hami.io/node-scheduler-policy` and `hami.io/gpu-scheduler-policy` to overlay scheduler config.
 
 ### User Stories
 
@@ -167,3 +168,89 @@ GPU2 Score: ((20+70)/100 + (1000+6000)/8000)) * 10 = 17.75
 ```
 
 So, in `Spread` policy we can select `GPU1`.
+
+#### Topology-aware  
+
+##### Nvidia Topology-aware (Nvidia GPU Only)  
+
+Nvidia Topology-aware primarily focuses on the topological relationships between each GPU (queried using the `nvidia-smi topo -m` command). The hami-device-plugin calculates scores between GPUs based on these relationships—the higher the bandwidth between GPUs, the higher the score. For example:  
+
+```json  
+[  
+  {  
+    "uuid": "gpu0",  
+    "score": {  
+      "gpu1": "100",  
+      "gpu2": "100",  
+      "gpu3": "200"  
+    }  
+  },  
+  {  
+    "uuid": "gpu1",  
+    "score": {  
+      "gpu0": "100",  
+      "gpu2": "200",  
+      "gpu3": "100"  
+    }  
+  },  
+  {  
+    "uuid": "gpu2",  
+    "score": {  
+      "gpu0": "100",  
+      "gpu1": "200",  
+      "gpu3": "200"  
+    }  
+  },  
+  {  
+    "uuid": "gpu3",  
+    "score": {  
+      "gpu0": "200",  
+      "gpu1": "100",  
+      "gpu2": "200"  
+    }  
+  }  
+]  
+```  
+###### One GPU
+When a Pod requests only one GPU, the GPU with the worst communication performance with other GPUs is prioritized—the lower the score, the higher the scheduling priority. For example:  
+
+1. The sum of scores for gpu0 with other GPUs is as follows:  
+```  
+gpu0 score: 100 + 100 + 200 = 400  
+```  
+2. The sum of scores for gpu1 with other GPUs is as follows:  
+```  
+gpu1 score: 100 + 200 + 100 = 400  
+```  
+3. The sum of scores for gpu2 with other GPUs is as follows:  
+```  
+gpu2 score: 100 + 200 + 200 = 500  
+```  
+4. The sum of scores for gpu3 with other GPUs is as follows:  
+```  
+gpu3 score: 200 + 100 + 200 = 500  
+```  
+
+Therefore, when a **Pod requests only one GPU**, we randomly select either **gpu0** or **gpu1**.  
+
+###### More than one GPU
+
+When a Pod requests multiple GPUs (more than one), the combination with the highest score is prioritized—the higher the score, the higher the scheduling priority.  
+
+For example: If a Pod requests 3 GPUs, take **gpu0, gpu1, gpu2** as an example. The score is calculated as:  
+`totalScore = score(gpu0, gpu1) + score(gpu0, gpu2) + score(gpu1, gpu2)`  
+
+1. The score for gpu0, gpu1, gpu2 is as follows:  
+```  
+(gpu0, gpu1, gpu2) totalScore: 100 + 100 + 200 = 400  
+```  
+2. The score for gpu0, gpu1, gpu3 is as follows:  
+```  
+(gpu0, gpu1, gpu3) totalScore: 100 + 200 + 100 = 400  
+```  
+3. The score for gpu1, gpu2, gpu3 is as follows:  
+```  
+(gpu1, gpu2, gpu3) totalScore: 200 + 100 + 200 = 500  
+```  
+
+Therefore, when a **Pod requests 3 GPUs**, we allocate **gpu1, gpu2, gpu3**.
