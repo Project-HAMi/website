@@ -1,13 +1,11 @@
 ---
-title: 分配 metax 设备
+title: 分配沐曦设备
 translated: true
 ---
 
-## 分配 metax 设备
+要分配沐曦设备，您只需分配 `metax-tech.com/gpu`，无需其他字段。
 
-要分配 metax 设备，您只需分配 `metax-tech.com/gpu`，无需其他字段。
-
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -20,5 +18,5 @@ spec:
       command: ["sleep","infinity"]
       resources:
         limits:
-          metax-tech.com/gpu: 1 # 请求 1 个 metax GPU
+          metax-tech.com/gpu: 1 # 请求 1 个沐曦 GPU
 ```

@@ -1,13 +1,11 @@
 ---
-title: 使用扩展调度策略分配 metax 设备
+title: 使用扩展调度策略分配沐曦设备
 translated: true
 ---
 
-## 使用扩展调度策略分配 metax 设备
+为了以最佳性能分配沐曦设备，您只需将 `metax-tech.com/gpu` 与注释 `hami.io/node-scheduler-policy: "spread"` 一起分配。
 
-为了以最佳性能分配 metax 设备，您只需将 `metax-tech.com/gpu` 与注释 `hami.io/node-scheduler-policy`=`spread` 一起分配。
-
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -22,5 +20,5 @@ spec:
       command: ["sleep","infinity"]
       resources:
         limits:
-          metax-tech.com/gpu: 4 # 请求 4 个 metax GPU
+          metax-tech.com/gpu: 4 # 请求 4 个沐曦 GPU
 ```
