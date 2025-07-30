@@ -1,41 +1,49 @@
 ---
-slug: /
-title: 什么是 HAMi？
+title: 什么是HAMi？
 translated: true
+slug: /
 ---
 
-## HAMi: 异构AI计算虚拟化中间件
+## 目录 {#toc}
 
-异构AI计算虚拟化中间件（HAMi），前称为k8s-vGPU-scheduler，是一个设计用于管理k8s集群中异构AI计算设备的“全合一”图表。它可以提供在任务之间共享异构AI设备的能力。
+- [HAMi：异构AI计算虚拟化中间件](#hami-heterogeneous-ai-computing-virtualization-middleware)
+- [为什么选择HAMi](#why-hami)
+- [后续步骤](#whats-next)
 
-HAMi是一个[云原生计算基金会](https://cncf.io/)的沙箱项目和[景观项目](https://landscape.cncf.io/?item=orchestration-management--scheduling-orchestration--hami)以及[CNAI景观项目](https://landscape.cncf.io/?group=cnai&item=cnai--general-orchestration--hami)。
+## HAMi：异构AI计算虚拟化中间件 {#hami-heterogeneous-ai-computing-virtualization-middleware}
 
-## 为什么选择HAMi：
-- __设备共享__
-    - 支持多种异构AI计算设备
-    - 支持多设备容器的设备共享
+异构AI计算虚拟化中间件（HAMi），前身为k8s-vGPU-scheduler，是一个专为管理k8s集群中异构AI计算设备而设计的"一体化"Helm Chart。它能够实现异构AI设备在多个任务间的共享能力。
 
-- __设备内存控制__
-    - 容器内的硬限制
-    - 支持动态设备内存分配
-    - 支持按MB或百分比分配内存
+HAMi是[云原生计算基金会（CNCF）](https://cncf.io/)的SandBox项目，同时被收录于[CNCF技术全景图-编排与调度类目](https://landscape.cncf.io/?item=orchestration-management--scheduling-orchestration--hami)及[CNAI技术全景图](https://landscape.cncf.io/?group=cnai&item=cnai--general-orchestration--hami)。
 
-- __设备规格__
-    - 支持指定某种类型的异构AI计算设备  
-    - 支持使用设备UUID指定某个异构AI计算设备
+## 为什么选择HAMi {#why-hami}
 
-- __易于尝试__
-    - 对容器内的任务透明
-    - 使用helm安装/卸载，简单且环保
+- **设备共享**
+  - 支持多种异构AI计算设备（如NVIDIA GPU/CUDA）
+  - 支持多设备容器的设备共享
 
-- __开放和中立__
-    - 由互联网、金融、制造、云服务提供商等共同发起
-    - 目标是与CNCF进行开放治理
+- **设备内存控制**
+  - 容器内硬性内存限制
+  - 支持动态设备内存分配
+  - 支持按MB或百分比分配内存
 
+- **设备规格指定**
+  - 支持指定特定类型的异构AI计算设备
+  - 支持通过设备UUID指定具体设备
 
-## 下一步
+- **开箱即用**
+  - 对容器内任务透明无感
+  - 通过helm一键安装/卸载，简洁环保
 
-以下是一些推荐的下一步操作：
+- **开放中立**
+  - 由互联网、金融、制造业、云服务商等多领域联合发起
+  - 以CNCF开放治理为目标
 
-- 了解HAMi的[架构](./architecture.md)。
-- 开始[安装HAMi](../installation/prequisities.md)。
+## 后续步骤 {#whats-next}
+
+推荐继续了解：
+
+- 学习HAMi的[架构设计](./architecture.md)
+- 开始[安装HAMi](../installation/prequisities.md)
+ 
+ This content is powered by i18n-agent-action with LLM service https://api.deepseek.com with model deepseek-chat
