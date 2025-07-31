@@ -1,4 +1,3 @@
-```markdown
 ---
 title: 启用AWS-Neuron设备共享
 ---
@@ -131,5 +130,3 @@ kubectl get node <节点名称> -o yaml | grep -A 10 "hami.io/node-register-<卡
 1. AWS Neuron共享仅对申请单个设备(即`aws.amazon.com/neuroncore`=1)的容器生效。
 
 2. 容器内执行`neuron-ls`显示的是设备总内存，这属于正常现象。实际运行任务时会对设备内存进行正确限制。
-```
- This content is powered by i18n-agent-action with LLM service https://api.deepseek.com with model deepseek-chat

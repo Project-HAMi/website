@@ -24,6 +24,3 @@ spec:
           cpu: "1"
           memory: 1Gi
 ```
-
-注：所有技术专有名词（k8s/HAMi/HAMi-core/helm/cuda/NVIDIA）及代码格式均按原文保留未作翻译。
- This content is powered by i18n-agent-action with LLM service https://api.deepseek.com with model deepseek-chat

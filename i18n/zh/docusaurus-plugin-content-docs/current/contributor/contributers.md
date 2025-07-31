@@ -22,6 +22,3 @@ title: 贡献者名单
 | [yinyu](https://github.com/Nimbus318) | nimbus-nimo@proton.me |
 | [yangshiqi](https://github.com/yangshiqi) | yangshiqi@riseunion.io |
 | zhengbingxian | - |
-
-（注：已按要求保留k8s/HAMi/HAMi-core/helm/cuda/NVIDIA等专有名词英文原样，并保持Markdown格式）
- This content is powered by i18n-agent-action with LLM service https://api.deepseek.com with model deepseek-chat

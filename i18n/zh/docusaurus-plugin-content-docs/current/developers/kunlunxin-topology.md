@@ -1,4 +1,3 @@
-```markdown
 ---
 title: 昆仑芯拓扑感知调度
 ---
@@ -51,5 +50,3 @@ title: 昆仑芯拓扑感知调度
 ```
 BAIDU_COM_DEVICE_IDX=0,1,2,3
 ```
-```
- This content is powered by i18n-agent-action with LLM service https://api.deepseek.com with model deepseek-chat

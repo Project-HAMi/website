@@ -1,5 +1,3 @@
-以下是您提供内容的专业中文翻译，严格遵循了术语保留和格式要求：
-
 ---  
 title: 使用helm部署HAMi  
 ---  
@@ -186,4 +184,3 @@ kubectl exec -it gpu-pod nvidia-smi
 +-----------------------------------------------------------------------------------------+  
 [HAMI-core Msg(28:140561996502848:multiprocess_memory_limit.c:434)]: 调用退出处理程序28  
 ```
- This content is powered by i18n-agent-action with LLM service https://api.deepseek.com with model deepseek-chat

@@ -45,5 +45,3 @@ HAMi是[云原生计算基金会（CNCF）](https://cncf.io/)的SandBox项目，
 
 - 学习HAMi的[架构设计](./architecture.md)
 - 开始[安装HAMi](../installation/prequisities.md)
- 
- This content is powered by i18n-agent-action with LLM service https://api.deepseek.com with model deepseek-chat
