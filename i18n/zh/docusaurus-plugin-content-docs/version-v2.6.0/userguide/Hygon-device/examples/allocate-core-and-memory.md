@@ -5,7 +5,7 @@ translated: true
 
 ## 为容器分配设备核心和内存
 
-要分配设备核心资源的某一部分，您只需在容器中使用 `hygon.com/dcunum` 请求的 cambricon DCU 数量，并分配 `hygon.com/dcucores` 和 `hygon.com/dcumem`。
+要分配设备核心资源的某一部分，您只需在容器中使用 `hygon.com/dcunum` 请求的海光 DCU 数量，并分配 `hygon.com/dcucores` 和 `hygon.com/dcumem`。
 
 ```
 apiVersion: v1

@@ -5,7 +5,7 @@ translated: true
 
 ## 分配独占设备
 
-要分配整个寒武纪设备，您只需分配 `hygon.com/dcunum`，无需其他字段。
+要分配整个海光 DCU 设备，您只需分配 `hygon.com/dcunum`，无需其他字段。
 
 ```
 apiVersion: v1
