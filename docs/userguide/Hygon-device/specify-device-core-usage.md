@@ -4,14 +4,12 @@ title: Allocate device core usage
 
 ## Allocate device core to container
 
-Allocate a percentage of device core resources by specify resource `cambricon.com/mlu.smlu.vcore`.
-Optional, each unit of `cambricon.com/mlu.smlu.vcore` equals to 1% device cores.
+Allocate a percentage of device core resources by specify resource `hygon.com/dcucores`.
+Optional, each unit of `hygon.com/dcucores` equals to 1% device cores.
 
-```
+```yaml
       resources:
         limits:
-          cambricon.com/vmlu: 1 # requesting 1 MLU
-          cambricon.com/mlu.smlu.vcore: "10" # Each MLU contains 10% device cores
+          hygon.com/dcunum: 1 # requesting 1 DCU
+          hygon.com/dcucores: 15 # Each DCU allocates 15% device cores.
 ```
-
-> **NOTICE:** *Depending on the parameters of cambricon-device-plugin, resource name can be `cambricon.com/mlu370.smlu.vcore` or other types*

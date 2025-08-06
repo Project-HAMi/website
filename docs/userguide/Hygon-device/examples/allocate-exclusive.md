@@ -4,7 +4,7 @@ title: Allocate exclusive device
 
 ## Allocate exclusive device
 
-To allocate a whole cambricon device, you need to only assign `hygon.com/dcunum` without other fields.
+To allocate a whole hygon DCU device, you need to only assign `hygon.com/dcunum` without other fields.
 
 ```
 apiVersion: v1
