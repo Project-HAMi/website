@@ -151,7 +151,7 @@ The Procedure of a vGPU task which uses dynamic-mig is shown below:
 
 Note that after submited a task, deviceshare plugin will iterate over templates defined in configMap `hami-scheduler-device`, and find the first available template to fit. You can always change the content of that configMap, and restart vc-scheduler to customize.
 
-If you submit the example on an empty A100-PCIE-40GB node, then it will select a GPU and chosse MIG template below:
+If you submit the example on an empty A100-PCIE-40GB node, then it will select a GPU and choose MIG template below:
 
 ```yaml
   2g.10gb : 3
