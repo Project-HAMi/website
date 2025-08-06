@@ -160,7 +160,7 @@ spec:
           nvidia.com/gpumem: 10240 # Each vGPU contains 10240m device memory （Optional,Integer）
 ```
 
-#### Verify in container resouce control {#verify-in-container-resouce-control}
+#### 2. Verify in container resouce control {#verify-in-container-resouce-control}
 
 Execute the following query command:
 
@@ -168,7 +168,7 @@ Execute the following query command:
 kubectl exec -it gpu-pod nvidia-smi
 ```
 
-The result should be
+The result should be:
 
 ```text
 [HAMI-core Msg(28:140561996502848:libvgpu.c:836)]: Initializing.....
