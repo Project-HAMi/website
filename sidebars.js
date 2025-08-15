@@ -34,7 +34,8 @@ module.exports = {
         "installation/upgrade",
         "installation/uninstall",
         "installation/webui-installation",
-        "installation/how-to-use-volcano-vgpu"
+        "installation/how-to-use-volcano-vgpu",
+        "installation/aws-installation"
       ]
     },
     {
