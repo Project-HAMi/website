@@ -1,0 +1,58 @@
+site_name: HAMi
+theme:
+  palette:
+    primary: teal
+  name: material
+  logo: logo.svg
+  language: en
+  custom_dir: overrides
+  features:
+    - navigation.footer
+    - toc.integrate
+
+  highlightjs: true
+  hljs_languages:
+    - yaml
+    - rust
+
+docs_dir: ./docs
+nav:
+  - blog: 
+    - blog/2024-12-18-support-blog-post/index.md
+    - blog/2024-12-31-post/index.md
+  - Core Concepts:
+    - What is HAMI: core-concepts/introduction.md
+    - Architecture: core-concepts/architecture.md
+  - Changelog:
+    - changelog/source/v2.5.0.md
+    - changelog/source/v2.5.1.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - toc:
+      permalink: true      # 在标题旁添加链接图标
+      baselevel: 1         # 从哪个级别开始生成目录
+      separator: "-"       # 锚点分隔符
+
+extra:
+  version: v0.4
+
+plugins:
+  - search:
+      lang:
+        - en
+  - i18n:
+      docs_structure: folder
+      languages:
+        - locale: en
+          default: true
+          name: English
+          build: true
+        - locale: zh
+          name: Chinese
+          build: true
