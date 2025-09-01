@@ -31,18 +31,10 @@ sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
 
 #### Configure Docker
 
-When running Kubernetes with Docker, edit the configuration file, typically located at `/etc/docker/daemon.json`, to set up `nvidia-container-runtime` as the default low-level runtime:
+When running Kubernetes with Docker, use the `nvidia-ctk` tool to automatically configure Docker:
 
-```json
-{
-    "default-runtime": "nvidia",
-    "runtimes": {
-        "nvidia": {
-            "path": "/usr/bin/nvidia-container-runtime",
-            "runtimeArgs": []
-        }
-    }
-}
+```bash
+sudo nvidia-ctk runtime configure --runtime=docker
 ```
 
 And then restart Docker:
@@ -53,24 +45,10 @@ sudo systemctl daemon-reload && systemctl restart docker
 
 #### Configure containerd
 
-When running Kubernetes with containerd, modify the configuration file typically located at `/etc/containerd/config.toml`, to set up
-`nvidia-container-runtime` as the default low-level runtime:
+When running Kubernetes with containerd, use the `nvidia-ctk` tool to automatically configure containerd:
 
-```toml
-version = 2
-[plugins]
-  [plugins."io.containerd.grpc.v1.cri"]
-    [plugins."io.containerd.grpc.v1.cri".containerd]
-      default_runtime_name = "nvidia"
-
-      [plugins."io.containerd.grpc.v1.cri".containerd.runtimes]
-        [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia]
-          privileged_without_host_devices = false
-          runtime_engine = ""
-          runtime_root = ""
-          runtime_type = "io.containerd.runc.v2"
-          [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia.options]
-            BinaryName = "/usr/bin/nvidia-container-runtime"
+```bash
+sudo nvidia-ctk runtime configure --runtime=containerd
 ```
 
 And then restart containerd:
