@@ -32,51 +32,29 @@ sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
 
 #### 配置 `Docker`
 
-在使用 `Docker` 运行 `Kubernetes` 时，编辑配置文件，通常位于 `/etc/docker/daemon.json`，以设置 `nvidia-container-runtime` 作为默认的低级运行时：
+在使用 `Docker` 运行 `Kubernetes` 时，使用 `nvidia-ctk` 工具自动配置 Docker：
 
-```json
-{
-    "default-runtime": "nvidia",
-    "runtimes": {
-        "nvidia": {
-            "path": "/usr/bin/nvidia-container-runtime",
-            "runtimeArgs": []
-        }
-    }
-}
+```bash
+sudo nvidia-ctk runtime configure --runtime=docker
 ```
 
 然后重启 `Docker`：
 
-```
+```bash
 sudo systemctl daemon-reload && systemctl restart docker
 ```
 
 #### 配置 `containerd`
 
-在使用 `containerd` 运行 `Kubernetes` 时，修改配置文件，通常位于 `/etc/containerd/config.toml`，以设置
-`nvidia-container-runtime` 作为默认的低级运行时：
+在使用 `containerd` 运行 `Kubernetes` 时，使用 `nvidia-ctk` 工具自动配置 containerd：
 
-```
-version = 2
-[plugins]
-  [plugins."io.containerd.grpc.v1.cri"]
-    [plugins."io.containerd.grpc.v1.cri".containerd]
-      default_runtime_name = "nvidia"
-
-      [plugins."io.containerd.grpc.v1.cri".containerd.runtimes]
-        [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia]
-          privileged_without_host_devices = false
-          runtime_engine = ""
-          runtime_root = ""
-          runtime_type = "io.containerd.runc.v2"
-          [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia.options]
-            BinaryName = "/usr/bin/nvidia-container-runtime"
+```bash
+sudo nvidia-ctk runtime configure --runtime=containerd
 ```
 
 然后重启 `containerd`：
 
-```
+```bash
 sudo systemctl daemon-reload && systemctl restart containerd
 ```
 
