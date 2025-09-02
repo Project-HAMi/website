@@ -5,7 +5,7 @@ title: Ascend device template
 
 ```yaml
 vnpus:
-- chipName: 910B
+- chipName: 910A
   commonWord: Ascend910A
   resourceName: huawei.com/Ascend910A
   resourceMemoryName: huawei.com/Ascend910A-memory
@@ -26,9 +26,9 @@ vnpus:
       memory: 17476
       aiCore: 16
 - chipName: 910B3
-  commonWord: Ascend910B
-  resourceName: huawei.com/Ascend910B
-  resourceMemoryName: huawei.com/Ascend910B-memory
+  commonWord: Ascend910B3
+  resourceName: huawei.com/Ascend910B3
+  resourceMemoryName: huawei.com/Ascend910B3-memory
   memoryAllocatable: 65536
   memoryCapacity: 65536
   aiCore: 20
