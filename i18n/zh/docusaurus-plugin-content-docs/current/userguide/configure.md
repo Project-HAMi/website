@@ -64,6 +64,12 @@ helm install hami hami-charts/hami --set devicePlugin.deviceMemoryScaling=5 ...
 | `hami.io/gpu-scheduler-policy` | 字符串 | GPU 卡调度策略：`"binpack"` 表示将 Pod 分配到同一块 GPU 卡上执行，`"spread"` 表示分配到不同的 GPU 卡上执行。 | `"binpack"` 或 `"spread"` |
 | `nvidia.com/vgpu-mode` | 字符串 | 指定该 Pod 希望使用的 vGPU 实例类型。 | `"hami-core"` 或 `"mig"` |
 
+## Node 配置：注解
+
+| 参数 | 类型 | 描述 | 示例 |
+| --- | ---- | --- | ----- |
+| `nvidia.com/nouse-gpuuuid` | 字符串 | 如果设置了此字段，则该 Pod 分配的设备 **必须** 是此字符串中定义的 GPU UUID 之一。 | `"GPU-AAA,GPU-BBB"` |
+
 ## 容器配置：环境变量
 
 | 参数 | 类型 | 描述 | 默认值 |

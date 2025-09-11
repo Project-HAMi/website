@@ -81,6 +81,12 @@ helm install hami hami-charts/hami --set devicePlugin.deviceMemoryScaling=5 ...
 | `hami.io/gpu-scheduler-policy` | String | GPU scheduling policy: `"binpack"` allocates the pod to the same GPU card for execution. `"spread"` allocates the pod to different GPU cards for execution. | `"binpack"` or `"spread"` |
 | `nvidia.com/vgpu-mode` | String | The type of vGPU instance this pod wishes to use. | `"hami-core"` or `"mig"` |
 
+## Node configs: annotations
+
+| Argument | Type | Description | Example |
+|----------|------|-------------|---------|
+| `nvidia.com/nouse-gpuuuid` | String | If set, HAMI will not allocate any devices defined in this string to Pods during scheduling. | `"GPU-AAA,GPU-BBB"` |
+
 ## Container configs: env
 
 | Argument | Type | Description | Default |

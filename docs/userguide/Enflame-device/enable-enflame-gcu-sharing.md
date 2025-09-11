@@ -82,6 +82,8 @@ spec:
 
 ## Device UUID Selection
 
+### Pod Annotation
+
 You can specify which GPU devices to use or exclude using annotations:
 
 ```yaml
@@ -97,6 +99,11 @@ metadata:
 spec:
   # ... rest of pod spec
 ```
+
+### Node Annotation
+
+`enflame.com/nouse-gpuuuid`:
+String type, supports multiple device IDs. Multiple devices should be separated by comma, ie: "node1-enflame-2,node1-enflame-3". If set, HAMI will not allocate any devices defined in this string to Pods during scheduling.
 
 > **NOTE:** The device ID format is `{node-name}-enflame-{index}`. You can find the available device IDs in the node status.
 
