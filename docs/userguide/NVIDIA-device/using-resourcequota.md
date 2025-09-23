@@ -12,7 +12,7 @@ resources:
     nvidia.com/gpu: 2
     nvidia.com/gpumem: 2000
 ```
-In addition, the extended ResourceQuota also supports limiting GPU memory and compute power requests based on the actual cluster device situation. For example, if a task is about to be scheduled on a GPU with 2000MB of memory, the HAMi scheduler will calculate whether the request is feasible.
+In addition, the extended ResourceQuota also supports limiting GPU memory and compute power requests based on the actual cluster device situation. For example, if a task is about to be scheduled on a GPU with 2000MB of memory, the HAMi scheduler will calculate whether the request is feasible and update quota with the actual resource usage.
 
 ## Using Extended ResourceQuota
 
