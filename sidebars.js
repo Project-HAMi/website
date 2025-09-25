@@ -177,8 +177,8 @@ module.exports = {
               "type": "category",
               "label": "Examples",
               "items": [
-                "userguide/Kunlunxin-device/enable-kunlunxin-vxpu/allocate_whole_xpu",
-                "userguide/Kunlunxin-device/enable-kunlunxin-vxpu/allocate_vxpu"
+                "userguide/Kunlunxin-device/examples/allocate_whole_xpu",
+                "userguide/Kunlunxin-device/examples/allocate_vxpu"
               ]
             }
           ] 
