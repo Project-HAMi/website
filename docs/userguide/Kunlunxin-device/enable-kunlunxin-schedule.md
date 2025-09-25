@@ -56,9 +56,3 @@ spec:
         limits:
           kunlunxin.com/xpu: 4 # requesting 4 XPUs
 ```
-
-:::note
-
-You can find more examples in examples folder soon.
-
-:::
