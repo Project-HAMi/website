@@ -20,6 +20,7 @@ The following people, in alphabetical order, have either authored or signed off 
 | peizhaoyou | peizhaoyou@4paradigm.com |
 | [wawa0210](https://github.com/wawa0210) | xiaozhang0210@hotmail.com |
 | [whybeyoung](https://github.com/whybeyoung) | - |
+| [windsonsea](https://github.com/windsonsea) | haifeng.yao@daocloud.io |
 | [yinyu](https://github.com/Nimbus318) | nimbus-nimo@proton.me |
 | [yangshiqi](https://github.com/yangshiqi) | yangshiqi@riseunion.io |
 | zhengbingxian | - |
