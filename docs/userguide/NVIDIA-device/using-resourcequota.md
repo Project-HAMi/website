@@ -16,7 +16,7 @@ In addition, the extended ResourceQuota also supports limiting GPU memory and co
 
 ## Using Extended ResourceQuota
 
-To ensure HAMi scheduler recognizes the extended ResourceQuota, the resource names should include the limit. prefix. For instance, the following ResourceQuota configuration limits the GPU memory usage in the default namespace to 2000MiB and restricts the use of more than 2 GPUs:
+To ensure HAMi scheduler recognizes the extended ResourceQuota, the resource names should include the limits. prefix. For instance, the following ResourceQuota configuration limits the GPU memory usage in the default namespace to 2000MiB and restricts the use of more than 2 GPUs:
 ```yaml
 apiVersion: v1
 kind: ResourceQuota
@@ -25,6 +25,6 @@ metadata:
   namespace: default
 spec:
   hard:
-    limit.nvidia.com/gpu: 2
-    limit.nvidia.com/gpumem: 2000
+    limits.nvidia.com/gpu: 2
+    limits.nvidia.com/gpumem: 2000
 ```

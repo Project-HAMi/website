@@ -16,7 +16,7 @@ resources:
 
 ## 使用扩展的resourcequota
 
-扩展的 resourcequota 资源命名需要带有"limit."前缀以保证被 HAMi scheduler 识别。例如，下面的 resourcequota 配置将限制default命名空间上所有任务的显存使用量不能超过 2000MiB，并且不能超过 2 个 GPU。
+扩展的 resourcequota 资源命名需要带有"limits."前缀以保证被 HAMi scheduler 识别。例如，下面的 resourcequota 配置将限制default命名空间上所有任务的显存使用量不能超过 2000MiB，并且不能超过 2 个 GPU。
 ```yaml
 apiVersion: v1
 kind: ResourceQuota
@@ -25,6 +25,6 @@ metadata:
   namespace: default
 spec:
   hard:
-    limit.nvidia.com/gpu: 2
-    limit.nvidia.com/gpumem: 2000
+    limits.nvidia.com/gpu: 2
+    limits.nvidia.com/gpumem: 2000
 ```
