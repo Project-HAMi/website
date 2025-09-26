@@ -78,6 +78,8 @@ spec:
 
 ## 设备 UUID 选择
 
+### Pod注解
+
 你可以通过 Pod 注解来指定要使用或排除特定的 GPU 设备：
 
 ```yaml
@@ -93,6 +95,11 @@ metadata:
 spec:
   # ... rest of pod spec
 ```
+
+### Node注解
+
+`enflame.com/nouse-gpuuuid`：
+字符串类型，支持多个设备ID，使用,分割多个设备，如："node1-enflame-2,node1-enflame-3"。如果设置，hami在进行调度将不会为Pod使用字符串中定义的任何设备。
 
 > **说明:** 设备 ID 格式为 `{节点名称}-enflame-{索引}`。你可以在节点状态中找到可用的设备 ID。
 
