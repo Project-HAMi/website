@@ -28,3 +28,7 @@ spec:
     limits.nvidia.com/gpu: 2
     limits.nvidia.com/gpumem: 2000
 ```
+
+## 监控扩展的resourcequota
+
+HAMi 调度器提供了相关指标，用于帮助用户监控当前 ResourceQuota 的使用情况。您可以参考 [HAMi 监控](../../userguide/monitoring/device-allocation.md) 文档，查看指标的详细说明。

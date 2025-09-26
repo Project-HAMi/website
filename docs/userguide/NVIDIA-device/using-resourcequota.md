@@ -28,3 +28,7 @@ spec:
     limits.nvidia.com/gpu: 2
     limits.nvidia.com/gpumem: 2000
 ```
+
+## Monitoring Extended ResourceQuota
+
+The HAMi scheduler exposes metrics that allow users to monitor the current usage of ResourceQuota. For detailed information about these metrics, please refer to [HAMi Monitoring](../../userguide/monitoring/device-allocation.md).
