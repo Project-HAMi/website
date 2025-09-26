@@ -171,7 +171,16 @@ module.exports = {
           "type": "category",
           "label": "Optimize Kunlunxin devices scheduling",
           "items": [
-            "userguide/Kunlunxin-device/enable-kunlunxin-schedule"
+            "userguide/Kunlunxin-device/enable-kunlunxin-schedule",
+            "userguide/Kunlunxin-device/enable-kunlunxin-vxpu",
+            {
+              "type": "category",
+              "label": "Examples",
+              "items": [
+                "userguide/Kunlunxin-device/examples/allocate_whole_xpu",
+                "userguide/Kunlunxin-device/examples/allocate_vxpu"
+              ]
+            }
           ] 
         },
         {
