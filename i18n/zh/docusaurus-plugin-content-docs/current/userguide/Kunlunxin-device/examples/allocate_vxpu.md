@@ -6,7 +6,7 @@ title: 分配 vxpu 设备
 
 要分配特定显存大小的vxpu，您只需要分配 `kunlunxin.com/vxpu` 以及 `kunlunxin.com/vxpu-memory`
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:

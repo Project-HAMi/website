@@ -6,7 +6,7 @@ title: Allocate a whole xpu card
 
 To allocate a whole xpu device, you need to only assign `kunlunxin.com/xpu` without other fields. You can allocate multiple XPUs for a container.
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:

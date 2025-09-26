@@ -21,7 +21,7 @@ This component supports multiplexing Kunlunxin XPU devices (P800-OAM) and provid
 ## Enable XPU-sharing Support
 
 * Deploy [vxpu-device-plugin]
-```
+```yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -122,11 +122,14 @@ spec:
 ```
 
 
-> **Note:** Default resource names are as follows:
-> - `kunlunxin.com/vxpu` for VXPU count
-> - `kunlunxin.com/vxpu-memory` for memory allocation
->
-> You can customize these names using the parameters above.
+:::note
+Default resource names are as follows:
+
+- `kunlunxin.com/vxpu` for VXPU count
+- `kunlunxin.com/vxpu-memory` for memory allocation
+
+You can customize these names using the parameters above.
+:::
 
 ## Device Granularity Partitioning
 

@@ -21,7 +21,7 @@ title: 启用昆仑芯 VXPU
 ## 启用 XPU 共享支持
 
 * 部署 [vxpu-device-plugin]
-```
+```yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -121,12 +121,14 @@ spec:
         xpu: "on"
 ```
 
+:::note
+默认资源名称如下：
 
-> **注意：** 默认资源名称如下：
-> - `kunlunxin.com/vxpu` 用于 VXPU 计数
-> - `kunlunxin.com/vxpu-memory` 用于内存分配
->
-> 您可以使用上述参数自定义这些名称。
+- `kunlunxin.com/vxpu` 用于 VXPU 计数
+- `kunlunxin.com/vxpu-memory` 用于内存分配
+
+您可以使用上述参数自定义这些名称。
+:::
 
 ## 设备粒度分区
 
