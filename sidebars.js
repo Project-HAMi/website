@@ -61,6 +61,7 @@ module.exports = {
             "userguide/NVIDIA-device/specify-device-core-usage",
             "userguide/NVIDIA-device/specify-device-type-to-use",
             "userguide/NVIDIA-device/specify-device-uuid-to-use",
+            "userguide/NVIDIA-device/using-resourcequota",
             {
               "type": "category",
               "label": "Examples",
