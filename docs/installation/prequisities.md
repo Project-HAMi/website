@@ -4,10 +4,13 @@ title: Prequisities
 
 Before installing HAMi, make sure the following tools and dependencies are properly installed in your environment:
 
-- [Helm](https://helm.sh/zh/docs/) v3+
-- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) v1.16+
-- [CUDA](https://developer.nvidia.com/cuda-toolkit) v10.2+
-- [NvidiaDriver](https://www.nvidia.cn/drivers/unix/) v440+
+- NVIDIA drivers >= 440
+- nvidia-docker version > 2.0
+- default runtime configured as nvidia for containerd/docker/cri-o container runtime
+- Kubernetes version >= 1.18
+- glibc >= 2.17 & glibc < 2.30
+- kernel version >= 3.10
+- helm > 3.0
 
 ## Preparing your GPU Nodes
 
