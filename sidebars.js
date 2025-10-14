@@ -140,8 +140,10 @@ module.exports = {
               "type": "category",
               "label": "Examples",
               "items": [
-                "userguide/Iluvatar-device/examples/allocate-device-core-and-memory-to-container",
-                "userguide/Iluvatar-device/examples/allocate-exclusive"
+                "userguide/Iluvatar-device/examples/allocate-BI-V150",
+                "userguide/Iluvatar-device/examples/allocate-MR-V100",
+                "userguide/Iluvatar-device/examples/allocate-exclusive-BI-V150",
+                "userguide/Iluvatar-device/examples/allocate-exclusive-MR-V100"
               ]
             }
           ]
