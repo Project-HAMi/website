@@ -5,10 +5,13 @@ translated: true
 
 ## 先决条件
 
-- [Helm](https://helm.sh/zh/docs/) 版本 v3+
-- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) 版本 v1.16+
-- [CUDA](https://developer.nvidia.com/cuda-toolkit) 版本 v10.2+
-- [NvidiaDriver](https://www.nvidia.cn/drivers/unix/) v440+
+- NVIDIA drivers >= 440
+- nvidia-docker > 2.0
+- 默认运行时配置为 NVIDIA 运行时
+- Kubernetes >= 1.18
+- glibc >= 2.17 & glibc < 2.30
+- kernel 版本 >= 3.10
+- helm > 3.0
 
 ## 准备您的 GPU 节点
 
