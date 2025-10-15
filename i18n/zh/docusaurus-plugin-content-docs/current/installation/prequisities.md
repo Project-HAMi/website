@@ -5,13 +5,13 @@ translated: true
 
 ## 先决条件
 
-- NVIDIA drivers >= 440
+- NVIDIA 驱动版本 >= 440
 - nvidia-docker > 2.0
 - 默认运行时配置为 NVIDIA 运行时
-- Kubernetes >= 1.18
+- Kubernetes 版本 >= 1.18
 - glibc >= 2.17 & glibc < 2.30
 - kernel 版本 >= 3.10
-- helm > 3.0
+- helm 版本 > 3.0
 
 ## 准备您的 GPU 节点
 
