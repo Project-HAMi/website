@@ -82,7 +82,7 @@ GPU spread，尽可能使用不同的 GPU 卡，例如：
 
 ### Node-scheduler-policy
 
-![node-scheduler-policy-demo.png](https://github.com/Project-HAMi/HAMi/raw/master/docs/develop/imgs/node-shceduler-policy-demo.png)
+![node-scheduler-policy-demo.png](https://github.com/Project-HAMi/HAMi/raw/master/docs/develop/imgs/node-scheduler-policy-demo.png)
 
 #### Binpack
 
