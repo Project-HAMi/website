@@ -4,7 +4,7 @@ title: Exclusive gpu usage
 
 ## Job description
 
-To allocate an exlusive GPU, you need only assign `volcano.sh/vgpu-number` without any other `volcano.sh/xxx` fields, as the example below:
+To allocate an exclusive GPU, you need only assign `volcano.sh/vgpu-number` without any other `volcano.sh/xxx` fields, as the example below:
 
 ```yaml
 apiVersion: v1

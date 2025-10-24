@@ -1,5 +1,5 @@
 ---
-title: Goverance
+title: Governance
 ---
 
 Heterogeneous AI Computing Virtualization Middleware (HAMi), formerly known as k8s-vGPU-scheduler, is an "all-in-one" tools designed to manage Heterogeneous AI Computing Devices in a k8s cluster
