@@ -160,7 +160,7 @@ spec:
           nvidia.com/gpumem: 10240 # Each vGPU contains 10240m device memory （Optional,Integer）
 ```
 
-#### 2. Verify in container resouce control {#verify-in-container-resouce-control}
+#### 2. Verify in container resource control {#verify-in-container-resource-control}
 
 Execute the following query command:
 

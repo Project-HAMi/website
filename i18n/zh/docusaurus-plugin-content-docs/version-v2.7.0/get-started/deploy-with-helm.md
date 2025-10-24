@@ -152,7 +152,7 @@ spec:
           nvidia.com/gpumem: 10240 # 每个 vGPU 包含 10240m 设备内存（可选，整型）
 ```
 
-#### 2. 验证容器内资源限制 {#verify-in-container-resouce-control}
+#### 2. 验证容器内资源限制 {#verify-in-container-resource-control}
 
 执行查询命令：
 

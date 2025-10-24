@@ -24,7 +24,7 @@ title: Enable Illuvatar GPU Sharing
 
 ## Enabling GPU-sharing Support
 
-* Deploy gpu-manager on iluvatar nodes (Please consult your device provider to aquire its package and document)
+* Deploy gpu-manager on iluvatar nodes (Please consult your device provider to acquire its package and document)
 
 > **NOTICE:** *Install only gpu-manager, don't install gpu-admission package.*
 

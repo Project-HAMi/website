@@ -79,7 +79,7 @@ Hence, if an issue is important it is important to advocate its priority early i
 
 <!-- ### Release Artifacts
 
-The HAMi container images are availble at `dockerHub`. 
+The HAMi container images are available at `dockerHub`. 
 You can visit `https://hub.docker.com/r/karmada/<component_name>` to see the details of images.
 For example, [here](https://hub.docker.com/r/karmada/karmada-controller-manager) for karmada-controller-manager.
 

@@ -22,7 +22,7 @@ title: Enable cambricon MLU sharing
 
 ## Enabling MLU-sharing Support
 
-* Contact your device provider to aquire cambricon-device-plugin>2.0.9, edit parameter `mode` to 'dynamic-smlu` in containers.args field.
+* Contact your device provider to acquire cambricon-device-plugin>2.0.9, edit parameter `mode` to 'dynamic-smlu` in containers.args field.
 
 ```
         args:

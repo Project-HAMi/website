@@ -285,7 +285,7 @@ module.exports = {
       "label": "Contributor Guide",
       "items": [
         "contributor/contributing",
-        "contributor/goverance",
+        "contributor/governance",
         "contributor/ladder"
       ]
     },

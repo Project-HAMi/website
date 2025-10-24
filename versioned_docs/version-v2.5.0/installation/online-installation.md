@@ -14,7 +14,7 @@ helm repo add hami-charts https://project-hami.github.io/HAMi/
 
 ## Get your kubernetes version
 
-kubenetes version is needed for properly installation. You can get this information by using the following command:
+kubernetes version is needed for properly installation. You can get this information by using the following command:
 
 ```
 kubectl version

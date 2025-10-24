@@ -1,5 +1,5 @@
 ---
-title: Contributer Ladder
+title: Contributor Ladder
 ---
 
 This docs different ways to get involved and level up within the project. You can see different roles within the project in the contributor roles.

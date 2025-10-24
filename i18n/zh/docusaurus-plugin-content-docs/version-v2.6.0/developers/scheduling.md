@@ -84,7 +84,7 @@ GPU spread，尽可能使用不同的 GPU 卡，例如：
 
 ### Node-scheduler-policy
 
-![node-shceduler-policy-demo.png](https://github.com/Project-HAMi/HAMi/raw/master/docs/develop/imgs/node-shceduler-policy-demo.png)
+![node-scheduler-policy-demo.png](https://github.com/Project-HAMi/HAMi/raw/master/docs/develop/imgs/node-scheduler-policy-demo.png)
 
 #### Binpack
 
@@ -236,7 +236,7 @@ gpu3 score: 200+100+200 = 500
 
 当Pod申请了多张卡（大于一张卡）时，会优先考虑得分最高的组合，得分越高，调度优先级越高。
 
-举例：Pod申请了3张卡时，以`gpu0，gpu1，gpu2`为例，得分计算方式为`totalScore = score（gpu0，gpu1）+ score（gpu0，gpu2）+ socre（gpu1，gpu2）`
+举例：Pod申请了3张卡时，以`gpu0，gpu1，gpu2`为例，得分计算方式为`totalScore = score（gpu0，gpu1）+ score（gpu0，gpu2）+ score（gpu1，gpu2）`
 1. gpu0，gpu1，gpu2 得分如下
 ```
    (gpu0, gpu1, gpu2) totalScore: 100+100+200 = 400

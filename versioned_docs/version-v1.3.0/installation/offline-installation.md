@@ -21,8 +21,8 @@ Load these images, tag these images with your inner registry, and push them into
 docker load -i {HAMi_image}.tar
 docker tag projecthami/hami:{HAMi version} {your_inner_registry}/hami:{HAMi version} 
 docker push {your_inner_registry}/hami:{HAMi version}
-docker tag docker.io/jettech/kube-webhook-certgen:v1.5.2 {your inner_regisry}/kube-webhook-certgen:v1.5.2
-docker push {your inner_regisry}/kube-webhook-certgen:v1.5.2
+docker tag docker.io/jettech/kube-webhook-certgen:v1.5.2 {your inner_registry}/kube-webhook-certgen:v1.5.2
+docker push {your inner_registry}/kube-webhook-certgen:v1.5.2
 docker tag liangjw/kube-webhook-certgen:v1.1.1 {your_inner_registry}/kube-webhook-certgen:v1.1.1
 docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:{your kubernetes version} {your_inner_registry}/kube-scheduler:{your kubernetes version}
 docker push {your_inner_registry}/kube-scheduler:{your kubernetes version}  
@@ -30,7 +30,7 @@ docker push {your_inner_registry}/kube-scheduler:{your kubernetes version}
 
 ## Prepare HAMi chart
 
-Download the charts folder from [github](https://github.com/Project-HAMi/HAMi/tree/master/charts), place it into $\{CHART_PATH\} inside cluser, then edit the following fields in $\{CHART_PATH\}/hami/values.yaml. 
+Download the charts folder from [github](https://github.com/Project-HAMi/HAMi/tree/master/charts), place it into $\{CHART_PATH\} inside cluster, then edit the following fields in $\{CHART_PATH\}/hami/values.yaml. 
 
 ```
 scheduler.kubeScheduler.image
@@ -54,4 +54,4 @@ execute the following command
 kubectl get pods -n kube-system
 ```
 
-If you can see both the 'device-plugin' and 'schduler' running, then HAMi is installed successfully,
+If you can see both the 'device-plugin' and 'scheduler' running, then HAMi is installed successfully,

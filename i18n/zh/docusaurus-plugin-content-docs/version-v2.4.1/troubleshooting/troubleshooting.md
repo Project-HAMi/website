@@ -35,7 +35,7 @@ The cause of the problem was that the firewall did not close the already existin
 
 ```
 # ens192 is the name of the network-card used by the member cluster to communicate with karmada.
-tcpkill -9  -i ens192 src host ${KARMADA_APISERVER_IP} and dst port ${MEMBER_CLUTER_APISERVER_IP}
+tcpkill -9  -i ens192 src host ${KARMADA_APISERVER_IP} and dst port ${MEMBER_CLUSTER_APISERVER_IP}
 ```
 
 

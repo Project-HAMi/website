@@ -40,7 +40,7 @@ the GPU device plugin (gpu-device) handles fine-grained allocation based on the 
 
 ## Enabling topo-awareness scheduling
 
-* Deploy Metax GPU Extensions on metax nodes (Please consult your device provider to aquire its package and document)
+* Deploy Metax GPU Extensions on metax nodes (Please consult your device provider to acquire its package and document)
 
 * Deploy HAMi according to README.md
 
