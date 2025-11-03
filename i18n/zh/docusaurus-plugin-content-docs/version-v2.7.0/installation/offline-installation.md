@@ -22,8 +22,8 @@ registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:{您的 kuber
 docker load -i {HAMi_image}.tar
 docker tag projecthami/hami:{HAMi 版本} {your_inner_registry}/hami:{HAMi 版本} 
 docker push {your_inner_registry}/hami:{HAMi 版本}
-docker tag docker.io/jettech/kube-webhook-certgen:v1.5.2 {your inner_regisry}/kube-webhook-certgen:v1.5.2
-docker push {your inner_regisry}/kube-webhook-certgen:v1.5.2
+docker tag docker.io/jettech/kube-webhook-certgen:v1.5.2 {your inner_registry}/kube-webhook-certgen:v1.5.2
+docker push {your inner_registry}/kube-webhook-certgen:v1.5.2
 docker tag liangjw/kube-webhook-certgen:v1.1.1 {your_inner_registry}/kube-webhook-certgen:v1.1.1
 docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:{您的 kubernetes 版本} {your_inner_registry}/kube-scheduler:{您的 kubernetes 版本}
 docker push {your_inner_registry}/kube-scheduler:{您的 kubernetes 版本}  

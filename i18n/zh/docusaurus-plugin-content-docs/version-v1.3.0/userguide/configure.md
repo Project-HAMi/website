@@ -18,11 +18,11 @@ You can update these configurations using one of the following methods:
 2. Modify Helm Chart: Update the corresponding values in the [ConfigMap](https://raw.githubusercontent.com/archlitchi/HAMi/refs/heads/master/charts/hami/templates/scheduler/device-configmap.yaml), then reapply the Helm Chart to regenerate the ConfigMap.
 
 * `nvidia.deviceMemoryScaling:` 
-  Float type, by default: 1. The ratio for NVIDIA device memory scaling, can be greater than 1 (enable virtual device memory, experimental feature). For NVIDIA GPU with *M* memory, if we set `nvidia.deviceMemoryScaling` argument to *S*, vGPUs splitted by this GPU will totally get `S * M` memory in Kubernetes with our device plugin.
+  Float type, by default: 1. The ratio for NVIDIA device memory scaling, can be greater than 1 (enable virtual device memory, experimental feature). For NVIDIA GPU with *M* memory, if we set `nvidia.deviceMemoryScaling` argument to *S*, vGPUs split by this GPU will totally get `S * M` memory in Kubernetes with our device plugin.
 * `nvidia.deviceSplitCount:` 
   Integer type, by default: equals 10. Maximum tasks assigned to a simple GPU device.
 * `nvidia.migstrategy:`
-  String type, "none" for ignoring MIG features or "mixed" for allocating MIG device by seperate resources. Default "none"
+  String type, "none" for ignoring MIG features or "mixed" for allocating MIG device by separate resources. Default "none"
 * `nvidia.disablecorelimit:`
   String type, "true" for disable core limit, "false" for enable core limit, default: false
 * `nvidia.defaultMem:` 
@@ -87,13 +87,13 @@ helm install hami hami-charts/hami --set devicePlugin.deviceMemoryScaling=5 ...
 * `GPU_CORE_UTILIZATION_POLICY:`
   String type, "default", "force", "disable"
   default: "default"
-  "default" means the dafault utilization policy
+  "default" means the default utilization policy
   "force" means the container will always limit the core utilization below "nvidia.com/gpucores"
   "disable" means the container will ignore the utilization limitation set by "nvidia.com/gpucores" during task execution
 * `CUDA_DISABLE_CONTROL`
   Bool type, "true","false"
   default: false
-  "true" means the HAMi-core will not be used inside container, as a result, there will be no resource isolation and limitaion in that container, only for debug. 
+  "true" means the HAMi-core will not be used inside container, as a result, there will be no resource isolation and limitation in that container, only for debug. 
 
 
   

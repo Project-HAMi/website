@@ -21,7 +21,7 @@ translated: true
 
 ### Enabling GPU-sharing Support
 
-* Deploy Metax GPU Operator on metax nodes (Please consult your device provider to aquire its package and document)
+* Deploy Metax GPU Operator on metax nodes (Please consult your device provider to acquire its package and document)
 
 * Deploy HAMi according to README.md
 

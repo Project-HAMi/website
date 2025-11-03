@@ -2,7 +2,7 @@
 title: Device resource isolation
 ---
 
-A simple demostration for device isolation:
+A simple demonstration for device isolation:
 A task with the following resources.
 
 ```

@@ -1600,7 +1600,7 @@ type DevicePluginServer interface {
  // Plugin can run device specific operations and instruct Kubelet
  // of the steps to make the Device available in the container
  Allocate(context.Context, *AllocateRequest) (*AllocateResponse, error)
- // PreStartContainer is called, if indicated by Device Plugin during registeration phase,
+ // PreStartContainer is called, if indicated by Device Plugin during registration phase,
  // before each container start. Device plugin can run device specific operations
  // such as resetting the device before making devices available to the container
  PreStartContainer(context.Context, *PreStartContainerRequest) (*PreStartContainerResponse, error)
@@ -1678,7 +1678,7 @@ func (plugin *NvidiaDevicePlugin) WatchAndRegister() {
  errorSleepInterval := time.Second * 5
  successSleepInterval := time.Second * 30
  for {
-  err := plugin.RegistrInAnnotation()
+  err := plugin.RegisterInAnnotation()
   if err != nil {
    klog.Errorf("Failed to register annotation: %v", err)
    klog.Infof("Retrying in %v seconds...", errorSleepInterval)
@@ -1692,7 +1692,7 @@ func (plugin *NvidiaDevicePlugin) WatchAndRegister() {
 ```
 
 ```golang
-func (plugin *NvidiaDevicePlugin) RegistrInAnnotation() error {
+func (plugin *NvidiaDevicePlugin) RegisterInAnnotation() error {
  devices := plugin.getAPIDevices()
  klog.InfoS("start working on the devices", "devices", devices)
  annos := make(map[string]string)

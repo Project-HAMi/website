@@ -11,7 +11,7 @@ For example, a task with the following annotation will be assigned to A100 or V1
 ```
 metadata:
   annotations:
-    nvidia.com/use-gputype: "A100,V100" # Specify the card type for this job, use comma to seperate, will not launch job on non-specified card
+    nvidia.com/use-gputype: "A100,V100" # Specify the card type for this job, use comma to separate, will not launch job on non-specified card
 ```
 
 A task may use `nvidia.com/nouse-gputype` to evade certain type of GPU. In this following example, that job won't be assigned to 1080(include 1080Ti) or 2080(include 2080Ti) type of card. 
@@ -19,5 +19,5 @@ A task may use `nvidia.com/nouse-gputype` to evade certain type of GPU. In this 
 ```
 metadata:
   annotations:
-    nvidia.com/nouse-gputype: "1080,2080" # Specify the blacklist card type for this job, use comma to seperate, will not launch job on specified card
+    nvidia.com/nouse-gputype: "1080,2080" # Specify the blacklist card type for this job, use comma to separate, will not launch job on specified card
 ```

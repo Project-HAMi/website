@@ -59,7 +59,7 @@ author: elrond.wang
 ## Pod 调度流程
 
 - 用户发送创建 Pod 请求到 kube-apiserver
-- 触发 Adminssion Webhook，更新 Pod 中 schedulerName
+- 触发 Admission Webhook，更新 Pod 中 schedulerName
 - kube-apiserver 根据 schedulerName 将请求发送给调度器处理
 - 调度器处理
   - 收集 Node device 信息 -- 通过 node annotation 收集，数据来自 daemonSet `hami-device-plugin` 定时写入
@@ -117,7 +117,7 @@ Pod 创建状态显示 `UnexpectedAdmissionError`
 
 ### MutatingWebhook
 
-K8s 提供了 adminssionWebhook 资源, 以 k8s 资源操作为触发器，触发 hook，用途最广泛的为针对
+K8s 提供了 admissionWebhook 资源, 以 k8s 资源操作为触发器，触发 hook，用途最广泛的为针对
 Pod 创建做拦截，对 Pod 做 YAML 注入，具体的例如增加 init 容器注入文件等等。
 
 #### Webhook 配置
@@ -293,7 +293,7 @@ func (dev *NvidiaGPUDevices) MutateAdmission(ctr *corev1.Container, p *corev1.Po
 
 主要比对 Pod 的 Resources Limit 中有没有包含 `device-config.yaml` 的配置，如果有走 hami 调度流程
 
-`deivce-config` 以英伟达显卡为例：
+`device-config` 以英伟达显卡为例：
 
 ```yaml
 nvidia:
@@ -1598,7 +1598,7 @@ type DevicePluginServer interface {
  // Plugin can run device specific operations and instruct Kubelet
  // of the steps to make the Device available in the container
  Allocate(context.Context, *AllocateRequest) (*AllocateResponse, error)
- // PreStartContainer is called, if indicated by Device Plugin during registeration phase,
+ // PreStartContainer is called, if indicated by Device Plugin during registration phase,
  // before each container start. Device plugin can run device specific operations
  // such as resetting the device before making devices available to the container
  PreStartContainer(context.Context, *PreStartContainerRequest) (*PreStartContainerResponse, error)
@@ -1676,7 +1676,7 @@ func (plugin *NvidiaDevicePlugin) WatchAndRegister() {
  errorSleepInterval := time.Second * 5
  successSleepInterval := time.Second * 30
  for {
-  err := plugin.RegistrInAnnotation()
+  err := plugin.RegisterInAnnotation()
   if err != nil {
    klog.Errorf("Failed to register annotation: %v", err)
    klog.Infof("Retrying in %v seconds...", errorSleepInterval)
@@ -1690,7 +1690,7 @@ func (plugin *NvidiaDevicePlugin) WatchAndRegister() {
 ```
 
 ```golang
-func (plugin *NvidiaDevicePlugin) RegistrInAnnotation() error {
+func (plugin *NvidiaDevicePlugin) RegisterInAnnotation() error {
  devices := plugin.getAPIDevices()
  klog.InfoS("start working on the devices", "devices", devices)
  annos := make(map[string]string)
@@ -1787,7 +1787,7 @@ func (plugin *NvidiaDevicePlugin) getAPIDevices() *[]*util.DeviceInfo {
 ```
 
 这里通过 nvidia 驱动获取设备信息，需要注意的是这里有配置 DeviceMemoryScaling，内存超分配置，
-这里是通过命令行启动的 --config-file 参数指定的 schduler 配置和代码中固化的
+这里是通过命令行启动的 --config-file 参数指定的 scheduler 配置和代码中固化的
 `config/config.json` 来取值的，其中 config/config.json 优先级大于 --config-file
 
 到这里，调度所需的所有东西就准备好了，Pod 可以顺利被分配到合适的节点上。

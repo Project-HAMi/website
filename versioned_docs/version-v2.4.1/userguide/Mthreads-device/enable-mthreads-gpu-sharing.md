@@ -29,7 +29,7 @@ title: Enable Mthreads GPU sharing
 
 ## Enabling GPU-sharing Support
 
-* Deploy MT-CloudNative Toolkit on mthreads nodes (Please consult your device provider to aquire its package and document)
+* Deploy MT-CloudNative Toolkit on mthreads nodes (Please consult your device provider to acquire its package and document)
 
 > **NOTICE:** *You can remove mt-mutating-webhook and mt-gpu-scheduler after installation(optional).*
 
