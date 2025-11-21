@@ -164,7 +164,8 @@ Device Plugins can only report a single resource type. GPU memory and compute in
 
 **Why does the Node Capacity show `volcano.sh/vgpu-number` and `volcano.sh/vgpu-memory` when using `volcano-vgpu-device-plugin`?**
 
-- The `volcano-vgpu-device-plugin` patches `volcano.sh/vgpu-number` and `volcano.sh/vgpu-memory` into Node Capacity and Allocatable via Kubernetes APIs instead of standard Device Plugin interfaces. Note that resources registered outside the kubelet’s standard mechanisms cannot be automatically updated or reclaimed by kubelet.
+- volcano-vgpu-device-plugin creates  **[three independent Device Plugin instances](https://github.com/Project-HAMi/volcano-vgpu-device-plugin/blob/2bf6dfe37f7b716f05d0d3210f89898087c06d99/pkg/plugin/vgpu/mig-strategy.go#L65-L85)** , each registering with kubelet for volcano.sh/vgpu-number, volcano.sh/vgpu-memory, and volcano.sh/vgpu-cores resources respectively. After kubelet receives the registration, it automatically writes the resources into Capacity and Allocatable.
+- **Note** : volcano.sh/vgpu-memory resource is subject to Kubernetes extended resources quantity limit (**maximum 32,767** ). For GPUs with large memory (e.g., A100 80GB), configure the `--gpu-memory-factor` parameter to avoid exceeding the limit.
 
 
 ## Why don’t some domestic vendors require a runtime for installation?

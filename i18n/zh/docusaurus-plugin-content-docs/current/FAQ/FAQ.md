@@ -158,8 +158,8 @@ Kubernetes 的 Device Plugin 每次只能上报一种资源类型。HAMi 将核�
 
 **为什么使用 `volcano-vgpu-device-plugin` 时 Node Capacity 中会出现 `volcano.sh/vgpu-number` 和 `volcano.sh/vgpu-memory`？**
 
-- `volcano-vgpu-device-plugin` 是通过 Kubernetes API **直接补丁方式**将 `volcano.sh/vgpu-number` 和 `volcano.sh/vgpu-memory` 写入 Node 的 `capacity` 和 `allocatable` 字段中，而不是通过标准的 Device Plugin 接口进行注册。  
-- **注意**：通过这种方式注册的资源并不受 kubelet 的标准机制管理，**kubelet 无法自动更新或释放这些资源**。
+- `volcano-vgpu-device-plugin` 创建了[三个独立的 Device Plugin 实例](https://github.com/Project-HAMi/volcano-vgpu-device-plugin/blob/2bf6dfe37f7b716f05d0d3210f89898087c06d99/pkg/plugin/vgpu/mig-strategy.go#L65-L85)，分别向 kubelet 注册 `volcano.sh/vgpu-number`、`volcano.sh/vgpu-memory`、`volcano.sh/vgpu-cores` 三种资源。kubelet 接收注册后，自动将资源写入 Capacity 和 Allocatable。
+- **提示**：`volcano.sh/vgpu-memory` 资源受 Kubernetes 扩展资源数量限制（最大 32767）。对于大显存 GPU（如 A100 80GB），需要配置 --gpu-memory-factor 参数避免超限。
 
 ---
 
