@@ -390,7 +390,7 @@ metadata:
 - bind: 为 Pod 创建一个 binding 资源
 
 调度时会根据拓展点顺序来调用拓展调度器的实现，这里会先调用
-`https://127.0.0.1:443/filter`，再调用 `https://127.0.0.1:443/filter`
+`https://127.0.0.1:443/filter`，再调用 `https://127.0.0.1:443/bind`
 
 #### 拓展调度器 HTTP Server 启动
 
