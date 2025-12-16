@@ -69,6 +69,7 @@ HAMi 目前有一个 [内置的 mig 配置](https://github.com/Project-HAMi/HAMi
       defaultMemory: 0
       defaultCores: 0
       defaultGPUNum: 1
+      memoryFactor: 1
       deviceSplitCount: {{ .Values.devicePlugin.deviceSplitCount }}
       deviceMemoryScaling: {{ .Values.devicePlugin.deviceMemoryScaling }}
       deviceCoreScaling: {{ .Values.devicePlugin.deviceCoreScaling }}

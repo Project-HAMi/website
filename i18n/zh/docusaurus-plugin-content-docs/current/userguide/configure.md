@@ -32,6 +32,7 @@ translated: true
 | `nvidia.defaultMem` | 整数 | 当前任务默认使用的设备显存（MB）。若为 `0`，则表示使用设备 100% 显存。 | `0` |
 | `nvidia.defaultCores` | 整数 | 当前任务默认预留的 GPU 核心百分比。`0` 表示只要显存够就可用任何 GPU；`100` 表示独占整块 GPU。 | `0` |
 | `nvidia.defaultGPUNum` | 整数 | 默认分配的 GPU 数量。若设为 `0`，则会被过滤。如果 Pod 的资源未显式设置 `nvidia.com/gpu`，则 webhook 会检查是否设置了 `nvidia.com/gpumem`、`resource-mem-percentage` 或 `nvidia.com/gpucores`，若设置了其中任一项，则自动添加默认值的 `nvidia.com/gpu`。 | `1` |
+| `nvidia.memoryFactor` | 整数 | 在资源申请时`nvidia.com/gpumem`的真实值会放大相应的倍数。如果部署了`mock-device-plugin`, 在`node.status.capacity`的真实值也会放大对应的倍数。 | `1` |
 | `nvidia.resourceCountName` | 字符串 | vGPU 数量的资源名。 | `"nvidia.com/gpu"` |
 | `nvidia.resourceMemoryName` | 字符串 | vGPU 显存大小的资源名。 | `"nvidia.com/gpumem"` |
 | `nvidia.resourceMemoryPercentageName` | 字符串 | vGPU 显存比例的资源名。 | `"nvidia.com/gpumem-percentage"` |

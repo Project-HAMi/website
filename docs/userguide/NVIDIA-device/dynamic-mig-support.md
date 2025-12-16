@@ -73,6 +73,7 @@ nvidia:
   defaultMemory: 0
   defaultCores: 0
   defaultGPUNum: 1
+  memoryFactor: 1
   deviceSplitCount: { { .Values.devicePlugin.deviceSplitCount } }
   deviceMemoryScaling: { { .Values.devicePlugin.deviceMemoryScaling } }
   deviceCoreScaling: { { .Values.devicePlugin.deviceCoreScaling } }
