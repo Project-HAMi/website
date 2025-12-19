@@ -70,12 +70,12 @@ module.exports = {
                 "userguide/NVIDIA-device/examples/use-exclusive-card",
                 "userguide/NVIDIA-device/examples/allocate-device-memory",
                 "userguide/NVIDIA-device/examples/allocate-device-memory2",
-		            "userguide/NVIDIA-device/examples/allocate-device-core",
+                "userguide/NVIDIA-device/examples/allocate-device-core",
                 "userguide/NVIDIA-device/examples/specify-card-type-to-use",
                 "userguide/NVIDIA-device/examples/specify-certain-card",
                 "userguide/NVIDIA-device/examples/dynamic-mig-example"
               ]
-            } 
+            }
           ]
         },
         {
@@ -185,7 +185,7 @@ module.exports = {
                 "userguide/Kunlunxin-device/examples/allocate_vxpu"
               ]
             }
-          ] 
+          ]
         },
         {
           "type": "category",
@@ -242,7 +242,7 @@ module.exports = {
                 "userguide/Ascend-device/examples/allocate-exclusive"
               ]
             }
-          ] 
+          ]
         },
         {
           "type": "category",
@@ -260,12 +260,26 @@ module.exports = {
                   "items": [
                     "userguide/volcano-vgpu/NVIDIA-GPU/examples/default_use",
                     "userguide/volcano-vgpu/NVIDIA-GPU/examples/use_exclusive_gpu"
-                  ] 
+                  ]
                 }
               ]
             }
-          ] 
-        } 
+          ]
+        },
+        {
+          "type": "category",
+          "label": "Usring HAMi with Kueue",
+          "items": [
+            "userguide/Kueue/how-to-use-kueue",
+            {
+              "type": "category",
+              "label": "Examples",
+              "items": [
+                "userguide/Kueue/examples/defalt_use",
+              ]
+            }
+          ]
+        },
       ]
     },
     {
