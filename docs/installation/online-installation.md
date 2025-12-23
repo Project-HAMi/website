@@ -26,7 +26,7 @@ Ensure the `scheduler.kubeScheduler.imageTag` matches your Kubernetes server ver
 For instance, if your cluster server is v1.16.8, use the following command to deploy:
 
 ```bash
-helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag=v1.16.8 -n kube-system
+helm install hami hami-charts/hami --set scheduler.kubeScheduler.image.tag=v1.16.8 -n kube-system
 ```
 
 Customize your installation by editing the [configurations](../userguide/configure.md).
