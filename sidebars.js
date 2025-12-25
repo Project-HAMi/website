@@ -268,7 +268,7 @@ module.exports = {
         },
         {
           "type": "category",
-          "label": "Usring HAMi with Kueue",
+          "label": "Using HAMi with Kueue",
           "items": [
             "userguide/Kueue/how-to-use-kueue",
             {
