@@ -36,7 +36,8 @@ module.exports = {
         "installation/webui-installation",
         "installation/how-to-use-volcano-vgpu",
         "installation/how-to-use-volcano-ascend",
-        "installation/aws-installation"
+        "installation/aws-installation",
+        "installation/how-to-use-hami-dra"
       ]
     },
     {
@@ -57,6 +58,7 @@ module.exports = {
           "type": "category",
           "label": "Share NVIDIA GPU devices",
           "items": [
+            "userguide/NVIDIA-device/dynamic-resource-allocation",
             "userguide/NVIDIA-device/dynamic-mig-support",
             "userguide/NVIDIA-device/specify-device-memory-usage",
             "userguide/NVIDIA-device/specify-device-core-usage",
