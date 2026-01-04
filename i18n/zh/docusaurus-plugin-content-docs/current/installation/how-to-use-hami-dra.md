@@ -22,7 +22,7 @@ helm dependency build
 ```
 
 然后用以下命令进行安装：
-``` bash
+```bash
 helm install hami hami-charts/hami --set dra.enable=true -n hami-system
 ```
 
