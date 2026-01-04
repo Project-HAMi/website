@@ -16,7 +16,7 @@ By installing the [HAMi DRA webhook](https://github.com/Project-HAMi/HAMi-DRA) i
 
 You can use the following commands to add the HAMi chart repository and update dependencies:
 
-``` bash
+```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/
 helm dependency build
 ```
