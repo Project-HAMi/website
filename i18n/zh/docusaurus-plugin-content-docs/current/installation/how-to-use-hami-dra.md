@@ -16,7 +16,7 @@ HAMi 已经提供了对 K8s [DRA](https://kubernetes.io/docs/concepts/scheduling
 
 您可以使用以下命令添加 HAMi 图表仓库并更新依赖：
 
-``` bash
+```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/
 helm dependency build
 ```
