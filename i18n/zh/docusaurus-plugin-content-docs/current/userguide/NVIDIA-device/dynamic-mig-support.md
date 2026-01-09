@@ -25,10 +25,11 @@ translated: true
 
 ## 启用 Dynamic-mig 支持
 
-* 使用 helm 安装 chart，参见[此处](https://github.com/Project-HAMi/HAMi#enabling-vgpu-support-in-kubernetes)的“在 Kubernetes 中启用 vGPU 支持”部分
+* 使用 Helm 安装 Chart，参见[此处](https://github.com/Project-HAMi/HAMi#enabling-vgpu-support-in-kubernetes)的“在 Kubernetes 中启用 vGPU 支持”部分
 
-* 在 device-plugin configMap 中将 `mode` 配置为 `mig` 以支持 MIG 节点
-```
+* 在 device-plugin ConfigMap 中将 `mode` 配置为 `mig` 以支持 MIG 节点
+
+```bash
 kubectl describe cm  hami-device-plugin -n kube-system
 ```
 
@@ -47,94 +48,91 @@ kubectl describe cm  hami-device-plugin -n kube-system
 }
 ```
 
-* 重启以下 pod 以使更改生效：
-  * hami-scheduler 
+* 重启以下 Pod 以使更改生效：
+  * hami-scheduler
   * 'MIG-NODE-A' 上的 hami-device-plugin
 
-## 自定义 mig 配置（可选）
-HAMi 目前有一个 [内置的 mig 配置](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/templates/scheduler/device-configmap.yaml) 用于 MIG。
+## 自定义 MIG 配置（可选）
 
-您可以按照以下步骤自定义 mig 配置：
+HAMi 目前有一个 [内置的 MIG 配置](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/templates/scheduler/device-configmap.yaml) 用于 MIG。
 
-  ### 更改 charts/hami/templates/scheduler 中 'device-configmap.yaml' 的内容，如下所示
+您可以按照以下步骤自定义 MIG 配置：
 
-  ```yaml
-    nvidia:
-      resourceCountName: {{ .Values.resourceName }}
-      resourceMemoryName: {{ .Values.resourceMem }}
-      resourceMemoryPercentageName: {{ .Values.resourceMemPercentage }}
-      resourceCoreName: {{ .Values.resourceCores }}
-      resourcePriorityName: {{ .Values.resourcePriority }}
-      overwriteEnv: false
-      defaultMemory: 0
-      defaultCores: 0
-      defaultGPUNum: 1
-      memoryFactor: 1
-      deviceSplitCount: {{ .Values.devicePlugin.deviceSplitCount }}
-      deviceMemoryScaling: {{ .Values.devicePlugin.deviceMemoryScaling }}
-      deviceCoreScaling: {{ .Values.devicePlugin.deviceCoreScaling }}
-      knownMigGeometries:
-      - models: [ "A30" ]
-        allowedGeometries:
-          - 
-            - name: 1g.6gb
-              memory: 6144
-              count: 4
-          - 
-            - name: 2g.12gb
-              memory: 12288
-              count: 2
-          - 
-            - name: 4g.24gb
-              memory: 24576
-              count: 1
-      - models: [ "A100-SXM4-40GB", "A100-40GB-PCIe", "A100-PCIE-40GB", "A100-SXM4-40GB" ]
-        allowedGeometries:
-          - 
-            - name: 1g.5gb
-              memory: 5120
-              count: 7
-          - 
-            - name: 2g.10gb
-              memory: 10240
-              count: 3
-            - name: 1g.5gb
-              memory: 5120
-              count: 1
-          - 
-            - name: 3g.20gb
-              memory: 20480
-              count: 2
-          - 
-            - name: 7g.40gb
-              memory: 40960
-              count: 1
-      - models: [ "A100-SXM4-80GB", "A100-80GB-PCIe", "A100-PCIE-80GB"]
-        allowedGeometries:
-          - 
-            - name: 1g.10gb
-              memory: 10240
-              count: 7
-          - 
-            - name: 2g.20gb
-              memory: 20480
-              count: 3
-            - name: 1g.10gb
-              memory: 10240
-              count: 1
-          - 
-            - name: 3g.40gb
-              memory: 40960
-              count: 2
-          - 
-            - name: 7g.79gb
-              memory: 80896
-              count: 1
-  ```
+### 更改 charts/hami/templates/scheduler 中 'device-configmap.yaml'
 
-  > **注意** Helm 安装和更新将基于此文件中的配置，覆盖 Helm 的内置配置
+```yaml
+nvidia:
+  resourceCountName: { { .Values.resourceName } }
+  resourceMemoryName: { { .Values.resourceMem } }
+  resourceMemoryPercentageName: { { .Values.resourceMemPercentage } }
+  resourceCoreName: { { .Values.resourceCores } }
+  resourcePriorityName: { { .Values.resourcePriority } }
+  overwriteEnv: false
+  defaultMemory: 0
+  defaultCores: 0
+  defaultGPUNum: 1
+  memoryFactor: 1
+  deviceSplitCount: { { .Values.devicePlugin.deviceSplitCount } }
+  deviceMemoryScaling: { { .Values.devicePlugin.deviceMemoryScaling } }
+  deviceCoreScaling: { { .Values.devicePlugin.deviceCoreScaling } }
+  knownMigGeometries:
+    - models: ["A30"]
+      allowedGeometries:
+        - name: 1g.6gb
+          memory: 6144
+          count: 4
+        - name: 2g.12gb
+          memory: 12288
+          count: 2
+        - name: 4g.24gb
+          memory: 24576
+          count: 1
 
-  > **注意** 请注意 HAMi 将按照此 configMap 的顺序找到并使用适合任务的第一个 MIG 模板
+    - models:
+        ["A100-SXM4-40GB", "A100-40GB-PCIe", "A100-PCIE-40GB", "A100-SXM4-40GB"]
+      allowedGeometries:
+        - name: 1g.5gb
+          memory: 5120
+          count: 7
+        - name: 2g.10gb
+          memory: 10240
+          count: 3
+        - name: 1g.5gb
+          memory: 5120
+          count: 1
+        - name: 3g.20gb
+          memory: 20480
+          count: 2
+        - name: 7g.40gb
+          memory: 40960
+          count: 1
+
+    - models: ["A100-SXM4-80GB", "A100-80GB-PCIe", "A100-PCIE-80GB"]
+      allowedGeometries:
+        - name: 1g.10gb
+          memory: 10240
+          count: 7
+        - name: 2g.20gb
+          memory: 20480
+          count: 3
+        - name: 1g.10gb
+          memory: 10240
+          count: 1
+        - name: 3g.40gb
+          memory: 40960
+          count: 2
+        - name: 7g.79gb
+          memory: 80896
+          count: 1
+```
+
+:::note
+
+Helm 安装和更新将基于此文件中的配置，覆盖 Helm 的内置配置。
+
+请注意 HAMi 将按照此 ConfigMap 的顺序找到并使用适合任务的第一个 MIG 模板。
+
+:::
 
 ## 运行 MIG 作业
 
@@ -158,7 +156,7 @@ spec:
           nvidia.com/gpumem: 8000
 ```
 
-在上面的示例中，任务分配了两个 mig 实例，每个实例至少具有 8G 设备内存。
+在上面的示例中，任务分配了两个 MIG 实例，每个实例至少具有 8G 设备内存。
 
 ## 监控 MIG 实例
 
@@ -173,10 +171,12 @@ nodeGPUMigInstance{deviceidx="1",deviceuuid="GPU-30f90f49-43ab-0a78-bf5c-93ed41e
 nodeGPUMigInstance{deviceidx="1",deviceuuid="GPU-30f90f49-43ab-0a78-bf5c-93ed41ef2da2",migname="3g.20gb-1",nodeid="aio-node15",zone="vGPU"} 1
 ```
 
-## 注意事项
+:::note
 
 1. 您无需在 MIG 节点上执行任何操作，所有操作均由 hami-device-plugin 中的 mig-parted 管理。
 
-2. Ampere 架构之前的 Nvidia 设备无法使用 'mig' 模式
+2. Ampere 架构之前的 NVIDIA 设备无法使用 MIG 模式
 
-3. 您不会在节点上看到任何 mig 资源（即 `nvidia.com/mig-1g.10gb`），hami 对 'mig' 和 'hami-core' 节点使用统一的资源名称。
+3. 您不会在节点上看到任何 MIG 资源（即 `nvidia.com/mig-1g.10gb`），HAMi 对 MIG 和 hami-core 节点使用统一的资源名称。
+
+:::

@@ -5,14 +5,16 @@ translated: true
 
 # Volcano vgpu 设备插件用于 Kubernetes
 
-**注意**：
+:::note
 
 使用 volcano-vgpu 时，**不需要** 安装 HAMi，仅使用  
-[Volcano vgpu device-plugin](https://github.com/Project-HAMi/volcano-vgpu-device-plugin) 即可。它可以为由 volcano 管理的 NVIDIA 设备提供设备共享机制。
+[Volcano vGPU device-plugin](https://github.com/Project-HAMi/volcano-vgpu-device-plugin) 即可。它可以为由 Volcano 管理的 NVIDIA 设备提供设备共享机制。
 
 该插件基于 [Nvidia Device Plugin](https://github.com/NVIDIA/k8s-device-plugin)，并使用 [HAMi-core](https://github.com/Project-HAMi/HAMi-core) 实现对 GPU 卡的硬隔离支持。
 
-Volcano vgpu 仅在 volcano > 1.9 版本中可用。
+Volcano vGPU 仅在 Volcano v1.9 及更高版本中可用。
+
+:::
 
 ## 快速开始
 
@@ -101,9 +103,9 @@ status:
     volcano.sh/gpu-number: "10"   # vGPU 资源
 ```
 
-### 运行 VGPU 作业
+### 运行 vGPU 作业
 
-可以通过在 `resources.limits` 中设置 `volcano.sh/vgpu-number`、`volcano.sh/vgpu-cores` 和 `volcano.sh/vgpu-memory` 来请求 VGPU：
+可以通过在 `resources.limits` 中设置 `volcano.sh/vgpu-number`、`volcano.sh/vgpu-cores` 和 `volcano.sh/vgpu-memory` 来请求 vGPU：
 
 ```bash
 cat <<EOF | kubectl apply -f -
@@ -121,16 +123,19 @@ spec:
         limits:
           volcano.sh/vgpu-number: 2        # 请求 2 张 GPU 卡
           volcano.sh/vgpu-memory: 3000     # （可选）每个 vGPU 使用 3G 显存
-          volcano.sh/vgpu-cores: 50        # （可选）每个 vGPU 使用 50% 核心
+          volcano.sh/vgpu-cores: 50        # （可选）每个 vGPU 使用 50% 核
 EOF
 ```
 
 你可以在容器内使用 `nvidia-smi` 验证设备显存使用情况：
 
-> **⚠️ 警告：**  
-> 如果你在使用 device plugin 配合 NVIDIA 镜像时未显式请求 GPU，  
-> 那么该节点上所有 GPU 都会暴露在你的容器中。  
-> 容器中使用的 vGPU 数量不能超过该节点上的 GPU 总数。
+:::warning
+
+如果你在使用 device-plugin 配合 NVIDIA 镜像时未显式请求 GPU，  
+那么该节点上所有 GPU 都会暴露在你的容器中。  
+容器中使用的 vGPU 数量不能超过该节点上的 GPU 总数。
+
+:::
 
 ### 监控
 
