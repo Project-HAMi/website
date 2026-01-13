@@ -33,3 +33,11 @@ DRA 功能的实现需要对应设备的 DRA Driver 提供支持，目前支持�
 * [NVIDIA GPU](../userguide/NVIDIA-device/dynamic-resource-allocation.md)
 
 请参照对应的页面安装设备驱动。
+
+## 查看监控
+
+HAMi DRA 提供了与传统模式相同的监控功能，安装 HAMi DRA 时会默认启用监控服务，你可以将监控服务通过 NodePort 暴露到本地，或者添加 Prometheus 采集来访问监控指标。
+
+你可以在 [这里](../userguide/monitoring/device-allocation.md) 查看 HAMi DRA 提供的监控指标。
+
+更多信息请参考 [HAMi DRA monitor](https://github.com/Project-HAMi/HAMi-DRA/blob/main/docs/MONITOR.md)
