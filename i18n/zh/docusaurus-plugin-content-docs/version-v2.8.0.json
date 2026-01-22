@@ -1,0 +1,86 @@
+{
+  "version.label": {
+    "message": "下一个",
+    "description": "The label for version current"
+  },
+  "sidebar.docs.category.Core Concepts": {
+    "message": "核心概念",
+    "description": "The label for category Core Concepts in sidebar docs"
+  },
+  "sidebar.docs.category.Get Started": {
+    "message": "开始使用",
+    "description": "The label for category Get Started in sidebar docs"
+  },
+  "sidebar.docs.category.Installation": {
+    "message": "安装",
+    "description": "The label for category Installation in sidebar docs"
+  },
+  "sidebar.docs.category.User Guide": {
+    "message": "用户指南",
+    "description": "The label for category User Guide in sidebar docs"
+  },
+  "sidebar.docs.category.Monitoring": {
+    "message": "监控",
+    "description": "The label for category Monitoring in sidebar docs"
+  },
+  "sidebar.docs.category.Share NVIDIA GPU devices": {
+    "message": "共享 NVIDIA GPU 设备",
+    "description": "The label for category Share NVIDIA GPU devices in sidebar docs"
+  },
+  "sidebar.docs.category.Examples": {
+    "message": "示例",
+    "description": "The label for category Examples in sidebar docs"
+  },
+  "sidebar.docs.category.Share Cambricon MLU devices": {
+    "message": "共享寒武纪 MLU 设备",
+    "description": "The label for category Share Cambricon MLU devices in sidebar docs"
+  },
+  "sidebar.docs.category.Contributor Guide": {
+    "message": "贡献者指南",
+    "description": "The label for category Contributor Guide in sidebar docs"
+  },
+  "sidebar.docs.category.Developer Guide": {
+    "message": "开发者指南",
+    "description": "The label for category Developer Guide in sidebar docs"
+  },
+  "sidebar.docs.category.Key Features": {
+    "message": "核心功能",
+    "description": "The label for category Key Features in sidebar docs"
+  },
+  "sidebar.docs.category.Share Hygon DCU devices": {
+    "message": "共享海光 DCU 设备",
+    "description": "The label for category Share Hygon DCU devices in sidebar docs"
+  },
+  "sidebar.docs.category.Share Mthreads GPU devices": {
+    "message": "共享摩尔线程 GPU 设备",
+    "description": "The label for category Share Mthreads GPU devices in sidebar docs"
+  },
+  "sidebar.docs.category.Optimize Metax GPU scheduling": {
+    "message": "优化沐曦 GPU 调度",
+    "description": "The label for category Optimize Metax GPU scheduling in sidebar docs"
+  },
+  "sidebar.docs.category.Volcano vgpu support": {
+    "message": "Volcano vGPU 支持",
+    "description": "The label for category Volcano vgpu support in sidebar docs"
+  },
+  "sidebar.docs.category.Share Ascend devices": {
+    "message": "共享昇腾 GPU 设备",
+    "description": "The label for category Share Ascend devices in sidebar docs"
+  },
+  "sidebar.docs.category.Share Illuvatar GPU devices": {
+    "message": "共享天数 GPU 设备",
+    "description": "The label for category Share Illuvatar GPU devices in sidebar docs"
+  },
+  "sidebar.docs.category.Share Enflame GCU devices": {
+    "message": "共享燧原 GCU 设备",
+    "description": "The label for category Share Enflame GCU devices in sidebar docs"
+  },
+  "sidebar.docs.category.Share Metax GPU devices": {
+    "message": "共享沐曦 GPU 设备",
+    "description": "The label for category Share Metax GPU devices in sidebar docs"
+  },
+  "sidebar.docs.category.Metax GPU topology-aware scheduling": {
+    "message": "Metax GPU 拓扑感知调度",
+    "description": "The label for category Metax GPU topology-aware scheduling in sidebar docs"
+  }
+}
