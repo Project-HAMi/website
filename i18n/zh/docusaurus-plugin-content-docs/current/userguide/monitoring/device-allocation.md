@@ -23,6 +23,15 @@ curl {scheduler node ip}:31993/metrics
 | vGPUCoreAllocated | 分配给某个容器的 vGPU 核心数量| `{containeridx="Ascend310P",deviceuuid="aio-node74-arm-Ascend310P-0",nodename="aio-node74-arm",podname="ascend310p-pod",podnamespace="default",zone="vGPU"}` 50 |
 | vGPUMemoryAllocated | 分配给某个容器的 vGPU 显存 | `{containeridx="Ascend310P",deviceuuid="aio-node74-arm-Ascend310P-0",nodename="aio-node74-arm",podname="ascend310p-pod",podnamespace="default",zone="vGPU"}` 3.221225472e+09 |
 | QuotaUsed | resourcequota 的使用情况 | `{quotaName="nvidia.com/gpucores", quotanamespace="default",limit="200",zone="vGPU"}` 100 |
-| vGPUPodsDeviceAllocated | 从 pod 分配的 vGPU (这个指标将在v2.8.0移除，请使用 vGPUCoreAllocated 和 vGPUMemoryAllocated 替代它 )| `{containeridx="Ascend310P",deviceusedcore="0",deviceuuid="aio-node74-arm-Ascend310P-0",nodename="aio-node74-arm",podname="ascend310p-pod",podnamespace="default",zone="vGPU"}` 3.221225472e+09 |
+
+如果你在使用 [HAMi DRA](../../installation/how-to-use-hami-dra.md), 它将暴露如下指标 :
+| 指标  | 描述 | 示例 |
+|----------|-------------|---------|
+| GPUDeviceCoreLimit | GPU 设备核心限制 |`{devicebrand="Tesla",deviceidx="0",devicename="hami-gpu-1",deviceproductname="Tesla P4",deviceuuid="GPU-3ab1-179d-d6dd",nodeid="k8s-node01"}` 100 |
+| GPUDeviceMemoryLimit | GPU 设备内存限制 |`{devicebrand="Tesla",deviceidx="0",devicename="hami-gpu-1",deviceproductname="Tesla P4",deviceuuid="GPU-3ab1-179d-d6dd",nodeid="k8s-node01"}` 8192 |
+| GPUDeviceCoreAllocated | 分配给某个 GPU 的设备核心 | `{devicebrand="Tesla",deviceidx="0",devicename="hami-gpu-1",deviceproductname="Tesla P4",deviceuuid="GPU-3ab1-179d-d6dd",nodeid="k8s-node01"}` 0 |
+| GPUDeviceMemoryAllocated | 分配给某个 GPU 的设备内存 |`{devicebrand="Tesla",deviceidx="0",devicename="hami-gpu-1",deviceproductname="Tesla P4",deviceuuid="GPU-3ab1-179d-d6dd",nodeid="k8s-node01"}` 0 |
+| vGPUDeviceCoreAllocated | 分配给某个容器的 vGPU 核心数量 |`{devicebrand="Tesla",deviceidx="0",devicename="hami-gpu-0",deviceproductname="Tesla P4",deviceuuid="GPU-82be-83fe-3068",nodeid="k8s-node01",podname="pod-0",podnamespace="default"}` 100 |
+| vGPUDeviceMemoryAllocated | 分配给某个容器的 vGPU 显存 |`{devicebrand="Tesla",deviceidx="0",devicename="hami-gpu-0",deviceproductname="Tesla P4",deviceuuid="GPU-82be-83fe-3068",nodeid="k8s-node01",podname="pod-0",podnamespace="default"}` 4000 |
 
 > **注意** 请注意，这只是关于设备分配的概览，并不是设备的实时使用指标。有关实时使用情况，请参见实时设备使用。
