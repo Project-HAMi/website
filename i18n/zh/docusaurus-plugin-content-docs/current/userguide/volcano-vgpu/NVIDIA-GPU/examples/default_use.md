@@ -1,11 +1,11 @@
 ---
-title: 默认 vgpu 作业
+title: 默认 vGPU Job
 translated: true
 ---
 
-## 职位描述
+## Job 描述
 
-VGPU 可以通过在 resource.limit 中设置 "volcano.sh/vgpu-number"、"volcano.sh/vgpu-cores" 和 "volcano.sh/vgpu-memory" 来请求。
+vGPU 可以通过在 resource.limit 中设置 "volcano.sh/vgpu-number"、"volcano.sh/vgpu-cores" 和 "volcano.sh/vgpu-memory" 来请求。
 
 ```yaml
 apiVersion: v1
