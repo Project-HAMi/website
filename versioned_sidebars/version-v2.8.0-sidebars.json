@@ -265,6 +265,20 @@
               ]
             }
           ]
+        },
+        {
+          "type": "category",
+          "label": "Using HAMi with Kueue",
+          "items": [
+            "userguide/Kueue/how-to-use-kueue",
+            {
+              "type": "category",
+              "label": "Examples",
+              "items": [
+                "userguide/Kueue/examples/defalt_use"
+              ]
+            }
+          ]
         }
       ]
     },
