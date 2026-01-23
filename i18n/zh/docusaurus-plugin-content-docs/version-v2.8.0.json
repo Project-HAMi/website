@@ -1,7 +1,7 @@
 {
   "version.label": {
-    "message": "下一个",
-    "description": "The label for version current"
+    "message": "v2.8.0",
+    "description": "The label for version v2.8.0"
   },
   "sidebar.docs.category.Core Concepts": {
     "message": "核心概念",
