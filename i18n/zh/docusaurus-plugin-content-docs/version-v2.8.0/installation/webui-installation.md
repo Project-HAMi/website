@@ -1,5 +1,5 @@
 ---
-title: WebUI 安装
+title: WebUI
 translated: true
 ---
 
