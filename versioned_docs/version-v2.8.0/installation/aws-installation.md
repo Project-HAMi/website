@@ -1,5 +1,5 @@
 ---
-title: Install and Use HAMi on AWS
+title: HAMi on AWS
 translated: true
 ---
 

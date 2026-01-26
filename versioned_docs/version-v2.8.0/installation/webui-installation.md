@@ -1,5 +1,5 @@
 ---
-title: WebUI Installation
+title: WebUI
 ---
 
 # Deploy HAMi-WebUI using Helm Charts

@@ -1,5 +1,5 @@
 ---
-title: 如何使用 Volcano vGPU 设备插件
+title: Volcano vGPU
 translated: true
 ---
 

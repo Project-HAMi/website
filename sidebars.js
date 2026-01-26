@@ -34,10 +34,10 @@ module.exports = {
         "installation/upgrade",
         "installation/uninstall",
         "installation/webui-installation",
-        "installation/how-to-use-volcano-vgpu",
-        "installation/how-to-use-volcano-ascend",
         "installation/aws-installation",
-        "installation/how-to-use-hami-dra"
+        "installation/how-to-use-hami-dra",
+        "installation/how-to-use-volcano-vgpu",
+        "installation/how-to-use-volcano-ascend"
       ]
     },
     {
