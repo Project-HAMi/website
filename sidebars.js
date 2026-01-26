@@ -277,11 +277,11 @@ module.exports = {
               "type": "category",
               "label": "Examples",
               "items": [
-                "userguide/Kueue/examples/defalt_use",
+                "userguide/Kueue/examples/defalt_use"
               ]
             }
           ]
-        },
+        }
       ]
     },
     {
