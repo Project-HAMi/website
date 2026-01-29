@@ -10,7 +10,11 @@ module.exports = {
   url: "https://project-hami.io",
   baseUrl: "/",
   onBrokenLinks: "throw",
-  onBrokenMarkdownLinks: "throw",
+  markdown: {
+    hooks: {
+      onBrokenMarkdownLinks: "throw",
+    },
+  },
   organizationName: "hami-io",
   projectName: "website",
   favicon: "img/favicon.ico",
@@ -184,6 +188,10 @@ module.exports = {
             {
               label: "CNCF Slack ",
               href: "https://slack.cncf.io/",
+            },
+            {
+              label: "Discord",
+              href: "https://discord.gg/Amhy7XmbNq",
             },
           ],
         },

@@ -3,33 +3,8 @@ layout: post
 title: HAMI 项目 GPU Pod 调度流程源码走读
 catalog: true
 tag: [Kubernetes, GPU, AI]
-author: elrond.wang
+authors: [elrond_wang]
 ---
-
-- [调度流程](#调度流程)
-- [Pod 调度流程](#pod-调度流程)
-  - [常见问题排查](#常见问题排查)
-    - [Pod UnexpectedAdmissionError](#pod-unexpectedadmissionerror)
-    - [调度问题](#调度问题)
-  - [MutatingWebhook](#mutatingwebhook)
-    - [Webhook 配置](#webhook-配置)
-    - [Webhook Server 实现](#webhook-server-实现)
-  - [拓展 k8s scheduler](#拓展-k8s-scheduler)
-    - [KubeSchedulerConfiguration](#kubeschedulerconfiguration)
-    - [拓展调度器 HTTP Server 启动](#拓展调度器-http-server-启动)
-    - [filter 实现](#filter-实现)
-      - [获取节点资源信息](#获取节点资源信息)
-        - [Node 缓存](#node-缓存)
-        - [device](#device)
-      - [根据节点资源信息打分](#根据节点资源信息打分)
-      - [计算出节点的分数](#计算出节点的分数)
-      - [计算每个容器对应的设备的分数](#计算每个容器对应的设备的分数)
-    - [binding 实现](#binding-实现)
-  - [Node 将设备情况写入 node annotation](#node-将设备情况写入-node-annotation)
-    - [启动 device-plugin 服务](#启动-device-plugin-服务)
-    - [启动 plugin](#启动-plugin)
-    - [nvidia 插件的实现](#nvidia-插件的实现)
-- [参考](#参考)
 
 使用 HAMi 的过程中经常会出现 Pod 被创建出来 Pending 的问题，犹以如下两个问题为著：
 
@@ -37,6 +12,8 @@ author: elrond.wang
 - Pod Pending
 
 介于此，展开这部分代码的粗略走读，旨在说明调度过程中各组件的交互，以及资源的计算方式，其他细节会有所遗漏。
+
+<!-- truncate -->
 
 ## 调度流程
 
@@ -46,13 +23,13 @@ author: elrond.wang
 
 细节上可以分为三个阶段：
 
-- 准备阶段: 图上可以看出有一些依赖条件，例如要有 Mutating Webhook、device-plugin 等等。
+- 准备阶段：图上可以看出有一些依赖条件，例如要有 Mutating Webhook、device-plugin 等等。
   所以这个阶段主要分析下依赖条件的准备，只有在服务首次启动时需要。
 
   ![Pod 创建前的准备工作](https://github.com/elrondwong/elrond.wang/raw/master/img/posts/Hami-GPU-Pod-Scheduler/%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C.png)
 
-- Pod 调度阶段: 准备过程完成之后 Pod 进入处理流程，完成调度
-- Pod 启动阶段: Pod 如何与 Node 上的 GPU 进行交互等
+- Pod 调度阶段：准备过程完成之后 Pod 进入处理流程，完成调度
+- Pod 启动阶段：Pod 如何与 Node 上的 GPU 进行交互等
 
 本文会着重分析准备阶段，主要内容为调度分析。
 
@@ -74,11 +51,11 @@ Pod 创建状态显示 `UnexpectedAdmissionError`
 
 了解流程之后，可以知道这个错误代表 kube-apiserver 调用拓展调度器失败，可能有两个原因，其他情况具体排查需要看 kube-apiserver 日志。
 
-- 通信异常： 从 kube-apiserver 到拓展调度器的 https 端口不通，有几种可能
+- 通信异常：从 kube-apiserver 到拓展调度器的 https 端口不通，有几种可能
   - dns 无法解析
   - 跨节点通信有问题
   - 拓展调度器的服务异常
-- TLS 验证错误: 一般会显示 `webhook x509: certificate signed by unknown authority`，helmchart 部署时有一个 `jobs.batch` `hami-vgpu.admission-pathch`，如果没有运行完成会出现这样的问题
+- TLS 验证错误：一般会显示 `webhook x509: certificate signed by unknown authority`，helmchart 部署时有一个 `jobs.batch` `hami-vgpu.admission-pathch`，如果没有运行完成会出现这样的问题
 
 #### 调度问题
 
@@ -117,7 +94,7 @@ Pod 创建状态显示 `UnexpectedAdmissionError`
 
 ### MutatingWebhook
 
-K8s 提供了 admissionWebhook 资源, 以 k8s 资源操作为触发器，触发 hook，用途最广泛的为针对
+K8s 提供了 admissionWebhook 资源，以 k8s 资源操作为触发器，触发 hook，用途最广泛的为针对
 Pod 创建做拦截，对 Pod 做 YAML 注入，具体的例如增加 init 容器注入文件等等。
 
 #### Webhook 配置
@@ -384,7 +361,7 @@ metadata:
   uid: 3a61a72c-0bab-432f-b4d7-5c1ae46ee14d
 ```
 
-拓展调度器通过[拓展点](https://kubernetes.io/docs/reference/scheduling/config/#extension-points)进行拓展, 这里拓展了 filter 和 bind。
+拓展调度器通过[拓展点](https://kubernetes.io/docs/reference/scheduling/config/#extension-points)进行拓展，这里拓展了 filter 和 bind。
 
 - filter: 找到最合适的 node
 - bind: 为 Pod 创建一个 binding 资源
@@ -533,7 +510,7 @@ func (s *Scheduler) Filter(args extenderv1.ExtenderArgs) (*extenderv1.ExtenderFi
 }
 ```
 
-这里核心逻辑主要有两步, 获取节点资源、根据节点已分配资源与总资源计算分数并选出一个最高分。
+这里核心逻辑主要有两步，获取节点资源、根据节点已分配资源与总资源计算分数并选出一个最高分。
 
 ##### 获取节点资源信息
 
@@ -639,7 +616,7 @@ func (s *Scheduler) getNodesUsage(nodes *[]string, task *corev1.Pod) (*map[strin
 }
 ```
 
-获取 Node 总的资源与已分配的资源, 首先获取 Node 信息。
+获取 Node 总的资源与已分配的资源，首先获取 Node 信息。
 
 `pkg/scheduler/nodes.go:120`
 
@@ -1242,7 +1219,7 @@ func fitInCertainDevice(node *NodeUsage, request util.ContainerDeviceRequest, an
  return &res, nil
 ```
 
-遍历完成之后选择分数最高的, 给 Pod 打标签。
+遍历完成之后选择分数最高的，给 Pod 打标签。
 
 ```yaml
 apiVersion: v1

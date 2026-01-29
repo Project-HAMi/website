@@ -3,33 +3,9 @@ layout: post
 title: Source Code Walkthrough of the GPU Pod Scheduling Process in HAMI
 catalog: true
 tag: [Kubernetes, GPU, AI]
-author: elrond.wang
+authors: [elrond_wang]
 ---
 
-- [Scheduling Process](#scheduling-process)
-- [Pod Scheduling Process](#pod-scheduling-process)
-  - [Common Issue Troubleshooting](#common-issue-troubleshooting)
-    - [Pod UnexpectedAdmissionError](#pod-unexpectedadmissionerror)
-    - [Scheduling Issues](#scheduling-issues)
-  - [MutatingWebhook](#mutatingwebhook)
-    - [Webhook Configuration](#webhook-configuration)
-    - [Webhook Server Implementation](#webhook-server-implementation)
-  - [Extending the Kubernetes Scheduler](#extending-the-kubernetes-scheduler)
-    - [KubeSchedulerConfiguration](#kubeschedulerconfiguration)
-    - [Starting the Extended Scheduler HTTP Server](#starting-the-extended-scheduler-http-server)
-    - [filter implementation](#filter-implementation)
-      - [Retrieving Node Resource Information](#retrieving-node-resource-information)
-        - [Node Cache](#node-cache)
-        - [device](#device)
-      - [Scoring Based on Node Resource Information](#scoring-based-on-node-resource-information)
-      - [Calculating Node Scores](#calculating-node-scores)
-      - [Calculating Device Scores for Each Container](#calculating-device-scores-for-each-container)
-    - [Binding Implementation](#binding-implementation)
-  - [Node Writes Device Information to Node Annotation](#node-writes-device-information-to-node-annotation)
-    - [Starting the Device-Plugin Service](#starting-the-device-plugin-service)
-    - [Starting the Plugin](#starting-the-plugin)
-    - [Implement nvidia plugins](#implement-nvidia-plugins)
-- [References](#references)
 
 During the use of HAMi, it is common for Pods to be created and remain in a Pending state, particularly due to the following two issues:
 
@@ -37,6 +13,7 @@ During the use of HAMi, it is common for Pods to be created and remain in a Pend
 - Pod Pending
 
 This section provides a rough walkthrough of the related code to explain the interactions between components during scheduling and how resources are calculated. Other details may be omitted.
+<!-- truncate -->
 
 ## Scheduling Process
 
