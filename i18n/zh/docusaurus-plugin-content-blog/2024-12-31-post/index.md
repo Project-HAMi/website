@@ -6,39 +6,14 @@ tag: [Kubernetes, GPU, AI]
 authors: [elrond_wang]
 ---
 
-- [调度流程](#调度流程)
-- [Pod 调度流程](#pod-调度流程)
-  - [常见问题排查](#常见问题排查)
-    - [Pod UnexpectedAdmissionError](#pod-unexpectedadmissionerror)
-    - [调度问题](#调度问题)
-  - [MutatingWebhook](#mutatingwebhook)
-    - [Webhook 配置](#webhook-配置)
-    - [Webhook Server 实现](#webhook-server-实现)
-  - [拓展 k8s scheduler](#拓展-k8s-scheduler)
-    - [KubeSchedulerConfiguration](#kubeschedulerconfiguration)
-    - [拓展调度器 HTTP Server 启动](#拓展调度器-http-server-启动)
-    - [filter 实现](#filter-实现)
-      - [获取节点资源信息](#获取节点资源信息)
-        - [Node 缓存](#node-缓存)
-        - [device](#device)
-      - [根据节点资源信息打分](#根据节点资源信息打分)
-      - [计算出节点的分数](#计算出节点的分数)
-      - [计算每个容器对应的设备的分数](#计算每个容器对应的设备的分数)
-    - [binding 实现](#binding-实现)
-  - [Node 将设备情况写入 node annotation](#node-将设备情况写入-node-annotation)
-    - [启动 device-plugin 服务](#启动-device-plugin-服务)
-    - [启动 plugin](#启动-plugin)
-    - [nvidia 插件的实现](#nvidia-插件的实现)
-- [参考](#参考)
-
-<!-- truncate -->
-
 使用 HAMi 的过程中经常会出现 Pod 被创建出来 Pending 的问题，犹以如下两个问题为著：
 
 - Pod UnexpectedAdmissionError
 - Pod Pending
 
 介于此，展开这部分代码的粗略走读，旨在说明调度过程中各组件的交互，以及资源的计算方式，其他细节会有所遗漏。
+
+<!-- truncate -->
 
 ## 调度流程
 
