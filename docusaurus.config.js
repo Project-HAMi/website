@@ -189,6 +189,10 @@ module.exports = {
               label: "CNCF Slack ",
               href: "https://slack.cncf.io/",
             },
+            {
+              label: "Discord",
+              href: "https://discord.gg/Amhy7XmbNq",
+            },
           ],
         },
         {
