@@ -9,7 +9,7 @@ description: An overview of the GitHub workflow used by the HAMi project. It inc
 
 ## Fork in the cloud
 
-1. Visit <https://github.com/Project-HAMi/HAMi>
+1. Visit [https://github.com/Project-HAMi/HAMi](https://github.com/Project-HAMi/HAMi)
 2. Click `Fork` button (top right) to establish a cloud-based fork.
 
 ## Clone fork to local storage
