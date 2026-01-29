@@ -27,10 +27,6 @@
     "message": "共享 NVIDIA GPU 设备",
     "description": "The label for category Share NVIDIA GPU devices in sidebar docs"
   },
-  "sidebar.docs.category.Examples": {
-    "message": "示例",
-    "description": "The label for category Examples in sidebar docs"
-  },
   "sidebar.docs.category.Share Cambricon MLU devices": {
     "message": "共享寒武纪 MLU 设备",
     "description": "The label for category Share Cambricon MLU devices in sidebar docs"
@@ -83,8 +79,64 @@
     "message": "Metax GPU 拓扑感知调度",
     "description": "The label for category Metax GPU topology-aware scheduling in sidebar docs"
   },
+"sidebar.docs.category.Managing AWS Neuron devices": {
+    "message": "管理 AWS Neuron 设备",
+    "description": "The label for category Managing AWS Neuron devices in sidebar docs"
+  },
+  "sidebar.docs.category.Optimize Kunlunxin devices scheduling": {
+    "message": "优化昆仑芯设备调度",
+    "description": "The label for category Optimize Kunlunxin devices scheduling in sidebar docs"
+  },
   "sidebar.docs.category.Using HAMi with Kueue": {
     "message": "在 Kueue 中使用 HAMi",
     "description": "The label for category Using HAMi with Kueue in sidebar docs"
+  },
+  "sidebar.docs.category.nvidia-examples": {
+    "message": "示例",
+    "description": "The label for category nvidia-examples in sidebar docs"
+  },
+  "sidebar.docs.category.cambricon-examples": {
+    "message": "示例",
+    "description": "The label for category cambricon-examples in sidebar docs"
+  },
+  "sidebar.docs.category.hygon-examples": {
+    "message": "示例",
+    "description": "The label for category hygon-examples in sidebar docs"
+  },
+  "sidebar.docs.category.mthreads-examples": {
+    "message": "示例",
+    "description": "The label for category mthreads-examples in sidebar docs"
+  },
+  "sidebar.docs.category.iluvatar-examples": {
+    "message": "示例",
+    "description": "The label for category iluvatar-examples in sidebar docs"
+  },
+  "sidebar.docs.category.awsneuron-examples": {
+    "message": "示例",
+    "description": "The label for category awsneuron-examples in sidebar docs"
+  },
+  "sidebar.docs.category.kunlunxin-examples": {
+    "message": "示例",
+    "description": "The label for category kunlunxin-examples in sidebar docs"
+  },
+  "sidebar.docs.category.metax-sgpu-examples": {
+    "message": "示例",
+    "description": "The label for category metax-sgpu-examples in sidebar docs"
+  },
+  "sidebar.docs.category.metax-gpu-examples": {
+    "message": "示例",
+    "description": "The label for category metax-gpu-examples in sidebar docs"
+  },
+  "sidebar.docs.category.ascend-examples": {
+    "message": "示例",
+    "description": "The label for category ascend-examples in sidebar docs"
+  },
+  "sidebar.docs.category.volcano-vgpu-examples": {
+    "message": "示例",
+    "description": "The label for category volcano-vgpu-examples in sidebar docs"
+  },
+  "sidebar.docs.category.kueue-examples": {
+    "message": "示例",
+    "description": "The label for category kueue-examples in sidebar docs"
   }
 }

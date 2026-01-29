@@ -4,20 +4,6 @@ title: Contributing
 
 Welcome to HAMi!
 
-- [Contributing](#contributing)
-- [Before you get started](#before-you-get-started)
-  - [Code of Conduct](#code-of-conduct)
-  - [Community Expectations](#community-expectations)
-- [Getting started](#getting-started)
-- [Your First Contribution](#your-first-contribution)
-  - [Find something to work on](#find-something-to-work-on)
-    - [Find a good first topic](#find-a-good-first-topic)
-      - [Work on an issue](#work-on-an-issue)
-    - [File an Issue](#file-an-issue)
-- [Contributor Workflow](#contributor-workflow)
-  - [Creating Pull Requests](#creating-pull-requests)
-  - [Code Review](#code-review)
-
 # Before you get started
 
 ## Code of Conduct
@@ -33,7 +19,6 @@ HAMi is a community project driven by its community which strives to promote a h
 - Fork the repository on GitHub.
 - Make your changes on your fork repository.
 - Submit a PR.
-
 
 # Your First Contribution
 
@@ -94,12 +79,12 @@ To submit a proposed change, please develop the code/fix and add new test cases.
 After that, run these local verifications before submitting pull request to predict the pass or
 fail of continuous integration.
 
-* Run and pass `make verify`
+- Run and pass `make verify`
 
 ## Code Review
 
 To make it easier for your PR to receive reviews, consider the reviewers will need you to:
 
-* follow [good coding guidelines](https://github.com/golang/go/wiki/CodeReviewComments).
-* write [good commit messages](https://chris.beams.io/posts/git-commit/).
-* break large changes into a logical series of smaller patches which individually make easily understandable changes, and in aggregate solve a broader issue.
+- follow [good coding guidelines](https://github.com/golang/go/wiki/CodeReviewComments).
+- write [good commit messages](https://chris.beams.io/posts/git-commit/).
+- break large changes into a logical series of smaller patches which individually make easily understandable changes, and in aggregate solve a broader issue.

@@ -54,6 +54,7 @@
         {
           "type": "category",
           "label": "NVIDIA GPU",
+          "key": "nvidia-gpu",
           "items": [
             "userguide/NVIDIA-device/dynamic-mig-support",
             "userguide/NVIDIA-device/specify-device-memory-usage",
@@ -63,6 +64,7 @@
             {
               "type": "category",
               "label": "Examples",
+              "key": "nvidia-examples",
               "items": [
                 "userguide/NVIDIA-device/examples/use-exclusive-card",
                 "userguide/NVIDIA-device/examples/allocate-device-memory",
@@ -86,6 +88,7 @@
             {
               "type": "category",
               "label": "Examples",
+              "key": "cambricon-examples",
               "items": [
                 "userguide/Cambricon-device/examples/allocate-core-and-memory",
                 "userguide/Cambricon-device/examples/allocate-exclusive"
@@ -103,6 +106,7 @@
             {
               "type": "category",
               "label": "Examples",
+              "key": "hygon-examples",
               "items": [
                 "userguide/Hygon-device/examples/allocate-core-and-memory",
                 "userguide/Hygon-device/examples/allocate-exclusive"
@@ -120,6 +124,7 @@
             {
               "type": "category",
               "label": "Examples",
+              "key": "mthreads-examples",
               "items": [
                 "userguide/Mthreads-device/examples/allocate-core-and-memory",
                 "userguide/Mthreads-device/examples/allocate-exclusive"
@@ -138,6 +143,7 @@
             {
               "type": "category",
               "label": "Examples",
+              "key": "metax-examples",
               "items": [
                 {
                   "type": "category",
@@ -171,6 +177,7 @@
             {
               "type": "category",
               "label": "Examples",
+              "key": "ascend-examples",
               "items": [
                 "userguide/Ascend-device/examples/allocate-310p",
                 "userguide/Ascend-device/examples/allocate-910b",
@@ -188,6 +195,7 @@
             {
               "type": "category",
               "label": "Examples",
+              "key": "enflame-examples",
               "items": [
                 "userguide/Enflame-device/examples/use_exclusive",
                 "userguide/Enflame-device/examples/default_use"
@@ -204,6 +212,7 @@
             {
               "type": "category",
               "label": "Examples",
+              "key": "iluvatar-examples",
               "items": [
                 "userguide/Iluvatar-device/examples/default_use",
                 "userguide/Iluvatar-device/examples/use_exclusive"
@@ -218,12 +227,14 @@
             {
               "type": "category",
               "label": "NVIDIA GPU",
+              "key": "volcano-nvidia-gpu",
               "items": [
                 "userguide/volcano-vgpu/NVIDIA GPU/how-to-use-volcano-vgpu",
                 "userguide/volcano-vgpu/NVIDIA GPU/monitor",
                 {
                   "type": "category",
                   "label": "Examples",
+                  "key": "volcano-vgpu-examples",
                   "items": [
                     "userguide/volcano-vgpu/NVIDIA GPU/examples/default_use",
                     "userguide/volcano-vgpu/NVIDIA GPU/examples/use_exclusive_gpu"

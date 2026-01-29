@@ -5,20 +5,6 @@ translated: true
 
 欢迎来到 HAMi！
 
-- [贡献](#contributing)
-- [在您开始之前](#before-you-get-started)
-  - [行为准则](#code-of-conduct)
-  - [社区期望](#community-expectations)
-- [入门](#getting-started)
-- [您的第一次贡献](#your-first-contribution)
-  - [找到要处理的内容](#find-something-to-work-on)
-    - [找到一个好的入门主题](#find-a-good-first-topic)
-      - [处理一个问题](#work-on-an-issue)
-    - [提交一个问题](#file-an-issue)
-- [贡献者工作流程](#contributor-workflow)
-  - [创建拉取请求](#creating-pull-requests)
-  - [代码审查](#code-review)
-
 # 在您开始之前
 
 ## 行为准则
@@ -91,12 +77,12 @@ HAMi 通常遵循标准的[github 拉取请求](https://help.github.com/articles
 要提交建议的更改，请开发代码/修复并添加新的测试用例。
 之后，在提交拉取请求之前运行这些本地验证，以预测持续集成的通过或失败。
 
-* 运行并通过 `make verify`
+- 运行并通过 `make verify`
 
 ## 代码审查
 
 为了让您的 PR 更容易获得审查，请考虑审查者需要您：
 
-* 遵循[良好的编码指南](https://github.com/golang/go/wiki/CodeReviewComments)。
-* 撰写[良好的提交信息](https://chris.beams.io/posts/git-commit/)。
-* 将大的更改分解为一系列逻辑的小补丁，这些补丁单独进行易于理解的更改，并在整体上解决更广泛的问题。
+- 遵循[良好的编码指南](https://github.com/golang/go/wiki/CodeReviewComments)。
+- 撰写[良好的提交信息](https://chris.beams.io/posts/git-commit/)。
+- 将大的更改分解为一系列逻辑的小补丁，这些补丁单独进行易于理解的更改，并在整体上解决更广泛的问题。

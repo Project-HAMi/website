@@ -63,6 +63,7 @@
             {
               "type": "category",
               "label": "Examples",
+              "key": "nvidia-examples",
               "items": [
                 "userguide/NVIDIA-device/examples/use-exclusive-card",
                 "userguide/NVIDIA-device/examples/allocate-device-memory",
@@ -86,6 +87,7 @@
             {
               "type": "category",
               "label": "Examples",
+              "key": "cambricon-examples",
               "items": [
                 "userguide/Cambricon-device/examples/allocate-core-and-memory",
                 "userguide/Cambricon-device/examples/allocate-exclusive"
@@ -103,6 +105,7 @@
             {
               "type": "category",
               "label": "Examples",
+              "key": "hygon-examples",
               "items": [
                 "userguide/Hygon-device/examples/allocate-core-and-memory",
                 "userguide/Hygon-device/examples/allocate-exclusive"
@@ -120,6 +123,7 @@
             {
               "type": "category",
               "label": "Examples",
+              "key": "mthreads-examples",
               "items": [
                 "userguide/Mthreads-device/examples/allocate-core-and-memory",
                 "userguide/Mthreads-device/examples/allocate-exclusive"
@@ -137,6 +141,7 @@
             {
               "type": "category",
               "label": "Examples",
+              "key": "metax-examples",
               "items": [
                 "userguide/Metax-device/examples/default-use",
                 "userguide/Metax-device/examples/allocate-binpack",
@@ -154,6 +159,7 @@
             {
               "type": "category",
               "label": "Examples",
+              "key": "ascend-examples",
               "items": [
                 "userguide/Ascend-device/examples/allocate-310p",
                 "userguide/Ascend-device/examples/allocate-910b",
@@ -175,6 +181,7 @@
                 {
                   "type": "category",
                   "label": "Examples",
+                  "key": "volcano-vgpu-examples",
                   "items": [
                     "userguide/volcano-vgpu/NVIDIA GPU/examples/default_use",
                     "userguide/volcano-vgpu/NVIDIA GPU/examples/use_exclusive_gpu"

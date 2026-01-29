@@ -4,13 +4,6 @@ title: Governance
 
 Heterogeneous AI Computing Virtualization Middleware (HAMi), formerly known as k8s-vGPU-scheduler, is an "all-in-one" tools designed to manage Heterogeneous AI Computing Devices in a k8s cluster
 
-- [HAMi Project Governance](#hami-project-governance)
-  - [Values](#values)
-  - [Membership](#membership)
-  - [Meetings](#meetings)
-  - [Code of Conduct](#code-of-conduct)
-  - [Modifying this Charter](#modifying-this-charter)
-
 ## Values
 
 The HAMi and its leadership embrace the following values:
@@ -59,5 +52,5 @@ Maintainers will appoint a non-involved contributor to work with them.
 
 ## Modifying this Charter
 
-Changes to this Governance and its supporting documents may be approved by 
+Changes to this Governance and its supporting documents may be approved by
 a 2/3 vote of the Maintainers.

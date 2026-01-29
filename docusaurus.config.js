@@ -10,7 +10,11 @@ module.exports = {
   url: "https://project-hami.io",
   baseUrl: "/",
   onBrokenLinks: "throw",
-  onBrokenMarkdownLinks: "throw",
+  markdown: {
+    hooks: {
+      onBrokenMarkdownLinks: "throw",
+    },
+  },
   organizationName: "hami-io",
   projectName: "website",
   favicon: "img/favicon.ico",
