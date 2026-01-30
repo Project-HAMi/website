@@ -235,7 +235,7 @@ module.exports = {
           includeCurrentVersion: true,
         },
         gtag: {
-          trackingID: "UA-195246198-1",
+          trackingID: "G-MK932R9NMD",
           anonymizeIP: false,
         },
         blog: {
