@@ -1,5 +1,6 @@
 ---
 title: 介绍 HAMi
+authors: [hami_community]
 ---
 
 ## 什么是 HAMi？
