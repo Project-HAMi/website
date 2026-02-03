@@ -111,6 +111,18 @@ article header h1 {
   font-size: 1.2rem !important;
 }
 
+/* Blog list page title font size - override Docusaurus default 3rem */
+/* Use attribute selector to match CSS Modules generated class names */
+h2[class*="title"] {
+  font-size: 1.6rem !important;
+}
+
+@media (max-width: 576px) {
+  h2[class*="title"] {
+    font-size: 1.3rem !important;
+  }
+}
+
 .support-wrapper {
   list-style-type: none;
   padding-left: 0;

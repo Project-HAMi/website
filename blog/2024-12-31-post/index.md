@@ -1,8 +1,10 @@
 ---
-layout: post
-title: Source Code Walkthrough of the GPU Pod Scheduling Process in HAMI
-catalog: true
-tag: [Kubernetes, GPU, AI]
+title: Source Code Walkthrough of the GPU Pod Scheduling Process in HAMi
+date: "2024-12-31"
+slug: hami-gpu-scheduling-source-code
+description: "A detailed source code analysis of HAMi's GPU Pod scheduling process, covering MutatingWebhook, scheduler extension, device registration, scoring algorithms, and binding implementation."
+keywords: [HAMi, GPU scheduling, Kubernetes scheduler, source code]
+tags: [Kubernetes, GPU, AI, Source Code, Scheduling]
 authors: [elrond_wang]
 ---
 

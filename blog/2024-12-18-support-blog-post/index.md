@@ -1,5 +1,11 @@
 ---
 title: Introducing HAMi
+date: "2024-12-18"
+slug: introducing-hami
+description: "An introduction to HAMi (Heterogeneous AI Computing Virtualization Middleware), a Kubernetes-native solution for managing heterogeneous AI computing devices with resource isolation and unified management."
+keywords: [HAMi, GPU virtualization, Kubernetes, heterogeneous computing]
+tags: [Introduction, GPU Sharing, Kubernetes]
+authors: [hami_community]
 ---
 
 ## What is HAMi?
@@ -37,6 +43,3 @@ To streamline operations, HAMi offers a unified monitoring system along with con
 ## Conclusion
 
 In conclusion, HAMi represents a significant advancement in the management of heterogeneous AI computing resources within Kubernetes environments. Its compatibility with existing systems, commitment to open governance, and robust resource management capabilities make it an essential tool for organizations looking to optimize their AI computing infrastructure. Join us on this journey towards more efficient and flexible AI computing with HAMi!
-
-Citations:
-[1] https://project-hami.io
