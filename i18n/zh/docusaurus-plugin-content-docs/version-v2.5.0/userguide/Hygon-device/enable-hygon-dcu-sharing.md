@@ -76,6 +76,6 @@ Device 0:
 
 1. 如果您的镜像不是 'dtk-embedded-image'，则需要在任务运行后安装 `pciutiils`、`libelf-dev`、`kmod`，否则，像 `hy-smi` 或 `hy-virtual` 这样的 dcu 工具可能无法正常工作。
 
-2. 不支持在 init 容器中共享 DCU，init 容器中带有 "hygon.com/dcumem" 的 pod 将永远不会被调度。
+2. 不支持在 init 容器中共享 DCU，init 容器中带有 "hygon.com/dcumem" 的 Pod 将永远不会被调度。
 
 3. 每个容器只能获取一个 vdcu。如果您想挂载多个 dcu 设备，则不应设置 `hygon.com/dcumem` 或 `hygon.com/dcucores`。

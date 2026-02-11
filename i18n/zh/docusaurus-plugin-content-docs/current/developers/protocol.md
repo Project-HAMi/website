@@ -7,7 +7,7 @@ translated: true
 
 ### 设备注册
 
-为了进行更准确的调度，HAMI 调度器需要在设备注册时感知设备的规格，包括 UUID、显存、计算能力、型号、numa 数量等。
+为了进行更准确的调度，HAMi 调度器需要在设备注册时感知设备的规格，包括 UUID、显存、计算能力、型号、numa 数量等。
 
 然而，device-plugin 设备注册 API 并未提供相应的参数获取，因此 HAMi-device-plugin 在注册时将这些补充信息存储在节点的注释中，以供调度器读取，如下图所示：
 
@@ -24,7 +24,7 @@ hami.io/node-nvidia-register: 'GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec,10,32768
 
 kube-scheduler 在 `bind` 过程中调用 device-plugin 挂载设备，但仅向 device-plugin 提供设备的 `UUID`。因此，在设备共享的场景中，device-plugin 无法获取任务请求的相应设备规格，如 `设备内存` 和 `计算核心`。
 
-因此，有必要开发一个协议，使调度器层与 device-plugin 进行通信以传递任务调度信息。调度器通过将调度结果补丁到 pod 的注释中并在 device-plugin 中读取它来传递此信息，如下图所示：
+因此，有必要开发一个协议，使调度器层与 device-plugin 进行通信以传递任务调度信息。调度器通过将调度结果补丁到 Pod 的注释中并在 device-plugin 中读取它来传递此信息，如下图所示：
 
 <img src="https://github.com/Project-HAMi/website/blob/master/versioned_docs/version-v1.3.0/resources/task_dispatch.png?raw=true" width="600px"/>
 

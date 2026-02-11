@@ -17,7 +17,7 @@ translated: true
 
 1. 不支持多卡设备共享。
 
-2. 在一个 pod 中只能共享一个 mthreads 设备（即使有多个容器）。
+2. 在一个 Pod 中只能共享一个 mthreads 设备（即使有多个容器）。
 
 3. 仅支持通过指定 mthreads.com/vgpu 分配独占的 mthreads GPU。
 
@@ -32,11 +32,11 @@ translated: true
 
 * 在 mthreads 节点上部署 MT-CloudNative Toolkit（请咨询您的设备提供商以获取其软件包和文档）
 
-> **注意：** *安装后可以移除 mt-mutating-webhook 和 mt-gpu-scheduler（可选）。*
+> **注意：** 安装后可以移除 mt-mutating-webhook 和 mt-gpu-scheduler（可选）。
 
 * 在安装 hami 时设置 'devices.mthreads.enabled = true'
 
-```
+```bash
 helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag={your kubernetes version} --set device.mthreads.enabled=true -n kube-system
 ```
 
@@ -44,7 +44,7 @@ helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag={your 
 
 现在可以通过容器请求 Mthreads GPU，使用 `mthreads.com/vgpu`、`mthreads.com/sgpu-memory` 和 `mthreads.com/sgpu-core` 资源类型：
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -64,6 +64,6 @@ spec:
           mthreads.com/sgpu-core: 8
 ```
 
-> **注意1：** *每个 sgpu-memory 单位表示 512M 设备内存*
-
-> **注意2：** *您可以在 examples 文件夹中找到更多示例*
+> **注意1：** 每个 sgpu-memory 单位表示 512M 设备内存
+>
+> **注意2：** 您可以在 examples 文件夹中找到更多示例

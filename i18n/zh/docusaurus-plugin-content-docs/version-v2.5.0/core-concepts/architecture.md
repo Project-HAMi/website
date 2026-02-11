@@ -14,7 +14,7 @@ HAMi 由以下组件组成：
 - 设备插件 (HAMi-device-plugin)
 - 容器内资源控制 (HAMi-Core)
 
-HAMi MutatingWebhook 检查该任务是否可以由 HAMi 处理，它扫描每个提交的 pod 的资源字段，如果这些 pod 所需的每个资源是 'cpu'、'memory' 或 HAMi 资源，则会将该 pod 的 schedulerName 字段设置为 'HAMi-scheduler'。
+HAMi MutatingWebhook 检查该任务是否可以由 HAMi 处理，它扫描每个提交的 Pod 的资源字段，如果这些 Pod 所需的每个资源是 'cpu'、'memory' 或 HAMi 资源，则会将该 Pod 的 schedulerName 字段设置为 'HAMi-scheduler'。
 
 HAMi 调度器负责将任务分配给适当的节点和设备。同时，调度器需要维护异构计算设备的全局视图以进行监控。
 
