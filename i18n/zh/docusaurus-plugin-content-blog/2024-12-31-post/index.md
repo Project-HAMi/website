@@ -1,6 +1,6 @@
 ---
 layout: post
-title: HAMI 项目 GPU Pod 调度流程源码走读
+title: HAMi 项目 GPU Pod 调度流程源码走读
 catalog: true
 tag: [Kubernetes, GPU, AI]
 authors: [elrond_wang]

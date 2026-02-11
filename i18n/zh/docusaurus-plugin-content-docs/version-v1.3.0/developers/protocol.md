@@ -6,7 +6,7 @@ title: Protocol design
 
 ### Device Registration
 
-In order to perform more accurate scheduling, the HAMI scheduler needs to perceive the specifications of the device during device registration, including UUID, video memory, computing power, model, numa number, etc
+In order to perform more accurate scheduling, the HAMi scheduler needs to perceive the specifications of the device during device registration, including UUID, video memory, computing power, model, numa number, etc
 
 However, the device-plugin device registration API does not provide corresponding parameter acquisition, so HAMi-device-plugin stores these supplementary information in the node annotations during registering for the scheduler to read, as the following figure shows:
 
