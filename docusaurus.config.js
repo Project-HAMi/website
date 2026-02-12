@@ -115,9 +115,8 @@ module.exports = {
   ],
   themeConfig: {
     announcementBar: {
-      id: "start",
-      content:
-        '⭐️ If you like HAMi, give it a star on <a target="_blank" rel="noopener noreferrer" href="https://github.com/Project-HAMi/HAMi">GitHub</a>! ⭐️',
+      id: "kubecon-2026-europe", // Increment on change
+      content: 'theme.announcementBar.message',
     },
     algolia: {
       appId: "IWSUKSVX6L",
