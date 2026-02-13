@@ -164,3 +164,60 @@ h2[class*="title"] {
 html[data-theme='dark'] .support-wrapper li {
   background-color: #ffffff;
 }
+
+.community-qr-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 1rem 0 1.5rem;
+}
+
+.community-qr-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1rem;
+  background: #ffffff;
+  text-align: center;
+}
+
+.community-qr-card h3 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+}
+
+.community-qr-image {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  display: block;
+  margin: 0 auto 0.75rem;
+}
+
+.community-qr-card p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+html[data-theme='dark'] .community-qr-card {
+  background: #1b2230;
+  border-color: #374151;
+}
+
+html[data-theme='dark'] .community-qr-image {
+  border-color: #4b5563;
+}
+
+@media (max-width: 996px) {
+  .community-qr-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .community-qr-grid {
+    grid-template-columns: 1fr;
+  }
+}
