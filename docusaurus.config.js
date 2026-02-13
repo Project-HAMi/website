@@ -154,6 +154,12 @@ module.exports = {
           position: "left",
         },
         {
+          to: "community",
+          activeBasePath: "community",
+          label: "Community",
+          position: "left",
+        },
+        {
           to: "adopters",
           activeBasePath: "adopters",
           label: "Adopters",
@@ -176,8 +182,16 @@ module.exports = {
           title: "Documentation",
           items: [
             {
-              label: "Documentation",
-              to: "/docs/",
+              label: "Get Started",
+              to: "/docs/get-started/deploy-with-helm",
+            },
+            {
+              label: "Installation",
+              to: "/docs/installation/online-installation",
+            },
+            {
+              label: "User Guide",
+              to: "/docs/userguide/configure",
             },
           ],
         },
@@ -192,6 +206,10 @@ module.exports = {
               label: "Discord",
               href: "https://discord.gg/Amhy7XmbNq",
             },
+            {
+              label: "WeChat Group",
+              href: "/community?wechat=group",
+            },
           ],
         },
         {
@@ -204,6 +222,10 @@ module.exports = {
             {
               label: "Blog",
               to: "/blog",
+            },
+            {
+              label: "Changelog",
+              to: "/changelog",
             },
           ],
         },
