@@ -1,0 +1,64 @@
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+  padding: 1.25rem 1.25rem 1rem;
+  text-align: center;
+}
+
+.closeButton {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.65rem;
+  border: none;
+  background: transparent;
+  color: #4a4a4a;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.modalTitle {
+  margin: 0 1.6rem 0.9rem;
+  font-size: 1rem;
+  color: #1f2937;
+}
+
+.qrImage {
+  width: 220px;
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.modalDescription {
+  margin: 0.8rem 0 0;
+  font-size: 0.9rem;
+  color: #4b5563;
+}
+
+@media (max-width: 480px) {
+  .modal {
+    max-width: 320px;
+    padding: 1rem 1rem 0.9rem;
+  }
+
+  .qrImage {
+    width: 200px;
+  }
+}
