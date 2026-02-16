@@ -144,7 +144,7 @@ kind: Pod
 metadata:
   name: gpu-pod
   annotations:
-    nvidia.com/vgpu-mode: "mig" #(可选)，如果未设置，此 pod 可以被分配到 MIG 实例或 hami-core 实例
+    nvidia.com/vgpu-mode: "mig" #(可选)，如果未设置，此 Pod 可以被分配到 MIG 实例或 hami-core 实例
 spec:
   containers:
     - name: ubuntu-container
