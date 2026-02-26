@@ -5,22 +5,6 @@ translated: true
 
 欢迎来到 HAMi！
 
-- [贡献](#contributing)
-- [在您开始之前](#before-you-get-started)
-  - [行为准则](#code-of-conduct)
-  - [社区期望](#community-expectations)
-- [入门](#getting-started)
-- [您的第一次贡献](#your-first-contribution)
-  - [找到要处理的内容](#find-something-to-work-on)
-    - [找到一个好的入门主题](#find-a-good-first-topic)
-      - [处理一个问题](#work-on-an-issue)
-    - [提交一个问题](#file-an-issue)
-- [贡献者工作流程](#contributor-workflow)
-  - [创建拉取请求](#creating-pull-requests)
-  - [代码审查](#code-review)
-
-# 在您开始之前
-
 ## 行为准则
 
 请务必阅读并遵守我们的[行为准则](https://github.com/cncf/foundation/blob/main/code-of-conduct.md)
@@ -29,13 +13,13 @@ translated: true
 
 HAMi 是一个由社区驱动的项目，致力于促进一个健康、友好和富有成效的环境。
 
-# 入门
+## 入门
 
 - 在 GitHub 上 fork 这个仓库。
 - 在您的 fork 仓库中进行更改。
 - 提交一个 PR。
 
-# 您的第一次贡献
+## 您的第一次贡献
 
 我们将帮助您在不同领域进行贡献，如提交问题、开发功能、修复关键错误以及让您的工作得到审查和合并。
 
@@ -58,7 +42,7 @@ HAMi 是一个由社区驱动的项目，致力于促进一个健康、友好和
 我们可以帮助希望处理这些问题的新贡献者。
 
 另一个好的贡献方式是找到文档改进的地方，比如缺失/损坏的链接。
-请参阅下面的[贡献](#contributing)以了解工作流程。
+请参阅下面的[贡献者工作流程](#贡献者工作流程)以了解工作流程。
 
 #### 处理一个问题
 
@@ -73,7 +57,7 @@ HAMi 是一个由社区驱动的项目，致力于促进一个健康、友好和
 
 请在提交问题时遵循提示的提交指南。
 
-# 贡献者工作流程
+## 贡献者工作流程
 
 请不要犹豫提出问题或发送拉取请求。
 
@@ -91,12 +75,12 @@ HAMi 通常遵循标准的[github 拉取请求](https://help.github.com/articles
 要提交建议的更改，请开发代码/修复并添加新的测试用例。
 之后，在提交拉取请求之前运行这些本地验证，以预测持续集成的通过或失败。
 
-* 运行并通过 `make verify`
+- 运行并通过 `make verify`
 
 ## 代码审查
 
 为了让您的 PR 更容易获得审查，请考虑审查者需要您：
 
-* 遵循[良好的编码指南](https://github.com/golang/go/wiki/CodeReviewComments)。
-* 撰写[良好的提交信息](https://chris.beams.io/posts/git-commit/)。
-* 将大的更改分解为一系列逻辑的小补丁，这些补丁单独进行易于理解的更改，并在整体上解决更广泛的问题。
+- 遵循[良好的编码指南](https://github.com/golang/go/wiki/CodeReviewComments)。
+- 撰写[良好的提交信息](https://chris.beams.io/posts/git-commit/)。
+- 将大的更改分解为一系列逻辑的小补丁，这些补丁单独进行易于理解的更改，并在整体上解决更广泛的问题。

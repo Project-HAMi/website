@@ -11,6 +11,8 @@ This article about the HAMi Meetup Beijing event is **only available in Chinese*
 
 **Please switch to the Chinese version to read the full content.**
 
+<!-- truncate -->
+
 ---
 
 👉 Use the language selector in the top right corner to switch to **简体中文** (Simplified Chinese).

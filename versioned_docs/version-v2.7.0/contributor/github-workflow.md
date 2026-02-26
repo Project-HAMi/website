@@ -9,7 +9,7 @@ description: An overview of the GitHub workflow used by the HAMi project. It inc
 
 ## Fork in the cloud
 
-1. Visit https://github.com/Project-HAMi/HAMi
+1. Visit [https://github.com/Project-HAMi/HAMi](https://github.com/Project-HAMi/HAMi)
 2. Click `Fork` button (top right) to establish a cloud-based fork.
 
 ## Clone fork to local storage
@@ -279,4 +279,4 @@ will create the PR branch inside the main repository rather than inside your for
   git push ${your_remote_name} myrevert
   ```
 
-- [Create a Pull Request](#7-create-a-pull-request) using this branch.
+- [Create a Pull Request](#create-a-pull-request) using this branch.

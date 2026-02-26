@@ -5,15 +5,6 @@ translated: true
 
 本文档解释了如何在 `Project-HAMi/HAMi` 仓库的发布分支上管理 cherry pick。一个常见的用例是将 PR 从 master 分支回移到发布分支。
 
-> 本文档摘自 [Kubernetes cherry-pick](https://github.com/kubernetes/community/blob/master/contributors/devel/sig-release/cherry-picks.md)。
-
-- [先决条件](#prerequisites)
-- [哪些 PR 适合进行 Cherry Pick](#what-kind-of-prs-are-good-for-cherry-picks)
-- [发起 Cherry Pick](#initiate-a-cherry-pick)
-- [Cherry Pick 审核](#cherry-pick-review)
-- [Cherry Pick 故障排除](#troubleshooting-cherry-picks)
-- [不支持版本的 Cherry Pick](#cherry-picks-for-unsupported-releases)
-
 ## 先决条件
 
 - 一个已合并到 `master` 分支的拉取请求。

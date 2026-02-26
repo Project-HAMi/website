@@ -10,7 +10,7 @@ translated: true
 
 ## 在云端创建 Fork
 
-1. 访问 https://github.com/Project-HAMi/HAMi
+1. 访问 [https://github.com/Project-HAMi/HAMi](https://github.com/Project-HAMi/HAMi)
 2. 点击 `Fork` 按钮（右上角）以建立基于云的 fork。
 
 ## 克隆 fork 到本地存储
@@ -255,4 +255,4 @@ _如果你有上游写入权限_，请避免使用 GitHub UI 中的 `Revert` 按
   git push ${your_remote_name} myrevert
   ```
 
-- [创建一个拉取请求](#7-create-a-pull-request) 使用此分支。
+- [创建一个拉取请求](#创建拉取请求) 使用此分支。

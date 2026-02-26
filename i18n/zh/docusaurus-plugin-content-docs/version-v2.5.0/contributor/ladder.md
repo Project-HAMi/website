@@ -3,21 +3,6 @@ title: 贡献者阶梯
 translated: true
 ---
 
-本文档介绍了在项目中参与和提升的不同方式。您可以在贡献者角色中看到项目中的不同角色。
-
-- [贡献者阶梯](#contributor-ladder)
-  - [贡献者阶梯](#contributor-ladder-1)
-    - [社区参与者](#community-participant)
-    - [贡献者](#contributor)
-    - [组织成员](#organization-member)
-    - [审阅者](#reviewer)
-    - [维护者](#maintainer)
-    - [活跃的维护者应该](#an-active-maintainer-should)
-    - [如何成为维护者](#how-to-be-a-maintainer)
-    - [移除维护者](#removing-maintainers)
-  - [不活跃](#inactivity)
-  - [非自愿移除或降级](#involuntary-removal-or-demotion)
-
 ## 贡献者阶梯
 
 您好！我们很高兴您想了解更多关于我们项目贡献者阶梯的信息！这个贡献者阶梯概述了项目中的不同贡献者角色，以及与之相关的责任和特权。社区成员通常从“阶梯”的第一级开始，并随着他们在项目中的参与度增加而逐步提升。我们的项目成员乐于帮助您在贡献者阶梯上进步。
@@ -85,9 +70,9 @@ translated: true
   * 必须积极参与至少一个项目领域
   * 必须有两个赞助者，他们也是组织成员，其中至少一个不为同一雇主工作
   * **[在 HAMi-project/HAMi 仓库中打开一个问题][membership request]**
-    - 确保您的赞助者在问题中被 @提及
-    - 完成问题清单上的每一项
-    - 确保所列贡献代表您在项目中的工作。
+    * 确保您的赞助者在问题中被 @提及
+    * 完成问题清单上的每一项
+    * 确保所列贡献代表您在项目中的工作。
   * 让您的赞助审阅者回复赞助确认：`+1`
   * 一旦您的赞助者回复，您的请求将由 `HAMi GitHub 管理团队`处理。
 
