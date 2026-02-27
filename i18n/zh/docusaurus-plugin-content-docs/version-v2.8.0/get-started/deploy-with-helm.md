@@ -2,12 +2,6 @@
 title: 使用 Helm 部署 HAMi
 ---
 
-## 目录 {#toc}
-
-- [先决条件](#prerequisites)
-- [安装步骤](#installation)
-- [演示](#demo)
-
 本指南将涵盖：
 
 - 为每个 GPU 节点配置 NVIDIA 容器运行时
@@ -149,7 +143,7 @@ spec:
       resources:
         limits:
           nvidia.com/gpu: 1 # 申请 1 个 vGPU
-          nvidia.com/gpumem: 10240 # 每个 vGPU 包含 10240m 设备内存（可选，整型）
+          nvidia.com/gpumem: 10240 # 每个 vGPU 包含 10240m 设备显存（可选，整型）
 ```
 
 #### 2. 验证容器内资源限制 {#verify-in-container-resource-control}

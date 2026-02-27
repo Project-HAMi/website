@@ -6,7 +6,7 @@ title: WebUI
 
 This topic includes instructions for installing and running HAMi-WebUI on Kubernetes using Helm Charts.
 
-The WebUI can only be accessed by your localhost, so you need to connect your localhost to the cluster by configuring `~/.kube/config` 
+The WebUI can only be accessed by your localhost, so you need to connect your localhost to the cluster by configuring `~/.kube/config`
 
 [Helm](https://helm.sh/) is an open-source command line tool used for managing Kubernetes applications. It is a graduate project in the [CNCF Landscape](https://www.cncf.io/projects/helm/).
 
@@ -58,7 +58,6 @@ To set up the HAMi-WebUI Helm repository so that you download the correct HAMi-W
 
 1. Configure ~/.kube/config in your localhost to be able to connect your cluster.
 
-
 2. Run the following command to do a port-forwarding of the HAMi-WebUI service on port `3000` in your localhost.
 
    ```bash
@@ -87,7 +86,6 @@ kubectl logs --namespace=hami deploy/my-hami-webui -c hami-webui-be-oss
 ```
 
 For more information about accessing Kubernetes application logs, refer to [Pods](https://kubernetes.io/docs/reference/kubectl/cheatsheet/#interacting-with-running-pods) and [Deployments](https://kubernetes.io/docs/reference/kubectl/cheatsheet/#interacting-with-deployments-and-services).
-
 
 ## Uninstall the HAMi-WebUI deployment
 

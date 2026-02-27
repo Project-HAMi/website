@@ -4,12 +4,14 @@ translated: true
 ---
 
 本指南将涵盖：
+
 - 在每个 GPU 节点中配置 nvidia 容器运行时
 - 使用 helm 安装 HAMi
 - 启动 vGPU 任务
 - 检查容器内相应的设备资源是否受限
 
 ### 前提条件
+
 - [Helm](https://helm.sh/zh/docs/) 版本 v3+
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) 版本 v1.16+
 - [CUDA](https://developer.nvidia.com/cuda-toolkit) 版本 v10.2+
@@ -18,6 +20,7 @@ translated: true
 ### 安装
 
 #### 1. 配置 nvidia-container-toolkit
+
 <summary> 配置 nvidia-container-toolkit </summary>
 
 在所有 GPU 节点上执行以下步骤。
@@ -56,7 +59,7 @@ sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
 
 然后重启 `Docker`：
 
-```
+```bash
 sudo systemctl daemon-reload && systemctl restart docker
 ```
 
@@ -64,7 +67,7 @@ sudo systemctl daemon-reload && systemctl restart docker
 
 在使用 `containerd` 运行 `Kubernetes` 时，修改配置文件，通常位于 `/etc/containerd/config.toml`，以设置 `nvidia-container-runtime` 为默认的低级运行时：
 
-```
+```yaml
 version = 2
 [plugins]
   [plugins."io.containerd.grpc.v1.cri"]
@@ -83,34 +86,35 @@ version = 2
 
 然后重启 `containerd`：
 
-```
+```bash
 sudo systemctl daemon-reload && systemctl restart containerd
 ```
 
 #### 2. 给节点打标签
+
 通过添加标签 "gpu=on" 来为调度 HAMi 标记您的 GPU 节点。没有此标签，节点无法被我们的调度器管理。
 
-```
+```bash
 kubectl label nodes {nodeid} gpu=on
 ```
 
-#### 3. 使用 helm 部署 HAMi：
+#### 3. 使用 helm 部署 HAMi
 
 首先，您需要使用以下命令检查您的 Kubernetes 版本：
 
-```
+```bash
 kubectl version
 ```
 
 然后，在 helm 中添加我们的仓库
 
-```
+```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/
 ```
 
 在安装过程中，将 Kubernetes 调度器镜像版本设置为与您的 Kubernetes 服务器版本匹配。例如，如果您的集群服务器版本是 1.16.8，使用以下命令进行部署：
 
-```
+```bash
 helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag=v1.16.8 -n kube-system
 ```
 
@@ -118,11 +122,11 @@ helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag=v1.16.
 
 ### 演示
 
-#### 1. 提交演示任务：
+#### 1. 提交演示任务
 
 容器现在可以使用 `nvidia.com/gpu` 资源类型请求 NVIDIA vGPUs。
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -135,20 +139,20 @@ spec:
       resources:
         limits:
           nvidia.com/gpu: 1 # 请求 1 个 vGPUs
-          nvidia.com/gpumem: 10240 # 每个 vGPU 包含 10240 MiB 设备内存（可选，整数）
+          nvidia.com/gpumem: 10240 # 每个 vGPU 包含 10240 MiB 设备显存（可选，整数）
 ```
 
 #### 在容器资源控制中验证
 
 执行以下查询命令：
 
-```
+```bash
 kubectl exec -it gpu-pod nvidia-smi
 ```
 
 结果应为
 
-```
+```text
 [HAMI-core Msg(28:140561996502848:libvgpu.c:836)]: Initializing.....
 Wed Apr 10 09:28:58 2024       
 +-----------------------------------------------------------------------------------------+

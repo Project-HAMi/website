@@ -30,7 +30,7 @@ helm install --generate-name --namespace <ENTER_NAMESPACE_HERE> ./*
 
 ## 使用 AWS add-on 安装
 
-在使用 AWS add-on 安装 HAMi 前，你需要安装cert-manager，你可以在 AWS 插件市场中找到该插件并通过控制台安装。
+在使用 AWS add-on 安装 HAMi 前，你需要安装 cert-manager，你可以在 AWS 插件市场中找到该插件并通过控制台安装。
 你也可以参考[AWS 用户指南](https://docs.aws.amazon.com/eks/latest/userguide/lbc-manifest.html#lbc-cert)进行安装。
 
 然后你就可以使用 AWS 插件市场中的 HAMi 插件进行安装。
@@ -39,7 +39,7 @@ helm install --generate-name --namespace <ENTER_NAMESPACE_HERE> ./*
 
 您可以使用以下命令验证您的安装：
 
-```
+```bash
 kubectl get pods -n kube-system
 ```
 
@@ -48,7 +48,8 @@ kubectl get pods -n kube-system
 ## 使用示例
 
 ### NVIDIA 设备
-[使用独占 GPU](https://project-hami.io/zh/docs/userguide/NVIDIA-device/examples/use-exclusive-card)   
-[为容器分配特定设备内存](https://project-hami.io/zh/docs/userguide/NVIDIA-device/examples/allocate-device-memory)   
-[为容器分配设备核心资源](https://project-hami.io/zh/docs/userguide/NVIDIA-device/examples/allocate-device-core)   
-[将任务分配给 mig 实例](https://project-hami.io/zh/docs/userguide/NVIDIA-device/examples/dynamic-mig-example)   
+
+[使用独占 GPU](https://project-hami.io/zh/docs/userguide/NVIDIA-device/examples/use-exclusive-card)
+[为容器分配特定设备显存](https://project-hami.io/zh/docs/userguide/NVIDIA-device/examples/allocate-device-memory)
+[为容器分配设备核心资源](https://project-hami.io/zh/docs/userguide/NVIDIA-device/examples/allocate-device-core)
+[将任务分配给 mig 实例](https://project-hami.io/zh/docs/userguide/NVIDIA-device/examples/dynamic-mig-example)

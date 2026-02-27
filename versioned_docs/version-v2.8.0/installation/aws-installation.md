@@ -40,17 +40,16 @@ Once cert-manager is installed, you can install the HAMi add-on from the AWS Mar
 
 You can verify your installation with the following command:
 
-
 ```
 kubectl get pods -n kube-system
 ```
-
 
 If both the **hami-device-plugin** and **hami-scheduler** pods are in the `Running` state, your installation was successful.
 
 ## Usage Examples
 
 ### NVIDIA Devices
+
 [Use Exclusive GPU](https://project-hami.io/docs/userguide/NVIDIA-device/examples/use-exclusive-card)  
 [Allocate Specific Device Memory to a Container](https://project-hami.io/docs/userguide/NVIDIA-device/examples/allocate-device-memory)  
 [Allocate Device Core Resources to a Container](https://project-hami.io/docs/userguide/NVIDIA-device/examples/allocate-device-core)  

@@ -41,10 +41,13 @@ You can update these configurations using one of the following methods:
    | `nvidia.resourcePriorityName` | String | vGPU job priority name. | `"nvidia.com/priority"` |
 
 ## Node Configs: ConfigMap
-HAMi allows configuring per-node behavior for device plugin. Edit 
+
+HAMi allows configuring per-node behavior for device plugin. Edit
+
 ```sh
 kubectl -n <namespace> edit cm hami-device-plugin
 ```
+
 * `name`: Name of the node.
 * `operatingmode`: Operating mode of the node, can be "hami-core" or "mig", default: "hami-core".
 * `devicememoryscaling`: Overcommit ratio of device memory.

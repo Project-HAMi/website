@@ -7,7 +7,6 @@ title: Contributors
 
 The following people, in alphabetical order, have either authored or signed off on commits in the HAMi repository:
 
-
 | Contributor | Email |
 |-----------------|-----------|
 | [archlitchi](https://github.com/archlitchi) | archlitchi@gmail.com|

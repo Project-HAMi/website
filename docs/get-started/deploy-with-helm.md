@@ -2,12 +2,6 @@
 title: Deploy HAMi using helm
 ---
 
-## TOC {#toc}
-
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Demo](#demo)
-
 This guide will cover:
 
 - Configure nvidia container runtime in each GPU nodes
@@ -157,7 +151,7 @@ spec:
       resources:
         limits:
           nvidia.com/gpu: 1 # requesting 1 vGPUs
-          nvidia.com/gpumem: 10240 # Each vGPU contains 10240m device memory （Optional,Integer）
+          nvidia.com/gpumem: 10240 # Each vGPU contains 10240m device memory (Optional,Integer)
 ```
 
 #### 2. Verify in container resource control {#verify-in-container-resource-control}

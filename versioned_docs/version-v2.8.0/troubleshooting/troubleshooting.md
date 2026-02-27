@@ -13,7 +13,7 @@ title: Troubleshooting
 
   - Manually edit the DaemonSet using `kubectl edit daemonset` and update the environment variable from `NodeName` to `NODE_NAME`.
   - Upgrade the `device-plugin` image to the latest version using Helm:  
-    
+
     ```bash
     helm upgrade hami hami/hami -n kube-system
     ```  

@@ -2,11 +2,6 @@
 title: Device sharing
 ---
 
-## TOC {#toc}
-
-- [Device Sharing](#device-sharing)
-- [Benefits](#benefits)
-
 HAMi offers robust device-sharing capabilities, enabling multiple tasks to share the same GPU, MLU, or NPU device,
 maximizing the utilization of heterogeneous AI computing resources.
 

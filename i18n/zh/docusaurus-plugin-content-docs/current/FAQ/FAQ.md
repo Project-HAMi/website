@@ -7,21 +7,19 @@ title: 常见问题
 
 | **GPU 厂商** | **GPU 型号** | **粒度** | **多 GPU 支持** |
 | --- | --- | --- | --- |
-| NVIDIA | 几乎所有主流消费级和数据中心 GPU | 核心 1%，内存 1M | 支持。多 GPU 仍可通过虚拟化进行拆分和共享。 |
+| NVIDIA | 几乎所有主流消费级和数据中心 GPU | 核心 1%，显存 1M | 支持。多 GPU 仍可通过虚拟化进行拆分和共享。 |
 | 昇腾 | 910A、910B2、910B3、310P | 最小粒度取决于卡类型模板。参考[官方模板](https://www.hiascend.com/document/detail/zh/mindx-dl/50rc1/AVI/cpaug/cpaug_0005.html)。 | 支持，但当 `npu > 1` 时不支持拆分，整卡独占。 |
-| 海光 | Z100、Z100L、K100-AI | 核心 1%，内存 1M | 支持，但当 `dcu > 1` 时不支持拆分，整卡独占。 |
-| 寒武纪 | 370、590 | 核心 1%，内存 256M | 支持，但当 `mlu > 1` 时不支持拆分，整卡独占。 |
-| 天数智芯 | 全部 | 核心 1%，内存 256M | 支持，但当 `gpu > 1` 时不支持拆分，整卡独占。 |
-| 摩尔线程 | MTT S4000 | 核心为 1 个核心组，内存 512M | 支持，但当 `gpu > 1` 时不支持拆分，整卡独占。 |
+| 海光 | Z100、Z100L、K100-AI | 核心 1%，显存 1M | 支持，但当 `dcu > 1` 时不支持拆分，整卡独占。 |
+| 寒武纪 | 370、590 | 核心 1%，显存 256M | 支持，但当 `mlu > 1` 时不支持拆分，整卡独占。 |
+| 天数智芯 | 全部 | 核心 1%，显存 256M | 支持，但当 `gpu > 1` 时不支持拆分，整卡独占。 |
+| 摩尔线程 | MTT S4000 | 核心为 1 个核心组，显存 512M | 支持，但当 `gpu > 1` 时不支持拆分，整卡独占。 |
 | 魅特思 | MXC500 | 不支持拆分，只能整卡分配。 | 支持，但所有分配均为整卡。 |
 
 ## 什么是 vGPU？为什么看到 10 个 vGPU 却无法在同一张卡上分配两个 vGPU？
 
-**简要说明**
+**简要说明：**
 
 vGPU 通过逻辑划分方式提升 GPU 利用率，使多个任务共享同一块物理 GPU。设置 `deviceSplitCount: 10` 表示该 GPU 最多可同时服务 10 个任务，但并不允许一个任务使用该 GPU 上的多个 vGPU。
-
----
 
 ### vGPU 的概念
 
@@ -43,7 +41,7 @@ vGPU 是通过虚拟化在物理 GPU 上创建的逻辑实例，使多个任务�
 
 ## HAMi 的 `nvidia.com/priority` 字段仅支持两级，如何在资源紧张时实现多级用户自定义优先级的排队调度？
 
-**简要说明**
+**简要说明：**
 
 HAMi 的两级优先级用于同一张卡内任务的运行时抢占。若需支持多级用户自定义的任务调度优先级，可将 HAMi 与 **Volcano** 集成，利用其队列调度功能实现多级任务分配与抢占。
 
@@ -84,11 +82,9 @@ HAMi 原生的 `nvidia.com/priority` 字段（0 为高优先级，1 为低/默�
 
 ## HAMi 支持多节点、多 GPU 分布式训练吗？支持跨节点和跨 GPU 吗？
 
-**简要说明**
+**简要说明：**
 
 HAMi 支持多节点多 GPU 分布式训练，单个 Pod 可使用同节点多个 GPU，跨节点则通过多个 Pod 配合分布式框架实现。
-
----
 
 ### 多节点多 GPU 分布式训练
 
@@ -103,11 +99,9 @@ HAMi 支持多节点多 GPU 分布式训练，单个 Pod 可使用同节点多�
 
 ## HAMi 插件、Volcano 插件、NVIDIA 官方插件三者的关系与兼容性
 
-**简要说明**
+**简要说明：**
 
 同一节点只能启用一个 GPU 插件，避免资源冲突。
-
----
 
 ### 插件关系说明
 
@@ -136,21 +130,20 @@ HAMi 支持多节点多 GPU 分布式训练，单个 Pod 可使用同节点多�
 
 ## 为什么 Node Capacity 中只有 `nvidia.com/gpu` 而没有 `nvidia.com/gpucores` 或 `nvidia.com/gpumem`？
 
-**简要说明**
+**简要说明：**
 
-Kubernetes 的 Device Plugin 每次只能上报一种资源类型。HAMi 将核心数和内存信息以 Node 注解方式记录供调度器使用。
-
----
+Kubernetes 的 Device Plugin 每次只能上报一种资源类型。HAMi 将核心数和显存信息以 Node 注解方式记录供调度器使用。
 
 ### Device Plugin 的设计限制
 
 - Device Plugin 接口（如 Registration、ListAndWatch）仅允许每个插件实例上报一个资源；
-- 这简化了资源管理，但限制了同时上报多个指标（如核心和内存）。
+- 这简化了资源管理，但限制了同时上报多个指标（如核心和显存）。
 
 ### HAMi 的实现
 
-- HAMi 将 GPU 详细信息（如算力、内存、型号）存储为 **节点注解**，供调度器解析；
+- HAMi 将 GPU 详细信息（如算力、显存、型号）存储为 **节点注解**，供调度器解析；
 - 示例：
+
   ```yaml
   hami.io/node-nvidia-register: GPU-fc28df76-54d2-c387-e52e-5f0a9495968c,10,49140,100,NVIDIA-NVIDIA L40S,0,true:GPU-b97db201-0442-8531-56d4-367e0c7d6edd,10,49140,100,...
 
@@ -161,8 +154,6 @@ Kubernetes 的 Device Plugin 每次只能上报一种资源类型。HAMi 将核�
 - `volcano-vgpu-device-plugin` 创建了[三个独立的 Device Plugin 实例](https://github.com/Project-HAMi/volcano-vgpu-device-plugin/blob/2bf6dfe37f7b716f05d0d3210f89898087c06d99/pkg/plugin/vgpu/mig-strategy.go#L65-L85)，分别向 kubelet 注册 `volcano.sh/vgpu-number`、`volcano.sh/vgpu-memory`、`volcano.sh/vgpu-cores` 三种资源。kubelet 接收注册后，自动将资源写入 Capacity 和 Allocatable。
 - **提示**：`volcano.sh/vgpu-memory` 资源受 Kubernetes 扩展资源数量限制（最大 32767）。对于大显存 GPU（如 A100 80GB），需要配置 --gpu-memory-factor 参数避免超限。
 
----
-
 ## 为什么某些国产厂商不需要单独安装运行时？
 
 某些国产厂商（例如：**海光**、**寒武纪**）的 Device Plugin 插件已内置了设备发现与挂载的能力，因此不再需要额外的运行时组件。  
@@ -172,13 +163,9 @@ Kubernetes 的 Device Plugin 每次只能上报一种资源类型。HAMi 将核�
 - 设备节点挂载；
 - 高级功能（如拓扑感知、NUMA、性能隔离等）支持。
 
----
-
-**简要总结**
+**简要总结：**
 
 当官方插件无法满足高级功能（如缺少必要信息）或引入配置复杂性时，**HAMi 会选择自研 Device Plugin 插件**，以确保调度器获取完整资源信息。
-
----
 
 HAMi 的调度器需要从节点获取足够的 GPU 信息来完成资源调度和设备分配。主要通过以下三种方式：
 
@@ -186,9 +173,7 @@ HAMi 的调度器需要从节点获取足够的 GPU 信息来完成资源调度�
 2. **通过标准 Device Plugin 接口上报资源给 kubelet**；
 3. **直接修改节点的 `status.capacity` 与 `status.allocatable` 字段**。
 
----
-
 **为什么 HAMi 要自研插件？举例如下：**
 
 - **昇腾插件问题**：官方插件需为每种卡类型部署不同插件，HAMi 将其抽象为统一模板，简化集成；
-- **NVIDIA 插件问题**：无法支持如 GPU 核心/内存比例限制、GPU 资源超售、NUMA 感知等高级功能，HAMi 需定制插件实现这些调度优化功能。
+- **NVIDIA 插件问题**：无法支持如 GPU 核心/显存比例限制、GPU 资源超售、NUMA 感知等高级功能，HAMi 需定制插件实现这些调度优化功能。

@@ -12,7 +12,7 @@ title: Enable Hygon DCU sharing
 
 ***Device compute core limitation***: DCUs can be allocated with certain percentage of device core(i.e hygon.com/dcucores:60 indicate this container uses 60% compute cores of this device)
 
-***DCU Type Specification***: You can specify which type of DCU to use or to avoid for a certain task, by setting "hygon.com/use-dcutype" or "hygon.com/nouse-dcutype" annotations. 
+***DCU Type Specification***: You can specify which type of DCU to use or to avoid for a certain task, by setting "hygon.com/use-dcutype" or "hygon.com/nouse-dcutype" annotations.
 
 ## Prerequisites
 
@@ -22,7 +22,6 @@ title: Enable Hygon DCU sharing
 ## Enabling DCU-sharing Support
 
 * Deploy the dcu-vgpu-device-plugin [here](https://github.com/Project-HAMi/dcu-vgpu-device-plugin)
-
 
 ## Running DCU jobs
 
@@ -53,6 +52,7 @@ spec:
 ## Enable vDCU inside container
 
 You need to enable vDCU inside container in order to use it.
+
 ```
 source /opt/hygondriver/env.sh
 ```
@@ -67,9 +67,9 @@ If you have an output like this, then you have successfully enabled vDCU inside 
 
 ```
 Device 0:
-	Actual Device: 0
-	Compute units: 60
-	Global memory: 2097152000 bytes
+ Actual Device: 0
+ Compute units: 60
+ Global memory: 2097152000 bytes
 ```
 
 Launch your DCU tasks like you usually do

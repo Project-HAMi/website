@@ -23,7 +23,7 @@ translated: true
    中的相应值，然后重新应用 Helm Chart 以重新生成 ConfigMap。
 
 * `nvidia.deviceMemoryScaling`：
-  浮点类型，默认值：1。NVIDIA 设备内存缩放比例，可以大于 1（启用虚拟设备内存，实验性功能）。对于具有 *M* 内存的 NVIDIA GPU，如果我们将 `nvidia.deviceMemoryScaling` 参数设置为 *S*，则通过此 GPU 分割的 vGPU 在 Kubernetes 中将总共获得 `S * M` 内存。
+  浮点类型，默认值：1。NVIDIA 设备显存缩放比例，可以大于 1（启用虚拟设备显存，实验性功能）。对于具有 *M* 内存的 NVIDIA GPU，如果我们将 `nvidia.deviceMemoryScaling` 参数设置为 *S*，则通过此 GPU 分割的 vGPU 在 Kubernetes 中将总共获得 `S * M` 内存。
 * `nvidia.deviceSplitCount`：
   整数类型，默认值：10。分配给单个 GPU 设备的最大任务数。
 * `nvidia.migstrategy`：
@@ -31,17 +31,17 @@ translated: true
 * `nvidia.disablecorelimit`：
   字符串类型，"true" 表示禁用核心限制，"false" 表示启用核心限制，默认值：false。
 * `nvidia.defaultMem`：
-  整数类型，默认值：0。当前任务的默认设备内存，以 MB 为单位。'0' 表示使用 100% 设备内存。
+  整数类型，默认值：0。当前任务的默认设备显存，以 MB 为单位。'0' 表示使用 100% 设备显存。
 * `nvidia.defaultCores`：
-  整数类型，默认值：0。为当前任务保留的 GPU 核心百分比。如果分配为 0，则可能适合任何具有足够设备内存的 GPU。如果分配为 100，则将独占使用整个 GPU 卡。
+  整数类型，默认值：0。为当前任务保留的 GPU 核心百分比。如果分配为 0，则可能适合任何具有足够设备显存的 GPU。如果分配为 100，则将独占使用整个 GPU 卡。
 * `nvidia.defaultGPUNum`：
   整数类型，默认值：1，如果配置值为 0，则配置值将不生效并被过滤。当用户未在 Pod 资源中设置 nvidia.com/gpu 这个键时，webhook 应检查 nvidia.com/gpumem、resource-mem-percentage、nvidia.com/gpucores 这三个键，任意一个键有值，webhook 应将 nvidia.com/gpu 键和此默认值添加到资源限制映射中。
 * `nvidia.resourceCountName`：
   字符串类型，vgpu 数量资源名称，默认值："nvidia.com/gpu"。
 * `nvidia.resourceMemoryName`：
-  字符串类型，vgpu 内存大小资源名称，默认值："nvidia.com/gpumem"。
+  字符串类型，vgpu 显存大小资源名称，默认值："nvidia.com/gpumem"。
 * `nvidia.resourceMemoryPercentageName`：
-  字符串类型，vgpu 内存比例资源名称，默认值："nvidia.com/gpumem-percentage"。
+  字符串类型，vgpu 显存比例资源名称，默认值："nvidia.com/gpumem-percentage"。
 * `nvidia.resourceCoreName`：
   字符串类型，vgpu 核心资源名称，默认值："nvidia.com/cores"。
 * `nvidia.resourcePriorityName`：

@@ -21,6 +21,7 @@ The Nvidia DRA driver is built into HAMi and does not need to be installed separ
 ## Verify Installation
 
 To verify the installation is successful, use the following command to view GPU devices:
+
 ```bash
 kubectl get resourceslices.resource.k8s.io -A
 ```

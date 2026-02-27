@@ -4,12 +4,14 @@ translated: true
 ---
 
 本指南将涵盖：
+
 - 在每个 GPU 节点中配置 nvidia 容器运行时
 - 使用 helm 安装 HAMi
 - 启动 vGPU 任务
 - 检查容器内相应的设备资源是否受限
 
 ### 前提条件
+
 - [Helm](https://helm.sh/zh/docs/) 版本 v3+
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) 版本 v1.16+
 - [CUDA](https://developer.nvidia.com/cuda-toolkit) 版本 v10.2+
@@ -18,6 +20,7 @@ translated: true
 ### 安装
 
 #### 1. 配置 nvidia-container-toolkit
+
 <summary> 配置 nvidia-container-toolkit </summary>
 
 在所有 GPU 节点上执行以下步骤。
@@ -88,13 +91,14 @@ sudo systemctl daemon-reload && systemctl restart containerd
 ```
 
 #### 2. 给节点打标签
+
 通过添加标签 "gpu=on" 来为调度 HAMi 标记您的 GPU 节点。没有此标签，节点无法被我们的调度器管理。
 
 ```
 kubectl label nodes {nodeid} gpu=on
 ```
 
-#### 3. 使用 helm 部署 HAMi：
+#### 3. 使用 helm 部署 HAMi
 
 首先，您需要使用以下命令检查您的 Kubernetes 版本：
 
@@ -118,7 +122,7 @@ helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag=v1.16.
 
 ### 演示
 
-#### 1. 提交演示任务：
+#### 1. 提交演示任务
 
 容器现在可以使用 `nvidia.com/gpu` 资源类型请求 NVIDIA vGPUs。
 
@@ -135,7 +139,7 @@ spec:
       resources:
         limits:
           nvidia.com/gpu: 1 # 请求 1 个 vGPUs
-          nvidia.com/gpumem: 10240 # 每个 vGPU 包含 3000m 设备内存（可选，整数）
+          nvidia.com/gpumem: 10240 # 每个 vGPU 包含 3000m 设备显存（可选，整数）
 ```
 
 #### 在容器资源控制中验证
