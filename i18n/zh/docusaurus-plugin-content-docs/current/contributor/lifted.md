@@ -5,15 +5,11 @@ translated: true
 
 本文档解释了如何管理提升的代码。此任务的一个常见用户案例是开发人员从其他代码库中提升代码到 `pkg/util/lifted` 目录。
 
-- [提升代码的步骤](#steps-of-lifting-code)
-- [如何编写提升注释](#how-to-write-lifted-comments)
-- [示例](#examples)
-
 ## 提升代码的步骤
 
 - 从另一个代码库中复制代码并将其保存到 `pkg/util/lifted` 下的一个 go 文件中。
 - 可选择性地更改提升的代码。
-- 为代码添加提升注释 [如指导](#how-to-write-lifted-comments)。
+- 为代码添加提升注释 [如指导](#如何编写提升注释)。
 - 运行 `hack/update-lifted.sh` 来更新提升文档 `pkg/util/lifted/doc.go`。
 
 ## 如何编写提升注释
@@ -46,7 +42,7 @@ translated: true
 
 // IsQuotaHugePageResourceName 返回 true 如果资源名称具有与配额相关的大页资源前缀。
 func IsQuotaHugePageResourceName(name corev1.ResourceName) bool {
-	return strings.HasPrefix(string(name), corev1.ResourceHugePagesPrefix) || strings.HasPrefix(string(name), corev1.ResourceRequestsHugePagesPrefix)
+ return strings.HasPrefix(string(name), corev1.ResourceHugePagesPrefix) || strings.HasPrefix(string(name), corev1.ResourceRequestsHugePagesPrefix)
 }
 ```
 
@@ -69,11 +65,11 @@ func IsQuotaHugePageResourceName(name corev1.ResourceName) bool {
 // GetNewReplicaSet 返回与给定部署意图匹配的副本集；从客户端接口获取 ReplicaSetList。
 // 如果新的副本集尚不存在，则返回 nil。
 func GetNewReplicaSet(deployment *appsv1.Deployment, f ReplicaSetListFunc) (*appsv1.ReplicaSet, error) {
-	rsList, err := ListReplicaSetsByDeployment(deployment, f)
-	if err != nil {
-		return nil, err
-	}
-	return FindNewReplicaSet(deployment, rsList), nil
+ rsList, err := ListReplicaSetsByDeployment(deployment, f)
+ if err != nil {
+  return nil, err
+ }
+ return FindNewReplicaSet(deployment, rsList), nil
 }
 ```
 
@@ -87,7 +83,7 @@ func GetNewReplicaSet(deployment *appsv1.Deployment, f ReplicaSetListFunc) (*app
 
 ### 提升常量
 
-将常量 `isNegativeErrorMsg` 提升到 `corevalidation.go `：
+将常量 `isNegativeErrorMsg` 提升到 `corevalidation.go`：
 
 ```go
 // +lifted:source=https://github.com/kubernetes/kubernetes/blob/release-1.22/pkg/apis/core/validation/validation.go#L59

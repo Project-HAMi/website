@@ -7,12 +7,12 @@ description: An overview of the GitHub workflow used by the Karmada project. It 
 
 ![Git workflow](../resources/contributor/git_workflow.png)
 
-### 1 Fork in the cloud
+## 1 Fork in the cloud
 
-1. Visit https://github.com/karmada-io/karmada
+1. Visit [https://github.com/karmada-io/karmada](https://github.com/karmada-io/karmada)
 2. Click `Fork` button (top right) to establish a cloud-based fork.
 
-### 2 Clone fork to local storage
+## 2 Clone fork to local storage
 
 Per Go's [workspace instructions][go-workspace], place Karmada' code on your
 `GOPATH` using the following cloning procedure.
@@ -57,7 +57,7 @@ git remote set-url --push upstream no_push
 git remote -v
 ```
 
-### 3 Branch
+## 3 Branch
 
 Get your local master up to date:
 
@@ -72,13 +72,14 @@ git rebase upstream/master
 ```
 
 Branch from it:
+
 ```sh
 git checkout -b myfeature
 ```
 
 Then edit code on the `myfeature` branch.
 
-### 4 Keep your branch in sync
+## 4 Keep your branch in sync
 
 ```sh
 # Depending on which repository you are working from,
@@ -95,17 +96,18 @@ and violate the principle that commits ought to be individually understandable
 and useful (see below). You can also consider changing your `.git/config` file via
 `git config branch.autoSetupRebase always` to change the behavior of `git pull`, or another non-merge option such as `git pull --rebase`.
 
-### 5 Commit
+## 5 Commit
 
 Commit your changes.
 
 ```sh
 git commit --signoff
 ```
+
 Likely you go back and edit/build/test some more then `commit --amend`
 in a few cycles.
 
-### 6 Push
+## 6 Push
 
 When ready to review (or just to establish an offsite backup of your work),
 push your branch to your fork on `github.com`:
@@ -114,7 +116,7 @@ push your branch to your fork on `github.com`:
 git push -f ${your_remote_name} myfeature
 ```
 
-### 7 Create a pull request
+## 7 Create a pull request
 
 1. Visit your fork at `https://github.com/$user/karmada`
 2. Click the `Compare & Pull Request` button next to your `myfeature` branch.
@@ -123,7 +125,7 @@ _If you have upstream write access_, please refrain from using the GitHub UI for
 creating PRs, because GitHub will create the PR branch inside the main
 repository rather than inside your fork.
 
-#### Get a code review
+### Get a code review
 
 Once your pull request has been opened it will be assigned to one or more
 reviewers.  Those reviewers will do a thorough code review, looking for
@@ -135,7 +137,7 @@ fork.
 
 Very small PRs are easy to review.  Very large PRs are very difficult to review.
 
-#### Squash commits
+### Squash commits
 
 After a review, prepare your PR for merging by squashing your commits.
 
@@ -155,26 +157,26 @@ rebase](https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History):
 
 1. Check your git branch:
 
-  ```
+  ```bash
   git status
   ```
 
 Output is similar to:
 
-  ```
+  ```text
   On branch your-contribution
   Your branch is up to date with 'origin/your-contribution'.
   ```
 
-2. Start an interactive rebase using a specific commit hash, or count backwards from your last commit using `HEAD~<n>`, where `<n>` represents the number of commits to include in the rebase.
+1. Start an interactive rebase using a specific commit hash, or count backwards from your last commit using `HEAD~<n>`, where `<n>` represents the number of commits to include in the rebase.
 
-  ```
+  ```bash
   git rebase -i HEAD~3
   ```
 
 Output is similar to:
 
-  ```
+  ```text
   pick 2ebe926 Original commit
   pick 31f33e9 Address feedback
   pick b0315fe Second unit of work
@@ -192,9 +194,9 @@ Output is similar to:
 
   ```
 
-3. Use a command line text editor to change the word `pick` to `squash` for the commits you want to squash, then save your changes and continue the rebase:
+1. Use a command line text editor to change the word `pick` to `squash` for the commits you want to squash, then save your changes and continue the rebase:
 
-  ```
+  ```text
   pick 2ebe926 Original commit
   squash 31f33e9 Address feedback
   pick b0315fe Second unit of work
@@ -205,7 +207,7 @@ Output is similar to:
 
 Output (after saving changes) is similar to:
 
-  ```
+  ```text
   [detached HEAD 61fdded] Second unit of work
    Date: Thu Mar 5 19:01:32 2020 +0100
    2 files changed, 15 insertions(+), 1 deletion(-)
@@ -214,9 +216,10 @@ Output (after saving changes) is similar to:
 
   Successfully rebased and updated refs/heads/master.
   ```
-4. Force push your changes to your remote branch:
 
-  ```
+1. Force push your changes to your remote branch:
+
+  ```bash
   git push --force
   ```
 
@@ -224,13 +227,13 @@ For mass automated fixups (e.g. automated doc formatting), use one or more
 commits for the changes to tooling and a final commit to apply the fixup en
 masse. This makes reviews easier.
 
-### Merging a commit
+## Merging a commit
 
 Once you've received review and approval, your commits are squashed, your PR is ready for merging.
 
 Merging happens automatically after both a  Reviewer and Approver have approved the PR. If you haven't squashed your commits, they may ask you to do so before approving a PR.
 
-### Reverting a commit
+## Reverting a commit
 
 In case you wish to revert a commit, use the following instructions.
 
@@ -251,6 +254,7 @@ will create the PR branch inside the main repository rather than inside your for
   git fetch upstream
   git rebase upstream/master
   ```
+
 - If the commit you wish to revert is a:
   - **merge commit:**
 

@@ -4,8 +4,6 @@ title: Contributing
 
 Welcome to HAMi!
 
-# Before you get started
-
 ## Code of Conduct
 
 Please make sure to read and observe our [Code of Conduct](https://github.com/cncf/foundation/blob/main/code-of-conduct.md)
@@ -14,13 +12,13 @@ Please make sure to read and observe our [Code of Conduct](https://github.com/cn
 
 HAMi is a community project driven by its community which strives to promote a healthy, friendly and productive environment.
 
-# Getting started
+## Getting started
 
 - Fork the repository on GitHub.
 - Make your changes on your fork repository.
 - Submit a PR.
 
-# Your First Contribution
+## Your First Contribution
 
 We will help you to contribute in different areas like filing issues, developing features, fixing critical bugs and
 getting your work reviewed and merged.
@@ -45,7 +43,7 @@ labels for issues that should not need deep knowledge of the system.
 We can help new contributors who wish to work on such issues.
 
 Another good way to contribute is to find a documentation improvement, such as a missing/broken link.
-Please see [Contributing](#contributing) below for the workflow.
+Please see [Contributor Workflow](#contributor-workflow) below for the workflow.
 
 #### Work on an issue
 
@@ -60,7 +58,7 @@ Issues should be filed under the appropriate HAMi sub-repository.
 
 Please follow the prompted submission guidelines while opening an issue.
 
-# Contributor Workflow
+## Contributor Workflow
 
 Please do not ever hesitate to ask a question or send a pull request.
 

@@ -4,28 +4,13 @@ title: Contributor Ladder
 
 This docs different ways to get involved and level up within the project. You can see different roles within the project in the contributor roles.
 
-<!-- template begins here -->
-
-- [Contributor Ladder](#contributor-ladder)
-  - [Contributor Ladder](#contributor-ladder-1)
-    - [Community Participant](#community-participant)
-    - [Contributor](#contributor)
-    - [Organization Member](#organization-member)
-    - [Reviewer](#reviewer)
-    - [Maintainer](#maintainer)
-    - [An active maintainer should](#an-active-maintainer-should)
-    - [How to be a maintainer](#how-to-be-a-maintainer)
-    - [Removing Maintainers](#removing-maintainers)
-  - [Inactivity](#inactivity)
-  - [Involuntary Removal or Demotion](#involuntary-removal-or-demotion)
-
 ## Contributor Ladder
 
 Hello! We are excited that you want to learn more about our project contributor ladder! This contributor ladder outlines the different contributor roles within the project, along with the responsibilities and privileges that come with them. Community members generally start at the first levels of the "ladder" and advance up it as their involvement in the project grows.  Our project members are happy to help you advance along the contributor ladder.
 
 Each of the contributor roles below is organized into lists of three types of things. "Responsibilities" are things that a contributor is expected to do. "Requirements" are qualifications a person needs to meet to be in that role, and "Privileges" are things contributors on that level are entitled to.
 
-### Community Participant
+## Community Participant
 
 Description: A Community Participant engages with the project and its community, contributing their time, thoughts, etc. Community participants are usually users who have stopped being anonymous and started being active in project discussions.
 
@@ -39,7 +24,7 @@ Description: A Community Participant engages with the project and its community,
   * Trying out new releases
   * Attending community events
 
-### Contributor
+## Contributor
 
 Description: A Contributor contributes directly to the project and adds value to it. Contributions need not be code. People at the Contributor level may be new contributors, or they may only contribute occasionally.
 
@@ -66,7 +51,7 @@ A very special thanks to the [long list of people](https://github.com/Project-HA
 
 As long as you contribute to HAMi, your name will be added [here](https://github.com/Project-HAMi/HAMi/blob/master/AUTHORS.md). If you don't find your name, please contact us to add it.
 
-### Organization Member
+## Organization Member
 
 Description: An Organization Member is an established contributor who regularly participates in the project. Organization Members have privileges in both project repositories and elections, and as such are expected to act in the interests of the whole project.
 
@@ -86,12 +71,11 @@ An Organization Member must meet the responsibilities and has the requirements o
   * Must be actively contributing to at least one project area
   * Must have two sponsors who are also Organization Members, at least one of whom does not work for the same employer
   * **[Open an issue][membership request] against the HAMi-project/HAMi repo**
-    - Ensure your sponsors are @mentioned on the issue
-    - Complete every item on the issue checklist
-    - Make sure that the list of contributions included is representative of your work on the project.
+    * Ensure your sponsors are @mentioned on the issue
+    * Complete every item on the issue checklist
+    * Make sure that the list of contributions included is representative of your work on the project.
   * Have your sponsoring reviewers reply confirmation of sponsorship: `+1`
   * Once your sponsors have responded, your request will be handled by the `HAMi GitHub Admin team`.
-
 
 * Privileges:
   * May be assigned Issues and Reviews
@@ -104,7 +88,7 @@ The process for a Contributor to become an Organization Member is as follows:
 1. Contact Maintainers and get at least two maintainers to agree
 2. Submit an Issue application to become a Member
 
-### Reviewer
+## Reviewer
 
 Description: A Reviewer has responsibility for specific code, documentation, test, or other project areas. They are collectively responsible, with other Reviewers, for reviewing all changes to those areas and indicating whether those changes are ready to merge. They have a track record of contribution and review in the project.
 
@@ -134,7 +118,7 @@ The process of becoming a Reviewer is:
 1. The contributor is nominated by opening a PR against the appropriate repository, which adds their GitHub username to the OWNERS file for one or more directories.
 2. At least two members of the team that owns that repository or main directory, who are already Approvers, approve the PR.
 
-### Maintainer
+## Maintainer
 
 Description: Maintainers are very established contributors who are responsible for the entire project. As such, they have the ability to approve PRs against any area of the project, and are expected to participate in making decisions about the strategy and priorities of the project.
 
@@ -142,7 +126,7 @@ A Maintainer must meet the responsibilities and requirements of a Reviewer, plus
 
 The current list of maintainers can be found in the [MAINTAINERS](https://github.com/Project-HAMi/HAMi/blob/master/MAINTAINERS.md).
 
-### An active maintainer should
+## An active maintainer should
 
 * Actively participate in reviewing pull requests and incoming issues. Note that there are no hard rules on what is “active enough” and this is left up to the judgement of the current group of maintainers.
 
@@ -154,13 +138,13 @@ The current list of maintainers can be found in the [MAINTAINERS](https://github
 
 * Gracefully step down from their maintainership role when they are no longer planning to actively participate in the project.
 
-### How to be a maintainer
+## How to be a maintainer
 
 New maintainers are added by consensus among the current group of maintainers. This can be done via a private discussion via Slack or email. A majority of maintainers should support the addition of the new person, and no single maintainer should object to adding the new maintainer.
 
 When adding a new maintainer, we should file a PR to [HAMi](https://github.com/Project-HAMi/HAMi) and update [MAINTAINERS](https://github.com/Project-HAMi/HAMi/blob/master/MAINTAINERS.md). Once this PR is merged, you will become a maintainer of HAMi.
 
-### Removing Maintainers
+## Removing Maintainers
 
 It is normal for maintainers to come and go based on their other responsibilities. Inactive maintainers may be removed if there is no expectation of ongoing participation. If a former maintainer resumes participation, they should be given quick consideration for re-adding to the team.
 

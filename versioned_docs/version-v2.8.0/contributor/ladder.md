@@ -4,23 +4,6 @@ title: Contributor Ladder
 
 This docs different ways to get involved and level up within the project. You can see different roles within the project in the contributor roles.
 
-<!-- template begins here -->
-
-- [Contributor Ladder](#contributor-ladder)
-  - [Contributor Ladder](#contributor-ladder-1)
-    - [Community Participant](#community-participant)
-    - [Contributor](#contributor)
-    - [Organization Member](#organization-member)
-    - [Reviewer](#reviewer)
-    - [Maintainer](#maintainer)
-    - [An active maintainer should](#an-active-maintainer-should)
-    - [How to be a maintainer](#how-to-be-a-maintainer)
-    - [Removing Maintainers](#removing-maintainers)
-  - [Inactivity](#inactivity)
-  - [Involuntary Removal or Demotion](#involuntary-removal-or-demotion)
-
-## Contributor Ladder
-
 Hello! We are excited that you want to learn more about our project contributor ladder! This contributor ladder outlines the different contributor roles within the project, along with the responsibilities and privileges that come with them. Community members generally start at the first levels of the "ladder" and advance up it as their involvement in the project grows.  Our project members are happy to help you advance along the contributor ladder.
 
 Each of the contributor roles below is organized into lists of three types of things. "Responsibilities" are things that a contributor is expected to do. "Requirements" are qualifications a person needs to meet to be in that role, and "Privileges" are things contributors on that level are entitled to.
@@ -86,12 +69,11 @@ An Organization Member must meet the responsibilities and has the requirements o
   * Must be actively contributing to at least one project area
   * Must have two sponsors who are also Organization Members, at least one of whom does not work for the same employer
   * **[Open an issue][membership request] against the HAMi-project/HAMi repo**
-    - Ensure your sponsors are @mentioned on the issue
-    - Complete every item on the issue checklist
-    - Make sure that the list of contributions included is representative of your work on the project.
+    * Ensure your sponsors are @mentioned on the issue
+    * Complete every item on the issue checklist
+    * Make sure that the list of contributions included is representative of your work on the project.
   * Have your sponsoring reviewers reply confirmation of sponsorship: `+1`
   * Once your sponsors have responded, your request will be handled by the `HAMi GitHub Admin team`.
-
 
 * Privileges:
   * May be assigned Issues and Reviews
