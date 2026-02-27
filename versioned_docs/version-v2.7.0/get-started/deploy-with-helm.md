@@ -2,12 +2,6 @@
 title: Deploy HAMi using helm
 ---
 
-## TOC {#toc}
-
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Demo](#demo)
-
 This guide will cover:
 
 - Configure nvidia container runtime in each GPU nodes
