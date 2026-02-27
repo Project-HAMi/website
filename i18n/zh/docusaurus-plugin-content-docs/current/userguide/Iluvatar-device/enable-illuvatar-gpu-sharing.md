@@ -34,7 +34,7 @@ helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag={your 
 
 * 部署'gpu-manager'之后，会根据 GPU 设备型号上报资源名称
 
-> **说明：** 目前默认支持的 GPU 型号和资源名称在 (<https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/templates/scheduler/device-configmap.yaml>) 定义：
+> **说明：** 目前默认支持的 GPU 型号和资源名称在 [device-configmap.yaml](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/templates/scheduler/device-configmap.yaml) 定义：
 
 ```yaml
     iluvatars:
