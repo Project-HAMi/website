@@ -85,7 +85,7 @@ spec:
               memory: 500Mi
               cpu: 500m
           command:
-            - -xpu-device-plugin
+            - xpu-device-plugin
             - --memory-unit=MiB
             - --resource-name=kunlunxin.com/vxpu
             - -logtostderr
