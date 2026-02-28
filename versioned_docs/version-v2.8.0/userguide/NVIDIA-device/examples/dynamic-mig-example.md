@@ -2,7 +2,7 @@
 title: Assign task to mig instance
 ---
 
-## This example will allocate 2g.10gb * 2 for A100-40GB-PCIE device  or 1g.10gb * 2 for A100-80GB-XSM device.
+## This example will allocate 2g.10gb x 2 for A100-40GB-PCIE device  or 1g.10gb x 2 for A100-80GB-XSM device
 
 ```yaml
 apiVersion: v1
@@ -22,4 +22,3 @@ spec:
           nvidia.com/gpu: 2
           nvidia.com/gpumem: 8000
 ```
-

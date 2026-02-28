@@ -29,7 +29,7 @@ cd website
 
 Our website is organized like below:
 
-```
+```text
 website
 ├── sidebars.json        # sidebar for the current docs version
 ├── docs                 # docs directory for the current docs version
@@ -79,7 +79,7 @@ It's important for your article to specify metadata concerning an article at the
 
 For now, let's take a look at a quick example which should explain the most relevant entries in **Front Matter**:
 
-```
+```markdown
 ---
 title: A doc with tags
 ---

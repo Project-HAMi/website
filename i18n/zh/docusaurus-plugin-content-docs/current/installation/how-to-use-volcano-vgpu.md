@@ -108,12 +108,12 @@ spec:
       resources:
         limits:
           volcano.sh/vgpu-number: 2 # 请求 2 个 gpu 卡
-          volcano.sh/vgpu-memory: 3000 # （可选）每个 vGPU 使用 3G 设备内存
+          volcano.sh/vgpu-memory: 3000 # （可选）每个 vGPU 使用 3G 设备显存
           volcano.sh/vgpu-cores: 50 # （可选）每个 vGPU 使用 50% 核心  
 EOF
 ```
 
-您可以在容器内使用 nvidia-smi 验证设备内存：
+您可以在容器内使用 nvidia-smi 验证设备显存：
 
 > **警告：** *如果在使用设备插件和 NVIDIA 镜像时不请求 GPU，机器上的所有 GPU 都将暴露在您的容器内。
 > 容器使用的 vgpu 数量不能超过该节点上的 gpu 数量。*

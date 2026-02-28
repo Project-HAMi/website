@@ -35,14 +35,14 @@ the GPU device plugin (gpu-device) handles fine-grained allocation based on the 
 
 ## Prerequisites
 
-* Metax GPU extensions >= 0.8.0
-* Kubernetes >= 1.23
+- Metax GPU extensions >= 0.8.0
+- Kubernetes >= 1.23
 
 ## Enabling topo-awareness scheduling
 
-* Deploy Metax GPU Extensions on metax nodes (Please consult your device provider to acquire its package and document)
+- Deploy Metax GPU Extensions on metax nodes (Please consult your device provider to acquire its package and document)
 
-* Deploy HAMi according to README.md
+- Deploy HAMi according to README.md
 
 ## Running Metax jobs
 

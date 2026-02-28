@@ -3,8 +3,6 @@ title: 配置
 translated: true
 ---
 
-# 全局配置
-
 ## 设备配置：ConfigMap
 
 :::note
@@ -27,16 +25,16 @@ translated: true
 
    | 参数名 | 类型 | 描述 | 默认值 |
    |-------|-----|------|-------|
-   | `nvidia.deviceMemoryScaling` | 浮点 | NVIDIA 设备内存缩放比例，可以大于 1（启用虚拟设备内存，实验性功能）。对于具有 *M* 内存的 NVIDIA GPU，若 `nvidia.deviceMemoryScaling` 设置为 *S*，则 vGPU 在 Kubernetes 中将总共获得 `S * M` 内存。 | 1 |
+   | `nvidia.deviceMemoryScaling` | 浮点 | NVIDIA 设备显存缩放比例，可以大于 1（启用虚拟设备显存，实验性功能）。对于具有 *M* 内存的 NVIDIA GPU，若 `nvidia.deviceMemoryScaling` 设置为 *S*，则 vGPU 在 Kubernetes 中将总共获得 `S * M` 内存。 | 1 |
    | `nvidia.deviceSplitCount` | 整数 | 分配给单个 GPU 设备的最大任务数。 | 10 |
    | `nvidia.migstrategy` | 字符串 | "none" 表示忽略 MIG 功能，"mixed" 表示通过独立资源分配 MIG 设备。 | "none" |
    | `nvidia.disablecorelimit` | 字符串 | "true" 表示禁用核心限制，"false" 表示启用核心限制。 | "false" |
-   | `nvidia.defaultMem` | 整数 | 当前任务的默认设备内存（MB）。'0' 表示使用 100% 设备内存。 | 0 |
-   | `nvidia.defaultCores` | 整数 | 为当前任务保留的 GPU 核心百分比。0 适用于任何具有足够设备内存的 GPU，100 表示独占整个 GPU。 | 0 |
+   | `nvidia.defaultMem` | 整数 | 当前任务的默认设备显存（MB）。'0' 表示使用 100% 设备显存。 | 0 |
+   | `nvidia.defaultCores` | 整数 | 为当前任务保留的 GPU 核心百分比。0 适用于任何具有足够设备显存的 GPU，100 表示独占整个 GPU。 | 0 |
    | `nvidia.defaultGPUNum` | 整数 | 默认 GPU 设备数量，若配置值为 0，则无效并被过滤。若 `nvidia.com/gpu` 未设置，则 webhook 检查 `nvidia.com/gpumem`、`resource-mem-percentage`、`nvidia.com/gpucores`，任一有值则添加 `nvidia.com/gpu`。 | 1 |
    | `nvidia.resourceCountName` | 字符串 | vGPU 数量资源名称。 | "nvidia.com/gpu" |
-   | `nvidia.resourceMemoryName` | 字符串 | vGPU 内存大小资源名称。 | "nvidia.com/gpumem" |
-   | `nvidia.resourceMemoryPercentageName` | 字符串 | vGPU 内存比例资源名称。 | "nvidia.com/gpumem-percentage" |
+   | `nvidia.resourceMemoryName` | 字符串 | vGPU 显存大小资源名称。 | "nvidia.com/gpumem" |
+   | `nvidia.resourceMemoryPercentageName` | 字符串 | vGPU 显存比例资源名称。 | "nvidia.com/gpumem-percentage" |
    | `nvidia.resourceCoreName` | 字符串 | vGPU 核心资源名称。 | "nvidia.com/cores" |
    | `nvidia.resourcePriorityName` | 字符串 | vGPU 任务优先级名称。 | "nvidia.com/priority" |
 

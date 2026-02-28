@@ -9,7 +9,7 @@ translated: true
 
 ***MLU 共享***：每个任务可以分配部分 MLU，而不是整个 MLU 卡，因此 MLU 可以在多个任务之间共享。
 
-***设备内存控制***：MLU 可以在某种类型（即 370）上分配一定的设备内存大小，并确保不超过边界。
+***设备显存控制***：MLU 可以在某种类型（即 370）上分配一定的设备显存大小，并确保不超过边界。
 
 ***MLU 类型指定***：您可以通过设置 "cambricon.com/use-mlutype" 或 "cambricon.com/nouse-mlutype" 注释来指定某个任务使用或避免使用哪种类型的 MLU。
 
@@ -25,10 +25,10 @@ translated: true
 
 * 联系您的设备提供商以获取 cambricon-device-plugin>2.0.9，在 containers.args 字段中将参数 `mode` 编辑为 'dynamic-smlu'。
 
-```
+```yaml
         args:
             - --mode=dynamic-smlu # 设备插件模式：default, sriov, env-share, topology-aware, dynamic-mim, smlu 或 dynamic-smlu
-	...
+ ...
 ```
 
 * 部署修改后的 cambricon-device-plugin
@@ -36,7 +36,8 @@ translated: true
 * 使用 helm 安装图表，请参阅[此处](https://github.com/Project-HAMi/HAMi#enabling-vgpu-support-in-kubernetes)的“在 Kubernetes 中启用 vGPU 支持”部分
 
 * 为该节点上的每个 MLU 激活 smlu 模式
-```
+
+```bash
 cnmon set -c 0 -smlu on
 cnmon set -c 1 -smlu on
 ...
@@ -46,7 +47,7 @@ cnmon set -c 1 -smlu on
 
 Cambricon MMLUs 现在可以通过容器请求，使用 `cambricon.com/mlu.smlu.vmemory` 和 `cambricon.com/mlu.smlu.vcore` 资源类型：
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -59,7 +60,7 @@ spec:
       resources:
         limits:
           cambricon.com/vmlu: 1 # 请求 1 个 MLU
-          cambricon.com/mlu.smlu.vmemory: 20 # 每个 MLU 请求 20% 的 MLU 设备内存
+          cambricon.com/mlu.smlu.vmemory: 20 # 每个 MLU 请求 20% 的 MLU 设备显存
           cambricon.com/mlu.smlu.vcore: 10 # 每个 MLU 请求 10% 的 MLU 设备核心
 ```
 

@@ -3,8 +3,6 @@ title: Volcano vGPU
 translated: true
 ---
 
-# Kubernetes 的 Volcano vgpu 设备插件
-
 **注意**：
 
 使用 volcano-vgpu 时，您*不需要*安装 HAMi，只需使用  
@@ -53,8 +51,8 @@ data:
 
 一旦您在*所有*希望使用的 GPU 节点上启用了此选项，您就可以通过部署以下 Daemonset 在集群中启用 GPU 支持：
 
-```
-$ kubectl create -f https://raw.githubusercontent.com/Project-HAMi/volcano-vgpu-device-plugin/main/volcano-vgpu-device-plugin.yml
+```bash
+kubectl create -f https://raw.githubusercontent.com/Project-HAMi/volcano-vgpu-device-plugin/main/volcano-vgpu-device-plugin.yml
 ```
 
 ### 验证环境是否准备好
@@ -93,7 +91,7 @@ status:
 
 可以通过在 resource.limit 中设置 "volcano.sh/vgpu-number"、"volcano.sh/vgpu-cores" 和 "volcano.sh/vgpu-memory" 来请求 VGPU。
 
-```shell script
+```bash
 $ cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
@@ -108,12 +106,12 @@ spec:
       resources:
         limits:
           volcano.sh/vgpu-number: 2 # 请求 2 个 gpu 卡
-          volcano.sh/vgpu-memory: 3000 # （可选）每个 vGPU 使用 3G 设备内存
+          volcano.sh/vgpu-memory: 3000 # （可选）每个 vGPU 使用 3G 设备显存
           volcano.sh/vgpu-cores: 50 # （可选）每个 vGPU 使用 50% 核心  
 EOF
 ```
 
-您可以在容器内使用 nvidia-smi 验证设备内存：
+您可以在容器内使用 nvidia-smi 验证设备显存：
 
 > **警告：** *如果在使用设备插件和 NVIDIA 镜像时不请求 GPU，机器上的所有 GPU 都将暴露在您的容器内。
 > 容器使用的 vgpu 数量不能超过该节点上的 gpu 数量。*
@@ -122,5 +120,6 @@ EOF
 
 volcano-scheduler-metrics 记录每个 GPU 的使用和限制，访问以下地址以获取这些指标。
 
-```
+```bash
 curl {volcano scheduler cluster ip}:8080/metrics
+```

@@ -2,7 +2,7 @@
 title: Assign task to a certain GPU
 ---
 
-## Assign task to a certain GPU 
+## Assign task to a certain GPU
 
 To assign a task to a certain GPU, you need only to assign the `nvidia.com/use-gpuuuid` in annotations field.
 

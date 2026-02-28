@@ -3,7 +3,7 @@ title: 为容器分配 Ascend-310p 切片
 translated: true
 ---
 
-要分配一定大小的 GPU 设备内存，您只需在 `huawei.com/ascend310P` 之外分配 `huawei.com/ascend310P-memory`。
+要分配一定大小的 GPU 设备显存，您只需在 `huawei.com/ascend310P` 之外分配 `huawei.com/ascend310P-memory`。
 
 ```yaml
 apiVersion: v1
@@ -25,4 +25,4 @@ spec:
           huawei.com/Ascend310P-memory: 1024
 ```
 
-> **注意：** *Ascend910B 的计算资源也受到 `huawei.com/Ascend310P-memory` 的限制，等于分配的设备内存的百分比。*
+> **注意：** *Ascend910B 的计算资源也受到 `huawei.com/Ascend310P-memory` 的限制，等于分配的设备显存的百分比。*

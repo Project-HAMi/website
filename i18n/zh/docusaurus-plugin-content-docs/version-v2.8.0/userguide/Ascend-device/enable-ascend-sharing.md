@@ -3,7 +3,7 @@ title: 启用 Ascend 共享
 translated: true
 ---
 
-基于虚拟化模板支持内存切片，自动使用可用的租赁模板。有关详细信息，请查看[设备模板](./device-template.md)。
+基于虚拟化模板支持显存切片，自动使用可用的租赁模板。有关详细信息，请查看[设备模板](./device-template.md)。
 
 ## 先决条件
 
@@ -15,7 +15,7 @@ translated: true
 
 * 由于与 HAMi 的依赖关系，您需要在 HAMi 安装期间设置以下参数：
 
-  ```
+  ```yaml
   devices.ascend.enabled=true
   ```
 
@@ -75,7 +75,7 @@ spec:
       resources:
         limits:
           huawei.com/Ascend910B: 1 # 请求 1 个 Ascend
-          huawei.com/Ascend910B-memory: 2000 # 请求 2000m 设备内存
+          huawei.com/Ascend910B-memory: 2000 # 请求 2000m 设备显存
 ```
 
 ### Ascend 310P
@@ -96,12 +96,12 @@ spec:
       resources:
         limits:
           huawei.com/Ascend310P: 1 # 请求 1 个 Ascend
-          huawei.com/Ascend310P-memory: 1024 # 请求 1024m 设备内存
+          huawei.com/Ascend310P-memory: 1024 # 请求 1024m 设备显存
 ```
 
 ### 注意事项
 
-1. 目前，Ascend 910b 仅支持两种分片策略，分别是 1/4 和 1/2。Ascend 310p 支持 3 种分片策略：1/7、2/7、4/7。作业的内存请求将自动与最接近的分片策略对齐。在此示例中，任务将分配 16384M 设备内存。
+1. 目前，Ascend 910b 仅支持两种分片策略，分别是 1/4 和 1/2。Ascend 310p 支持 3 种分片策略：1/7、2/7、4/7。作业的显存请求将自动与最接近的分片策略对齐。在此示例中，任务将分配 16384M 设备显存。
 
 2. 不支持在初始化容器中使用 Ascend-sharing。
 

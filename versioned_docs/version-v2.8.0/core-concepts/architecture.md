@@ -2,13 +2,6 @@
 title: Architecture
 ---
 
-## TOC {#toc}
-
-- [HAMi MutatingWebhook](#hami-mutatingwebhook)
-- [HAMi scheduler](#hami-scheduler)
-- [Device-plugin](#device-plugin)
-- [HAMi-Core](#hami-core)
-
 The overall architecture of HAMi is shown as below:
 
 ![Architecture](../resources/architect.jpg)

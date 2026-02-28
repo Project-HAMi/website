@@ -5,7 +5,7 @@ title: Device resource isolation
 A simple demonstration for device isolation:
 A task with the following resources.
 
-```
+```yaml
       resources:
         limits:
           nvidia.com/gpu: 1 # requesting 1 vGPU
