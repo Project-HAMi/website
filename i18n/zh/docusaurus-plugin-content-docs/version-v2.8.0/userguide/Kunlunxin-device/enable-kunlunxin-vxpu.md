@@ -8,12 +8,12 @@ title: 启用昆仑芯 VXPU
 
 ***XPU 共享***：每个任务只能占用设备的一部分，允许多个任务共享单个 XPU
 
-***内存分配限制***：您现在可以使用内存值（例如 24576M）来分配 XPU，组件确保任务不会超过分配的内存限制
+***内存分配限制***：您现在可以使用内存值（例如 24576M）来分配 XPU，组件确保任务不会超过分配的显存限制
 
 ***设备 UUID 选择***：您可以通过注解指定使用或排除特定的 XPU 设备
 
-
 ## 前置条件
+
 * driver version >= 5.0.21.16
 * xpu-container-toolkit >= xpu_container_1.0.2-1
 * XPU device type: P800-OAM
@@ -21,6 +21,7 @@ title: 启用昆仑芯 VXPU
 ## 启用 XPU 共享支持
 
 * 部署 [vxpu-device-plugin]
+
 ```yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -84,7 +85,7 @@ spec:
             limits:
               memory: 500Mi
               cpu: 500m
-          args:
+          command:
             - xpu-device-plugin
             - --memory-unit=MiB
             - --resource-name=kunlunxin.com/vxpu
@@ -124,18 +125,19 @@ spec:
 :::note
 默认资源名称如下：
 
-- `kunlunxin.com/vxpu` 用于 VXPU 计数
-- `kunlunxin.com/vxpu-memory` 用于内存分配
+* `kunlunxin.com/vxpu` 用于 VXPU 计数
+* `kunlunxin.com/vxpu-memory` 用于显存分配
 
 您可以使用上述参数自定义这些名称。
 :::
 
 ## 设备粒度分区
 
-XPU P800-OAM 支持 2 个级别的分区粒度：1/4 卡和 1/2 卡，内存分配会自动对齐。规则如下：
-> - 请求内存 ≤ 24576M (24G) 将自动对齐到 24576M (24G)
-> - 请求内存 > 24576M (24G) 且 ≤ 49152M (48G) 将自动对齐到 49152M (48G)
-> - 请求内存 > 49152M (48G) 将分配为完整卡
+XPU P800-OAM 支持 2 个级别的分区粒度：1/4 卡和 1/2 卡，显存分配会自动对齐。规则如下：
+>
+> * 请求显存 ≤ 24576M (24G) 将自动对齐到 24576M (24G)
+> * 请求显存 > 24576M (24G) 且 ≤ 49152M (48G) 将自动对齐到 49152M (48G)
+> * 请求显存 > 49152M (48G) 将分配为完整卡
 
 ## 运行 XPU 任务
 
@@ -153,7 +155,7 @@ spec:
       resources:
         limits:
           kunlunxin.com/vxpu: 1 # 请求一个 VXPU
-          kunlunxin.com/vxpu-memory: 24576 # 请求一个需要 24576 MiB 设备内存的虚拟 XPU
+          kunlunxin.com/vxpu-memory: 24576 # 请求一个需要 24576 MiB 设备显存的虚拟 XPU
 ```
 
 ## 设备 UUID 选择
@@ -192,10 +194,10 @@ kubectl get node <node-name> -o yaml | grep -A 10 "hami.io/node-register-xpu"
 
 在节点注解中查找包含设备信息的注解。
 
-
 ## 重要说明
 
 当前的昆仑芯片驱动程序最多支持 32 个句柄。8 个 XPU 设备占用 8 个句柄，因此不可能将所有 8 个设备都拆分为 4 个。
+
 ```yaml
 # 有效
 kunlunxin.com/vxpu: 8

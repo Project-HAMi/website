@@ -4,7 +4,7 @@ title: Enable Illuvatar GPU Sharing
 
 ## Introduction
 
-**We now support iluvatar.ai/gpu(i.e MR-V100、BI-V150、BI-V100) by implementing most device-sharing features as nvidia-GPU**, including:
+**We now support iluvatar.ai/gpu(i.e MR-V100, BI-V150, BI-V100) by implementing most device-sharing features as nvidia-GPU**, including:
 
 ***GPU sharing***: Each task can allocate a portion of GPU instead of a whole GPU card, thus GPU can be shared among multiple tasks.
 
@@ -28,11 +28,13 @@ title: Enable Illuvatar GPU Sharing
 > **NOTICE:** *Install only gpu-manager, don't install gpu-admission package.*
 
 * set the devices.iluvatar.enabled=true when install hami
-```
+
+```bash
 helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag={your kubernetes version} --set devices.iluvatar.enabled=true
 ```
 
 **Note:** The currently supported GPU models and resource names are defined in (https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/templates/scheduler/device-configmap.yaml):
+
 ```yaml
     iluvatars:
     - chipName: MR-V100

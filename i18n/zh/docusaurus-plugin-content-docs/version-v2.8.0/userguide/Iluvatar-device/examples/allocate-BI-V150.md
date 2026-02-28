@@ -3,7 +3,7 @@ title: 为容器分配 BI-V150 切片
 translated: true
 ---
 
-为容器分配核心和显存资源，只需配置一定大小的GPU核心 `iluvatar.ai/BI-V150.vCore`和GPU显存资源 `iluvatar.ai/BI-V150.vMem`。
+为容器分配核心和显存资源，只需配置一定大小的 GPU 核心 `iluvatar.ai/BI-V150.vCore`和 GPU 显存资源 `iluvatar.ai/BI-V150.vMem`。
 
 ```yaml
 apiVersion: v1
@@ -37,4 +37,4 @@ spec:
         iluvatar.ai/BI-V150.vMem: 64
 ```
 
-> **注意：** *每个 `iluvatar.ai/<card-type>.vCore` 单位代表 1% 的可用计算核心，每个 `iluvatar.ai/<card-type>.vMem` 单位代表 256MB 的设备内存*
+> **注意：** *每个 `iluvatar.ai/<card-type>.vCore` 单位代表 1% 的可用计算核心，每个 `iluvatar.ai/<card-type>.vMem` 单位代表 256MB 的设备显存*

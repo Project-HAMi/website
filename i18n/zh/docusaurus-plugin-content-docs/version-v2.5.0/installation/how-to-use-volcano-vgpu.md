@@ -3,8 +3,6 @@ title: 使用 Volcano vGPU 设备插件
 translated: true
 ---
 
-# Kubernetes 的 Volcano vgpu 设备插件
-
 :::note
 
 使用 volcano-vgpu 时，您*不需要*安装 HAMi，只需使用  
@@ -113,12 +111,12 @@ spec:
       resources:
         limits:
           volcano.sh/vgpu-number: 2 # 请求 2 个 GPU 卡
-          volcano.sh/vgpu-memory: 3000 # （可选）每个 vGPU 使用 3G 设备内存
+          volcano.sh/vgpu-memory: 3000 # （可选）每个 vGPU 使用 3G 设备显存
           volcano.sh/vgpu-cores: 50 # （可选）每个 vGPU 使用 50% 核
 EOF
 ```
 
-您可以在容器内使用 nvidia-smi 验证设备内存：
+您可以在容器内使用 nvidia-smi 验证设备显存：
 
 :::warning
 

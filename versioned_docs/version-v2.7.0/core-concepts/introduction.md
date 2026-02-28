@@ -3,12 +3,6 @@ title: What is HAMi?
 slug: /
 ---
 
-## TOC {#toc}
-
-- [HAMi: Heterogeneous AI Computing Virtualization Middleware](#hami-heterogeneous-ai-computing-virtualization-middleware)
-- [Why HAMi](#why-hami)
-- [What's Next](#whats-next)
-
 ## HAMi: Heterogeneous AI Computing Virtualization Middleware {#hami-heterogeneous-ai-computing-virtualization-middleware}
 
 Heterogeneous AI Computing Virtualization Middleware (HAMi), formerly known as

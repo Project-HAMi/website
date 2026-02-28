@@ -6,10 +6,12 @@ translated: true
 # HAMi DRA for Kubernetes
 
 ## Introduction
+
 HAMi has provided support for K8s [DRA](https://kubernetes.io/docs/concepts/scheduling-eviction/dynamic-resource-allocation/) (Dynamic Resource Allocation).
 By installing the [HAMi DRA webhook](https://github.com/Project-HAMi/HAMi-DRA) in your cluster, you can get a consistent user experience in DRA mode that matches the traditional usage.
 
 ## Prerequisites
+
 * Kubernetes version >= 1.34 with DRA Consumable Capacity [featuregate](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/) enabled
 
 ## Installation
@@ -22,6 +24,7 @@ helm dependency build
 ```
 
 Then install with the following command:
+
 ```bash
 helm install hami hami-charts/hami --set dra.enable=true -n hami-system
 ```
@@ -29,7 +32,9 @@ helm install hami hami-charts/hami --set dra.enable=true -n hami-system
 > **Note:** *DRA mode is not compatible with traditional mode. Do not enable both at the same time.*
 
 ## Supported Devices
+
 The implementation of DRA functionality requires support from the corresponding device's DRA Driver. Currently supported devices include:
+
 * [NVIDIA GPU](../userguide/NVIDIA-device/dynamic-resource-allocation.md)
 
 Please refer to the corresponding page to install the device driver.
@@ -38,6 +43,6 @@ Please refer to the corresponding page to install the device driver.
 
 HAMi DRA provides the same monitoring capabilities as the traditional model. When installing HAMi DRA, the monitoring service will be enabled by default. You can expose the monitoring service to the local environment via NodePort or add Prometheus collection to access monitoring metrics.
 
-You can view the monitoring metrics provided by HAMi DRA [here](../userguide/monitoring/device-allocation.md). 
+You can view the monitoring metrics provided by HAMi DRA [here](../userguide/monitoring/device-allocation.md).
 
 For more information, please refer to [HAMi DRA monitor](https://github.com/Project-HAMi/HAMi-DRA/blob/main/docs/MONITOR.md)

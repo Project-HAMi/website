@@ -29,14 +29,15 @@ title: Enable Enflame GPU Sharing
 > **NOTICE:** *Install only gpushare-device-plugin, don't install gpu-scheduler-plugin package.*
 
 > **NOTE:** The default resource names are:
-> - `enflame.com/vgcu` for GCU count, only support 1 now.
-> - `enflame.com/vgcu-percentage` for the percentage of memory and cores in a gcu slice.
+>
+> * `enflame.com/vgcu` for GCU count, only support 1 now.
+> * `enflame.com/vgcu-percentage` for the percentage of memory and cores in a gcu slice.
 >
 > You can customize these names by modifying `hami-scheduler-device` configMap above.
 
 * Set 'devices.enflame.enabled=true' when deploy HAMi
 
-```
+```bash
 helm install hami hami-charts/hami --set devices.enflame.enabled=true -n kube-system
 ```
 
@@ -46,10 +47,10 @@ HAMi divides each Enflame GCU into 100 units for resource allocation. When you r
 
 ### GCU Slice Allocation
 
-- Each unit of `enflame.com/vgcu-percentage` represents 1% device memory and 1% core
-- If you don't specify a memory request, the system will default to using 100% of the available memory
-- Memory allocation is enforced with hard limits to ensure tasks don't exceed their allocated memory
-- Core allocation is enforced with hard limits to ensure tasks don't exceed their allocated cores
+* Each unit of `enflame.com/vgcu-percentage` represents 1% device memory and 1% core
+* If you don't specify a memory request, the system will default to using 100% of the available memory
+* Memory allocation is enforced with hard limits to ensure tasks don't exceed their allocated memory
+* Core allocation is enforced with hard limits to ensure tasks don't exceed their allocated cores
 
 ## Running Enflame jobs
 

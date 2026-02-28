@@ -4,7 +4,7 @@ title: Build HAMi
 
 ## Make Binary
 
-### prequisities
+### prerequisites
 
 The following tools are required:
 
@@ -19,12 +19,11 @@ make
 
 If everything are successfully built, the following output are printed
 
-```
+```bash
 go build -ldflags '-s -w -X github.com/Project-HAMi/HAMi/pkg/version.version=v0.0.1' -o bin/scheduler ./cmd/scheduler
 go build -ldflags '-s -w -X github.com/Project-HAMi/HAMi/pkg/version.version=v0.0.1' -o bin/vGPUmonitor ./cmd/vGPUmonitor
 go build -ldflags '-s -w -X github.com/Project-HAMi/HAMi/pkg/version.version=v0.0.1' -o bin/nvidia-device-plugin ./cmd/device-plugin/nvidia
 ```
-
 
 ## Make Image
 
@@ -94,6 +93,3 @@ HAMi-Core is recommended to be built in a nvidia/cuda image:
 git clone https://github.com/Project-HAMi/HAMi-core.git
 docker build . -f dockerfiles/Dockerfile.{arch}
 ```
-
-
-

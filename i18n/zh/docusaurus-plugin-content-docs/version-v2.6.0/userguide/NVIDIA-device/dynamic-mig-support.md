@@ -28,7 +28,8 @@ translated: true
 * 使用 helm 安装 chart，参见[此处](https://github.com/Project-HAMi/HAMi#enabling-vgpu-support-in-kubernetes)的“在 Kubernetes 中启用 vGPU 支持”部分
 
 * 在 device-plugin configMap 中将 `mode` 配置为 `mig` 以支持 MIG 节点
-```
+
+```bash
 kubectl describe cm  hami-device-plugin -n kube-system
 ```
 
@@ -48,15 +49,16 @@ kubectl describe cm  hami-device-plugin -n kube-system
 ```
 
 * 重启以下 pod 以使更改生效：
-  * hami-scheduler 
+  * hami-scheduler
   * 'MIG-NODE-A' 上的 hami-device-plugin
 
 ## 自定义 mig 配置（可选）
+
 HAMi 目前有一个 [内置的 mig 配置](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/templates/scheduler/device-configmap.yaml) 用于 MIG。
 
 您可以按照以下步骤自定义 mig 配置：
 
-  ### 更改 charts/hami/templates/scheduler 中 'device-configmap.yaml' 的内容，如下所示
+### 更改 charts/hami/templates/scheduler 中 'device-configmap.yaml' 的内容，如下所示
 
   ```yaml
     nvidia:
@@ -132,7 +134,6 @@ HAMi 目前有一个 [内置的 mig 配置](https://github.com/Project-HAMi/HAMi
   ```
 
   > **注意** Helm 安装和更新将基于此文件中的配置，覆盖 Helm 的内置配置
-
   > **注意** 请注意 HAMi 将按照此 configMap 的顺序找到并使用适合任务的第一个 MIG 模板
 
 ## 运行 MIG 作业
@@ -157,7 +158,7 @@ spec:
           nvidia.com/gpumem: 8000
 ```
 
-在上面的示例中，任务分配了两个 mig 实例，每个实例至少具有 8G 设备内存。
+在上面的示例中，任务分配了两个 mig 实例，每个实例至少具有 8G 设备显存。
 
 ## 监控 MIG 实例
 

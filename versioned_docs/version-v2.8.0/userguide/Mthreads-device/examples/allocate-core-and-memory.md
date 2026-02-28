@@ -6,7 +6,7 @@ title: Allocate device core and memory resource
 
 To allocate a certain part of device core resource, you need only to assign the `mthreads.com/sgpu-memory` and `mthreads.com/sgpu-core` along with the number of cambricon MLUs you requested in the container using `mthreads.com/vgpu`
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:

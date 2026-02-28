@@ -1763,7 +1763,7 @@ func (plugin *NvidiaDevicePlugin) getAPIDevices() *[]*util.DeviceInfo {
 }
 ```
 
-这里通过 nvidia 驱动获取设备信息，需要注意的是这里有配置 DeviceMemoryScaling，内存超分配置，
+这里通过 nvidia 驱动获取设备信息，需要注意的是这里有配置 DeviceMemoryScaling，显存超分配置，
 这里是通过命令行启动的 --config-file 参数指定的 scheduler 配置和代码中固化的
 `config/config.json` 来取值的，其中 config/config.json 优先级大于 --config-file
 

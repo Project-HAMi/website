@@ -58,6 +58,6 @@ The scoring logic is shown below:
 
 In the bind phase, the allocation result is patched into the pod annotations. For example:
 
-```
+```yaml
 BAIDU_COM_DEVICE_IDX=0,1,2,3
 ```

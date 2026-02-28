@@ -35,7 +35,7 @@ Additional installation methods can be found [here](https://github.com/volcano-s
 
 ```shell
 kubectl label node {ascend-node} ascend=on
-``` 
+```
 
 ### Deploy `hami-scheduler-device` config map
 

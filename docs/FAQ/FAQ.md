@@ -15,7 +15,6 @@ title: FAQ
 | Mthreads | MTT S4000 | Core 1 core group, Memory 512M | Supported, but splitting is not supported when `gpu > 1`. The entire card is exclusively allocated. |
 | Metax | MXC500 | Does not support splitting, only whole card allocation is possible. | Supported, but all allocations are for whole cards. |
 
-
 ## What is vGPU? Why can't I allocate two vGPUs on the same card despite seeing 10 vGPUs?
 
 **TL;DR**
@@ -79,11 +78,9 @@ In summary, while HAMi's own priority serves a different, device-specific purpos
 
 - **KubeVirt & Kata Containers**: Incompatible due to their reliance on virtualization for resource isolation, whereas HAMi’s GPU Device Plugin depends on direct GPU mounting into containers. Supporting these would require adapting the device allocation logic, balancing performance overhead and implementation complexity. HAMi prioritizes high-performance scenarios with direct GPU mounting and thus does not currently support these virtualization solutions.
 
-
 ## Why are there [HAMI-core Warn(...)] logs in my Pod's output? Can I disable them?
 
 This is normal and can be ignored. If needed, disable the logs by setting the environment variable `LIBCUDA_LOG_LEVEL=0` in the container.
-
 
 ## Does HAMi support multi-node, multi-GPU distributed training? Does it support cross-host and cross-GPU scenarios?
 
@@ -104,14 +101,11 @@ HAMi supports distributed training in Kubernetes by running multiple Pods across
 
 **Note**: A single Pod cannot span multiple nodes. If cross-host resource coordination is required, adopt **multi-Pod distributed training**, where the distributed framework manages task execution across hosts.
 
-
 ## Relationship and Compatibility Between HAMi Device Plugin, Volcano vGPU Device Plugin, and NVIDIA Official Device Plugin
 
 **TL;DR**
 
 Use only one GPU management plugin per node in a cluster to ensure clarity and stability in resource allocation.
-
-
 
 ### Their Relationship
 
@@ -138,7 +132,6 @@ These three Device Plugins all manage GPU resources but differ in usage scenario
 - **HAMi Device Plugin and Volcano vGPU Device Plugin**: Can theoretically coexist, but using only one is recommended.
 - **NVIDIA Official Device Plugin and Volcano vGPU Device Plugin**: Can theoretically coexist, but mixed usage is not advised.
 
-
 ## Why do Node Capacity and Allocatable show only `nvidia.com/gpu` and not `nvidia.com/gpucores` or `nvidia.com/gpumem`?
 
 **TL;DR**
@@ -156,7 +149,8 @@ Device Plugins can only report a single resource type. GPU memory and compute in
 
 - HAMi stores detailed GPU resource information (e.g., compute power, memory, model) as **node annotations** for use by the scheduler.
 - Example annotation:
-   ```
+
+   ```yaml
    hami.io/node-nvidia-register: GPU-fc28df76-54d2-c387-e52e-5f0a9495968c,10,49140,100,NVIDIA-NVIDIA L40S,0,true:GPU-b97db201-0442-8531-56d4-367e0c7d6edd,10,49140,100,...
    ```
 
@@ -167,13 +161,9 @@ Device Plugins can only report a single resource type. GPU memory and compute in
 - volcano-vgpu-device-plugin creates  **[three independent Device Plugin instances](https://github.com/Project-HAMi/volcano-vgpu-device-plugin/blob/2bf6dfe37f7b716f05d0d3210f89898087c06d99/pkg/plugin/vgpu/mig-strategy.go#L65-L85)** , each registering with kubelet for volcano.sh/vgpu-number, volcano.sh/vgpu-memory, and volcano.sh/vgpu-cores resources respectively. After kubelet receives the registration, it automatically writes the resources into Capacity and Allocatable.
 - **Note** : volcano.sh/vgpu-memory resource is subject to Kubernetes extended resources quantity limit (**maximum 32,767** ). For GPUs with large memory (e.g., A100 80GB), configure the `--gpu-memory-factor` parameter to avoid exceeding the limit.
 
-
 ## Why don’t some domestic vendors require a runtime for installation?
 
 Certain domestic vendors (e.g., Hygon, Cambricon) do not require a runtime because their DevicePlugin handles device discovery and mounting directly. In contrast, vendors like NVIDIA and Ascend rely on runtimes for environment configuration, device node mounting, and advanced functionality support.
-
-
-
 
 **TL;DR**
 
