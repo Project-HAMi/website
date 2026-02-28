@@ -84,8 +84,8 @@ spec:
             limits:
               memory: 500Mi
               cpu: 500m
-          args:
-            - xpu-device-plugin
+          command:
+            - -xpu-device-plugin
             - --memory-unit=MiB
             - --resource-name=kunlunxin.com/vxpu
             - -logtostderr
