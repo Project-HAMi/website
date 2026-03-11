@@ -1,5 +1,6 @@
 ---
 title: 为容器分配特定设备显存
+linktitle: 分配显存
 translated: true
 ---
 

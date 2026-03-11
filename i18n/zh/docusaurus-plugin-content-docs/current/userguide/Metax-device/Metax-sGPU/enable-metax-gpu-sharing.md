@@ -1,7 +1,10 @@
 ---
 title: 启用沐曦 GPU 共享
+linktitle: GPU 共享
 translated: true
 ---
+
+## 启用沐曦 GPU 共享
 
 **HAMi 目前支持复用沐曦 GPU 设备，提供与 vGPU 类似的复用功能**，包括：
 

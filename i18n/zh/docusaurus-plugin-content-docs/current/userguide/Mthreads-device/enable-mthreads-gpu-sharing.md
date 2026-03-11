@@ -1,5 +1,6 @@
 ---
 title: 启用 Mthreads GPU 共享
+linktitle: GPU 共享
 translated: true
 ---
 

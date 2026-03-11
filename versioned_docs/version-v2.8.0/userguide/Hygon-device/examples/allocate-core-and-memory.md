@@ -2,9 +2,7 @@
 title: Allocate device core and memory resource
 ---
 
-## Allocate device core and memory to container
-
-To allocate a certain part of device core resource, you need only to assign the `hygon.com/dcucores` and `hygon.com/dcumem` along with the number of hygon DCUs you requested in the container using `hygon.com/dcunum`
+To allocate a certain part of device core resource, you need only to assign the `hygon.com/dcucores` and `hygon.com/dcumem` along with the number of Hygon DCUs you requested in the container using `hygon.com/dcunum`.
 
 ```yaml
 apiVersion: v1

@@ -1,0 +1,111 @@
+.page {
+  padding-bottom: var(--hami-space-64);
+}
+
+.hero {
+  padding: var(--hami-space-64) 0 var(--hami-space-32);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(17, 208, 93, 0.18), transparent 34%),
+    linear-gradient(180deg, rgba(17, 208, 93, 0.08), transparent 70%);
+}
+
+.eyebrow {
+  margin: 0 0 var(--hami-space-8);
+  color: var(--hami-color-primary);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.84rem;
+}
+
+.title {
+  margin: 0 0 var(--hami-space-16);
+  max-width: 880px;
+}
+
+.subtitle {
+  margin: 0;
+  max-width: 760px;
+  font-size: 1.08rem;
+}
+
+.section,
+.sectionAlt {
+  padding: var(--hami-space-24) 0;
+}
+
+.sectionAlt {
+  background: linear-gradient(180deg, rgba(17, 208, 93, 0.06), transparent);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: var(--hami-space-16);
+}
+
+.primaryCard,
+.sideCard {
+  padding: var(--hami-space-24);
+  border: 1px solid var(--hami-color-border);
+  border-radius: var(--hami-radius-lg);
+  background: var(--hami-color-surface);
+  box-shadow: var(--hami-shadow-sm);
+}
+
+.cardIcon {
+  display: inline-flex;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--hami-space-12);
+  border-radius: 999px;
+  background: rgba(17, 208, 93, 0.14);
+  color: var(--hami-color-primary);
+  font-size: 1.1rem;
+}
+
+.linkList {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: var(--hami-space-16);
+}
+
+.actionLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--hami-color-border);
+  border-radius: 12px;
+  color: var(--hami-color-text);
+  background: rgba(17, 208, 93, 0.03);
+  font-weight: 600;
+}
+
+.actionLink:hover {
+  text-decoration: none;
+  border-color: var(--hami-color-primary);
+}
+
+.meetingMeta {
+  display: grid;
+  gap: 0.7rem;
+  margin-top: var(--hami-space-16);
+}
+
+.resourceList {
+  margin: var(--hami-space-16) 0 0;
+}
+
+@media (max-width: 996px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero {
+    padding: var(--hami-space-48) 0 var(--hami-space-24);
+  }
+}

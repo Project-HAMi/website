@@ -1,7 +1,10 @@
 ---
 title: 启用沐曦 GPU 拓扑感知调度
+linktitle: 拓扑感知调度
 translated: true
 ---
+
+## 启用沐曦 GPU 拓扑感知调度
 
 **HAMi 现在通过在沐曦 GPU 之间实现拓扑感知来支持 metax.com/gpu**：
 

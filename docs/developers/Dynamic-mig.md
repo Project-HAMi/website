@@ -2,7 +2,7 @@
 title: Dynamic MIG Implementation
 ---
 
-# NVIDIA GPU MPS and MIG dynamic slice plugin
+## NVIDIA GPU MPS and MIG dynamic slice plugin
 
 ## Special Thanks
 

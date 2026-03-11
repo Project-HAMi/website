@@ -3,8 +3,6 @@ title: Dynamic Resource Allocation
 translated: true
 ---
 
-# Dynamic Resource Allocation
-
 ## Introduction
 
 HAMi has supported K8s [DRA](https://kubernetes.io/docs/concepts/scheduling-eviction/dynamic-resource-allocation/) (Dynamic Resource Allocation) on NVIDIA devices.

@@ -1,4 +1,4 @@
 ---
-title: readme
+title: 简介
 slug: /readme
 ---

@@ -3,7 +3,7 @@ title: 配置
 translated: true
 ---
 
-# 全局配置
+## 全局配置
 
 ## 设备配置：ConfigMap
 

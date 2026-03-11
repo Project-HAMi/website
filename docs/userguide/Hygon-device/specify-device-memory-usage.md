@@ -2,8 +2,6 @@
 title: Allocate device memory
 ---
 
-## Allocate device memory to container
-
 Allocate a percentage size of device memory by specify resources such as `hygon.com/dcumem`.
 Optional, Each unit of `hygon.com/dcumem` equals to 1M device memory.
 

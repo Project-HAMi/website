@@ -1,9 +1,9 @@
 ---
-title: Volcano vGPU
+title: Volcano vGPU 使用指南
 translated: true
 ---
 
-# Kubernetes 的 Volcano vgpu 设备插件
+## Kubernetes 的 Volcano vgpu 设备插件
 
 **注意**：
 
@@ -53,8 +53,8 @@ data:
 
 一旦您在*所有*希望使用的 GPU 节点上启用了此选项，您就可以通过部署以下 Daemonset 在集群中启用 GPU 支持：
 
-```
-$ kubectl create -f https://raw.githubusercontent.com/Project-HAMi/volcano-vgpu-device-plugin/main/volcano-vgpu-device-plugin.yml
+```bash
+kubectl create -f https://raw.githubusercontent.com/Project-HAMi/volcano-vgpu-device-plugin/main/volcano-vgpu-device-plugin.yml
 ```
 
 ### 验证环境是否准备好
@@ -122,5 +122,6 @@ EOF
 
 volcano-scheduler-metrics 记录每个 GPU 的使用和限制，访问以下地址以获取这些指标。
 
-```
+```bash
 curl {volcano scheduler cluster ip}:8080/metrics
+```

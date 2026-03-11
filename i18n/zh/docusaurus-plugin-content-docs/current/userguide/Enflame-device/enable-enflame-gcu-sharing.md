@@ -1,5 +1,6 @@
 ---
 title: 启用燧原 GPU 共享
+linktitle: GPU 共享
 ---
 
 

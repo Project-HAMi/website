@@ -3,7 +3,7 @@ title: HAMi DRA
 translated: true
 ---
 
-# Kubernetes 的 HAMi DRA
+## Kubernetes 的 HAMi DRA
 
 ## 介绍
 HAMi 已经提供了对 K8s [DRA](https://kubernetes.io/docs/concepts/scheduling-eviction/dynamic-resource-allocation/)（动态资源分配）功能的支持。
@@ -30,7 +30,7 @@ helm install hami hami-charts/hami --set dra.enable=true -n hami-system
 
 ## 支持的设备
 DRA 功能的实现需要对应设备的 DRA Driver 提供支持，目前支持的设备包括：
-* [NVIDIA GPU](../userguide/NVIDIA-device/dynamic-resource-allocation.md)
+* [NVIDIA GPU](../userguide/nvidia-device/dynamic-resource-allocation.md)
 
 请参照对应的页面安装设备驱动。
 

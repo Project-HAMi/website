@@ -2,7 +2,7 @@
 title: WebUI
 ---
 
-# Deploy HAMi-WebUI using Helm Charts
+## Deploy HAMi-WebUI using Helm Charts
 
 This topic includes instructions for installing and running HAMi-WebUI on Kubernetes using Helm Charts.
 

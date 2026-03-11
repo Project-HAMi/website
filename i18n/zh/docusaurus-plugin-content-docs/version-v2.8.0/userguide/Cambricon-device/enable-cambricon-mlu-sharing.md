@@ -1,5 +1,6 @@
 ---
 title: 启用寒武纪 MLU 共享
+linktitle: MLU 共享
 translated: true
 ---
 

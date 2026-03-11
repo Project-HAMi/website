@@ -2,9 +2,9 @@
 title: Contributor Ladder
 ---
 
-This docs different ways to get involved and level up within the project. You can see different roles within the project in the contributor roles.
+This document describes different ways to get involved and level up within the project. You can see different roles within the project in the contributor roles.
 
-## Contributor Ladder
+## Overview
 
 Hello! We are excited that you want to learn more about our project contributor ladder! This contributor ladder outlines the different contributor roles within the project, along with the responsibilities and privileges that come with them. Community members generally start at the first levels of the "ladder" and advance up it as their involvement in the project grows.  Our project members are happy to help you advance along the contributor ladder.
 

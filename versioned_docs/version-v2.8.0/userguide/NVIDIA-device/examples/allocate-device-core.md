@@ -2,8 +2,6 @@
 title: Allocate device core resource
 ---
 
-## Allocate device core to container
-
 To allocate a certain part of device core resource, you need only to assign the `nvidia.com/gpucores` without other resource fields.
 
 ```yaml

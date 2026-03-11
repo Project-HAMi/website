@@ -58,25 +58,25 @@
           "type": "category",
           "label": "Share NVIDIA GPU devices",
           "items": [
-            "userguide/NVIDIA-device/dynamic-resource-allocation",
-            "userguide/NVIDIA-device/dynamic-mig-support",
-            "userguide/NVIDIA-device/specify-device-memory-usage",
-            "userguide/NVIDIA-device/specify-device-core-usage",
-            "userguide/NVIDIA-device/specify-device-type-to-use",
-            "userguide/NVIDIA-device/specify-device-uuid-to-use",
-            "userguide/NVIDIA-device/using-resourcequota",
+            "userguide/nvidia-device/dynamic-resource-allocation",
+            "userguide/nvidia-device/dynamic-mig-support",
+            "userguide/nvidia-device/specify-device-memory-usage",
+            "userguide/nvidia-device/specify-device-core-usage",
+            "userguide/nvidia-device/specify-device-type-to-use",
+            "userguide/nvidia-device/specify-device-uuid-to-use",
+            "userguide/nvidia-device/using-resourcequota",
             {
               "type": "category",
               "label": "Examples",
               "key": "nvidia-examples",
               "items": [
-                "userguide/NVIDIA-device/examples/use-exclusive-card",
-                "userguide/NVIDIA-device/examples/allocate-device-memory",
-                "userguide/NVIDIA-device/examples/allocate-device-memory2",
-                "userguide/NVIDIA-device/examples/allocate-device-core",
-                "userguide/NVIDIA-device/examples/specify-card-type-to-use",
-                "userguide/NVIDIA-device/examples/specify-certain-card",
-                "userguide/NVIDIA-device/examples/dynamic-mig-example"
+                "userguide/nvidia-device/examples/use-exclusive-card",
+                "userguide/nvidia-device/examples/allocate-device-memory",
+                "userguide/nvidia-device/examples/allocate-device-memory2",
+                "userguide/nvidia-device/examples/allocate-device-core",
+                "userguide/nvidia-device/examples/specify-card-type-to-use",
+                "userguide/nvidia-device/examples/specify-certain-card",
+                "userguide/nvidia-device/examples/dynamic-mig-example"
               ]
             }
           ]
@@ -85,17 +85,17 @@
           "type": "category",
           "label": "Share Cambricon MLU devices",
           "items": [
-            "userguide/Cambricon-device/enable-cambricon-mlu-sharing",
-            "userguide/Cambricon-device/specify-device-memory-usage",
-            "userguide/Cambricon-device/specify-device-core-usage",
-            "userguide/Cambricon-device/specify-device-type-to-use",
+            "userguide/cambricon-device/enable-cambricon-mlu-sharing",
+            "userguide/cambricon-device/specify-device-memory-usage",
+            "userguide/cambricon-device/specify-device-core-usage",
+            "userguide/cambricon-device/specify-device-type-to-use",
             {
               "type": "category",
               "label": "Examples",
               "key": "cambricon-examples",
               "items": [
-                "userguide/Cambricon-device/examples/allocate-core-and-memory",
-                "userguide/Cambricon-device/examples/allocate-exclusive"
+                "userguide/cambricon-device/examples/allocate-core-and-memory",
+                "userguide/cambricon-device/examples/allocate-exclusive"
               ]
             }
           ]
@@ -104,18 +104,18 @@
           "type": "category",
           "label": "Share Hygon DCU devices",
           "items": [
-            "userguide/Hygon-device/enable-hygon-dcu-sharing",
-            "userguide/Hygon-device/specify-device-memory-usage",
-            "userguide/Hygon-device/specify-device-core-usage",
-            "userguide/Hygon-device/specify-device-uuid-to-use",
+            "userguide/hygon-device/enable-hygon-dcu-sharing",
+            "userguide/hygon-device/specify-device-memory-usage",
+            "userguide/hygon-device/specify-device-core-usage",
+            "userguide/hygon-device/specify-device-uuid-to-use",
             {
               "type": "category",
               "label": "Examples",
               "key": "hygon-examples",
               "items": [
-                "userguide/Hygon-device/examples/allocate-core-and-memory",
-                "userguide/Hygon-device/examples/allocate-exclusive",
-                "userguide/Hygon-device/examples/specify-certain-cards"
+                "userguide/hygon-device/examples/allocate-core-and-memory",
+                "userguide/hygon-device/examples/allocate-exclusive",
+                "userguide/hygon-device/examples/specify-certain-cards"
               ]
             }
           ]
@@ -124,16 +124,16 @@
           "type": "category",
           "label": "Share Mthreads GPU devices",
           "items": [
-            "userguide/Mthreads-device/enable-mthreads-gpu-sharing",
-            "userguide/Mthreads-device/specify-device-memory-usage",
-            "userguide/Mthreads-device/specify-device-core-usage",
+            "userguide/mthreads-device/enable-mthreads-gpu-sharing",
+            "userguide/mthreads-device/specify-device-memory-usage",
+            "userguide/mthreads-device/specify-device-core-usage",
             {
               "type": "category",
               "label": "Examples",
               "key": "mthreads-examples",
               "items": [
-                "userguide/Mthreads-device/examples/allocate-core-and-memory",
-                "userguide/Mthreads-device/examples/allocate-exclusive"
+                "userguide/mthreads-device/examples/allocate-core-and-memory",
+                "userguide/mthreads-device/examples/allocate-exclusive"
               ]
             }
           ]
@@ -142,16 +142,16 @@
           "type": "category",
           "label": "Share Illuvatar GPU devices",
           "items": [
-            "userguide/Iluvatar-device/enable-illuvatar-gpu-sharing",
+            "userguide/iluvatar-device/enable-illuvatar-gpu-sharing",
             {
               "type": "category",
               "label": "Examples",
               "key": "iluvatar-examples",
               "items": [
-                "userguide/Iluvatar-device/examples/allocate-BI-V150",
-                "userguide/Iluvatar-device/examples/allocate-MR-V100",
-                "userguide/Iluvatar-device/examples/allocate-exclusive-BI-V150",
-                "userguide/Iluvatar-device/examples/allocate-exclusive-MR-V100"
+                "userguide/iluvatar-device/examples/allocate-BI-V150",
+                "userguide/iluvatar-device/examples/allocate-MR-V100",
+                "userguide/iluvatar-device/examples/allocate-exclusive-BI-V150",
+                "userguide/iluvatar-device/examples/allocate-exclusive-MR-V100"
               ]
             }
           ]
@@ -160,21 +160,21 @@
           "type": "category",
           "label": "Share Enflame GCU devices",
           "items": [
-            "userguide/Enflame-device/enable-enflame-gcu-sharing"
+            "userguide/enflame-device/enable-enflame-gcu-sharing"
           ]
         },
         {
           "type": "category",
           "label": "Managing AWS Neuron devices",
           "items": [
-            "userguide/AWSNeuron-device/enable-awsneuron-managing",
+            "userguide/awsneuron-device/enable-awsneuron-managing",
             {
               "type": "category",
               "label": "Examples",
               "key": "awsneuron-examples",
               "items": [
-                "userguide/AWSNeuron-device/examples/allocate-neuron-core",
-                "userguide/AWSNeuron-device/examples/allocate-neuron-device"
+                "userguide/awsneuron-device/examples/allocate-neuron-core",
+                "userguide/awsneuron-device/examples/allocate-neuron-device"
               ]
             }
           ]
@@ -183,15 +183,15 @@
           "type": "category",
           "label": "Optimize Kunlunxin devices scheduling",
           "items": [
-            "userguide/Kunlunxin-device/enable-kunlunxin-schedule",
-            "userguide/Kunlunxin-device/enable-kunlunxin-vxpu",
+            "userguide/kunlunxin-device/enable-kunlunxin-schedule",
+            "userguide/kunlunxin-device/enable-kunlunxin-vxpu",
             {
               "type": "category",
               "label": "Examples",
               "key": "kunlunxin-examples",
               "items": [
-                "userguide/Kunlunxin-device/examples/allocate_whole_xpu",
-                "userguide/Kunlunxin-device/examples/allocate_vxpu"
+                "userguide/kunlunxin-device/examples/allocate_whole_xpu",
+                "userguide/kunlunxin-device/examples/allocate_vxpu"
               ]
             }
           ]
@@ -204,15 +204,15 @@
               "type": "category",
               "label": "Share Metax GPU devices",
               "items": [
-                "userguide/Metax-device/Metax-sGPU/enable-metax-gpu-sharing",
+                "userguide/metax-device/metax-sgpu/enable-metax-gpu-sharing",
                 {
                   "type": "category",
                   "label": "Examples",
                   "key": "metax-sgpu-examples",
                   "items": [
-                    "userguide/Metax-device/Metax-sGPU/examples/default-use",
-                    "userguide/Metax-device/Metax-sGPU/examples/allocate-exclusive",
-                    "userguide/Metax-device/Metax-sGPU/examples/allocate-qos-policy"
+                    "userguide/metax-device/metax-sgpu/examples/default-use",
+                    "userguide/metax-device/metax-sgpu/examples/allocate-exclusive",
+                    "userguide/metax-device/metax-sgpu/examples/allocate-qos-policy"
                   ]
                 }
               ]
@@ -221,17 +221,17 @@
               "type": "category",
               "label": "Metax GPU topology-aware scheduling",
               "items": [
-                "userguide/Metax-device/Metax-GPU/enable-metax-gpu-schedule",
-                "userguide/Metax-device/Metax-GPU/specify-binpack-task",
-                "userguide/Metax-device/Metax-GPU/specify-spread-task",
+                "userguide/metax-device/metax-gpu/enable-metax-gpu-schedule",
+                "userguide/metax-device/metax-gpu/specify-binpack-task",
+                "userguide/metax-device/metax-gpu/specify-spread-task",
                 {
                   "type": "category",
                   "label": "Examples",
                   "key": "metax-gpu-examples",
                   "items": [
-                    "userguide/Metax-device/Metax-GPU/examples/default-use",
-                    "userguide/Metax-device/Metax-GPU/examples/allocate-binpack",
-                    "userguide/Metax-device/Metax-GPU/examples/allocate-spread"
+                    "userguide/metax-device/metax-gpu/examples/default-use",
+                    "userguide/metax-device/metax-gpu/examples/allocate-binpack",
+                    "userguide/metax-device/metax-gpu/examples/allocate-spread"
                   ]
                 }
               ]
@@ -242,16 +242,16 @@
           "type": "category",
           "label": "Share Ascend devices",
           "items": [
-            "userguide/Ascend-device/enable-ascend-sharing",
-            "userguide/Ascend-device/device-template",
+            "userguide/ascend-device/enable-ascend-sharing",
+            "userguide/ascend-device/device-template",
             {
               "type": "category",
               "label": "Examples",
               "key": "ascend-examples",
               "items": [
-                "userguide/Ascend-device/examples/allocate-310p",
-                "userguide/Ascend-device/examples/allocate-910b",
-                "userguide/Ascend-device/examples/allocate-exclusive"
+                "userguide/ascend-device/examples/allocate-310p",
+                "userguide/ascend-device/examples/allocate-910b",
+                "userguide/ascend-device/examples/allocate-exclusive"
               ]
             }
           ]
@@ -264,15 +264,15 @@
               "type": "category",
               "label": "NVIDIA GPU",
               "items": [
-                "userguide/volcano-vgpu/NVIDIA-GPU/how-to-use-volcano-vgpu",
-                "userguide/volcano-vgpu/NVIDIA-GPU/monitor",
+                "userguide/volcano-vgpu/nvidia-gpu/how-to-use-volcano-vgpu",
+                "userguide/volcano-vgpu/nvidia-gpu/monitor",
                 {
                   "type": "category",
                   "label": "Examples",
                   "key": "volcano-vgpu-examples",
                   "items": [
-                    "userguide/volcano-vgpu/NVIDIA-GPU/examples/default_use",
-                    "userguide/volcano-vgpu/NVIDIA-GPU/examples/use_exclusive_gpu"
+                    "userguide/volcano-vgpu/nvidia-gpu/examples/default_use",
+                    "userguide/volcano-vgpu/nvidia-gpu/examples/use_exclusive_gpu"
                   ]
                 }
               ]
@@ -283,13 +283,13 @@
           "type": "category",
           "label": "Using HAMi with Kueue",
           "items": [
-            "userguide/Kueue/how-to-use-kueue",
+            "userguide/kueue/how-to-use-kueue",
             {
               "type": "category",
               "label": "Examples",
               "key": "kueue-examples",
               "items": [
-                "userguide/Kueue/examples/defalt_use"
+                "userguide/kueue/examples/defalt_use"
               ]
             }
           ]

@@ -1,5 +1,5 @@
 ---
-title: Releases
+title: 发布记录
 translated: true
 ---
 

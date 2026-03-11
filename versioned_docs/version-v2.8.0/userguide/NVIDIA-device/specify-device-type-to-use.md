@@ -2,8 +2,6 @@
 title: Assign to certain device type
 ---
 
-## Assign to certain device type
-
 Sometimes a task may wish to run on a certain type of GPU, it can fill the `nvidia.com/use-gputype` field in pod annotation. HAMi scheduler will check if the device type returned from `nvidia-smi -L` contains the content of annotation.
 
 For example, a task with the following annotation will be assigned to A100 or V100 GPU

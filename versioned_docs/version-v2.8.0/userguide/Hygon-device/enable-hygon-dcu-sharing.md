@@ -53,19 +53,19 @@ spec:
 
 You need to enable vDCU inside container in order to use it.
 
-```
+```yaml
 source /opt/hygondriver/env.sh
 ```
 
 check if you have successfully enabled vDCU by using following command
 
-```
+```yaml
 hy-virtual -show-device-info
 ```
 
 If you have an output like this, then you have successfully enabled vDCU inside container.
 
-```
+```yaml
 Device 0:
  Actual Device: 0
  Compute units: 60

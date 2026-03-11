@@ -2,8 +2,6 @@
 title: Allocate vxpu device
 ---
 
-## Allocate vxpu device
-
 To allocate a certain part of device core resource, you need only to assign the `kunlunxin.com/vxpu` along with the `kunlunxin.com/vxpu-memory`
 
 ```yaml

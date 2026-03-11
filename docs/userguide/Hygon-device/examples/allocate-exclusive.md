@@ -2,11 +2,9 @@
 title: Allocate exclusive device
 ---
 
-## Allocate exclusive device
-
 To allocate a whole hygon DCU device, you need to only assign `hygon.com/dcunum` without other fields.
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:

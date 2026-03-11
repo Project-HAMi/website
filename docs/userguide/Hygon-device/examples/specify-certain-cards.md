@@ -2,8 +2,6 @@
 title: Assign task to certain DCU cards
 ---
 
-## Assign task to certain DCU cards
-
 To assign a task to certain DCUs, you need only to assign the `hygon.com/use-gpuuuid` in annotations field.
 
 ```yaml

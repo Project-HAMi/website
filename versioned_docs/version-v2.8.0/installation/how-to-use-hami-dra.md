@@ -35,7 +35,7 @@ helm install hami hami-charts/hami --set dra.enable=true -n hami-system
 
 The implementation of DRA functionality requires support from the corresponding device's DRA Driver. Currently supported devices include:
 
-* [NVIDIA GPU](../userguide/NVIDIA-device/dynamic-resource-allocation.md)
+* [NVIDIA GPU](../userguide/nvidia-device/dynamic-resource-allocation.md)
 
 Please refer to the corresponding page to install the device driver.
 

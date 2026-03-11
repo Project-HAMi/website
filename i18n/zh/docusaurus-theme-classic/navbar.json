@@ -26,5 +26,25 @@
   "item.label.Community": {
     "message": "社区",
     "description": "Navbar item with label Community"
+  },
+  "item.label.Home": {
+    "message": "首页",
+    "description": "Navbar item with label Home"
+  },
+  "item.label.Docs": {
+    "message": "文档",
+    "description": "Navbar item with label Docs"
+  },
+  "item.label.Adoption": {
+    "message": "采用者",
+    "description": "Navbar item with label Adoption"
+  },
+  "item.label.Releases": {
+    "message": "发布记录",
+    "description": "Navbar item with label Releases"
+  },
+  "item.label.Case Studies": {
+    "message": "案例研究",
+    "description": "Navbar item with label Case Studies"
   }
 }

@@ -2,8 +2,6 @@
 title: Assign task to a certain type
 ---
 
-## Assign task to a certain type
-
 To assign a task to a certain GPU type, you need only to assign the `nvidia.com/use-gputype` in annotations field.
 
 ```yaml
