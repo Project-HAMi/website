@@ -181,6 +181,21 @@ module.exports = {
         },
         {
           "type": "category",
+          "label": "Managing Vastai devices",
+          "items": [
+            "userguide/Vastai/enable-vastai-sharing",
+            {
+              "type": "category",
+              "label": "Examples",
+              "key": "vastai-examples",
+              "items": [
+                "userguide/Vastai/examples/default_use",
+              ]
+            }
+          ]
+        },
+        {
+          "type": "category",
           "label": "Optimize Kunlunxin devices scheduling",
           "items": [
             "userguide/Kunlunxin-device/enable-kunlunxin-schedule",
