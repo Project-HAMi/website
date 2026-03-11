@@ -35,7 +35,7 @@ helm install hami hami-charts/hami --set dra.enable=true -n hami-system
 
 The implementation of DRA functionality requires support from the corresponding device's DRA Driver. Currently supported devices include:
 
-* [NVIDIA GPU](../userguide/nvidia-device/dynamic-resource-allocation.md)
+* [NVIDIA GPU](../userguide/nvidia-device/dynamic-resource-allocation)
 
 Please refer to the corresponding page to install the device driver.
 
@@ -43,6 +43,6 @@ Please refer to the corresponding page to install the device driver.
 
 HAMi DRA provides the same monitoring capabilities as the traditional model. When installing HAMi DRA, the monitoring service will be enabled by default. You can expose the monitoring service to the local environment via NodePort or add Prometheus collection to access monitoring metrics.
 
-You can view the monitoring metrics provided by HAMi DRA [here](../userguide/monitoring/device-allocation.md).
+You can view the monitoring metrics provided by HAMi DRA [here](../userguide/monitoring/device-allocation).
 
 For more information, please refer to [HAMi DRA monitor](https://github.com/Project-HAMi/HAMi-DRA/blob/main/docs/MONITOR.md)

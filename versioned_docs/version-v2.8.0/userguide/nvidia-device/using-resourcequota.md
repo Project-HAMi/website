@@ -34,4 +34,4 @@ spec:
 
 ## Monitoring Extended ResourceQuota
 
-The HAMi scheduler exposes metrics that allow users to monitor the current usage of ResourceQuota. For detailed information about these metrics, please refer to [HAMi Monitoring](../../userguide/monitoring/device-allocation.md).
+The HAMi scheduler exposes metrics that allow users to monitor the current usage of ResourceQuota. For detailed information about these metrics, please refer to [HAMi Monitoring](../monitoring/device-allocation).

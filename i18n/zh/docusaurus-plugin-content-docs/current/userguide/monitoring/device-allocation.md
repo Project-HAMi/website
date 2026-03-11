@@ -24,7 +24,7 @@ curl {scheduler node ip}:31993/metrics
 | vGPUMemoryAllocated | 分配给某个容器的 vGPU 显存 | `{containeridx="Ascend310P",deviceuuid="aio-node74-arm-Ascend310P-0",nodename="aio-node74-arm",podname="ascend310p-pod",podnamespace="default",zone="vGPU"}` 3.221225472e+09 |
 | QuotaUsed | resourcequota 的使用情况 | `{quotaName="nvidia.com/gpucores", quotanamespace="default",limit="200",zone="vGPU"}` 100 |
 
-如果你在使用 [HAMi DRA](../../installation/how-to-use-hami-dra.md), 它将暴露如下指标 :
+如果你在使用 [HAMi DRA](../../installation/how-to-use-hami-dra), 它将暴露如下指标 :
 
 | 指标  | 描述 | 示例 |
 |----------|-------------|---------|
