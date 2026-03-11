@@ -19,6 +19,7 @@ import {
 import styles from './styles.module.css';
 import ContributorsList from '../components/contributorsList';
 import AdoptersList from '../components/adoptersList';
+import BeforeAfterComparison from '../components/BeforeAfterComparison';
 import heroStats from '../data/home/heroStats';
 import valueCards from '../data/home/valueCards';
 import featureCards from '../data/home/featureCards';
@@ -88,37 +89,6 @@ const runtimeLanes = [
     ],
   },
 ];
-const compareRequests = [
-  { key: 'a', tone: 'alpha', name: 'Pod A', usage: { en: 'mem 30% · core 25%', zh: '显存 30% · 算力 25%' }, cells: 5 },
-  { key: 'b', tone: 'beta', name: 'Pod B', usage: { en: 'mem 24% · core 20%', zh: '显存 24% · 算力 20%' }, cells: 4 },
-  { key: 'c', tone: 'gamma', name: 'Pod C', usage: { en: 'mem 18% · core 15%', zh: '显存 18% · 算力 15%' }, cells: 3 },
-];
-const compareScenarios = [
-  {
-    key: 'before',
-    title: { en: 'Without HAMi', zh: '未使用 HAMi' },
-    result: { en: 'Whole-GPU allocation', zh: '整卡独占分配' },
-    summary: { en: 'Fragmentation, low utilization', zh: '资源碎片化，利用率低' },
-    policies: [{ en: 'Single placement path', zh: '单一路径放置' }],
-    gpus: [
-      { key: 'gpu0', name: 'GPU 0', utilization: '31%', mode: { en: 'exclusive', zh: '独占' }, allocations: [{ tone: 'alpha', cells: 5 }] },
-      { key: 'gpu1', name: 'GPU 1', utilization: '25%', mode: { en: 'exclusive', zh: '独占' }, allocations: [{ tone: 'beta', cells: 4 }] },
-      { key: 'gpu2', name: 'GPU 2', utilization: '19%', mode: { en: 'exclusive', zh: '独占' }, allocations: [{ tone: 'gamma', cells: 3 }] },
-    ],
-  },
-  {
-    key: 'after',
-    title: { en: 'With HAMi', zh: '使用 HAMi' },
-    result: { en: 'Fine-grained slicing & packing', zh: '细粒度切分与装箱' },
-    summary: { en: 'Higher packing, higher utilization', zh: '装箱更紧凑，利用率更高' },
-    policies: [{ en: 'Binpack', zh: 'Binpack' }, { en: 'Spread', zh: 'Spread' }, { en: 'Topology-aware', zh: '拓扑感知' }],
-    gpus: [
-      { key: 'gpu0', name: 'GPU 0', utilization: '75%', mode: { en: 'shared slices', zh: '切片共享' }, allocations: [{ tone: 'alpha', cells: 5 }, { tone: 'beta', cells: 4 }, { tone: 'gamma', cells: 3 }] },
-      { key: 'gpu1', name: 'GPU 1', utilization: '0%', mode: { en: 'standby', zh: '空闲' }, allocations: [] },
-      { key: 'gpu2', name: 'GPU 2', utilization: '0%', mode: { en: 'standby', zh: '空闲' }, allocations: [] },
-    ],
-  },
-];
 const vendorEcosystem = [
   { key: 'ascend', name: 'Huawei Ascend', logo: 'img/contributors/ascend.svg', href: 'https://www.hiascend.com' },
   { key: 'cambricon', name: 'Cambricon', logo: 'img/contributors/cambricon.svg', href: 'https://www.cambricon.com' },
@@ -133,16 +103,6 @@ const vendorEcosystem = [
 
 function pickLocalized(locale, textObj) {
   return locale === 'zh' ? textObj.zh : textObj.en;
-}
-
-function buildGpuCells(allocations, capacity = 16) {
-  const cells = allocations.flatMap((allocation) =>
-    Array.from({ length: allocation.cells }, (_, index) => ({ key: `${allocation.tone}-${index}`, tone: allocation.tone }))
-  );
-  while (cells.length < capacity) {
-    cells.push({ key: `empty-${cells.length}`, tone: 'empty' });
-  }
-  return cells.slice(0, capacity);
 }
 
 export default function Home() {
@@ -412,66 +372,9 @@ export default function Home() {
               </div>
             </article>
 
-            <article ref={addRevealRef} data-reveal-scale="1" className={clsx(styles.beforeAfterVisual, styles.reveal)} aria-label={isZh ? '使用 HAMi 前后示意对比' : 'Before and after HAMi diagram'}>
-              <h3>{isZh ? '使用 HAMi 前后对比' : 'Before vs After HAMi'}</h3>
-              <div className={styles.compareSharedInput}>
-                <div className={styles.compareSharedHeader}>
-                  <span className={styles.compareSharedLabel}>{isZh ? '共享输入' : 'Shared input'}</span>
-                  <p>{isZh ? '同一组工作负载请求，在不同资源管理模型下得到不同放置结果。' : 'The same workload requests produce different placement outcomes under different resource management models.'}</p>
-                </div>
-                <div className={styles.compareSharedRequests}>
-                  {compareRequests.map((request) => (
-                    <div key={request.key} className={clsx(styles.compareRequest, styles.compareSharedRequest, styles[`compareRequest_${request.tone}`])}>
-                      <span className={styles.compareRequestName}>{request.name}</span>
-                      <span className={styles.compareRequestUsage}>{pickLocalized(i18n.currentLocale, request.usage)}</span>
-                    </div>
-                  ))}
-                </div>
-                <div className={styles.compareBranchRail} aria-hidden="true">
-                  <span className={styles.compareBranchLine} />
-                  <span className={styles.compareBranchSplit} />
-                </div>
-              </div>
-              <div className={styles.compareVisualGrid}>
-                {compareScenarios.map((scenario) => (
-                  <section key={scenario.key} className={clsx(styles.comparePanel, styles[`comparePanel_${scenario.key}`])}>
-                    <header className={styles.comparePanelHeader}>
-                      <div>
-                        <h4>{pickLocalized(i18n.currentLocale, scenario.title)}</h4>
-                      </div>
-                      <span className={styles.comparePanelBadge}>{pickLocalized(i18n.currentLocale, scenario.result)}</span>
-                    </header>
-                    <div className={styles.compareResultRow}>
-                      <span className={styles.compareResultChip}>{pickLocalized(i18n.currentLocale, scenario.result)}</span>
-                      {scenario.policies.map((policy) => (
-                        <span key={policy.en} className={clsx(styles.compareResultChip, styles.comparePolicyChip)}>{pickLocalized(i18n.currentLocale, policy)}</span>
-                      ))}
-                    </div>
-                    <div className={styles.compareGpuRack}>
-                      {scenario.gpus.map((gpu) => (
-                        <article key={gpu.key} className={styles.compareGpuCard}>
-                          <header className={styles.compareGpuHeader}>
-                            <div>
-                              <h5>{gpu.name}</h5>
-                              <span>{pickLocalized(i18n.currentLocale, gpu.mode)}</span>
-                            </div>
-                            <strong className={styles.compareUtilizationValue}>{gpu.utilization}</strong>
-                          </header>
-                          <div className={styles.compareGpuGrid}>
-                            {buildGpuCells(gpu.allocations).map((cell) => (
-                              <span key={`${gpu.key}-${cell.key}`} className={clsx(styles.compareGpuCell, cell.tone !== 'empty' && styles[`compareGpuCell_${cell.tone}`], cell.tone === 'empty' && styles.compareGpuCell_empty)} />
-                            ))}
-                          </div>
-                        </article>
-                      ))}
-                    </div>
-                    <div className={styles.compareOutcomeRow}>
-                      <span className={styles.compareOutcomeText}>{pickLocalized(i18n.currentLocale, scenario.summary)}</span>
-                    </div>
-                  </section>
-                ))}
-              </div>
-            </article>
+            <div ref={addRevealRef} data-reveal-scale="1" className={clsx(styles.reveal, styles.beforeAfterWrapper)}>
+              <BeforeAfterComparison isZh={isZh} />
+            </div>
           </div>
         </section>
 

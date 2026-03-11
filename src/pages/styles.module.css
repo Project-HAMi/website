@@ -755,6 +755,10 @@
   font-size: 0.76rem;
 }
 
+.beforeAfterWrapper {
+  margin-top: 0;
+}
+
 .beforeAfterVisual {
   padding: 18px;
   border: 1px solid var(--hami-diagram-border);

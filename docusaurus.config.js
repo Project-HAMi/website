@@ -205,10 +205,6 @@ module.exports = {
         searchContextByPaths: ["docs", "zh/docs"],
         useAllContextsWithNoSearchContext: true,
         explicitSearchResultPath: true,
-        ignoreFiles: [
-          /^docs\/(?:next|v\d+\.\d+\.\d+)(?:\/|$)/,
-          /^zh\/docs\/(?:next|v\d+\.\d+\.\d+)(?:\/|$)/,
-        ],
       },
     ],
   ],
