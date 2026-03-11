@@ -108,7 +108,7 @@
     right: 0;
     left: 0;
     isolation: isolate;
-    overflow: hidden;
+    overflow: visible;
   }
 
   :global(.theme-announcement-bar + .theme-layout-navbar.navbar.navbar--fixed-top) {

@@ -56,6 +56,13 @@
   --hami-color-border-strong: #b6c4d2;
   --hami-color-code-bg: #f2f7fb;
   --hami-color-code-border: #d9e4ef;
+  --hami-glass-nav-bg: rgba(255, 255, 255, 0.72);
+  --hami-glass-nav-border: rgba(181, 194, 207, 0.68);
+  --hami-glass-nav-shadow: 0 10px 24px rgba(15, 23, 34, 0.04);
+  --hami-glass-nav-backdrop: blur(14px) saturate(135%);
+  --hami-glass-nav-overlay: rgba(241, 246, 251, 0.28);
+  --hami-glass-sidebar-bg: #f7fbff;
+  --hami-glass-sidebar-brand-bg: #fbfdff;
 
   --hami-text-h1: clamp(2.1rem, 5vw, 3.2rem);
   --hami-text-h2: clamp(1.6rem, 3.4vw, 2.2rem);
@@ -157,6 +164,13 @@
   --hami-shadow-sm: 0 8px 20px rgba(0, 0, 0, 0.26);
   --hami-shadow-md: 0 20px 44px rgba(0, 0, 0, 0.34);
   --hero-border-color: rgba(118, 185, 0, 0.16);
+  --hami-glass-nav-bg: rgba(11, 15, 20, 0.72);
+  --hami-glass-nav-border: rgba(42, 52, 66, 0.72);
+  --hami-glass-nav-shadow: 0 14px 30px rgba(0, 0, 0, 0.22);
+  --hami-glass-nav-backdrop: blur(14px) saturate(135%);
+  --hami-glass-nav-overlay: rgba(5, 10, 16, 0.42);
+  --hami-glass-sidebar-bg: #0a1118;
+  --hami-glass-sidebar-brand-bg: #0d151d;
 
   /* Diagram panel tokens (dark mode) */
   --hami-diagram-bg: linear-gradient(180deg, rgba(10, 22, 36, 0.82), rgba(7, 16, 28, 0.92));
@@ -430,11 +444,11 @@ html[data-theme='dark'] .cncf-logo {
 }
 
 .navbar {
-  background: rgba(255, 255, 255, 0.72);
-  -webkit-backdrop-filter: blur(14px) saturate(135%);
-  backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(181, 194, 207, 0.68);
-  box-shadow: 0 10px 24px rgba(15, 23, 34, 0.04);
+  background: var(--hami-glass-nav-bg);
+  -webkit-backdrop-filter: var(--hami-glass-nav-backdrop);
+  backdrop-filter: var(--hami-glass-nav-backdrop);
+  border-bottom: 1px solid var(--hami-glass-nav-border);
+  box-shadow: var(--hami-glass-nav-shadow);
   transition:
     background-color var(--hami-motion-base),
     border-color var(--hami-motion-base),
@@ -452,16 +466,74 @@ html[data-theme='dark'] .cncf-logo {
   }
 }
 
-html[data-theme='dark'] .navbar {
-  background: rgba(11, 15, 20, 0.72);
-  border-bottom: 1px solid rgba(42, 52, 66, 0.72);
-  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.22);
+.navbar-sidebar {
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  max-height: 100vh;
+  z-index: calc(var(--ifm-z-index-fixed) + 1);
+}
+
+.navbar-sidebar__items {
+  background: transparent;
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.navbar-sidebar__backdrop {
+  background: rgba(10, 18, 28, 0.42);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  z-index: var(--ifm-z-index-fixed);
+}
+
+.navbar-sidebar__item {
+  background:
+    linear-gradient(180deg, rgba(118, 185, 0, 0.04), rgba(57, 198, 244, 0.03)),
+    var(--hami-glass-sidebar-bg);
+  -webkit-backdrop-filter: var(--hami-glass-nav-backdrop);
+  backdrop-filter: var(--hami-glass-nav-backdrop);
+  border-left: 1px solid var(--hami-glass-nav-border);
+  box-shadow: var(--hami-glass-nav-shadow);
+  flex: 0 0 100%;
+  min-height: 100%;
+}
+
+.navbar-sidebar__brand {
+  background:
+    linear-gradient(90deg, rgba(118, 185, 0, 0.05), rgba(57, 198, 244, 0.04)),
+    var(--hami-glass-sidebar-brand-bg);
+  -webkit-backdrop-filter: var(--hami-glass-nav-backdrop);
+  backdrop-filter: var(--hami-glass-nav-backdrop);
+  border-left: 1px solid var(--hami-glass-nav-border);
+  border-bottom: 1px solid var(--hami-glass-nav-border);
+}
+
+html[data-theme='dark'] .navbar-sidebar__backdrop {
+  background: rgba(3, 8, 13, 0.56);
 }
 
 @media (max-width: 996px) {
-  .navbar {
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
+  .navbar.navbar-sidebar--show .navbar-sidebar,
+  .navbar.navbar-sidebar--show .navbar-sidebar__backdrop {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .navbar.navbar-sidebar--show .navbar-sidebar {
+    transform: translate3d(0, 0, 0);
+  }
+
+  .navbar:has(.navbar__toggle[aria-expanded='true']) .navbar-sidebar,
+  .navbar:has(.navbar__toggle[aria-expanded='true']) .navbar-sidebar__backdrop {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .navbar:has(.navbar__toggle[aria-expanded='true']) .navbar-sidebar {
+    transform: translate3d(0, 0, 0);
   }
 }
 
