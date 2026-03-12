@@ -1,5 +1,5 @@
 ---
-title: Prequisities
+title: Prerequisites
 ---
 
 Before installing HAMi, make sure the following tools and dependencies are properly installed in your environment:

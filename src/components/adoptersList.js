@@ -13,10 +13,11 @@ const AdoptersList = () => {
     return (
         <ul className="support-wrapper">
             {
-                adoptersData.map(({ logo, name, nameZh, website }, index) => {
+                adoptersData.map(({ logo, logoZh, name, nameZh, website }, index) => {
                     const href = website?.trim() || null;
-                    const hasLogo = logo && logo.trim() !== '';
-                    const logoPath = hasLogo && logo.startsWith('/') ? logo : `/img/adopters/${logo}`;
+                    const rawLogo = (isZh && logoZh) ? logoZh : logo;
+                    const hasLogo = rawLogo && rawLogo.trim() !== '';
+                    const logoPath = hasLogo && rawLogo.startsWith('/') ? rawLogo : `/img/adopters/${rawLogo}`;
                     const displayName = isZh && nameZh ? nameZh : name;
 
                     return (

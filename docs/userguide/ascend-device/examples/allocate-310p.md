@@ -43,4 +43,3 @@ metadata:
 spec:
   # ... rest of pod spec
 ```
-

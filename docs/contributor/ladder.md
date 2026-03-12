@@ -49,7 +49,7 @@ Description: A Contributor contributes directly to the project and adds value to
 
 A very special thanks to the [long list of people](https://github.com/Project-HAMi/HAMi/blob/master/AUTHORS.md) who have contributed to and helped maintain the project. We wouldn't be where we are today without your contributions. Thank you! 💖
 
-As long as you contribute to HAMi, your name will be added [here](https://github.com/Project-HAMi/HAMi/blob/master/AUTHORS.md). If you don't find your name, please contact us to add it.
+As long as you contribute to HAMi, your name will be added to the [AUTHORS.md file](https://github.com/Project-HAMi/HAMi/blob/master/AUTHORS.md). If you don't find your name, please contact us to add it.
 
 ### Organization Member
 

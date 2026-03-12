@@ -17,6 +17,7 @@ import DocItemContent from '@theme/DocItem/Content';
 import DocBreadcrumbs from '@theme/DocBreadcrumbs';
 import ContentVisibility from '@theme/ContentVisibility';
 import styles from './styles.module.css';
+import useImageLightbox from '../../utils/useImageLightbox';
 
 function useDocTOC() {
   const {frontMatter, toc} = useDoc();
@@ -32,6 +33,7 @@ function useDocTOC() {
 }
 
 export default function DocItemLayout({children}) {
+  useImageLightbox();
   const docTOC = useDocTOC();
   const {metadata} = useDoc();
   return (

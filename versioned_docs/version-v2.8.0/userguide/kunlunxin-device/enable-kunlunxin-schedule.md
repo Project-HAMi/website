@@ -8,7 +8,7 @@ When multiple XPUs are configured on a single P800 server, performance is signif
 when the GPU cards are connected to, or located within, the same NUMA node. This arrangement
 forms a topology among all the XPUs on the server, as shown below:
 
-![img](../../resources/kunlunxin_topo.jpg)
+![Kunlunxin XPU topology diagram showing NUMA node connections on P800 server](../../resources/kunlunxin_topo.jpg)
 
 When a user job requests a certain number of `kunlunxin.com/xpu` resources,
 Kubernetes schedules the pods onto appropriate nodes with the goal of minimizing fragmentation

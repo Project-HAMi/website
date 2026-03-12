@@ -14,7 +14,7 @@ Memory slicing is supported based on virtualization template, lease available te
 
 * Due to dependencies with HAMi, you need to set the arguments in the process of installing HAMi:
 
-  ```
+  ```yaml
   devices.ascend.enabled=true
   ```
 
@@ -104,5 +104,5 @@ spec:
 
 1. Ascend-sharing in init container is not supported.
 
-2. `huawei.com/Ascend910B-memory` only works when `huawei.com/Ascend91B0=1`.
+1. `huawei.com/Ascend910B-memory` only works when `huawei.com/Ascend91B0=1`.
    `huawe.com/Ascend310P-memory` only works when `huawei.com/Ascend310P=1`.

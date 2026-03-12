@@ -8,7 +8,7 @@ When multiple GPUs are configured on a single server, the GPU cards are connecte
 Depending on the connection type, a near-far relationship is formed among the GPUs.
 Together, these connections define the topology of the GPU cards on the server, as shown below:
 
-![img](https://github.com/Project-HAMi/HAMi/raw/master/imgs/metax_topo.png)
+![Metax GPU topology diagram showing PCIe Switch and MetaXLink connections](https://github.com/Project-HAMi/HAMi/raw/master/imgs/metax_topo.png)
 
 When a user job requests a specific number of `metax-tech.com/gpu` resources,
 Kubernetes schedules the pod to a suitable node. On that node,
@@ -21,11 +21,11 @@ the GPU device plugin (gpu-device) handles fine-grained allocation based on the 
 
 2. When using `node-scheduler-policy=spread`, allocate Metax resources to be under the same Metaxlink or Paiswich as much as possible, as shown below:
 
-   ![img](https://github.com/Project-HAMi/HAMi/raw/master/imgs/metax_spread.png)
+   ![Metax spread scheduling policy diagram showing resource allocation](https://github.com/Project-HAMi/HAMi/raw/master/imgs/metax_spread.png)
 
 3. When using `node-scheduler-policy=binpack`, assign GPU resources, so minimize the damage to MetaxXLink topology, as shown below:
 
-   ![img](https://github.com/Project-HAMi/HAMi/raw/master/imgs/metax_binpack.png)
+   ![Metax binpack scheduling policy diagram showing topology-aware allocation](https://github.com/Project-HAMi/HAMi/raw/master/imgs/metax_binpack.png)
 
 ## Important Notes
 
@@ -35,14 +35,14 @@ the GPU device plugin (gpu-device) handles fine-grained allocation based on the 
 
 ## Prerequisites
 
-* Metax GPU extensions >= 0.8.0
-* Kubernetes >= 1.23
+- Metax GPU extensions >= 0.8.0
+- Kubernetes >= 1.23
 
 ## Enabling topo-awareness scheduling
 
-* Deploy Metax GPU Extensions on metax nodes (Please consult your device provider to acquire its package and document)
+- Deploy Metax GPU Extensions on metax nodes (Please consult your device provider to acquire its package and document)
 
-* Deploy HAMi according to README.md
+- Deploy HAMi according to README.md
 
 ## Running Metax jobs
 

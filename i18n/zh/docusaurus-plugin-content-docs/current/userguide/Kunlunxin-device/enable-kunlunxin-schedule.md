@@ -9,7 +9,7 @@ linktitle: 拓扑感知调度
 
 当在单个 P800 服务器上配置多个 XPU 时，当 XPU 卡连接到同一 NUMA 节点或互相之间可以直接连接时，性能会显著提升。从而在服务器上的所有 XPU 之间形成拓扑，如下所示：
 
-![img](../../resources/kunlunxin_topo.jpg)
+![Kunlunxin XPU 拓扑图，显示 P800 服务器上的 NUMA 节点连接](../../resources/kunlunxin_topo.jpg)
 
 当用户作业请求一定数量的 `kunlunxin.com/xpu` 资源时，
 Kubernetes 将 Pod 调度到适当的节点上，目标是减少碎片化

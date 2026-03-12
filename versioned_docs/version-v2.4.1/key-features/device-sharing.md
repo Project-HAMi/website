@@ -7,4 +7,4 @@ title: Device sharing
 - Permits partial device allocation by specifying device core usage.
 - Requires zero changes to existing programs.
 
-![img](../resources/example.png)
+![HAMi device sharing example showing multiple tasks sharing a single GPU](../resources/example.png)

@@ -139,6 +139,7 @@ spec:
 ```
 
 The ClusterQueue tracks:
+
 - `nvidia.com/total-gpucores`: Total GPU cores across all vGPUs (each unit represents 1% of a GPU core)
 - `nvidia.com/total-gpumem`: Total GPU memory across all vGPUs (in MiB)
 
@@ -194,6 +195,7 @@ spec:
 ```
 
 In this example:
+
 - `kueue.x-k8s.io/queue-name` label associates the Deployment with the `hami-local-queue`
 - `nvidia.com/gpu: 1` requests 1 vGPU
 - `nvidia.com/gpucores: 50` requests 50% of GPU cores for each vGPU
@@ -263,6 +265,7 @@ Kueue's ResourceTransformation automatically converts HAMi vGPU resource request
 - `nvidia.com/gpu` × `nvidia.com/gpumem` → `nvidia.com/total-gpumem`
 
 For example:
+
 - A Deployment with 2 replicas, each requesting `nvidia.com/gpu: 1`, `nvidia.com/gpucores: 50`, and `nvidia.com/gpumem: 1024`
 - Will consume: `nvidia.com/total-gpucores: 100` (2 replicas × 1 GPU × 50 cores) and `nvidia.com/total-gpumem: 2048` (2 replicas × 1 GPU × 1024 MiB)
 

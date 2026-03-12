@@ -22,7 +22,6 @@ import AdoptersList from '../components/adoptersList';
 import BeforeAfterComparison from '../components/BeforeAfterComparison';
 import heroStats from '../data/home/heroStats';
 import valueCards from '../data/home/valueCards';
-import featureCards from '../data/home/featureCards';
 
 const cardIcons = {
   'network-wired': faNetworkWired,
@@ -36,35 +35,84 @@ const cardIcons = {
 };
 
 const fallbackCardIcon = faCircleNodes;
-const architectureLayers = [
-  {
-    key: 'workloads',
-    tone: 'workloads',
-    icon: faCubesStacked,
-    iconType: 'fa',
-    title: { en: 'AI Workloads', zh: 'AI 工作负载' },
-    items: { en: 'Training • Inference • Batch • Pipelines', zh: '训练 • 推理 • 批处理 • 流水线' },
-  },
-  {
-    key: 'hami',
-    tone: 'hami',
-    iconType: 'hami',
-    title: { en: 'HAMi Platform', zh: 'HAMi 平台' },
-    items: { en: 'Virtualization • Sharing • Isolation • Scheduling', zh: '虚拟化 • 共享 • 隔离 • 调度' },
-  },
-  {
-    key: 'accelerators',
-    tone: 'accelerators',
-    icon: faPuzzlePiece,
-    iconType: 'fa',
-    title: { en: 'Heterogeneous Accelerators', zh: '异构加速器' },
-    items: { en: 'GPU • NPU • MLU • DCU', zh: 'GPU • NPU • MLU • DCU' },
-  },
+const heroWorkloadEcosystem = [
+  { key: 'deepseek', label: { en: 'DeepSeek', zh: 'DeepSeek' }, logo: 'img/ecosystem/deepseek.svg' },
+  { key: 'vllm', label: { en: 'vLLM', zh: 'vLLM' }, logo: 'img/ecosystem/vllm.png' },
+  { key: 'xinference', label: { en: 'Xinference', zh: 'Xinference' }, logo: 'img/ecosystem/xinference.svg' },
+  { key: 'llm', label: { en: 'LLM', zh: 'LLM' } },
+  { key: 'ml', label: { en: 'ML', zh: 'ML' } },
+  { key: 'hpc', label: { en: 'HPC', zh: 'HPC' } },
 ];
-const runtimeThemes = [
-  { key: 'slicing', icon: 'hami', title: { en: 'GPU slicing & isolation', zh: 'GPU 切分与隔离' } },
-  { key: 'scheduling', icon: 'kubernetes', title: { en: 'Heterogeneous scheduling & topology', zh: '异构调度与拓扑策略' } },
+const heroSchedulerEcosystem = [
+  { key: 'kubernetes', label: { en: 'Kubernetes', zh: 'Kubernetes' }, logo: 'img/ecosystem/kubernetes.svg' },
+  { key: 'volcano', label: { en: 'Volcano', zh: 'Volcano' }, logo: 'img/ecosystem/volcano.png' },
+  { key: 'kueue', label: { en: 'Kueue', zh: 'Kueue' }, logo: 'img/ecosystem/kueue.svg' },
+  { key: 'koordinator', label: { en: 'Koordinator', zh: 'Koordinator' }, logo: 'img/ecosystem/koordinator.svg' },
 ];
+const heroGpuSlices = ['GPU', '1/2', '1/4', '1/N'];
+const heroDeviceEcosystem = [
+  { key: 'nvidia', label: { en: 'NVIDIA', zh: 'NVIDIA' }, logo: 'img/ecosystem/nvidia.svg' },
+  { key: 'ascend', label: { en: 'Huawei Ascend', zh: '华为昇腾' }, logo: 'img/contributors/ascend.svg' },
+  { key: 'cambricon', label: { en: 'Cambricon', zh: '寒武纪' }, logo: 'img/contributors/cambricon.svg' },
+  { key: 'hygon', label: { en: 'Hygon', zh: '海光' }, logo: 'img/contributors/hygon.png' },
+  { key: 'enflame', label: { en: 'Enflame', zh: '燧原' }, logo: 'img/contributors/enflame.svg' },
+  { key: 'iluvatar', label: { en: 'Iluvatar', zh: '天数智芯' }, logo: 'img/contributors/iluvatar.png' },
+  { key: 'kunlunxin', label: { en: 'Kunlunxin', zh: '昆仑芯' }, logo: 'img/contributors/kunlunxin.jpg' },
+  { key: 'mthreads', label: { en: 'Moore Threads', zh: '摩尔线程' }, logo: 'img/contributors/mthread.png' },
+  { key: 'metax', label: { en: 'MetaX', zh: '沐曦' }, logo: 'img/contributors/metax.png' },
+  { key: 'aws-neuron', label: { en: 'AWS Neuron', zh: 'AWS Neuron' }, logo: 'img/ecosystem/aws.svg' },
+  { key: 'vaststream', label: { en: 'Vaststream', zh: '壁仞' }, logo: 'img/ecosystem/vaststream.jpg' },
+];
+const heroDiagramCopy = {
+  workloads: {
+    en: 'AI Workloads',
+    zh: 'AI 工作负载',
+  },
+  schedulerEcosystem: {
+    en: 'Kubernetes Scheduling Ecosystem',
+    zh: 'Kubernetes 调度生态',
+  },
+  heterogeneousAccelerators: {
+    en: 'Heterogeneous Accelerators',
+    zh: '异构加速器',
+  },
+  hamiLogoAlt: {
+    en: 'HAMi logo',
+    zh: 'HAMi 图标',
+  },
+  moreAccelerators: {
+    en: 'More accelerators coming...',
+    zh: '更多加速器正在支持中…',
+  },
+  capabilities: {
+    en: 'Virtualization • Sharing • Isolation • Scheduling',
+    zh: '虚拟化 • 共享 • 隔离 • 调度',
+  },
+  gpuSlicing: {
+    en: 'GPU slicing capabilities',
+    zh: 'GPU 切分能力',
+  },
+  observability: {
+    en: 'Observability',
+    zh: '可观测性',
+  },
+  allocatedDevices: {
+    en: 'Allocated Devices',
+    zh: '已分配设备',
+  },
+  allocatedDevicesDesc: {
+    en: 'Allocation count and spread',
+    zh: '设备分配总量与分布',
+  },
+  realTimeUsage: {
+    en: 'Real-time Usage',
+    zh: '实时使用率',
+  },
+  realTimeUsageDesc: {
+    en: 'GPU memory/core utilization',
+    zh: '显存 / 核心利用趋势',
+  },
+};
 const runtimeLanes = [
   {
     key: 'control',
@@ -72,9 +120,24 @@ const runtimeLanes = [
     title: { en: 'Control Plane', zh: '控制面' },
     summary: { en: 'Decision path', zh: '决策路径' },
     steps: [
-      { key: 'webhook', emphasis: 'secondary', label: { en: 'MutatingWebhook', zh: 'MutatingWebhook' } },
-      { key: 'scheduler', emphasis: 'primary', label: { en: 'HAMi Scheduler + Policy/Topology', zh: 'HAMi Scheduler + 策略/拓扑' } },
-      { key: 'binding', emphasis: 'primary', label: { en: 'Device binding decision', zh: '设备绑定决策' } },
+      {
+        key: 'webhook',
+        emphasis: 'secondary',
+        label: { en: 'MutatingWebhook', zh: 'MutatingWebhook' },
+        note: { en: 'admission entry', zh: '准入入口' },
+      },
+      {
+        key: 'scheduler',
+        emphasis: 'primary',
+        label: { en: 'HAMi Scheduler', zh: 'HAMi Scheduler' },
+        note: { en: 'policy / topology', zh: '策略 / 拓扑' },
+      },
+      {
+        key: 'binding',
+        emphasis: 'primary',
+        label: { en: 'Device binding decision', zh: '设备绑定决策' },
+        note: { en: 'target GPU selected', zh: '完成目标设备选择' },
+      },
     ],
   },
   {
@@ -83,13 +146,44 @@ const runtimeLanes = [
     title: { en: 'Data Plane', zh: '数据面' },
     summary: { en: 'Enforcement path', zh: '执行路径' },
     steps: [
-      { key: 'injection', emphasis: 'primary', label: { en: 'Device Plugin + CDI injection', zh: 'Device Plugin + CDI 注入' } },
-      { key: 'isolation', emphasis: 'primary', label: { en: 'HAMi-Core hard isolation (memory/core)', zh: 'HAMi-Core 硬隔离（memory/core）' } },
-      { key: 'runtime', emphasis: 'secondary', label: { en: 'Container workloads run', zh: '容器工作负载运行' } },
+      {
+        key: 'injection',
+        emphasis: 'primary',
+        label: { en: 'Device Plugin + CDI injection', zh: 'Device Plugin + CDI 注入' },
+        note: { en: 'device attached', zh: '完成设备注入' },
+      },
+      {
+        key: 'isolation',
+        emphasis: 'primary',
+        label: { en: 'HAMi Core', zh: 'HAMi Core' },
+        note: { en: 'memory / core isolation', zh: '内存 / 核心隔离' },
+      },
+      {
+        key: 'runtime',
+        emphasis: 'secondary',
+        label: { en: 'Container workload', zh: '容器工作负载' },
+        note: { en: 'execution starts', zh: '开始运行' },
+      },
     ],
   },
 ];
+const runtimeDiagramCopy = {
+  title: { en: 'HAMi Runtime Mechanism', zh: 'HAMi 运行时机制' },
+  entryLabel: { en: 'Request Entry / Runtime Interface', zh: '请求入口 / 运行时接口' },
+  entryValue: {
+    en: 'PodSpec + Device Plugin / DRA + CDI',
+    zh: 'PodSpec + Device Plugin / DRA + CDI 运行时接口',
+  },
+};
+const architectureSectionCopy = {
+  lead: {
+    en: 'From request to isolation, HAMi turns GPU slicing and heterogeneous scheduling into usable Kubernetes runtime paths.',
+    zh: '从请求到隔离执行，HAMi 将 GPU 切分与异构调度组织成可落地的 Kubernetes 运行时链路。',
+  },
+};
 const vendorEcosystem = [
+  { key: 'nvidia', name: 'NVIDIA', logo: 'img/ecosystem/nvidia.svg', href: 'https://www.nvidia.com' },
+  { key: 'aws', name: 'AWS', logo: 'img/ecosystem/aws.svg', href: 'https://www.aws.com' },
   { key: 'ascend', name: 'Huawei Ascend', logo: 'img/contributors/ascend.svg', href: 'https://www.hiascend.com' },
   { key: 'cambricon', name: 'Cambricon', logo: 'img/contributors/cambricon.svg', href: 'https://www.cambricon.com' },
   { key: 'enflame', name: 'Enflame', logo: 'img/contributors/enflame.svg', href: 'https://www.enflame-tech.com' },
@@ -98,11 +192,40 @@ const vendorEcosystem = [
   { key: 'kunlunxin', name: 'Kunlunxin', logo: 'img/contributors/kunlunxin.jpg', href: 'https://www.kunlunxin.com' },
   { key: 'metax', name: 'Metax', logo: 'img/contributors/metax.png', href: 'https://www.metax-tech.com' },
   { key: 'mthreads', name: 'Mthreads', logo: 'img/contributors/mthread.png', href: 'https://www.mthreads.com' },
-  { key: 'nvidia', name: 'NVIDIA', logo: 'img/nvidia.svg', href: 'https://www.nvidia.com' },
+  { key: 'vaststream', name: 'Vaststream', logo: 'img/ecosystem/vaststream.jpg', href: 'https://www.vastaitech.com' },
 ];
 
 function pickLocalized(locale, textObj) {
   return locale === 'zh' ? textObj.zh : textObj.en;
+}
+function pickLocalizedOrRaw(locale, value) {
+  return typeof value === 'string' ? value : pickLocalized(locale, value);
+}
+
+function RuntimeLaneCard({ lane, locale }) {
+  return (
+    <section className={styles.runtimeLane} data-runtime-part={lane.key}>
+      <header className={styles.runtimeLaneHeader}>
+        <h3>{pickLocalized(locale, lane.title)}</h3>
+        <span className={styles.runtimeLaneKicker}>{pickLocalized(locale, lane.summary)}</span>
+      </header>
+      <div className={styles.runtimeLaneFlow}>
+        {lane.steps.map((step, index) => (
+          <React.Fragment key={step.key}>
+            <article className={clsx(styles.runtimeStepCard, styles[`runtimeStepCard_${step.emphasis}`])}>
+              <span className={styles.runtimeStepLabel}>{pickLocalized(locale, step.label)}</span>
+              <span className={styles.runtimeStepNote}>{pickLocalized(locale, step.note)}</span>
+            </article>
+            {index < lane.steps.length - 1 && (
+              <div className={styles.runtimeArrow} aria-hidden="true">
+                <span className={styles.runtimeArrowLine} />
+              </div>
+            )}
+          </React.Fragment>
+        ))}
+      </div>
+    </section>
+  );
 }
 
 export default function Home() {
@@ -151,7 +274,7 @@ export default function Home() {
       }>
       <main>
         <section className={clsx(styles.hero, 'hami-shell-bg')}>
-          <div className="container">
+          <div className={styles.heroContainer}>
             <div className={styles.heroContent}>
               <div>
                 <div className={styles.badges}>
@@ -181,54 +304,97 @@ export default function Home() {
                 </div>
               </div>
               <div className={styles.heroVisual}>
-                  <div className={styles.stackK8sHeader}>
-                    <div className={styles.stackK8sBadge} aria-label={isZh ? '运行于 Kubernetes 之上' : 'Runs on Kubernetes'}>
-                      <img src={kubernetesLogo} alt="" className={styles.stackK8sBadgeLogo} aria-hidden="true" />
-                      <span>{isZh ? '运行于 Kubernetes 之上' : 'Runs on Kubernetes'}</span>
-                    </div>
-                  </div>
-                  <div className={styles.stackWrapper}>
-                    <div className={styles.stackDiagram} role="img" aria-label="HAMi architecture overview">
-                      {architectureLayers.map((layer, index) => (
-                        <React.Fragment key={layer.key}>
-                          <article className={clsx(styles.stackLayer, styles[`stackLayer_${layer.tone}`])}>
-                            <div className={styles.stackLayerHeader}>
-                              <span className={styles.stackLayerIcon} aria-hidden="true">
-                                {layer.iconType === 'hami' ? (
-                                  <span className={clsx(styles.brandGlyph, styles.brandGlyphHami)} />
-                                ) : layer.iconType === 'kubernetes' ? (
-                                  <span className={clsx(styles.brandGlyph, styles.brandGlyphKubernetes)} />
-                                ) : (
-                                  <FontAwesomeIcon icon={layer.icon} />
-                                )}
-                              </span>
-                              <h3 className={styles.stackLayerTitle}>{pickLocalized(i18n.currentLocale, layer.title)}</h3>
-                            </div>
-                            <p className={styles.stackLayerItems}>{pickLocalized(i18n.currentLocale, layer.items)}</p>
-                          </article>
-                          {index < architectureLayers.length - 1 && (
-                            <div className={styles.stackArrowWrap} aria-hidden="true">
-                              <span className={styles.stackArrowLine} />
-                              <span className={styles.stackArrow}>↓</span>
-                            </div>
-                          )}
-                        </React.Fragment>
-                      ))}
-                    </div>
-                    <aside className={styles.stackObsCrossCut} aria-label={isZh ? '可观测性与运维（贯穿各层）' : 'Observability & Ops (cross-cutting)'}>
-                      <div className={styles.stackObsRail} aria-hidden="true">
-                        <span />
-                        <span />
-                        <span />
+                <div className={styles.ecosystemDiagram} role="img" aria-label={isZh ? 'HAMi AI 基础设施生态架构图' : 'HAMi AI infrastructure ecosystem architecture diagram'}>
+                  <div className={styles.ecosystemStack}>
+                    <section className={clsx(styles.ecoLayer, styles.ecoLayerWorkloads)}>
+                      <h3>{pickLocalized(i18n.currentLocale, heroDiagramCopy.workloads)}</h3>
+                      <div className={styles.ecoLogoGrid}>
+                        {heroWorkloadEcosystem.map((item) => (
+                          <div key={item.key} className={styles.ecoLogoChip}>
+                            {item.logo ? (
+                              <img src={useBaseUrl(item.logo)} alt={pickLocalizedOrRaw(i18n.currentLocale, item.label)} />
+                            ) : (
+                              <span>{pickLocalizedOrRaw(i18n.currentLocale, item.label)}</span>
+                            )}
+                          </div>
+                        ))}
                       </div>
-                      <div className={styles.stackObsCard}>
-                        <span className={styles.stackObsIcon} aria-hidden="true">
-                          <FontAwesomeIcon icon={faChartLine} />
-                        </span>
-                        <span className={clsx(styles.stackObsLabel, !isZh && styles.stackObsLabelEn)}>{isZh ? '可观测性与运维' : 'Observability & Ops'}</span>
+                    </section>
+
+                    <section className={styles.ecoCoreRow}>
+                      <div className={styles.ecoCoreStack}>
+                        <section className={clsx(styles.ecoLayer, styles.ecoLayerScheduler)}>
+                          <h3>{pickLocalized(i18n.currentLocale, heroDiagramCopy.schedulerEcosystem)}</h3>
+                          <div className={styles.schedulerEcosystemGrid}>
+                            {heroSchedulerEcosystem.map((item) => (
+                              <div key={item.key} className={styles.ecoLogoChip}>
+                                <img src={useBaseUrl(item.logo)} alt={pickLocalizedOrRaw(i18n.currentLocale, item.label)} />
+                              </div>
+                            ))}
+                          </div>
+                        </section>
+
+                        <section className={styles.hamiCenterLayer}>
+                          <section className={styles.hamiPlatformBlock}>
+                            <h3 className={styles.hamiTitle}>
+                              <img src={hamiLogo} alt={pickLocalized(i18n.currentLocale, heroDiagramCopy.hamiLogoAlt)} />
+                              <span>HAMi</span>
+                            </h3>
+                            <p>{pickLocalized(i18n.currentLocale, heroDiagramCopy.capabilities)}</p>
+                          </section>
+
+                          <section className={styles.gpuSliceRow} aria-label={pickLocalized(i18n.currentLocale, heroDiagramCopy.gpuSlicing)}>
+                            {heroGpuSlices.map((slice, index) => (
+                              <React.Fragment key={slice}>
+                                <div className={styles.gpuSliceChip}>
+                                  <span className={styles.gpuSliceIcon} aria-hidden="true" />
+                                  <span>{slice}</span>
+                                </div>
+                                {index < heroGpuSlices.length - 1 && <span className={styles.gpuSliceArrow} aria-hidden="true">→</span>}
+                              </React.Fragment>
+                            ))}
+                          </section>
+                        </section>
                       </div>
-                    </aside>
+
+                      <aside className={styles.observabilityPanel}>
+                        <h4>{pickLocalized(i18n.currentLocale, heroDiagramCopy.observability)}</h4>
+                        <div className={styles.observabilityMetric}>
+                          <span className={styles.observabilityIcon} aria-hidden="true">
+                            <FontAwesomeIcon icon={faCubesStacked} />
+                          </span>
+                          <div>
+                            <strong>{pickLocalized(i18n.currentLocale, heroDiagramCopy.allocatedDevices)}</strong>
+                            <p>{pickLocalized(i18n.currentLocale, heroDiagramCopy.allocatedDevicesDesc)}</p>
+                          </div>
+                        </div>
+                        <div className={styles.observabilityMetric}>
+                          <span className={styles.observabilityIcon} aria-hidden="true">
+                            <FontAwesomeIcon icon={faChartLine} />
+                          </span>
+                          <div>
+                            <strong>{pickLocalized(i18n.currentLocale, heroDiagramCopy.realTimeUsage)}</strong>
+                            <p>{pickLocalized(i18n.currentLocale, heroDiagramCopy.realTimeUsageDesc)}</p>
+                          </div>
+                        </div>
+                      </aside>
+                    </section>
+
+                    <section className={clsx(styles.ecoLayer, styles.ecoLayerDevices)}>
+                      <h3>{pickLocalized(i18n.currentLocale, heroDiagramCopy.heterogeneousAccelerators)}</h3>
+                      <div className={styles.ecoLogoGrid}>
+                        {heroDeviceEcosystem.map((item) => (
+                          <div key={item.key} className={styles.ecoLogoChip}>
+                            <img src={useBaseUrl(item.logo)} alt={pickLocalizedOrRaw(i18n.currentLocale, item.label)} />
+                          </div>
+                        ))}
+                        <div className={styles.ecoOpenChip}>
+                          {pickLocalized(i18n.currentLocale, heroDiagramCopy.moreAccelerators)}
+                        </div>
+                      </div>
+                    </section>
                   </div>
+                </div>
               </div>
             </div>
           </div>
@@ -262,42 +428,22 @@ export default function Home() {
             <div className={styles.cardGrid}>
               {valueCards.map((card) => {
                 const icon = cardIcons[card.icon] ?? fallbackCardIcon;
+                const isKubernetesCard = card.icon === 'kubernetes';
                 return (
-                  <article key={card.id} className={clsx(styles.card, 'hami-section-card')}>
+                  <article key={card.id} className={styles.card}>
                     <div className={styles.cardTop}>
                       <div className={styles.cardIcon} aria-hidden="true">
-                        <FontAwesomeIcon icon={icon} />
-                      </div>
-                      <h3>{pickLocalized(i18n.currentLocale, card.title)}</h3>
-                    </div>
-                    <p>{pickLocalized(i18n.currentLocale, card.description)}</p>
-                  </article>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-
-        <section ref={addRevealRef} className={clsx(styles.section, styles.sectionAlt, styles.reveal)}>
-          <div className="container">
-            <h2 className={styles.sectionTitle}>{isZh ? '核心能力' : 'Key Features'}</h2>
-            <div className={styles.featureGrid}>
-              {featureCards.map((card) => {
-                const icon = cardIcons[card.icon] ?? fallbackCardIcon;
-                const isK8sNativeCard = card.id === 'k8s-native';
-                return (
-                  <article key={card.id} className={clsx(styles.featureCard, 'hami-section-card')}>
-                    <div className={styles.cardTop}>
-                      <div className={styles.cardIcon} aria-hidden="true">
-                        {isK8sNativeCard ? (
+                        {isKubernetesCard ? (
                           <img src={kubernetesLogo} alt="" className={styles.cardIconImage} />
                         ) : (
                           <FontAwesomeIcon icon={icon} />
                         )}
                       </div>
-                      <h3>{pickLocalized(i18n.currentLocale, card.title)}</h3>
+                      <div className={styles.cardBody}>
+                        <h3>{pickLocalized(i18n.currentLocale, card.title)}</h3>
+                        <p>{pickLocalized(i18n.currentLocale, card.description)}</p>
+                      </div>
                     </div>
-                    <p>{pickLocalized(i18n.currentLocale, card.description)}</p>
                   </article>
                 );
               })}
@@ -308,72 +454,58 @@ export default function Home() {
         <section ref={addRevealRef} className={clsx(styles.section, styles.reveal)}>
           <div className="container">
             <h2 className={styles.sectionTitle}>{isZh ? '架构与工作原理' : 'Architecture & How It Works'}</h2>
-            <div className={clsx(styles.archIntro, 'hami-section-card')}>
-              <p>
-                {isZh
-                  ? 'HAMi 通过「GPU 虚拟化切分 + 异构资源调度」两条核心链路，在 Kubernetes 中完成从请求到分配再到隔离执行。'
-                  : 'HAMi works through two core paths: GPU virtualization/slicing and heterogeneous scheduling from request to isolated execution.'}
-              </p>
-              <Link className={styles.inlineLink} to={useBaseUrl('/docs/core-concepts/architecture')}>
-                {isZh ? '查看完整架构文档 →' : 'View full architecture docs →'}
-              </Link>
-            </div>
-            <article ref={addRevealRef} data-reveal-scale="1" className={clsx(styles.runtimeMechanism, styles.reveal)} role="img" aria-label={isZh ? 'HAMi 运行时机制架构图' : 'HAMi runtime architecture diagram'}>
-              <header className={styles.runtimeHeader}>
-                <h3>{isZh ? 'HAMi 运行时机制' : 'HAMi Runtime Mechanism'}</h3>
-                <div className={styles.runtimeThemeRow}>
-                  {runtimeThemes.map((theme) => (
-                    <div key={theme.key} className={clsx(styles.runtimeTheme, styles[`runtimeTheme_${theme.key}`])}>
-                      <span className={styles.runtimeThemeIcon} aria-hidden="true">
-                        {theme.icon === 'hami' ? <img src={hamiLogo} alt="" /> : <img src={kubernetesLogo} alt="" />}
-                      </span>
-                      <span className={styles.runtimeThemeTitle}>{pickLocalized(i18n.currentLocale, theme.title)}</span>
-                    </div>
-                  ))}
-                </div>
-              </header>
-              <div className={styles.runtimeEntryStage}>
-                <div className={styles.runtimeEntryLabel}>{isZh ? '请求入口 / 运行时接口' : 'Request entry / Runtime interface'}</div>
-                <div className={styles.runtimeEntry}>{isZh ? 'PodSpec + Device Plugin / DRA + CDI 运行时' : 'PodSpec + Device Plugin / DRA + CDI runtime'}</div>
-              </div>
-              <div className={styles.runtimeStageConnector} aria-hidden="true">
-                <span className={styles.runtimeStageConnectorLine} />
-                <span className={styles.runtimeStageConnectorDot}>↓</span>
-              </div>
-              <div className={styles.runtimeGrid}>
-                {runtimeLanes.map((lane) => (
-                  <section key={lane.key} className={clsx(styles.runtimeLane, styles[`runtimeLane_${lane.tone}`])}>
-                    <header className={styles.runtimeLaneHeader}>
-                      <h4>{pickLocalized(i18n.currentLocale, lane.title)}</h4>
-                      <span className={styles.runtimeLaneSummary}>{pickLocalized(i18n.currentLocale, lane.summary)}</span>
-                    </header>
-                    <div className={styles.runtimeLaneFlow}>
-                      {lane.steps.map((step, index) => (
-                        <React.Fragment key={step.key}>
-                          <div className={clsx(styles.runtimeNode, styles[`runtimeNode_${step.emphasis}`])}>{pickLocalized(i18n.currentLocale, step.label)}</div>
-                          {index < lane.steps.length - 1 && (
-                            <div className={styles.runtimeArrow} aria-hidden="true">
-                              <span className={styles.runtimeArrowLine} />
-                              <span className={styles.runtimeArrowDot}>↓</span>
-                            </div>
-                          )}
-                        </React.Fragment>
-                      ))}
+            <p className={styles.sectionLead}>{pickLocalized(i18n.currentLocale, architectureSectionCopy.lead)}</p>
+
+            <div className={styles.architectureOverview}>
+              <article
+                ref={addRevealRef}
+                data-reveal-scale="1"
+                className={clsx(styles.runtimeMechanism, styles.reveal)}
+                aria-label={isZh ? 'HAMi 运行时机制架构图' : 'HAMi runtime architecture diagram'}>
+                <div className={styles.runtimeDiagramFrame} role="img" aria-label={isZh ? 'HAMi 运行时机制架构图' : 'HAMi runtime architecture diagram'}>
+                  <h3 className={styles.runtimeDiagramTitle}>{pickLocalized(i18n.currentLocale, runtimeDiagramCopy.title)}</h3>
+                  <section className={styles.runtimeStage} data-runtime-part="entry">
+                    <span className={styles.runtimeSectionLabel}>{pickLocalized(i18n.currentLocale, runtimeDiagramCopy.entryLabel)}</span>
+                    <div className={styles.runtimeStageCard}>
+                      {pickLocalized(i18n.currentLocale, runtimeDiagramCopy.entryValue)}
                     </div>
                   </section>
-                ))}
-              </div>
-              <div className={styles.runtimeResourceConnector} aria-hidden="true"><span className={styles.runtimeResourceConnectorLine} /></div>
-              <div className={styles.runtimeResources}>
-                <span className={styles.runtimeResourcesLabel}>{isZh ? '资源语义' : 'Resource semantics'}</span>
-                <div className={styles.runtimeResourcesValue}>
-                  <code>nvidia.com/gpu</code>&nbsp;+&nbsp;<code>gpumem</code>/<code>gpucores</code>
+                  <div className={styles.runtimeStageConnector} aria-hidden="true">
+                    <span className={styles.runtimeConnectorLine} />
+                  </div>
+                  <section className={styles.runtimePipelineSection} data-runtime-part="pipeline">
+                    <div className={styles.runtimeLaneGrid}>
+                      <RuntimeLaneCard lane={runtimeLanes[0]} locale={i18n.currentLocale} />
+                      <RuntimeLaneCard lane={runtimeLanes[1]} locale={i18n.currentLocale} />
+                    </div>
+                  </section>
+                  <section className={styles.runtimeResources} data-runtime-part="resources">
+                    <span className={styles.runtimeResourcesLabel}>{isZh ? '资源语义' : 'Resource Semantics'}</span>
+                    <div className={styles.runtimeResourcesValue}>
+                      <code>nvidia.com/gpu</code>
+                      <span className={styles.runtimeResourcesDivider}>+</span>
+                      <code>gpumem</code>
+                      <span className={styles.runtimeResourcesSlash}>/</span>
+                      <code>gpucores</code>
+                    </div>
+                  </section>
                 </div>
-              </div>
-            </article>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section ref={addRevealRef} className={clsx(styles.section, styles.reveal)}>
+          <div className="container">
+            <h2 className={styles.sectionTitle}>{isZh ? '使用 HAMi 前后对比' : 'Before and After Using HAMi'}</h2>
+            <p className={styles.sectionLead}>
+              {isZh
+                ? '相同工作负载下，对比传统整卡独占与 HAMi GPU 共享后的资源利用率变化。'
+                : 'Compare traditional whole-GPU allocation with HAMi GPU sharing under the same workloads.'}
+            </p>
 
             <div ref={addRevealRef} data-reveal-scale="1" className={clsx(styles.reveal, styles.beforeAfterWrapper)}>
-              <BeforeAfterComparison isZh={isZh} />
+              <BeforeAfterComparison isZh={isZh} showHeader={false} />
             </div>
           </div>
         </section>
@@ -414,7 +546,7 @@ export default function Home() {
             <div className={styles.supportersWrap}>
               <AdoptersList />
             </div>
-            <article className={clsx(styles.adoptersCta, 'hami-section-card')}>
+            <article className={styles.adoptersCta}>
               <h3 className={styles.adoptersCtaTitle}>
                 {isZh ? '加入采用者列表' : 'Join the adopters list'}
               </h3>

@@ -48,7 +48,7 @@ module.exports = {
         "description": "Installation methods, prerequisites, upgrades and integrations."
       },
       "items": [
-        "installation/prequisities",
+        "installation/prerequisites",
         "installation/online-installation",
         "installation/offline-installation",
         "installation/upgrade",

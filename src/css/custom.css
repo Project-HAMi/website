@@ -308,6 +308,75 @@ pre {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
+.theme-doc-markdown img,
+.theme-blog-markdown img,
+article.markdown img {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 4px;
+  cursor: zoom-in;
+}
+
+body.hami-lightbox-open {
+  overflow: hidden;
+}
+
+.hami-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(6, 10, 16, 0.88);
+  display: grid;
+  grid-template-rows: 1fr auto;
+  align-items: center;
+  justify-items: center;
+  padding: clamp(18px, 3vw, 40px);
+  gap: 12px;
+}
+
+.hami-lightbox[hidden] {
+  display: none !important;
+  pointer-events: none;
+}
+
+.hami-lightbox__image {
+  max-width: min(96vw, 1600px);
+  max-height: min(86vh, 1100px);
+  width: auto;
+  height: auto;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.45);
+  cursor: zoom-out;
+}
+
+.hami-lightbox__caption {
+  margin: 0;
+  max-width: min(90vw, 980px);
+  text-align: center;
+  color: rgba(233, 240, 248, 0.95);
+  font-size: 0.94rem;
+  line-height: 1.45;
+}
+
+.hami-lightbox__close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(255, 255, 255, 0.26);
+  border-radius: 999px;
+  background: rgba(16, 24, 36, 0.62);
+  color: #ffffff;
+  font-size: 1.45rem;
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 html[data-theme='light'] .hami-pill {
   border-color: rgba(182, 196, 210, 0.95);
   background: rgba(255, 255, 255, 0.92);

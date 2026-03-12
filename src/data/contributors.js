@@ -1,7 +1,7 @@
 const contributorsData = [
   {
-    logo: "/img/contributors/dynamia-logo.svg",
-    logoZh: "/img/contributors/dynamia-logo-zh.svg",
+    logo: "/img/contributors/dynamia.svg",
+    logoZh: "/img/contributors/dynamia-zh.svg",
     alt: "Dynamia",
     href: "https://www.dynamia.ai",
   },

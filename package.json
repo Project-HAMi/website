@@ -9,7 +9,8 @@
   "scripts": {
     "docusaurus": "docusaurus",
     "start": "docusaurus start",
-    "build": "NODE_OPTIONS=\"--no-deprecation\" docusaurus build",
+    "build": "NODE_OPTIONS=\"--max-old-space-size=8192 --no-deprecation\" docusaurus build",
+    "build:fast": "NODE_OPTIONS=\"--max-old-space-size=8192 --no-deprecation\" docusaurus build --locale en",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",
@@ -50,6 +51,9 @@
     ]
   },
   "devDependencies": {
-    "gh-pages": "^6.1.1"
+    "@docusaurus/faster": "^3.9.2",
+    "@swc/core": "^1.15.18",
+    "gh-pages": "^6.1.1",
+    "swc-loader": "^0.2.7"
   }
 }

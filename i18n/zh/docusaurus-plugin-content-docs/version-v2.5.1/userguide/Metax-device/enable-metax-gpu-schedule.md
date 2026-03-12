@@ -7,7 +7,7 @@ translated: true
 
 当在单个服务器上配置多个 GPU 时，GPU 卡根据它们是否连接到同一个 PCIe 交换机或 MetaXLink 而存在近远关系。这在服务器上的所有卡之间形成了一个拓扑，如下图所示：
 
-![img](../../resources/metax_topo.jpg)
+![Metax GPU 拓扑图，显示 PCIe Switch 和 MetaXLink 连接](../../resources/metax_topo.jpg)
 
 用户作业请求一定数量的 metax-tech.com/gpu 资源，Kubernetes 将 Pod 调度到适当的节点。gpu-device 进一步处理在资源节点上分配剩余资源的逻辑，遵循以下标准：
 
@@ -18,11 +18,11 @@ translated: true
 
 2. 使用 `node-scheduler-policy=spread` 时，尽可能将 Metax 资源分配在同一个 Metaxlink 或 Paiswich 下，如下图所示：
 
-   ![img](../../resources/metax_spread.jpg)
+   ![Metax spread 调度策略图，展示资源分配](../../resources/metax_spread.jpg)
 
 3. 使用 `node-scheduler-policy=binpack` 时，分配 GPU 资源，以尽量减少对 MetaxXLink 拓扑的破坏，如下图所示：
 
-   ![img](../../resources/metax_binpack.jpg)
+   ![Metax binpack 调度策略图，展示拓扑感知分配](../../resources/metax_binpack.jpg)
 
 ## 重要说明
 
@@ -32,14 +32,14 @@ translated: true
 
 ## 前提条件
 
-* Metax GPU 扩展版本 >= 0.8.0
-* Kubernetes 版本 >= 1.23
+- Metax GPU 扩展版本 >= 0.8.0
+- Kubernetes 版本 >= 1.23
 
 ## 启用拓扑感知调度
 
-* 在 metax 节点上部署 Metax GPU 扩展（请咨询您的设备提供商以获取其软件包和文档）
+- 在 metax 节点上部署 Metax GPU 扩展（请咨询您的设备提供商以获取其软件包和文档）
 
-* 根据 README.md 部署 HAMi
+- 根据 README.md 部署 HAMi
 
 ## 运行 Metax 作业
 
@@ -62,4 +62,4 @@ spec:
           metax-tech.com/gpu: 1 # 请求 1 个 vGPU
 ```
 
-> **注意2：** 您可以在 examples 文件夹中找到更多示例。
+> **注意 2：** 您可以在 examples 文件夹中找到更多示例。

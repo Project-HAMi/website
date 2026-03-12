@@ -1,5 +1,5 @@
 ---
-title: Prequisities
+title: Prerequisites
 ---
 
 ## Prerequisites

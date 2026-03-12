@@ -1,449 +1,207 @@
 .shell {
-  padding: 18px;
-  border: 1px solid var(--hami-diagram-border);
-  border-radius: 20px;
-  background: var(--hami-diagram-bg);
-  box-shadow: var(--hami-diagram-shadow);
+  display: grid;
+  gap: 26px;
+}
+
+.shellCompact {
+  gap: 20px;
 }
 
 .header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 14px;
-}
-
-.header h3 {
-  margin: 0 0 6px;
-  color: var(--hami-diagram-heading);
-}
-
-.header p {
-  max-width: 780px;
-  margin: 0;
-  font-size: 0.82rem;
-  line-height: 1.5;
-  color: var(--hami-diagram-muted);
-}
-
-.replayButton {
-  flex: 0 0 auto;
-  min-height: 36px;
-  padding: 0 12px;
-  border: 1px solid rgba(57, 198, 244, 0.28);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--hami-diagram-heading);
-  font: inherit;
-  font-size: 0.76rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition:
-    background var(--hami-motion-fast),
-    border-color var(--hami-motion-fast),
-    transform var(--hami-motion-fast);
-}
-
-.replayButton:hover,
-.replayButton:focus-visible {
-  border-color: rgba(118, 185, 0, 0.44);
-  background: rgba(118, 185, 0, 0.1);
-  transform: translateY(-1px);
-}
-
-.sharedInput {
   display: grid;
-  gap: 10px;
-  margin-bottom: 14px;
-}
-
-.sharedMeta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.sharedLabel,
-.panelEyebrow {
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--hami-diagram-label-color);
-}
-
-.stepLabel {
-  padding: 4px 8px;
-  border-radius: 999px;
-  border: 1px solid var(--hami-diagram-chip-border);
-  background: var(--hami-diagram-chip-bg);
-  font-size: 0.68rem;
-  font-weight: 700;
-  color: var(--hami-diagram-heading);
-  white-space: nowrap;
-}
-
-.requestRail {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.requestCard {
-  display: grid;
-  gap: 4px;
-  padding: 10px 12px;
-  border-radius: 14px;
-  border: 1px solid var(--hami-diagram-card-border);
-  background: var(--hami-diagram-card-bg);
-  opacity: 0.72;
-  transform: translateY(0);
-  transition:
-    opacity var(--hami-motion-fast),
-    transform var(--hami-motion-fast),
-    border-color var(--hami-motion-fast),
-    box-shadow var(--hami-motion-fast);
-}
-
-.requestCardPlaced {
-  opacity: 1;
-}
-
-.requestCardActive {
-  transform: translateY(-2px);
-  box-shadow: 0 14px 28px rgba(4, 20, 32, 0.18);
-}
-
-.requestCard_alpha {
-  border-color: rgba(57, 198, 244, 0.38);
-  background: linear-gradient(135deg, rgba(57, 198, 244, 0.2), rgba(57, 198, 244, 0.08));
-}
-
-.requestCard_beta {
-  border-color: rgba(118, 185, 0, 0.38);
-  background: linear-gradient(135deg, rgba(118, 185, 0, 0.2), rgba(118, 185, 0, 0.08));
-}
-
-.requestCard_gamma {
-  border-color: rgba(19, 122, 211, 0.38);
-  background: linear-gradient(135deg, rgba(19, 122, 211, 0.2), rgba(19, 122, 211, 0.08));
-}
-
-.requestName {
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: var(--hami-diagram-heading);
-}
-
-.requestSemantics {
-  font-size: 0.68rem;
-  font-weight: 700;
-  color: var(--hami-diagram-body);
-}
-
-.requestUsage {
-  font-size: 0.64rem;
-  color: var(--hami-diagram-muted);
-}
-
-.branchRail {
-  display: grid;
-  justify-items: center;
-  gap: 0;
-}
-
-.branchStem {
-  width: 1px;
-  height: 12px;
-  background: linear-gradient(180deg, rgba(57, 198, 244, 0.14), rgba(57, 198, 244, 0.2));
-  transition: background var(--hami-motion-fast);
-}
-
-.branchStemActive {
-  background: linear-gradient(180deg, rgba(57, 198, 244, 0.4), rgba(57, 198, 244, 0.72));
-}
-
-.branchArms {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-  width: min(100%, 720px);
-}
-
-.branchArm {
-  height: 10px;
-  border-top: 1px solid var(--hami-diagram-connector);
-  opacity: 0.4;
-  transition: opacity var(--hami-motion-fast), border-color var(--hami-motion-fast);
-}
-
-.branchArmLeft {
-  border-left: 1px solid var(--hami-diagram-connector);
-  border-top-left-radius: 999px;
-}
-
-.branchArmRight {
-  border-right: 1px solid var(--hami-diagram-connector);
-  border-top-right-radius: 999px;
-}
-
-.branchArmActive {
-  opacity: 1;
-  border-color: rgba(57, 198, 244, 0.72);
-}
-
-.panelGrid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.panel {
-  display: grid;
-  gap: 12px;
-  min-width: 0;
-  padding: 14px;
-  border-radius: 18px;
-  border: 1px solid var(--hami-diagram-card-border);
-}
-
-.panelBefore {
-  background: var(--hami-diagram-panel-before-bg);
-  border-color: var(--hami-diagram-panel-before-border);
-}
-
-.panelAfter {
-  background: var(--hami-diagram-panel-after-bg);
-  border-color: var(--hami-diagram-panel-after-border);
-}
-
-.panelHeader {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.panelHeaderText {
-  min-width: 0;
-}
-
-.panelTitleRow {
-  display: flex;
-  align-items: center;
+  grid-template-columns: 1fr;
   gap: 8px;
-  margin: 4px 0 6px;
+  align-items: start;
 }
 
-.panelTitleRow h4 {
-  margin: 0;
-  font-size: 1rem;
+.headerText h3 {
+  margin: 0 0 8px;
   color: var(--hami-diagram-heading);
 }
 
-.panelBadge {
-  padding: 4px 8px;
-  border-radius: 999px;
-  border: 1px solid var(--hami-diagram-chip-border);
-  background: var(--hami-diagram-chip-bg);
-  font-size: 0.64rem;
-  font-weight: 700;
-  color: var(--hami-diagram-heading);
-  white-space: nowrap;
-}
-
-.panelHeaderText p {
+.headerText p {
   margin: 0;
   font-size: 0.74rem;
   line-height: 1.45;
+  letter-spacing: 0.01em;
   color: var(--hami-diagram-muted);
 }
 
-.policySwitch {
+.inputSection {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 6px;
-  min-width: 290px;
+  gap: 12px;
 }
 
-.policyButton {
-  display: grid;
-  gap: 3px;
-  padding: 8px 9px;
-  border: 1px solid rgba(118, 185, 0, 0.2);
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--hami-diagram-heading);
-  text-align: left;
-  cursor: pointer;
-  transition:
-    background var(--hami-motion-fast),
-    border-color var(--hami-motion-fast),
-    transform var(--hami-motion-fast);
-}
-
-.policyButton span {
-  font-size: 0.72rem;
-  font-weight: 700;
-}
-
-.policyButton small {
-  font-size: 0.58rem;
-  color: var(--hami-diagram-muted);
-}
-
-.policyButton:hover,
-.policyButton:focus-visible {
-  transform: translateY(-1px);
-  border-color: rgba(118, 185, 0, 0.36);
-}
-
-.policyButtonActive {
-  border-color: rgba(118, 185, 0, 0.62);
-  background: linear-gradient(135deg, rgba(118, 185, 0, 0.18), rgba(57, 198, 244, 0.08));
-}
-
-.flowBox {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 10px 12px;
+.inputHeader {
+  display: flex;
   align-items: center;
-  padding: 10px 12px;
-  border-radius: 14px;
-  border: 1px solid var(--hami-diagram-card-border);
-  background: rgba(255, 255, 255, 0.04);
 }
 
-.flowRequest {
-  align-self: start;
-  min-width: 118px;
-  padding: 7px 10px;
-  border-radius: 999px;
-  border: 1px solid var(--hami-diagram-chip-border);
-  background: var(--hami-diagram-chip-bg);
-  font-size: 0.68rem;
+.inputLabel,
+.compareEyebrow,
+.metric span {
+  font-size: 0.7rem;
   font-weight: 700;
-  color: var(--hami-diagram-heading);
-  text-align: center;
-  transition:
-    transform var(--hami-motion-fast),
-    border-color var(--hami-motion-fast),
-    box-shadow var(--hami-motion-fast);
-}
-
-.flowRequestActive {
-  transform: translateY(-1px);
-  box-shadow: 0 10px 20px rgba(4, 20, 32, 0.16);
-}
-
-.flowRequest_alpha {
-  border-color: rgba(57, 198, 244, 0.42);
-  background: rgba(57, 198, 244, 0.16);
-}
-
-.flowRequest_beta {
-  border-color: rgba(118, 185, 0, 0.42);
-  background: rgba(118, 185, 0, 0.16);
-}
-
-.flowRequest_gamma {
-  border-color: rgba(19, 122, 211, 0.42);
-  background: rgba(19, 122, 211, 0.16);
-}
-
-.flowText {
-  margin: 0;
-  font-size: 0.72rem;
-  line-height: 1.45;
-  color: var(--hami-diagram-body);
-}
-
-.flowLine {
-  grid-column: 1 / -1;
-  position: relative;
-  height: 8px;
-  overflow: hidden;
-}
-
-.flowLine::before {
-  content: "";
-  position: absolute;
-  inset: 3px 0 auto;
-  height: 1px;
-  background: rgba(57, 198, 244, 0.14);
-}
-
-.flowLine span {
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 24%;
-  border-radius: 999px;
-  background: linear-gradient(90deg, rgba(57, 198, 244, 0), rgba(57, 198, 244, 0.88), rgba(118, 185, 0, 0.72));
-  opacity: 0;
-}
-
-.flowLineActive span {
-  animation: flowTraverse 900ms ease both;
-}
-
-.statGrid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-}
-
-.statCard {
-  display: grid;
-  gap: 5px;
-  padding: 10px;
-  border-radius: 12px;
-  border: 1px solid var(--hami-diagram-card-border);
-  background: rgba(255, 255, 255, 0.04);
-}
-
-.statCard span {
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
   color: var(--hami-diagram-label-color);
 }
 
-.statCard strong {
-  font-size: 0.78rem;
-  line-height: 1.35;
+.workloadRow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.workloadCard {
+  display: grid;
+  gap: 4px;
+  padding-top: 10px;
+  border-top: 1px solid var(--hami-diagram-card-border);
+}
+
+.workloadCard strong {
+  font-size: 0.84rem;
   color: var(--hami-diagram-heading);
+}
+
+.workloadCard span {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--hami-diagram-body);
+}
+
+.workloadCard small {
+  font-size: 0.68rem;
+  color: var(--hami-diagram-muted);
+}
+
+.compareGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.compareTransform {
+  display: grid;
+  grid-template-columns: auto minmax(88px, auto) auto;
+  align-items: center;
+  justify-items: center;
+  align-self: stretch;
+  align-content: center;
+  gap: 12px;
+  min-width: 164px;
+}
+
+.compareTransformCore {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+}
+
+.compareTransformLogo {
+  width: 44px;
+  height: 44px;
+  display: block;
+}
+
+.compareTransformCaption {
+  max-width: 120px;
+  font-size: 0.64rem;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: 0.03em;
+  text-align: center;
+  color: var(--hami-diagram-muted);
+}
+
+.compareTransformArrow {
+  position: relative;
+  display: block;
+  width: 42px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(57, 198, 244, 0.1), rgba(57, 198, 244, 0.3));
+}
+
+.compareTransformArrow::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  border-right: 1px solid rgba(57, 198, 244, 0.28);
+  border-bottom: 1px solid rgba(57, 198, 244, 0.28);
+}
+
+.compareTransformArrowLeft::after {
+  right: -1px;
+  transform: translateY(-50%) rotate(-45deg);
+}
+
+.compareTransformArrowRight::after {
+  right: -1px;
+  transform: translateY(-50%) rotate(-45deg);
+}
+
+.compareColumn {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  height: 100%;
+  padding: 14px 16px;
+  border: 1px solid rgba(57, 198, 244, 0.12);
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.015));
+  box-shadow: 0 8px 18px rgba(16, 52, 79, 0.06);
+}
+
+.compareColumn_before {
+  border-color: rgba(124, 140, 160, 0.24);
+  background: linear-gradient(180deg, rgba(112, 124, 142, 0.08), rgba(255, 255, 255, 0.015));
+}
+
+.compareColumn_after {
+  border-color: rgba(118, 185, 0, 0.28);
+  background: linear-gradient(180deg, rgba(118, 185, 0, 0.12), rgba(57, 198, 244, 0.04));
+  box-shadow: 0 12px 28px rgba(39, 92, 13, 0.1);
+}
+
+.compareHeader {
+  display: grid;
+  gap: 4px;
+}
+
+.compareHeader h4 {
+  margin: 0;
+  font-size: 1.02rem;
+  line-height: 1.3;
+  color: var(--hami-diagram-heading);
+}
+
+.compareCaption {
+  margin: 0;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: var(--hami-diagram-muted);
 }
 
 .gpuRack {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
+  gap: 12px;
 }
 
 .gpuCard {
   display: grid;
-  gap: 8px;
-  padding: 9px;
-  border-radius: 13px;
-  border: 1px solid var(--hami-diagram-card-border);
-  background: var(--hami-diagram-card-bg);
-  transition:
-    border-color var(--hami-motion-fast),
-    transform var(--hami-motion-fast),
-    box-shadow var(--hami-motion-fast);
+  gap: 10px;
+  min-width: 0;
+  padding-top: 8px;
+  border-top: 1px solid rgba(57, 198, 244, 0.12);
 }
 
-.gpuCardTargeted {
-  transform: translateY(-1px);
-  border-color: rgba(57, 198, 244, 0.46);
-  box-shadow: 0 14px 28px rgba(4, 20, 32, 0.18);
-}
-
-.gpuCardFragmented {
-  border-color: rgba(124, 140, 160, 0.36);
+.gpuCardShared {
+  border-top-color: rgba(118, 185, 0, 0.24);
 }
 
 .gpuHeader {
@@ -453,273 +211,237 @@
   gap: 8px;
 }
 
-.gpuTitleRow {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 5px;
-}
-
 .gpuHeader h5 {
   margin: 0;
-  font-size: 0.74rem;
+  font-size: 0.8rem;
+  line-height: 1.3;
   color: var(--hami-diagram-heading);
 }
 
-.gpuMode {
+.gpuHeader span {
   display: block;
-  margin-top: 3px;
-  font-size: 0.61rem;
+  margin-top: 2px;
+  font-size: 0.62rem;
   color: var(--hami-diagram-muted);
 }
 
-.gpuUtilization {
-  font-size: 0.82rem;
+.gpuHeader strong {
+  font-size: 0.76rem;
   color: var(--hami-diagram-heading);
 }
 
-.topologyBadge {
-  padding: 2px 6px;
+.gpuBar {
+  position: relative;
+  height: 18px;
+  overflow: hidden;
   border-radius: 999px;
-  border: 1px solid rgba(57, 198, 244, 0.28);
-  background: rgba(57, 198, 244, 0.08);
-  font-size: 0.54rem;
-  font-weight: 700;
-  color: var(--hami-diagram-label-color);
-}
-
-.gpuGrid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 3px;
-}
-
-.gpuCell {
-  aspect-ratio: 1;
-  border-radius: 5px;
-  border: 1px solid var(--hami-diagram-card-border);
-  background: var(--hami-diagram-empty-cell-bg);
-}
-
-.gpuCellVisible {
-  animation: cellEnter 520ms ease both;
-  animation-delay: var(--cell-delay);
-}
-
-.gpuCellFree {
-  border-style: dashed;
-  border-color: rgba(120, 143, 166, 0.22);
-  background: var(--hami-diagram-empty-cell-bg);
-}
-
-.gpuCell_alpha {
-  border-color: rgba(57, 198, 244, 0.32);
-  background: linear-gradient(135deg, rgba(57, 198, 244, 0.92), rgba(57, 198, 244, 0.62));
-}
-
-.gpuCell_beta {
-  border-color: rgba(118, 185, 0, 0.34);
-  background: linear-gradient(135deg, rgba(118, 185, 0, 0.88), rgba(164, 217, 86, 0.7));
-}
-
-.gpuCell_gamma {
-  border-color: rgba(19, 122, 211, 0.34);
-  background: linear-gradient(135deg, rgba(19, 122, 211, 0.88), rgba(107, 181, 240, 0.72));
-}
-
-.gpuCell_fragmented {
-  border-style: dashed;
-  border-color: rgba(153, 171, 191, 0.4);
+  border: 1px solid rgba(57, 198, 244, 0.12);
   background:
-    linear-gradient(135deg, rgba(153, 171, 191, 0.18), rgba(153, 171, 191, 0.04)),
-    repeating-linear-gradient(135deg, rgba(153, 171, 191, 0.18) 0 4px, rgba(153, 171, 191, 0.06) 4px 8px);
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.03) 0 18px,
+      rgba(255, 255, 255, 0.08) 18px 19px
+    );
 }
 
-.gpuCellFragmented {
-  animation:
-    cellEnter 520ms ease both,
-    strandedPulse 2.2s ease-in-out infinite;
-  animation-delay: var(--cell-delay), 520ms;
+.gpuBarFill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, rgba(57, 198, 244, 0.88), rgba(118, 185, 0, 0.82));
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
 }
 
-.gpuCellTargeted {
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5), 0 0 0 1px rgba(57, 198, 244, 0.38);
-}
-
-.gpuTags {
+.sliceGroup {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
+  gap: 6px;
+  min-height: 28px;
 }
 
-.gpuTag,
-.gpuTagIdle {
-  padding: 3px 7px;
+.sliceGroupSharedPods {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.sliceGroupSharedPods .sliceTag {
+  min-width: 0;
+  padding-left: 0;
+  padding-right: 0;
+  text-align: center;
+}
+
+.sliceTag,
+.idleTag {
+  padding: 4px 8px;
   border-radius: 999px;
-  font-size: 0.6rem;
+  font-size: 0.62rem;
   font-weight: 700;
   white-space: nowrap;
 }
 
-.gpuTag {
-  border: 1px solid transparent;
-}
-
-.gpuTag_alpha {
-  border-color: rgba(57, 198, 244, 0.32);
-  background: rgba(57, 198, 244, 0.12);
+.sliceTag_alpha {
   color: var(--hami-diagram-heading);
+  background: rgba(57, 198, 244, 0.14);
+  border: 1px solid rgba(57, 198, 244, 0.28);
 }
 
-.gpuTag_beta {
-  border-color: rgba(118, 185, 0, 0.32);
-  background: rgba(118, 185, 0, 0.12);
+.sliceTag_beta {
   color: var(--hami-diagram-heading);
+  background: rgba(118, 185, 0, 0.14);
+  border: 1px solid rgba(118, 185, 0, 0.28);
 }
 
-.gpuTag_gamma {
-  border-color: rgba(19, 122, 211, 0.32);
-  background: rgba(19, 122, 211, 0.12);
+.sliceTag_gamma {
   color: var(--hami-diagram-heading);
+  background: rgba(19, 122, 211, 0.14);
+  border: 1px solid rgba(19, 122, 211, 0.26);
 }
 
-.gpuTagIdle {
-  border: 1px dashed rgba(120, 143, 166, 0.28);
+.idleTag {
   color: var(--hami-diagram-muted);
+  border: 1px dashed rgba(57, 198, 244, 0.18);
 }
 
-@keyframes cellEnter {
-  0% {
-    opacity: 0;
-    transform: scale(0.86);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
+.metricRow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  padding: 2px 0 2px;
 }
 
-@keyframes strandedPulse {
-  0%, 100% {
-    box-shadow: 0 0 0 0 rgba(153, 171, 191, 0.12);
-  }
-  50% {
-    box-shadow: 0 0 0 1px rgba(153, 171, 191, 0.28);
-  }
+.metric {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  grid-template-rows: minmax(2.1em, auto) auto;
 }
 
-@keyframes flowTraverse {
-  0% {
-    opacity: 0;
-    transform: translateX(-20%);
-  }
-  20% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-    transform: translateX(380%);
-  }
+.metric span {
+  display: block;
+  line-height: 1.35;
+}
+
+.metric strong {
+  align-self: start;
+  font-size: 1.14rem;
+  color: var(--hami-diagram-heading);
+}
+
+.metric_after strong {
+  color: #bce8f8;
+}
+
+:global(html[data-theme='light']) .headerText h3,
+:global(html[data-theme='light']) .compareHeader h4,
+:global(html[data-theme='light']) .workloadCard strong,
+:global(html[data-theme='light']) .gpuHeader h5,
+:global(html[data-theme='light']) .metric strong {
+  color: #183b59;
+}
+
+:global(html[data-theme='light']) .compareColumn {
+  background: linear-gradient(180deg, rgba(252, 254, 255, 0.96), rgba(246, 250, 253, 0.94));
+  border-color: rgba(57, 198, 244, 0.14);
+  box-shadow: 0 8px 18px rgba(16, 52, 79, 0.05);
+}
+
+:global(html[data-theme='light']) .compareColumn_before {
+  border-color: rgba(124, 140, 160, 0.18);
+  background: linear-gradient(180deg, rgba(244, 247, 250, 0.98), rgba(240, 244, 248, 0.94));
+}
+
+:global(html[data-theme='light']) .compareColumn_after {
+  border-color: rgba(118, 185, 0, 0.18);
+  background: linear-gradient(180deg, rgba(247, 252, 244, 0.98), rgba(241, 249, 245, 0.94));
+}
+
+:global(html[data-theme='light']) .compareTransform span {
+  color: #183b59;
+}
+
+:global(html[data-theme='light']) .compareTransformCaption {
+  color: #5c7894;
+}
+
+:global(html[data-theme='light']) .workloadCard span {
+  color: #224766;
+}
+
+:global(html[data-theme='light']) .headerText p,
+:global(html[data-theme='light']) .compareCaption,
+:global(html[data-theme='light']) .workloadCard small,
+:global(html[data-theme='light']) .gpuHeader span,
+:global(html[data-theme='light']) .idleTag {
+  color: #5c7894;
+}
+
+:global(html[data-theme='light']) .gpuBar {
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(227, 239, 247, 0.72) 0 24px,
+      rgba(195, 216, 230, 0.62) 24px 25px
+    );
+  border-color: rgba(57, 198, 244, 0.16);
+}
+
+:global(html[data-theme='light']) .metric_after strong {
+  color: #1575cb;
 }
 
 @media (max-width: 996px) {
-  .shell {
-    padding: 12px;
-    border-radius: 16px;
-  }
-
   .header,
-  .sharedMeta,
-  .panelHeader {
-    display: grid;
-  }
-
-  .requestRail,
-  .panelGrid {
+  .compareGrid,
+  .workloadRow,
+  .gpuRack,
+  .metricRow {
     grid-template-columns: 1fr;
   }
 
-  .policySwitch {
-    min-width: 0;
+  .header {
+    gap: 4px;
   }
 
-  .gpuRack {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .compareGrid {
+    gap: 24px;
+  }
+
+  .compareTransform {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 8px;
+  }
+
+  .compareTransformCore {
+    justify-items: center;
+  }
+
+  .compareTransformArrow {
+    display: none;
+  }
+
+  .compareTransformCaption {
+    max-width: none;
+    text-align: center;
+  }
+
+  .compareColumn {
+    padding: 16px;
+    border-radius: 16px;
   }
 }
 
 @media (max-width: 480px) {
   .shell {
-    padding: 8px;
-    border-radius: 12px;
+    gap: 20px;
   }
 
-  .header h3 {
-    font-size: 0.92rem;
+  .workloadRow,
+  .gpuRack,
+  .metricRow {
+    gap: 10px;
   }
 
-  .header p,
-  .panelHeaderText p,
-  .flowText {
-    font-size: 0.68rem;
-  }
-
-  .replayButton,
-  .stepLabel,
-  .panelBadge,
-  .flowRequest,
-  .gpuTag,
-  .gpuTagIdle {
-    font-size: 0.58rem;
-  }
-
-  .requestCard,
-  .panel,
-  .gpuCard,
-  .statCard,
-  .flowBox {
-    border-radius: 10px;
-  }
-
-  .requestCard {
-    padding: 8px;
-  }
-
-  .panel {
-    padding: 8px;
-    gap: 8px;
-  }
-
-  .policySwitch {
-    grid-template-columns: 1fr;
-  }
-
-  .statGrid,
-  .gpuRack {
-    grid-template-columns: 1fr;
-  }
-
-  .gpuGrid {
-    gap: 2px;
-  }
-
-  .gpuCell {
-    border-radius: 3px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .replayButton,
-  .policyButton,
-  .requestCard,
-  .gpuCard,
-  .flowRequest {
-    transition: none !important;
-  }
-
-  .flowLineActive span,
-  .gpuCellVisible,
-  .gpuCellFragmented {
-    animation: none !important;
-  }
 }

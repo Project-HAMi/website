@@ -11,6 +11,15 @@ module.exports = {
   baseUrl: "/",
   onBrokenLinks: "throw",
   trailingSlash: false,
+
+  // Performance optimization: Enable fast build mode and v4 future flags
+  future: {
+    v4: true,
+    experimental_faster: {
+      swcJsLoader: true,
+      ssgWorkerThreads: true,
+    },
+  },
   customFields: {
     defaultOgImage: "/img/hami-graph-color.png",
   },
@@ -172,6 +181,10 @@ module.exports = {
         showLastUpdateAuthor: false,
         showLastUpdateTime: true,
         includeCurrentVersion: true,
+        // Performance optimization: Disable number prefix parser
+        numberPrefixParser: false,
+        // Performance optimization: Disable breadcrumbs for performance
+        breadcrumbs: false,
       },
     ],
     [
@@ -205,6 +218,9 @@ module.exports = {
         searchContextByPaths: ["docs", "zh/docs"],
         useAllContextsWithNoSearchContext: true,
         explicitSearchResultPath: true,
+        // Performance optimization: Limit search result snippets
+        searchResultLimits: 8,
+        searchResultContextMaxLength: 50,
       },
     ],
   ],

@@ -7,7 +7,7 @@ title: Allocate device core usage
 Allocate a part of device core resources by specify resource `mthreads.com/sgpu-core`.
 Optional, each unit of `mthreads.com/smlu-core` equals to 1/16 device cores.
 
-```
+```yaml
       resources:
         limits:
           mthreads.com/vgpu: 1 # requesting 1 GPU

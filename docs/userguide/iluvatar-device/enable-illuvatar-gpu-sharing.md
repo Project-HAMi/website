@@ -4,7 +4,7 @@ title: Enable Illuvatar GPU Sharing
 
 ## Introduction
 
-**We now support iluvatar.ai/gpu(i.e MR-V100、BI-V150、BI-V100) by implementing most device-sharing features as nvidia-GPU**, including:
+**We now support iluvatar.ai/gpu(i.e MR-V100, BI-V150, BI-V100) by implementing most device-sharing features as nvidia-GPU**, including:
 
 ***GPU sharing***: Each task can allocate a portion of GPU instead of a whole GPU card, thus GPU can be shared among multiple tasks.
 
@@ -28,11 +28,13 @@ title: Enable Illuvatar GPU Sharing
 > **NOTICE:** *Install only gpu-manager, don't install gpu-admission package.*
 
 * set the devices.iluvatar.enabled=true when install hami
-```
+
+```bash
 helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag={your kubernetes version} --set devices.iluvatar.enabled=true
 ```
 
-**Note:** The currently supported GPU models and resource names are defined in (https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/templates/scheduler/device-configmap.yaml):
+**Note:** The currently supported GPU models and resource names are defined in ([https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/templates/scheduler/device-configmap.yaml](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/templates/scheduler/device-configmap.yaml)):
+
 ```yaml
     iluvatars:
     - chipName: MR-V100
@@ -63,15 +65,15 @@ HAMi divides each Iluvatar GPU into 100 units for resource allocation. When you 
 
 ### Memory Allocation
 
-- Each unit of `iluvatar.ai/<card-type>.vMem` represents 256MB of device memory
-- If you don't specify a memory request, the system will default to using 100% of the available memory
-- Memory allocation is enforced with hard limits to ensure tasks don't exceed their allocated memory
+* Each unit of `iluvatar.ai/<card-type>.vMem` represents 256MB of device memory
+* If you don't specify a memory request, the system will default to using 100% of the available memory
+* Memory allocation is enforced with hard limits to ensure tasks don't exceed their allocated memory
 
 ### Core Allocation
 
-- Each unit of `iluvatar.ai/<card-type>.vCore` represents 1% of the available compute cores
-- Core allocation is enforced with hard limits to ensure tasks don't exceed their allocated cores
-- When requesting multiple GPUs, the system will automatically set the core resources based on the number of GPUs requested
+* Each unit of `iluvatar.ai/<card-type>.vCore` represents 1% of the available compute cores
+* Core allocation is enforced with hard limits to ensure tasks don't exceed their allocated cores
+* When requesting multiple GPUs, the system will automatically set the core resources based on the number of GPUs requested
 
 ## Running Iluvatar jobs
 
@@ -149,6 +151,7 @@ Look for annotations containing device information in the node status.
 ## Notes
 
 1. You need to set the following prestart command in order for the device-share to work properly
+
 ```sh
       set -ex
       echo "export LD_LIBRARY_PATH=/usr/local/corex/lib64:$LD_LIBRARY_PATH">> /root/.bashrc
@@ -157,8 +160,8 @@ Look for annotations containing device information in the node status.
       source /root/.bashrc
 ```
 
-2. Virtualization takes effect only for containers that apply for one GPU(i.e iluvatar.ai/vgpu=1 ). When requesting multiple GPUs, the system will automatically set the core resources based on the number of GPUs requested.
+1. Virtualization takes effect only for containers that apply for one GPU(i.e iluvatar.ai/vgpu=1 ). When requesting multiple GPUs, the system will automatically set the core resources based on the number of GPUs requested.
 
-3. The `iluvatar.ai/<card-type>.vMem` resource is only effective when `iluvatar.ai/<card-type>-vgpu=1`.
+2. The `iluvatar.ai/<card-type>.vMem` resource is only effective when `iluvatar.ai/<card-type>-vgpu=1`.
 
-4. Multi-device requests (`iluvatar.ai/<card-type>-vgpu= > 1`) do not support vGPU mode.
+3. Multi-device requests (`iluvatar.ai/<card-type>-vgpu= > 1`) do not support vGPU mode.

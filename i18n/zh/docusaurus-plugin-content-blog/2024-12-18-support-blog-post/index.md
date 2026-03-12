@@ -14,7 +14,7 @@ HAMi 提供了一个统一的复用接口，以满足不同设备类型的需求
 
 ## 为什么选择 HAMi？
 
-### Kubernetes 本机 API 兼容性
+### Kubernetes 原生 API 兼容性
 
 HAMi 的突出特点之一是其与 Kubernetes 原生 API 的兼容性。这意味着用户可以在
 不修改现有配置的情况下升级到 HAMi，从而实现无缝过渡，同时保持 Kubernetes 的默认行为。

@@ -28,7 +28,7 @@
       "type": "category",
       "label": "Installation",
       "items": [
-        "installation/prequisities",
+        "installation/prerequisites",
         "installation/online-installation",
         "installation/offline-installation",
         "installation/upgrade",

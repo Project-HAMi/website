@@ -4,8 +4,6 @@ linktitle: 指定核心
 translated: true
 ---
 
-## 分配设备核心给容器
-
 通过指定资源 `hygon.com/dcucores` 来分配设备核心资源的百分比。
 可选项，每个 `hygon.com/dcucores` 单位等于设备核心的 1%。
 

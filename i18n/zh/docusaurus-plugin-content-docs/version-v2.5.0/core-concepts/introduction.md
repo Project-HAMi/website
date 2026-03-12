@@ -38,4 +38,4 @@ HAMi 是一个[云原生计算基金会](https://cncf.io/)的沙箱项目和[景
 以下是一些推荐的下一步操作：
 
 - 了解 HAMi 的[架构](./architecture.md)。
-- 开始[安装 HAMi](../installation/prequisities.md)。
+- 开始[安装 HAMi](../installation/prerequisites.md)。

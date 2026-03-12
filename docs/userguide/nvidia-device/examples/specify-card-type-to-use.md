@@ -24,4 +24,4 @@ spec:
           nvidia.com/gpu: 2 # requesting 2 vGPUs
 ```
 
-> **NOTICE:** * You can assign this task to multiple GPU types, use comma to separate,In this example, we want to run this job on A100 or V100*
+> **NOTICE:** *You can assign this task to multiple GPU types, use comma to separate,In this example, we want to run this job on A100 or V100*

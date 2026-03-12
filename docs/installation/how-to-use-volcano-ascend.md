@@ -1,8 +1,7 @@
 ---
-title: Volcano Ascend vNPU
+linktitle: Volcano Ascend vNPU
+title: User Guide for Ascend Devices in Volcano
 ---
-
-## User Guide for Ascend Devices in Volcano
 
 ## Introduction
 
@@ -29,13 +28,13 @@ helm repo add volcano-sh https://volcano-sh.github.io/helm-charts
 helm install volcano volcano-sh/volcano -n volcano-system --create-namespace
 ```
 
-Additional installation methods can be found [here](https://github.com/volcano-sh/volcano?tab=readme-ov-file#quick-start-guide).
+Additional installation methods can be found in [the Volcano Quick Start Guide](https://github.com/volcano-sh/volcano?tab=readme-ov-file#quick-start-guide).
 
 ### Label the Node with ascend=on
 
 ```shell
 kubectl label node {ascend-node} ascend=on
-``` 
+```
 
 ### Deploy `hami-scheduler-device` config map
 
@@ -109,7 +108,7 @@ spec:
 The supported Ascend chips and their `ResourceNames` are shown in the following table:
 
 | ChipName | ResourceName | ResourceMemoryName |
-|-------|-------|-------|
+| ------- | ------- | ------- |
 | 910A | huawei.com/Ascend910A | huawei.com/Ascend910A-memory |
 | 910B2 | huawei.com/Ascend910B2 | huawei.com/Ascend910B2-memory |
 | 910B3 | huawei.com/Ascend910B3 | huawei.com/Ascend910B3-memory |

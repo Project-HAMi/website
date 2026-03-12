@@ -31,4 +31,5 @@ spec:
       limits:
         iluvatar.ai/BI-V150-vgpu: 2
 ```
+
 > **Note:** *When applying for exclusive use of a GPU, `iluvatar.ai/<card-type>-vgpu=1`, you need to set the values ​​of `iluvatar.ai/<card-type>.vCore` and `iluvatar.ai/<card-type>.vMem` to the maximum number of GPU resources. `iluvatar.ai/<card-type>-vgpu>1` no longer supports the vGPU function, so you don't need to fill in the core and memory values*
