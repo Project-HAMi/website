@@ -15,4 +15,5 @@ The table below lists the devices supported by HAMi:
 | GPU | Metax    | MXC500 | ✅ | ✅ | ❌ |
 | GCU | Enflame  | S60    | ✅ | ✅ | ❌ |
 | XPU | Kunlunxin | P800  | ✅ | ✅ | ❌ | 
+| GPU | Vastai | VA16  | ✅ | ✅ | ❌ | 
 | DPU | Teco | Checking | In progress | In progress | ❌ |
