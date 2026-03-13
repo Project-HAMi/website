@@ -1,447 +1,591 @@
 .shell {
   display: grid;
-  gap: 26px;
+  gap: 16px;
 }
 
-.shellCompact {
-  gap: 20px;
-}
-
-.header {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 8px;
-  align-items: start;
-}
-
-.headerText h3 {
-  margin: 0 0 8px;
+.header h3 {
+  margin: 0 0 6px;
   color: var(--hami-diagram-heading);
 }
 
-.headerText p {
+.header p {
   margin: 0;
-  font-size: 0.74rem;
-  line-height: 1.45;
-  letter-spacing: 0.01em;
+  font-size: 0.8rem;
   color: var(--hami-diagram-muted);
 }
 
-.inputSection {
+.layout {
   display: grid;
-  gap: 12px;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.32fr);
+  gap: 16px;
+  align-items: start;
 }
 
-.inputHeader {
-  display: flex;
+.diagramCard {
+  margin: 0;
+  border: 1px solid rgba(56, 121, 173, 0.2);
+  border-radius: 16px;
+  padding: 14px;
+  min-height: 392px;
+  background: linear-gradient(180deg, rgba(248, 252, 255, 0.05), rgba(241, 248, 253, 0.03));
+  overflow: hidden;
+}
+
+.storyRow {
+  display: grid;
+  grid-template-columns: minmax(140px, 0.24fr) 56px minmax(0, 0.38fr) 56px minmax(0, 0.38fr);
+  gap: 10px;
   align-items: center;
+  min-height: 324px;
+  min-width: 0;
 }
 
-.inputLabel,
-.compareEyebrow,
-.metric span {
-  font-size: 0.7rem;
+.stepRequests {
+  display: grid;
+  gap: 10px;
+  align-content: center;
+  min-width: 0;
+}
+
+.stepRequests h4 {
+  margin: 0;
+  text-align: center;
+  font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.07em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--hami-diagram-label-color);
 }
 
-.workloadRow {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-}
-
-.workloadCard {
-  display: grid;
-  gap: 4px;
-  padding-top: 10px;
-  border-top: 1px solid var(--hami-diagram-card-border);
-}
-
-.workloadCard strong {
-  font-size: 0.84rem;
-  color: var(--hami-diagram-heading);
-}
-
-.workloadCard span {
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: var(--hami-diagram-body);
-}
-
-.workloadCard small {
-  font-size: 0.68rem;
-  color: var(--hami-diagram-muted);
-}
-
-.compareGrid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-  gap: 18px;
-  align-items: start;
-}
-
-.compareTransform {
-  display: grid;
-  grid-template-columns: auto minmax(88px, auto) auto;
-  align-items: center;
-  justify-items: center;
-  align-self: stretch;
-  align-content: center;
-  gap: 12px;
-  min-width: 164px;
-}
-
-.compareTransformCore {
-  display: grid;
-  justify-items: center;
-  gap: 6px;
-}
-
-.compareTransformLogo {
-  width: 44px;
-  height: 44px;
-  display: block;
-}
-
-.compareTransformCaption {
-  max-width: 120px;
-  font-size: 0.64rem;
-  font-weight: 600;
-  line-height: 1.35;
-  letter-spacing: 0.03em;
-  text-align: center;
-  color: var(--hami-diagram-muted);
-}
-
-.compareTransformArrow {
-  position: relative;
-  display: block;
-  width: 42px;
-  height: 1px;
-  background: linear-gradient(90deg, rgba(57, 198, 244, 0.1), rgba(57, 198, 244, 0.3));
-}
-
-.compareTransformArrow::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  width: 7px;
-  height: 7px;
-  border-right: 1px solid rgba(57, 198, 244, 0.28);
-  border-bottom: 1px solid rgba(57, 198, 244, 0.28);
-}
-
-.compareTransformArrowLeft::after {
-  right: -1px;
-  transform: translateY(-50%) rotate(-45deg);
-}
-
-.compareTransformArrowRight::after {
-  right: -1px;
-  transform: translateY(-50%) rotate(-45deg);
-}
-
-.compareColumn {
-  display: grid;
-  gap: 14px;
-  min-width: 0;
-  height: 100%;
-  padding: 14px 16px;
-  border: 1px solid rgba(57, 198, 244, 0.12);
-  border-radius: 16px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.015));
-  box-shadow: 0 8px 18px rgba(16, 52, 79, 0.06);
-}
-
-.compareColumn_before {
-  border-color: rgba(124, 140, 160, 0.24);
-  background: linear-gradient(180deg, rgba(112, 124, 142, 0.08), rgba(255, 255, 255, 0.015));
-}
-
-.compareColumn_after {
-  border-color: rgba(118, 185, 0, 0.28);
-  background: linear-gradient(180deg, rgba(118, 185, 0, 0.12), rgba(57, 198, 244, 0.04));
-  box-shadow: 0 12px 28px rgba(39, 92, 13, 0.1);
-}
-
-.compareHeader {
-  display: grid;
-  gap: 4px;
-}
-
-.compareHeader h4 {
-  margin: 0;
-  font-size: 1.02rem;
-  line-height: 1.3;
-  color: var(--hami-diagram-heading);
-}
-
-.compareCaption {
-  margin: 0;
-  font-size: 0.72rem;
-  line-height: 1.45;
-  color: var(--hami-diagram-muted);
-}
-
-.gpuRack {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.gpuCard {
+.requestList {
   display: grid;
   gap: 10px;
-  min-width: 0;
-  padding-top: 8px;
-  border-top: 1px solid rgba(57, 198, 244, 0.12);
 }
 
-.gpuCardShared {
-  border-top-color: rgba(118, 185, 0, 0.24);
+.requestRowItem {
+  border: 1px solid rgba(56, 121, 173, 0.2);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  min-height: 114px;
+  padding: 8px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
 }
 
-.gpuHeader {
+.requestStrips {
   display: flex;
-  align-items: flex-start;
+  gap: 4px;
+  align-items: flex-end;
+  height: 76px;
+}
+
+.userIcon {
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.62rem;
+}
+
+.userIcon_a {
+  color: #b45309;
+  background: rgba(217, 119, 6, 0.16);
+}
+
+.userIcon_b {
+  color: #1f4f84;
+  background: rgba(85, 154, 208, 0.16);
+}
+
+.requestText {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  text-align: center;
+}
+
+.requestText strong {
+  font-size: 0.66rem;
+  color: var(--hami-diagram-heading);
+}
+
+.requestText span {
+  font-size: 0.58rem;
+  color: var(--hami-diagram-muted);
+  line-height: 1.25;
+}
+
+.requestStrip {
+  width: 26px;
+  height: 76px;
+  border: 1px solid rgba(56, 121, 173, 0.28);
+  border-radius: 4px;
+  overflow: hidden;
+  background: rgba(220, 231, 239, 0.28);
+  position: relative;
+}
+
+.requestStripFill {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.requestStripFill_a {
+  background: rgba(217, 119, 6, 0.75);
+}
+
+.requestStripFill_b {
+  background: rgba(85, 154, 208, 0.78);
+}
+
+.flowLink {
+  display: grid;
+  justify-items: center;
+  gap: 5px;
+  align-self: center;
+}
+
+.flowLink span {
+  font-size: 0.66rem;
+  font-weight: 700;
+  color: var(--hami-diagram-heading);
+  text-align: center;
+  line-height: 1.2;
+}
+
+.flowLink i {
+  display: block;
+  width: 40px;
+  height: 1px;
+  background: rgba(56, 121, 173, 0.5);
+  position: relative;
+}
+
+.flowLink i::after {
+  content: '';
+  position: absolute;
+  right: -1px;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-right: 1px solid rgba(56, 121, 173, 0.74);
+  border-bottom: 1px solid rgba(56, 121, 173, 0.74);
+  transform: translateY(-50%) rotate(-45deg);
+}
+
+.allocPanel {
+  display: grid;
+  gap: 6px;
+  align-content: center;
+  min-width: 0;
+}
+
+.allocPanelWithout {
+  --panel-border: rgba(85, 115, 142, 0.5);
+  --meter-bg: rgba(214, 226, 235, 0.52);
+}
+
+.allocPanelWith {
+  --panel-border: rgba(103, 163, 38, 0.54);
+  --meter-bg: rgba(228, 241, 225, 0.54);
+}
+
+.allocHead {
+  display: flex;
+  align-items: center;
   justify-content: space-between;
+  gap: 10px;
+}
+
+.allocHeadTitle {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.allocHeadLogo {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.allocHead h4 {
+  margin: 0;
+  font-size: 0.74rem;
+  color: var(--hami-diagram-heading);
+}
+
+.allocHead span {
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: var(--hami-diagram-label-color);
+}
+
+.rackGrid {
+  border: 1px solid var(--panel-border);
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  min-width: 0;
+}
+
+.gpuCell {
+  border-right: 1px solid var(--panel-border);
+  display: grid;
+  grid-template-rows: 1fr auto;
+}
+
+.gpuCell:last-child {
+  border-right: 0;
+}
+
+.gpuCellAvailableOnly {
+  background: rgba(221, 240, 211, 0.36);
+}
+
+.gpuMeter {
+  position: relative;
+  height: 92px;
+  display: flex;
+  flex-direction: column-reverse;
+  background: var(--meter-bg);
+  overflow: hidden;
+}
+
+.wastedBlock,
+.workloadABlock,
+.workloadBBlock,
+.availableBlock {
+  display: block;
+}
+
+.wastedBlock {
+  background:
+    repeating-linear-gradient(
+      135deg,
+      rgba(208, 216, 224, 0.78) 0 7px,
+      rgba(195, 205, 214, 0.9) 7px 14px
+    );
+}
+
+.workloadABlock {
+  background: rgba(217, 119, 6, 0.72);
+  border-top: 1px solid rgba(255, 255, 255, 0.32);
+}
+
+.workloadBBlock {
+  background: rgba(85, 154, 208, 0.78);
+  border-top: 1px solid rgba(255, 255, 255, 0.32);
+}
+
+.availableBlock {
+  background: rgba(214, 239, 202, 0.9);
+  border-top: 1px solid rgba(255, 255, 255, 0.34);
+}
+
+.availableText {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-style: normal;
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #5f9800;
+}
+
+.gpuLabel {
+  text-align: center;
+  font-size: 0.56rem;
+  padding: 4px 0;
+  color: var(--hami-diagram-heading);
+  border-top: 1px solid var(--panel-border);
+}
+
+.allocFoot {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.allocFoot span {
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: var(--hami-diagram-muted);
+}
+
+.legendRow {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: var(--hami-diagram-muted);
+}
+
+.legendSwatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  border: 1px solid rgba(56, 121, 173, 0.26);
+}
+
+.legendSwatchA { background: rgba(217, 119, 6, 0.75); }
+.legendSwatchB { background: rgba(85, 154, 208, 0.82); }
+.legendSwatchWaste {
+  background:
+    repeating-linear-gradient(
+      135deg,
+      rgba(208, 216, 224, 0.82) 0 3px,
+      rgba(195, 205, 214, 0.92) 3px 6px
+    );
+}
+.legendSwatchAvail { background: rgba(214, 239, 202, 0.92); }
+
+.summary {
+  display: grid;
+  align-content: start;
   gap: 8px;
 }
 
-.gpuHeader h5 {
+.summaryLead {
   margin: 0;
-  font-size: 0.8rem;
-  line-height: 1.3;
+  font-size: 1.06rem;
+  line-height: 1.22;
+  font-weight: 800;
   color: var(--hami-diagram-heading);
 }
 
-.gpuHeader span {
-  display: block;
-  margin-top: 2px;
-  font-size: 0.62rem;
-  color: var(--hami-diagram-muted);
-}
-
-.gpuHeader strong {
-  font-size: 0.76rem;
-  color: var(--hami-diagram-heading);
-}
-
-.gpuBar {
-  position: relative;
-  height: 18px;
-  overflow: hidden;
-  border-radius: 999px;
-  border: 1px solid rgba(57, 198, 244, 0.12);
-  background:
-    repeating-linear-gradient(
-      90deg,
-      rgba(255, 255, 255, 0.03) 0 18px,
-      rgba(255, 255, 255, 0.08) 18px 19px
-    );
-}
-
-.gpuBarFill {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  background: linear-gradient(90deg, rgba(57, 198, 244, 0.88), rgba(118, 185, 0, 0.82));
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
-}
-
-.sliceGroup {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  min-height: 28px;
-}
-
-.sliceGroupSharedPods {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 6px;
-}
-
-.sliceGroupSharedPods .sliceTag {
-  min-width: 0;
-  padding-left: 0;
-  padding-right: 0;
-  text-align: center;
-}
-
-.sliceTag,
-.idleTag {
-  padding: 4px 8px;
-  border-radius: 999px;
-  font-size: 0.62rem;
+.summaryLine {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.25;
   font-weight: 700;
-  white-space: nowrap;
-}
-
-.sliceTag_alpha {
   color: var(--hami-diagram-heading);
-  background: rgba(57, 198, 244, 0.14);
-  border: 1px solid rgba(57, 198, 244, 0.28);
 }
 
-.sliceTag_beta {
-  color: var(--hami-diagram-heading);
-  background: rgba(118, 185, 0, 0.14);
-  border: 1px solid rgba(118, 185, 0, 0.28);
-}
-
-.sliceTag_gamma {
-  color: var(--hami-diagram-heading);
-  background: rgba(19, 122, 211, 0.14);
-  border: 1px solid rgba(19, 122, 211, 0.26);
-}
-
-.idleTag {
-  color: var(--hami-diagram-muted);
-  border: 1px dashed rgba(57, 198, 244, 0.18);
-}
-
-.metricRow {
+.metricsRow {
+  margin-top: 16px;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  padding: 2px 0 2px;
+  gap: 14px;
 }
 
-.metric {
+.metricBadge {
   display: grid;
-  align-content: start;
-  gap: 4px;
-  grid-template-rows: minmax(2.1em, auto) auto;
+  gap: 2px;
+  padding-left: 10px;
+  border-left: 3px solid var(--ifm-color-primary, #76b900);
 }
 
-.metric span {
-  display: block;
-  line-height: 1.35;
+.metricBadge span {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--hami-diagram-label-color);
 }
 
-.metric strong {
-  align-self: start;
-  font-size: 1.14rem;
+.metricBadge strong {
+  font-size: 1.2rem;
+  font-weight: 800;
   color: var(--hami-diagram-heading);
+  line-height: 1.1;
 }
 
-.metric_after strong {
-  color: #bce8f8;
+:global(html[data-theme='light']) .diagramCard {
+  border-color: rgba(53, 109, 157, 0.22);
+  background: linear-gradient(180deg, #f8fbfe, #f3f8fc);
 }
 
-:global(html[data-theme='light']) .headerText h3,
-:global(html[data-theme='light']) .compareHeader h4,
-:global(html[data-theme='light']) .workloadCard strong,
-:global(html[data-theme='light']) .gpuHeader h5,
-:global(html[data-theme='light']) .metric strong {
-  color: #183b59;
+:global(html[data-theme='light']) .requestRowItem,
+:global(html[data-theme='light']) .metricBadge {
+  border-color: rgba(53, 109, 157, 0.22);
+  background: rgba(255, 255, 255, 0.74);
 }
 
-:global(html[data-theme='light']) .compareColumn {
-  background: linear-gradient(180deg, rgba(252, 254, 255, 0.96), rgba(246, 250, 253, 0.94));
-  border-color: rgba(57, 198, 244, 0.14);
-  box-shadow: 0 8px 18px rgba(16, 52, 79, 0.05);
+:global(html[data-theme='light']) .requestText strong,
+:global(html[data-theme='light']) .allocHead h4,
+:global(html[data-theme='light']) .flowLink span,
+:global(html[data-theme='light']) .gpuLabel,
+:global(html[data-theme='light']) .summaryLead,
+:global(html[data-theme='light']) .summaryLine,
+:global(html[data-theme='light']) .metricBadge strong {
+  color: #173b5a;
 }
 
-:global(html[data-theme='light']) .compareColumn_before {
-  border-color: rgba(124, 140, 160, 0.18);
-  background: linear-gradient(180deg, rgba(244, 247, 250, 0.98), rgba(240, 244, 248, 0.94));
+:global(html[data-theme='light']) .requestText span,
+:global(html[data-theme='light']) .allocFoot span,
+:global(html[data-theme='light']) .legendItem {
+  color: #5a7590;
 }
 
-:global(html[data-theme='light']) .compareColumn_after {
-  border-color: rgba(118, 185, 0, 0.18);
-  background: linear-gradient(180deg, rgba(247, 252, 244, 0.98), rgba(241, 249, 245, 0.94));
-}
-
-:global(html[data-theme='light']) .compareTransform span {
-  color: #183b59;
-}
-
-:global(html[data-theme='light']) .compareTransformCaption {
-  color: #5c7894;
-}
-
-:global(html[data-theme='light']) .workloadCard span {
-  color: #224766;
-}
-
-:global(html[data-theme='light']) .headerText p,
-:global(html[data-theme='light']) .compareCaption,
-:global(html[data-theme='light']) .workloadCard small,
-:global(html[data-theme='light']) .gpuHeader span,
-:global(html[data-theme='light']) .idleTag {
-  color: #5c7894;
-}
-
-:global(html[data-theme='light']) .gpuBar {
-  background:
-    repeating-linear-gradient(
-      90deg,
-      rgba(227, 239, 247, 0.72) 0 24px,
-      rgba(195, 216, 230, 0.62) 24px 25px
-    );
-  border-color: rgba(57, 198, 244, 0.16);
-}
-
-:global(html[data-theme='light']) .metric_after strong {
-  color: #1575cb;
-}
-
-@media (max-width: 996px) {
-  .header,
-  .compareGrid,
-  .workloadRow,
-  .gpuRack,
-  .metricRow {
+@media (max-width: 1320px) {
+  .layout {
     grid-template-columns: 1fr;
   }
 
-  .header {
-    gap: 4px;
-  }
-
-  .compareGrid {
-    gap: 24px;
-  }
-
-  .compareTransform {
-    grid-template-columns: 1fr;
-    justify-items: center;
-    gap: 8px;
-  }
-
-  .compareTransformCore {
-    justify-items: center;
-  }
-
-  .compareTransformArrow {
-    display: none;
-  }
-
-  .compareTransformCaption {
-    max-width: none;
-    text-align: center;
-  }
-
-  .compareColumn {
-    padding: 16px;
-    border-radius: 16px;
-  }
-}
-
-@media (max-width: 480px) {
-  .shell {
-    gap: 20px;
-  }
-
-  .workloadRow,
-  .gpuRack,
-  .metricRow {
+  .summary {
     gap: 10px;
   }
 
+  .metricsRow {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .diagramCard {
+    min-height: 0;
+    padding: 12px;
+  }
+
+  .storyRow {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    min-height: 0;
+    gap: 10px 12px;
+  }
+
+  .stepRequests {
+    grid-column: 1 / -1;
+    gap: 8px;
+  }
+
+  .stepRequests h4 {
+    text-align: left;
+  }
+
+  .requestList {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .flowLink {
+    display: none;
+  }
+
+  .requestRowItem {
+    min-height: 84px;
+    padding: 6px;
+    grid-template-columns: auto minmax(0, 1fr) 20px;
+    gap: 6px;
+  }
+
+  .requestStrip {
+    width: 20px;
+    height: 58px;
+  }
+
+  .allocPanel {
+    gap: 5px;
+  }
+
+  .allocHead h4 {
+    font-size: 0.7rem;
+  }
+
+  .allocHead span {
+    font-size: 0.54rem;
+  }
+
+  .gpuMeter {
+    height: 64px;
+  }
+
+  .allocFoot span {
+    font-size: 0.54rem;
+  }
+
+  .metricsRow {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .summaryLead {
+    font-size: 0.94rem;
+    line-height: 1.3;
+  }
+
+  .summaryLine {
+    font-size: 0.78rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .diagramCard {
+    padding: 10px;
+  }
+
+  .storyRow {
+    grid-template-columns: 1fr;
+    gap: 9px;
+  }
+
+  .stepRequests {
+    grid-column: auto;
+  }
+
+  .requestList {
+    grid-template-columns: 1fr;
+    gap: 7px;
+  }
+
+  .requestRowItem {
+    min-height: 80px;
+    grid-template-columns: auto minmax(0, 1fr) 80px;
+    gap: 6px;
+    padding: 6px;
+  }
+
+  .requestStrip {
+    width: 40px;
+    height: 64px;
+  }
+
+  .requestText strong {
+    font-size: 0.62rem;
+  }
+
+  .requestText span,
+  .allocHead h4,
+  .allocHead span,
+  .allocFoot span,
+  .gpuLabel,
+  .legendItem,
+  .metricBadge span,
+  .metricBadge strong {
+    font-size: 0.58rem;
+  }
+
+  .gpuMeter {
+    height: 52px;
+  }
+
+  .legendRow {
+    margin-top: 8px;
+    gap: 6px 10px;
+  }
+
+  .summaryLead {
+    font-size: 0.9rem;
+  }
+
+  .summaryLine {
+    font-size: 0.76rem;
+  }
+
+  .metricsRow {
+    grid-template-columns: 1fr;
+  }
 }

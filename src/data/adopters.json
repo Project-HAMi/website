@@ -7,16 +7,16 @@
     "website": "https://www.dynamia.ai"
   },
   {
-    "name": "4paradigm",
-    "nameZh": "第四范式",
-    "logo": "/img/contributors/4paradigm.svg",
-    "website": "https://www.4paradigm.com"
-  },
-  {
     "name": "DaoCloud",
     "nameZh": "道客网络",
     "logo": "/img/contributors/daocloud.svg",
     "website": "https://www.daocloud.io"
+  },
+  {
+    "name": "4paradigm",
+    "nameZh": "第四范式",
+    "logo": "/img/contributors/4paradigm.svg",
+    "website": "https://www.4paradigm.com"
   },
   {
     "name": "Baidu AI Cloud",

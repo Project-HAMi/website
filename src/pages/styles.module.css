@@ -24,15 +24,23 @@
   align-items: center;
 }
 
+.heroLogo {
+  display: block;
+  height: 40px;
+  width: auto;
+  margin-bottom: var(--hami-space-24);
+  opacity: 0.95;
+}
+
 .badges {
   display: flex;
   flex-wrap: wrap;
   gap: var(--hami-space-8);
-  margin-bottom: var(--hami-space-16);
+  margin-bottom: var(--hami-space-24);
 }
 
 .heroTitle {
-  margin: 0 0 var(--hami-space-12);
+  margin: 0 0 var(--hami-space-24);
   font-size: clamp(2.2rem, 3vw, 2.9rem);
   line-height: 1.08;
   color: #f5f7fa;
@@ -40,10 +48,33 @@
 }
 
 .heroSubtitle {
-  margin: 0;
-  max-width: 760px;
-  font-size: 1.12rem;
-  color: rgba(232, 238, 245, 0.9);
+  margin: 0 0 var(--hami-space-16);
+  max-width: 560px;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: rgba(232, 238, 245, 0.85);
+}
+
+.heroFeatureChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 var(--hami-space-24);
+}
+
+.heroFeatureChip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(12px);
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: rgba(232, 238, 245, 0.76);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
 }
 
 .hero :global(.hami-pill) {
@@ -63,9 +94,10 @@
 .hero :global(.button.button--outline),
 .hero :global(a.button.button--secondary),
 .hero :global(a.button.button--outline) {
-  border-color: rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.08);
-  color: #f5f7fa;
+  border-color: rgba(244, 249, 255, 0.78);
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(6, 12, 18, 0.18);
 }
 
 .hero :global(.button--secondary:hover),
@@ -74,9 +106,10 @@
 .hero :global(.button.button--outline:hover),
 .hero :global(a.button.button--secondary:hover),
 .hero :global(a.button.button--outline:hover) {
-  border-color: rgba(118, 185, 0, 0.72);
-  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.3);
   color: #ffffff;
+  box-shadow: 0 8px 18px rgba(6, 12, 18, 0.24);
 }
 
 .heroActions {
@@ -211,18 +244,22 @@
 }
 
 .hamiPlatformBlock {
-  border: 1px solid #bcd9f3;
+  border: 1px solid #76b900;
   border-radius: 12px;
-  padding: 8px 10px 7px;
-  background: linear-gradient(180deg, #f0f7ff, #e8f3ff);
-  box-shadow: 0 4px 12px rgba(39, 93, 146, 0.08);
-  min-height: 56px;
+  padding: 8px 10px;
+  background: #f4fbe6;
+  box-shadow: 0 4px 12px rgba(88, 138, 0, 0.12);
+  min-height: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .hamiPlatformBlock h3 {
   margin: 0;
-  color: #1d4f83;
+  color: #335900;
   font-size: 0.9rem;
+  font-weight: 800;
   text-align: center;
 }
 
@@ -235,17 +272,24 @@
 }
 
 .hamiTitle img {
-  width: 18px;
-  height: 18px;
+  height: 32px;
+  width: auto;
   object-fit: contain;
 }
 
+.hamiLogoLight { display: block; }
+.hamiLogoDark  { display: none;  }
+
+:global(html[data-theme='dark']) .hamiLogoLight { display: none;  }
+:global(html[data-theme='dark']) .hamiLogoDark  { display: block; }
+
 .hamiPlatformBlock p {
   margin: 5px 0 0;
-  color: #3d668e;
-  font-size: 0.58rem;
+  color: #1f2937;
+  font-size: 0.64rem;
+  line-height: 1.35;
   text-align: center;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .gpuSliceRow {
@@ -253,6 +297,9 @@
   align-items: center;
   justify-content: center;
   gap: 5px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+  width: 100%;
 }
 
 .gpuSliceChip {
@@ -379,6 +426,23 @@
   color: #4e6e90;
 }
 
+.observabilityLogoRow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px;
+  align-items: stretch;
+}
+
+.observabilityLogoRow .ecoLogoChip {
+  min-width: 0;
+}
+
+.observabilityLogoRow .ecoLogoChip img {
+  height: 18px;
+  width: auto;
+  max-width: 100%;
+}
+
 :global(html[data-theme='dark']) .heroVisual {
   border-color: rgba(74, 96, 120, 0.55);
   background: rgba(14, 21, 31, 0.9);
@@ -410,17 +474,17 @@
 }
 
 :global(html[data-theme='dark']) .hamiPlatformBlock {
-  border-color: rgba(91, 138, 184, 0.68);
-  background: linear-gradient(180deg, rgba(27, 50, 74, 0.88), rgba(22, 42, 63, 0.9));
-  box-shadow: 0 8px 20px rgba(3, 10, 20, 0.28);
+  border-color: rgba(140, 219, 35, 0.88);
+  background: rgba(35, 54, 12, 0.9);
+  box-shadow: 0 8px 18px rgba(3, 10, 20, 0.26);
 }
 
 :global(html[data-theme='dark']) .hamiPlatformBlock h3 {
-  color: #d6e8fb;
+  color: #e3f9ba;
 }
 
 :global(html[data-theme='dark']) .hamiPlatformBlock p {
-  color: #a9c8e9;
+  color: #f8fafc;
 }
 
 :global(html[data-theme='dark']) .gpuSliceChip {
@@ -474,6 +538,8 @@
 :global(html[data-theme='dark']) .observabilityMetric p {
   color: #a9c8e9;
 }
+
+
 
 @media (min-width: 1400px) {
   .heroContent {
@@ -1061,7 +1127,7 @@
 }
 
 .beforeAfterWrapper {
-  margin-top: 0;
+  margin-top: var(--hami-space-32);
 }
 
 .beforeAfterVisual {
@@ -1501,6 +1567,178 @@
   margin-top: var(--hami-space-24);
 }
 
+.communityMetricsHeader {
+  margin-top: 20px;
+  margin-bottom: 16px;
+}
+
+.communityMetricsTitle {
+  margin: 0;
+  font-size: 1rem;
+  color: #1f3b09;
+}
+
+.communityMetricsDesc {
+  margin: 8px 0 0;
+  font-size: 0.9rem;
+  color: #4b5d36;
+  line-height: 1.5;
+}
+
+.communityMetricsRow {
+  margin-top: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(180px, 1fr));
+  gap: 18px;
+}
+
+.communityMetricCard {
+  padding: 20px 20px 18px;
+  border-radius: 14px;
+  border: 1px solid rgba(118, 185, 0, 0.42);
+  background: linear-gradient(180deg, #ffffff 0%, #f9fdec 100%);
+  display: grid;
+  gap: 16px;
+  align-content: start;
+  box-shadow: 0 4px 14px rgba(88, 138, 0, 0.1);
+  transition:
+    border-color var(--hami-motion-fast),
+    box-shadow var(--hami-motion-fast),
+    transform var(--hami-motion-fast);
+}
+
+.communityMetricCard:hover {
+  border-color: rgba(118, 185, 0, 0.72);
+  box-shadow: 0 10px 24px rgba(88, 138, 0, 0.16);
+  transform: translateY(-1px);
+}
+
+.communityMetricCard strong {
+  font-size: 0.92rem;
+  color: #2f4a08;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+}
+
+.communityMetricHead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.communityMetricIcon {
+  width: 12px;
+  height: 12px;
+  color: #5b8f00;
+  font-size: 0.46rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 12px;
+  margin-right: 2px;
+  opacity: 0.75;
+}
+
+.metricSourceHint {
+  margin-left: auto;
+  position: relative;
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(118, 185, 0, 0.45);
+  background: rgba(118, 185, 0, 0.1);
+  color: #5b8f00;
+  font-size: 0.4rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  opacity: 0.72;
+}
+
+.metricSourceHint::after {
+  content: attr(data-source);
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 8px);
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(118, 185, 0, 0.38);
+  background: #ffffff;
+  color: #2f3a0c;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
+  font-size: 0.68rem;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(3px);
+  transition:
+    opacity var(--hami-motion-fast),
+    transform var(--hami-motion-fast);
+  z-index: 4;
+}
+
+.metricSourceHint:hover::after,
+.metricSourceHint:focus-visible::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.communityMetricCard span {
+  font-size: 1.72rem;
+  line-height: 1.02;
+  font-weight: 800;
+  color: #152900;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  margin-top: 2px;
+}
+
+.communityMetricActions {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+
+.communityMetricActions :global(.button) {
+  min-height: 40px;
+  padding: 0 18px;
+  border-radius: 10px;
+  font-weight: 700;
+  box-shadow: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.communityMetricActions :global(.button--primary) {
+  background: #76b900;
+  border-color: #76b900;
+  color: #102000;
+}
+
+.communityMetricActions :global(.button--primary:hover) {
+  background: #6aa800;
+  border-color: #6aa800;
+  color: #0c1a00;
+}
+
+.communityMetricActions :global(.button--outline) {
+  background: #ffffff;
+  border-color: rgba(118, 185, 0, 0.5);
+  color: #2f4a08;
+}
+
+.communityMetricActions :global(.button--outline:hover) {
+  background: #f7fce9;
+  border-color: #76b900;
+  color: #223707;
+}
+
 .adoptersCta {
   margin-top: var(--hami-space-32);
   padding: var(--hami-space-32) var(--hami-space-24);
@@ -1541,15 +1779,97 @@
     linear-gradient(135deg, rgba(16, 24, 39, 0.98), rgba(11, 18, 32, 0.96));
 }
 
+:global(html[data-theme='dark']) .communityMetricCard {
+  border-color: rgba(140, 219, 35, 0.58);
+  background: linear-gradient(180deg, rgba(20, 31, 9, 0.92) 0%, rgba(16, 25, 7, 0.95) 100%);
+  box-shadow: 0 6px 18px rgba(2, 6, 23, 0.38);
+}
+
+:global(html[data-theme='dark']) .communityMetricsTitle {
+  color: #d9f2ad;
+}
+
+:global(html[data-theme='dark']) .communityMetricsDesc {
+  color: #b7c89b;
+}
+
+:global(html[data-theme='dark']) .communityMetricCard:hover {
+  border-color: rgba(140, 219, 35, 0.82);
+  box-shadow: 0 12px 28px rgba(2, 6, 23, 0.44);
+}
+
+:global(html[data-theme='dark']) .communityMetricCard strong {
+  color: #d9f2ad;
+}
+
+:global(html[data-theme='dark']) .communityMetricCard span {
+  color: #f4ffdf;
+}
+
+:global(html[data-theme='dark']) .communityMetricIcon {
+  color: #d9f2ad;
+}
+
+:global(html[data-theme='dark']) .metricSourceHint {
+  border-color: rgba(140, 219, 35, 0.55);
+  background: rgba(140, 219, 35, 0.16);
+  color: #d9f2ad;
+}
+
+:global(html[data-theme='dark']) .metricSourceHint::after {
+  border-color: rgba(140, 219, 35, 0.45);
+  background: rgba(15, 23, 42, 0.96);
+  color: #e6f5cc;
+  box-shadow: 0 8px 20px rgba(2, 6, 23, 0.46);
+}
+
+:global(html[data-theme='dark']) .communityMetricActions :global(.button--primary) {
+  background: #8cdb23;
+  border-color: #8cdb23;
+  color: #0f1d00;
+}
+
+:global(html[data-theme='dark']) .communityMetricActions :global(.button--primary:hover) {
+  background: #9ee94a;
+  border-color: #9ee94a;
+  color: #0d1800;
+}
+
+:global(html[data-theme='dark']) .communityMetricActions :global(.button--outline) {
+  background: rgba(17, 29, 5, 0.7);
+  border-color: rgba(140, 219, 35, 0.62);
+  color: #dff6b8;
+}
+
+:global(html[data-theme='dark']) .communityMetricActions :global(.button--outline:hover) {
+  background: rgba(24, 41, 7, 0.9);
+  border-color: #8cdb23;
+  color: #f4ffdf;
+}
+
 .cncfFeatureMedia {
-  padding: var(--hami-space-24);
+  display: flex;
+  flex-direction: column;
+  gap: var(--hami-space-12);
+}
+
+.cncfLogoBox {
+  padding: var(--hami-space-16);
   border-radius: var(--hami-radius-md);
-  background: rgba(255, 255, 255, 0.9);
+  background: #ffffff;
+  border: 1px solid rgba(17, 208, 93, 0.22);
+}
+
+.cnaiLogoBox {
+  padding: var(--hami-space-16);
+  border-radius: var(--hami-radius-md);
+  background: #ffffff;
   border: 1px solid rgba(17, 208, 93, 0.22);
 }
 
 .cncfFeatureLogoLight,
-.cncfFeatureLogoDark {
+.cncfFeatureLogoDark,
+.cnaiLogo {
   width: 100%;
   height: auto;
   display: block;
@@ -1557,18 +1877,6 @@
 
 .cncfFeatureLogoDark {
   display: none;
-}
-
-:global(html[data-theme='dark']) .cncfFeatureMedia {
-  background: rgba(7, 13, 24, 0.9);
-}
-
-:global(html[data-theme='dark']) .cncfFeatureLogoLight {
-  display: none;
-}
-
-:global(html[data-theme='dark']) .cncfFeatureLogoDark {
-  display: block;
 }
 
 .cncfFeatureBody {
@@ -1645,7 +1953,7 @@
   }
 
   .heroTitle {
-    font-size: 1.6rem;
+    font-size: 2rem;
   }
 
   .heroSubtitle {
@@ -1740,15 +2048,37 @@
 
   .gpuSliceRow {
     flex-wrap: wrap;
-    justify-content: flex-start;
+    justify-content: center;
   }
 
   .ecoCoreRow {
     grid-template-columns: 1fr;
   }
 
+  .cncfLogoBox,
+  .cnaiLogoBox {
+    padding: var(--hami-space-8) var(--hami-space-12);
+    flex: 1;
+  }
+
+  .cncfFeatureMedia {
+    flex-direction: row;
+  }
+
+  .cncfFeatureLogoLight,
+  .cncfFeatureLogoDark,
+  .cnaiLogo {
+    max-height: 44px;
+    width: auto;
+    margin: 0 auto;
+  }
+
   .cardTop {
     grid-template-columns: 44px minmax(0, 1fr);
+  }
+
+  .communityMetricsRow {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .cardIcon {
@@ -1800,7 +2130,7 @@
 /* ── phone breakpoint ── */
 @media (max-width: 480px) {
   .hero {
-    padding: var(--hami-space-32) 0;
+    padding: 20px 0;
   }
 
   .section {
@@ -1808,11 +2138,33 @@
   }
 
   .heroTitle {
-    font-size: 1.28rem;
+    font-size: 2rem;
   }
 
   .heroSubtitle {
-    font-size: 0.92rem;
+    font-size: 0.88rem;
+    line-height: 1.45;
+  }
+
+  .badges {
+    display: none;
+  }
+
+  .heroActions {
+    margin-top: 14px;
+    gap: 8px;
+  }
+
+  .heroActions :global(.button),
+  .heroActions :global(.button.button--lg) {
+    min-height: 34px;
+    padding: 0 12px;
+    font-size: 0.84rem;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.2;
   }
 
   .sectionTitle {
@@ -1825,27 +2177,29 @@
   }
 
   .heroVisual {
-    padding: 10px;
+    padding: 8px;
     border-radius: 14px;
+    max-height: none;
+    overflow: visible;
   }
 
   .ecoLayer {
-    padding: 8px;
+    padding: 6px;
     border-radius: 12px;
   }
 
   .ecoLayer h3 {
-    font-size: 0.68rem;
-    margin-bottom: 6px;
+    font-size: 0.62rem;
+    margin-bottom: 5px;
   }
 
   .ecoLogoChip {
-    min-height: 30px;
+    min-height: 24px;
     border-radius: 8px;
   }
 
   .ecoLogoChip img {
-    max-height: 16px;
+    max-height: 13px;
   }
 
   .ecoLogoChip span {
@@ -1856,25 +2210,180 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .ecoCoreRow {
+    grid-template-columns: minmax(0, 1fr) 122px;
+    gap: 6px;
+  }
+
   .gpuSliceRow {
-    gap: 4px;
+    gap: 2px;
+    flex-wrap: nowrap;
+    justify-content: center;
   }
 
   .gpuSliceChip {
-    min-height: 30px;
-    font-size: 0.62rem;
+    min-height: 18px;
+    min-width: 0;
+    padding: 0 4px;
+    font-size: 0.48rem;
+    gap: 2px;
+  }
+
+  .gpuSliceArrow {
+    font-size: 0.52rem;
+  }
+
+  .gpuSliceIcon {
+    width: 7px;
+    height: 7px;
+    border-width: 1px;
+  }
+
+  .gpuSliceIcon::after {
+    inset: 1px;
+  }
+
+  .observabilityPanel {
+    padding: 5px;
+    gap: 4px;
+  }
+
+  .observabilityPanel h4 {
+    font-size: 0.56rem;
+    letter-spacing: 0.04em;
+  }
+
+  .observabilityMetric {
+    padding: 4px;
+    grid-template-columns: 18px minmax(0, 1fr);
+    gap: 4px;
+  }
+
+  .observabilityIcon {
+    width: 18px;
+    height: 18px;
+    font-size: 0.5rem;
+  }
+
+  .observabilityMetric strong {
+    font-size: 0.54rem;
+    line-height: 1.1;
+  }
+
+  .observabilityMetric p {
+    display: none;
+  }
+
+  .observabilityLogoRow .ecoLogoChip {
+    min-height: 22px;
+    padding: 2px;
+  }
+
+  .observabilityLogoRow .ecoLogoChip img {
+    height: 12px;
+  }
+
+  .communityMetricsRow {
+    grid-template-columns: 1fr;
+  }
+
+  .communityMetricCard {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0 12px;
+    padding: 14px 14px;
+    padding-right: 36px;
+    position: relative;
+  }
+
+  .communityMetricHead {
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .communityMetricIcon {
+    width: 14px;
+    height: 14px;
+    flex: 0 0 14px;
+    font-size: 0.58rem;
+    margin-right: 2px;
+    opacity: 0.82;
+  }
+
+  .communityMetricCard strong {
+    font-size: 0.94rem;
+    line-height: 1.2;
+  }
+
+  .communityMetricCard span {
+    grid-column: 2;
+    grid-row: 1;
+    margin: 0;
+    margin-right: 10px;
+    font-size: 1.45rem;
+    line-height: 1;
+    letter-spacing: 0;
+  }
+
+  .metricSourceHint {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    width: 14px;
+    height: 14px;
+    flex: 0 0 14px;
+    margin-left: 0;
+    font-size: 0.46rem;
+    transform: translateY(-50%);
+  }
+
+  .metricSourceHint::after {
+    left: auto;
+    right: 0;
+    transform: translateY(3px);
+  }
+
+  .metricSourceHint:hover::after,
+  .metricSourceHint:focus-visible::after {
+    transform: translateY(0);
   }
 
   .ecoLayerDevices .ecoLogoGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .ecoOpenChip {
-    grid-column: 1 / -1;
+    min-height: 22px;
+    font-size: 0.52rem;
   }
 
   .runtimeMechanism {
     padding: 0;
+  }
+
+  .runtimeLaneGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .runtimeLane {
+    padding: 10px;
+    border-radius: 12px;
+    gap: 8px;
+  }
+
+  .runtimeLaneHeader {
+    padding-bottom: 6px;
+    gap: 6px;
+  }
+
+  .runtimeLaneHeader h3 {
+    font-size: 0.82rem;
+  }
+
+  .runtimeLaneKicker {
+    font-size: 0.58rem;
+    padding: 2px 6px;
   }
 
   .runtimeStageCard {

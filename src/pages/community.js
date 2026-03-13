@@ -23,14 +23,14 @@ const maintainers = [
   {
     name: 'Leibo Wang',
     github: 'https://github.com/william-wang',
-    employer: 'NVIDIA',
+    employer: 'Nvidia',
     employerZh: '英伟达',
   },
   {
     name: 'Yu Yin',
     github: 'https://github.com/Nimbus318',
-    employer: 'Independent Developer',
-    employerZh: '独立开发者',
+    employer: 'Dynamia',
+    employerZh: '密瓜智能',
   },
   {
     name: 'Shouren Yang',
@@ -109,44 +109,6 @@ export default function CommunityPage() {
           </div>
         </section>
 
-        <section className={styles.entrySection}>
-          <div className="container">
-            <h2 className={styles.entryTitle}>{isZh ? '社区入口' : 'Community Dashboard'}</h2>
-            <p className={styles.sectionIntro}>
-              {isZh
-                ? '从交流渠道、例会和资料入口快速开始参与社区。'
-                : 'Start quickly through chat channels, weekly meetings, and shared resources.'}
-            </p>
-            <div className={styles.dashboardGrid}>
-              {cardConfig.map((card) => (
-                <article key={card.key} className={styles.dashboardCard}>
-                  <h3>{pickLocalized(i18n.currentLocale, card.title)}</h3>
-                  {card.meta && (
-                    <div className={styles.meetingMetaRow}>
-                      {card.meta.map((meta) => (
-                        <span key={meta.en} className={styles.metaBadge}>{pickLocalized(i18n.currentLocale, meta)}</span>
-                      ))}
-                    </div>
-                  )}
-                  <div className={styles.dashboardButtons}>
-                    {card.items.map((item) => (
-                      <a
-                        key={item.label.en}
-                        href={item.href}
-                        className={styles.dashboardButton}
-                        target={item.external ? '_blank' : undefined}
-                        rel={item.external ? 'noreferrer' : undefined}>
-                        <FontAwesomeIcon icon={item.icon} />
-                        <span>{pickLocalized(i18n.currentLocale, item.label)}</span>
-                      </a>
-                    ))}
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
         <section className={styles.section}>
           <div className="container">
             <div className={styles.governanceSection}>
@@ -185,6 +147,44 @@ export default function CommunityPage() {
                   );
                 })}
               </div>
+            </div>
+          </div>
+        </section>
+
+        <section className={styles.entrySection}>
+          <div className="container">
+            <h2 className={styles.entryTitle}>{isZh ? '社区入口' : 'Community Dashboard'}</h2>
+            <p className={styles.sectionIntro}>
+              {isZh
+                ? '从交流渠道、例会和资料入口快速开始参与社区。'
+                : 'Start quickly through chat channels, weekly meetings, and shared resources.'}
+            </p>
+            <div className={styles.dashboardGrid}>
+              {cardConfig.map((card) => (
+                <article key={card.key} className={styles.dashboardCard}>
+                  <h3>{pickLocalized(i18n.currentLocale, card.title)}</h3>
+                  {card.meta && (
+                    <div className={styles.meetingMetaRow}>
+                      {card.meta.map((meta) => (
+                        <span key={meta.en} className={styles.metaBadge}>{pickLocalized(i18n.currentLocale, meta)}</span>
+                      ))}
+                    </div>
+                  )}
+                  <div className={styles.dashboardButtons}>
+                    {card.items.map((item) => (
+                      <a
+                        key={item.label.en}
+                        href={item.href}
+                        className={styles.dashboardButton}
+                        target={item.external ? '_blank' : undefined}
+                        rel={item.external ? 'noreferrer' : undefined}>
+                        <FontAwesomeIcon icon={item.icon} />
+                        <span>{pickLocalized(i18n.currentLocale, item.label)}</span>
+                      </a>
+                    ))}
+                  </div>
+                </article>
+              ))}
             </div>
           </div>
         </section>

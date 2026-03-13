@@ -1,235 +1,206 @@
 import React from 'react';
 import clsx from 'clsx';
-import useBaseUrl from '@docusaurus/useBaseUrl';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
 import styles from './BeforeAfterComparison.module.css';
 
-const workloads = [
-  {
-    key: 'a',
-    tone: 'alpha',
-    name: 'Pod A',
-    slice: { en: '0.3 GPU slice', zh: '0.3 GPU 切片' },
-    quota: { en: 'memory 30% · compute 25%', zh: '显存 30% · 算力 25%' },
-  },
-  {
-    key: 'b',
-    tone: 'beta',
-    name: 'Pod B',
-    slice: { en: '0.25 GPU slice', zh: '0.25 GPU 切片' },
-    quota: { en: 'memory 25% · compute 20%', zh: '显存 25% · 算力 20%' },
-  },
-  {
-    key: 'c',
-    tone: 'gamma',
-    name: 'Pod C',
-    slice: { en: '0.2 GPU slice', zh: '0.2 GPU 切片' },
-    quota: { en: 'memory 20% · compute 15%', zh: '显存 20% · 算力 15%' },
-  },
-];
-
-const comparisonContent = {
+const copy = {
   title: { en: 'Before and After Using HAMi', zh: '使用 HAMi 前后对比' },
   subtitle: {
-    en: 'Compare traditional whole-GPU allocation with HAMi GPU sharing under the same workloads.',
-    zh: '相同工作负载下，对比传统整卡独占与 HAMi GPU 共享后的资源利用率变化。',
+    en: 'Same workloads, different GPU efficiency.',
+    zh: '相同工作负载，不同 GPU 利用效率。',
   },
-  inputLabel: { en: 'Example Workloads', zh: '示例工作负载' },
-  beforeTitle: { en: 'Without HAMi', zh: '未使用 HAMi' },
-  beforeSubtitle: { en: 'Whole GPU allocation', zh: '整卡独占' },
-  afterTitle: { en: 'With HAMi', zh: '使用 HAMi' },
-  afterSubtitle: { en: 'GPU slicing and sharing', zh: '切分共享' },
-  transformLabel: {
-    en: 'GPU virtualization & sharing',
-    zh: 'GPU 虚拟化与共享',
+  stepRequests: { en: 'Requests', zh: '请求' },
+  stepWithout: { en: 'Without HAMi', zh: '未使用 HAMi' },
+  stepWith: { en: 'With HAMi', zh: '使用 HAMi' },
+  userA: { en: 'User A', zh: '用户 A' },
+  userB: { en: 'User B', zh: '用户 B' },
+  reqGpu: { en: '2 GPUs', zh: '2 张 GPU' },
+  req10g: { en: '10G per GPU', zh: '每卡 10G' },
+  req20g: { en: '20G per GPU', zh: '每卡 20G' },
+  node: { en: 'Node: 4 x V100 (32G)', zh: '节点：4 x V100 (32G)' },
+  wasted: { en: 'Fragmented / Wasted', zh: '碎片化 / 浪费' },
+  exclusive: { en: 'Whole GPU occupied', zh: '整卡占用' },
+  shared: { en: 'Shared with isolation', zh: '隔离共享' },
+  available: { en: 'Available', zh: '可用' },
+  summaryLead: {
+    en: 'HAMi packs fragmented AI workloads onto fewer GPUs while preserving isolation.',
+    zh: 'HAMi 在保障隔离的前提下，将碎片化 AI 负载打包到更少 GPU。',
   },
+  summary1: { en: 'GPUs used: 4 → 2', zh: '占用 GPU：4 → 2' },
+  summary2: { en: 'Utilization: 50% → 100%', zh: '利用率：50% → 100%' },
+  summary3: { en: 'Workloads per GPU: 1 → 2+', zh: '单卡负载数：1 → 2+' },
+  metricGpu: { en: 'GPUs Used', zh: '占用 GPU' },
+  metricUtil: { en: 'Utilization', zh: '利用率' },
+  metricMulti: { en: 'Workloads / GPU', zh: '单卡负载数' },
+  metricGpuValue: '4 → 2',
+  metricUtilValue: '50% → 100%',
+  metricMultiValue: '1 → 2+',
+  legendA: { en: 'Workload A', zh: '负载 A' },
+  legendB: { en: 'Workload B', zh: '负载 B' },
+  legendWaste: { en: 'Wasted', zh: '浪费容量' },
+  legendAvail: { en: 'Available', zh: '可用容量' },
 };
 
-const comparisonPanels = {
-  before: {
-    caption: {
-      en: 'Whole GPU allocation · low utilization',
-      zh: '整卡独占 · 低利用率',
-    },
-    gpus: [
-      { key: 'gpu0', label: 'GPU 0', pod: 'Pod A', fill: 30, utilization: '30%' },
-      { key: 'gpu1', label: 'GPU 1', pod: 'Pod B', fill: 25, utilization: '25%' },
-      { key: 'gpu2', label: 'GPU 2', pod: 'Pod C', fill: 20, utilization: '20%' },
-    ],
-    metrics: {
-      gpu: { en: 'Occupied GPUs', zh: '占用 GPU' },
-      utilization: { en: 'GPU utilization', zh: 'GPU 利用率' },
-      capacity: { en: 'Fragmentation', zh: '碎片化' },
-      values: {
-        gpu: '3',
-        utilization: '25-30%',
-        capacity: { en: 'High', zh: '高' },
-      },
-    },
-  },
-  after: {
-    caption: {
-      en: 'GPU slicing & sharing · higher utilization',
-      zh: '切分共享 · 更高利用率',
-    },
-    gpus: [
-      { key: 'gpu0', label: 'GPU 0', pods: ['Pod A', 'Pod B', 'Pod C'], fill: 75, utilization: '75%+' },
-      { key: 'gpu1', label: 'GPU 1', pods: [], fill: 0, utilization: '--' },
-      { key: 'gpu2', label: 'GPU 2', pods: [], fill: 0, utilization: '--' },
-    ],
-    metrics: {
-      gpu: { en: 'Occupied GPUs', zh: '占用 GPU' },
-      utilization: { en: 'GPU utilization', zh: 'GPU 利用率' },
-      capacity: { en: 'Reusable capacity', zh: '可复用容量' },
-      values: {
-        gpu: '1',
-        utilization: '75%+',
-        capacity: { en: 'Higher', zh: '更高' },
-      },
-    },
-  },
-};
+const requestRows = [
+  { key: 'a', tone: 'a', user: copy.userA, mem: copy.req10g, level: 31, gpuCount: 2 },
+  { key: 'b', tone: 'b', user: copy.userB, mem: copy.req20g, level: 62, gpuCount: 2 },
+];
 
-function localize(isZh, text) {
-  return isZh ? text.zh : text.en;
+const withoutRack = [
+  { key: 'gpu0', a: 31, b: 0, available: 0 },
+  { key: 'gpu1', a: 31, b: 0, available: 0 },
+  { key: 'gpu2', a: 0, b: 62, available: 0 },
+  { key: 'gpu3', a: 0, b: 62, available: 0 },
+];
+
+const withRack = [
+  { key: 'gpu0', a: 31, b: 62, available: 7 },
+  { key: 'gpu1', a: 31, b: 62, available: 7 },
+  { key: 'gpu2', a: 0, b: 0, available: 100 },
+  { key: 'gpu3', a: 0, b: 0, available: 100 },
+];
+
+function t(isZh, value) {
+  return isZh ? value.zh : value.en;
 }
 
-function SummaryMetric({ label, value, tone }) {
+function RequestRow({ isZh, row }) {
   return (
-    <div className={clsx(styles.metric, styles[`metric_${tone}`])}>
-      <span>{label}</span>
-      <strong>{value}</strong>
-    </div>
-  );
-}
-
-function GpuColumn({ gpu, isZh, shared = false }) {
-  return (
-    <article className={clsx(styles.gpuCard, shared && styles.gpuCardShared)}>
-      <header className={styles.gpuHeader}>
-        <div>
-          <h5>{gpu.label}</h5>
-          <span>{shared ? (isZh ? '共享' : 'Shared') : (isZh ? '独占' : 'Exclusive')}</span>
-        </div>
-        <strong>{gpu.utilization}</strong>
-      </header>
-
-      <div className={styles.gpuBar} aria-hidden="true">
-        <span className={styles.gpuBarFill} style={{ width: `${gpu.fill}%` }} />
+    <article className={styles.requestRowItem}>
+      <span className={clsx(styles.userIcon, styles[`userIcon_${row.tone}`])} aria-hidden="true">
+        <FontAwesomeIcon icon={faUser} />
+      </span>
+      <div className={styles.requestText}>
+        <strong>{t(isZh, row.user)}</strong>
+        <span>{t(isZh, copy.reqGpu)}</span>
+        <span>{t(isZh, row.mem)}</span>
       </div>
-
-      {shared ? (
-        <div
-          className={clsx(
-            styles.sliceGroup,
-            gpu.pods.length > 0 && styles.sliceGroupSharedPods,
-          )}>
-          {gpu.pods.length > 0 ? (
-            gpu.pods.map((pod, index) => (
-              <span key={pod} className={clsx(styles.sliceTag, styles[`sliceTag_${['alpha', 'beta', 'gamma'][index]}`])}>
-                {pod}
-              </span>
-            ))
-          ) : (
-            <span className={styles.idleTag}>{isZh ? '空闲' : 'Free'}</span>
-          )}
-        </div>
-      ) : (
-        <div className={styles.sliceGroup}>
-          <span className={clsx(styles.sliceTag, styles[`sliceTag_${gpu.key === 'gpu0' ? 'alpha' : gpu.key === 'gpu1' ? 'beta' : 'gamma'}`])}>
-            {gpu.pod}
-          </span>
-          <span className={styles.idleTag}>{isZh ? '闲置容量' : 'Unused'}</span>
-        </div>
-      )}
+      <div className={styles.requestStrips} aria-hidden="true">
+        {Array.from({ length: row.gpuCount }).map((_, i) => (
+          <div key={i} className={styles.requestStrip}>
+            <span className={clsx(styles.requestStripFill, styles[`requestStripFill_${row.tone}`])} style={{ height: `${row.level}%` }} />
+          </div>
+        ))}
+      </div>
     </article>
   );
 }
 
-function ComparisonColumn({ side, isZh }) {
-  const panel = comparisonPanels[side];
-  const title = side === 'before' ? comparisonContent.beforeTitle : comparisonContent.afterTitle;
-  const subtitle = side === 'before' ? comparisonContent.beforeSubtitle : comparisonContent.afterSubtitle;
+function GpuCell({ isZh, item, mode }) {
+  const isWith = mode === 'with';
+  const used = item.a + item.b;
+  const wasted = Math.max(0, 100 - used);
+  const isFullyAvailable = isWith && item.available === 100;
 
   return (
-    <section className={clsx(styles.compareColumn, styles[`compareColumn_${side}`])}>
-      <header className={styles.compareHeader}>
-        <span className={styles.compareEyebrow}>{localize(isZh, subtitle)}</span>
-        <h4>{localize(isZh, title)}</h4>
-      </header>
-
-      <p className={styles.compareCaption}>{localize(isZh, panel.caption)}</p>
-
-      <div className={styles.metricRow}>
-        <SummaryMetric
-          tone={side}
-          label={localize(isZh, panel.metrics.gpu)}
-          value={panel.metrics.values.gpu}
-        />
-        <SummaryMetric
-          tone={side}
-          label={localize(isZh, panel.metrics.utilization)}
-          value={panel.metrics.values.utilization}
-        />
-        <SummaryMetric
-          tone={side}
-          label={localize(isZh, panel.metrics.capacity)}
-          value={localize(isZh, panel.metrics.values.capacity)}
-        />
+    <article className={clsx(styles.gpuCell, isFullyAvailable && styles.gpuCellAvailableOnly)}>
+      <div className={styles.gpuMeter}>
+        {isWith && item.available > 0 && <span className={styles.availableBlock} style={{ height: `${item.available}%` }} />}
+        {item.b > 0 && <span className={styles.workloadBBlock} style={{ height: `${item.b}%` }} />}
+        {item.a > 0 && <span className={styles.workloadABlock} style={{ height: `${item.a}%` }} />}
+        {!isWith && wasted > 0 && <span className={styles.wastedBlock} style={{ height: `${wasted}%` }} />}
+        {isFullyAvailable && <em className={styles.availableText}>{t(isZh, copy.available)}</em>}
       </div>
+      <span className={styles.gpuLabel}>{item.key.toUpperCase()}</span>
+    </article>
+  );
+}
 
-      <div className={styles.gpuRack}>
-        {panel.gpus.map((gpu) => (
-          <GpuColumn key={`${side}-${gpu.key}`} gpu={gpu} isZh={isZh} shared={side === 'after'} />
+function AllocationPanel({ isZh, mode }) {
+  const isWith = mode === 'with';
+  const rack = isWith ? withRack : withoutRack;
+
+  return (
+    <section className={clsx(styles.allocPanel, isWith ? styles.allocPanelWith : styles.allocPanelWithout)}>
+      <header className={styles.allocHead}>
+        <div className={styles.allocHeadTitle}>
+          {isWith && (
+            <img
+              src="/img/logo.svg"
+              alt="HAMi"
+              className={styles.allocHeadLogo}
+            />
+          )}
+          <h4>{isWith ? t(isZh, copy.stepWith) : t(isZh, copy.stepWithout)}</h4>
+        </div>
+        <span>{t(isZh, copy.node)}</span>
+      </header>
+      <div className={styles.rackGrid}>
+        {rack.map((item) => (
+          <GpuCell key={`${mode}-${item.key}`} isZh={isZh} item={item} mode={mode} />
         ))}
       </div>
+      <footer className={styles.allocFoot}>
+        <span>{isWith ? t(isZh, copy.shared) : t(isZh, copy.exclusive)}</span>
+        <span>{isWith ? t(isZh, copy.available) : t(isZh, copy.wasted)}</span>
+      </footer>
     </section>
   );
 }
 
-export default function BeforeAfterComparison({ isZh, showHeader = true }) {
-  const hamiLogo = useBaseUrl('img/hami-graph-color.svg');
-
+function MetricBadge({ label, value }) {
   return (
-    <section
-      className={clsx(styles.shell, !showHeader && styles.shellCompact)}
-      aria-label={isZh ? '使用 HAMi 前后对比' : 'Before and after using HAMi'}>
+    <article className={styles.metricBadge}>
+      <span>{label}</span>
+      <strong>{value}</strong>
+    </article>
+  );
+}
+
+export default function BeforeAfterComparison({ isZh, showHeader = true }) {
+  return (
+    <section className={styles.shell} aria-label={t(isZh, copy.title)}>
       {showHeader && (
         <header className={styles.header}>
-          <div className={styles.headerText}>
-            <h3>{localize(isZh, comparisonContent.title)}</h3>
-            <p>{localize(isZh, comparisonContent.subtitle)}</p>
-          </div>
+          <h3>{t(isZh, copy.title)}</h3>
+          <p>{t(isZh, copy.subtitle)}</p>
         </header>
       )}
 
-      <section className={styles.inputSection}>
-        <div className={styles.inputHeader}>
-          <span className={styles.inputLabel}>{localize(isZh, comparisonContent.inputLabel)}</span>
-        </div>
-        <div className={styles.workloadRow}>
-          {workloads.map((workload) => (
-            <article key={workload.key} className={clsx(styles.workloadCard, styles[`workloadCard_${workload.tone}`])}>
-              <strong>{workload.name}</strong>
-              <span>{localize(isZh, workload.slice)}</span>
-              <small>{localize(isZh, workload.quota)}</small>
-            </article>
-          ))}
-        </div>
-      </section>
+      <div className={styles.layout}>
+        <figure className={styles.diagramCard}>
+          <div className={styles.storyRow}>
+            <section className={styles.stepRequests}>
+              <h4>{t(isZh, copy.stepRequests)}</h4>
+              <div className={styles.requestList}>
+                {requestRows.map((row) => (
+                  <RequestRow key={row.key} isZh={isZh} row={row} />
+                ))}
+              </div>
+            </section>
 
-      <div className={styles.compareGrid}>
-        <ComparisonColumn side="before" isZh={isZh} />
-        <div className={styles.compareTransform} aria-hidden="true">
-          <span className={clsx(styles.compareTransformArrow, styles.compareTransformArrowLeft)} />
-          <div className={styles.compareTransformCore}>
-            <img src={hamiLogo} alt="" className={styles.compareTransformLogo} />
-            <span className={styles.compareTransformCaption}>
-              {localize(isZh, comparisonContent.transformLabel)}
-            </span>
+            <div className={styles.flowLink}>
+              <span>{t(isZh, copy.stepWithout)}</span>
+              <i aria-hidden="true" />
+            </div>
+
+            <AllocationPanel isZh={isZh} mode="without" />
+
+            <div className={styles.flowLink}>
+              <span>{t(isZh, copy.stepWith)}</span>
+              <i aria-hidden="true" />
+            </div>
+
+            <AllocationPanel isZh={isZh} mode="with" />
           </div>
-          <span className={clsx(styles.compareTransformArrow, styles.compareTransformArrowRight)} />
-        </div>
-        <ComparisonColumn side="after" isZh={isZh} />
+
+          <div className={styles.legendRow} aria-label={isZh ? '配色图例' : 'Color legend'}>
+            <span className={styles.legendItem}><i className={clsx(styles.legendSwatch, styles.legendSwatchA)} aria-hidden="true" />{t(isZh, copy.legendA)}</span>
+            <span className={styles.legendItem}><i className={clsx(styles.legendSwatch, styles.legendSwatchB)} aria-hidden="true" />{t(isZh, copy.legendB)}</span>
+            <span className={styles.legendItem}><i className={clsx(styles.legendSwatch, styles.legendSwatchWaste)} aria-hidden="true" />{t(isZh, copy.legendWaste)}</span>
+            <span className={styles.legendItem}><i className={clsx(styles.legendSwatch, styles.legendSwatchAvail)} aria-hidden="true" />{t(isZh, copy.legendAvail)}</span>
+          </div>
+        </figure>
+
+        <aside className={styles.summary}>
+          <p className={styles.summaryLead}>{t(isZh, copy.summaryLead)}</p>
+          <div className={styles.metricsRow}>
+            <MetricBadge label={t(isZh, copy.metricGpu)} value={copy.metricGpuValue} />
+            <MetricBadge label={t(isZh, copy.metricUtil)} value={copy.metricUtilValue} />
+            <MetricBadge label={t(isZh, copy.metricMulti)} value={copy.metricMultiValue} />
+          </div>
+        </aside>
       </div>
     </section>
   );

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback, useState } from 'react';
 import clsx from 'clsx';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
@@ -7,14 +7,19 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBuildingCircleCheck,
+  faBoxOpen,
   faChartLine,
+  faCircleInfo,
   faCircleNodes,
   faCubesStacked,
   faGaugeHigh,
+  faGlobe,
   faNetworkWired,
   faPuzzlePiece,
   faShareNodes,
   faShieldHalved,
+  faStar,
+  faUsers,
 } from '@fortawesome/free-solid-svg-icons';
 import styles from './styles.module.css';
 import ContributorsList from '../components/contributorsList';
@@ -81,8 +86,8 @@ const heroDiagramCopy = {
     zh: 'HAMi 图标',
   },
   moreAccelerators: {
-    en: 'More accelerators coming...',
-    zh: '更多加速器正在支持中…',
+    en: 'and more...',
+    zh: '更多',
   },
   capabilities: {
     en: 'Virtualization • Sharing • Isolation • Scheduling',
@@ -105,8 +110,8 @@ const heroDiagramCopy = {
     zh: '设备分配总量与分布',
   },
   realTimeUsage: {
-    en: 'Real-time Usage',
-    zh: '实时使用率',
+    en: 'vGPU Real-time Usage',
+    zh: 'vGPU 实时使用率',
   },
   realTimeUsageDesc: {
     en: 'GPU memory/core utilization',
@@ -195,6 +200,40 @@ const vendorEcosystem = [
   { key: 'vaststream', name: 'Vaststream', logo: 'img/ecosystem/vaststream.jpg', href: 'https://www.vastaitech.com' },
 ];
 
+const DEVSTATS_URL = 'https://hami.devstats.cncf.io/d/18/overall-project-statistics-table?orgId=1';
+const GITHUB_REPO_URL = 'https://github.com/Project-HAMi/HAMi';
+const DOCKER_IMAGE_URL = 'https://hub.docker.com/r/projecthami/hami';
+
+function formatCompactNumber(value) {
+  if (!Number.isFinite(value)) return '--';
+  if (value >= 1000000) return `${(value / 1000000).toFixed(1).replace(/\.0$/, '')}M`;
+  if (value >= 1000) return `${(value / 1000).toFixed(1).replace(/\.0$/, '')}K`;
+  return `${Math.round(value)}`;
+}
+
+function useCountUp(target, duration = 900) {
+  const [displayValue, setDisplayValue] = useState(0);
+
+  useEffect(() => {
+    if (!Number.isFinite(target) || target <= 0) {
+      setDisplayValue(0);
+      return;
+    }
+    let frameId;
+    const start = performance.now();
+    const tick = (now) => {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - (1 - progress) * (1 - progress);
+      setDisplayValue(Math.round(target * eased));
+      if (progress < 1) frameId = requestAnimationFrame(tick);
+    };
+    frameId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frameId);
+  }, [target, duration]);
+
+  return displayValue;
+}
+
 function pickLocalized(locale, textObj) {
   return locale === 'zh' ? textObj.zh : textObj.en;
 }
@@ -231,8 +270,16 @@ function RuntimeLaneCard({ lane, locale }) {
 export default function Home() {
   const { i18n } = useDocusaurusContext();
   const isZh = i18n.currentLocale === 'zh';
+  const [starsCount, setStarsCount] = useState(3100);
+  const [dockerPulls, setDockerPulls] = useState(114000);
   const kubernetesLogo = useBaseUrl('img/kubernetes-logo.svg');
   const hamiLogo = useBaseUrl('img/hami-graph-color.svg');
+  const hamiHorizontalLogoLight = useBaseUrl('img/hami-horizontal-color-black.svg');
+  const hamiHorizontalLogoDark = useBaseUrl('img/hami-horizontal-color-white.svg');
+  const contributorsCount = useCountUp(500);
+  const contributorCountries = useCountUp(17);
+  const starsCountDisplay = useCountUp(starsCount);
+  const dockerPullsDisplay = useCountUp(dockerPulls);
 
   /* ── scroll-reveal via IntersectionObserver ── */
   const revealRefs = useRef([]);
@@ -264,13 +311,48 @@ export default function Home() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const fetchGitHubStars = async () => {
+      try {
+        const response = await fetch('https://api.github.com/repos/Project-HAMi/HAMi', { signal: controller.signal });
+        if (!response.ok) return;
+        const data = await response.json();
+        if (typeof data?.stargazers_count === 'number') {
+          setStarsCount(data.stargazers_count);
+        }
+      } catch (error) {
+        // Keep fallback value when API is unavailable.
+      }
+    };
+
+    const fetchDockerPulls = async () => {
+      try {
+        const response = await fetch('https://hub.docker.com/v2/repositories/projecthami/hami/', { signal: controller.signal });
+        if (!response.ok) return;
+        const data = await response.json();
+        if (typeof data?.pull_count === 'number') {
+          setDockerPulls(data.pull_count);
+        }
+      } catch (error) {
+        // Keep fallback value when API is unavailable.
+      }
+    };
+
+    fetchGitHubStars();
+    fetchDockerPulls();
+
+    return () => controller.abort();
+  }, []);
+
   return (
     <Layout
-      title={isZh ? 'HAMi 异构 AI 计算虚拟化中间件' : 'HAMi - Heterogeneous AI Computing Virtualization Middleware'}
+      title={isZh ? 'Kubernetes 上的异构 GPU 共享' : 'Heterogeneous GPU Sharing on Kubernetes'}
       description={
         isZh
-          ? 'HAMi 为 Kubernetes 提供异构 AI 设备共享、隔离与调度能力。'
-          : 'HAMi provides Kubernetes-native heterogeneous AI device sharing, isolation and scheduling.'
+          ? 'HAMi 是开源的云原生 GPU 虚拟化中间件，为 AI 工作负载提供异构加速器的共享、隔离与调度能力。'
+          : 'HAMi is an open-source, cloud-native GPU virtualization middleware that brings sharing, isolation and scheduling of heterogeneous accelerators to AI workloads on Kubernetes.'
       }>
       <main>
         <section className={clsx(styles.hero, 'hami-shell-bg')}>
@@ -286,14 +368,22 @@ export default function Home() {
                 </div>
                 <h1 className={styles.heroTitle}>
                   {isZh
-                    ? '面向异构 AI 基础设施的 Kubernetes 虚拟化中间件'
-                    : 'Kubernetes virtualization middleware for heterogeneous AI infrastructure'}
+                    ? 'Kubernetes 上的异构 GPU 共享'
+                    : 'Heterogeneous GPU Sharing on Kubernetes'}
                 </h1>
                 <p className={styles.heroSubtitle}>
                   {isZh
-                    ? 'HAMi 提供资源共享、隔离与调度能力，让 GPU/NPU/MLU 等异构设备在同一平台内高效运行。'
-                    : 'HAMi enables sharing, isolation and scheduling for GPU/NPU/MLU resources so mixed accelerators run efficiently on one platform.'}
+                    ? 'HAMi 是开源的云原生 GPU 虚拟化中间件，为 AI 工作负载提供异构加速器的共享、隔离与调度能力。'
+                    : 'HAMi is an open-source, cloud-native GPU virtualization middleware that brings sharing, isolation and scheduling of heterogeneous accelerators to AI workloads on Kubernetes.'}
                 </p>
+                <div className={styles.heroFeatureChips}>
+                  {(isZh
+                    ? ['GPU 切分', '异构加速器', 'Kubernetes 原生调度']
+                    : ['GPU Slicing', 'Heterogeneous Accelerators', 'Kubernetes-native Scheduling']
+                  ).map((chip) => (
+                    <span key={chip} className={styles.heroFeatureChip}>{chip}</span>
+                  ))}
+                </div>
                 <div className={styles.heroActions}>
                   <Link className="button button--primary button--lg" to={useBaseUrl('/docs/get-started/deploy-with-helm')}>
                     {isZh ? '快速开始' : 'Quick Start'}
@@ -337,22 +427,21 @@ export default function Home() {
                         <section className={styles.hamiCenterLayer}>
                           <section className={styles.hamiPlatformBlock}>
                             <h3 className={styles.hamiTitle}>
-                              <img src={hamiLogo} alt={pickLocalized(i18n.currentLocale, heroDiagramCopy.hamiLogoAlt)} />
-                              <span>HAMi</span>
+                              <img src={hamiHorizontalLogoLight} alt={pickLocalized(i18n.currentLocale, heroDiagramCopy.hamiLogoAlt)} className={styles.hamiLogoLight} />
+                              <img src={hamiHorizontalLogoDark} alt={pickLocalized(i18n.currentLocale, heroDiagramCopy.hamiLogoAlt)} className={styles.hamiLogoDark} />
                             </h3>
                             <p>{pickLocalized(i18n.currentLocale, heroDiagramCopy.capabilities)}</p>
-                          </section>
-
-                          <section className={styles.gpuSliceRow} aria-label={pickLocalized(i18n.currentLocale, heroDiagramCopy.gpuSlicing)}>
-                            {heroGpuSlices.map((slice, index) => (
-                              <React.Fragment key={slice}>
-                                <div className={styles.gpuSliceChip}>
-                                  <span className={styles.gpuSliceIcon} aria-hidden="true" />
-                                  <span>{slice}</span>
-                                </div>
-                                {index < heroGpuSlices.length - 1 && <span className={styles.gpuSliceArrow} aria-hidden="true">→</span>}
-                              </React.Fragment>
-                            ))}
+                            <section className={styles.gpuSliceRow} aria-label={pickLocalized(i18n.currentLocale, heroDiagramCopy.gpuSlicing)}>
+                              {heroGpuSlices.map((slice, index) => (
+                                <React.Fragment key={slice}>
+                                  <div className={styles.gpuSliceChip}>
+                                    <span className={styles.gpuSliceIcon} aria-hidden="true" />
+                                    <span>{slice}</span>
+                                  </div>
+                                  {index < heroGpuSlices.length - 1 && <span className={styles.gpuSliceArrow} aria-hidden="true">→</span>}
+                                </React.Fragment>
+                              ))}
+                            </section>
                           </section>
                         </section>
                       </div>
@@ -375,6 +464,14 @@ export default function Home() {
                           <div>
                             <strong>{pickLocalized(i18n.currentLocale, heroDiagramCopy.realTimeUsage)}</strong>
                             <p>{pickLocalized(i18n.currentLocale, heroDiagramCopy.realTimeUsageDesc)}</p>
+                          </div>
+                        </div>
+                        <div className={styles.observabilityLogoRow}>
+                          <div className={styles.ecoLogoChip}>
+                            <img src={useBaseUrl('img/ecosystem/prometheus.svg')} alt="Prometheus" />
+                          </div>
+                          <div className={styles.ecoLogoChip}>
+                            <img src={useBaseUrl('img/ecosystem/opentelemetry.svg')} alt="OpenTelemetry" />
                           </div>
                         </div>
                       </aside>
@@ -404,8 +501,12 @@ export default function Home() {
           <div className="container">
             <div className={styles.cncfFeature}>
               <div className={styles.cncfFeatureMedia}>
-                <img src={useBaseUrl('img/cncf-color.svg')} alt="CNCF logo" className={styles.cncfFeatureLogoLight} />
-                <img src={useBaseUrl('img/cncf-white.svg')} alt="CNCF logo" className={styles.cncfFeatureLogoDark} />
+                <div className={styles.cncfLogoBox}>
+                  <img src={useBaseUrl('img/cncf-color.svg')} alt="CNCF logo" className={styles.cncfFeatureLogoLight} />
+                </div>
+                <div className={styles.cnaiLogoBox}>
+                  <img src={useBaseUrl('img/ecosystem/cnai.svg')} alt="CNAI Landscape logo" className={styles.cnaiLogo} />
+                </div>
               </div>
               <div className={styles.cncfFeatureBody}>
                 <span className={styles.cncfEyebrow}>{isZh ? 'CNCF Sandbox 项目' : 'CNCF Sandbox Project'}</span>
@@ -413,9 +514,18 @@ export default function Home() {
                   {isZh ? 'HAMi 是 CNCF Sandbox 项目' : 'HAMi is a CNCF Sandbox project'}
                 </h2>
                 <p className={styles.cncfFeatureText}>
-                  {isZh
-                    ? '该项目在 CNCF 治理下开放开发，来自全球各地的公司和个人持续为其做出贡献。'
-                    : 'The project is developed in the open under CNCF governance, with contributions from a growing global community of companies and individuals.'}
+                  {isZh ? (
+                    <>
+                      HAMi 是云原生计算基金会（CNCF）的{' '}
+                      <a href="https://landscape.cncf.io/?item=orchestration-management--scheduling-orchestration--hami" target="_blank" rel="noopener noreferrer">Sandbox 项目</a>，
+                      并被收录于 CNCF 技术全景图和 CNAI 技术全景图。
+                    </>
+                  ) : (
+                    <>
+                      HAMi is a <a href="https://landscape.cncf.io/?item=orchestration-management--scheduling-orchestration--hami" target="_blank" rel="noopener noreferrer">Sandbox project</a> of the
+                      Cloud Native Computing Foundation (CNCF), listed in both the CNCF Landscape and the CNAI Landscape.
+                    </>
+                  )}
                 </p>
               </div>
             </div>
@@ -576,6 +686,98 @@ export default function Home() {
             </p>
             <div className={styles.supportersWrap}>
               <ContributorsList />
+            </div>
+            <div className={styles.communityMetricsHeader}>
+              <h3 className={styles.communityMetricsTitle}>
+                {isZh ? '全球社区指标' : 'Global Community Metrics'}
+              </h3>
+              <p className={styles.communityMetricsDesc}>
+                {isZh
+                  ? '实时展示 HAMi 社区增长与开源活跃度。'
+                  : 'A live snapshot of HAMi community growth and open-source momentum.'}
+              </p>
+            </div>
+            <div className={styles.communityMetricsRow}>
+              <article className={styles.communityMetricCard}>
+                <div className={styles.communityMetricHead}>
+                  <span className={styles.communityMetricIcon} aria-hidden="true">
+                    <FontAwesomeIcon icon={faStar} />
+                  </span>
+                  <strong>{isZh ? 'GitHub Stars' : 'GitHub Stars'}</strong>
+                  <a
+                    className={styles.metricSourceHint}
+                    href={GITHUB_REPO_URL}
+                    target="_blank"
+                    rel="noreferrer"
+                    data-source={isZh ? '数据来源：GitHub' : 'Source: GitHub'}
+                    aria-label={isZh ? '查看 Stars 数据来源' : 'View stars data source'}>
+                    <FontAwesomeIcon icon={faCircleInfo} />
+                  </a>
+                </div>
+                <span>{formatCompactNumber(starsCountDisplay)}</span>
+              </article>
+              <article className={styles.communityMetricCard}>
+                <div className={styles.communityMetricHead}>
+                  <span className={styles.communityMetricIcon} aria-hidden="true">
+                    <FontAwesomeIcon icon={faBoxOpen} />
+                  </span>
+                  <strong>{isZh ? '镜像下载' : 'Docker Pulls'}</strong>
+                  <a
+                    className={styles.metricSourceHint}
+                    href={DOCKER_IMAGE_URL}
+                    target="_blank"
+                    rel="noreferrer"
+                    data-source={isZh ? '数据来源：Docker Hub' : 'Source: Docker Hub'}
+                    aria-label={isZh ? '查看 Docker 下载数据来源' : 'View Docker pulls data source'}>
+                    <FontAwesomeIcon icon={faCircleInfo} />
+                  </a>
+                </div>
+                <span>{formatCompactNumber(dockerPullsDisplay)}</span>
+              </article>
+              <article className={styles.communityMetricCard}>
+                <div className={styles.communityMetricHead}>
+                  <span className={styles.communityMetricIcon} aria-hidden="true">
+                    <FontAwesomeIcon icon={faUsers} />
+                  </span>
+                  <strong>{isZh ? '贡献者' : 'Contributors'}</strong>
+                  <a
+                    className={styles.metricSourceHint}
+                    href={DEVSTATS_URL}
+                    target="_blank"
+                    rel="noreferrer"
+                    data-source={isZh ? '数据来源：DevStats' : 'Source: DevStats'}
+                    aria-label={isZh ? '查看贡献者数据来源' : 'View contributors data source'}>
+                    <FontAwesomeIcon icon={faCircleInfo} />
+                  </a>
+                </div>
+                <span>{contributorsCount}+</span>
+              </article>
+              <article className={styles.communityMetricCard}>
+                <div className={styles.communityMetricHead}>
+                  <span className={styles.communityMetricIcon} aria-hidden="true">
+                    <FontAwesomeIcon icon={faGlobe} />
+                  </span>
+                  <strong>{isZh ? '贡献者国家' : 'Contributor Countries'}</strong>
+                  <a
+                    className={styles.metricSourceHint}
+                    href={DEVSTATS_URL}
+                    target="_blank"
+                    rel="noreferrer"
+                    data-source={isZh ? '数据来源：DevStats' : 'Source: DevStats'}
+                    aria-label={isZh ? '查看国家数据来源' : 'View countries data source'}>
+                    <FontAwesomeIcon icon={faCircleInfo} />
+                  </a>
+                </div>
+                <span>{contributorCountries}</span>
+              </article>
+            </div>
+            <div className={styles.communityMetricActions}>
+              <a className={clsx('button', 'button--primary')} href={GITHUB_REPO_URL} target="_blank" rel="noreferrer">
+                {isZh ? '给 HAMi 点个 Star' : 'Star HAMi on GitHub'}
+              </a>
+              <Link className={clsx('button', 'button--outline')} to={useBaseUrl('/community')}>
+                {isZh ? '加入社区' : 'Join Community'}
+              </Link>
             </div>
           </div>
         </section>

@@ -604,6 +604,46 @@ html[data-theme='dark'] .navbar-sidebar__backdrop {
   .navbar:has(.navbar__toggle[aria-expanded='true']) .navbar-sidebar {
     transform: translate3d(0, 0, 0);
   }
+
+  /* Keep mobile nav solid when menu is open (no frosted glass). */
+  .navbar.navbar-sidebar--show,
+  .navbar:has(.navbar__toggle[aria-expanded='true']) {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .navbar.navbar-sidebar--show .navbar-sidebar__backdrop,
+  .navbar:has(.navbar__toggle[aria-expanded='true']) .navbar-sidebar__backdrop {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .navbar.navbar-sidebar--show .navbar-sidebar__item,
+  .navbar.navbar-sidebar--show .navbar-sidebar__brand,
+  .navbar:has(.navbar__toggle[aria-expanded='true']) .navbar-sidebar__item,
+  .navbar:has(.navbar__toggle[aria-expanded='true']) .navbar-sidebar__brand {
+    background: #ffffff;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .navbar.navbar-sidebar--show .navbar-sidebar,
+  .navbar.navbar-sidebar--show .navbar-sidebar__items,
+  .navbar:has(.navbar__toggle[aria-expanded='true']) .navbar-sidebar,
+  .navbar:has(.navbar__toggle[aria-expanded='true']) .navbar-sidebar__items {
+    background: #ffffff;
+  }
+
+  html[data-theme='dark'] .navbar.navbar-sidebar--show .navbar-sidebar,
+  html[data-theme='dark'] .navbar.navbar-sidebar--show .navbar-sidebar__items,
+  html[data-theme='dark'] .navbar:has(.navbar__toggle[aria-expanded='true']) .navbar-sidebar,
+  html[data-theme='dark'] .navbar:has(.navbar__toggle[aria-expanded='true']) .navbar-sidebar__items,
+  html[data-theme='dark'] .navbar.navbar-sidebar--show .navbar-sidebar__item,
+  html[data-theme='dark'] .navbar.navbar-sidebar--show .navbar-sidebar__brand,
+  html[data-theme='dark'] .navbar:has(.navbar__toggle[aria-expanded='true']) .navbar-sidebar__item,
+  html[data-theme='dark'] .navbar:has(.navbar__toggle[aria-expanded='true']) .navbar-sidebar__brand {
+    background: #0b0f14;
+  }
 }
 
 .navbar__link--active {
