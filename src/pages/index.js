@@ -161,7 +161,7 @@ const runtimeLanes = [
         key: 'isolation',
         emphasis: 'primary',
         label: { en: 'HAMi Core', zh: 'HAMi Core' },
-        note: { en: 'memory / core isolation', zh: '内存 / 核心隔离' },
+        note: { en: 'memory / core isolation', zh: '显存 / 核心隔离' },
       },
       {
         key: 'runtime',
@@ -362,7 +362,8 @@ export default function Home() {
                 <div className={styles.badges}>
                   {heroStats.map((item) => (
                     <span key={item.key} className="hami-pill">
-                      <strong>{item.label}:</strong>&nbsp;{item.value}
+                      <strong>{typeof item.label === 'object' ? (isZh ? item.label.zh : item.label.en) : item.label}:</strong>&nbsp;
+                      {typeof item.value === 'object' ? (isZh ? item.value.zh : item.value.en) : item.value}
                     </span>
                   ))}
                 </div>

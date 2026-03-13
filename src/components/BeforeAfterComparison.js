@@ -2,6 +2,7 @@ import React from 'react';
 import clsx from 'clsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 import styles from './BeforeAfterComparison.module.css';
 
 const copy = {
@@ -110,6 +111,7 @@ function GpuCell({ isZh, item, mode }) {
 function AllocationPanel({ isZh, mode }) {
   const isWith = mode === 'with';
   const rack = isWith ? withRack : withoutRack;
+  const logoUrl = useBaseUrl('img/logo.svg');
 
   return (
     <section className={clsx(styles.allocPanel, isWith ? styles.allocPanelWith : styles.allocPanelWithout)}>
@@ -117,7 +119,7 @@ function AllocationPanel({ isZh, mode }) {
         <div className={styles.allocHeadTitle}>
           {isWith && (
             <img
-              src="/img/logo.svg"
+              src={logoUrl}
               alt="HAMi"
               className={styles.allocHeadLogo}
             />
