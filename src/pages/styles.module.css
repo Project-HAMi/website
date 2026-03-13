@@ -1640,6 +1640,8 @@
 
   .heroVisual {
     justify-self: stretch;
+    max-height: none;
+    overflow: visible;
   }
 
   .heroTitle {
@@ -2026,8 +2028,8 @@
   .runtimeStepNote { font-size: 0.58rem; }
 
   .runtimeResources {
-    padding: 12px 0 0;
-    border-radius: 0;
+    padding: 12px 10px;
+    border-radius: 14px;
     font-size: 0.74rem;
   }
 

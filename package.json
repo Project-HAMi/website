@@ -9,6 +9,7 @@
   "scripts": {
     "docusaurus": "docusaurus",
     "start": "docusaurus start",
+    "start:network": "./start-network.sh",
     "build": "NODE_OPTIONS=\"--max-old-space-size=8192 --no-deprecation\" docusaurus build",
     "build:fast": "NODE_OPTIONS=\"--max-old-space-size=8192 --no-deprecation\" docusaurus build --locale en",
     "swizzle": "docusaurus swizzle",
