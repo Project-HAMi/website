@@ -23,11 +23,6 @@
 
 .diagramCard {
   margin: 0;
-  border: 1px solid rgba(56, 121, 173, 0.2);
-  border-radius: 16px;
-  padding: 14px;
-  min-height: 392px;
-  background: linear-gradient(180deg, rgba(248, 252, 255, 0.05), rgba(241, 248, 253, 0.03));
   overflow: hidden;
 }
 
@@ -405,10 +400,7 @@
   line-height: 1.1;
 }
 
-:global(html[data-theme='light']) .diagramCard {
-  border-color: rgba(53, 109, 157, 0.22);
-  background: linear-gradient(180deg, #f8fbfe, #f3f8fc);
-}
+
 
 :global(html[data-theme='light']) .requestRowItem,
 :global(html[data-theme='light']) .metricBadge {

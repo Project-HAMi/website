@@ -162,37 +162,11 @@ export default function BeforeAfterComparison({ isZh, showHeader = true }) {
 
       <div className={styles.layout}>
         <figure className={styles.diagramCard}>
-          <div className={styles.storyRow}>
-            <section className={styles.stepRequests}>
-              <h4>{t(isZh, copy.stepRequests)}</h4>
-              <div className={styles.requestList}>
-                {requestRows.map((row) => (
-                  <RequestRow key={row.key} isZh={isZh} row={row} />
-                ))}
-              </div>
-            </section>
-
-            <div className={styles.flowLink}>
-              <span>{t(isZh, copy.stepWithout)}</span>
-              <i aria-hidden="true" />
-            </div>
-
-            <AllocationPanel isZh={isZh} mode="without" />
-
-            <div className={styles.flowLink}>
-              <span>{t(isZh, copy.stepWith)}</span>
-              <i aria-hidden="true" />
-            </div>
-
-            <AllocationPanel isZh={isZh} mode="with" />
-          </div>
-
-          <div className={styles.legendRow} aria-label={isZh ? '配色图例' : 'Color legend'}>
-            <span className={styles.legendItem}><i className={clsx(styles.legendSwatch, styles.legendSwatchA)} aria-hidden="true" />{t(isZh, copy.legendA)}</span>
-            <span className={styles.legendItem}><i className={clsx(styles.legendSwatch, styles.legendSwatchB)} aria-hidden="true" />{t(isZh, copy.legendB)}</span>
-            <span className={styles.legendItem}><i className={clsx(styles.legendSwatch, styles.legendSwatchWaste)} aria-hidden="true" />{t(isZh, copy.legendWaste)}</span>
-            <span className={styles.legendItem}><i className={clsx(styles.legendSwatch, styles.legendSwatchAvail)} aria-hidden="true" />{t(isZh, copy.legendAvail)}</span>
-          </div>
+          <img
+            src={useBaseUrl(isZh ? 'img/gpu-sharing-diagram-zh.svg' : 'img/gpu-sharing-diagram.svg')}
+            alt={t(isZh, copy.title)}
+            style={{ width: '100%', background: '#fff', borderRadius: '8px' }}
+          />
         </figure>
 
         <aside className={styles.summary}>

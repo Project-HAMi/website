@@ -3,7 +3,7 @@ const valueCards = [
     id: 'heterogeneous-management',
     icon: 'network-wired',
     title: {
-      en: 'Heterogeneous management',
+      en: 'Heterogeneous Management',
       zh: '统一管理异构设备复用',
     },
     description: {
@@ -15,7 +15,7 @@ const valueCards = [
     id: 'hard-isolation',
     icon: 'shield-halved',
     title: {
-      en: 'Hard isolation',
+      en: 'Hard Isolation',
       zh: '细粒度切分与硬隔离',
     },
     description: {
