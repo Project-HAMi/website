@@ -1,14 +1,13 @@
 ---
 title: 分配设备核心给容器
+linktitle: 指定核心
 translated: true
 ---
-
-## 分配设备核心给容器
 
 通过指定资源 `cambricon.com/mlu.smlu.vcore` 来分配设备核心资源的百分比。
 可选项，每个 `cambricon.com/mlu.smlu.vcore` 单位等于设备核心的 1%。
 
-```
+```yaml
       resources:
         limits:
           cambricon.com/vmlu: 1 # 请求 1 个 MLU

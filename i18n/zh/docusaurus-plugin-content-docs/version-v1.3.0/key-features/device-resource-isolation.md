@@ -5,7 +5,7 @@ title: Device resource isolation
 A simple demonstration for device isolation:
 A task with the following resources.
 
-```
+```yaml
       resources:
         limits:
           nvidia.com/gpu: 1 # requesting 1 vGPU
@@ -14,4 +14,4 @@ A task with the following resources.
 
 will see 3G device memory inside container
 
-![img](../resources/hard_limit.jpg)
+![GPU 内存硬限制演示，显示容器内 3GB 设备内存](../resources/hard_limit.jpg)

@@ -14,8 +14,8 @@ the `Project-HAMi/website` repository.
   The community now supports both Chinese and English.
   English is the official language of documentation.
 - For our docs we use markdown. If you are unfamiliar with Markdown,
-  please see https://guides.github.com/features/mastering-markdown/ or
-  https://www.markdownguide.org/ if you are looking for something more substantial.
+  please see [https://guides.github.com/features/mastering-markdown/](https://guides.github.com/features/mastering-markdown/) or
+  [https://www.markdownguide.org/](https://www.markdownguide.org/) if you are looking for something more substantial.
 - We get some additions through [Docusaurus 2](https://docusaurus.io/), a model static website generator.
 
 ## Setup
@@ -29,7 +29,7 @@ cd website
 
 Our website is organized like below:
 
-```
+```text
 website
 ├── sidebars.json        # sidebar for the current docs version
 ├── docs                 # docs directory for the current docs version
@@ -79,7 +79,7 @@ It's important for your article to specify metadata concerning an article at the
 
 For now, let's take a look at a quick example which should explain the most relevant entries in **Front Matter**:
 
-```
+```yaml
 ---
 title: A doc with tags
 ---

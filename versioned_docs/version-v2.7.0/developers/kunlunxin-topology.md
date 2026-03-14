@@ -8,7 +8,7 @@ When multiple XPUs are configured on a single P800 server, performance is optimi
 when GPUs are connected to or located within the same NUMA node, as shown below.
 This setup establishes a specific topology among all GPUs in the server.
 
-![img](../resources/kunlunxin_topo.jpg)
+![Kunlunxin XPU topology diagram showing NUMA node connections on P800 server](../resources/kunlunxin_topo.jpg)
 
 When a user job requests a specific number of `kunlunxin.com/xpu` resources,
 Kubernetes schedules the pods to appropriate nodes to minimize resource fragmentation
@@ -25,7 +25,7 @@ The filtering phase identifies all nodes eligible for allocation. For each node,
 the best XPU combination plan is selected and cached for use in the scoring phase.
 The selection process is shown below:
 
-![img](../resources/kunlunxin_filter.png)
+![Kunlunxin XPU filter selection process diagram](../resources/kunlunxin_filter.png)
 
 ## Score
 

@@ -1,8 +1,7 @@
 ---
-title: Volcano vGPU
+linktitle: Volcano vGPU
+title: Volcano vGPU device plugin for Kubernetes
 ---
-
-# Volcano vGPU device plugin for Kubernetes
 
 :::note
 

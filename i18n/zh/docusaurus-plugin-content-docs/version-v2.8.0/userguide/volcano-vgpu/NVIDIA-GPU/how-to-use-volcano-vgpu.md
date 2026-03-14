@@ -3,7 +3,7 @@ title: 如何使用 Volcano vGPU
 translated: true
 ---
 
-# Volcano vgpu 设备插件用于 Kubernetes
+## Volcano vgpu 设备插件用于 Kubernetes
 
 **注意**：
 

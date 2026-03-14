@@ -1,12 +1,15 @@
 ---
 title: 启用昆仑芯 GPU 拓扑感知调度
+linktitle: 拓扑感知调度
 ---
+
+## 启用昆仑芯 GPU 拓扑感知调度
 
 **昆仑芯 GPU 拓扑感知调度现在通过 `kunlunxin.com/xpu` 资源得到支持。**
 
-当在单个P800服务器上配置多个XPU时，当XPU卡连接到同一NUMA节点或互相之间可以直接连接时，性能会显著提升。从而在服务器上的所有 XPU 之间形成拓扑，如下所示：
+当在单个 P800 服务器上配置多个 XPU 时，当 XPU 卡连接到同一 NUMA 节点或互相之间可以直接连接时，性能会显著提升。从而在服务器上的所有 XPU 之间形成拓扑，如下所示：
 
-![img](../../resources/kunlunxin_topo.jpg)
+![Kunlunxin XPU 拓扑图，显示 P800 服务器上的 NUMA 节点连接](../../resources/kunlunxin_topo.jpg)
 
 当用户作业请求一定数量的 `kunlunxin.com/xpu` 资源时，
 Kubernetes 将 Pod 调度到适当的节点上，目标是减少碎片化
@@ -30,9 +33,9 @@ Kubernetes 将 Pod 调度到适当的节点上，目标是减少碎片化
 
 ## 启用拓扑感知调度
 
-- 在 P800 节点上部署昆仑芯设备插件。
+* 在 P800 节点上部署昆仑芯设备插件。
   （请联系您的设备供应商获取相应的软件包和文档。）  
-- 按照 `README.md` 中的说明部署 HAMi。
+* 按照 `README.md` 中的说明部署 HAMi。
 
 ## 运行昆仑芯作业
 

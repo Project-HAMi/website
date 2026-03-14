@@ -1,19 +1,31 @@
 {
   "link.item.label.Documentation": {
     "message": "文档",
-    "description": "The label of footer link with label=Documentation linking to /docs/"
+    "description": "The label of footer link with label=Documentation linking to /docs"
   },
   "link.item.label.Get Started": {
     "message": "快速开始",
     "description": "The label of footer link with label=Get Started"
   },
+  "link.item.label.Try Demo": {
+    "message": "体验示例",
+    "description": "The label of footer link with label=Try Demo linking to /docs/get-started/deploy-with-helm"
+  },
   "link.item.label.Installation": {
     "message": "安装部署",
     "description": "The label of footer link with label=Installation"
   },
+  "link.item.label.Install": {
+    "message": "安装",
+    "description": "The label of footer link with label=Install linking to /docs/installation/online-installation"
+  },
+  "link.item.label.Quick Start": {
+    "message": "快速开始",
+    "description": "The label of footer link with label=Quick Start linking to /docs/get-started/deploy-with-helm"
+  },
   "link.item.label.User Guide": {
     "message": "用户指南",
-    "description": "The label of footer link with label=User Guide"
+    "description": "The label of footer link with label=User Guide linking to /docs/userguide/configure"
   },
   "link.title.Community": {
     "message": "社区",
@@ -41,22 +53,34 @@
   },
   "link.item.label.WeChat Group": {
     "message": "微信入群",
-    "description": "The label of footer link with label=WeChat Group"
+    "description": "The label of footer link with label=WeChat Group linking to /community?wechat=group"
   },
   "link.item.label.Adopters": {
     "message": "采用者",
     "description": "底部链接标签，指向 Adopters"
   },
+  "link.item.label.Adoption": {
+    "message": "采用案例",
+    "description": "The label of footer link with label=Adoption linking to /adopters"
+  },
+  "link.item.label.Releases": {
+    "message": "发布记录",
+    "description": "The label of footer link with label=Releases linking to /changelog"
+  },
   "link.title.Documentation": {
     "message": "文档",
     "description": "The title of the footer links column with title=Documentation in the footer"
   },
-  "link.item.label.CNCF Slack ": {
-    "message": "CNCF Slack ",
-    "description": "The label of footer link with label=CNCF Slack  linking to https://slack.cncf.io/"
+  "link.item.label.Slack ": {
+    "message": "Slack ",
+    "description": "The label of footer link with label=Slack  linking to https://slack.cncf.io/"
   },
   "copyright": {
-    "message": "\n        <br />\n        <strong>© HAMi Authors 2025 | Documentation Distributed under <a href=\"https://creativecommons.org/licenses/by/4.0\">CC-BY-4.0</a> </strong> <strong>| Powered by <a href=\"https://www.netlify.com\">Netlify</a></strong>\n        <br />\n        <br />\n       Copyright © HAMi \n For website terms of use, trademark policy and other project policies please see lfprojects.org/policies/.\n      ",
+    "message": "\n        <br />\n        <strong>© HAMi Authors 2026 | Documentation Distributed under <a href=\"https://creativecommons.org/licenses/by/4.0\">CC-BY-4.0</a> </strong> <strong>| Powered by <a href=\"https://www.netlify.com\">Netlify</a></strong>\n        <br />\n        <br />\n        The Linux Foundation has registered trademarks and uses trademarks. For a list of trademarks of The Linux Foundation, please see our <a href=\"https://www.linuxfoundation.org/trademark-usage/\">Trademark Usage</a> page.\n        <br />\n        <a href=\"https://www.linuxfoundation.org/privacy/\">Privacy Policy</a> and <a href=\"https://www.linuxfoundation.org/terms/\">Terms of Use</a>.\n      ",
     "description": "The footer copyright"
+  },
+  "link.item.label.Discord": {
+    "message": "Discord",
+    "description": "The label of footer link with label=Discord linking to https://discord.gg/Amhy7XmbNq"
   }
 }

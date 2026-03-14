@@ -4,38 +4,41 @@ translated: true
 slug: /
 ---
 
-## HAMi：异构 AI 计算虚拟化中间件 {#hami-heterogeneous-ai-computing-virtualization-middleware}
+HAMi（异构 AI 计算虚拟化中间件）是一个用于管理 Kubernetes 集群中异构 AI 计算设备的开源平台。前身为 k8s-vGPU-scheduler，HAMi 可在多个容器和工作负载之间实现设备共享。
 
-异构 AI 计算虚拟化中间件（HAMi），前身为 k8s-vGPU-scheduler，是一个专为管理 k8s 集群中异构 AI 计算设备而设计的"一体化"Helm Chart。它能够实现异构 AI 设备在多个任务间的共享能力。
+HAMi 是[云原生计算基金会（CNCF）](https://cncf.io/)的 [Sandbox 项目](https://landscape.cncf.io/?item=orchestration-management--scheduling-orchestration--hami)，并被收录于 [CNCF 技术全景图](https://landscape.cncf.io/?item=orchestration-management--scheduling-orchestration--hami)和 [CNAI 技术全景图](https://landscape.cncf.io/?group=cnai&item=orchestration-management--scheduling-orchestration--hami)。
 
-HAMi 是[云原生计算基金会（CNCF）](https://cncf.io/)的 SandBox 项目，同时被收录于[CNCF 技术全景图 - 编排与调度类目](https://landscape.cncf.io/?item=orchestration-management--scheduling-orchestration--hami)及[CNAI 技术全景图](https://landscape.cncf.io/?group=cnai&item=cnai--general-orchestration--hami)。
+## 核心特性
 
-## 为什么选择 HAMi {#why-hami}
+### 设备共享
 
-- **设备共享**
-  - 支持多种异构 AI 计算设备（如 NVIDIA GPU/CUDA）
-  - 支持多设备容器的设备共享
+- **多设备支持**：兼容多种异构 AI 计算设备（GPU、NPU 等）
+- **共享访问**：多个容器可同时共享设备，提高资源利用率
 
-- **设备显存控制**
-  - 容器内硬性内存限制
-  - 支持动态设备显存分配
-  - 支持按 MB 或百分比分配内存
+### 内存管理
 
-- **设备规格指定**
-  - 支持指定特定类型的异构 AI 计算设备
-  - 支持通过设备 UUID 指定具体设备
+- **硬限制**：在容器内强制执行严格的内存限制，防止资源冲突
+- **动态分配**：根据工作负载需求按需分配设备内存
+- **灵活单位**：支持按 MB 或占总设备内存百分比的方式指定内存分配
 
-- **开箱即用**
-  - 对容器内任务透明无感
-  - 通过 helm 一键安装/卸载，简洁环保
+### 设备规格
 
-- **开放中立**
-  - 由互联网、金融、制造业、云服务商等多领域联合发起
-  - 以 CNCF 开放治理为目标
+- **类型选择**：可请求特定类型的异构 AI 计算设备
+- **UUID 定向**：使用设备 UUID 精确指定特定设备
 
-## 后续步骤 {#whats-next}
+### 易用性
+
+- **对工作负载透明**：容器内无需修改代码
+- **简单部署**：使用 Helm 轻松安装和卸载，配置简单
+
+### 开放治理
+
+- **社区驱动**：由互联网、金融、制造业、云服务等多个领域的组织联合发起
+- **中立发展**：作为开源项目由 CNCF 管理
+
+## 后续步骤
 
 推荐继续了解：
 
 - 学习 HAMi 的[架构设计](./architecture.md)
-- 开始[安装 HAMi](../installation/prequisities.md)
+- 在您的 Kubernetes 集群中[安装 HAMi](../installation/prerequisites.md)

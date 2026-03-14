@@ -1,8 +1,7 @@
 ---
-title: WebUI
+linktitle: WebUI
+title: Deploy HAMi-WebUI using Helm Charts
 ---
-
-# Deploy HAMi-WebUI using Helm Charts
 
 This topic includes instructions for installing and running HAMi-WebUI on Kubernetes using Helm Charts.
 
@@ -12,7 +11,7 @@ The WebUI can only be accessed by your localhost, so you need to connect your lo
 
 The HAMi-WebUI open-source community offers Helm Charts for running it on Kubernetes. Please be aware that the code is provided without any warranties. If you encounter any problems, you can report them to the [Official GitHub repository](https://github.com/Project-HAMi/HAMi-WebUI/tree/main/charts/hami-webui).
 
-## Prequisities
+## Prerequisites
 
 To install HAMi-WebUI using Helm, ensure you meet these requirements:
 

@@ -1,9 +1,8 @@
 ---
-title: WebUI
+linktitle: 安装 WebUI
 translated: true
+title: 使用 Helm Charts 部署 HAMi-WebUI
 ---
-
-# 使用 Helm Charts 部署 HAMi-WebUI
 
 本主题包含在 Kubernetes 上使用 Helm Charts 安装和运行 HAMi-WebUI 的说明。
 

@@ -1,4 +1,5 @@
 ---
+linktitle: 通过 Helm 在线安装
 title: 通过 Helm 在线安装（推荐）
 translated: true
 ---

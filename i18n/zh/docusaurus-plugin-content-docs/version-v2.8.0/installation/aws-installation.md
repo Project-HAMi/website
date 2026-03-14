@@ -1,5 +1,6 @@
 ---
-title: HAMi on AWS
+linktitle: HAMi on AWS
+title: 在 AWS 上安装与使用 HAMi
 translated: true
 ---
 
@@ -49,7 +50,7 @@ kubectl get pods -n kube-system
 
 ### NVIDIA 设备
 
-[使用独占 GPU](https://project-hami.io/zh/docs/userguide/NVIDIA-device/examples/use-exclusive-card)
-[为容器分配特定设备显存](https://project-hami.io/zh/docs/userguide/NVIDIA-device/examples/allocate-device-memory)
-[为容器分配设备核心资源](https://project-hami.io/zh/docs/userguide/NVIDIA-device/examples/allocate-device-core)
-[将任务分配给 mig 实例](https://project-hami.io/zh/docs/userguide/NVIDIA-device/examples/dynamic-mig-example)
+- [使用独占 GPU](https://project-hami.io/zh/docs/userguide/nvidia-device/examples/use-exclusive-card)
+- [为容器分配特定设备显存](https://project-hami.io/zh/docs/userguide/nvidia-device/examples/allocate-device-memory)
+- [为容器分配设备核心资源](https://project-hami.io/zh/docs/userguide/nvidia-device/examples/allocate-device-core)
+- [将任务分配给 mig 实例](https://project-hami.io/zh/docs/userguide/nvidia-device/examples/dynamic-mig-example)

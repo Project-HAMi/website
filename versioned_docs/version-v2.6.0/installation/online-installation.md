@@ -1,4 +1,5 @@
 ---
+linktitle: Online Installation from Helm
 title: Online Installation from Helm (Recommended)
 ---
 

@@ -1,4 +1,5 @@
 ---
+linktitle: Online Installation from Helm
 title: Online Installation from Helm (Recommended)
 ---
 
@@ -12,9 +13,9 @@ You can add HAMi chart repository using the following command:
 helm repo add hami-charts https://project-hami.github.io/HAMi/
 ```
 
-## Get your Kubernetes version
+## Get your kubernetes version
 
-A Kubernetes version is required for proper installation. You can retrieve it using the following command:
+kubernetes version is needed for properly installation. You can get this information by using the following command:
 
 ```bash
 kubectl version
@@ -22,14 +23,13 @@ kubectl version
 
 ## Installation
 
-Ensure the Kubernetes scheduler image version matches your Kubernetes server version.
-For instance, if your cluster server is v1.16.8, use the following command to deploy:
+During installation, set the Kubernetes scheduler image version to match your Kubernetes server version. For instance, if your cluster server version is 1.16.8, use the following command for deployment:
 
 ```bash
 helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag=v1.16.8 -n kube-system
 ```
 
-Customize your installation by editing the [configurations](../userguide/configure.md).
+You can customize your installation by adjusting the [configs](../userguide/configure.md).
 
 ## Verify your installation
 

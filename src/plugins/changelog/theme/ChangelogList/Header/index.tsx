@@ -43,7 +43,7 @@ export default function ChangelogListHeader({
 }): ReactNode {
   return (
     <header className="margin-bottom--lg">
-      <Heading as="h1" style={{ fontSize: "3rem" }}>
+      <Heading as="h1" style={{ fontSize: "2.4rem" }}>
         {blogTitle}
       </Heading>
       <p>
@@ -54,6 +54,11 @@ export default function ChangelogListHeader({
           }}
         >
           {"Subscribe through {rssLink} to stay up-to-date with new releases!"}
+        </Translate>
+      </p>
+      <p>
+        <Translate id="changelog.description.filterHint">
+          Use year and highlight tags to quickly locate impactful releases.
         </Translate>
       </p>
     </header>

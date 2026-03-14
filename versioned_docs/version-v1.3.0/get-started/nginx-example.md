@@ -1,14 +1,16 @@
 ---
-title: Deploy HAMi using helm
+title: Deploy HAMi using Helm
 ---
 
 This guide will cover:
+
 - Configure nvidia container runtime in each GPU nodes
 - Install HAMi using helm
 - Launch a vGPU task
 - Check if the corresponding device resources are limited inside container
 
 ### Prerequisites
+
 - [Helm](https://helm.sh/zh/docs/) version v3+
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) version v1.16+
 - [CUDA](https://developer.nvidia.com/cuda-toolkit) version v10.2+
@@ -17,6 +19,7 @@ This guide will cover:
 ### Installation
 
 #### 1. Configure nvidia-container-toolkit
+
 <summary> Configure nvidia-container-toolkit </summary>
 
 Execute the following steps on all your GPU nodes.
@@ -88,13 +91,14 @@ sudo systemctl daemon-reload && systemctl restart containerd
 ```
 
 #### 2. Label your nodes
+
 Label your GPU nodes for scheduling with HAMi by adding the label "gpu=on". Without this label, the nodes cannot be managed by our scheduler.
 
 ```
 kubectl label nodes {nodeid} gpu=on
 ```
 
-#### 3. Deploy HAMi using helm:
+#### 3. Deploy HAMi using Helm
 
 First, you need to check your Kubernetes version by using the following command:
 
@@ -118,7 +122,7 @@ If everything goes well, you will see both vgpu-device-plugin and vgpu-scheduler
 
 ### Demo
 
-#### 1. Submit demo task:
+#### 1. Submit demo task
 
 Containers can now request NVIDIA vGPUs using the `nvidia.com/gpu`` resource type.
 
@@ -146,7 +150,7 @@ Execute the following query command:
 kubectl exec -it gpu-pod nvidia-smi
 ```
 
-The result should be 
+The result should be
 
 ```
 [HAMI-core Msg(28:140561996502848:libvgpu.c:836)]: Initializing.....
@@ -172,5 +176,3 @@ Wed Apr 10 09:28:58 2024
 +-----------------------------------------------------------------------------------------+
 [HAMI-core Msg(28:140561996502848:multiprocess_memory_limit.c:434)]: Calling exit handler 28
 ```
-
-

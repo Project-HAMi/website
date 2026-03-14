@@ -2,9 +2,9 @@
 title: Contributor Ladder
 ---
 
-This docs different ways to get involved and level up within the project. You can see different roles within the project in the contributor roles.
+This document describes different ways to get involved and level up within the project. You can see different roles within the project in the contributor roles.
 
-## Contributor Ladder
+## Overview
 
 Hello! We are excited that you want to learn more about our project contributor ladder! This contributor ladder outlines the different contributor roles within the project, along with the responsibilities and privileges that come with them. Community members generally start at the first levels of the "ladder" and advance up it as their involvement in the project grows.  Our project members are happy to help you advance along the contributor ladder.
 
@@ -49,7 +49,7 @@ Description: A Contributor contributes directly to the project and adds value to
 
 A very special thanks to the [long list of people](https://github.com/Project-HAMi/HAMi/blob/master/AUTHORS.md) who have contributed to and helped maintain the project. We wouldn't be where we are today without your contributions. Thank you! 💖
 
-As long as you contribute to HAMi, your name will be added [here](https://github.com/Project-HAMi/HAMi/blob/master/AUTHORS.md). If you don't find your name, please contact us to add it.
+As long as you contribute to HAMi, your name will be added to the [AUTHORS.md file](https://github.com/Project-HAMi/HAMi/blob/master/AUTHORS.md). If you don't find your name, please contact us to add it.
 
 ### Organization Member
 

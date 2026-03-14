@@ -7,9 +7,10 @@ title: Enable Metax GPU topology-aware scheduling
 When multiple GPUs are configured on a single server, the GPU cards are connected to the same PCIe Switch or MetaXLink depending on whether they are connected
 , there is a near-far relationship. This forms a topology among all the cards on the server, as shown in the following figure:
 
-![img](../../resources/metax_topo.jpg)
+![Metax GPU 拓扑图，显示 PCIe Switch 和 MetaXLink 连接](../../resources/metax_topo.jpg)
 
 A user job requests a certain number of metax-tech.com/gpu resources, Kubernetes schedule pods to the appropriate node. gpu-device further processes the logic of allocating the remaining resources on the resource node following criteria below:
+
 1. MetaXLink takes precedence over PCIe Switch in two way:
 – A connection is considered a MetaXLink connection when there is a MetaXLink connection and a PCIe Switch connection between the two cards.
 – When both the MetaXLink and the PCIe Switch can meet the job request
@@ -17,11 +18,11 @@ Equipped with MetaXLink interconnected resources.
 
 2. When using `node-scheduler-policy=spread` , Allocate Metax resources to be under the same Metaxlink or Paiswich as much as possible, as the following figure shows:
 
-![img](../../resources/metax_spread.jpg)
+![Metax spread 调度策略图，展示资源分配](../../resources/metax_spread.jpg)
 
-3. When using `node-scheduler-policy=binpack`, Assign GPU resources, so minimize the damage to MetaxXLink topology, as the following figure shows:
+1. When using `node-scheduler-policy=binpack`, Assign GPU resources, so minimize the damage to MetaxXLink topology, as the following figure shows:
 
-![img](../../resources/metax_binpack.jpg)
+![Metax binpack 调度策略图，展示拓扑感知分配](../../resources/metax_binpack.jpg)
 
 ## Important Notes
 
@@ -45,7 +46,7 @@ Equipped with MetaXLink interconnected resources.
 Mthreads GPUs can now be requested by a container
 using the `metax-tech.com/gpu`  resource type:
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -63,5 +64,3 @@ spec:
 ```
 
 > **NOTICE2:** *You can find more examples in examples folder
-
-   

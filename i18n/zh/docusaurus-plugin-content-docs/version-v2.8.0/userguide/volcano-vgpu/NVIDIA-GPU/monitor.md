@@ -1,9 +1,10 @@
 ---
 title: 监控 Volcano vGPU
+linktitle: 监控
 translated: true
 ---
 
-## 监控
+## 监控 Volcano vGPU
 
 volcano-scheduler-metrics 记录每个 GPU 的使用情况和限制，访问以下地址获取这些指标。
 

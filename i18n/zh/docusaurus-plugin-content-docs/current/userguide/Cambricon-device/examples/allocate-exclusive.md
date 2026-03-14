@@ -1,5 +1,6 @@
 ---
 title: 分配独占设备
+linktitle: 独占设备
 translated: true
 ---
 

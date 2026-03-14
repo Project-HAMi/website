@@ -1,9 +1,7 @@
 ---
-title: Volcano Ascend vNPU
+title: Volcano Ascend vNPU 使用指南
 translated: true
 ---
-
-# Volcano 中 Ascend 设备使用指南
 
 ## 介绍
 
@@ -15,7 +13,7 @@ Volcano 通过 `ascend-device-plugin` 支持 Ascend 310 和 Ascend 910 的 vNPU 
 - Ascend 310 系列的 NPU 和 vNPU 集群
 - 异构 Ascend 集群
 
-此功能仅在Volcano 1.14及以上版本中可用。
+此功能仅在 Volcano 1.14 及以上版本中可用。
 
 ## 快速开始
 
@@ -23,7 +21,7 @@ Volcano 通过 `ascend-device-plugin` 支持 Ascend 310 和 Ascend 910 的 vNPU 
 
 [ascend-docker-runtime](https://gitcode.com/Ascend/mind-cluster/tree/master/component/ascend-docker-runtime)
 
-### 安装Volcano
+### 安装 Volcano
 
 ```shell
 helm repo add volcano-sh https://volcano-sh.github.io/helm-charts
@@ -36,7 +34,7 @@ helm install volcano volcano-sh/volcano -n volcano-system --create-namespace
 
 ```shell
 kubectl label node {ascend-node} ascend=on
-``` 
+```
 
 ### 部署 hami-scheduler-device ConfigMap
 
@@ -49,6 +47,7 @@ kubectl apply -f https://raw.githubusercontent.com/Project-HAMi/ascend-device-pl
 ```shell
 kubectl apply -f https://raw.githubusercontent.com/Project-HAMi/ascend-device-plugin/refs/heads/main/ascend-device-plugin.yaml
 ```
+
 更多信息请参考 [ascend-device-plugin 文档](https://github.com/Project-HAMi/ascend-device-plugin)。
 
 ### 更新调度器配置
@@ -103,7 +102,9 @@ spec:
           huawei.com/Ascend310P-memory: "4096"
 
 ```
-支持的 Ascend 芯片及其对应的资源名称如下表所示:
+
+支持的 Ascend 芯片及其对应的资源名称如下表所示：
+
 | ChipName | ResourceName | ResourceMemoryName |
 |-------|-------|-------|
 | 910A | huawei.com/Ascend910A | huawei.com/Ascend910A-memory |

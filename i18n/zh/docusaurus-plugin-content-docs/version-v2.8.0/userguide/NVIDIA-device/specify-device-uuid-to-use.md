@@ -1,9 +1,10 @@
 ---
 title: 分配到特定设备
+linktitle: 指定设备
 translated: true
 ---
 
-## 分配到特定设备类型
+## 分配到特定设备
 
 有时任务可能希望在某个特定的GPU上运行，可以在pod注释中填写`nvidia.com/use-gpuuuid`字段。HAMi调度器将尝试匹配具有该UUID的设备。
 

@@ -1,0 +1,46 @@
+.backToTop {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 1200;
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  border: 1px solid var(--hami-color-border-strong);
+  background: var(--hami-color-surface);
+  color: var(--ifm-color-primary);
+  box-shadow: var(--hami-shadow-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity var(--hami-motion-fast), transform var(--hami-motion-fast), background-color var(--hami-motion-fast), border-color var(--hami-motion-fast), color var(--hami-motion-fast);
+}
+
+.backToTopVisible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.backToTop:hover {
+  border-color: var(--ifm-color-primary);
+  background: rgba(118, 185, 0, 0.14);
+  color: var(--ifm-color-primary-darkest);
+}
+
+.arrow {
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+@media (max-width: 996px) {
+  .backToTop {
+    right: 0.85rem;
+    bottom: 0.95rem;
+  }
+}

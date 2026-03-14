@@ -1,0 +1,32 @@
+.docItemContainer header + *,
+.docItemContainer article > *:first-child {
+  margin-top: 0;
+}
+
+@media (min-width: 997px) {
+  .docItemCol {
+    max-width: 75% !important;
+  }
+}
+
+/* Breadcrumbs row: put breadcrumbs and version badge on the same line */
+.docBreadcrumbsRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+/* Remove the bottom margin that DocBreadcrumbs normally adds — the row handles it */
+.docBreadcrumbsRow nav {
+  margin-bottom: 0;
+}
+
+/* On mobile keep a tighter layout */
+@media (max-width: 996px) {
+  .docBreadcrumbsRow {
+    gap: 0.25rem;
+  }
+}

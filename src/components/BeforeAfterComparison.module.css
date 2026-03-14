@@ -1,0 +1,583 @@
+.shell {
+  display: grid;
+  gap: 16px;
+}
+
+.header h3 {
+  margin: 0 0 6px;
+  color: var(--hami-diagram-heading);
+}
+
+.header p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--hami-diagram-muted);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.32fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.diagramCard {
+  margin: 0;
+  overflow: hidden;
+}
+
+.storyRow {
+  display: grid;
+  grid-template-columns: minmax(140px, 0.24fr) 56px minmax(0, 0.38fr) 56px minmax(0, 0.38fr);
+  gap: 10px;
+  align-items: center;
+  min-height: 324px;
+  min-width: 0;
+}
+
+.stepRequests {
+  display: grid;
+  gap: 10px;
+  align-content: center;
+  min-width: 0;
+}
+
+.stepRequests h4 {
+  margin: 0;
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--hami-diagram-label-color);
+}
+
+.requestList {
+  display: grid;
+  gap: 10px;
+}
+
+.requestRowItem {
+  border: 1px solid rgba(56, 121, 173, 0.2);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  min-height: 114px;
+  padding: 8px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.requestStrips {
+  display: flex;
+  gap: 4px;
+  align-items: flex-end;
+  height: 76px;
+}
+
+.userIcon {
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.62rem;
+}
+
+.userIcon_a {
+  color: #b45309;
+  background: rgba(217, 119, 6, 0.16);
+}
+
+.userIcon_b {
+  color: #1f4f84;
+  background: rgba(85, 154, 208, 0.16);
+}
+
+.requestText {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  text-align: center;
+}
+
+.requestText strong {
+  font-size: 0.66rem;
+  color: var(--hami-diagram-heading);
+}
+
+.requestText span {
+  font-size: 0.58rem;
+  color: var(--hami-diagram-muted);
+  line-height: 1.25;
+}
+
+.requestStrip {
+  width: 26px;
+  height: 76px;
+  border: 1px solid rgba(56, 121, 173, 0.28);
+  border-radius: 4px;
+  overflow: hidden;
+  background: rgba(220, 231, 239, 0.28);
+  position: relative;
+}
+
+.requestStripFill {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.requestStripFill_a {
+  background: rgba(217, 119, 6, 0.75);
+}
+
+.requestStripFill_b {
+  background: rgba(85, 154, 208, 0.78);
+}
+
+.flowLink {
+  display: grid;
+  justify-items: center;
+  gap: 5px;
+  align-self: center;
+}
+
+.flowLink span {
+  font-size: 0.66rem;
+  font-weight: 700;
+  color: var(--hami-diagram-heading);
+  text-align: center;
+  line-height: 1.2;
+}
+
+.flowLink i {
+  display: block;
+  width: 40px;
+  height: 1px;
+  background: rgba(56, 121, 173, 0.5);
+  position: relative;
+}
+
+.flowLink i::after {
+  content: '';
+  position: absolute;
+  right: -1px;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-right: 1px solid rgba(56, 121, 173, 0.74);
+  border-bottom: 1px solid rgba(56, 121, 173, 0.74);
+  transform: translateY(-50%) rotate(-45deg);
+}
+
+.allocPanel {
+  display: grid;
+  gap: 6px;
+  align-content: center;
+  min-width: 0;
+}
+
+.allocPanelWithout {
+  --panel-border: rgba(85, 115, 142, 0.5);
+  --meter-bg: rgba(214, 226, 235, 0.52);
+}
+
+.allocPanelWith {
+  --panel-border: rgba(103, 163, 38, 0.54);
+  --meter-bg: rgba(228, 241, 225, 0.54);
+}
+
+.allocHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.allocHeadTitle {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.allocHeadLogo {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.allocHead h4 {
+  margin: 0;
+  font-size: 0.74rem;
+  color: var(--hami-diagram-heading);
+}
+
+.allocHead span {
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: var(--hami-diagram-label-color);
+}
+
+.rackGrid {
+  border: 1px solid var(--panel-border);
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  min-width: 0;
+}
+
+.gpuCell {
+  border-right: 1px solid var(--panel-border);
+  display: grid;
+  grid-template-rows: 1fr auto;
+}
+
+.gpuCell:last-child {
+  border-right: 0;
+}
+
+.gpuCellAvailableOnly {
+  background: rgba(221, 240, 211, 0.36);
+}
+
+.gpuMeter {
+  position: relative;
+  height: 92px;
+  display: flex;
+  flex-direction: column-reverse;
+  background: var(--meter-bg);
+  overflow: hidden;
+}
+
+.wastedBlock,
+.workloadABlock,
+.workloadBBlock,
+.availableBlock {
+  display: block;
+}
+
+.wastedBlock {
+  background:
+    repeating-linear-gradient(
+      135deg,
+      rgba(208, 216, 224, 0.78) 0 7px,
+      rgba(195, 205, 214, 0.9) 7px 14px
+    );
+}
+
+.workloadABlock {
+  background: rgba(217, 119, 6, 0.72);
+  border-top: 1px solid rgba(255, 255, 255, 0.32);
+}
+
+.workloadBBlock {
+  background: rgba(85, 154, 208, 0.78);
+  border-top: 1px solid rgba(255, 255, 255, 0.32);
+}
+
+.availableBlock {
+  background: rgba(214, 239, 202, 0.9);
+  border-top: 1px solid rgba(255, 255, 255, 0.34);
+}
+
+.availableText {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-style: normal;
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #5f9800;
+}
+
+.gpuLabel {
+  text-align: center;
+  font-size: 0.56rem;
+  padding: 4px 0;
+  color: var(--hami-diagram-heading);
+  border-top: 1px solid var(--panel-border);
+}
+
+.allocFoot {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.allocFoot span {
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: var(--hami-diagram-muted);
+}
+
+.legendRow {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: var(--hami-diagram-muted);
+}
+
+.legendSwatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  border: 1px solid rgba(56, 121, 173, 0.26);
+}
+
+.legendSwatchA { background: rgba(217, 119, 6, 0.75); }
+.legendSwatchB { background: rgba(85, 154, 208, 0.82); }
+.legendSwatchWaste {
+  background:
+    repeating-linear-gradient(
+      135deg,
+      rgba(208, 216, 224, 0.82) 0 3px,
+      rgba(195, 205, 214, 0.92) 3px 6px
+    );
+}
+.legendSwatchAvail { background: rgba(214, 239, 202, 0.92); }
+
+.summary {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+
+.summaryLead {
+  margin: 0;
+  font-size: 1.06rem;
+  line-height: 1.22;
+  font-weight: 800;
+  color: var(--hami-diagram-heading);
+}
+
+.summaryLine {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.25;
+  font-weight: 700;
+  color: var(--hami-diagram-heading);
+}
+
+.metricsRow {
+  margin-top: 16px;
+  display: grid;
+  gap: 14px;
+}
+
+.metricBadge {
+  display: grid;
+  gap: 2px;
+  padding-left: 10px;
+  border-left: 3px solid var(--ifm-color-primary, #76b900);
+}
+
+.metricBadge span {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--hami-diagram-label-color);
+}
+
+.metricBadge strong {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--hami-diagram-heading);
+  line-height: 1.1;
+}
+
+
+
+:global(html[data-theme='light']) .requestRowItem,
+:global(html[data-theme='light']) .metricBadge {
+  border-color: rgba(53, 109, 157, 0.22);
+  background: rgba(255, 255, 255, 0.74);
+}
+
+:global(html[data-theme='light']) .requestText strong,
+:global(html[data-theme='light']) .allocHead h4,
+:global(html[data-theme='light']) .flowLink span,
+:global(html[data-theme='light']) .gpuLabel,
+:global(html[data-theme='light']) .summaryLead,
+:global(html[data-theme='light']) .summaryLine,
+:global(html[data-theme='light']) .metricBadge strong {
+  color: #173b5a;
+}
+
+:global(html[data-theme='light']) .requestText span,
+:global(html[data-theme='light']) .allocFoot span,
+:global(html[data-theme='light']) .legendItem {
+  color: #5a7590;
+}
+
+@media (max-width: 1320px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .summary {
+    gap: 10px;
+  }
+
+  .metricsRow {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .diagramCard {
+    min-height: 0;
+    padding: 12px;
+  }
+
+  .storyRow {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    min-height: 0;
+    gap: 10px 12px;
+  }
+
+  .stepRequests {
+    grid-column: 1 / -1;
+    gap: 8px;
+  }
+
+  .stepRequests h4 {
+    text-align: left;
+  }
+
+  .requestList {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .flowLink {
+    display: none;
+  }
+
+  .requestRowItem {
+    min-height: 84px;
+    padding: 6px;
+    grid-template-columns: auto minmax(0, 1fr) 20px;
+    gap: 6px;
+  }
+
+  .requestStrip {
+    width: 20px;
+    height: 58px;
+  }
+
+  .allocPanel {
+    gap: 5px;
+  }
+
+  .allocHead h4 {
+    font-size: 0.7rem;
+  }
+
+  .allocHead span {
+    font-size: 0.54rem;
+  }
+
+  .gpuMeter {
+    height: 64px;
+  }
+
+  .allocFoot span {
+    font-size: 0.54rem;
+  }
+
+  .metricsRow {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .summaryLead {
+    font-size: 0.94rem;
+    line-height: 1.3;
+  }
+
+  .summaryLine {
+    font-size: 0.78rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .diagramCard {
+    padding: 10px;
+  }
+
+  .storyRow {
+    grid-template-columns: 1fr;
+    gap: 9px;
+  }
+
+  .stepRequests {
+    grid-column: auto;
+  }
+
+  .requestList {
+    grid-template-columns: 1fr;
+    gap: 7px;
+  }
+
+  .requestRowItem {
+    min-height: 80px;
+    grid-template-columns: auto minmax(0, 1fr) 80px;
+    gap: 6px;
+    padding: 6px;
+  }
+
+  .requestStrip {
+    width: 40px;
+    height: 64px;
+  }
+
+  .requestText strong {
+    font-size: 0.62rem;
+  }
+
+  .requestText span,
+  .allocHead h4,
+  .allocHead span,
+  .allocFoot span,
+  .gpuLabel,
+  .legendItem,
+  .metricBadge span,
+  .metricBadge strong {
+    font-size: 0.58rem;
+  }
+
+  .gpuMeter {
+    height: 52px;
+  }
+
+  .legendRow {
+    margin-top: 8px;
+    gap: 6px 10px;
+  }
+
+  .summaryLead {
+    font-size: 0.9rem;
+  }
+
+  .summaryLine {
+    font-size: 0.76rem;
+  }
+
+  .metricsRow {
+    grid-template-columns: 1fr;
+  }
+}

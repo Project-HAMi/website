@@ -50,7 +50,7 @@ If both the **hami-device-plugin** and **hami-scheduler** pods are in the `Runni
 
 ### NVIDIA Devices
 
-[Use Exclusive GPU](https://project-hami.io/docs/userguide/NVIDIA-device/examples/use-exclusive-card)  
-[Allocate Specific Device Memory to a Container](https://project-hami.io/docs/userguide/NVIDIA-device/examples/allocate-device-memory)  
-[Allocate Device Core Resources to a Container](https://project-hami.io/docs/userguide/NVIDIA-device/examples/allocate-device-core)  
-[Assign Tasks to MIG Instances](https://project-hami.io/docs/userguide/NVIDIA-device/examples/dynamic-mig-example)
+- [Use Exclusive GPU](https://project-hami.io/docs/userguide/nvidia-device/examples/use-exclusive-card)
+- [Allocate Specific Device Memory to a Container](https://project-hami.io/docs/userguide/nvidia-device/examples/allocate-device-memory)
+- [Allocate Device Core Resources to a Container](https://project-hami.io/docs/userguide/nvidia-device/examples/allocate-device-core)
+- [Assign Tasks to MIG Instances](https://project-hami.io/docs/userguide/nvidia-device/examples/dynamic-mig-example)

@@ -35,6 +35,32 @@ function processSection(section) {
     .replace(/\n## .*/, '')
     .trim()
     .replace('running_woman', 'running');
+  const version = title.match(/^(?<version>v\d+\.\d+\.\d+)/)?.groups.version ?? 'unknown';
+  const rawDate = title.match(/ \((?<date>.*)\)/)?.groups.date;
+  const releaseYear = rawDate?.split('-')?.[0] ?? 'unknown';
+  const tags = [];
+  const loweredContent = content.toLowerCase();
+  if (loweredContent.includes('breaking')) {
+    tags.push('breaking');
+  }
+  if (
+    loweredContent.includes('new feature') ||
+    loweredContent.includes('feature') ||
+    loweredContent.includes('enhancement')
+  ) {
+    tags.push('feature');
+  }
+  if (
+    loweredContent.includes('compatible') ||
+    loweredContent.includes('compatibility') ||
+    loweredContent.includes('cdi') ||
+    loweredContent.includes('dra')
+  ) {
+    tags.push('compatibility');
+  }
+  if (!tags.length) {
+    tags.push('general');
+  }
 
   let authors = content.match(/#### Committers:[\s\S]*$/);
   if (authors) {
@@ -61,7 +87,7 @@ function processSection(section) {
     }
   }
   let hour = 20;
-  const date = title.match(/ \((?<date>.*)\)/)?.groups.date;
+  const date = rawDate;
   while (publishTimes.has(`${date}T${hour}:00`)) {
     hour -= 1;
   }
@@ -73,6 +99,11 @@ function processSection(section) {
 mdx:
  format: md
 date: ${`${date}T${hour}:00`}${
+      `
+release_version: '${version}'
+release_year: '${releaseYear}'
+release_tags:
+${tags.map((tag) => `  - '${tag}'`).join('\n')}`}${
       authors
         ? `
 authors:

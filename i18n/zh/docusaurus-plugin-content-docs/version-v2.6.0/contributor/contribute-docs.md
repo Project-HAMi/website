@@ -3,13 +3,13 @@ title: 如何贡献文档
 translated: true
 ---
 
-从1.3版本开始，社区文档将在HAMi网站上提供。本文件解释了如何向`Project-HAMi/website`仓库贡献文档。
+从 1.3 版本开始，社区文档将在 HAMi 网站上提供。本文件解释了如何向`Project-HAMi/website`仓库贡献文档。
 
 ## 前提条件
 
-- 文档和代码一样，也按版本分类和存储。1.3是我们归档的第一个版本。
+- 文档和代码一样，也按版本分类和存储。1.3 是我们归档的第一个版本。
 - 文档需要翻译成多种语言，以便来自不同地区的读者阅读。社区现在支持中文和英文。英文是文档的官方语言。
-- 我们的文档使用Markdown。如果您不熟悉Markdown，请参阅https://guides.github.com/features/mastering-markdown/或https://www.markdownguide.org/以获取更详细的信息。
+- 我们的文档使用 Markdown。如果您不熟悉 Markdown，请参阅 [https://guides.github.com/features/mastering-markdown/](https://guides.github.com/features/mastering-markdown/) 或 [https://www.markdownguide.org/](https://www.markdownguide.org/) 以获取更详细的信息。
 - 我们通过[Docusaurus 2](https://docusaurus.io/)获得了一些附加功能，这是一个现代静态网站生成器。
 
 ## 设置
@@ -23,7 +23,7 @@ cd website
 
 我们的网站组织如下：
 
-```
+```text
 website
 ├── sidebars.json        # 当前文档版本的侧边栏
 ├── docs                 # 当前文档版本的文档目录
@@ -47,13 +47,13 @@ website
 └── package.json
 ```
 
-`versions.json`文件是一个版本列表，从最新到最早。下表解释了版本化文件如何映射到其版本和生成的URL。
+`versions.json`文件是一个版本列表，从最新到最早。下表解释了版本化文件如何映射到其版本和生成的 URL。
 
-| 路径                                    | 版本          | URL               |
-| --------------------------------------- | -------------- | ----------------- |
-| `versioned_docs/version-1.0.0/hello.md` | 1.0.0          | /docs/1.0.0/hello |
-| `versioned_docs/version-1.1.0/hello.md` | 1.1.0 (最新)   | /docs/hello       |
-| `docs/hello.md`                         | 当前           | /docs/next/hello  |
+| 路径 | 版本 | URL |
+| --- | --- | --- |
+| `versioned_docs/version-1.0.0/hello.md` | 1.0.0 | /docs/1.0.0/hello |
+| `versioned_docs/version-1.1.0/hello.md` | 1.1.0 (最新) | /docs/hello |
+| `docs/hello.md` | 当前 | /docs/next/hello |
 
 :::提示
 
@@ -68,11 +68,11 @@ website
 
 ### 在顶部开始一个标题
 
-在Markdown文件的顶部指定有关文章的元数据是很重要的，这个部分称为**Front Matter**。
+在 Markdown 文件的顶部指定有关文章的元数据是很重要的，这个部分称为**Front Matter**。
 
 现在，让我们看一个快速示例，它应该解释**Front Matter**中最相关的条目：
 
-```
+```markdown
 ---
 title: 带有标签的文档
 ---
@@ -80,25 +80,25 @@ title: 带有标签的文档
 ## 二级标题
 ```
 
-在两行---之间的顶部部分是Front Matter部分。在这里，我们定义了一些条目，告诉Docusaurus如何处理文章：
+在两行---之间的顶部部分是 Front Matter 部分。在这里，我们定义了一些条目，告诉 Docusaurus 如何处理文章：
 
-- 标题相当于HTML文档中的`<h1>`或Markdown文章中的`# <title>`。
-- 每个文档都有一个唯一的ID。默认情况下，文档ID是与根文档目录相关的文档名称（不带扩展名）。
+- 标题相当于 HTML 文档中的`<h1>`或 Markdown 文章中的`# <title>`。
+- 每个文档都有一个唯一的 ID。默认情况下，文档 ID 是与根文档目录相关的文档名称（不带扩展名）。
 
 ### 链接到其他文档
 
 您可以通过添加以下任何链接轻松路由到其他地方：
 
-- 指向外部站点的绝对URL，如`https://github.com`或`https://k8s.io` - 您可以使用任何Markdown标记来实现这一点，因此
-  - `<https://github.com>`或
+- 指向外部站点的绝对 URL，如`https://github.com`或`https://k8s.io` - 您可以使用任何 Markdown 标记来实现这一点，因此
+  - `<https://github.com>` 或
   - `[kubernetes](https://k8s.io)`都可以。
-- 链接到Markdown文件或生成的路径。您可以使用相对路径索引相应的文件。
-- 链接到图片或其他资源。如果您的文章包含图片或其他资源，您可以在`/docs/resources`中创建相应的目录，并将文章相关文件放在该目录中。现在我们将关于HAMi的公共图片存储在`/docs/resources/general`中。您可以使用以下方式链接图片：
+- 链接到 Markdown 文件或生成的路径。您可以使用相对路径索引相应的文件。
+- 链接到图片或其他资源。如果您的文章包含图片或其他资源，您可以在`/docs/resources`中创建相应的目录，并将文章相关文件放在该目录中。现在我们将关于 HAMi 的公共图片存储在`/docs/resources/general`中。您可以使用以下方式链接图片：
   - `![Git工作流](https://github.com/Project-HAMi/HAMi/raw/master/docs/develop/resources/contributor/git_workflow.png)`
 
 ### 目录组织
 
-Docusaurus 2使用侧边栏来管理文档。
+Docusaurus 2 使用侧边栏来管理文档。
 
 创建侧边栏有助于：
 
@@ -148,18 +148,18 @@ items: [
 ],
 ```
 
-如果您添加了文档，您必须将其添加到`sidebars.js`中以使其正确显示。如果您不确定您的文档位于何处，可以在PR中询问社区成员。
+如果您添加了文档，您必须将其添加到`sidebars.js`中以使其正确显示。如果您不确定您的文档位于何处，可以在 PR 中询问社区成员。
 
 ### 关于中文文档
 
 关于文档的中文版有两种情况：
 
 - 您想将我们现有的英文文档翻译成中文。在这种情况下，您需要修改相应文件的内容，路径为[https://github.com/Project-HAMi/website/tree/main/i18n/zh/docusaurus-plugin-content-docs/current](https://github.com/Project-HAMi/website/tree/main/i18n/zh/docusaurus-plugin-content-docs/current)。该目录的组织与外层完全相同。`current.json`保存了文档目录的翻译。如果您想翻译目录名称，可以编辑它。
-- 您想贡献没有英文版的中文文档。欢迎任何类型的文章。在这种情况下，您可以先将文章和标题添加到主目录。文章内容可以先标记为TBD。然后将相应的中文内容添加到中文目录中。
+- 您想贡献没有英文版的中文文档。欢迎任何类型的文章。在这种情况下，您可以先将文章和标题添加到主目录。文章内容可以先标记为 TBD。然后将相应的中文内容添加到中文目录中。
 
 ## 调试文档
 
-现在您已经完成了文档。在您向`Project-HAMi/website`发起PR后，如果通过CI，您可以在网站上预览您的文档。
+现在您已经完成了文档。在您向`Project-HAMi/website`发起 PR 后，如果通过 CI，您可以在网站上预览您的文档。
 
 点击红色标记的**Details**，您将进入网站的预览视图。
 
