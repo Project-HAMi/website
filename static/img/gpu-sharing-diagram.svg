@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" xmlns:xl="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" xmlns:dc="http://purl.org/dc/elements/1.1/" viewBox="-63 81 1253 751" width="1253" height="751">
+<svg xmlns:xl="http://www.w3.org/1999/xlink" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:dc="http://purl.org/dc/elements/1.1/" viewBox="99 136 1091 696" width="1091" height="696">
   <defs>
     <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="FilledArrow_Marker" stroke-linejoin="miter" stroke-miterlimit="10" viewBox="-1 -3 7 6" markerWidth="7" markerHeight="6" color="black">
       <g>
@@ -13,32 +13,22 @@
       </g>
     </marker>
   </defs>
-  <g id="diagram" stroke-opacity="1" stroke-dasharray="none" stroke="none" fill="none" fill-opacity="1">
-    <title>diagram</title>
-    <g id="diagram_Layer_1">
+  <g id="diagram-compacted" stroke-dasharray="none" fill="none" fill-opacity="1" stroke="none" stroke-opacity="1">
+    <title>diagram-compacted</title>
+    <g id="diagram-compacted_Layer_1">
       <title>Layer 1</title>
       <g id="Graphic_256"/>
-      <g id="Graphic_2">
-        <title>GPU</title>
-        <rect x="-35.866513" y="382.33896" width="100" height="150" fill="white"/>
-        <rect x="-35.866513" y="382.33896" width="100" height="150" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
-      </g>
-      <g id="Graphic_3">
-        <title>GPU</title>
-        <rect x="82.53809" y="382.33896" width="100" height="150" fill="white"/>
-        <rect x="82.53809" y="382.33896" width="100" height="150" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
-      </g>
       <g id="Group_162">
         <g id="Group_9">
           <g id="Graphic_11">
-            <circle cx="74.45397" cy="287.7497" r="11.0825859483434" fill="#ee9447"/>
+            <circle cx="190.49303" cy="358.4851" r="11.0825859483434" fill="#ee9447"/>
           </g>
           <g id="Graphic_10">
-            <path d="M 96.61916 317.3033 C 96.61916 311.18237 91.65748 306.2207 85.53657 306.2207 L 63.37137 306.2207 C 57.25064 306.2207 52.288774 311.18237 52.288774 317.3033 L 52.288774 328.3859 L 96.61916 328.3859 Z" fill="#ee9447"/>
+            <path d="M 212.65823 388.0387 C 212.65823 381.9178 207.69655 376.9561 201.57563 376.9561 L 179.41043 376.9561 C 173.2897 376.9561 168.32784 381.9178 168.32784 388.0387 L 168.32784 399.1213 L 212.65823 399.1213 Z" fill="#ee9447"/>
           </g>
         </g>
         <g id="Graphic_5">
-          <text transform="translate(49.70197 339.32782)" fill="black">
+          <text transform="translate(165.74103 410.06325)" fill="black">
             <tspan font-family="Helvetica Neue" font-size="16" fill="black" x="40500936e-20" y="16" xml:space="preserve">User A</tspan>
           </text>
         </g>
@@ -46,151 +36,167 @@
       <g id="Group_163">
         <g id="Group_6">
           <g id="Graphic_8">
-            <circle cx="320.4741" cy="287.64052" r="10.9734125937313" fill="#6ab0df"/>
+            <circle cx="349.9702" cy="362.4069" r="10.9734125937313" fill="#6ab0df"/>
           </g>
           <g id="Graphic_7">
-            <path d="M 342.42094 316.903 C 342.42094 310.84236 337.50813 305.92956 331.4475 305.92956 L 309.50066 305.92956 C 303.44022 305.92956 298.52724 310.84236 298.52724 316.903 L 298.52724 327.8764 L 342.42094 327.8764 Z" fill="#6ab0df"/>
+            <path d="M 371.91703 391.66936 C 371.91703 385.60874 367.00423 380.69594 360.9436 380.69594 L 338.99676 380.69594 C 332.9363 380.69594 328.02333 385.60874 328.02333 391.66936 L 328.02333 402.6428 L 371.91703 402.6428 Z" fill="#6ab0df"/>
           </g>
         </g>
         <g id="Graphic_4">
-          <text transform="translate(295.4261 339.022)" fill="black">
+          <text transform="translate(324.92218 413.7884)" fill="black">
             <tspan font-family="Helvetica Neue" font-size="16" fill="black" x="682121e-18" y="16" xml:space="preserve">User B</tspan>
           </text>
         </g>
       </g>
       <g id="Graphic_14">
-        <text transform="translate(25.701967 549.94403)" fill="black">
-          <tspan font-family="Helvetica Neue" font-size="16" fill="black" x="20.744" y="16" xml:space="preserve">2 GPUs</tspan>
-          <tspan font-family="Helvetica Neue" font-size="16" fill="black" x="4121148e-19" y="35.46411" xml:space="preserve">10G per GPU</tspan>
+        <text transform="translate(128.72503 545.7867)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="16" fill="black" x="2842171e-20" y="17" xml:space="preserve">R</tspan>
+          <tspan font-family="PingFang SC" font-size="16" fill="black" y="17" xml:space="preserve">equest </tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" fill="black" y="17" xml:space="preserve">2 GPUs</tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" fill="black" x="13.016" y="38" xml:space="preserve">10G per GPU</tspan>
         </text>
       </g>
-      <g id="Graphic_15">
-        <title>A Request B</title>
-        <rect x="-35.866513" y="482.33896" width="100" height="50" fill="#ee9447"/>
-        <rect x="-35.866513" y="482.33896" width="100" height="50" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      <g id="Group_258">
+        <g id="Graphic_2">
+          <title>GPU</title>
+          <rect x="122.45823" y="440.628" width="62.30162" height="99.68259" fill="white"/>
+          <rect x="122.45823" y="440.628" width="62.30162" height="99.68259" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        </g>
+        <g id="Graphic_3">
+          <title>GPU</title>
+          <rect x="196.22621" y="440.628" width="62.30162" height="99.68259" fill="white"/>
+          <rect x="196.22621" y="440.628" width="62.30162" height="99.68259" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        </g>
+        <g id="Graphic_15">
+          <title>A Request B</title>
+          <rect x="122.45823" y="509.4772" width="62.30162" height="31.15081" fill="#ee9447"/>
+          <rect x="122.45823" y="509.4772" width="62.30162" height="31.15081" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        </g>
+        <g id="Graphic_16">
+          <title>A Request 1</title>
+          <rect x="196.22621" y="509.4772" width="62.30162" height="31.15081" fill="#ee9447"/>
+          <rect x="196.22621" y="509.4772" width="62.30162" height="31.15081" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        </g>
       </g>
-      <g id="Graphic_16">
-        <title>A Request 1</title>
-        <rect x="82.53809" y="482.33896" width="100" height="50" fill="#ee9447"/>
-        <rect x="82.53809" y="482.33896" width="100" height="50" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
-      </g>
-      <g id="Graphic_18">
-        <title>GPU</title>
-        <rect x="211.27179" y="381.8295" width="100" height="150" fill="white"/>
-        <rect x="211.27179" y="381.8295" width="100" height="150" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
-      </g>
-      <g id="Graphic_17">
-        <title>GPU</title>
-        <rect x="329.6764" y="381.8295" width="100" height="150" fill="white"/>
-        <rect x="329.6764" y="381.8295" width="100" height="150" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
-      </g>
-      <g id="Graphic_19">
-        <title>B Request 1</title>
-        <rect x="211.27179" y="431.8295" width="100" height="100" fill="#6ab0df"/>
-        <rect x="211.27179" y="431.8295" width="100" height="100" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
-      </g>
-      <g id="Graphic_20">
-        <title>B Request 2</title>
-        <rect x="329.6764" y="431.8295" width="100" height="100" fill="#6ab0df"/>
-        <rect x="329.6764" y="431.8295" width="100" height="100" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      <g id="Group_259">
+        <g id="Graphic_18">
+          <title>GPU</title>
+          <rect x="281.93538" y="443.9908" width="62.30162" height="99.68259" fill="white"/>
+          <rect x="281.93538" y="443.9908" width="62.30162" height="99.68259" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        </g>
+        <g id="Graphic_17">
+          <title>GPU</title>
+          <rect x="355.70336" y="443.9908" width="62.30162" height="99.68259" fill="white"/>
+          <rect x="355.70336" y="443.9908" width="62.30162" height="99.68259" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        </g>
+        <g id="Graphic_19">
+          <title>B Request 1</title>
+          <rect x="281.93538" y="481.37175" width="62.30162" height="62.30162" fill="#6ab0df"/>
+          <rect x="281.93538" y="481.37175" width="62.30162" height="62.30162" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        </g>
+        <g id="Graphic_20">
+          <title>B Request 2</title>
+          <rect x="355.70336" y="481.37175" width="62.30162" height="62.30162" fill="#6ab0df"/>
+          <rect x="355.70336" y="481.37175" width="62.30162" height="62.30162" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        </g>
       </g>
       <g id="Graphic_21">
-        <text transform="translate(271.7221 549.43456)" fill="black">
-          <tspan font-family="Helvetica Neue" font-size="16" fill="black" x="20.744" y="16" xml:space="preserve">2 GPUs</tspan>
-          <tspan font-family="Helvetica Neue" font-size="16" fill="black" x="4121148e-19" y="35.46411" xml:space="preserve">20G per GPU</tspan>
+        <text transform="translate(288.91418 548.3226)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="16" fill="black" x="4973799e-19" y="16" xml:space="preserve">Request 2 GPUs</tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" fill="black" x="12.304" y="35.46411" xml:space="preserve">20G per GPU</tspan>
         </text>
       </g>
       <g id="Graphic_22">
         <title>GPU</title>
-        <rect x="760.8431" y="136.40814" width="100" height="150" fill="white"/>
-        <rect x="760.8431" y="136.40814" width="100" height="150" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <rect x="760.8431" y="181.18644" width="100" height="160" fill="white"/>
+        <rect x="760.8431" y="181.18644" width="100" height="160" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
       </g>
       <g id="Graphic_23">
         <title>GPU</title>
-        <rect x="859.8431" y="136.40814" width="100" height="150" fill="white"/>
-        <rect x="859.8431" y="136.40814" width="100" height="150" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <rect x="859.8431" y="181.18644" width="100" height="160" fill="white"/>
+        <rect x="859.8431" y="181.18644" width="100" height="160" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
       </g>
       <g id="Graphic_24">
         <title>GPU</title>
-        <rect x="959.8431" y="136.40814" width="100" height="150" fill="white"/>
-        <rect x="959.8431" y="136.40814" width="100" height="150" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <rect x="959.8431" y="181.18644" width="100" height="160" fill="white"/>
+        <rect x="959.8431" y="181.18644" width="100" height="160" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
       </g>
       <g id="Graphic_25">
         <title>GPU</title>
-        <rect x="1059.8431" y="136.40814" width="100" height="150" fill="white"/>
-        <rect x="1059.8431" y="136.40814" width="100" height="150" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <rect x="1059.8431" y="181.18644" width="100" height="160" fill="white"/>
+        <rect x="1059.8431" y="181.18644" width="100" height="160" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
       </g>
       <g id="Graphic_29">
         <title>A Request B</title>
-        <rect x="760.8431" y="236.40814" width="100" height="50" fill="#ee9447"/>
-        <rect x="760.8431" y="236.40814" width="100" height="50" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <rect x="760.8431" y="291.18644" width="100" height="50" fill="#ee9447"/>
+        <rect x="760.8431" y="291.18644" width="100" height="50" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
       </g>
       <g id="Graphic_28">
         <title>A Request 1</title>
-        <rect x="859.8431" y="236.40814" width="100" height="50" fill="#ee9447"/>
-        <rect x="859.8431" y="236.40814" width="100" height="50" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <rect x="859.8431" y="291.18644" width="100" height="50" fill="#ee9447"/>
+        <rect x="859.8431" y="291.18644" width="100" height="50" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
       </g>
       <g id="Graphic_27">
         <title>B Request 1</title>
-        <rect x="959.8431" y="186.40814" width="101" height="100" fill="#6ab0df"/>
-        <rect x="959.8431" y="186.40814" width="101" height="100" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <rect x="959.8431" y="241.18644" width="101" height="100" fill="#6ab0df"/>
+        <rect x="959.8431" y="241.18644" width="101" height="100" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
       </g>
       <g id="Graphic_26">
         <title>B Request 2</title>
-        <rect x="1059.8431" y="186.40814" width="100" height="100" fill="#6ab0df"/>
-        <rect x="1059.8431" y="186.40814" width="100" height="100" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <rect x="1059.8431" y="241.18644" width="100" height="100" fill="#6ab0df"/>
+        <rect x="1059.8431" y="241.18644" width="100" height="100" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
       </g>
       <g id="Graphic_30">
         <title>GPU Label</title>
-        <rect x="760.8431" y="286.40814" width="100" height="25" fill="white"/>
-        <rect x="760.8431" y="286.40814" width="100" height="25" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
-        <text transform="translate(765.8431 290.71214)" fill="#666">
+        <rect x="760.8431" y="341.18644" width="100" height="25" fill="white"/>
+        <rect x="760.8431" y="341.18644" width="100" height="25" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <text transform="translate(765.8431 345.49044)" fill="#666">
           <tspan font-family="Helvetica Neue" font-size="14" fill="#666" x="24.259" y="13" xml:space="preserve">GPU 0</tspan>
         </text>
       </g>
       <g id="Graphic_31">
         <title>GPU Label</title>
-        <rect x="859.8431" y="286.40814" width="100" height="25" fill="white"/>
-        <rect x="859.8431" y="286.40814" width="100" height="25" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
-        <text transform="translate(864.8431 290.71214)" fill="#666">
+        <rect x="859.8431" y="341.18644" width="100" height="25" fill="white"/>
+        <rect x="859.8431" y="341.18644" width="100" height="25" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <text transform="translate(864.8431 345.49044)" fill="#666">
           <tspan font-family="Helvetica Neue" font-size="14" fill="#666" x="24.259" y="13" xml:space="preserve">GPU 1</tspan>
         </text>
       </g>
       <g id="Graphic_32">
         <title>GPU Label</title>
-        <rect x="959.8431" y="286.40814" width="100" height="25" fill="white"/>
-        <rect x="959.8431" y="286.40814" width="100" height="25" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
-        <text transform="translate(964.8431 290.71214)" fill="#666">
+        <rect x="959.8431" y="341.18644" width="100" height="25" fill="white"/>
+        <rect x="959.8431" y="341.18644" width="100" height="25" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <text transform="translate(964.8431 345.49044)" fill="#666">
           <tspan font-family="Helvetica Neue" font-size="14" fill="#666" x="24.259" y="13" xml:space="preserve">GPU 2</tspan>
         </text>
       </g>
       <g id="Graphic_33">
         <title>GPU Label</title>
-        <rect x="1059.8431" y="286.40814" width="100" height="25" fill="white"/>
-        <rect x="1059.8431" y="286.40814" width="100" height="25" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
-        <text transform="translate(1064.8431 290.71214)" fill="#666">
+        <rect x="1059.8431" y="341.18644" width="100" height="25" fill="white"/>
+        <rect x="1059.8431" y="341.18644" width="100" height="25" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <text transform="translate(1064.8431 345.49044)" fill="#666">
           <tspan font-family="Helvetica Neue" font-size="14" fill="#666" x="24.259" y="13" xml:space="preserve">GPU 3</tspan>
         </text>
       </g>
       <g id="Graphic_57">
         <title>GPU</title>
-        <rect x="760.8431" y="602.2508" width="100" height="150" fill="white"/>
-        <rect x="760.8431" y="602.2508" width="100" height="150" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <rect x="760.8431" y="592.2508" width="100" height="160" fill="white"/>
+        <rect x="760.8431" y="592.2508" width="100" height="160" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
       </g>
       <g id="Graphic_56">
         <title>GPU</title>
-        <rect x="860.8431" y="602.2508" width="100" height="150" fill="white"/>
-        <rect x="860.8431" y="602.2508" width="100" height="150" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <rect x="860.8431" y="592.2508" width="100" height="160" fill="white"/>
+        <rect x="860.8431" y="592.2508" width="100" height="160" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
       </g>
       <g id="Graphic_55">
         <title>GPU</title>
-        <rect x="959.8431" y="602.2508" width="100" height="150" fill="white"/>
-        <rect x="959.8431" y="602.2508" width="100" height="150" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <rect x="960.8431" y="592.2508" width="100" height="160" fill="white"/>
+        <rect x="960.8431" y="592.2508" width="100" height="160" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
       </g>
       <g id="Graphic_54">
         <title>GPU</title>
-        <rect x="1059.8431" y="602.2508" width="100" height="150" fill="white"/>
-        <rect x="1059.8431" y="602.2508" width="100" height="150" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <rect x="1059.8431" y="592.2508" width="100" height="160" fill="white"/>
+        <rect x="1059.8431" y="592.2508" width="100" height="160" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
       </g>
       <g id="Graphic_53">
         <title>A Request B</title>
@@ -269,17 +275,17 @@
         </text>
       </g>
       <g id="Graphic_63">
-        <text transform="translate(765.8431 323.5443)" fill="#666">
+        <text transform="translate(765.8431 378.3226)" fill="#666">
           <tspan font-family="Helvetica Neue" font-size="16" fill="#666" x="6536993e-19" y="16" xml:space="preserve">Whole GPU occupied</tspan>
         </text>
       </g>
       <g id="Graphic_64">
-        <text transform="translate(983.0992 323.5443)" fill="#666">
+        <text transform="translate(983.0992 378.3226)" fill="#666">
           <tspan font-family="Helvetica Neue" font-size="16" fill="#666" x="881073e-18" y="16" xml:space="preserve">Fragmented/Wasted</tspan>
         </text>
       </g>
       <g id="Graphic_74">
-        <text transform="translate(614.4586 185.71245)" fill="black">
+        <text transform="translate(614.4586 240.49076)" fill="black">
           <tspan font-family="Helvetica Neue" font-weight="bold" font-size="16" fill="black" x="0" y="16" xml:space="preserve">Without HAMi</tspan>
         </text>
       </g>
@@ -290,44 +296,44 @@
       </g>
       <g id="Group_250">
         <g id="Graphic_83">
-          <rect x="-35.866513" y="788.6652" width="20" height="20" fill="#ee9447"/>
-          <rect x="-35.866513" y="788.6652" width="20" height="20" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+          <rect x="123.72503" y="788.6652" width="20" height="20" fill="#ee9447"/>
+          <rect x="123.72503" y="788.6652" width="20" height="20" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
         </g>
         <g id="Graphic_80">
-          <text transform="translate(-10.866512 788.9331)" fill="#666">
+          <text transform="translate(148.72503 788.9331)" fill="#666">
             <tspan font-family="Helvetica Neue" font-size="16" fill="#666" x="3339551e-19" y="16" xml:space="preserve">Workload A</tspan>
           </text>
         </g>
       </g>
       <g id="Group_251">
         <g id="Graphic_82">
-          <rect x="107.5993" y="788.6652" width="20" height="20" fill="#6ab0df"/>
-          <rect x="107.5993" y="788.6652" width="20" height="20" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+          <rect x="267.19085" y="788.6652" width="20" height="20" fill="#6ab0df"/>
+          <rect x="267.19085" y="788.6652" width="20" height="20" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
         </g>
         <g id="Graphic_79">
-          <text transform="translate(132.5993 788.9331)" fill="#666">
+          <text transform="translate(292.19085 788.9331)" fill="#666">
             <tspan font-family="Helvetica Neue" font-size="16" fill="#666" x="61106675e-20" y="16" xml:space="preserve">Workload B</tspan>
           </text>
         </g>
       </g>
       <g id="Group_252">
         <g id="Graphic_81">
-          <rect x="243.78064" y="788.6652" width="20" height="20" fill="#d1f1ca"/>
-          <rect x="243.78064" y="788.6652" width="20" height="20" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+          <rect x="403.3722" y="788.6652" width="20" height="20" fill="#d1f1ca"/>
+          <rect x="403.3722" y="788.6652" width="20" height="20" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
         </g>
         <g id="Graphic_78">
-          <text transform="translate(268.78064 788.9331)" fill="#666">
+          <text transform="translate(428.3722 788.9331)" fill="#666">
             <tspan font-family="Helvetica Neue" font-size="16" fill="#666" x="5755396e-19" y="16" xml:space="preserve">Available</tspan>
           </text>
         </g>
       </g>
       <g id="Graphic_85">
-        <text transform="translate(985.0031 111.94403)" fill="#2f8cbd">
+        <text transform="translate(985.0031 156.72233)" fill="#2f8cbd">
           <tspan font-family="Helvetica Neue" font-weight="bold" font-size="16" fill="#2f8cbd" x="2.224" y="16" xml:space="preserve">Node: 4 x V1000 (32G) </tspan>
         </text>
       </g>
       <g id="Graphic_86">
-        <text transform="translate(985.0031 577.7867)" fill="#2f8cbd">
+        <text transform="translate(985.0031 567.7867)" fill="#2f8cbd">
           <tspan font-family="Helvetica Neue" font-weight="bold" font-size="16" fill="#2f8cbd" x="2.224" y="16" xml:space="preserve">Node: 4 x V1000 (32G) </tspan>
         </text>
       </g>
@@ -337,31 +343,31 @@
       </g>
       <g id="Group_254">
         <g id="Graphic_84">
-          <rect x="367.3211" y="788.6652" width="20" height="20" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+          <rect x="526.91266" y="788.6652" width="20" height="20" stroke="#a5a5a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
         </g>
         <g id="Graphic_77">
-          <text transform="translate(393.47266 788.9331)" fill="#666">
+          <text transform="translate(553.0642 788.9331)" fill="#666">
             <tspan font-family="Helvetica Neue" font-size="16" fill="#666" x="0" y="16" xml:space="preserve">Wasted</tspan>
           </text>
         </g>
         <g id="Graphic_241">
-          <path d="M 367.3211 795.7738 L 371.41993 788.6652 L 367.3211 788.6652 Z M 367.3211 801.2738 L 367.3211 808.6652 L 367.96036 808.6652 L 379.49225 788.6652 L 374.5912 788.6652 Z M 371.13163 808.6652 L 376.0327 808.6652 L 387.3211 789.0874 L 387.3211 788.6652 L 382.66352 788.6652 Z M 379.20396 808.6652 L 384.105 808.6652 L 387.3211 803.0874 L 387.3211 794.5874 Z M 387.2763 808.6652 L 387.3211 808.6652 L 387.3211 808.5874 Z" fill="#ccc"/>
+          <path d="M 526.91266 795.7738 L 531.0115 788.6652 L 526.91266 788.6652 Z M 526.91266 801.2738 L 526.91266 808.6652 L 527.5519 808.6652 L 539.0838 788.6652 L 534.18274 788.6652 Z M 530.7232 808.6652 L 535.6242 808.6652 L 546.91266 789.0874 L 546.91266 788.6652 L 542.2551 788.6652 Z M 538.7955 808.6652 L 543.69656 808.6652 L 546.91266 803.0874 L 546.91266 794.5874 Z M 546.8678 808.6652 L 546.91266 808.6652 L 546.91266 808.5874 Z" fill="#ccc"/>
         </g>
       </g>
       <g id="Graphic_242">
-        <path d="M 760.8431 148.40814 L 760.8431 153.90814 L 778.3431 136.40814 L 772.8431 136.40814 Z M 764.3431 136.40814 L 760.8431 136.40814 L 760.8431 139.90814 Z M 760.8431 162.40814 L 760.8431 167.90814 L 792.3431 136.40814 L 786.8431 136.40814 Z M 760.8431 176.40814 L 760.8431 181.90814 L 806.3431 136.40814 L 800.8431 136.40814 Z M 760.8431 190.40814 L 760.8431 195.90814 L 820.3431 136.40814 L 814.8431 136.40814 Z M 760.8431 204.40814 L 760.8431 209.90814 L 834.3431 136.40814 L 828.8431 136.40814 Z M 760.8431 218.40814 L 760.8431 223.90814 L 848.3431 136.40814 L 842.8431 136.40814 Z M 760.8431 232.40814 L 760.8431 236.40814 L 762.3431 236.40814 L 860.8431 137.90814 L 860.8431 136.40814 L 856.8431 136.40814 Z M 770.8431 236.40814 L 776.3431 236.40814 L 860.8431 151.90814 L 860.8431 146.40814 Z M 784.8431 236.40814 L 790.3431 236.40814 L 860.8431 165.90814 L 860.8431 160.40814 Z M 798.8431 236.40814 L 804.3431 236.40814 L 860.8431 179.90814 L 860.8431 174.40814 Z M 812.8431 236.40814 L 818.3431 236.40814 L 860.8431 193.90814 L 860.8431 188.40814 Z M 826.8431 236.40814 L 832.3431 236.40814 L 860.8431 207.90814 L 860.8431 202.40814 Z M 840.8431 236.40814 L 846.3431 236.40814 L 860.8431 221.90814 L 860.8431 216.40814 Z M 854.8431 236.40814 L 860.3431 236.40814 L 860.8431 235.90814 L 860.8431 230.40814 Z" fill="#ccc"/>
+        <path d="M 760.8431 194.38644 L 760.8431 200.43644 L 778.3431 181.18644 L 772.8431 181.18644 Z M 764.3431 181.18644 L 760.8431 181.18644 L 760.8431 185.03644 Z M 760.8431 209.78644 L 760.8431 215.83644 L 792.3431 181.18644 L 786.8431 181.18644 Z M 760.8431 225.18644 L 760.8431 231.23644 L 806.3431 181.18644 L 800.8431 181.18644 Z M 760.8431 240.58644 L 760.8431 246.63644 L 820.3431 181.18644 L 814.8431 181.18644 Z M 760.8431 255.98644 L 760.8431 262.03644 L 834.3431 181.18644 L 828.8431 181.18644 Z M 760.8431 271.38644 L 760.8431 277.43644 L 848.3431 181.18644 L 842.8431 181.18644 Z M 760.8431 286.78644 L 760.8431 291.18644 L 762.3431 291.18644 L 860.8431 182.83644 L 860.8431 181.18644 L 856.8431 181.18644 Z M 770.8431 291.18644 L 776.3431 291.18644 L 860.8431 198.23644 L 860.8431 192.18644 Z M 784.8431 291.18644 L 790.3431 291.18644 L 860.8431 213.63644 L 860.8431 207.58644 Z M 798.8431 291.18644 L 804.3431 291.18644 L 860.8431 229.03644 L 860.8431 222.98644 Z M 812.8431 291.18644 L 818.3431 291.18644 L 860.8431 244.43644 L 860.8431 238.38644 Z M 826.8431 291.18644 L 832.3431 291.18644 L 860.8431 259.83644 L 860.8431 253.78644 Z M 840.8431 291.18644 L 846.3431 291.18644 L 860.8431 275.23644 L 860.8431 269.18644 Z M 854.8431 291.18644 L 860.3431 291.18644 L 860.8431 290.63644 L 860.8431 284.58644 Z" fill="#ccc"/>
       </g>
       <g id="Graphic_243">
-        <path d="M 859.8431 148.40814 L 859.8431 153.90814 L 877.3431 136.40814 L 871.8431 136.40814 Z M 863.3431 136.40814 L 859.8431 136.40814 L 859.8431 139.90814 Z M 859.8431 162.40814 L 859.8431 167.90814 L 891.3431 136.40814 L 885.8431 136.40814 Z M 859.8431 176.40814 L 859.8431 181.90814 L 905.3431 136.40814 L 899.8431 136.40814 Z M 859.8431 190.40814 L 859.8431 195.90814 L 919.3431 136.40814 L 913.8431 136.40814 Z M 859.8431 204.40814 L 859.8431 209.90814 L 933.3431 136.40814 L 927.8431 136.40814 Z M 859.8431 218.40814 L 859.8431 223.90814 L 947.3431 136.40814 L 941.8431 136.40814 Z M 859.8431 232.40814 L 859.8431 236.40814 L 861.3431 236.40814 L 959.8431 137.90814 L 959.8431 136.40814 L 955.8431 136.40814 Z M 869.8431 236.40814 L 875.3431 236.40814 L 959.8431 151.90814 L 959.8431 146.40814 Z M 883.8431 236.40814 L 889.3431 236.40814 L 959.8431 165.90814 L 959.8431 160.40814 Z M 897.8431 236.40814 L 903.3431 236.40814 L 959.8431 179.90814 L 959.8431 174.40814 Z M 911.8431 236.40814 L 917.3431 236.40814 L 959.8431 193.90814 L 959.8431 188.40814 Z M 925.8431 236.40814 L 931.3431 236.40814 L 959.8431 207.90814 L 959.8431 202.40814 Z M 939.8431 236.40814 L 945.3431 236.40814 L 959.8431 221.90814 L 959.8431 216.40814 Z M 953.8431 236.40814 L 959.3431 236.40814 L 959.8431 235.90814 L 959.8431 230.40814 Z" fill="#ccc"/>
+        <path d="M 859.8431 194.38644 L 859.8431 200.43644 L 877.3431 181.18644 L 871.8431 181.18644 Z M 863.3431 181.18644 L 859.8431 181.18644 L 859.8431 185.03644 Z M 859.8431 209.78644 L 859.8431 215.83644 L 891.3431 181.18644 L 885.8431 181.18644 Z M 859.8431 225.18644 L 859.8431 231.23644 L 905.3431 181.18644 L 899.8431 181.18644 Z M 859.8431 240.58644 L 859.8431 246.63644 L 919.3431 181.18644 L 913.8431 181.18644 Z M 859.8431 255.98644 L 859.8431 262.03644 L 933.3431 181.18644 L 927.8431 181.18644 Z M 859.8431 271.38644 L 859.8431 277.43644 L 947.3431 181.18644 L 941.8431 181.18644 Z M 859.8431 286.78644 L 859.8431 291.18644 L 861.3431 291.18644 L 959.8431 182.83644 L 959.8431 181.18644 L 955.8431 181.18644 Z M 869.8431 291.18644 L 875.3431 291.18644 L 959.8431 198.23644 L 959.8431 192.18644 Z M 883.8431 291.18644 L 889.3431 291.18644 L 959.8431 213.63644 L 959.8431 207.58644 Z M 897.8431 291.18644 L 903.3431 291.18644 L 959.8431 229.03644 L 959.8431 222.98644 Z M 911.8431 291.18644 L 917.3431 291.18644 L 959.8431 244.43644 L 959.8431 238.38644 Z M 925.8431 291.18644 L 931.3431 291.18644 L 959.8431 259.83644 L 959.8431 253.78644 Z M 939.8431 291.18644 L 945.3431 291.18644 L 959.8431 275.23644 L 959.8431 269.18644 Z M 953.8431 291.18644 L 959.3431 291.18644 L 959.8431 290.63644 L 959.8431 284.58644 Z" fill="#ccc"/>
       </g>
       <g id="Graphic_245">
-        <path d="M 960.3431 137.40814 L 960.3431 142.90814 L 966.8431 136.40814 L 961.3431 136.40814 Z M 960.3431 151.40814 L 960.3431 156.90814 L 980.8431 136.40814 L 975.3431 136.40814 Z M 960.3431 165.40814 L 960.3431 170.90814 L 994.8431 136.40814 L 989.3431 136.40814 Z M 960.3431 179.40814 L 960.3431 184.90814 L 1008.8431 136.40814 L 1003.3431 136.40814 Z M 967.3431 186.40814 L 972.8431 186.40814 L 1022.8431 136.40814 L 1017.3431 136.40814 Z M 981.3431 186.40814 L 986.8431 186.40814 L 1036.8431 136.40814 L 1031.3431 136.40814 Z M 995.3431 186.40814 L 1000.8431 186.40814 L 1050.8431 136.40814 L 1045.3431 136.40814 Z M 1009.3431 186.40814 L 1014.8431 186.40814 L 1060.3431 140.90814 L 1060.3431 136.40814 L 1059.3431 136.40814 Z M 1023.3431 186.40814 L 1028.8431 186.40814 L 1060.3431 154.90814 L 1060.3431 149.40814 Z M 1037.3431 186.40814 L 1042.8431 186.40814 L 1060.3431 168.90814 L 1060.3431 163.40814 Z M 1051.3431 186.40814 L 1056.8431 186.40814 L 1060.3431 182.90814 L 1060.3431 177.40814 Z" fill="#ccc"/>
+        <path d="M 960.3431 182.38644 L 960.3431 188.98644 L 966.8431 181.18644 L 961.3431 181.18644 Z M 960.3431 199.18644 L 960.3431 205.78644 L 980.8431 181.18644 L 975.3431 181.18644 Z M 960.3431 215.98644 L 960.3431 222.58644 L 994.8431 181.18644 L 989.3431 181.18644 Z M 960.3431 232.78644 L 960.3431 239.38644 L 1008.8431 181.18644 L 1003.3431 181.18644 Z M 967.3431 241.18644 L 972.8431 241.18644 L 1022.8431 181.18644 L 1017.3431 181.18644 Z M 981.3431 241.18644 L 986.8431 241.18644 L 1036.8431 181.18644 L 1031.3431 181.18644 Z M 995.3431 241.18644 L 1000.8431 241.18644 L 1050.8431 181.18644 L 1045.3431 181.18644 Z M 1009.3431 241.18644 L 1014.8431 241.18644 L 1060.3431 186.58644 L 1060.3431 181.18644 L 1059.3431 181.18644 Z M 1023.3431 241.18644 L 1028.8431 241.18644 L 1060.3431 203.38644 L 1060.3431 196.78644 Z M 1037.3431 241.18644 L 1042.8431 241.18644 L 1060.3431 220.18644 L 1060.3431 213.58644 Z M 1051.3431 241.18644 L 1056.8431 241.18644 L 1060.3431 236.98644 L 1060.3431 230.38644 Z" fill="#ccc"/>
       </g>
       <g id="Graphic_246">
-        <path d="M 1059.8431 137.40814 L 1059.8431 142.90814 L 1066.3431 136.40814 L 1060.8431 136.40814 Z M 1059.8431 151.40814 L 1059.8431 156.90814 L 1080.3431 136.40814 L 1074.8431 136.40814 Z M 1059.8431 165.40814 L 1059.8431 170.90814 L 1094.3431 136.40814 L 1088.8431 136.40814 Z M 1059.8431 179.40814 L 1059.8431 184.90814 L 1108.3431 136.40814 L 1102.8431 136.40814 Z M 1066.8431 186.40814 L 1072.3431 186.40814 L 1122.3431 136.40814 L 1116.8431 136.40814 Z M 1080.8431 186.40814 L 1086.3431 186.40814 L 1136.3431 136.40814 L 1130.8431 136.40814 Z M 1094.8431 186.40814 L 1100.3431 186.40814 L 1150.3431 136.40814 L 1144.8431 136.40814 Z M 1108.8431 186.40814 L 1114.3431 186.40814 L 1159.8431 140.90814 L 1159.8431 136.40814 L 1158.8431 136.40814 Z M 1122.8431 186.40814 L 1128.3431 186.40814 L 1159.8431 154.90814 L 1159.8431 149.40814 Z M 1136.8431 186.40814 L 1142.3431 186.40814 L 1159.8431 168.90814 L 1159.8431 163.40814 Z M 1150.8431 186.40814 L 1156.3431 186.40814 L 1159.8431 182.90814 L 1159.8431 177.40814 Z" fill="#ccc"/>
+        <path d="M 1059.8431 182.38644 L 1059.8431 188.98644 L 1066.3431 181.18644 L 1060.8431 181.18644 Z M 1059.8431 199.18644 L 1059.8431 205.78644 L 1080.3431 181.18644 L 1074.8431 181.18644 Z M 1059.8431 215.98644 L 1059.8431 222.58644 L 1094.3431 181.18644 L 1088.8431 181.18644 Z M 1059.8431 232.78644 L 1059.8431 239.38644 L 1108.3431 181.18644 L 1102.8431 181.18644 Z M 1066.8431 241.18644 L 1072.3431 241.18644 L 1122.3431 181.18644 L 1116.8431 181.18644 Z M 1080.8431 241.18644 L 1086.3431 241.18644 L 1136.3431 181.18644 L 1130.8431 181.18644 Z M 1094.8431 241.18644 L 1100.3431 241.18644 L 1150.3431 181.18644 L 1144.8431 181.18644 Z M 1108.8431 241.18644 L 1114.3431 241.18644 L 1159.8431 186.58644 L 1159.8431 181.18644 L 1158.8431 181.18644 Z M 1122.8431 241.18644 L 1128.3431 241.18644 L 1159.8431 203.38644 L 1159.8431 196.78644 Z M 1136.8431 241.18644 L 1142.3431 241.18644 L 1159.8431 220.18644 L 1159.8431 213.58644 Z M 1150.8431 241.18644 L 1156.3431 241.18644 L 1159.8431 236.98644 L 1159.8431 230.38644 Z" fill="#ccc"/>
       </g>
       <g id="Line_248">
-        <path d="M 450.65746 456.8295 L 605.7503 456.8295 L 605.7503 211.40814 L 747.9431 211.40814" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+        <path d="M 450.65746 456.8295 L 605.7503 456.8295 L 605.7503 261.18644 L 747.9431 261.18644" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
       </g>
       <g id="Line_249">
         <path d="M 450.65746 456.8295 L 605.7503 456.8295 L 605.7503 652.2508 L 747.9431 652.2508" marker-end="url(#FilledArrow_Marker_2)" stroke="#0ed05d" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
