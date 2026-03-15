@@ -13,30 +13,35 @@ const maintainers = [
     github: 'https://github.com/archlitchi',
     employer: 'Dynamia',
     employerZh: '密瓜智能',
+    employerUrl: 'https://dynamia.ai',
   },
   {
     name: 'Xiao Zhang',
     github: 'https://github.com/wawa0210',
     employer: 'Dynamia',
     employerZh: '密瓜智能',
+    employerUrl: 'https://dynamia.ai',
   },
   {
     name: 'Leibo Wang',
     github: 'https://github.com/william-wang',
     employer: 'Nvidia',
     employerZh: '英伟达',
+    employerUrl: 'https://www.nvidia.com',
   },
   {
     name: 'Yu Yin',
     github: 'https://github.com/Nimbus318',
     employer: 'Dynamia',
     employerZh: '密瓜智能',
+    employerUrl: 'https://dynamia.ai',
   },
   {
     name: 'Shouren Yang',
     github: 'https://github.com/Shouren',
     employer: '4Paradigm',
     employerZh: '第四范式',
+    employerUrl: 'https://www.4paradigm.com',
   },
 ];
 
@@ -134,7 +139,13 @@ export default function CommunityPage() {
                         <div className={styles.maintainerBody}>
                           <h3 className={styles.maintainerName}>{maintainer.name}</h3>
                           <p className={styles.maintainerMeta}>
-                            <span>{isZh && maintainer.employerZh ? maintainer.employerZh : maintainer.employer}</span>
+                            {maintainer.employerUrl ? (
+                              <a href={maintainer.employerUrl} target="_blank" rel="noreferrer" className={styles.employerLink}>
+                                {isZh && maintainer.employerZh ? maintainer.employerZh : maintainer.employer}
+                              </a>
+                            ) : (
+                              <span>{isZh && maintainer.employerZh ? maintainer.employerZh : maintainer.employer}</span>
+                            )}
                             <span className={styles.metaSeparator} aria-hidden="true">•</span>
                             <a href={maintainer.github} target="_blank" rel="noreferrer" className={styles.githubLink}>
                               <FontAwesomeIcon icon={faGithub} />
