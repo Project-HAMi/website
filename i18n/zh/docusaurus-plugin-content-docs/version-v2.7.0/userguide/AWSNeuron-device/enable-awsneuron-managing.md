@@ -23,7 +23,7 @@ HAMi 现已集成[my-scheduler](https://awsdocs-neuron.readthedocs-hosted.com/en
 
 * 部署 HAMi 核心组件
 
-```
+```bash
 helm install hami hami-charts/hami -n kube-system
 ```
 

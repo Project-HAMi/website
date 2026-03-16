@@ -4,14 +4,32 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faGithub} from '@fortawesome/free-brands-svg-icons';
 
 const STAR_CACHE_KEY = 'hami_github_stars';
-const STAR_FALLBACK = '3.1k';
+const STAR_FALLBACK = '3,100';
+
+function formatNumber(value) {
+  try {
+    return new Intl.NumberFormat('en-US').format(value);
+  } catch {
+    return String(value);
+  }
+}
 
 function formatStars(count) {
-  if (count >= 1000) {
-    const value = count / 1000;
-    return `${value.toFixed(value >= 10 ? 0 : 1)}k`;
-  }
-  return `${count}`;
+  return formatNumber(count);
+}
+
+function parseCompactCount(text) {
+  if (typeof text !== 'string') return null;
+  const trimmed = text.trim().toLowerCase();
+  // Examples: '3.1k', '12k', '1.2m', '3100', '3,100'
+  const m = trimmed.match(/^([0-9,.]+)\s*([km])?$/);
+  if (!m) return null;
+  let num = parseFloat(m[1].replace(/,/g, ''));
+  if (Number.isNaN(num)) return null;
+  const suffix = m[2];
+  if (suffix === 'k') num = Math.round(num * 1000);
+  if (suffix === 'm') num = Math.round(num * 1000000);
+  return Math.round(num);
 }
 
 const GhButton = ({className}) => {
@@ -62,7 +80,13 @@ const GhButton = ({className}) => {
         const badgeSvg = await badgeResponse.text();
         const countMatch = badgeSvg.match(/id="rlink"[^>]*>([^<]+)</);
         if (countMatch?.[1]) {
-          updateStars(countMatch[1].trim());
+          const raw = countMatch[1].trim();
+          const parsed = parseCompactCount(raw);
+          if (parsed && typeof parsed === 'number') {
+            updateStars(formatStars(parsed));
+          } else {
+            updateStars(raw);
+          }
         }
       } catch {
         // Keep fallback value if all external requests fail.
