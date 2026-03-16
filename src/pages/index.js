@@ -640,7 +640,7 @@ export default function Home() {
                 ))}
               </ul>
             </div>
-            <Link className={clsx(styles.inlineLink, styles.supportDocsLink)} to={useBaseUrl('/docs/userguide/Device-supported')}>
+            <Link className={clsx(styles.inlineLink, styles.supportDocsLink)} to={useBaseUrl('/docs/userguide/device-supported')}>
               {isZh ? '查看完整设备支持列表 →' : 'View full supported devices list →'}
             </Link>
           </div>

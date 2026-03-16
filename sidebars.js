@@ -70,7 +70,7 @@ module.exports = {
       },
       "items": [
         "userguide/configure",
-        "userguide/Device-supported",
+        "userguide/device-supported",
         {
           "type": "category",
           "label": "Monitoring",
@@ -173,10 +173,10 @@ module.exports = {
               "label": "Examples",
               "key": "iluvatar-examples",
               "items": [
-                "userguide/iluvatar-device/examples/allocate-BI-V150",
-                "userguide/iluvatar-device/examples/allocate-MR-V100",
-                "userguide/iluvatar-device/examples/allocate-exclusive-BI-V150",
-                "userguide/iluvatar-device/examples/allocate-exclusive-MR-V100"
+                "userguide/iluvatar-device/examples/allocate-bi-v150",
+                "userguide/iluvatar-device/examples/allocate-mr-v100",
+                "userguide/iluvatar-device/examples/allocate-exclusive-bi-v150",
+                "userguide/iluvatar-device/examples/allocate-exclusive-mr-v100"
               ]
             }
           ]
@@ -208,13 +208,13 @@ module.exports = {
           "type": "category",
           "label": "Managing Vastai devices",
           "items": [
-            "userguide/Vastai/enable-vastai-sharing",
+            "userguide/vastai/enable-vastai-sharing",
             {
               "type": "category",
               "label": "Examples",
               "key": "vastai-examples",
               "items": [
-                "userguide/Vastai/examples/default_use",
+                "userguide/vastai/examples/default-use",
               ]
             }
           ]
@@ -230,8 +230,8 @@ module.exports = {
               "label": "Examples",
               "key": "kunlunxin-examples",
               "items": [
-                "userguide/kunlunxin-device/examples/allocate_whole_xpu",
-                "userguide/kunlunxin-device/examples/allocate_vxpu"
+                "userguide/kunlunxin-device/examples/allocate-whole-xpu",
+                "userguide/kunlunxin-device/examples/allocate-vxpu"
               ]
             }
           ]
@@ -311,8 +311,8 @@ module.exports = {
                   "label": "Examples",
                   "key": "volcano-vgpu-examples",
                   "items": [
-                    "userguide/volcano-vgpu/nvidia-gpu/examples/default_use",
-                    "userguide/volcano-vgpu/nvidia-gpu/examples/use_exclusive_gpu"
+                    "userguide/volcano-vgpu/nvidia-gpu/examples/default-use",
+                    "userguide/volcano-vgpu/nvidia-gpu/examples/use-exclusive-gpu"
                   ]
                 }
               ]
@@ -323,13 +323,13 @@ module.exports = {
           "type": "category",
           "label": "Using HAMi with Kueue",
           "items": [
-            "userguide/Kueue/how-to-use-kueue",
+            "userguide/kueue/how-to-use-kueue",
             {
               "type": "category",
               "label": "Examples",
               "key": "kueue-examples",
               "items": [
-                "userguide/Kueue/examples/defalt_use"
+                "userguide/kueue/examples/defalt-use"
               ]
             }
           ]
@@ -348,8 +348,8 @@ module.exports = {
         "developers/build",
         "developers/protocol",
         "developers/scheduling",
-        "developers/HAMi-core-design",
-        "developers/Dynamic-mig",
+        "developers/hami-core-design",
+        "developers/dynamic-mig",
         "developers/kunlunxin-topology",
         "developers/mindmap"
       ]
@@ -374,7 +374,7 @@ module.exports = {
     },
     {
       "type": "doc",
-      "id": "FAQ/FAQ"
+      "id": "faq/faq"
     }
   ]
 }
