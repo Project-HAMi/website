@@ -2,37 +2,33 @@
 title: Deploy HAMi using Helm
 ---
 
-This guide will cover:
+This guide covers:
 
-- Configure nvidia container runtime in each GPU nodes
-- Install HAMi using helm
-- Launch a vGPU task
-- Check if the corresponding device resources are limited inside container
+- Configuring NVIDIA container runtime on each GPU node
+- Deploying HAMi using Helm
+- Launching a vGPU task
+- Verifying container resource limits
 
 ## Prerequisites {#prerequisites}
 
-- [Helm](https://helm.sh/zh/docs/) version v3+
-- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) version v1.16+
-- [CUDA](https://developer.nvidia.com/cuda-toolkit) version v10.2+
-- [NvidiaDriver](https://www.nvidia.cn/drivers/unix/) v440+
+- [Helm](https://helm.sh/zh/docs/) v3+
+- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) v1.16+
+- [CUDA](https://developer.nvidia.com/cuda-toolkit) v10.2+
+- [NVIDIA Driver](https://www.nvidia.cn/drivers/unix/) v440+
 
 ## Installation {#installation}
 
-### Configure nvidia-container-toolkit {#configure-nvidia-container-toolkit}
+### 1. Configure nvidia-container-toolkit {#configure-nvidia-container-toolkit}
 
-<summary> Configure nvidia-container-toolkit </summary>
+Perform the following steps on all GPU nodes.
 
-Execute the following steps on all your GPU nodes.
+This guide assumes that NVIDIA drivers and the `nvidia-container-toolkit` are already installed, and that `nvidia-container-runtime` is set as the default low-level runtime.
 
-This README assumes pre-installation of NVIDIA drivers and the
-`nvidia-container-toolkit`. Additionally, it assumes configuration of the
-`nvidia-container-runtime` as the default low-level runtime.
+See [nvidia-container-toolkit installation guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html).
 
-Please see: [nvidia-container-toolkit install-guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)
+The following example applies to Debian-based systems using Docker or containerd:
 
-#### Example for debian-based systems with `Docker` and `containerd` {#example-for-debian-based-systems-with-docker-and-containerd}
-
-##### Install the `nvidia-container-toolkit` {#install-the-nvidia-container-toolkit}
+#### Install the `nvidia-container-toolkit` {#install-the-nvidia-container-toolkit}
 
 ```bash
 distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
@@ -43,11 +39,9 @@ curl -s -L https://nvidia.github.io/libnvidia-container/$distribution/libnvidia-
 sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
 ```
 
-##### Configure `Docker` {#configure-docker}
+#### Configure Docker {#configure-docker}
 
-When running `Kubernetes` with `Docker`, edit the configuration file,
-typically located at `/etc/docker/daemon.json`, to set up
-`nvidia-container-runtime` as the default low-level runtime:
+When running Kubernetes with Docker, edit the configuration file (usually `/etc/docker/daemon.json`) to set `nvidia-container-runtime` as the default runtime:
 
 ```json
 {
@@ -61,17 +55,15 @@ typically located at `/etc/docker/daemon.json`, to set up
 }
 ```
 
-And then restart `Docker`:
+Restart Docker:
 
 ```bash
 sudo systemctl daemon-reload && systemctl restart docker
 ```
 
-##### Configure `containerd` {#configure-containerd}
+#### Configure containerd {#configure-containerd}
 
-When running `Kubernetes` with `containerd`, modify the configuration file
-typically located at `/etc/containerd/config.toml`, to set up
-`nvidia-container-runtime` as the default low-level runtime:
+When using Kubernetes with containerd, modify the configuration file (usually `/etc/containerd/config.toml`) to set `nvidia-container-runtime` as the default runtime:
 
 ```toml
 version = 2
@@ -90,38 +82,35 @@ version = 2
             BinaryName = "/usr/bin/nvidia-container-runtime"
 ```
 
-And then restart `containerd`:
+Restart containerd:
 
 ```bash
 sudo systemctl daemon-reload && systemctl restart containerd
 ```
 
-#### 2. Label your nodes {#label-your-nodes}
+### 2. Label your nodes {#label-your-nodes}
 
-Label your GPU nodes for scheduling with HAMi by adding the label "gpu=on".
-Without this label, the nodes cannot be managed by our scheduler.
+Label your GPU nodes for HAMi scheduling with `gpu=on`. Nodes without this label cannot be managed by the scheduler.
 
 ```bash
 kubectl label nodes {nodeid} gpu=on
 ```
 
-#### 3. Deploy HAMi using Helm {#deploy-hami-using-helm}
+### 3. Deploy HAMi using Helm {#deploy-hami-using-helm}
 
-First, you need to check your Kubernetes version by using the following command:
+Check your Kubernetes version:
 
 ```bash
 kubectl version
 ```
 
-Then, add our repo in helm
+Add the Helm repository:
 
 ```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/
 ```
 
-During installation, set the Kubernetes scheduler image version to match your
-Kubernetes server version. For instance, if your cluster server version is
-1.16.8, use the following command for deployment:
+During installation, set the Kubernetes scheduler image to match your cluster version. For example, if your cluster version is 1.16.8:
 
 ```bash
 helm install hami hami-charts/hami \
@@ -129,14 +118,13 @@ helm install hami hami-charts/hami \
   -n kube-system
 ```
 
-If everything goes well, you will see both vgpu-device-plugin and vgpu-scheduler pods are in the Running state
+If successful, both `vgpu-device-plugin` and `vgpu-scheduler` pods should be in the `Running` state.
 
-### Demo {#demo}
+## Demo {#demo}
 
-#### 1. Submit demo task {#submit-demo-task}
+### 1. Submit demo task {#submit-demo-task}
 
-Containers can now request NVIDIA vGPUs using the `nvidia.com/gpu` resource
-type.
+Containers can now request NVIDIA vGPUs using the `nvidia.com/gpu` resource type.
 
 ```yaml
 apiVersion: v1
@@ -150,19 +138,19 @@ spec:
       command: ["bash", "-c", "sleep 86400"]
       resources:
         limits:
-          nvidia.com/gpu: 1 # requesting 1 vGPUs
-          nvidia.com/gpumem: 10240 # Each vGPU contains 10240m device memory (Optional,Integer)
+          nvidia.com/gpu: 1 # Request 1 vGPU
+          nvidia.com/gpumem: 10240 # Each vGPU provides 10240 MiB device memory (optional)
 ```
 
-#### 2. Verify in container resource control {#verify-in-container-resource-control}
+### 2. Verify container resource limits {#verify-in-container-resource-control}
 
-Execute the following query command:
+Run the following command:
 
 ```bash
 kubectl exec -it gpu-pod nvidia-smi
 ```
 
-The result should be:
+Expected output:
 
 ```text
 [HAMI-core Msg(28:140561996502848:libvgpu.c:836)]: Initializing.....
