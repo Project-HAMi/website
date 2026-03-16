@@ -85,7 +85,7 @@ export default function CommunityPage() {
       title: { en: 'Resources', zh: '社区资料' },
       items: [
         { label: { en: 'Community Repository', zh: '社区仓库' }, href: 'https://github.com/Project-HAMi/community', icon: faBookOpen },
-        { label: { en: 'Meeting Recordings', zh: '会议录屏' }, href: 'https://github.com/Project-HAMi/community', icon: faVideo },
+        { label: { en: 'Meeting Recordings', zh: '会议录屏' }, href: 'https://space.bilibili.com/1105878584', icon: faVideo },
         { label: { en: 'Blog', zh: '博客' }, href: isZh ? '/zh/blog' : '/blog', icon: faFileLines },
       ],
     },
