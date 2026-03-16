@@ -5,23 +5,23 @@
   },
   "sidebar.docs.category.Core Concepts": {
     "message": "核心概念",
-    "description": "The label for category Core Concepts in sidebar docs"
+    "description": "The label for category 'Core Concepts' in sidebar 'docs'"
   },
   "sidebar.docs.category.Get Started": {
-    "message": "开始使用",
-    "description": "The label for category Get Started in sidebar docs"
+    "message": "快速开始",
+    "description": "The label for category 'Get Started' in sidebar 'docs'"
   },
   "sidebar.docs.category.Installation": {
     "message": "安装",
-    "description": "The label for category Installation in sidebar docs"
+    "description": "The label for category 'Installation' in sidebar 'docs'"
   },
   "sidebar.docs.category.User Guide": {
     "message": "用户指南",
-    "description": "The label for category User Guide in sidebar docs"
+    "description": "The label for category 'User Guide' in sidebar 'docs'"
   },
   "sidebar.docs.category.Monitoring": {
     "message": "监控",
-    "description": "The label for category Monitoring in sidebar docs"
+    "description": "The label for category 'Monitoring' in sidebar 'docs'"
   },
   "sidebar.docs.category.Share NVIDIA GPU devices": {
     "message": "共享 NVIDIA GPU 设备",
@@ -37,15 +37,15 @@
   },
   "sidebar.docs.category.Contributor Guide": {
     "message": "贡献者指南",
-    "description": "The label for category Contributor Guide in sidebar docs"
+    "description": "The label for category 'Contributor Guide' in sidebar 'docs'"
   },
   "sidebar.docs.category.Developer Guide": {
     "message": "开发者指南",
-    "description": "The label for category Developer Guide in sidebar docs"
+    "description": "The label for category 'Developer Guide' in sidebar 'docs'"
   },
   "sidebar.docs.category.Key Features": {
     "message": "核心功能",
-    "description": "The label for category Key Features in sidebar docs"
+    "description": "The label for category 'Key Features' in sidebar 'docs'"
   },
   "sidebar.docs.category.Share Hygon DCU devices": {
     "message": "共享海光 DCU 设备",
@@ -61,10 +61,90 @@
   },
   "sidebar.docs.category.Volcano vgpu support": {
     "message": "Volcano vGPU",
-    "description": "The label for category Volcano vgpu support in sidebar docs"
+    "description": "The label for category 'Volcano vgpu support' in sidebar 'docs'"
   },
   "sidebar.docs.category.Share Ascend devices": {
     "message": "共享昇腾 GPU 设备",
     "description": "The label for category Share Ascend devices in sidebar docs"
+  },
+  "sidebar.docs.category.nvidia-gpu": {
+    "message": "NVIDIA GPU",
+    "description": "The label for category 'NVIDIA GPU' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.nvidia-examples": {
+    "message": "Examples",
+    "description": "The label for category 'Examples' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Cambricon MLU": {
+    "message": "Cambricon MLU",
+    "description": "The label for category 'Cambricon MLU' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.cambricon-examples": {
+    "message": "Examples",
+    "description": "The label for category 'Examples' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Hygon DCU": {
+    "message": "Hygon DCU",
+    "description": "The label for category 'Hygon DCU' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.hygon-examples": {
+    "message": "Examples",
+    "description": "The label for category 'Examples' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Mthreads GPU": {
+    "message": "Mthreads GPU",
+    "description": "The label for category 'Mthreads GPU' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.mthreads-examples": {
+    "message": "Examples",
+    "description": "The label for category 'Examples' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Metax GPU": {
+    "message": "Metax GPU",
+    "description": "The label for category 'Metax GPU' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.metax-examples": {
+    "message": "Examples",
+    "description": "The label for category 'Examples' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.gpu": {
+    "message": "gpu",
+    "description": "The label for category 'gpu' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.sgpu": {
+    "message": "sgpu",
+    "description": "The label for category 'sgpu' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Ascend NPU": {
+    "message": "Ascend NPU",
+    "description": "The label for category 'Ascend NPU' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.ascend-examples": {
+    "message": "Examples",
+    "description": "The label for category 'Examples' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Enflame GCU": {
+    "message": "Enflame GCU",
+    "description": "The label for category 'Enflame GCU' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.enflame-examples": {
+    "message": "Examples",
+    "description": "The label for category 'Examples' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Iluvatar GPU": {
+    "message": "Iluvatar GPU",
+    "description": "The label for category 'Iluvatar GPU' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.iluvatar-examples": {
+    "message": "Examples",
+    "description": "The label for category 'Examples' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.volcano-nvidia-gpu": {
+    "message": "NVIDIA GPU",
+    "description": "The label for category 'NVIDIA GPU' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.volcano-vgpu-examples": {
+    "message": "Examples",
+    "description": "The label for category 'Examples' in sidebar 'docs'"
   }
 }

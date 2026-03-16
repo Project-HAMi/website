@@ -1,0 +1,308 @@
+.page {
+  padding-bottom: var(--hami-space-64);
+}
+
+.hero {
+  padding: var(--hami-space-64) 0 var(--hami-space-32);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(17, 208, 93, 0.18), transparent 34%),
+    linear-gradient(180deg, rgba(17, 208, 93, 0.08), transparent 70%);
+}
+
+.title {
+  margin: 0 0 var(--hami-space-16);
+  max-width: 880px;
+}
+
+.subtitle {
+  margin: 0;
+  max-width: 760px;
+  font-size: 1.08rem;
+}
+
+.section,
+.sectionAlt {
+  padding: var(--hami-space-24) 0;
+}
+
+.sectionAlt {
+  background: linear-gradient(180deg, rgba(17, 208, 93, 0.06), transparent);
+}
+
+.entrySection {
+  padding: var(--hami-space-24) 0;
+}
+
+.entryTitle {
+  margin: 0 0 12px;
+}
+
+.sectionIntro {
+  margin: 0 0 14px;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.dashboardGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.dashboardCard {
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid var(--hami-color-border);
+  background: #f8fafc;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+}
+
+.dashboardCard h3 {
+  margin: 0 0 10px;
+  font-size: 1rem;
+}
+
+.dashboardButtons {
+  display: grid;
+  gap: 8px;
+}
+
+.dashboardButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--hami-color-border);
+  color: var(--hami-color-text);
+  background: var(--ifm-background-surface-color);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.dashboardButton:hover {
+  background: var(--hami-color-primary);
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.meetingMetaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.metaBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--hami-color-border);
+  background: rgba(17, 208, 93, 0.06);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: var(--hami-space-16);
+}
+
+.primaryCard,
+.sideCard {
+  padding: var(--hami-space-24);
+  border: 1px solid var(--hami-color-border);
+  border-radius: var(--hami-radius-lg);
+  background: var(--hami-color-surface);
+  box-shadow: var(--hami-shadow-sm);
+}
+
+.cardIcon {
+  display: inline-flex;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--hami-space-12);
+  border-radius: 999px;
+  background: rgba(17, 208, 93, 0.14);
+  color: var(--hami-color-primary);
+  font-size: 1.1rem;
+}
+
+.linkList {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: var(--hami-space-16);
+}
+
+.actionLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--hami-color-border);
+  border-radius: 12px;
+  color: var(--hami-color-text);
+  background: rgba(17, 208, 93, 0.03);
+  font-weight: 600;
+}
+
+.actionLink:hover {
+  text-decoration: none;
+  border-color: var(--hami-color-primary);
+}
+
+.meetingMeta {
+  display: grid;
+  gap: 0.7rem;
+  margin-top: var(--hami-space-16);
+}
+
+.resourceList {
+  margin: var(--hami-space-16) 0 0;
+}
+
+.governanceSection {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.governanceIntro {
+  margin: 0;
+  max-width: 760px;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.maintainersTitle {
+  margin: 0;
+}
+
+.maintainersGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.875rem;
+}
+
+.maintainerCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--hami-color-border);
+  border-radius: 12px;
+  background: var(--hami-color-surface);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.maintainerCard:hover {
+  border-color: color-mix(in srgb, var(--hami-color-primary) 42%, var(--hami-color-border));
+  box-shadow: 0 8px 20px rgba(17, 24, 39, 0.06);
+}
+
+[data-theme='dark'] .maintainerCard:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.22);
+}
+
+.maintainerTop {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.maintainerAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  border: 1px solid var(--hami-color-border);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.maintainerBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.28rem;
+  min-width: 0;
+}
+
+.maintainerName {
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.2;
+}
+
+.maintainerMeta {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--ifm-color-emphasis-700);
+  font-size: 0.9rem;
+  line-height: 1.3;
+}
+
+.metaSeparator {
+  color: var(--ifm-color-emphasis-500);
+}
+
+.githubLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.32rem;
+  color: var(--ifm-color-emphasis-700);
+  font-weight: 500;
+  font-size: 0.86rem;
+  min-width: 0;
+}
+
+[data-theme='dark'] .dashboardCard {
+  border-color: rgba(74, 96, 120, 0.55);
+  background: rgba(22, 30, 42, 0.88);
+  box-shadow: 0 8px 20px rgba(2, 8, 20, 0.25);
+}
+
+[data-theme='dark'] .dashboardButton {
+  border-color: rgba(74, 96, 120, 0.55);
+  background: rgba(20, 30, 44, 0.9);
+  color: rgba(220, 231, 245, 0.95);
+}
+
+[data-theme='dark'] .dashboardButton:hover {
+  background: #11d05d;
+  color: #ffffff;
+}
+
+[data-theme='dark'] .metaBadge {
+  border-color: rgba(74, 96, 120, 0.55);
+  background: rgba(20, 30, 44, 0.9);
+  color: rgba(220, 231, 245, 0.95);
+}
+
+@media (max-width: 996px) {
+  .dashboardGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero {
+    padding: var(--hami-space-48) 0 var(--hami-space-24);
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboardGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .maintainersGrid {
+    grid-template-columns: 1fr;
+  }
+}

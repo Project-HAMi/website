@@ -1,0 +1,406 @@
+[
+  {
+    "name": "Dynamia",
+    "nameZh": "密瓜智能",
+    "logoZh": "/img/contributors/dynamia-zh.svg",
+    "logo": "/img/contributors/dynamia.svg",
+    "website": "https://www.dynamia.ai"
+  },
+  {
+    "name": "DaoCloud",
+    "nameZh": "道客网络",
+    "logo": "/img/contributors/daocloud.svg",
+    "website": "https://www.daocloud.io"
+  },
+  {
+    "name": "4paradigm",
+    "nameZh": "第四范式",
+    "logo": "/img/contributors/4paradigm.svg",
+    "website": "https://www.4paradigm.com"
+  },
+  {
+    "name": "Baidu AI Cloud",
+    "nameZh": "百度智能云",
+    "logo": "/img/adopters/baidu-cloud.png",
+    "website": "https://cloud.baidu.com/"
+  },
+  {
+    "name": "Huawei",
+    "nameZh": "华为",
+    "logo": "/img/contributors/huawei.svg",
+    "website": "https://www.huawei.com"
+  },
+  {
+    "name": "LinkedIn",
+    "nameZh": "LinkedIn",
+    "logo": "/img/adopters/linkedin.png",
+    "website": "https://linkedin.com/"
+  },
+  {
+    "name": "SAP",
+    "nameZh": "SAP",
+    "logo": "/img/adopters/sap.png",
+    "website": "https://sap.com"
+  },
+  {
+    "name": "SF Technology",
+    "nameZh": "顺丰科技",
+    "logo": "/img/case-studies/sf-technology.svg",
+    "website": "https://www.sf-express.com"
+  },
+  {
+    "name": "Viettel",
+    "nameZh": "越南军用电子电信",
+    "logo": "/img/adopters/viettel.png",
+    "website": "https://www.viettel.com.vn"
+  },
+  {
+    "name": "Snow",
+    "nameZh": "Snow",
+    "logo": "/img/adopters/snow.png",
+    "website": "https://snowcorp.com/"
+  },
+  {
+    "name": "NIO",
+    "nameZh": "蔚来汽车",
+    "logo": "/img/adopters/nio.svg",
+    "logoZh": "/img/adopters/nio-zh.svg",
+    "website": "https://www.nio.com"
+  },
+  {
+    "name": "Ke Holdings Inc.",
+    "nameZh": "贝壳",
+    "logo": "/img/case-studies/ke-holdings.png",
+    "website": "https://www.ke.com"
+  },
+  {
+    "name": "Prep EDU",
+    "nameZh": "Prep EDU",
+    "logo": "/img/case-studies/prep.svg",
+    "website": "https://www.prepedu.com"
+  },
+  {
+    "name": "China Merchants Bank",
+    "nameZh": "招商银行",
+    "logo": "/img/adopters/china-merchants-bank.png",
+    "website": "https://www.cmbchina.com/"
+  },
+  {
+    "name": "iFlytek",
+    "nameZh": "科大讯飞",
+    "logo": "/img/contributors/iflytek-zh.svg",
+    "website": "https://www.iflytek.com"
+  },
+  {
+    "name": "PPIO",
+    "nameZh": "PPIO",
+    "logo": "/img/adopters/ppio.png",
+    "website": "https://ppio.com/"
+  },
+  {
+    "name": "OpenCSG",
+    "nameZh": "开放传神",
+    "logo": "/img/adopters/opencsg.svg",
+    "website": "https://www.opencsg.com/"
+  },
+  {
+    "name": "Baihai",
+    "nameZh": "白海",
+    "logo": "/img/adopters/baihai.jpg",
+    "website": "https://baihai.co/"
+  },
+  {
+    "name": "BONC",
+    "nameZh": "北京东方国信科技有限公司",
+    "logo": "/img/adopters/bonc.png",
+    "website": "https://www.bonc.com.cn/"
+  },
+  {
+    "name": "C. Y. Intell",
+    "nameZh": "承羽智慧",
+    "logo": "/img/adopters/cyintell.png",
+    "website": "https://www.cyintell.com/"
+  },
+  {
+    "name": "Chaintech",
+    "nameZh": "承启科技",
+    "logo": "/img/adopters/chaintech.svg",
+    "website": "https://www.chaintech.com.tw/"
+  },
+  {
+    "name": "China Eastcom",
+    "nameZh": "中国东信",
+    "logo": "/img/contributors/caih.png",
+    "website": "https://www.caih.com/"
+  },
+  {
+    "name": "China Mobile",
+    "nameZh": "中国移动",
+    "logo": "/img/adopters/china-mobile.png",
+    "website": "https://www.chinamobileltd.com"
+  },
+  {
+    "name": "China Unicom Industrial Internet",
+    "nameZh": "中国联通工业互联网",
+    "logo": "/img/adopters/china-unicom.png",
+    "website": "https://www.chinaunicom.cn"
+  },
+  {
+    "name": "China University of Mining and Technology",
+    "nameZh": "中国矿业大学",
+    "logo": "/img/adopters/china-university-of-mining-and-technology.jpg",
+    "website": "https://www.cumt.edu.cn"
+  },
+  {
+    "name": "Coocaa Technology",
+    "nameZh": "酷开科技",
+    "logo": "/img/adopters/coocaa.png",
+    "website": "https://www.coocaa.com/"
+  },
+  {
+    "name": "CoresHub",
+    "nameZh": "基石计算",
+    "logo": "/img/adopters/coreshub.svg",
+    "website": "https://coreshub.cn/"
+  },
+  {
+    "name": "DeepRoute.ai",
+    "nameZh": "元戎启行",
+    "logo": "/img/adopters/deeproute.png",
+    "website": "https://deeproute.ai/"
+  },
+  {
+    "name": "Dialo",
+    "nameZh": "Dialo",
+    "logo": "/img/adopters/dialo.png",
+    "website": "https://dialo.ai/"
+  },
+  {
+    "name": "Donghua University",
+    "nameZh": "东华大学",
+    "logo": "/img/adopters/donghua-university.png",
+    "website": "https://www.dhu.edu.cn"
+  },
+  {
+    "name": "ECloud (China Mobile Cloud)",
+    "nameZh": "移动云",
+    "logo": "/img/adopters/ecloud.jpg",
+    "website": "https://ecloud.10086.cn/"
+  },
+  {
+    "name": "Empathy",
+    "nameZh": "Empathy",
+    "logo": "/img/adopters/empathy.png",
+    "website": "https://empathy.co"
+  },
+  {
+    "name": "Ghostcloud",
+    "nameZh": "精灵云",
+    "logo": "/img/adopters/ghostcloud.png",
+    "website": "https://www.ghostcloud.cn/"
+  },
+  {
+    "name": "Gsafety",
+    "nameZh": "北京辰安",
+    "logo": "/img/adopters/gsafety.jpg",
+    "website": "https://www.gsafety.com/"
+  },
+  {
+    "name": "Guangdong University of Technology",
+    "nameZh": "广东工业大学",
+    "logo": "/img/adopters/guangdong-university-of-technology.png",
+    "website": "https://www.gdut.edu.cn"
+  },
+  {
+    "name": "Guangzhou Pingao",
+    "nameZh": "广州品高",
+    "logo": "/img/adopters/guangzhou-pingao.jpg",
+    "website": "https://www.bingosoft.net/"
+  },
+  {
+    "name": "H3C",
+    "nameZh": "新华三",
+    "logo": "/img/adopters/h3c.png",
+    "website": "https://www.h3c.com"
+  },
+  {
+    "name": "Hangzhou Lianhui",
+    "nameZh": "杭州联汇",
+    "logo": "/img/adopters/hangzhou-lianhui.png",
+    "website": "https://www.hzlh.com/"
+  },
+  {
+    "name": "Haofang",
+    "nameZh": "浩方",
+    "logo": "/img/adopters/haofan.jpg",
+    "website": "https://www.hofan.cn/"
+  },
+  {
+    "name": "Harbin Institute of Technology",
+    "nameZh": "哈尔滨工业大学",
+    "logo": "/img/adopters/harbin-institute-of-technology.png",
+    "website": "https://www.hit.edu.cn"
+  },
+  {
+    "name": "i-tudou",
+    "nameZh": "土豆数据",
+    "logo": "/img/adopters/i-tudou.png",
+    "website": "https://www.i-tudou.com"
+  },
+  {
+    "name": "Infervision",
+    "nameZh": "推想科技",
+    "logo": "/img/adopters/infervision.png",
+    "website": "https://www.infervision.com/"
+  },
+  {
+    "name": "Institute of Information Engineering, CAS",
+    "nameZh": "中国科学院信息工程研究所",
+    "logo": "/img/adopters/institute-of-information-engineering-cas.png",
+    "website": "https://www.iie.ac.cn/"
+  },
+  {
+    "name": "Kylinsoft",
+    "nameZh": "麒麟软件",
+    "logo": "/img/adopters/kylinsoft.png",
+    "website": "https://www.kylinos.cn"
+  },
+  {
+    "name": "Linklogis",
+    "nameZh": "联易融",
+    "logo": "/img/adopters/linklogis.jpg",
+    "website": "https://www.linklogis.com/"
+  },
+  {
+    "name": "Mashang Consumer Finance",
+    "nameZh": "马上消费金融",
+    "logo": "/img/adopters/msxf.png",
+    "website": "https://www.msxf.com/"
+  },
+  {
+    "name": "Miaoyun",
+    "nameZh": "秒云",
+    "logo": "/img/adopters/miaoyun.png",
+    "website": "https://www.miaoyun.net.cn/"
+  },
+  {
+    "name": "Nankai University - Network Laboratory",
+    "nameZh": "南开大学网络实验室",
+    "logo": "/img/adopters/nankai-university.png",
+    "website": "https://www.nankai.edu.cn"
+  },
+  {
+    "name": "Northsoft",
+    "nameZh": "北科互联",
+    "logo": "/img/adopters/northsoft.png",
+    "website": "http://www.arkunion.com/"
+  },
+  {
+    "name": "Ping An Bank",
+    "nameZh": "平安银行",
+    "logo": "/img/adopters/pingan-bank.png",
+    "website": "https://bank.pingan.com"
+  },
+  {
+    "name": "Ping An Securities",
+    "nameZh": "平安证券",
+    "logo": "/img/adopters/pingan-securities.png",
+    "website": "https://stock.pingan.com/"
+  },
+  {
+    "name": "RageHealth",
+    "nameZh": "深圳伯德睿捷健康科技有限公司",
+    "logo": "/img/adopters/ragehealth.png",
+    "website": "http://ragehealth.cn/"
+  },
+  {
+    "name": "RiseUnion",
+    "nameZh": "睿思智联",
+    "logo": "/img/contributors/riseunion.png",
+    "website": "https://www.theriseunion.com/"
+  },
+  {
+    "name": "Shanghai Ashermed Medical Technology Co., Ltd.",
+    "nameZh": "上海艾莎医学科技有限公司",
+    "logo": "/img/adopters/ashermed.png",
+    "website": "https://www.ashermed.com/"
+  },
+  {
+    "name": "si-tech",
+    "nameZh": "思特奇",
+    "logo": "/img/adopters/si-tech.png",
+    "website": "https://www.si-tech.com.cn"
+  },
+  {
+    "name": "Sina Weibo",
+    "nameZh": "新浪微博",
+    "logo": "/img/adopters/weibo.png",
+    "website": "https://weibo.com"
+  },
+  {
+    "name": "Sinochem Modern Agriculture",
+    "nameZh": "中化现代农业",
+    "logo": "/img/adopters/sinochem.png",
+    "website": "https://www.sinochemagri.com/"
+  },
+  {
+    "name": "Southeast University",
+    "nameZh": "东南大学",
+    "logo": "/img/adopters/southeast-university.png",
+    "website": "https://www.seu.edu.cn/"
+  },
+  {
+    "name": "SZZT",
+    "nameZh": "SZZT 证通",
+    "logo": "/img/adopters/szzt.png",
+    "website": "https://www.szzt.com.cn/"
+  },
+  {
+    "name": "Technical University of Munich",
+    "nameZh": "慕尼黑工业大学",
+    "logo": "/img/adopters/tum.png",
+    "website": "https://www.tum.de"
+  },
+  {
+    "name": "Tongcheng Travel",
+    "nameZh": "同程旅行",
+    "logo": "/img/adopters/tongcheng-travel.png",
+    "website": "https://www.ly.com"
+  },
+  {
+    "name": "UCloud",
+    "nameZh": "UCloud",
+    "logo": "/img/adopters/ucloud.png",
+    "website": "https://www.ucloud.cn/"
+  },
+  {
+    "name": "Unicdata",
+    "nameZh": "众调科技",
+    "logo": "/img/adopters/unicdata.png",
+    "website": "https://www.unicdata.com/"
+  },
+  {
+    "name": "Woqu",
+    "nameZh": "喔趣",
+    "logo": "/img/adopters/woqu.png",
+    "website": "https://www.woqu365.com"
+  },
+  {
+    "name": "Xuanyuan Network Technology Co., Ltd.",
+    "nameZh": "轩辕网络",
+    "logo": "/img/adopters/xuanyuan-network.png",
+    "website": ""
+  },
+  {
+    "name": "XW Bank",
+    "nameZh": "新网银行",
+    "logo": "/img/contributors/xw.png",
+    "website": "https://www.xwbank.com"
+  },
+  {
+    "name": "ZStack",
+    "nameZh": "云轴科技",
+    "logo": "/img/adopters/zstack.png",
+    "website": "https://www.zstack.io/"
+  }
+]

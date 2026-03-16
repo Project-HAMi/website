@@ -1,8 +1,7 @@
-----
-Dynamic MIG Implementation
-----
-
-# NVIDIA GPU MPS and MIG dynamic slice plugin
+---
+linktitle: Dynamic MIG Implementation
+title: NVIDIA GPU MPS and MIG dynamic slice plugin
+---
 
 ## Special Thanks
 
@@ -23,6 +22,7 @@ HAMi is done by using [hami-core](https://github.com/Project-HAMi/HAMi-core), wh
 - Tasks can choose to use MIG, use HAMi-core, or use both.
 
 ### Config maps
+
 - hami-scheduler-device-configMap
 This configmap defines the plugin configurations including resourceName, and MIG geometries, and node-level configurations.
 
@@ -100,11 +100,11 @@ data:
 
 ## Structure
 
-<img src="https://github.com/Project-HAMi/HAMi/blob/master/docs/develop/imgs/hami-dynamic-mig-structure.png?raw=true" width = "600" /> 
+<img src="https://github.com/Project-HAMi/HAMi/blob/master/docs/develop/imgs/hami-dynamic-mig-structure.png?raw=true" width="600" alt="HAMi 动态 MIG 结构图，显示 vGPU 池和调度器组件" />
 
 ## Examples
 
-Dynamic mig is compatible with hami tasks, as the example below: 
+Dynamic mig is compatible with hami tasks, as the example below:
 Just Setting `nvidia.com/gpu` and `nvidia.com/gpumem`.
 
 ```yaml
@@ -120,7 +120,7 @@ spec:
       resources:
         limits:
           nvidia.com/gpu: 2 # requesting 2 vGPUs
-          nvidia.com/gpumem: 8000 # Each vGPU contains 8000m device memory （Optional,Integer)
+          nvidia.com/gpumem: 8000 # Each vGPU contains 8000m device memory (Optional,Integer)
 ```
 
 A task can decide only to use `mig` or `hami-core` by setting `annotations.nvidia.com/vgpu-mode` to corresponding value, as the example below shows:
@@ -140,14 +140,14 @@ spec:
       resources:
         limits:
           nvidia.com/gpu: 2 # requesting 2 vGPUs
-          nvidia.com/gpumem: 8000 # Each vGPU contains 8000m device memory （Optional,Integer
+          nvidia.com/gpumem: 8000 # Each vGPU contains 8000m device memory (Optional,Integer
 ```
 
 ## Procedures
 
 The Procedure of a vGPU task which uses dynamic-mig is shown below:
 
-<img src="https://github.com/Project-HAMi/HAMi/blob/master/docs/develop/imgs/hami-dynamic-mig-procedure.png?raw=true" width = "800" /> 
+<img src="https://github.com/Project-HAMi/HAMi/blob/master/docs/develop/imgs/hami-dynamic-mig-procedure.png?raw=true" width="800" alt="HAMi 动态 MIG 流程图，显示任务调度过程" />
 
 Note that after submitted a task, deviceshare plugin will iterate over templates defined in configMap `hami-scheduler-device`, and find the first available template to fit. You can always change the content of that configMap, and restart vc-scheduler to customize.
 
@@ -159,4 +159,3 @@ If you submit the example on an empty A100-PCIE-40GB node, then it will select a
 ```
 
 Then start the container with 2g.10gb instances * 2
-

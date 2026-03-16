@@ -2,7 +2,7 @@
 title: Configuration
 ---
 
-# Global Config
+## Global Config
 
 ## Device Configs: ConfigMap
 

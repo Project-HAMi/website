@@ -4,7 +4,7 @@ title: Build HAMi
 
 ## Make Binary
 
-### prequisities
+### Prerequisites
 
 The following tools are required:
 
@@ -27,7 +27,7 @@ go build -ldflags '-s -w -X github.com/Project-HAMi/HAMi/pkg/version.version=v0.
 
 ## Make Image
 
-### prequisities
+### Prerequisites
 
 The following tools are required:
 

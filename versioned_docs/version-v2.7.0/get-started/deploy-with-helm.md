@@ -1,5 +1,5 @@
 ---
-title: Deploy HAMi using helm
+title: Deploy HAMi using Helm
 ---
 
 This guide will cover:
@@ -18,7 +18,7 @@ This guide will cover:
 
 ## Installation {#installation}
 
-### 1. Configure nvidia-container-toolkit {#configure-nvidia-container-toolkit}
+### Configure nvidia-container-toolkit {#configure-nvidia-container-toolkit}
 
 <summary> Configure nvidia-container-toolkit </summary>
 
@@ -105,7 +105,7 @@ Without this label, the nodes cannot be managed by our scheduler.
 kubectl label nodes {nodeid} gpu=on
 ```
 
-#### 3. Deploy HAMi using helm {#deploy-hami-using-helm}
+#### 3. Deploy HAMi using Helm {#deploy-hami-using-helm}
 
 First, you need to check your Kubernetes version by using the following command:
 
@@ -151,7 +151,7 @@ spec:
       resources:
         limits:
           nvidia.com/gpu: 1 # requesting 1 vGPUs
-          nvidia.com/gpumem: 10240 # Each vGPU contains 10240m device memory （Optional,Integer）
+          nvidia.com/gpumem: 10240 # Each vGPU contains 10240m device memory (Optional,Integer)
 ```
 
 #### 2. Verify in container resource control {#verify-in-container-resource-control}

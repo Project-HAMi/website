@@ -5,7 +5,7 @@ translated: true
 
 HAMi 的整体架构如下所示：
 
-![Architecture](../resources/architect.jpg)
+![HAMi 系统架构图，显示各组件之间的关系和交互](../resources/architect.jpg)
 
 HAMi 由以下组件组成：
 

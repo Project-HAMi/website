@@ -100,7 +100,7 @@ data:
 
 ## 结构
 
-<img src="https://github.com/Project-HAMi/HAMi/blob/master/docs/develop/imgs/hami-dynamic-mig-structure.png?raw=true" width = "600" />
+<img src="https://github.com/Project-HAMi/HAMi/blob/master/docs/develop/imgs/hami-dynamic-mig-structure.png?raw=true" width="600" alt="HAMi 动态 MIG 结构图，显示 vGPU 池和调度器组件" />
 
 ## 示例
 
@@ -147,7 +147,7 @@ spec:
 
 使用动态-mig 的 vGPU 任务的流程如下所示：
 
-<img src="https://github.com/Project-HAMi/HAMi/blob/master/docs/develop/imgs/hami-dynamic-mig-procedure.png?raw=true" width = "800" />
+<img src="https://github.com/Project-HAMi/HAMi/blob/master/docs/develop/imgs/hami-dynamic-mig-procedure.png?raw=true" width="800" alt="HAMi 动态 MIG 流程图，显示任务调度过程" />
 
 请注意，在提交任务后，deviceshare 插件将遍历 configMap `hami-scheduler-device` 中定义的模板，并找到第一个可用的模板来适配。您可以随时更改该 configMap 的内容，并重新启动 vc-scheduler 进行自定义。
 

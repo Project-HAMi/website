@@ -14,4 +14,4 @@ A task with the following resources.
 
 will see 3G device memory inside container
 
-![img](../resources/hard_limit.jpg)
+![GPU memory hard limit demonstration showing 3G device memory inside container](../resources/hard_limit.jpg)

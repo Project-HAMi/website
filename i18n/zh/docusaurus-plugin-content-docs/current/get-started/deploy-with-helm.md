@@ -18,7 +18,7 @@ title: 使用 Helm 部署 HAMi
 
 ## 安装步骤 {#installation}
 
-### 1. 配置 nvidia-container-toolkit {#configure-nvidia-container-toolkit}
+### 配置 nvidia-container-toolkit {#configure-nvidia-container-toolkit}
 
 <summary> 配置 nvidia-container-toolkit </summary>
 

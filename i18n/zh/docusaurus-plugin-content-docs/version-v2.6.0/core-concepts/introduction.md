@@ -8,7 +8,7 @@ translated: true
 
 异构 AI 计算虚拟化中间件（HAMi），前称为 k8s-vGPU-scheduler，是一个设计用于管理 k8s 集群中异构 AI 计算设备的“全合一”图表。它可以提供在任务之间共享异构 AI 设备的能力。
 
-HAMi 是一个[云原生计算基金会](https://cncf.io/)的沙箱项目和[景观项目](https://landscape.cncf.io/?item=orchestration-management--scheduling-orchestration--hami)以及[CNAI 景观项目](https://landscape.cncf.io/?group=cnai&item=cnai--general-orchestration--hami)。
+HAMi 是一个[云原生计算基金会](https://cncf.io/)的沙箱项目和[景观项目](https://landscape.cncf.io/?item=orchestration-management--scheduling-orchestration--hami)以及[CNAI 景观项目](https://landscape.cncf.io/?group=cnai&item=orchestration-management--scheduling-orchestration--hami)。
 
 ## 为什么选择 HAMi
 
@@ -38,4 +38,4 @@ HAMi 是一个[云原生计算基金会](https://cncf.io/)的沙箱项目和[景
 以下是一些推荐的下一步操作：
 
 - 了解 HAMi 的[架构](./architecture.md)。
-- 开始[安装 HAMi](../installation/prequisities.md)。
+- 开始[安装 HAMi](../installation/prerequisites.md)。

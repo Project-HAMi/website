@@ -4,4 +4,4 @@ title: HAMi mind map
 
 ## Mind map
 
-![image](../resources/HAMI-VGPU-mind-map-English.png)
+![HAMi VGPU mind map showing project structure and components](../resources/HAMI-VGPU-mind-map-English.png)

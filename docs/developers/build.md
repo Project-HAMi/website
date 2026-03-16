@@ -27,7 +27,7 @@ go build -ldflags '-s -w -X github.com/Project-HAMi/HAMi/pkg/version.version=v0.
 
 ## Make Image
 
-### prequisities
+### Prerequisites
 
 The following tools are required:
 
@@ -42,7 +42,7 @@ make docker
 
 If everything are successfully built, the following output are printed
 
-```
+```bash
 go build -ldflags '-s -w -X github.com/Project-HAMi/HAMi/pkg/version.version=v0.0.1' -o bin/scheduler ./cmd/scheduler
 go build -ldflags '-s -w -X github.com/Project-HAMi/HAMi/pkg/version.version=v0.0.1' -o bin/vGPUmonitor ./cmd/vGPUmonitor
 go build -ldflags '-s -w -X github.com/Project-HAMi/HAMi/pkg/version.version=v0.0.1' -o bin/nvidia-device-plugin ./cmd/device-plugin/nvidia

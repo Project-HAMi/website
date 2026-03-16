@@ -1,13 +1,19 @@
 import React, { memo, useEffect, useState } from 'react';
-import { useThemeConfig } from '@docusaurus/theme-common';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faDiscord, faGithub, faSlack, faWeixin } from '@fortawesome/free-brands-svg-icons';
+import { faBullhorn, faDownload, faRocket, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { useColorMode, useThemeConfig } from '@docusaurus/theme-common';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import FooterLinks from '@theme/Footer/Links';
 import FooterLogo from '@theme/Footer/Logo';
 import FooterCopyright from '@theme/Footer/Copyright';
 import FooterLayout from '@theme/Footer/Layout';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 import styles from './styles.module.css';
 
 function WechatGroupModal({ isOpen, onClose }) {
+  const wechatQr = useBaseUrl('img/community/wechat-assistant-qr.jpg');
+
   useEffect(() => {
     if (!isOpen) {
       return undefined;
@@ -57,7 +63,7 @@ function WechatGroupModal({ isOpen, onClose }) {
         </h3>
         <img
           className={styles.qrImage}
-          src="/img/community/wechat-assistant-qr.jpg"
+          src={wechatQr}
           alt="HAMi 微信小助手二维码"
         />
         <p className={styles.modalDescription}>
@@ -70,6 +76,7 @@ function WechatGroupModal({ isOpen, onClose }) {
 
 function Footer() {
   const { footer } = useThemeConfig();
+  const { colorMode } = useColorMode();
   const { i18n } = useDocusaurusContext();
   const [isWechatModalOpen, setIsWechatModalOpen] = useState(false);
 
@@ -110,8 +117,44 @@ function Footer() {
           ...group,
           items: group.items?.filter((item) => item.label !== 'WeChat Group'),
         }));
+  const iconMap = {
+    Install: faDownload,
+    安装: faDownload,
+    'Quick Start': faRocket,
+    快速开始: faRocket,
+    'Slack ': faSlack,
+    Discord: faDiscord,
+    GitHub: faGithub,
+    Adoption: faUsers,
+    Releases: faBullhorn,
+    发布记录: faBullhorn,
+    'WeChat Group': faWeixin,
+    微信入群: faWeixin,
+  };
+  const iconizedLinks = adjustedLinks?.map((group) => ({
+    ...group,
+    items: group.items?.map((item) => {
+      const icon = iconMap[item.label];
+      if (!icon) {
+        return item;
+      }
+      return {
+        ...item,
+        label: (
+          <span className={styles.footerItemLabel}>
+            <FontAwesomeIcon icon={icon} className={styles.footerItemIcon} />
+            <span>{item.label}</span>
+          </span>
+        ),
+      };
+    }),
+  }));
   const footerLinks =
-    adjustedLinks && adjustedLinks.length > 0 ? <FooterLinks links={adjustedLinks} /> : null;
+    iconizedLinks && iconizedLinks.length > 0 ? <FooterLinks links={iconizedLinks} /> : null;
+  const isZh = i18n.currentLocale === 'zh';
+  const cncfLogoLight = useBaseUrl('img/cncf-color.svg');
+  const cncfLogoDark = useBaseUrl('img/cncf-white.svg');
+  const cncfLogo = colorMode === 'dark' ? cncfLogoDark : cncfLogoLight;
 
   return (
     <>
@@ -121,6 +164,16 @@ function Footer() {
         logo={logo && <FooterLogo logo={logo} />}
         copyright={copyright && <FooterCopyright copyright={copyright} />}
       />
+      <div className={styles.cncfBar}>
+        <a
+          className={styles.cncfLink}
+          href="https://www.cncf.io/sandbox-projects/"
+          target="_blank"
+          rel="noreferrer">
+          <img className={styles.cncfLogo} src={cncfLogo} alt="CNCF" />
+          <span>{isZh ? 'HAMi 是 CNCF Sandbox 项目' : 'HAMi is a CNCF Sandbox project'}</span>
+        </a>
+      </div>
       {i18n.currentLocale === 'zh' && (
         <WechatGroupModal
           isOpen={isWechatModalOpen}

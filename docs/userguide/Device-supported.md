@@ -5,7 +5,7 @@ title: Device supported by HAMi
 The table below lists the devices supported by HAMi:
 
 | Type | Manufactor | Models | MemoryIsolation | CoreIsolation | MultiCard Support |
-|------|------------|------|-----------------|---------------|-------------------|
+| ---- | ---------- | ------ | --------------- | ------------- | ----------------- |
 | GPU | NVIDIA | All | ✅ | ✅ | ✅ |
 | MLU | Cambricon | 370, 590 | ✅ | ✅ | ❌ |
 | DCU | Hygon | Z100, Z100L | ✅ | ✅ | ❌ |
