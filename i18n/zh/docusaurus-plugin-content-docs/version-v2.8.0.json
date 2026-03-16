@@ -88,51 +88,59 @@
     "description": "The label for category 'Using HAMi with Kueue' in sidebar 'docs'"
   },
   "sidebar.docs.category.nvidia-examples": {
-    "message": "Examples",
+    "message": "示例",
     "description": "The label for category 'Examples' in sidebar 'docs'"
   },
   "sidebar.docs.category.cambricon-examples": {
-    "message": "Examples",
+    "message": "示例",
     "description": "The label for category 'Examples' in sidebar 'docs'"
   },
   "sidebar.docs.category.hygon-examples": {
-    "message": "Examples",
+    "message": "示例",
     "description": "The label for category 'Examples' in sidebar 'docs'"
   },
   "sidebar.docs.category.mthreads-examples": {
-    "message": "Examples",
+    "message": "示例",
     "description": "The label for category 'Examples' in sidebar 'docs'"
   },
   "sidebar.docs.category.iluvatar-examples": {
-    "message": "Examples",
+    "message": "示例",
     "description": "The label for category 'Examples' in sidebar 'docs'"
   },
   "sidebar.docs.category.Managing AWS Neuron devices": {
-    "message": "Managing AWS Neuron devices",
+    "message": "管理 AWS Neuron 设备",
     "description": "The label for category 'Managing AWS Neuron devices' in sidebar 'docs'"
   },
   "sidebar.docs.category.awsneuron-examples": {
-    "message": "Examples",
+    "message": "示例",
     "description": "The label for category 'Examples' in sidebar 'docs'"
   },
+  "sidebar.docs.category.Managing Vastai devices": {
+    "message": "管理 Vastai 设备",
+    "description": "The label for category 'Managing Vastai devices' in sidebar 'docs'"
+  },
   "sidebar.docs.category.Optimize Kunlunxin devices scheduling": {
-    "message": "Optimize Kunlunxin devices scheduling",
+    "message": "优化昆仑芯设备调度",
     "description": "The label for category 'Optimize Kunlunxin devices scheduling' in sidebar 'docs'"
   },
   "sidebar.docs.category.kunlunxin-examples": {
-    "message": "Examples",
+    "message": "示例",
+    "description": "The label for category 'Examples' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.vastai-examples": {
+    "message": "示例",
     "description": "The label for category 'Examples' in sidebar 'docs'"
   },
   "sidebar.docs.category.metax-sgpu-examples": {
-    "message": "Examples",
+    "message": "示例",
     "description": "The label for category 'Examples' in sidebar 'docs'"
   },
   "sidebar.docs.category.metax-gpu-examples": {
-    "message": "Examples",
+    "message": "示例",
     "description": "The label for category 'Examples' in sidebar 'docs'"
   },
   "sidebar.docs.category.ascend-examples": {
-    "message": "Examples",
+    "message": "示例",
     "description": "The label for category 'Examples' in sidebar 'docs'"
   },
   "sidebar.docs.category.Volcano vGPU": {
@@ -144,11 +152,11 @@
     "description": "The label for category 'NVIDIA GPU' in sidebar 'docs'"
   },
   "sidebar.docs.category.volcano-vgpu-examples": {
-    "message": "Examples",
+    "message": "示例",
     "description": "The label for category 'Examples' in sidebar 'docs'"
   },
   "sidebar.docs.category.kueue-examples": {
-    "message": "Examples",
+    "message": "示例",
     "description": "The label for category 'Examples' in sidebar 'docs'"
   }
 }

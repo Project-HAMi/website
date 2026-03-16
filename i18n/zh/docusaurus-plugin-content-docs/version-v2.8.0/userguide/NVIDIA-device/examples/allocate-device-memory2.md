@@ -3,8 +3,6 @@ title: 按百分比分配设备显存给容器
 translated: true
 ---
 
-## 按百分比分配设备显存给容器
-
 要按百分比分配一定大小的 GPU 设备显存，您只需在 `nvidia.com/gpu` 之外分配 `nvidia.com/gpumem-percentage`。
 
 ```yaml
