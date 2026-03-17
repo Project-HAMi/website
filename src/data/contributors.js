@@ -128,6 +128,11 @@ const contributorsData = [
     alt: "Tiduyun",
     href: "https://tiduyun.com",
   },
+  {
+    logo: "/img/contributors/zstack.png",
+    alt: "ZStack",
+    href: "https://www.zstack.io",
+  },
 ];
 
 export default contributorsData;
