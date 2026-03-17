@@ -2,6 +2,9 @@
 title: Ascend device template
 ---
 
+Ascend device templates define how a physical Ascend card is sliced into virtual instances that HAMi can schedule.
+Each template describes the available memory, AI cores and optional CPU resources for a given card model.
+When a Pod requests Ascend resources, HAMi selects a suitable template according to the requested memory and compute.
 
 ```yaml
 vnpus:

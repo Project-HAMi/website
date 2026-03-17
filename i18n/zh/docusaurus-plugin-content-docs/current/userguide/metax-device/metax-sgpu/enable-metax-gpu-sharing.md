@@ -4,8 +4,6 @@ linktitle: GPU 共享
 translated: true
 ---
 
-## 启用沐曦 GPU 共享
-
 **HAMi 目前支持复用沐曦 GPU 设备，提供与 vGPU 类似的复用功能**，包括：
 
 - **GPU 共享**: 每个任务可以只占用一部分显卡，多个任务可以共享一张显卡

@@ -1,9 +1,8 @@
 ---
-title: HAMi DRA
+title: Kubernetes 的 HAMi DRA
+linktitle: HAMi DRA
 translated: true
 ---
-
-## Kubernetes 的 HAMi DRA
 
 ## 介绍
 

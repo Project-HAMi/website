@@ -4,8 +4,6 @@ linktitle: 指定 GPU
 translated: true
 ---
 
-## 将任务分配给特定的 GPU
-
 要将任务分配给特定的 GPU，只需在注释字段中分配 `nvidia.com/use-gpuuuid`。
 
 ```yaml

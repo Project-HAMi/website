@@ -3,8 +3,6 @@ title: 动态资源分配
 translated: true
 ---
 
-## 动态资源分配
-
 ## 介绍
 
 HAMi 已经在 NVIDIA 设备上支持了 K8s [DRA](https://kubernetes.io/docs/concepts/scheduling-eviction/dynamic-resource-allocation/)（动态资源分配）功能。

@@ -1,8 +1,7 @@
 ---
-title: Assign to certain device
+title: Assign to certain device type
+linktitle: Assign to certain device
 ---
-
-## Assign to certain device type
 
 Sometimes a task may wish to run on a certain GPU, it can fill the `nvidia.com/use-gpuuuid` field in pod annotation. HAMi scheduler will try to fit in device with that uuid.
 

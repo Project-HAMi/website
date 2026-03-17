@@ -3,7 +3,7 @@ title: 将任务分配给 mig 实例
 translated: true
 ---
 
-## 此示例将为 A100-40GB-PCIE 设备分配 2g.10gb * 2 或为 A100-80GB-XSM 设备分配 1g.10gb * 2。
+此示例将为 A100-40GB-PCIE 设备分配 `2g.10gb * 2` 或为 A100-80GB-XSM 设备分配 `1g.10gb * 2`。
 
 ```yaml
 apiVersion: v1

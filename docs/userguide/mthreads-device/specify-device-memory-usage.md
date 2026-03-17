@@ -1,5 +1,6 @@
 ---
-title: Allocate device memory
+title: Allocate device memory to container
+linktitle: Allocate device memory
 ---
 
 Allocate a percentage size of device memory by specify resources such as `mthreads.com/sgpu-memory`.

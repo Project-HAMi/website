@@ -1,5 +1,6 @@
 ---
 title: 全局配置
+linktitle: 配置
 translated: true
 ---
 

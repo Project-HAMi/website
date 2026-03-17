@@ -4,7 +4,7 @@ linktitle: GPU 共享
 translated: true
 ---
 
-## 启用天数智芯 GPU 共享
+## 简介
 
 本组件支持复用天数智芯 GPU 设备 (MR-V100、BI-V150、BI-V100)，并为此提供以下几种与 vGPU 类似的复用功能，包括：
 

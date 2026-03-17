@@ -1,9 +1,10 @@
 ---
 title: Volcano vGPU 使用指南
+linktitle: Volcano vGPU
 translated: true
 ---
 
-## Kubernetes 的 Volcano vgpu 设备插件
+:::note
 
 **注意**：
 
@@ -13,6 +14,8 @@ translated: true
 这基于 [Nvidia 设备插件](https://github.com/NVIDIA/k8s-device-plugin)，使用 [HAMi-core](https://github.com/Project-HAMi/HAMi-core) 支持 GPU 卡的硬隔离。
 
 Volcano vgpu 仅在 volcano > 1.9 中可用
+
+:::
 
 ## 快速开始
 

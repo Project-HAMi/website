@@ -1,10 +1,8 @@
 ---
-title: 使用独占 GPU
-linktitle: 独占 GPU
+title: 将设备核心分配给容器
+linktitle: 使用独占 GPU
 translated: true
 ---
-
-## 使用独占 GPU
 
 要以独占模式使用 GPU，这是 nvidia-k8s-device-plugin 的默认行为，您只需分配 `nvidia.com/gpu` 而无需其他资源字段。
 

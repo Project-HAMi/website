@@ -1,9 +1,8 @@
 ---
 title: 为容器分配设备核心和显存资源
+linktitle: 分配核心和显存
 translated: true
 ---
-
-## 为容器分配设备核心和显存
 
 要分配设备核心资源的某一部分，您只需在容器中使用 `cambricon.com/vmlu` 指定所需的寒武纪 MLU 数量，并分配 `cambricon.com/mlu370.smlu.vmemory` 和 `cambricon.com/mlu370.smlu.vcore`。
 

@@ -3,7 +3,7 @@ title: 前提条件
 translated: true
 ---
 
-## 先决条件
+在安装HAMi之前，请确保您的环境中已正确安装以下工具和依赖项：
 
 - NVIDIA 驱动版本 >= 440
 - nvidia-docker 版本 > 2.0

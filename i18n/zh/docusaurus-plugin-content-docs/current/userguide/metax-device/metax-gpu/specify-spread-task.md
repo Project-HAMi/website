@@ -1,5 +1,6 @@
 ---
 title: 扩展调度策略
+linktitle: Spread 策略
 translated: true
 ---
 

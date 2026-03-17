@@ -1,5 +1,6 @@
 ---
 title: Using Extended ResourceQuota for NVIDIA Devices
+linktitle: ResourceQuota
 translated: true
 ---
 

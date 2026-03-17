@@ -3,6 +3,10 @@ title: Ascend 设备模板
 translated: true
 ---
 
+Ascend 设备模板用于定义一块物理 Ascend 卡如何被切分成多个可租用的虚拟实例，供 HAMi 调度使用。
+每个模板描述了对应卡型的可用显存、AI Core 以及可选的 CPU 资源。
+当 Pod 申请 Ascend 相关资源时，HAMi 会根据请求的显存和算力，从这些模板中选择最合适的一种进行分配。
+
 ```yaml
 vnpus:
 - chipName: 910B

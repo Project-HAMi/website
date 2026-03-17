@@ -1,5 +1,5 @@
 ---
-title: 分配AWS Neuron核心资源
+title: 分配 AWS Neuron 核心资源
 ---
 
 如需分配1/2个neuron设备，您可以通过分配neuroncore来实现，如下例所示：

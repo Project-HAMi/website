@@ -1,5 +1,6 @@
 ---
 title: 启用昆仑芯 GPU 拓扑感知调度
+linktitle: 拓扑感知调度
 ---
 
 **昆仑芯 GPU 拓扑感知调度现在通过 `kunlunxin.com/xpu` 资源得到支持。**

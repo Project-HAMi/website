@@ -1,9 +1,8 @@
 ---
-title: Volcano Ascend vNPU
+title: Volcano Ascend vNPU 使用指南
+linktitle: Volcano Ascend vNPU
 translated: true
 ---
-
-## Volcano 中 Ascend 设备使用指南
 
 ## 介绍
 

@@ -1,5 +1,6 @@
 ---
 title: 将任务分配给特定的 GPU
+linktitle: 指定 GPU
 translated: true
 ---
 

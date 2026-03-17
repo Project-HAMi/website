@@ -1,5 +1,6 @@
 ---
-title: Allocate device core resource
+title: Allocate device core to container
+linktitle: Allocate device core resource
 ---
 
 To allocate a certain part of device core resource, you need only to assign the `nvidia.com/gpucores` without other resource fields.

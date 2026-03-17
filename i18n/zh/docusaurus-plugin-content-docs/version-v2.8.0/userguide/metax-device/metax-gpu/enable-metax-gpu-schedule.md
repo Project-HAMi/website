@@ -4,8 +4,6 @@ linktitle: 拓扑感知调度
 translated: true
 ---
 
-## 启用沐曦 GPU 拓扑感知调度
-
 **HAMi 现在通过在沐曦 GPU 之间实现拓扑感知来支持 metax.com/gpu**：
 
 当在单个服务器上配置多个 GPU 时，GPU 卡根据它们是否连接到同一个 PCIe 交换机或 MetaXLink 而存在远近关系。这在服务器上的所有卡之间形成了一个拓扑，如下图所示：

@@ -1,5 +1,6 @@
 ---
 title: 按百分比分配设备显存给容器
+linktitle: 按百分比分配显存
 translated: true
 ---
 

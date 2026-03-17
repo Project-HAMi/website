@@ -4,8 +4,6 @@ linktitle: 分配核心
 translated: true
 ---
 
-## 为容器分配设备核心资源
-
 要分配设备核心资源的某一部分，您只需分配 `nvidia.com/gpucores`，无需其他资源字段。
 
 ```yaml
