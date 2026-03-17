@@ -1,5 +1,5 @@
 ---
-title: 支持HAMi的设备
+title: HAMi 支持的设备
 translated: true
 ---
 

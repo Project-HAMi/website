@@ -1,8 +1,7 @@
 ---
-title: Allocate device memory
+title: Allocate device memory to container
+linktitle: Allocate device memory
 ---
-
-## Allocate device memory to container
 
 Allocate a certain size of device memory by specify resources such as `nvidia.com/gpumem`.
 Optional, Each unit of `nvidia.com/gpumem` equals to 1M.

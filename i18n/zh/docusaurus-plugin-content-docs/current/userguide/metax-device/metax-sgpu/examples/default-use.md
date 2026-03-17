@@ -1,5 +1,6 @@
 ---
 title: 为容器分配设备核心和显存资源
+linktitle: 分配核心和显存
 translated: true
 ---
 

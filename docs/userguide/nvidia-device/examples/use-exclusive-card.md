@@ -1,8 +1,7 @@
 ---
-title: Use exclusive GPU
+title: Allocate device core to container
+linktitle: Use exclusive GPU
 ---
-
-## Allocate device core to container
 
 To use GPU in an exclusive mode, which is the default behaviour of nvidia-k8s-device-plugin, you need only to assign the `nvidia.com/gpu` without other resource fields.
 

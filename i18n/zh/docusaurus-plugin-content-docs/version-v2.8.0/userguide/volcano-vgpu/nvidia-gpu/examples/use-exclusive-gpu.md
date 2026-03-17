@@ -4,8 +4,6 @@ linktitle: 独占 GPU
 translated: true
 ---
 
-## 使用独占 GPU
-
 要分配一个独占的GPU，您只需分配`volcano.sh/vgpu-number`，而无需其他`volcano.sh/xxx`字段，如下例所示：
 
 ```yaml

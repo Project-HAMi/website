@@ -1,5 +1,6 @@
 ---
 title: 监控 Volcano vGPU
+linktitle: 监控
 translated: true
 ---
 

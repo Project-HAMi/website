@@ -1,5 +1,6 @@
 ---
 title: 启用 Ascend 共享
+linktitle: Ascend 共享
 translated: true
 ---
 

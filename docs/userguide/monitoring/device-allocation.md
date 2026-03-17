@@ -1,8 +1,7 @@
 ---
-title: Cluster device allocation
+title: Cluster device allocation endpoint
+linktitle: Cluster device allocation
 ---
-
-## Cluster device allocation endpoint
 
 You can get the overview of cluster device allocation and limit by visiting `{scheduler node ip}:31993/metrics`, or add it to a prometheus endpoint, as the command below:
 

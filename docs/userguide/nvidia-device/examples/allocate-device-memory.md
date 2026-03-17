@@ -1,8 +1,7 @@
 ---
-title: Allocate certain device memory
+title: Allocate certain device memory to container
+linktitle: Allocate certain device memory
 ---
-
-## Allocate certain device memory to container
 
 To allocate a certain size of GPU device memory, you need only to assign `nvidia.com/gpumem` besides `nvidia.com/gpu`.
 

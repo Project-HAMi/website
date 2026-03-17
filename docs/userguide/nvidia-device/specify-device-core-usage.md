@@ -1,8 +1,7 @@
 ---
-title: Allocate device core usage
+title: Allocate device core to container
+linktitle: Allocate device core usage
 ---
-
-## Allocate device core to container
 
 Allocate a percentage of device core resources by specify resource `nvidia.com/gpucores`.
 Optional, each unit of `nvidia.com/gpucores` equals to 1% device cores.

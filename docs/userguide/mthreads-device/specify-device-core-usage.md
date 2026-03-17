@@ -1,8 +1,7 @@
 ---
-title: Allocate device core usage
+title: Allocate device core to container
+linktitle: Allocate device core usage
 ---
-
-## Allocate device core to container
 
 Allocate a part of device core resources by specify resource `mthreads.com/sgpu-core`.
 Optional, each unit of `mthreads.com/smlu-core` equals to 1/16 device cores.

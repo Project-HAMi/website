@@ -1,5 +1,6 @@
 ---
 title: Volcano Ascend vNPU 使用指南
+linktitle: Volcano Ascend vNPU
 translated: true
 ---
 

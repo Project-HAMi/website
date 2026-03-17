@@ -4,8 +4,6 @@ linktitle: Ascend 共享
 translated: true
 ---
 
-## 启用 Ascend 共享
-
 基于虚拟化模板支持显存切片，自动使用可用的租赁模板。有关详细信息，请查看[设备模板](./device-template.md)。
 
 ## 先决条件

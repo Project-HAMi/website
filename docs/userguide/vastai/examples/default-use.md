@@ -2,6 +2,10 @@
 title: Allocate Vastai Device
 ---
 
+This example shows how to request a single Vastai device in a plain Kubernetes Pod.
+The Pod simply runs a long‑running container image provided by Vastaitech and asks for one `vastaitech.com/va` device through the `resources.limits` section.
+You can use this as a starting point and adjust the image and resource limits to fit your own workloads.
+
 ```yaml
 apiVersion: v1
 kind: Pod

@@ -2,8 +2,6 @@
 title: How to use kueue on HAMi
 ---
 
-# Using Kueue with HAMi
-
 This guide will help you use Kueue to manage HAMi vGPU resources, including enabling Deployment support, configuring ResourceTransformation, and creating workloads that request vGPU resources.
 
 ## Prerequisites

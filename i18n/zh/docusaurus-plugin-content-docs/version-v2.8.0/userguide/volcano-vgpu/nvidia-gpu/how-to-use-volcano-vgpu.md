@@ -1,11 +1,10 @@
 ---
-title: 如何使用 Volcano vGPU
+title: Volcano vgpu 设备插件用于 Kubernetes
+linktitle: 如何使用 Volcano vGPU
 translated: true
 ---
 
-## Volcano vgpu 设备插件用于 Kubernetes
-
-**注意**：
+:::note
 
 使用 volcano-vgpu 时，**不需要** 安装 HAMi，仅使用  
 [Volcano vgpu device-plugin](https://github.com/Project-HAMi/volcano-vgpu-device-plugin) 即可。它可以为由 volcano 管理的 NVIDIA 设备提供设备共享机制。
@@ -13,6 +12,8 @@ translated: true
 该插件基于 [Nvidia Device Plugin](https://github.com/NVIDIA/k8s-device-plugin)，并使用 [HAMi-core](https://github.com/Project-HAMi/HAMi-core) 实现对 GPU 卡的硬隔离支持。
 
 Volcano vgpu 仅在 volcano > 1.9 版本中可用。
+
+:::
 
 ## 快速开始
 
