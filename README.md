@@ -1,4 +1,6 @@
 # HAMi Docs & Website
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FProject-HAMi%2Fwebsite.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FProject-HAMi%2Fwebsite?ref=badge_shield)
+
 
 This repo contains the source code of [HAMi website](https://project-hami.io/) and all of the docs for HAMi.
 It's built by [Docusaurus 3](https://docusaurus.io/), a modern static website generator.
@@ -38,3 +40,7 @@ GIT_USER=<Your GitHub username> USE_SSH=true yarn deploy
 ```
 
 If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FProject-HAMi%2Fwebsite.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FProject-HAMi%2Fwebsite?ref=badge_large)
