@@ -19,6 +19,13 @@
     "website": "https://www.4paradigm.com"
   },
   {
+    "name": "RiseUnion",
+    "nameZh": "睿思智联",
+    "logo": "/img/contributors/riseunion.png",
+    "logoZh": "/img/contributors/riseunion-zh.png",
+    "website": "https://www.theriseunion.com/"
+  },
+  {
     "name": "Baidu AI Cloud",
     "nameZh": "百度智能云",
     "logo": "/img/adopters/baidu-cloud.png",
@@ -318,12 +325,6 @@
     "nameZh": "深圳伯德睿捷健康科技有限公司",
     "logo": "/img/adopters/ragehealth.png",
     "website": "http://ragehealth.cn/"
-  },
-  {
-    "name": "RiseUnion",
-    "nameZh": "睿思智联",
-    "logo": "/img/contributors/riseunion.png",
-    "website": "https://www.theriseunion.com/"
   },
   {
     "name": "Shanghai Ashermed Medical Technology Co., Ltd.",
