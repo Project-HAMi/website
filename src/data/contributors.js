@@ -16,6 +16,11 @@ const contributorsData = [
     href: "https://www.4paradigm.com",
   },
   {
+    logo: "/img/contributors/riseunion.png",
+    alt: "RiseUnion",
+    href: "https://www.riseunion.com",
+  },
+  {
     logo: "/img/contributors/alibaba.svg",
     alt: "Alibaba Group",
     href: "https://www.alibabagroup.com",
@@ -77,11 +82,6 @@ const contributorsData = [
     logo: "/img/contributors/caih.png",
     alt: "CAIH Cloud",
     href: "https://www.caih.com",
-  },
-  {
-    logo: "/img/contributors/tetrate.png",
-    alt: "Tetrate",
-    href: "https://tetrate.io",
   },
   {
     logo: "/img/contributors/memverge.png",
