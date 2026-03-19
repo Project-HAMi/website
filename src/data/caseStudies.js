@@ -1,7 +1,36 @@
 const caseStudiesData = [
   {
+    name: 'NIO',
+    nameZh: '蔚来汽车',
+    logo: '/img/adopters/nio.svg',
+    logoZh: '/img/adopters/nio-zh.svg',
+    website: 'https://www.nio.com',
+    publishedAt: '2026-03-17',
+    metric: {
+      en: '10× GPU utilization improvement in CI pipelines',
+      zh: 'CI 流水线 GPU 利用率提升 10 倍',
+    },
+    summary: {
+      en: 'Improving GPU utilization for autonomous driving workloads with HAMi-based GPU virtualization on Kubernetes.',
+      zh: '基于 HAMi 的 GPU 虚拟化，提升自动驾驶工作负载的 GPU 利用率。',
+    },
+    highlights: [
+      {
+        en: '30% reduction in GPU hours for simulation workloads.',
+        zh: '仿真工作负载 GPU 时间减少 30%。',
+      },
+      {
+        en: 'Hybrid GPU sharing strategy combining HAMi with MIG and time-slicing.',
+        zh: '采用混合 GPU 共享策略，结合 HAMi、MIG 和时间切片。',
+      },
+    ],
+    url: 'https://www.cncf.io/case-studies/nio/',
+  },
+  {
     name: 'KE Holdings Inc.',
+    nameZh: '贝壳',
     logo: '/img/case-studies/ke-holdings.png',
+    website: 'https://www.ke.com',
     publishedAt: '2026-02-05',
     metric: {
       en: '3x improvement in platform GPU utilization',
@@ -25,7 +54,9 @@ const caseStudiesData = [
   },
   {
     name: 'DaoCloud',
+    nameZh: '道客网络',
     logo: '/img/case-studies/daocloud.svg',
+    website: 'https://www.daocloud.io',
     publishedAt: '2025-12-02',
     metric: {
       en: '>80% average GPU utilization after vGPU adoption',
@@ -49,7 +80,9 @@ const caseStudiesData = [
   },
   {
     name: 'SF Technology',
+    nameZh: '顺丰科技',
     logo: '/img/case-studies/sf-technology.svg',
+    website: 'https://www.sf-express.com',
     publishedAt: '2025-09-18',
     metric: {
       en: 'Up to 57% GPU savings for production and test clusters',
@@ -73,7 +106,9 @@ const caseStudiesData = [
   },
   {
     name: 'PREP EDU',
+    nameZh: 'PREP EDU',
     logo: '/img/case-studies/prep.svg',
+    website: 'https://www.prepedu.com',
     publishedAt: '2025-08-20',
     metric: {
       en: '90% of GPU infrastructure optimized using HAMi',

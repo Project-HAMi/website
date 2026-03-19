@@ -31,6 +31,7 @@ module.exports = {
   organizationName: "hami-io",
   projectName: "website",
   favicon: "img/logo.svg",
+  clientModules: [require.resolve('./src/client/imageFigureNumber.js')],
   i18n: {
     defaultLocale: defaultLocale,
     locales: ["en", "zh"],
