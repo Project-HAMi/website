@@ -13,9 +13,11 @@ const CaseStudiesList = () => {
     return (
         <ul className="support-wrapper casestudies-wrapper">
             {
-                caseStudiesData.map(({ logo, name, metric, url }, index) => {
-                    const hasLogo = logo && logo.trim() !== '';
-                    const logoPath = hasLogo && logo.startsWith('/') ? logo : `/img/casestudies/${logo}`;
+                caseStudiesData.map(({ logo, logoZh, name, metric, url }, index) => {
+                    const rawLogo = (isZh && logoZh) ? logoZh : logo;
+                    const hasLogo = rawLogo && rawLogo.trim() !== '';
+                    const logoPath = hasLogo && rawLogo.startsWith('/') ? rawLogo : `/img/casestudies/${rawLogo}`;
+                    const displayMetric = typeof metric === 'object' ? (isZh ? metric.zh : metric.en) : metric;
 
                     return (
                         <li key={index}>
@@ -34,7 +36,7 @@ const CaseStudiesList = () => {
                                 ) : (
                                     <div className="casestudy-name-card">
                                         <span className="casestudy-name">{name}</span>
-                                        <span className="casestudy-metric">{metric}</span>
+                                        <span className="casestudy-metric">{displayMetric}</span>
                                     </div>
                                 )}
                             </a>

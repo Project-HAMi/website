@@ -17,6 +17,7 @@ const contributorsData = [
   },
   {
     logo: "/img/contributors/riseunion.png",
+    logoZh: "/img/contributors/riseunion-zh.png",
     alt: "RiseUnion",
     href: "https://www.riseunion.com",
   },
