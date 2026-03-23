@@ -675,5 +675,17 @@
   "theme.SearchModal.footer.backToSearchText": {
     "message": "Back to search",
     "description": "The back to search text for footer"
+  },
+  "theme.hami.blog.meta.unknownAuthor": {
+    "message": "HAMi 社区",
+    "description": "Default author name for blog posts when no authors are specified"
+  },
+  "theme.hami.blog.meta.authorLabel": {
+    "message": "作者",
+    "description": "Label for blog post author metadata"
+  },
+  "theme.hami.blog.meta.publishedLabel": {
+    "message": "发布时间",
+    "description": "Label for blog post publish date metadata"
   }
 }
