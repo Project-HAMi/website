@@ -409,5 +409,11 @@
     "nameZh": "云轴科技",
     "logo": "/img/adopters/zstack.png",
     "website": "https://www.zstack.io/"
+  },
+  {
+    "name": "BoardWare",
+    "nameZh": "博维智慧科技",
+    "logo": "/img/adopters/boardware.jpg",
+    "website": "https://www.boardware.com.mo"
   }
 ]
