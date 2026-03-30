@@ -11,7 +11,7 @@ const contributorsData = [
     href: "https://www.daocloud.io",
   },
   {
-    logo: "/img/contributors/4paradigm.svg",
+    logo: "/img/contributors/phancy.png",
     alt: "4Paradigm",
     href: "https://www.4paradigm.com",
   },
