@@ -1,141 +1,141 @@
 ---
-title: "HAMi 即将亮相 KubeCon Europe 2026：构建 Kubernetes 中的 GPU 资源层"
+title: "HAMi at KubeCon Europe 2026: Building the GPU Resource Layer in Kubernetes"
 date: "2026-03-19"
-description: "HAMi 将在 KubeCon Europe 2026 的多项活动中亮相，包括 Project Pavilion 展台、技术分享、主舞台 Demo 等。作为 CNCF Sandbox 项目，HAMi 关注的 GPU 虚拟化、共享与调度问题，正在与 Kubernetes 生态中的 AI 基础设施议题发生越来越直接的交汇。"
+description: "HAMi will be featured in multiple activities at KubeCon Europe 2026, including Project Pavilion booth, technical sessions, main stage demo, and post-conference AI events. As a CNCF Sandbox project, HAMi focuses on GPU virtualization, sharing, and scheduling, which is increasingly intersecting with AI infrastructure topics in the Kubernetes ecosystem."
 tags: ["KubeCon", "GPU", "Kubernetes", "AI"]
 authors: [hami_community]
 ---
 
-下周，HAMi 将在 [KubeCon + CloudNativeCon Europe 2026](https://events.linuxfoundation.org/kubecon-cloudnativecon-europe/) 的多项活动中亮相，包括 Project Pavilion 展台、技术分享、主舞台 Demo，以及会后 AI 相关活动。
+Next week, HAMi will be featured in multiple activities at [KubeCon + CloudNativeCon Europe 2026](https://events.linuxfoundation.org/kubecon-cloudnativecon-europe/), including Project Pavilion booth, technical sessions, main stage demo, and post-conference AI-related events.
 
-作为 CNCF Sandbox 项目，HAMi 关注的 GPU 虚拟化、共享与调度问题，正在与 Kubernetes 生态中的 AI 基础设施议题发生越来越直接的交汇。KubeCon + CloudNativeCon Europe 2026 将于 3 月 23 日至 26 日在阿姆斯特丹举行，其中 3 月 23 日为 pre-event programming，3 月 24 日至 26 日为主会期。
+As a CNCF Sandbox project, HAMi focuses on GPU virtualization, sharing, and scheduling, which is increasingly intersecting with AI infrastructure topics in the Kubernetes ecosystem. KubeCon + CloudNativeCon Europe 2026 will be held in Amsterdam from March 23-26, with March 23 as pre-event programming and March 24-26 as the main conference.
 
 <!-- truncate -->
 
-![KubeCon EU 2026 吸引了 13,000 名参会者](/img/blog-hami-at-kubecon-eu-2026-kubecon.png)
+![KubeCon EU 2026 attracts 13,000 attendees](/img/blog-hami-at-kubecon-eu-2026-kubecon.png)
 
-## 为什么这次 KubeCon 值得关注？
+## Why This KubeCon Matters
 
-如果把过去几年云原生社区的讨论放在一起看，会发现一个越来越清晰的变化：AI 正在从应用层问题，进入 Kubernetes 的资源层、调度层与控制层。
+Looking at the cloud native community discussions over the past few years, a clear trend emerges: AI is moving from the application layer into Kubernetes' resource layer, scheduling layer, and control layer.
 
-围绕 GPU 的讨论也不再停留在"设备可见性"或"驱动可用性"，而是进一步延伸到共享、切分、利用率、多租户隔离，以及 AI workload 的调度语义等问题。
+The discussions around GPUs are no longer limited to "device visibility" or "driver availability," but have extended to sharing, partitioning, utilization, multi-tenant isolation, and AI workload scheduling semantics.
 
-KubeCon Europe 2026 的官方议程中，keynote、AI 相关 session、Project Pavilion 与 co-located events 都体现出这一趋势。
+The official agenda of KubeCon Europe 2026 reflects this trend across keynotes, AI-related sessions, Project Pavilion, and co-located events.
 
-在这个背景下，HAMi 所对应的问题空间也变得更加明确：不是简单地"让 Kubernetes 能识别 GPU"，而是让 GPU 进一步成为一种可以被抽象、被共享、被调度的资源层能力。
+In this context, HAMi's problem space becomes clearer: it's not simply about "making Kubernetes recognize GPUs," but making GPUs a resource layer capability that can be abstracted, shared, and scheduled.
 
-这也是为什么本次 KubeCon 对 HAMi 社区而言，不只是一次项目展示，更是一次和更大范围云原生生态对话的机会。
+This is why this KubeCon is more than just a project showcase for the HAMi community—it's an opportunity to engage with the broader cloud native ecosystem.
 
-## 在 KubeCon 现场，如何找到 HAMi？
+## Finding HAMi at KubeCon
 
-![欢迎来到 HAMi 展台](/img/blog-hami-at-kubecon-eu-2026-booth.png)
+![Welcome to HAMi Booth](/img/blog-hami-at-kubecon-eu-2026-booth.png)
 
-HAMi 将在 Project Pavilion 设置展台，方便与社区成员、用户和维护者进行现场交流。
+HAMi will have a booth at Project Pavilion for in-person exchanges with community members, users, and maintainers.
 
-- **Booth**：**P-13B**
-- **时间**：
-  - **3 月 24 日（周二）15:10–19:00**
-  - **3 月 26 日（周四）12:30–14:00**
+- **Booth**: **P-13B**
+- **Times**:
+  - **March 24 (Tuesday) 15:10–19:00**
+  - **March 26 (Thursday) 12:30–14:00**
 
-如果你会到现场，欢迎来到 HAMi Booth，一起交流这些话题：
+If you're attending, stop by the HAMi Booth to discuss:
 
-- Kubernetes 中的 GPU 虚拟化与共享
-- AI workload 的资源调度与利用率优化
-- 多租户 GPU 资源管理
-- HAMi 与 [Volcano](https://volcano.sh/)、[Kueue](https://kueue.sigs.k8s.io/)、[vLLM](https://github.com/vllm-project/vllm) 等生态项目的协同
+- GPU virtualization and sharing in Kubernetes
+- Resource scheduling and utilization optimization for AI workloads
+- Multi-tenant GPU resource management
+- HAMi's integration with ecosystem projects like [Volcano](https://volcano.sh/), [Kueue](https://kueue.sigs.k8s.io/), [vLLM](https://github.com/vllm-project/vllm), and others
 
-Project Pavilion 是 KubeCon 主展区中的项目展示区域，面向社区项目、维护者与开发者交流。
+Project Pavilion is the project showcase area within the main KubeCon exhibition, designed for community projects, maintainers, and developers to connect.
 
-## HAMi @ KubeCon Europe 2026 活动一览
+## HAMi @ KubeCon Europe 2026 Event Overview
 
 ### 1. Opening Keynote
 
-- **时间**：3 月 24 日 09:00–09:35
-- **地点**：Hall 12
-- **讲者**：Jonathan Bryce (Linux Foundation Executive Director) & Chris Aniszczyk (CNCF CTO)
-- **议程**：[Keynote: Welcome + Opening Remarks](https://kccnceu2026.sched.com/event/2CtKk/keynote-welcome-+-opening-remarks-jonathan-bryce-executive-director-cloud-and-infrastructure-linux-foundation-chris-aniszczyk-cto-cloud-and-infrastructure-linux-foundation?iframe=no)
+- **Time**: March 24, 09:00–09:35
+- **Location**: Hall 12
+- **Speakers**: Jonathan Bryce (Linux Foundation Executive Director) & Chris Aniszczyk (CNCF CTO)
+- **Agenda**: [Keynote: Welcome + Opening Remarks](https://kccnceu2026.sched.com/event/2CtKk/keynote-welcome-+-opening-remarks-jonathan-bryce-executive-director-cloud-and-infrastructure-linux-foundation-chris-aniszczyk-cto-cloud-and-infrastructure-linux-foundation?iframe=no)
 
-本次开幕 keynote 由 Linux Foundation 与 CNCF 相关负责人带来。
+This opening keynote will be delivered by leadership from Linux Foundation and CNCF.
 
-对于关注 AI 基础设施方向的社区成员来说，keynote 本身就是一个观察窗口：云原生主叙事是否正在吸纳更多 AI、GPU 与资源管理相关议题。
+For community members focused on AI infrastructure, the keynote serves as an observation window: Is the main cloud native narrative embracing more AI, GPU, and resource management topics?
 
-### 2. HAMi 技术分享（Lightning Talks）
+### 2. HAMi Technical Sessions (Lightning Talks)
 
 #### GPU Sharing in Kubernetes
 
-- **时间**：3 月 23 日 17:15–17:25
-- **地点**：Hall 7 · Room B
-- **讲者**：张潇（「Dynamia 密瓜智能」CEO，HAMi Maintainer）
-- **议程**：[K8s Issue #52757: Sharing GPUs Among Multiple Containers](https://colocatedeventseu2026.sched.com/event/2DY9v/cllightning-talk-k8s-issue-?iframe=yes&w=100%&sidebar=yes&bg=no#52757-sharing-gpus-among-multiple-containers-xiao-zhang-dynamiaai)
+- **Time**: March 23, 17:15–17:25
+- **Location**: Hall 7 · Room B
+- **Speaker**: Xiao Zhang (CEO, Dynamia, HAMi Maintainer)
+- **Agenda**: [K8s Issue #52757: Sharing GPUs Among Multiple Containers](https://colocatedeventseu2026.sched.com/event/2DY9v/cllightning-talk-k8s-issue-?iframe=yes&w=100%&sidebar=yes&bg=no#52757-sharing-gpus-among-multiple-containers-xiao-zhang-dynamiaai)
 
-这场 lightning talk 会从 Kubernetes 社区长期存在的 GPU 共享问题出发，讨论多容器共享 GPU 的背景、挑战与相关实现路径。
+This lightning talk will address Kubernetes' long-standing GPU sharing problem, discussing the background, challenges, and implementation paths for multi-container GPU sharing.
 
-#### HAMi 项目技术解读
+#### HAMi Project Technical Deep Dive
 
-- **时间**：3 月 23 日 14:43–14:48
-- **地点**：Elicium 2
-- **讲者**：李孟轩（「Dynamia 密瓜智能」CTO，HAMi Maintainer）
-- **议程**：[HAMi: Dynamic, Smart, Stable GPU-Sharing Middleware in Kubernetes](https://kccnceu2026.sched.com/event/2EFyZ/project-lightning-talk-hami-dynamic-smart-stable-gpu-sharing-middleware-in-kubernetes-mengxuan-li-maintainer?iframe=yes&w=100%&sidebar=yes&bg=no)
+- **Time**: March 23, 14:43–14:48
+- **Location**: Elicium 2
+- **Speaker**: Mengxuan Li (CTO, Dynamia, HAMi Maintainer)
+- **Agenda**: [HAMi: Dynamic, Smart, Stable GPU-Sharing Middleware in Kubernetes](https://kccnceu2026.sched.com/event/2EFyZ/project-lightning-talk-hami-dynamic-smart-stable-gpu-sharing-middleware-in-kubernetes-mengxuan-li-maintainer?iframe=yes&w=100%&sidebar=yes&bg=no)
 
-这场分享会聚焦 HAMi 的核心架构与能力，包括 GPU 虚拟化、共享与调度机制，以及项目在稳定性与生产可用性上的设计思路。
+This session will focus on HAMi's core architecture and capabilities, including GPU virtualization, sharing and scheduling mechanisms, and the project's design philosophy around stability and production readiness.
 
 ### 3. Maintainer Summit
 
-- **时间**：3 月 22 日
-- **信息**：[Maintainer Summit](https://events.linuxfoundation.org/kubecon-cloudnativecon-europe/features-add-ons/maintainer-summit/)
+- **Time**: March 22
+- **Information**: [Maintainer Summit](https://events.linuxfoundation.org/kubecon-cloudnativecon-europe/features-add-ons/maintainer-summit/)
 
-HAMi 也将参与 KubeCon 期间的 Maintainer Summit，并围绕 **Insights on AI Workloads** 与维护者群体展开交流。
+HAMi will also participate in the KubeCon Maintainer Summit, engaging with maintainers around **Insights on AI Workloads**.
 
-Maintainer Summit 是 KubeCon 主会前一天举行的维护者活动，聚焦上游协作、SIG/WG 话题与项目间讨论。
+The Maintainer Summit is a maintainer-focused event held the day before the main conference, focusing on upstream collaboration, SIG/WG topics, and inter-project discussions.
 
-对 HAMi 来说，这也是一个把 GPU 资源管理与 AI workload 问题带入更广泛维护者语境的重要场景。Maintainer Summit 确认于 3 月 22 日在 RAI Amsterdam 举行。
+For HAMi, this is an important venue to bring GPU resource management and AI workload topics into a broader maintainer context. The Maintainer Summit is confirmed for March 22 at RAI Amsterdam.
 
 ### 4. Poster Session
 
-- **时间**：3 月 25 日 13:15–14:15
-- **地点**：Hall 1–5 · Gouda Zone · Poster Pavilion
-- **讲者**：Satyam Soni (Devtron) & Rudraksh Karpe (ZS Associates)
-- **议程**：[Kubernetes as the Universal GPU Control Plane for AI Workloads](https://kccnceu2026.sched.com/event/2CW0q/poster-session-kubernetes-as-the-universal-gpu-control-plane-for-ai-workloads-satyam-soni-devtronai-rudraksh-karpe-zs-associates-inc?iframe=yes&w=100%&sidebar=yes&bg=no)
+- **Time**: March 25, 13:15–14:15
+- **Location**: Hall 1–5 · Gouda Zone · Poster Pavilion
+- **Speakers**: Satyam Soni (Devtron) & Rudraksh Karpe (ZS Associates)
+- **Agenda**: [Kubernetes as the Universal GPU Control Plane for AI Workloads](https://kccnceu2026.sched.com/event/2CW0q/poster-session-kubernetes-as-the-universal-gpu-control-plane-for-ai-workloads-satyam-soni-devtronai-rudraksh-karpe-zs-associates-inc?iframe=yes&w=100%&sidebar=yes&bg=no)
 
-这场 poster session 从更生态化的角度讨论 Kubernetes 作为 GPU control plane 的可能性，这一方向与 HAMi 长期关注的问题高度相关。
+This poster session discusses the potential of Kubernetes as a GPU control plane from an ecosystem perspective—a direction highly relevant to HAMi's long-term focus.
 
-### 5. 主舞台 Demo
+### 5. Main Stage Demo
 
-- **时间**：3 月 26 日 10:03–10:18
-- **地点**：Hall 12
-- **讲者**：李孟轩（「Dynamia 密瓜智能」CTO，HAMi Maintainer），Reza Jelveh（「Dynamia 密瓜智能」Head of Global Market & Solution Engineer）
+- **Time**: March 26, 10:03–10:18
+- **Location**: Hall 12
+- **Speakers**: Mengxuan Li (CTO, Dynamia, HAMi Maintainer), Reza Jelveh (Head of Global Market & Solution Engineer, Dynamia)
 
-KubeCon 期间的主舞台 Demo 将展示 GPU 共享与调度在 Kubernetes 中的实际运行方式。相比常规 PPT 分享，这类 Demo 更适合直观理解从资源抽象到系统落地的完整链路。
+The main stage demo during KubeCon will showcase GPU sharing and scheduling in action within Kubernetes. Compared to traditional slide presentations, this demo provides a more intuitive understanding of the complete chain from resource abstraction to system implementation.
 
 ### 6. AI Native Summit
 
-- **时间**：3 月 27 日 09:00–16:00
-- **地点**：Van der Valk Hotel Amsterdam – Zuidas
-- **议程**：[AI Native Summit Hosted by ETSI ISG NFV](https://kccnceu2026.sched.com/event/2HKYM/ai-native-summit-hosted-by-etsi-isg-nfv-separate-registration-required?iframe=no)
+- **Time**: March 27, 09:00–16:00
+- **Location**: Van der Valk Hotel Amsterdam – Zuidas
+- **Agenda**: [AI Native Summit Hosted by ETSI ISG NFV](https://kccnceu2026.sched.com/event/2HKYM/ai-native-summit-hosted-by-etsi-isg-nfv-separate-registration-required?iframe=no)
 
-在主会结束后，AI Native Summit 也值得关注。该活动更适合从系统层面讨论 AI 基础设施中的资源层、控制层，以及 Kubernetes 在其中的角色。
+After the main conference, the AI Native Summit is also worth attention. This event is better suited for system-level discussions of the resource layer and control layer in AI infrastructure, and Kubernetes' role within them.
 
-## 除了 HAMi，还可以关注哪些议题？
+## Beyond HAMi: Other Topics to Follow
 
-如果你会参加本届 KubeCon，除了 HAMi 相关活动，也建议重点关注以下方向：
+If you're attending this KubeCon, in addition to HAMi-related activities, we recommend focusing on these areas:
 
 - Device Management / DRA
 - AI workload scheduling
 - GPU observability
-- inference platform 与 AI reference stack
-- GPU 共享与资源抽象
+- Inference platforms and AI reference stacks
+- GPU sharing and resource abstraction
 
-这些议题虽然分散在不同会场，但共同指向一个问题：**Kubernetes 如何在 AI 时代具备更强的资源管理与调度能力。**
+While these topics are spread across different venues, they all point to one question: **How can Kubernetes gain stronger resource management and scheduling capabilities in the AI era?**
 
-## 社区动态与后续内容
+## Community Updates and Follow-up Content
 
-大会期间，HAMi 社区也会持续整理和发布相关内容，包括技术分享要点、现场展示以及对 AI 基础设施趋势的观察。
+During the conference, the HAMi community will continue to curate and publish related content, including technical session highlights, on-site demonstrations, and observations on AI infrastructure trends.
 
-欢迎关注：
+Stay connected:
 
-- [HAMi GitHub 仓库](https://github.com/project-hami/hami)
-- [HAMi 社区官网](https://project-hami.io)
+- [HAMi GitHub Repository](https://github.com/project-hami/hami)
+- [HAMi Community Website](https://project-hami.io)
 
-如果你也会在阿姆斯特丹，欢迎来 Project Pavilion 找到我们。
+If you'll be in Amsterdam, come find us at Project Pavilion.
 
-`📍 HAMi Booth：P-13B`
+`📍 HAMi Booth: P-13B`
