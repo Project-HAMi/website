@@ -3,7 +3,7 @@ title: 分配独占设备
 translated: true
 ---
 
-要分配整个 Ascend 设备，您只需分配 `huawei.com/ascend910` 或 `huawei.com/310p`，无需其他字段。
+要分配整个 Ascend 设备，你只需分配 `huawei.com/ascend910` 或 `huawei.com/310p`，无需其他字段。
 
 ```yaml
 apiVersion: v1

@@ -4,7 +4,7 @@ linktitle: 分配显存
 translated: true
 ---
 
-要分配特定大小的 GPU 设备显存，您只需在 `nvidia.com/gpu` 之外分配 `nvidia.com/gpumem`。
+要分配特定大小的 GPU 设备显存，你只需在 `nvidia.com/gpu` 之外分配 `nvidia.com/gpumem`。
 
 ```yaml
 apiVersion: v1

@@ -5,7 +5,7 @@ translated: true
 
 ## Job 描述
 
-要分配一个独占的 GPU，您只需分配 `volcano.sh/vgpu-number`，而无需其他 `volcano.sh/xxx` 字段，如下例所示：
+要分配一个独占的 GPU，你只需分配 `volcano.sh/vgpu-number`，而无需其他 `volcano.sh/xxx` 字段，如下例所示：
 
 ```yaml
 apiVersion: v1

@@ -11,9 +11,9 @@ translated: true
 
 ***设备显存控制***：MLU 可以在某种类型（即 370）上分配一定的设备显存大小，并确保不超过边界。
 
-***MLU 类型指定***：您可以通过设置 "cambricon.com/use-mlutype" 或 "cambricon.com/nouse-mlutype" 注释来指定某个任务使用或避免使用哪种类型的 MLU。
+***MLU 类型指定***：你可以通过设置 "cambricon.com/use-mlutype" 或 "cambricon.com/nouse-mlutype" 注释来指定某个任务使用或避免使用哪种类型的 MLU。
 
-***非常易于使用***：您无需修改任务 yaml 即可使用我们的调度程序。安装后，所有 MLU 任务将自动得到支持。您唯一需要做的就是标记 MLU 节点。
+***非常易于使用***：你无需修改任务 yaml 即可使用我们的调度程序。安装后，所有 MLU 任务将自动得到支持。你唯一需要做的就是标记 MLU 节点。
 
 ## 前提条件
 
@@ -23,7 +23,7 @@ translated: true
 
 ## 启用 MLU 共享支持
 
-* 联系您的设备提供商以获取 cambricon-device-plugin>2.0.9，在 containers.args 字段中将参数 `mode` 编辑为 'dynamic-smlu'。
+* 联系你的设备提供商以获取 cambricon-device-plugin>2.0.9，在 containers.args 字段中将参数 `mode` 编辑为 'dynamic-smlu'。
 
 ```yaml
         args:
@@ -33,7 +33,7 @@ translated: true
 
 * 部署修改后的 cambricon-device-plugin
 
-* 使用 helm 安装图表，请参阅[此处](https://github.com/Project-HAMi/HAMi#enabling-vgpu-support-in-kubernetes)的“在 Kubernetes 中启用 vGPU 支持”部分
+* 使用 helm 安装图表，参阅[此处](https://github.com/Project-HAMi/HAMi#enabling-vgpu-support-in-kubernetes)的“在 Kubernetes 中启用 vGPU 支持”部分
 
 * 为该节点上的每个 MLU 激活 smlu 模式
 

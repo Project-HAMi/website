@@ -3,7 +3,7 @@ title: 分配沐曦设备
 translated: true
 ---
 
-要分配沐曦设备，您只需分配 `metax-tech.com/gpu`，无需其他字段。
+要分配沐曦设备，你只需分配 `metax-tech.com/gpu`，无需其他字段。
 
 ```yaml
 apiVersion: v1

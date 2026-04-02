@@ -4,7 +4,7 @@ linktitle: Spread 策略
 translated: true
 ---
 
-为了分配性能最佳的 沐曦设备，您只需将 `metax-tech.com/gpu` 与注释 `hami.io/node-scheduler-policy: "spread"` 一起分配
+为了分配性能最佳的 沐曦设备，你只需将 `metax-tech.com/gpu` 与注释 `hami.io/node-scheduler-policy: "spread"` 一起分配
 
 ```yaml
 metadata:

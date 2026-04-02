@@ -24,7 +24,7 @@ title: 启用燧原 GPU 共享
 
 ## 开启 GCU 复用
 
-* 部署'gcushare-device-plugin'，燧原的 GCU 共享需要配合厂家提供的'gcushare-device-plugin'一起使用，请联系设备提供方获取
+* 部署'gcushare-device-plugin'，燧原的 GCU 共享需要配合厂家提供的'gcushare-device-plugin'一起使用，联系设备提供方获取
 
 > **注意：** *只需要安装 gcushare-device-plugin，不要安装 gcushare-scheduler-plugin.*
 

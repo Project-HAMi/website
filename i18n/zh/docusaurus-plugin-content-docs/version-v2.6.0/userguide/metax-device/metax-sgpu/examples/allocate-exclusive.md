@@ -5,7 +5,7 @@ translated: true
 
 ## 分配独占设备
 
-要分配整个Metax GPU设备，您只需为容器申请 `metax-tech.com/sgpu` 资源。
+要分配整个Metax GPU设备，你只需为容器申请 `metax-tech.com/sgpu` 资源。
 
 ```yaml
 apiVersion: v1

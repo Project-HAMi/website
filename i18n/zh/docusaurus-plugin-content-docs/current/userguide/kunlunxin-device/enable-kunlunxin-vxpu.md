@@ -8,9 +8,9 @@ title: 启用昆仑芯 VXPU
 
 ***XPU 共享***：每个任务只能占用设备的一部分，允许多个任务共享单个 XPU
 
-***内存分配限制***：您现在可以使用内存值（例如 24576M）来分配 XPU，组件确保任务不会超过分配的显存限制
+***内存分配限制***：你现在可以使用内存值（例如 24576M）来分配 XPU，组件确保任务不会超过分配的显存限制
 
-***设备 UUID 选择***：您可以通过注解指定使用或排除特定的 XPU 设备
+***设备 UUID 选择***：你可以通过注解指定使用或排除特定的 XPU 设备
 
 ## 前置条件
 
@@ -128,7 +128,7 @@ spec:
 * `kunlunxin.com/vxpu` 用于 VXPU 计数
 * `kunlunxin.com/vxpu-memory` 用于显存分配
 
-您可以使用上述参数自定义这些名称。
+你可以使用上述参数自定义这些名称。
 :::
 
 ## 设备粒度分区
@@ -160,7 +160,7 @@ spec:
 
 ## 设备 UUID 选择
 
-您可以通过 Pod 注解指定使用或排除特定的 XPU 设备：
+你可以通过 Pod 注解指定使用或排除特定的 XPU 设备：
 
 ```yaml
 apiVersion: v1
@@ -176,11 +176,11 @@ spec:
   # ... rest of Pod configuration
 ```
 
-> **注意：** 设备 ID 格式为 `{BusID}`。您可以在节点状态中找到可用的设备 ID。
+> **注意：** 设备 ID 格式为 `{BusID}`。你可以在节点状态中找到可用的设备 ID。
 
 ### 查找设备 UUID
 
-您可以使用以下命令在节点上查找昆仑芯 P800-OAM XPU 设备 UUID：
+你可以使用以下命令在节点上查找昆仑芯 P800-OAM XPU 设备 UUID：
 
 ```bash
 kubectl get pod <pod-name> -o yaml | grep -A 10 "hami.io/xpu-devices-allocated"

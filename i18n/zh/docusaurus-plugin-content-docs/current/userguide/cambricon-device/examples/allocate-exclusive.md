@@ -4,7 +4,7 @@ linktitle: 独占设备
 translated: true
 ---
 
-要分配整个寒武纪设备，您只需分配 `cambricon.com/vmlu`，无需其他字段。
+要分配整个寒武纪设备，你只需分配 `cambricon.com/vmlu`，无需其他字段。
 
 ```
 apiVersion: apps/v1

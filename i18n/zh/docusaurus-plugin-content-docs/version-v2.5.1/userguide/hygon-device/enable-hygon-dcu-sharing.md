@@ -13,7 +13,7 @@ translated: true
 
 ***设备计算核心限制***：DCU 可以分配一定百分比的设备核心（如 hygon.com/dcucores:60 表示此容器使用该设备的 60% 计算核心）。
 
-***DCU 类型规范***：您可以通过设置 "hygon.com/use-dcutype" 或 "hygon.com/nouse-dcutype" 注释来指定某个任务使用或避免使用哪种类型的 DCU。
+***DCU 类型规范***：你可以通过设置 "hygon.com/use-dcutype" 或 "hygon.com/nouse-dcutype" 注释来指定某个任务使用或避免使用哪种类型的 DCU。
 
 ## 先决条件
 
@@ -50,7 +50,7 @@ spec:
 
 ## 在容器内启用 vDCU
 
-您需要在容器内启用 vDCU 才能使用它。
+你需要在容器内启用 vDCU 才能使用它。
 
 ```bash
 source /opt/hygondriver/env.sh
@@ -62,7 +62,7 @@ source /opt/hygondriver/env.sh
 hy-virtual -show-device-info
 ```
 
-如果您有如下输出，则表示您已在容器内成功启用 vDCU。
+如果你有如下输出，则表示你已在容器内成功启用 vDCU。
 
 ```yaml
 Device 0:
@@ -71,12 +71,12 @@ Device 0:
  Global memory: 2097152000 bytes
 ```
 
-像往常一样启动您的 DCU 任务
+像往常一样启动你的 DCU 任务
 
 ## 注意事项
 
-1. 如果您的镜像不是 'dtk-embedded-image'，则需要在任务运行后安装 `pciutiils`、`libelf-dev`、`kmod`，否则，像 `hy-smi` 或 `hy-virtual` 这样的 dcu 工具可能无法正常工作。
+1. 如果你的镜像不是 'dtk-embedded-image'，则需要在任务运行后安装 `pciutiils`、`libelf-dev`、`kmod`，否则，像 `hy-smi` 或 `hy-virtual` 这样的 dcu 工具可能无法正常工作。
 
 2. 不支持在 init 容器中共享 DCU，init 容器中带有 "hygon.com/dcumem" 的 Pod 将永远不会被调度。
 
-3. 每个容器只能获取一个 vdcu。如果您想挂载多个 dcu 设备，则不应设置 `hygon.com/dcumem` 或 `hygon.com/dcucores`。
+3. 每个容器只能获取一个 vdcu。如果你想挂载多个 dcu 设备，则不应设置 `hygon.com/dcumem` 或 `hygon.com/dcucores`。

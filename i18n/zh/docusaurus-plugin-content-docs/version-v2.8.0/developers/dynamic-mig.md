@@ -150,9 +150,9 @@ spec:
 
 <img src="https://github.com/Project-HAMi/HAMi/blob/master/docs/develop/imgs/hami-dynamic-mig-procedure.png?raw=true" width="800" alt="HAMi 动态 MIG 流程图，显示任务调度过程" />
 
-请注意，在提交任务后，deviceshare 插件将遍历 configMap `hami-scheduler-device` 中定义的模板，并找到第一个可用的模板来适配。您可以随时更改该 configMap 的内容，并重新启动 vc-scheduler 进行自定义。
+请注意，在提交任务后，deviceshare 插件将遍历 configMap `hami-scheduler-device` 中定义的模板，并找到第一个可用的模板来适配。你可以随时更改该 configMap 的内容，并重新启动 vc-scheduler 进行自定义。
 
-如果您在空的 A100-PCIE-40GB 节点上提交示例，那么它将选择一个 GPU 并选择以下 MIG 模板：
+如果你在空的 A100-PCIE-40GB 节点上提交示例，那么它将选择一个 GPU 并选择以下 MIG 模板：
 
 ```yaml
   2g.10gb : 3

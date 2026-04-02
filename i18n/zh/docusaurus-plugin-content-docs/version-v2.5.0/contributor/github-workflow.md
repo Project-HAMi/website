@@ -89,7 +89,7 @@ git fetch upstream
 git rebase upstream/master
 ```
 
-请不要使用 `git pull` 代替上述的 `fetch` / `rebase`。`git pull` 会进行合并，这会留下合并提交。这会使提交历史变得混乱，并违反提交应该是单独可理解和有用的原则（见下文）。你也可以考虑通过 `git config branch.autoSetupRebase always` 更改 `.git/config` 文件以更改 `git pull` 的行为，或使用其他非合并选项如 `git pull --rebase`。
+不要使用 `git pull` 代替上述的 `fetch` / `rebase`。`git pull` 会进行合并，这会留下合并提交。这会使提交历史变得混乱，并违反提交应该是单独可理解和有用的原则（见下文）。你也可以考虑通过 `git config branch.autoSetupRebase always` 更改 `.git/config` 文件以更改 `git pull` 的行为，或使用其他非合并选项如 `git pull --rebase`。
 
 ## 提交
 
@@ -139,7 +139,7 @@ _如果你有上游写入权限_，请避免使用 GitHub UI 创建 PR，因为 
 
 如果可以，尽量让 PR 中的每个提交都能独立编译并通过测试，但这不是必需的。特别是，`merge` 提交必须被移除，因为它们不会通过测试。
 
-要压缩你的提交，请执行[交互式变基](https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History)：
+要压缩你的提交，执行[交互式变基](https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History)：
 
 1. 检查你的 git 分支：
 

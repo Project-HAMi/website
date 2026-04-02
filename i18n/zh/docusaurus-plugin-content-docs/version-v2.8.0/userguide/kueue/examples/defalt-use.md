@@ -5,7 +5,7 @@ title: 默认 Kueue 使用示例
 本示例演示了如何将 Kueue 与 HAMi vGPU 资源配合使用。示例包含一套完整的配置，用于创建
 ResourceFlavor、ClusterQueue、LocalQueue，以及一个请求 vGPU 资源的示例 Deployment。
 
-在应用此示例之前，请确保已安装 HAMi 和 Kueue，并且已在 Kueue 中启用 ResourceTransformation
+在应用此示例之前，确保已安装 HAMi 和 Kueue，并且已在 Kueue 中启用 ResourceTransformation
 配置（参见 [如何在 HAMi 上使用 Kueue](../how-to-use-kueue.md)）。
 
 ```yaml

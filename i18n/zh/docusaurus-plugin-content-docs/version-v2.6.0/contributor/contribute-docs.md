@@ -9,12 +9,12 @@ translated: true
 
 - 文档和代码一样，也按版本分类和存储。1.3 是我们归档的第一个版本。
 - 文档需要翻译成多种语言，以便来自不同地区的读者阅读。社区现在支持中文和英文。英文是文档的官方语言。
-- 我们的文档使用 Markdown。如果您不熟悉 Markdown，请参阅 [https://guides.github.com/features/mastering-markdown/](https://guides.github.com/features/mastering-markdown/) 或 [https://www.markdownguide.org/](https://www.markdownguide.org/) 以获取更详细的信息。
+- 我们的文档使用 Markdown。如果你不熟悉 Markdown，参阅 [https://guides.github.com/features/mastering-markdown/](https://guides.github.com/features/mastering-markdown/) 或 [https://www.markdownguide.org/](https://www.markdownguide.org/) 以获取更详细的信息。
 - 我们通过[Docusaurus 2](https://docusaurus.io/)获得了一些附加功能，这是一个现代静态网站生成器。
 
 ## 设置
 
-您可以通过克隆我们的网站仓库来设置本地环境。
+你可以通过克隆我们的网站仓库来设置本地环境。
 
 ```shell
 git clone https://github.com/Project-HAMi/website.git
@@ -87,13 +87,13 @@ title: 带有标签的文档
 
 ### 链接到其他文档
 
-您可以通过添加以下任何链接轻松路由到其他地方：
+你可以通过添加以下任何链接轻松路由到其他地方：
 
-- 指向外部站点的绝对 URL，如`https://github.com`或`https://k8s.io` - 您可以使用任何 Markdown 标记来实现这一点，因此
+- 指向外部站点的绝对 URL，如`https://github.com`或`https://k8s.io` - 你可以使用任何 Markdown 标记来实现这一点，因此
   - `<https://github.com>` 或
   - `[kubernetes](https://k8s.io)`都可以。
-- 链接到 Markdown 文件或生成的路径。您可以使用相对路径索引相应的文件。
-- 链接到图片或其他资源。如果您的文章包含图片或其他资源，您可以在`/docs/resources`中创建相应的目录，并将文章相关文件放在该目录中。现在我们将关于 HAMi 的公共图片存储在`/docs/resources/general`中。您可以使用以下方式链接图片：
+- 链接到 Markdown 文件或生成的路径。你可以使用相对路径索引相应的文件。
+- 链接到图片或其他资源。如果你的文章包含图片或其他资源，你可以在`/docs/resources`中创建相应的目录，并将文章相关文件放在该目录中。现在我们将关于 HAMi 的公共图片存储在`/docs/resources/general`中。你可以使用以下方式链接图片：
   - `![Git工作流](https://github.com/Project-HAMi/HAMi/raw/master/docs/develop/resources/contributor/git_workflow.png)`
 
 ### 目录组织
@@ -106,7 +106,7 @@ Docusaurus 2 使用侧边栏来管理文档。
 - 在每个文档上显示侧边栏
 - 提供分页导航，带有下一页/上一页按钮
 
-对于我们的文档，您可以从[https://github.com/Project-HAMi/website/blob/main/sidebars.js](https://github.com/Project-HAMi/website/blob/main/sidebars.js)了解我们的文档是如何组织的。
+对于我们的文档，你可以从[https://github.com/Project-HAMi/website/blob/main/sidebars.js](https://github.com/Project-HAMi/website/blob/main/sidebars.js)了解我们的文档是如何组织的。
 
 ```js
 module.exports = {
@@ -148,24 +148,24 @@ items: [
 ],
 ```
 
-如果您添加了文档，您必须将其添加到`sidebars.js`中以使其正确显示。如果您不确定您的文档位于何处，可以在 PR 中询问社区成员。
+如果你添加了文档，你必须将其添加到`sidebars.js`中以使其正确显示。如果你不确定你的文档位于何处，可以在 PR 中询问社区成员。
 
 ### 关于中文文档
 
 关于文档的中文版有两种情况：
 
-- 您想将我们现有的英文文档翻译成中文。在这种情况下，您需要修改相应文件的内容，路径为[https://github.com/Project-HAMi/website/tree/main/i18n/zh/docusaurus-plugin-content-docs/current](https://github.com/Project-HAMi/website/tree/main/i18n/zh/docusaurus-plugin-content-docs/current)。该目录的组织与外层完全相同。`current.json`保存了文档目录的翻译。如果您想翻译目录名称，可以编辑它。
-- 您想贡献没有英文版的中文文档。欢迎任何类型的文章。在这种情况下，您可以先将文章和标题添加到主目录。文章内容可以先标记为 TBD。然后将相应的中文内容添加到中文目录中。
+- 你想将我们现有的英文文档翻译成中文。在这种情况下，你需要修改相应文件的内容，路径为[https://github.com/Project-HAMi/website/tree/main/i18n/zh/docusaurus-plugin-content-docs/current](https://github.com/Project-HAMi/website/tree/main/i18n/zh/docusaurus-plugin-content-docs/current)。该目录的组织与外层完全相同。`current.json`保存了文档目录的翻译。如果你想翻译目录名称，可以编辑它。
+- 你想贡献没有英文版的中文文档。欢迎任何类型的文章。在这种情况下，你可以先将文章和标题添加到主目录。文章内容可以先标记为 TBD。然后将相应的中文内容添加到中文目录中。
 
 ## 调试文档
 
-现在您已经完成了文档。在您向`Project-HAMi/website`发起 PR 后，如果通过 CI，您可以在网站上预览您的文档。
+现在你已经完成了文档。在你向`Project-HAMi/website`发起 PR 后，如果通过 CI，你可以在网站上预览你的文档。
 
-点击红色标记的**Details**，您将进入网站的预览视图。
+点击红色标记的**Details**，你将进入网站的预览视图。
 
-点击**Next**，您可以看到相应的更改。如果您有与中文版相关的更改，请点击旁边的语言下拉框切换到中文。
+点击**Next**，你可以看到相应的更改。如果你有与中文版相关的更改，请点击旁边的语言下拉框切换到中文。
 
-如果预览页面不是您期望的，请再次检查您的文档。
+如果预览页面不是你期望的，再次检查你的文档。
 
 ## 常见问题
 
