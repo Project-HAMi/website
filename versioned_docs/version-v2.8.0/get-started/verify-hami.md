@@ -1,11 +1,11 @@
 ---
-title: Verify HAMi (Quick Start)
-sidebar_label: Verify HAMi
+title: Validate HAMi Setup and vGPU Behavior
+sidebar_label: Validate HAMi
 ---
 
-# Verify HAMi (Quick Start)
+# Validate HAMi Setup and vGPU Behavior
 
-This guide provides a rapid, end-to-end setup to verify that GPU workloads run correctly in a Kubernetes cluster with HAMi. 
+This guide provides a rapid, end-to-end setup to validate that GPU workloads run correctly in a Kubernetes cluster with HAMi.
 
 What "working" actually means: A successful HAMi setup goes beyond just running pods or a successful Helm installation. It means the GPU is accessible inside a container, Kubernetes correctly advertises the resources, and vGPU isolation (like memory limits) behaves predictably. 
 
