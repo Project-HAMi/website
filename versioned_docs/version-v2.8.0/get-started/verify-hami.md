@@ -1,5 +1,4 @@
 ---
-id: verify-hami
 title: Verify HAMi (Quick Start)
 sidebar_label: Verify HAMi
 ---
