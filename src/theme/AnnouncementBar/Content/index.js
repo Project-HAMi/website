@@ -14,6 +14,11 @@ const announcementMessagesByLocale = {
 export default function AnnouncementBarContent(props) {
   const {announcementBar} = useThemeConfig();
   const {i18n} = useDocusaurusContext();
+
+  if (!announcementBar) {
+    return null;
+  }
+
   const {content} = announcementBar;
   const localeMessages = announcementMessagesByLocale[i18n.currentLocale] ?? {};
   const fallbackMessages = announcementMessagesByLocale.en ?? {};
