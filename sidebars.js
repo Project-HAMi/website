@@ -71,6 +71,7 @@ module.exports = {
       "items": [
         "userguide/configure",
         "userguide/device-supported",
+        "userguide/hami-webui-user-guide",
         {
           "type": "category",
           "label": "Monitoring",
@@ -351,6 +352,7 @@ module.exports = {
         "developers/hami-core-design",
         "developers/dynamic-mig",
         "developers/kunlunxin-topology",
+        "developers/hami-webui-development-guide",
         "developers/mindmap"
       ]
     },

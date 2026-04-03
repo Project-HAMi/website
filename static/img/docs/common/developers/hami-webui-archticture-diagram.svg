@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xl="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/" version="1.1" viewBox="242 180 620 515" width="620" height="515">
+  <defs>
+    <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="FilledArrow_Marker" stroke-linejoin="miter" stroke-miterlimit="10" viewBox="-1 -4 10 8" markerWidth="10" markerHeight="8" color="black">
+      <g>
+        <path d="M 8 0 L 0 -3 L 0 3 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+      </g>
+    </marker>
+  </defs>
+  <g id="Canvas_1" stroke="none" fill-opacity="1" stroke-opacity="1" stroke-dasharray="none" fill="none">
+    <title>Canvas 1</title>
+    <rect fill="white" x="242" y="180" width="620" height="515"/>
+    <g id="Canvas_1_Layer_1">
+      <title>Layer 1</title>
+      <g id="Graphic_31">
+        <rect x="242.08984" y="180.58152" width="619.5" height="513.5" fill="white"/>
+      </g>
+      <g id="Graphic_13">
+        <path d="M 265.6797 549.99694 L 838 549.99694 C 840.2091 549.99694 842 551.7878 842 553.99694 L 842 673.8719 C 842 676.0811 840.2091 677.8719 838 677.8719 L 265.6797 677.8719 C 263.47055 677.8719 261.6797 676.0811 261.6797 673.8719 L 261.6797 553.99694 C 261.6797 551.7878 263.47055 549.99694 265.6797 549.99694 Z" fill="#daf7be"/>
+        <path d="M 265.6797 549.99694 L 838 549.99694 C 840.2091 549.99694 842 551.7878 842 553.99694 L 842 673.8719 C 842 676.0811 840.2091 677.8719 838 677.8719 L 265.6797 677.8719 C 263.47055 677.8719 261.6797 676.0811 261.6797 673.8719 L 261.6797 553.99694 C 261.6797 551.7878 263.47055 549.99694 265.6797 549.99694 Z" stroke="#17be00" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+        <text transform="translate(266.6797 554.99694)" fill="black">
+          <tspan font-family="Helvetica Neue" font-weight="bold" font-size="16" fill="black" x="233.60816" y="16" xml:space="preserve">Backend (Go)</tspan>
+        </text>
+      </g>
+      <g id="Graphic_12">
+        <path d="M 265.6797 377.11395 L 838 377.11395 C 840.2091 377.11395 842 378.9048 842 381.11395 L 842 500.98895 C 842 503.1981 840.2091 504.98895 838 504.98895 L 265.6797 504.98895 C 263.47055 504.98895 261.6797 503.1981 261.6797 500.98895 L 261.6797 381.11395 C 261.6797 378.9048 263.47055 377.11395 265.6797 377.11395 Z" fill="#e9d8fd"/>
+        <path d="M 265.6797 377.11395 L 838 377.11395 C 840.2091 377.11395 842 378.9048 842 381.11395 L 842 500.98895 C 842 503.1981 840.2091 504.98895 838 504.98895 L 265.6797 504.98895 C 263.47055 504.98895 261.6797 503.1981 261.6797 500.98895 L 261.6797 381.11395 C 261.6797 378.9048 263.47055 377.11395 265.6797 377.11395 Z" stroke="#981eff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+        <text transform="translate(266.6797 382.11395)" fill="black">
+          <tspan font-family="Helvetica Neue" font-weight="bold" font-size="16" fill="black" x="190.91216" y="16" xml:space="preserve">Frontend Proxy (Node.js)</tspan>
+        </text>
+      </g>
+      <g id="Graphic_11">
+        <path d="M 265.6797 199.3125 L 838 199.3125 C 840.2091 199.3125 842 201.10336 842 203.3125 L 842 323.1875 C 842 325.39664 840.2091 327.1875 838 327.1875 L 265.6797 327.1875 C 263.47055 327.1875 261.6797 325.39664 261.6797 323.1875 L 261.6797 203.3125 C 261.6797 201.10336 263.47055 199.3125 265.6797 199.3125 Z" fill="#d8e6ff"/>
+        <path d="M 265.6797 199.3125 L 838 199.3125 C 840.2091 199.3125 842 201.10336 842 203.3125 L 842 323.1875 C 842 325.39664 840.2091 327.1875 838 327.1875 L 265.6797 327.1875 C 263.47055 327.1875 261.6797 325.39664 261.6797 323.1875 L 261.6797 203.3125 C 261.6797 201.10336 263.47055 199.3125 265.6797 199.3125 Z" stroke="#5a8ff9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+        <text transform="translate(266.6797 204.3125)" fill="black">
+          <tspan font-family="Helvetica Neue" font-weight="bold" font-size="16" fill="black" x="205.03216" y="16" xml:space="preserve">Client Side (Browser)</tspan>
+        </text>
+      </g>
+      <g id="Graphic_2">
+        <path d="M 287 249.5 L 439 249.5 C 441.20914 249.5 443 251.29086 443 253.5 L 443 305.5 C 443 307.70914 441.20914 309.5 439 309.5 L 287 309.5 C 284.79086 309.5 283 307.70914 283 305.5 L 283 253.5 C 283 251.29086 284.79086 249.5 287 249.5 Z" fill="white"/>
+        <path d="M 287 249.5 L 439 249.5 C 441.20914 249.5 443 251.29086 443 253.5 L 443 305.5 C 443 307.70914 441.20914 309.5 439 309.5 L 287 309.5 C 284.79086 309.5 283 307.70914 283 305.5 L 283 253.5 C 283 251.29086 284.79086 249.5 287 249.5 Z" stroke="#5a8ff9" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <text transform="translate(288 257.5)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="16" fill="black" x="35.944" y="17" xml:space="preserve">Vu</tspan>
+          <tspan font-family="PingFang SC" font-size="16" fill="black" y="17" xml:space="preserve">e 3 SPA</tspan>
+          <tspan font-family="PingFang SC" font-size="16" fill="black" x="6.256" y="39" xml:space="preserve">(vGPU Dashboard)</tspan>
+        </text>
+      </g>
+      <g id="Graphic_3">
+        <path d="M 627.3321 249.5 L 814.6029 249.5 C 816.812 249.5 818.6029 251.29086 818.6029 253.5 L 818.6029 305.5 C 818.6029 307.70914 816.812 309.5 814.6029 309.5 L 627.3321 309.5 C 625.12296 309.5 623.3321 307.70914 623.3321 305.5 L 623.3321 253.5 C 623.3321 251.29086 625.12296 249.5 627.3321 249.5 Z" fill="white"/>
+        <path d="M 627.3321 249.5 L 814.6029 249.5 C 816.812 249.5 818.6029 251.29086 818.6029 253.5 L 818.6029 305.5 C 818.6029 307.70914 816.812 309.5 814.6029 309.5 L 627.3321 309.5 C 625.12296 309.5 623.3321 307.70914 623.3321 305.5 L 623.3321 253.5 C 623.3321 251.29086 625.12296 249.5 627.3321 249.5 Z" stroke="#5a8ff9" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <text transform="translate(628.3321 261.052)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="16" fill="black" x="50.123384" y="15" xml:space="preserve">Axios Client</tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" fill="black" x="53.667384" y="33.448" xml:space="preserve">(request.js)</tspan>
+        </text>
+      </g>
+      <g id="Graphic_5">
+        <path d="M 287 426.89716 L 439 426.89716 C 441.20914 426.89716 443 428.688 443 430.89716 L 443 482.89716 C 443 485.1063 441.20914 486.89716 439 486.89716 L 287 486.89716 C 284.79086 486.89716 283 485.1063 283 482.89716 L 283 430.89716 C 283 428.688 284.79086 426.89716 287 426.89716 Z" fill="white"/>
+        <path d="M 287 426.89716 L 439 426.89716 C 441.20914 426.89716 443 428.688 443 430.89716 L 443 482.89716 C 443 485.1063 441.20914 486.89716 439 486.89716 L 287 486.89716 C 284.79086 486.89716 283 485.1063 283 482.89716 L 283 430.89716 C 283 428.688 284.79086 426.89716 287 426.89716 Z" stroke="#831cdc" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <text transform="translate(288 438.44916)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="16" fill="black" x="23.744" y="15" xml:space="preserve">NestJS Server</tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" fill="black" x="21.224" y="33.448" xml:space="preserve">(AppController)</tspan>
+        </text>
+      </g>
+      <g id="Graphic_4">
+        <path d="M 628.9053 426.89716 L 816.1761 426.89716 C 818.3852 426.89716 820.1761 428.688 820.1761 430.89716 L 820.1761 482.89716 C 820.1761 485.1063 818.3852 486.89716 816.1761 486.89716 L 628.9053 486.89716 C 626.6962 486.89716 624.9053 485.1063 624.9053 482.89716 L 624.9053 430.89716 C 624.9053 428.688 626.6962 426.89716 628.9053 426.89716 Z" fill="white"/>
+        <path d="M 628.9053 426.89716 L 816.1761 426.89716 C 818.3852 426.89716 820.1761 428.688 820.1761 430.89716 L 820.1761 482.89716 C 820.1761 485.1063 818.3852 486.89716 816.1761 486.89716 L 628.9053 486.89716 C 626.6962 486.89716 624.9053 485.1063 624.9053 482.89716 L 624.9053 430.89716 C 624.9053 428.688 626.6962 426.89716 628.9053 426.89716 Z" stroke="#831cdc" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <text transform="translate(629.9053 438.44916)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="16" fill="black" x="19.011384" y="15" xml:space="preserve">ApiProxyMiddleware</tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" fill="black" x="36.795384" y="33.448" xml:space="preserve">(Reverse Proxy)</tspan>
+        </text>
+      </g>
+      <g id="Graphic_7">
+        <path d="M 287 599.37584 L 439 599.37584 C 441.20914 599.37584 443 601.1667 443 603.37584 L 443 655.37584 C 443 657.585 441.20914 659.37584 439 659.37584 L 287 659.37584 C 284.79086 659.37584 283 657.585 283 655.37584 L 283 603.37584 C 283 601.1667 284.79086 599.37584 287 599.37584 Z" fill="white"/>
+        <path d="M 287 599.37584 L 439 599.37584 C 441.20914 599.37584 443 601.1667 443 603.37584 L 443 655.37584 C 443 657.585 441.20914 659.37584 439 659.37584 L 287 659.37584 C 284.79086 659.37584 283 657.585 283 655.37584 L 283 603.37584 C 283 601.1667 284.79086 599.37584 287 599.37584 Z" stroke="#17be00" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <text transform="translate(288 610.92784)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="16" fill="black" x="51.592" y="15" xml:space="preserve">Kratos</tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" fill="black" x="35.88" y="33.448" xml:space="preserve">(Port 8000)</tspan>
+        </text>
+      </g>
+      <g id="Graphic_6">
+        <path d="M 627.3321 599.37584 L 814.6029 599.37584 C 816.812 599.37584 818.6029 601.1667 818.6029 603.37584 L 818.6029 655.37584 C 818.6029 657.585 816.812 659.37584 814.6029 659.37584 L 627.3321 659.37584 C 625.12296 659.37584 623.3321 657.585 623.3321 655.37584 L 623.3321 603.37584 C 623.3321 601.1667 625.12296 599.37584 627.3321 599.37584 Z" fill="white"/>
+        <path d="M 627.3321 599.37584 L 814.6029 599.37584 C 816.812 599.37584 818.6029 601.1667 818.6029 603.37584 L 818.6029 655.37584 C 818.6029 657.585 816.812 659.37584 814.6029 659.37584 L 627.3321 659.37584 C 625.12296 659.37584 623.3321 657.585 623.3321 655.37584 L 623.3321 603.37584 C 623.3321 601.1667 625.12296 599.37584 627.3321 599.37584 Z" stroke="#17be00" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <text transform="translate(628.3321 609.15184)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="16" fill="black" x="49.507384" y="15" xml:space="preserve">Prometheus</tspan>
+          <tspan font-family="PingFang SC" font-size="16" fill="black" x="43.531384" y="35.448" xml:space="preserve">(Metric Data)</tspan>
+        </text>
+      </g>
+      <g id="Line_14">
+        <line x1="443" y1="279.5" x2="613.4321" y2="279.5" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_15">
+        <rect x="472.3884" y="266.304" width="107.734" height="26.391998" fill="#d8e6ff"/>
+        <text transform="translate(477.3884 271.304)" fill="black">
+          <tspan font-family="Helvetica Neue" font-style="italic" font-size="14" fill="black" x="19184654e-20" y="13" xml:space="preserve">HTTP Requests</tspan>
+        </text>
+      </g>
+      <g id="Line_16">
+        <line x1="443" y1="456.89716" x2="615.0053" y2="456.89716" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Line_17">
+        <line x1="443" y1="629.37584" x2="613.4321" y2="629.37584" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Line_19">
+        <line x1="363" y1="426.89716" x2="363" y2="319.4" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_20">
+        <rect x="323.91" y="340.8188" width="78.18" height="26.391998" fill="white"/>
+        <text transform="translate(328.91 345.8188)" fill="black">
+          <tspan font-family="Helvetica Neue" font-style="italic" font-size="14" fill="black" x="14210855e-20" y="13" xml:space="preserve">Static Files</tspan>
+        </text>
+      </g>
+      <g id="Line_21">
+        <path d="M 720.9675 309.5 L 720.9675 356.7996 L 417.197 356.7996 L 417.197 416.99716" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_22">
+        <rect x="535.82175" y="343.6036" width="88.694" height="26.391998" fill="white"/>
+        <text transform="translate(540.82175 348.6036)" fill="black">
+          <tspan font-family="Helvetica Neue" font-style="italic" font-size="14" fill="black" x="0" y="13" xml:space="preserve">Target: /api/*</tspan>
+        </text>
+      </g>
+      <g id="Line_23">
+        <path d="M 722.5407 486.89716 L 722.5407 527.16016 L 363 527.16016 L 363 589.47584" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_24">
+        <rect x="469.95375" y="513.96416" width="136.28" height="26.391998" fill="white"/>
+        <text transform="translate(474.95375 518.96416)" fill="black">
+          <tspan font-family="Helvetica Neue" font-style="italic" font-size="14" fill="black" x="0" y="13" xml:space="preserve">Forward to Backend</tspan>
+        </text>
+      </g>
+    </g>
+  </g>
+</svg>
