@@ -64,8 +64,8 @@ export default function CommunityPage() {
       key: 'join',
       title: { en: 'Join Chat', zh: '加入交流' },
       items: [
-        { label: { en: 'Slack', zh: 'Slack' }, href: 'https://slack.cncf.io/', icon: faSlack },
         { label: { en: 'Discord', zh: 'Discord' }, href: 'https://discord.gg/Amhy7XmbNq', icon: faDiscord },
+        { label: { en: 'Slack (join #hami-dev)', zh: 'Slack（搜索 #hami-dev）' }, href: 'https://slack.cncf.io/', icon: faSlack },
         { label: { en: 'GitHub', zh: 'GitHub' }, href: 'https://github.com/Project-HAMi', icon: faGithub },
         { label: { en: 'Bilibili', zh: 'Bilibili' }, href: 'https://space.bilibili.com/1105878584', icon: faBilibili },
       ],

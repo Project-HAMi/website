@@ -122,7 +122,7 @@ function Footer() {
     安装: faDownload,
     'Quick Start': faRocket,
     快速开始: faRocket,
-    'Slack ': faSlack,
+    'Slack (#hami-dev)': faSlack,
     Discord: faDiscord,
     GitHub: faGithub,
     Adoption: faUsers,
