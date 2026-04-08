@@ -1,5 +1,6 @@
 ---
 title: Volcano Ascend vNPU 使用指南
+linktitle: Volcano Ascend vNPU
 translated: true
 ---
 
@@ -28,7 +29,7 @@ helm repo add volcano-sh https://volcano-sh.github.io/helm-charts
 helm install volcano volcano-sh/volcano -n volcano-system --create-namespace
 ```
 
-更多安装方式请参考[这里](https://github.com/volcano-sh/volcano?tab=readme-ov-file#quick-start-guide)。
+更多安装方式参考[这里](https://github.com/volcano-sh/volcano?tab=readme-ov-file#quick-start-guide)。
 
 ### 给 Ascend 设备打上 ascend=on 标签
 
@@ -48,7 +49,7 @@ kubectl apply -f https://raw.githubusercontent.com/Project-HAMi/ascend-device-pl
 kubectl apply -f https://raw.githubusercontent.com/Project-HAMi/ascend-device-plugin/refs/heads/main/ascend-device-plugin.yaml
 ```
 
-更多信息请参考 [ascend-device-plugin 文档](https://github.com/Project-HAMi/ascend-device-plugin)。
+更多信息参考 [ascend-device-plugin 文档](https://github.com/Project-HAMi/ascend-device-plugin)。
 
 ### 更新调度器配置
 
@@ -78,7 +79,7 @@ data:
 
 :::note
 
- 您可能会注意到 `volcano-vgpu` 有自己的 `GeometriesCMName` 和 `KnownGeometriesCMNamespace`，这意味着如果要在同一个 Volcano 集群中同时使用 vNPU 和 vGPU，您需要合并两边的 configMap。
+ 你可能会注意到 `volcano-vgpu` 有自己的 `GeometriesCMName` 和 `KnownGeometriesCMNamespace`，这意味着如果要在同一个 Volcano 集群中同时使用 vNPU 和 vGPU，你需要合并两边的 configMap。
 
  :::
 

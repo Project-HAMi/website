@@ -26,7 +26,7 @@ translated: true
 
 仅影响 alpha 功能的功能性问题的错误修复（不是数据丢失或安全问题）不符合关键错误修复的标准。
 
-如果您提议进行 cherry pick，但它不是一个明显的关键错误修复，请重新考虑。如果在反思后您仍希望继续，请通过补充您的 PR 来加强您的理由，例如：
+如果你提议进行 cherry pick，但它不是一个明显的关键错误修复，请重新考虑。如果在反思后你仍希望继续，请通过补充你的 PR 来加强你的理由，例如：
 
 - 详细描述问题的 GitHub issue
 
@@ -52,11 +52,11 @@ translated: true
   hack/cherry_pick_pull.sh upstream/release-1.0 1206
   ```
 
-  - 请注意，cherry pick 脚本假定您有一个名为 `upstream` 的 git 远程指向 HAMi GitHub 组织。
+  - 请注意，cherry pick 脚本假定你有一个名为 `upstream` 的 git 远程指向 HAMi GitHub 组织。
 
-  - 您需要为每个想要进行 cherry pick 的补丁发布单独运行 cherry pick 脚本。cherry pick 应应用于所有适用修复的活动发布分支。
+  - 你需要为每个想要进行 cherry pick 的补丁发布单独运行 cherry pick 脚本。cherry pick 应应用于所有适用修复的活动发布分支。
 
-  - 如果未设置 `GITHUB_TOKEN`，您将被要求输入 GitHub 密码：提供 GitHub [个人访问令牌](https://github.com/settings/tokens) 而不是实际的 GitHub 密码。如果您可以安全地将环境变量 `GITHUB_TOKEN` 设置为您的个人访问令牌，则可以避免交互式提示。参考 [https://github.com/github/hub/issues/2655#issuecomment-735836048](https://github.com/github/hub/issues/2655#issuecomment-735836048)
+  - 如果未设置 `GITHUB_TOKEN`，你将被要求输入 GitHub 密码：提供 GitHub [个人访问令牌](https://github.com/settings/tokens) 而不是实际的 GitHub 密码。如果你可以安全地将环境变量 `GITHUB_TOKEN` 设置为你的个人访问令牌，则可以避免交互式提示。参考 [https://github.com/github/hub/issues/2655#issuecomment-735836048](https://github.com/github/hub/issues/2655#issuecomment-735836048)
 
 ## Cherry Pick 审核
 
@@ -68,9 +68,9 @@ translated: true
 
 贡献者在发起 cherry pick 时可能会遇到以下一些困难。
 
-- cherry pick PR 无法干净地应用于旧的发布分支。在这种情况下，您需要手动修复冲突。
+- cherry pick PR 无法干净地应用于旧的发布分支。在这种情况下，你需要手动修复冲突。
 
-- cherry pick PR 包含无法通过 CI 测试的代码。在这种情况下，您需要从您的 fork 中获取自动生成的分支，修改有问题的提交并强制推送到自动生成的分支。或者，您可以创建一个新的 PR，这样会更繁琐。
+- cherry pick PR 包含无法通过 CI 测试的代码。在这种情况下，你需要从你的 fork 中获取自动生成的分支，修改有问题的提交并强制推送到自动生成的分支。或者，你可以创建一个新的 PR，这样会更繁琐。
 
 ## 不支持版本的 Cherry Pick
 

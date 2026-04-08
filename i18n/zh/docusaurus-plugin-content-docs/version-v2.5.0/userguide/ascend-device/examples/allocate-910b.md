@@ -3,7 +3,7 @@ title: 为容器分配 Ascend-910B 切片
 translated: true
 ---
 
-要分配一定大小的 GPU 设备显存，您只需在 `huawei.com/ascend910` 之外分配 `huawei.com/ascend910-memory`。
+要分配一定大小的 GPU 设备显存，你只需在 `huawei.com/ascend910` 之外分配 `huawei.com/ascend910-memory`。
 
 ```yaml
 apiVersion: v1

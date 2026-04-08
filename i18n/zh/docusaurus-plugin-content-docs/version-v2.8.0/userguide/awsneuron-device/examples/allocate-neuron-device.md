@@ -1,5 +1,5 @@
 ---
-title: 分配AWS Neuron核心
+title: 分配 AWS Neuron 核心
 ---
 
 如需独占分配一个或多个aws neuron设备，可通过`aws.amazon.com/neuron`进行资源分配：

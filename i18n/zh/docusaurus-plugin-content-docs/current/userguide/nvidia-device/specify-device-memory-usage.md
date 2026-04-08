@@ -4,8 +4,6 @@ linktitle: 指定显存
 translated: true
 ---
 
-## 为容器分配设备显存
-
 通过指定资源如 `nvidia.com/gpumem` 来分配一定大小的设备显存。可选项，每个 `nvidia.com/gpumem` 单位等于 1M。
 
 ```yaml

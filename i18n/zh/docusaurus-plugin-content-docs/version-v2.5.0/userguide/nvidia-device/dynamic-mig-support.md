@@ -57,7 +57,7 @@ HAMi 现在支持使用 `mig-parted` 动态调整 MIG 设备，包括：
 
 HAMi 目前有一个[内置的 MIG 配置](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/templates/scheduler/device-configmap.yaml)。
 
-您可以按照以下步骤自定义 MIG 配置：
+你可以按照以下步骤自定义 MIG 配置：
 
 ### 更改 charts/hami/templates/scheduler 中 'device-configmap.yaml'
 
@@ -171,10 +171,10 @@ nodeGPUMigInstance{deviceidx="1",deviceuuid="GPU-30f90f49-43ab-0a78-bf5c-93ed41e
 
 :::note
 
-1. 您无需在 MIG 节点上执行任何操作，所有操作均由 hami-device-plugin 中的 mig-parted 管理。
+1. 你无需在 MIG 节点上执行任何操作，所有操作均由 hami-device-plugin 中的 mig-parted 管理。
 
 2. Ampere 架构之前的 Nvidia 设备无法使用 MIG 模式
 
-3. 您不会在节点上看到任何 MIG 资源（即 `nvidia.com/mig-1g.10gb`），HAMi 对 MIG 和 hami-core 节点使用统一的资源名称。
+3. 你不会在节点上看到任何 MIG 资源（即 `nvidia.com/mig-1g.10gb`），HAMi 对 MIG 和 hami-core 节点使用统一的资源名称。
 
 :::

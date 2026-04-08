@@ -31,6 +31,7 @@ module.exports = {
   organizationName: "hami-io",
   projectName: "website",
   favicon: "img/logo.svg",
+  clientModules: [require.resolve('./src/client/imageFigureNumber.js')],
   i18n: {
     defaultLocale: defaultLocale,
     locales: ["en", "zh"],
@@ -230,10 +231,10 @@ module.exports = {
       defaultMode: "dark",
       respectPrefersColorScheme: false,
     },
-    announcementBar: {
-      id: "kubecon-2026-europe", // Increment on change
-      content: 'theme.announcementBar.message',
-    },
+    // announcementBar: {
+    //   id: "kubecon-2026-europe", // Increment on change
+    //   content: 'theme.announcementBar.message',
+    // },
     navbar: {
       title: "HAMi",
       logo: {
@@ -306,12 +307,12 @@ module.exports = {
           title: "Community",
           items: [
             {
-              label: "Slack ",
-              href: "https://slack.cncf.io/",
-            },
-            {
               label: "Discord",
               href: "https://discord.gg/Amhy7XmbNq",
+            },
+            {
+              label: "Slack (#hami-dev)",
+              href: "https://slack.cncf.io/",
             },
             {
               label: "WeChat Group",

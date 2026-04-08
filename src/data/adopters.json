@@ -15,8 +15,15 @@
   {
     "name": "4paradigm",
     "nameZh": "第四范式",
-    "logo": "/img/contributors/4paradigm.svg",
+    "logo": "/img/contributors/phancy.png",
     "website": "https://www.4paradigm.com"
+  },
+  {
+    "name": "RiseUnion",
+    "nameZh": "睿思智联",
+    "logo": "/img/contributors/riseunion.png",
+    "logoZh": "/img/contributors/riseunion-zh.png",
+    "website": "https://www.theriseunion.com/"
   },
   {
     "name": "Baidu AI Cloud",
@@ -320,12 +327,6 @@
     "website": "http://ragehealth.cn/"
   },
   {
-    "name": "RiseUnion",
-    "nameZh": "睿思智联",
-    "logo": "/img/contributors/riseunion.png",
-    "website": "https://www.theriseunion.com/"
-  },
-  {
     "name": "Shanghai Ashermed Medical Technology Co., Ltd.",
     "nameZh": "上海艾莎医学科技有限公司",
     "logo": "/img/adopters/ashermed.png",
@@ -408,5 +409,11 @@
     "nameZh": "云轴科技",
     "logo": "/img/adopters/zstack.png",
     "website": "https://www.zstack.io/"
+  },
+  {
+    "name": "BoardWare",
+    "nameZh": "博维智慧科技",
+    "logo": "/img/adopters/boardware.jpg",
+    "website": "https://www.boardware.com.mo"
   }
 ]

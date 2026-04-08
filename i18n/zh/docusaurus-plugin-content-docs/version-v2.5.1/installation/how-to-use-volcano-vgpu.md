@@ -5,7 +5,7 @@ translated: true
 
 **注意**：
 
-使用 volcano-vgpu 时，您*不需要*安装 HAMi，只需使用  
+使用 volcano-vgpu 时，你*不需要*安装 HAMi，只需使用  
 [Volcano vgpu 设备插件](https://github.com/Project-HAMi/volcano-vgpu-device-plugin) 就足够了。它可以为由 volcano 管理的 NVIDIA 设备提供设备共享机制。
 
 这基于 [Nvidia 设备插件](https://github.com/NVIDIA/k8s-device-plugin)，使用 [HAMi-core](https://github.com/Project-HAMi/HAMi-core) 支持 GPU 卡的硬隔离。
@@ -49,7 +49,7 @@ data:
 
 ### 在 Kubernetes 中启用 GPU 支持
 
-一旦您在*所有*希望使用的 GPU 节点上启用了此选项，您就可以通过部署以下 Daemonset 在集群中启用 GPU 支持：
+一旦你在*所有*希望使用的 GPU 节点上启用了此选项，你就可以通过部署以下 Daemonset 在集群中启用 GPU 支持：
 
 ```bash
 kubectl create -f https://raw.githubusercontent.com/Project-HAMi/volcano-vgpu-device-plugin/main/volcano-vgpu-device-plugin.yml
@@ -111,9 +111,9 @@ spec:
 EOF
 ```
 
-您可以在容器内使用 nvidia-smi 验证设备显存：
+你可以在容器内使用 nvidia-smi 验证设备显存：
 
-> **警告：** *如果在使用设备插件和 NVIDIA 镜像时不请求 GPU，机器上的所有 GPU 都将暴露在您的容器内。
+> **警告：** *如果在使用设备插件和 NVIDIA 镜像时不请求 GPU，机器上的所有 GPU 都将暴露在你的容器内。
 > 容器使用的 vgpu 数量不能超过该节点上的 gpu 数量。*
 
 ### 监控

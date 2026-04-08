@@ -4,8 +4,6 @@ linktitle: GPU 共享
 translated: true
 ---
 
-## 启用沐曦 GPU 共享
-
 **HAMi 目前支持复用沐曦 GPU 设备，提供与 vGPU 类似的复用功能**，包括：
 
 - **GPU 共享**: 每个任务可以只占用一部分显卡，多个任务可以共享一张显卡
@@ -22,7 +20,7 @@ translated: true
 
 ### 开启复用沐曦设备
 
-- 部署 Metax GPU Operator (请联系您的设备提供方获取)
+- 部署 Metax GPU Operator (联系你的设备提供方获取)
 - 根据 README.md 部署 HAMi
 
 ### 运行沐曦任务
@@ -47,4 +45,4 @@ spec:
           metax-tech.com/vmemory: 4 # 每个 GPU 需要 4 GiB 设备显存
 ```
 
-> **注意：** 您可以在 [examples 文件夹](https://github.com/Project-HAMi/HAMi/tree/release-v2.6/examples/metax/sgpu)中找到更多示例。
+> **注意：** 你可以在 [examples 文件夹](https://github.com/Project-HAMi/HAMi/tree/release-v2.6/examples/metax/sgpu)中找到更多示例。

@@ -10,7 +10,7 @@ HAMi 现已集成[my-scheduler](https://awsdocs-neuron.readthedocs-hosted.com/en
 
 * **Neuron 共享机制**：HAMi 支持通过分配设备核心 (aws.amazon.com/neuroncore) 实现 AWS Neuron 设备共享，每个 Neuron 核心对应 1/2 个物理设备。
 
-* **拓扑感知调度**：当容器需要分配多个 aws-neuron 设备时，HAMi 将确保这些设备之间具有物理连接，从而最小化设备间通信开销。具体连接方式请参阅[不同实例类型的设备分配策略](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/containers/kubernetes-getting-started.html#container-device-allocation-on-different-instance-types)。
+* **拓扑感知调度**：当容器需要分配多个 aws-neuron 设备时，HAMi 将确保这些设备之间具有物理连接，从而最小化设备间通信开销。具体连接方式参阅[不同实例类型的设备分配策略](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/containers/kubernetes-getting-started.html#container-device-allocation-on-different-instance-types)。
 
 ## 前提条件
 

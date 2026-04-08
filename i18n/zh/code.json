@@ -4,11 +4,11 @@
     "description": "The title of the 404 page"
   },
   "theme.NotFound.p1": {
-    "message": "我们找不到您要查找的内容。",
+    "message": "我们找不到你要查找的内容。",
     "description": "The first paragraph of the 404 page"
   },
   "theme.NotFound.p2": {
-    "message": "请联系将您链接到原始网址的站点所有者，并让他们知道他们的链接已经失效。",
+    "message": "联系将你链接到原始网址的站点所有者，并让他们知道他们的链接已经失效。",
     "description": "The 2nd paragraph of the 404 page"
   },
   "theme.blog.paginator.navAriaLabel": {
@@ -490,7 +490,7 @@
     "description": "The text for reporting missing results"
   },
   "theme.SearchModal.noResultsScreen.reportMissingResultsLinkText": {
-    "message": "请告知我们。",
+    "message": "告知我们。",
     "description": "The link text for reporting missing results"
   },
   "theme.SearchModal.placeholder": {
@@ -675,5 +675,17 @@
   "theme.SearchModal.footer.backToSearchText": {
     "message": "Back to search",
     "description": "The back to search text for footer"
+  },
+  "theme.hami.blog.meta.unknownAuthor": {
+    "message": "HAMi 社区",
+    "description": "Default author name for blog posts when no authors are specified"
+  },
+  "theme.hami.blog.meta.authorLabel": {
+    "message": "作者",
+    "description": "Label for blog post author metadata"
+  },
+  "theme.hami.blog.meta.publishedLabel": {
+    "message": "发布时间",
+    "description": "Label for blog post publish date metadata"
   }
 }

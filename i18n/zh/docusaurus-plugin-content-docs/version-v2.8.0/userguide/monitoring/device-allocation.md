@@ -1,11 +1,10 @@
 ---
-title: 集群设备分配
+title: 集群设备分配端点
+linktitle: 集群设备分配
 translated: true
 ---
 
-## 集群设备分配端点
-
-您可以通过访问 `{scheduler node ip}:31993/metrics` 获取集群设备分配和限制的概览，或者将其添加到 Prometheus 端点，如下命令所示：
+你可以通过访问 `{scheduler node ip}:31993/metrics` 获取集群设备分配和限制的概览，或者将其添加到 Prometheus 端点，如下命令所示：
 
 ```bash
 curl {scheduler node ip}:31993/metrics
@@ -25,4 +24,4 @@ curl {scheduler node ip}:31993/metrics
 | QuotaUsed | resourcequota 的使用情况 | `{quotaName="nvidia.com/gpucores", quotanamespace="default",limit="200",zone="vGPU"}` 100 |
 | vGPUPodsDeviceAllocated | 从 pod 分配的 vGPU (这个指标将在 v2.8.0 移除，请使用 vGPUCoreAllocated 和 vGPUMemoryAllocated 替代它 )| `{containeridx="Ascend310P",deviceusedcore="0",deviceuuid="aio-node74-arm-Ascend310P-0",nodename="aio-node74-arm",podname="ascend310p-pod",podnamespace="default",zone="vGPU"}` 3.221225472e+09 |
 
-> **注意** 请注意，这只是关于设备分配的概览，并不是设备的实时使用指标。有关实时使用情况，请参见实时设备使用。
+> **注意** 请注意，这只是关于设备分配的概览，并不是设备的实时使用指标。有关实时使用情况，参见实时设备使用。

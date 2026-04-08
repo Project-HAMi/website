@@ -2,8 +2,6 @@
 title: Protocol design
 ---
 
-## Protocol Implementation
-
 ### Device Registration
 
 <img src="https://github.com/Project-HAMi/HAMi/raw/master/docs/develop/imgs/protocol_register.png" width="600px" alt="HAMi project diagram" />

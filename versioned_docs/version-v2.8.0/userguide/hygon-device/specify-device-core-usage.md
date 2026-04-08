@@ -1,5 +1,6 @@
 ---
-title: Allocate device core usage
+title: Allocate device core to container
+linktitle: Allocate device core usage
 ---
 
 Allocate a percentage of device core resources by specify resource `hygon.com/dcucores`.

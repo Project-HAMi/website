@@ -1,8 +1,7 @@
 ---
-title: Configuration
+title: Global Config
+linktitle: Configuration
 ---
-
-# Global Config
 
 ## Device Configs: ConfigMap
 

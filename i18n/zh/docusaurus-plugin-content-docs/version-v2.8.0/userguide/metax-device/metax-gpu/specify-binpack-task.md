@@ -4,9 +4,7 @@ linktitle: Binpack 策略
 translated: true
 ---
 
-## Binpack 调度策略
-
-为了在最小化拓扑损失的情况下分配 沐曦设备，您只需将 `metax-tech.com/gpu` 与注释 `hami.io/node-scheduler-policy: "binpack"` 一起分配。
+为了在最小化拓扑损失的情况下分配 沐曦设备，你只需将 `metax-tech.com/gpu` 与注释 `hami.io/node-scheduler-policy: "binpack"` 一起分配。
 
 ```yaml
 metadata:

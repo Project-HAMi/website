@@ -2,8 +2,6 @@
 title: Assign to certain device
 ---
 
-## Assign to certain device type
-
 Sometimes a task may wish to run on a certain DCU, it can fill the `hygon.com/use-gpuuuid` field in pod annotation. HAMi scheduler will try to fit in device with that uuid.
 
 For example, a task with the following annotation will be assigned to the device with uuid `DCU-123456`

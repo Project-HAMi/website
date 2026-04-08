@@ -2,14 +2,12 @@
 title: 如何在 HAMi 上使用 Kueue
 ---
 
-## 在 HAMi 中使用 Kueue
-
 本指南将帮助你使用 Kueue 来管理 HAMi vGPU 资源，包括启用 Deployment 支持、配置
 ResourceTransformation，以及创建请求 vGPU 资源的工作负载。
 
 ## 前置条件
 
-在开始之前，请确保：
+在开始之前，确保：
 
 - 集群中已安装 HAMi
 - 集群中已安装 Kueue
@@ -270,4 +268,4 @@ Kueue 的 ResourceTransformation 会自动转换 HAMi vGPU 的资源请求：
 
 ## 示例
 
-完整可运行示例请参见 [示例文件](./examples/defalt-use.md)。
+完整可运行示例参见 [示例文件](./examples/defalt-use.md)。

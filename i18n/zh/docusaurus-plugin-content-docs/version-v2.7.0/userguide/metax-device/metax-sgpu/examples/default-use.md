@@ -3,7 +3,7 @@ title: 为容器分配设备核心和显存资源
 translated: true
 ---
 
-要分配设备核心资源的一部分，您只需在容器中使用 `metax-tech.com/sgpu` 申请沐曦 GPU 数量的同时，申请 `metax-tech.com/vcore` 和 `metax-tech.com/vmemory`。
+要分配设备核心资源的一部分，你只需在容器中使用 `metax-tech.com/sgpu` 申请沐曦 GPU 数量的同时，申请 `metax-tech.com/vcore` 和 `metax-tech.com/vmemory`。
 
 ```yaml
 apiVersion: v1

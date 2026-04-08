@@ -1,11 +1,10 @@
 ---
-title: 实时设备使用
+title: 实时设备使用端点
+linktitle: 实时设备使用
 translated: true
 ---
 
-## 实时设备使用端点
-
-您可以通过访问 `{GPU 节点 IP}:31992/metrics` 获取实时设备显存和核心使用情况，或者将其添加到 Prometheus 端点，如下命令所示：
+你可以通过访问 `{GPU 节点 IP}:31992/metrics` 获取实时设备显存和核心使用情况，或者将其添加到 Prometheus 端点，如下命令所示：
 
 ```bash
 curl {GPU 节点 IP}:31992/metrics

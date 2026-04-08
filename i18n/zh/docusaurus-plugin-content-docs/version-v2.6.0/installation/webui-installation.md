@@ -65,7 +65,7 @@ https://github.com/Project-HAMi/HAMi-WebUI/tree/main/charts/hami-webui
    kubectl port-forward service/my-hami-webui 3000:3000 --namespace=kube-system
    ```
 
-   有关端口转发的更多信息，请参阅[使用端口转发访问集群中的应用程序](https://kubernetes.io/docs/tasks/access-application-cluster/port-forward-access-application-cluster/)。
+   有关端口转发的更多信息，参阅[使用端口转发访问集群中的应用程序](https://kubernetes.io/docs/tasks/access-application-cluster/port-forward-access-application-cluster/)。
 
 3. 在浏览器中导航到 `localhost:3000`。
 
@@ -86,7 +86,7 @@ kubectl logs --namespace=hami deploy/my-hami-webui -c hami-webui-fe-oss
 kubectl logs --namespace=hami deploy/my-hami-webui -c hami-webui-be-oss
 ```
 
-有关访问 Kubernetes 应用程序日志的更多信息，请参阅 [Pods](https://kubernetes.io/docs/reference/kubectl/cheatsheet/#interacting-with-running-pods) 和 [Deployments](https://kubernetes.io/docs/reference/kubectl/cheatsheet/#interacting-with-deployments-and-services)。
+有关访问 Kubernetes 应用程序日志的更多信息，参阅 [Pods](https://kubernetes.io/docs/reference/kubectl/cheatsheet/#interacting-with-running-pods) 和 [Deployments](https://kubernetes.io/docs/reference/kubectl/cheatsheet/#interacting-with-deployments-and-services)。
 
 ## 卸载 HAMi WebUI 部署
 

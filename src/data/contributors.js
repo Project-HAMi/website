@@ -11,9 +11,15 @@ const contributorsData = [
     href: "https://www.daocloud.io",
   },
   {
-    logo: "/img/contributors/4paradigm.svg",
+    logo: "/img/contributors/phancy.png",
     alt: "4Paradigm",
     href: "https://www.4paradigm.com",
+  },
+  {
+    logo: "/img/contributors/riseunion.png",
+    logoZh: "/img/contributors/riseunion-zh.png",
+    alt: "RiseUnion",
+    href: "https://www.riseunion.com",
   },
   {
     logo: "/img/contributors/alibaba.svg",
@@ -79,11 +85,6 @@ const contributorsData = [
     href: "https://www.caih.com",
   },
   {
-    logo: "/img/contributors/tetrate.png",
-    alt: "Tetrate",
-    href: "https://tetrate.io",
-  },
-  {
     logo: "/img/contributors/memverge.png",
     alt: "MemVerge",
     href: "https://memverge.com",
@@ -127,6 +128,11 @@ const contributorsData = [
     logo: "/img/contributors/tiduyun.svg",
     alt: "Tiduyun",
     href: "https://tiduyun.com",
+  },
+  {
+    logo: "/img/contributors/zstack.png",
+    alt: "ZStack",
+    href: "https://www.zstack.io",
   },
 ];
 

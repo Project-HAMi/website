@@ -37,34 +37,46 @@ export default function CaseStudiesPage() {
         </header>
 
         <section className={styles.grid}>
-          {caseStudies.map((item) => (
-            <article key={item.name} className={`hami-section-card ${styles.card}`}>
-              <div className={styles.top}>
-                <div className={styles.logoBox}>
-                  <img className={styles.logo} src={useBaseUrl(item.logo)} alt={item.name} loading="lazy" />
+          {caseStudies.map((item) => {
+            const logo = (isZh && item.logoZh) ? item.logoZh : item.logo;
+            const displayName = item.nameZh && isZh ? item.nameZh : item.name;
+            return (
+              <article key={item.name} className={`hami-section-card ${styles.card}`}>
+                <div className={styles.top}>
+                  <div className={styles.logoBox}>
+                    <img className={styles.logo} src={useBaseUrl(logo)} alt={displayName} loading="lazy" />
+                  </div>
+                  <span className={styles.meta}>
+                    {isZh ? '发布日期' : 'Published'}: {formatDate(item.publishedAt, i18n.currentLocale)}
+                  </span>
                 </div>
-                <span className={styles.meta}>
-                  {isZh ? '发布日期' : 'Published'}: {formatDate(item.publishedAt, i18n.currentLocale)}
-                </span>
-              </div>
 
-              <h2 className={styles.title}>{item.name}</h2>
-              <p className={styles.summary}>{t(item.summary)}</p>
-              <p className={styles.metric}>{t(item.metric)}</p>
+                <h2 className={styles.title}>
+                  {item.website ? (
+                    <a href={item.website} target="_blank" rel="noopener noreferrer" className={styles.companyLink}>
+                      {displayName}
+                    </a>
+                  ) : (
+                    displayName
+                  )}
+                </h2>
+                <p className={styles.summary}>{t(item.summary)}</p>
+                <p className={styles.metric}>{t(item.metric)}</p>
 
-              <ul className={styles.highlightList}>
-                {item.highlights.map((point, idx) => (
-                  <li key={`${item.name}-highlight-${idx}`}>{t(point)}</li>
-                ))}
-              </ul>
+                <ul className={styles.highlightList}>
+                  {item.highlights.map((point, idx) => (
+                    <li key={`${item.name}-highlight-${idx}`}>{t(point)}</li>
+                  ))}
+                </ul>
 
-              <div className={styles.footer}>
-                <a className={styles.link} href={item.url} target="_blank" rel="noopener noreferrer">
-                  {isZh ? '查看 CNCF 原文' : 'Read on CNCF'} →
-                </a>
-              </div>
-            </article>
-          ))}
+                <div className={styles.footer}>
+                  <a className={styles.link} href={item.url} target="_blank" rel="noopener noreferrer">
+                    {isZh ? '查看 CNCF 原文' : 'Read on CNCF'} →
+                  </a>
+                </div>
+              </article>
+            );
+          })}
         </section>
       </main>
     </Layout>

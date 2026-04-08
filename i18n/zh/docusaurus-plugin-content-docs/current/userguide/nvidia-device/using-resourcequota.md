@@ -1,9 +1,8 @@
 ---
 title: 为 NVIDIA 设备使用扩展的 resourcequota
+linktitle: ResourceQuota
 translated: true
 ---
-
-## 扩展的 resourcequota
 
 HAMi 基于原生调度器扩展，你可以使用原生的 resourcequota 对资源进行限制。对于 NVIDIA 设备，HAMi 支持了在扩展场景下的 resourcequota。对于请求多个设备的任务，原生 resourcequota 会单独计算每个资源的请求量，而扩展的 resourcequota 会根据设备数量计算实际的资源请求量。例如，以下任务请求两个 GPU 和 2000MB 的 GPU 显存，它在 HAMi scheduler 中会被正确计算为 4000MB 的资源请求量。
 
@@ -34,4 +33,4 @@ spec:
 
 ## 监控扩展的 resourcequota
 
-HAMi 调度器提供了相关指标，用于帮助用户监控当前 ResourceQuota 的使用情况。您可以参考 [HAMi 监控](../monitoring/device-allocation) 文档，查看指标的详细说明。
+HAMi 调度器提供了相关指标，用于帮助用户监控当前 ResourceQuota 的使用情况。你可以参考 [HAMi 监控](../monitoring/device-allocation) 文档，查看指标的详细说明。

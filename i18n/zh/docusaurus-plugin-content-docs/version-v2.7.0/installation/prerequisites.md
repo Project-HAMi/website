@@ -10,13 +10,13 @@ translated: true
 - [CUDA](https://developer.nvidia.com/cuda-toolkit) 版本 v10.2+
 - [NvidiaDriver](https://www.nvidia.cn/drivers/unix/) v440+
 
-## 准备您的 GPU 节点
+## 准备你的 GPU 节点
 
 在所有 GPU 节点上执行以下步骤。
 
 本 README 假设已预安装 NVIDIA 驱动程序和 `nvidia-container-toolkit`。此外，还假设将 `nvidia-container-runtime` 配置为默认的低级运行时。
 
-请参阅：[https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)
+参阅：[https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)
 
 ### 适用于基于 Debian 系统的 `Docker` 和 `containerd` 示例
 
@@ -60,7 +60,7 @@ sudo systemctl daemon-reload && systemctl restart containerd
 
 ### 给节点打标签
 
-通过添加标签 "gpu=on" 来为 HAMi 调度标记您的 GPU 节点。没有此标签，节点无法被我们的调度器管理。
+通过添加标签 "gpu=on" 来为 HAMi 调度标记你的 GPU 节点。没有此标签，节点无法被我们的调度器管理。
 
 ```
 kubectl label nodes {nodeid} gpu=on

@@ -4,8 +4,6 @@ linktitle: 指定显存
 translated: true
 ---
 
-## 为容器分配设备显存
-
 通过指定资源如 `cambricon.com/mlu.smlu.vmemory` 来分配设备显存的百分比大小。可选项，每个 `cambricon.com/mlu.smlu.vmemory` 单位等于设备显存的 1%。
 
 ```yaml

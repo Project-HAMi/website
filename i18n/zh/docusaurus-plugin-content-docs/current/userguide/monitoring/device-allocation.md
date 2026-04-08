@@ -1,11 +1,10 @@
 ---
-title: 集群设备分配
+title: 集群设备分配端点
+linktitle: 集群设备分配
 translated: true
 ---
 
-## 集群设备分配端点
-
-您可以通过访问 `{scheduler node ip}:31993/metrics` 获取集群设备分配和限制的概览，或者将其添加到 Prometheus 端点，如下命令所示：
+你可以通过访问 `{scheduler node ip}:31993/metrics` 获取集群设备分配和限制的概览，或者将其添加到 Prometheus 端点，如下命令所示：
 
 ```bash
 curl {scheduler node ip}:31993/metrics
@@ -35,4 +34,4 @@ curl {scheduler node ip}:31993/metrics
 | vGPUDeviceCoreAllocated | 分配给某个容器的 vGPU 核心数量 |`{devicebrand="Tesla",deviceidx="0",devicename="hami-gpu-0",deviceproductname="Tesla P4",deviceuuid="GPU-82be-83fe-3068",nodeid="k8s-node01",podname="pod-0",podnamespace="default"}` 100 |
 | vGPUDeviceMemoryAllocated | 分配给某个容器的 vGPU 显存 |`{devicebrand="Tesla",deviceidx="0",devicename="hami-gpu-0",deviceproductname="Tesla P4",deviceuuid="GPU-82be-83fe-3068",nodeid="k8s-node01",podname="pod-0",podnamespace="default"}` 4000 |
 
-> **注意** 请注意，这只是关于设备分配的概览，并不是设备的实时使用指标。有关实时使用情况，请参见实时设备使用。
+> **注意** 请注意，这只是关于设备分配的概览，并不是设备的实时使用指标。有关实时使用情况，参见实时设备使用。

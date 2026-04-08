@@ -3,7 +3,7 @@ title: 分配多个独占设备
 translated: true
 ---
 
-要分配多个 MR-V100 设备，您只需分配 `iluvatar.ai/MR-V100-vgpu` ，无需其他字段。
+要分配多个 MR-V100 设备，你只需分配 `iluvatar.ai/MR-V100-vgpu` ，无需其他字段。
 
 ```yaml
 apiVersion: v1

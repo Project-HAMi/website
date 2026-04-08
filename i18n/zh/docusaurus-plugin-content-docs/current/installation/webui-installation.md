@@ -45,7 +45,7 @@ https://github.com/Project-HAMi/HAMi-WebUI/tree/main/charts/hami-webui
 
    > _**重要**_：您需要将 `externalPrometheus.address` 的值替换为集群内的 Prometheus 地址
 
-   您可以在安装期间根据配置[文档](https://github.com/Project-HAMi/HAMi-WebUI/blob/main/charts/hami-webui/README.md#values)在 [values.yaml](https://github.com/Project-HAMi/HAMi-WebUI/blob/main/charts/hami-webui/values.yaml) 中设置其他字段。
+   你可以在安装期间根据配置[文档](https://github.com/Project-HAMi/HAMi-WebUI/blob/main/charts/hami-webui/README.md#values)在 [values.yaml](https://github.com/Project-HAMi/HAMi-WebUI/blob/main/charts/hami-webui/values.yaml) 中设置其他字段。
 
 3. 运行以下命令以验证安装：
 
@@ -65,7 +65,7 @@ https://github.com/Project-HAMi/HAMi-WebUI/tree/main/charts/hami-webui
    kubectl port-forward service/my-hami-webui 3000:3000 --namespace=kube-system
    ```
 
-   有关端口转发的更多信息，请参阅[使用端口转发访问集群中的应用程序](https://kubernetes.io/docs/tasks/access-application-cluster/port-forward-access-application-cluster/)。
+   有关端口转发的更多信息，参阅[使用端口转发访问集群中的应用程序](https://kubernetes.io/docs/tasks/access-application-cluster/port-forward-access-application-cluster/)。
 
 3. 在浏览器中导航到 `localhost:3000`。
 
@@ -86,7 +86,7 @@ kubectl logs --namespace=hami deploy/my-hami-webui -c hami-webui-fe-oss
 kubectl logs --namespace=hami deploy/my-hami-webui -c hami-webui-be-oss
 ```
 
-有关访问 Kubernetes 应用程序日志的更多信息，请参阅 [Pods](https://kubernetes.io/docs/reference/kubectl/cheatsheet/#interacting-with-running-pods) 和 [Deployments](https://kubernetes.io/docs/reference/kubectl/cheatsheet/#interacting-with-deployments-and-services)。
+有关访问 Kubernetes 应用程序日志的更多信息，参阅 [Pods](https://kubernetes.io/docs/reference/kubectl/cheatsheet/#interacting-with-running-pods) 和 [Deployments](https://kubernetes.io/docs/reference/kubectl/cheatsheet/#interacting-with-deployments-and-services)。
 
 ## 卸载 HAMi WebUI 部署
 
@@ -100,7 +100,7 @@ helm uninstall my-hami-webui -n hami
 
 这将删除给定命名空间 `hami` 中的所有对象。
 
-如果您想删除命名空间 `hami`，请运行命令：
+如果你想删除命名空间 `hami`，运行命令：
 
 ```bash
 kubectl delete namespace hami
