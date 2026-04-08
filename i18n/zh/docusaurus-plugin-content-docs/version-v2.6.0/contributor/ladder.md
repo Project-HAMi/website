@@ -6,7 +6,7 @@ translated: true
 
 ## 贡献者阶梯
 
-您好！我们很高兴您想了解更多关于我们项目贡献者阶梯的信息！这个贡献者阶梯概述了项目中的不同贡献者角色，以及与之相关的责任和特权。社区成员通常从“阶梯”的第一级开始，并随着他们在项目中的参与度增加而逐步提升。我们的项目成员乐于帮助您在贡献者阶梯上进步。
+你好！我们很高兴你想了解更多关于我们项目贡献者阶梯的信息！这个贡献者阶梯概述了项目中的不同贡献者角色，以及与之相关的责任和特权。社区成员通常从“阶梯”的第一级开始，并随着他们在项目中的参与度增加而逐步提升。我们的项目成员乐于帮助你在贡献者阶梯上进步。
 
 以下每个贡献者角色都分为三种类型的列表。“责任”是指贡献者应履行的事项。“要求”是指一个人需要满足的资格条件，而“特权”是指该级别的贡献者有权享有的事项。
 
@@ -49,7 +49,7 @@ translated: true
 
 特别感谢[长长的名单](https://github.com/Project-HAMi/HAMi/blob/master/AUTHORS.md)中那些为项目做出贡献并帮助维护项目的人。没有你们的贡献，我们不会有今天的成就。谢谢！💖
 
-只要您为 HAMi 做出贡献，您的名字将被添加到[这里](https://github.com/Project-HAMi/HAMi/blob/master/AUTHORS.md)。如果您没有找到您的名字，请联系我们添加。
+只要你为 HAMi 做出贡献，你的名字将被添加到[这里](https://github.com/Project-HAMi/HAMi/blob/master/AUTHORS.md)。如果你没有找到你的名字，联系我们添加。
 
 ### 组织成员
 
@@ -71,11 +71,11 @@ translated: true
   * 必须积极参与至少一个项目领域
   * 必须有两个赞助者，他们也是组织成员，其中至少一个不为同一雇主工作
   * **在 HAMi-project/HAMi 仓库中打开一个问题**
-    * 确保您的赞助者在问题中被 @提及
+    * 确保你的赞助者在问题中被 @提及
     * 完成问题清单上的每一项
-    * 确保所列贡献代表您在项目中的工作。
-  * 让您的赞助审阅者回复赞助确认：`+1`
-  * 一旦您的赞助者回复，您的请求将由 `HAMi GitHub 管理团队`处理。
+    * 确保所列贡献代表你在项目中的工作。
+  * 让你的赞助审阅者回复赞助确认：`+1`
+  * 一旦你的赞助者回复，你的请求将由 `HAMi GitHub 管理团队`处理。
 
 * 特权：
   * 可以被分配问题和评审
@@ -142,7 +142,7 @@ translated: true
 
 新维护者由当前维护者小组通过共识添加。这可以通过 Slack 或电子邮件的私人讨论进行。大多数维护者应支持添加新成员，并且没有单个维护者反对添加新维护者。
 
-在添加新维护者时，我们应提交一个 PR 到 [HAMi](https://github.com/Project-HAMi/HAMi) 并更新 [MAINTAINERS](https://github.com/Project-HAMi/HAMi/blob/master/MAINTAINERS.md)。一旦这个 PR 合并，您将成为 HAMi 的维护者。
+在添加新维护者时，我们应提交一个 PR 到 [HAMi](https://github.com/Project-HAMi/HAMi) 并更新 [MAINTAINERS](https://github.com/Project-HAMi/HAMi/blob/master/MAINTAINERS.md)。一旦这个 PR 合并，你将成为 HAMi 的维护者。
 
 ### 移除维护者
 

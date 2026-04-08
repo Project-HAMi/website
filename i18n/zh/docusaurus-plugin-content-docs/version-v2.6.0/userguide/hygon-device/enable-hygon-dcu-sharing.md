@@ -76,4 +76,4 @@ Device 0:
 
 1. 在 init container 中无法使用 DCU 复用功能，否则该任务不会被调度
 
-2. 每个容器最多只能使用一个虚拟 DCU 设备，如果您希望在容器中挂载多个 DCU 设备，则不能使用`hygon.com/dcumem`和`hygon.com/dcucores`字段
+2. 每个容器最多只能使用一个虚拟 DCU 设备，如果你希望在容器中挂载多个 DCU 设备，则不能使用`hygon.com/dcumem`和`hygon.com/dcucores`字段

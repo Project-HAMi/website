@@ -33,4 +33,4 @@ spec:
 
 ## 监控扩展的 resourcequota
 
-HAMi 调度器提供了相关指标，用于帮助用户监控当前 ResourceQuota 的使用情况。您可以参考 [HAMi 监控](../monitoring/device-allocation) 文档，查看指标的详细说明。
+HAMi 调度器提供了相关指标，用于帮助用户监控当前 ResourceQuota 的使用情况。你可以参考 [HAMi 监控](../monitoring/device-allocation) 文档，查看指标的详细说明。

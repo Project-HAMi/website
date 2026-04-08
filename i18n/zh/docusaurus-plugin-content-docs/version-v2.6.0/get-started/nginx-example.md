@@ -27,7 +27,7 @@ translated: true
 
 此 README 假设已预安装 NVIDIA 驱动程序和 `nvidia-container-toolkit`。此外，假设已将 `nvidia-container-runtime` 配置为默认的低级运行时。
 
-请参阅：[https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)
+参阅：[https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)
 
 #### 适用于基于 debian 系统的 `Docker` 和 `containerd` 示例
 
@@ -92,7 +92,7 @@ sudo systemctl daemon-reload && systemctl restart containerd
 
 #### 2. 给节点打标签
 
-通过添加标签 "gpu=on" 来为调度 HAMi 标记您的 GPU 节点。没有此标签，节点无法被我们的调度器管理。
+通过添加标签 "gpu=on" 来为调度 HAMi 标记你的 GPU 节点。没有此标签，节点无法被我们的调度器管理。
 
 ```bash
 kubectl label nodes {nodeid} gpu=on
@@ -100,7 +100,7 @@ kubectl label nodes {nodeid} gpu=on
 
 #### 3. 使用 helm 部署 HAMi
 
-首先，您需要使用以下命令检查您的 Kubernetes 版本：
+首先，你需要使用以下命令检查你的 Kubernetes 版本：
 
 ```bash
 kubectl version
@@ -112,13 +112,13 @@ kubectl version
 helm repo add hami-charts https://project-hami.github.io/HAMi/
 ```
 
-在安装过程中，将 Kubernetes 调度器镜像版本设置为与您的 Kubernetes 服务器版本匹配。例如，如果您的集群服务器版本是 1.16.8，使用以下命令进行部署：
+在安装过程中，将 Kubernetes 调度器镜像版本设置为与你的 Kubernetes 服务器版本匹配。例如，如果你的集群服务器版本是 1.16.8，使用以下命令进行部署：
 
 ```bash
 helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag=v1.16.8 -n kube-system
 ```
 
-如果一切顺利，您将看到 vgpu-device-plugin 和 vgpu-scheduler pods 处于运行状态
+如果一切顺利，你将看到 vgpu-device-plugin 和 vgpu-scheduler pods 处于运行状态
 
 ### 演示
 

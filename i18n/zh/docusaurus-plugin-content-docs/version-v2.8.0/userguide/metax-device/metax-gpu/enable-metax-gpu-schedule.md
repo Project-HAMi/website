@@ -38,7 +38,7 @@ translated: true
 
 ## 启用拓扑感知调度
 
-- 在 metax 节点上部署沐曦 GPU 插件（请咨询您的设备提供商以获取其软件包和文档）
+- 在 metax 节点上部署沐曦 GPU 插件（请咨询你的设备提供商以获取其软件包和文档）
 
 - 根据 README.md 部署 HAMi
 
@@ -63,4 +63,4 @@ spec:
           metax-tech.com/gpu: 1 # 请求 1 个 GPU
 ```
 
-> **注意：** 您可以在 examples 文件夹中找到更多示例。
+> **注意：** 你可以在 examples 文件夹中找到更多示例。

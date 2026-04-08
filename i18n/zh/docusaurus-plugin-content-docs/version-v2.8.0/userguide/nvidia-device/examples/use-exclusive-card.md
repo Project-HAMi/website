@@ -4,7 +4,7 @@ linktitle: 使用独占 GPU
 translated: true
 ---
 
-要以独占模式使用 GPU，这是 nvidia-k8s-device-plugin 的默认行为，您只需分配 `nvidia.com/gpu` 而无需其他资源字段。
+要以独占模式使用 GPU，这是 nvidia-k8s-device-plugin 的默认行为，你只需分配 `nvidia.com/gpu` 而无需其他资源字段。
 
 ```yaml
 apiVersion: v1

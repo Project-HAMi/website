@@ -2,8 +2,8 @@
 title: 贡献者名单
 ---
 
-- 请查阅[HAMi社区成员制度](https://github.com/Project-HAMi/community/blob/main/community-membership.md)了解如何成为贡献者。
-- 完整[维护者名单](https://github.com/Project-HAMi/community/blob/main/MAINTAINERS.md)请参见此处。
+- 查阅[HAMi社区成员制度](https://github.com/Project-HAMi/community/blob/main/community-membership.md)了解如何成为贡献者。
+- 完整[维护者名单](https://github.com/Project-HAMi/community/blob/main/MAINTAINERS.md)参见此处。
 
 以下贡献者（按字母顺序排列）已签署或提交了HAMi代码库的提交记录：
 

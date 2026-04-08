@@ -9,9 +9,9 @@ translated: true
 以下列出的所有配置都在 hami-scheduler-device ConfigMap 中管理。
 :::
 
-您可以通过以下方法之一更新这些配置：
+你可以通过以下方法之一更新这些配置：
 
-1. 直接编辑 ConfigMap：如果 HAMi 已成功安装，您可以使用 kubectl edit 命令手动更新 hami-scheduler-device ConfigMap。
+1. 直接编辑 ConfigMap：如果 HAMi 已成功安装，你可以使用 kubectl edit 命令手动更新 hami-scheduler-device ConfigMap。
 
    ```bash
    kubectl edit configmap hami-scheduler-device -n <namespace>
@@ -40,7 +40,7 @@ translated: true
 
 ## Chart 配置：参数
 
-您可以通过使用 `-set` 设置以下参数来自定义您的 vGPU 支持，例如
+你可以通过使用 `-set` 设置以下参数来自定义你的 vGPU 支持，例如
 
 ```bash
 helm install hami hami-charts/hami --set devicePlugin.deviceMemoryScaling=5 ...

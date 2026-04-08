@@ -25,7 +25,7 @@ translated: true
 
 ## 开启 GPU 复用
 
-* 部署'gpu-manager'，天数智芯的 GPU 共享需要配合厂家提供的'gpu-manager'一起使用，请联系设备提供方获取
+* 部署'gpu-manager'，天数智芯的 GPU 共享需要配合厂家提供的'gpu-manager'一起使用，联系设备提供方获取
 
 > **注意：** *只需要安装 gpu-manager，不要安装 gpu-admission.*
 

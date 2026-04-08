@@ -30,7 +30,7 @@ translated: true
 
 ## 启用 GPU 共享支持
 
-* 在 mthreads 节点上部署 MT-CloudNative Toolkit（请咨询您的设备提供商以获取其软件包和文档）
+* 在 mthreads 节点上部署 MT-CloudNative Toolkit（请咨询你的设备提供商以获取其软件包和文档）
 
 > **注意：** 安装后可以移除 mt-mutating-webhook 和 mt-gpu-scheduler（可选）。
 
@@ -66,4 +66,4 @@ spec:
 
 > **注意 1：** 每个 sgpu-memory 单位表示 512M 设备显存
 >
-> **注意 2：** 您可以在 examples 文件夹中找到更多示例
+> **注意 2：** 你可以在 examples 文件夹中找到更多示例

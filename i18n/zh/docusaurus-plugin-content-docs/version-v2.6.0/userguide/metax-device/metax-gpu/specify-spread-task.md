@@ -5,7 +5,7 @@ translated: true
 
 ## 设置调度策略为分散
 
-为了分配性能最佳的 metax 设备，您只需将 `metax-tech.com/gpu` 与注释 `hami.io/node-scheduler-policy`=`spread` 一起分配
+为了分配性能最佳的 metax 设备，你只需将 `metax-tech.com/gpu` 与注释 `hami.io/node-scheduler-policy`=`spread` 一起分配
 
 ```
 metadata:

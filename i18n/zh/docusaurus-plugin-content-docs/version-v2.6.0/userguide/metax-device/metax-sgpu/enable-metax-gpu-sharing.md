@@ -21,7 +21,7 @@ translated: true
 
 ### 开启复用沐曦设备
 
-* 部署 Metax GPU Operator (请联系您的设备提供方获取)
+* 部署 Metax GPU Operator (联系你的设备提供方获取)
 * 根据 README.md 部署 HAMi
 
 ### 运行沐曦任务
@@ -46,4 +46,4 @@ spec:
           metax-tech.com/vmemory: 4 # each GPU require 4 GiB device memory
 ```
 
-> **注意：** 您可以在 examples 文件夹中找到更多示例。
+> **注意：** 你可以在 examples 文件夹中找到更多示例。

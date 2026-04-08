@@ -14,13 +14,13 @@ translated: true
 
 ## 启用 Ascend-sharing 支持
 
-* 由于与 HAMi 的依赖关系，您需要在 HAMi 安装期间设置以下参数：
+* 由于与 HAMi 的依赖关系，你需要在 HAMi 安装期间设置以下参数：
 
   ```yaml
   devices.ascend.enabled=true
   ```
 
-  有关更多详细信息，请参阅 values.yaml 中的 'devices' 部分：
+  有关更多详细信息，参阅 values.yaml 中的 'devices' 部分：
 
   ```yaml
   devices:
