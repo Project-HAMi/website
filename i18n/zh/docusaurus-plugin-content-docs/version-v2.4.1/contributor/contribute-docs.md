@@ -100,9 +100,13 @@ You can easily route to other places by adding any of the following links:
 - Link to markdown files or the resulting path.
   You can use relative paths to index the corresponding files.
 - Link to pictures or other resources.
-  If your article contains images or other resources, you may create a corresponding directory in `/docs/resources`, and article related files are placed in that directory.
-  Now we store public pictures about HAMi in `/docs/resources/general`. You can use the following to link the pictures:
-  - `![Git 工作流程图](../resources/contributor/git_workflow.png)`
+  If your article contains images, prefer storing them in `/static/img/docs/` and linking
+  with absolute paths. We use language-aware folders:
+  - `/static/img/docs/common/` for shared images
+  - `/static/img/docs/en/` for English-only images
+  - `/static/img/docs/zh/` for Chinese-only images
+Example:
+  - `![Git 工作流程图](/img/docs/common/contributor/github-workflow/git-workflow.png)`
 
 ### Directory organization
 

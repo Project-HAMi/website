@@ -4,7 +4,7 @@ title: Protocol design
 
 ### Device Registration
 
-<img src="https://github.com/Project-HAMi/HAMi/raw/master/docs/develop/imgs/protocol_register.png" width="600px" alt="HAMi project diagram" />
+<img src="/img/docs/common/developers/protocol/protocol-register.png" width="600px" alt="HAMi project diagram" />
 
 HAMi needs to know the spec of each AI devices in the cluster in order to schedule properly. During device registration, device-plugin needs to keep patching the spec of each device into node annotations every 30 seconds, in the format of the following:
 

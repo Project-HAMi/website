@@ -7,4 +7,4 @@ title: Device sharing
 - Permits partial device allocation by specifying device core usage.
 - Requires zero changes to existing programs.
 
-![HAMi 设备共享示例，展示多个任务共享单个 GPU](../resources/example.png)
+![HAMi 设备共享示例，展示多个任务共享单个 GPU](/img/docs/common/key-features/example.png)

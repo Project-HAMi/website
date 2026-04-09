@@ -15,7 +15,7 @@ translated: true
 
 这是一个 GPU 集群，拥有两个节点，以下故事以此集群为前提。
 
-![scheduler-policy-story.png](../resources/scheduler-policy-story.png)
+![scheduler-policy-story.png](/img/docs/common/developers/scheduling/scheduler-policy-story.png)
 
 #### 故事 1
 
@@ -82,7 +82,7 @@ GPU spread，尽可能使用不同的 GPU 卡，例如：
 
 ### Node-scheduler-policy
 
-![node-scheduler-policy-demo.png](../resources/node-scheduler-policy-demo.png)
+![node-scheduler-policy-demo.png](/img/docs/common/developers/scheduling/node-scheduler-policy-demo.png)
 
 #### Binpack
 
@@ -128,7 +128,7 @@ Node2 score: ((1+2)/4) * 10= 7.5
 
 ### GPU-scheduler-policy
 
-![gpu-scheduler-policy-demo.png](../resources/gpu-scheduler-policy-demo.png)
+![gpu-scheduler-policy-demo.png](/img/docs/common/developers/scheduling/gpu-scheduler-policy-demo.png)
 
 #### Binpack
 

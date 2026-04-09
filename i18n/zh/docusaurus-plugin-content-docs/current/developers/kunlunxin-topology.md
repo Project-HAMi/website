@@ -6,7 +6,7 @@ title: 昆仑芯拓扑感知调度
 
 当单个 P800 服务器配置多块 XPU 时，若 GPU 连接或位于同一 NUMA 节点内（如下图所示），可获得最优性能表现。这种配置会在服务器内所有 GPU 之间形成特定拓扑关系。
 
-![Kunlunxin XPU 拓扑图，显示 P800 服务器上的 NUMA 节点连接](../resources/kunlunxin_topo.jpg)
+![Kunlunxin XPU 拓扑图，显示 P800 服务器上的 NUMA 节点连接](/img/docs/common/userguide/kunlunxin-device/kunlunxin-topology.jpg)
 
 当用户作业申请特定数量的`kunlunxin.com/xpu`资源时，Kubernetes 会将 pod 调度到合适节点以最小化资源碎片并保持高性能。选定节点后，XPU 设备会根据以下规则进行细粒度资源分配：
 
@@ -18,7 +18,7 @@ title: 昆仑芯拓扑感知调度
 
 过滤阶段识别所有符合分配条件的节点。针对每个节点，系统会筛选最优 XPU 组合方案并缓存，供评分阶段使用。筛选流程如下图所示：
 
-![Kunlunxin XPU 过滤选择过程图](../resources/kunlunxin_filter.png)
+![Kunlunxin XPU 过滤选择过程图](/img/docs/common/developers/kunlunxin-topology/kunlunxin-filter.png)
 
 ## 评分阶段
 

@@ -5,7 +5,7 @@ description: An overview of the GitHub workflow used by the Karmada project. It 
 
 > This doc is lifted from [Kubernetes github-workflow](https://github.com/kubernetes/community/blob/master/contributors/guide/github-workflow.md).
 
-![Git workflow](../resources/contributor/git_workflow.png)
+![Git workflow](/img/docs/common/contributor/github-workflow/git-workflow.png)
 
 ### 1 Fork in the cloud
 

@@ -9,4 +9,4 @@ translated: true
 - 无需对现有程序进行任何修改
 - 支持动态 MIG 切片能力，样例
 
-![HAMi 设备共享示例，展示多个任务共享单个 GPU](https://github.com/Project-HAMi/HAMi/raw/master/imgs/example.png)
+![HAMi 设备共享示例，展示多个任务共享单个 GPU](/img/docs/common/key-features/example.png)

@@ -10,7 +10,7 @@ In order to perform more accurate scheduling, the HAMI scheduler needs to percei
 
 However, the device-plugin device registration API does not provide corresponding parameter acquisition, so HAMi-device-plugin stores these supplementary information in the node annotations during registering for the scheduler to read, as the following figure shows:
 
-<img src="https://github.com/Project-HAMi/website/blob/master/versioned_docs/version-v1.3.0/resources/device_registration.png?raw=true" width="600px" alt="HAMi device registration protocol diagram showing node annotation process" />
+<img src="/img/docs/common/developers/protocol/device-registration.png" width="600px" alt="HAMi device registration protocol diagram showing node annotation process" />
 
 Here you need to use two annotations, one of which is the timestamp, if it exceeds the specified threshold, the device on the corresponding node will be considered invalid. The other information for device registration. A node with 2 32G-V100 GPUs can be registered as shown below:
 
@@ -25,7 +25,7 @@ The kube-scheduler calls device-plugin to mount devices during the `bind` proces
 
 Therefore, it is necessary to develop a protocol for the scheduler layer to communicate with device-plugin to pass information about task dispatch. The scheduler passes this information by patching the scheduling result to the pod's annotations and reading it in device-plugin, as the figure below:
 
-<img src="https://github.com/Project-HAMi/website/blob/master/versioned_docs/version-v1.3.0/resources/task_dispatch.png?raw=true" width="600px" alt="HAMi task dispatch flow diagram" />
+<img src="/img/docs/common/developers/protocol/task-dispatch.png" width="600px" alt="HAMi task dispatch flow diagram" />
 
 In this process, there are 3 annotations that need to be set, which are the `timestamp`, `devices to be assigned`, and the `devices allocated`. The content of `devices to be assigned` and the `devices allocated` are the same when the scheduler creates them, but device-plugin will determine the current device allocation by the content of `devices to be assigned`, and when the assignment is successful, the corresponding device will be removed from the annotation, so the content of `device to be assigned` will be empty when the task is successfully run.
 

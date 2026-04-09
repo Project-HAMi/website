@@ -16,7 +16,7 @@ Karmada supports:
 
 The overall relationship between the member cluster and the control plane is shown in the following figure:  
 
-![overall-relationship.png](../resources/key-features/overall-relationship.png)
+![overall-relationship.png](/img/docs/common/key-features/features/overall-relationship.png)
 
 
 ## Multi-policy multi-cluster scheduling
@@ -37,11 +37,11 @@ Karmada supports:
 
 Much like k8s scheduling, Karmada support different scheduling policy. The overall scheduling process is shown in the figure below:  
 
-![overall-relationship.png](../resources/key-features/overall-scheduling.png)
+![overall-relationship.png](/img/docs/common/key-features/features/overall-scheduling.png)
 
 If one cluster does not have enough resource to accommodate their pods, Karamda will reschedule the pods. The overall rescheduling process is shown in the following figure:  
 
-![overall-relationship.png](../resources/key-features/overall-rescheduling.png)
+![overall-relationship.png](/img/docs/common/key-features/features/overall-rescheduling.png)
 
 
 ## Cross-cluster failover of applications
@@ -55,7 +55,7 @@ Karmada supports:
 
 Karmada supports failover for clusters, one cluster failure will cause failover of replicas as follows:  
 
-![overall-relationship.png](../resources/key-features/cluster-failover.png)
+![overall-relationship.png](/img/docs/common/key-features/features/cluster-failover.png)
 
 ## Global Uniform Resource View
 Karmada supports:
@@ -70,11 +70,11 @@ Karmada supports:
 
 Users can access and operate all member clusters via karmada-apiserver:  
 
-![overall-relationship.png](../resources/key-features/unified-operation.png)
+![overall-relationship.png](/img/docs/common/key-features/features/unified-operation.png)
 
 Users also can check and search all member clusters resources via karmada-apiserver:  
 
-![overall-relationship.png](../resources/key-features/unified-search.png)
+![overall-relationship.png](/img/docs/common/key-features/features/unified-search.png)
 
 ## Separating the concerns of different roles
 karmada supports:
@@ -90,11 +90,11 @@ karmada supports:
 
 Users can access all member clusters with unified authentication:
 
-![overall-relationship.png](../resources/key-features/unified-access.png)
+![overall-relationship.png](/img/docs/common/key-features/features/unified-access.png)
 
 Users also can defined global resource quota via `FederatedResourceQuota`:  
 
-![overall-relationship.png](../resources/key-features/unified-resourcequota.png)
+![overall-relationship.png](/img/docs/common/key-features/features/unified-resourcequota.png)
 
 ## Cross-cluster service governance
 karmada supports:
@@ -105,5 +105,5 @@ karmada supports:
 
 Users can enable service governance for cross-cluster with Karmada:  
 
-![overall-relationship.png](../resources/key-features/service-governance.png)
+![overall-relationship.png](/img/docs/common/key-features/features/service-governance.png)
 
