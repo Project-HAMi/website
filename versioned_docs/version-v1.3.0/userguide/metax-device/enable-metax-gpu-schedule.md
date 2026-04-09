@@ -7,7 +7,7 @@ title: Enable Metax GPU topology-aware scheduling
 When multiple GPUs are configured on a single server, the GPU cards are connected to the same PCIe Switch or MetaXLink depending on whether they are connected
 , there is a near-far relationship. This forms a topology among all the cards on the server, as shown in the following figure:
 
-![Metax GPU topology diagram showing PCIe Switch and MetaXLink connections](../../resources/metax_topo.jpg)
+![Metax GPU topology diagram showing PCIe Switch and MetaXLink connections](/img/docs/common/userguide/metax-device/metax-gpu/metax-topology.jpg)
 
 A user job requests a certain number of metax-tech.com/gpu resources, Kubernetes schedule pods to the appropriate node. gpu-device further processes the logic of allocating the remaining resources on the resource node following criteria below:
 
@@ -18,11 +18,11 @@ Equipped with MetaXLink interconnected resources.
 
 2. When using `node-scheduler-policy=spread` , Allocate Metax resources to be under the same Metaxlink or Paiswich as much as possible, as the following figure shows:
 
-![Metax spread scheduling policy diagram showing resource allocation](../../resources/metax_spread.jpg)
+![Metax spread scheduling policy diagram showing resource allocation](/img/docs/common/userguide/metax-device/metax-gpu/metax-spread.jpg)
 
 1. When using `node-scheduler-policy=binpack`, Assign GPU resources, so minimize the damage to MetaxXLink topology, as the following figure shows:
 
-![Metax binpack scheduling policy diagram showing topology-aware allocation](../../resources/metax_binpack.jpg)
+![Metax binpack scheduling policy diagram showing topology-aware allocation](/img/docs/common/userguide/metax-device/metax-gpu/metax-binpack.jpg)
 
 ## Important Notes
 

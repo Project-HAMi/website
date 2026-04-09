@@ -92,9 +92,17 @@ title: 带有标签的文档
 - 指向外部站点的绝对 URL，如`https://github.com`或`https://k8s.io` - 你可以使用任何 Markdown 标记来实现这一点，因此
   - `<https://github.com>` 或
   - `[kubernetes](https://k8s.io)`都可以。
-- 链接到 Markdown 文件或生成的路径。你可以使用相对路径索引相应的文件。
-- 链接到图片或其他资源。如果你的文章包含图片或其他资源，你可以在`/docs/resources`中创建相应的目录，并将文章相关文件放在该目录中。现在我们将关于 HAMi 的公共图片存储在`/docs/resources/general`中。你可以使用以下方式链接图片：
-  - `![Git工作流](../resources/contributor/git_workflow.png)`
+- 链接到 Markdown 文件或生成的路径。您可以使用相对路径索引相应的文件。
+- 链接到图片或其他资源。
+  如果文章包含图片，建议将图片放在`/static/img/docs/`并使用绝对路径引用。
+  我们使用按语言区分的目录：
+  - `/static/img/docs/common/`：中英文共享图片
+  - `/static/img/docs/en/`：仅英文图片
+  - `/static/img/docs/zh/`：仅中文图片
+  示例：
+  - `![WebUI Overview](/img/docs/en/userguide/webui-overview.png)`
+  - `![WebUI 集群概览](/img/docs/zh/userguide/webui-overview.png)`
+  - `![Architecture](/img/docs/common/architecture/hami-arch.png)`
 
 ### 目录组织
 

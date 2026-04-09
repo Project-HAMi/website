@@ -6,7 +6,7 @@ HAMi-core是一个为 CUDA 环境设计的 hook 库，作为容器内的 GPU 资
 [HAMi](https://github.com/HAMi-project/HAMi) 和
 [Volcano](https://github.com/volcano-sh/devices) 等项目采用。
 
-![HAMi-core 架构图，显示 GPU 资源控制器设计](../resources/hami-arch.png)
+![HAMi-core 架构图，显示 GPU 资源控制器设计](/img/docs/common/developers/hami-core-design/hami-arch.png)
 
 ## 功能特性
 
@@ -14,7 +14,7 @@ HAMi-core 提供以下核心功能：
 
 1. 设备显存虚拟化
 
-   ![nvidia-smi 输出示例，显示 HAMi-core 虚拟化后的 GPU 内存](../resources/sample_nvidia-smi.png)
+   ![nvidia-smi 输出示例，显示 HAMi-core 虚拟化后的 GPU 内存](/img/docs/common/developers/hami-core-design/sample-nvidia-smi.png)
 
 2. 限制设备使用率
 
@@ -27,4 +27,4 @@ HAMi-core 提供以下核心功能：
 HAMi-core 通过劫持 CUDA 运行时库（`libcudart.so`）与 CUDA 驱动库（`libcuda.so`）之间的
 API 调用来实现其功能，如下图所示：
 
-![HAMi-core 位置图，显示 CUDA Runtime 和 Driver 之间的 API 调用拦截](../resources/hami-core-position.png)
+![HAMi-core 位置图，显示 CUDA Runtime 和 Driver 之间的 API 调用拦截](/img/docs/common/developers/hami-core-design/hami-core-position.png)

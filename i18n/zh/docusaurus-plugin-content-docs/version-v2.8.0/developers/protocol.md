@@ -9,7 +9,7 @@ translated: true
 
 然而，device-plugin 设备注册 API 并未提供相应的参数获取，因此 HAMi-device-plugin 在注册时将这些补充信息存储在节点的注释中，以供调度器读取，如下图所示：
 
-<img src="https://github.com/Project-HAMi/website/blob/master/versioned_docs/version-v1.3.0/resources/device_registration.png?raw=true" width="600px" alt="HAMi 设备注册协议图，显示节点注解过程" />
+<img src="/img/docs/common/developers/protocol/device-registration.png" width="600px" alt="HAMi 设备注册协议图，显示节点注解过程" />
 
 这里需要使用两个注释，其中一个是时间戳，如果超过指定的阈值，则认为对应节点上的设备无效。另一个是设备注册信息。一个具有 2 个 32G-V100 GPU 的节点可以注册如下所示：
 
@@ -24,7 +24,7 @@ kube-scheduler 在 `bind` 过程中调用 device-plugin 挂载设备，但仅向
 
 因此，有必要开发一个协议，使调度器层与 device-plugin 进行通信以传递任务调度信息。调度器通过将调度结果补丁到 pod 的注释中并在 device-plugin 中读取它来传递此信息，如下图所示：
 
-<img src="https://github.com/Project-HAMi/website/blob/master/versioned_docs/version-v1.3.0/resources/task_dispatch.png?raw=true" width="600px" alt="HAMi 任务分发流程图" />
+<img src="/img/docs/common/developers/protocol/task-dispatch.png" width="600px" alt="HAMi 任务分发流程图" />
 
 在此过程中，需要设置 3 个注释，分别是 `时间戳`、`待分配设备` 和 `已分配设备`。调度器创建时，`待分配设备` 和 `已分配设备` 的内容相同，但 device-plugin 将根据 `待分配设备` 的内容确定当前设备分配情况，当分配成功时，相应设备将从注释中移除，因此当任务成功运行时，`待分配设备` 的内容将为空。
 

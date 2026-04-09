@@ -114,7 +114,6 @@ Example:
   - `![WebUI Overview](/img/docs/en/userguide/webui-overview.png)`
   - `![WebUI 集群概览](/img/docs/zh/userguide/webui-overview.png)`
   - `![Architecture](/img/docs/common/architecture/hami-arch.png)`
-  Keep version-specific screenshots in versioned docs resources only when they are truly tied to a specific historical version.
 
 ### Directory organization
 

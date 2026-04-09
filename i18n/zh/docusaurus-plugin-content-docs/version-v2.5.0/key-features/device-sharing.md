@@ -14,7 +14,7 @@ HAMi 提供了强大的设备共享功能，允许多个任务共享同一个 GP
 - **无侵入控制：** 不需要对现有程序进行任何更改就能控制资源分配。
 - **动态 MIG 支持：** 支持通过 mig-parted 动态调整 MIG 设备来支持 dynamic-mig。
 
-![HAMi 设备共享示例，展示多个任务共享单个 GPU](../resources/example.png)
+![HAMi 设备共享示例，展示多个任务共享单个 GPU](/img/docs/common/key-features/example.png)
 
 通过这些特性，HAMi 确保了在共享设备的情况下，每个任务的资源共享和安全性。
 这使得各组织能够更灵活、高效地利用其 AI 计算基础设施，满足不同任务的资源需求。

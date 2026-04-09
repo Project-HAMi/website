@@ -15,4 +15,4 @@ translated: true
 
 将在容器内看到 3G 设备显存
 
-![GPU 内存硬限制演示，显示容器内 3GB 设备内存](../resources/hard_limit.jpg)
+![GPU 内存硬限制演示，显示容器内 3GB 设备内存](/img/docs/common/key-features/hard-limit.jpg)

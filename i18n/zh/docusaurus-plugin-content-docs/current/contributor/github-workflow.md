@@ -6,7 +6,7 @@ translated: true
 
 > 本文档摘自 [Kubernetes github-workflow](https://github.com/kubernetes/community/blob/master/contributors/guide/github-workflow.md)。
 
-![Git 工作流程](https://github.com/Project-HAMi/HAMi/raw/master/docs/develop/resources/contributor/git_workflow.png)
+![Git 工作流程](/img/docs/common/contributor/github-workflow/git-workflow.png)
 
 ## 在云端创建 Fork
 

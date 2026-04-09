@@ -4,7 +4,7 @@ title: Architecture
 
 The overall architecture of HAMi is shown as below:
 
-![HAMi 系统架构图，显示各组件之间的关系和交互](../resources/architect.jpg)
+![HAMi 系统架构图，显示各组件之间的关系和交互](/img/docs/common/core-concepts/architect.jpg)
 
 The HAMi consists of the following components:
 

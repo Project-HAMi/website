@@ -15,7 +15,7 @@ use can set Pod annotation to change this default policy, use `hami.io/node-sche
 
 This is a GPU cluster, having two node, the following story takes this cluster as a prerequisite.
 
-![scheduler-policy-story.png](../resources/scheduler-policy-story.png)
+![scheduler-policy-story.png](/img/docs/common/developers/scheduling/scheduler-policy-story.png)
 
 #### Story 1
 
@@ -82,7 +82,7 @@ GPU spread, use different GPU cards when possible, egs:
 
 ### Node-scheduler-policy
 
-![node-scheduler-policy-demo.png](../resources/node-scheduler-policy-demo.png)
+![node-scheduler-policy-demo.png](/img/docs/common/developers/scheduling/node-scheduler-policy-demo.png)
 
 #### Binpack
 
@@ -128,7 +128,7 @@ So, in `Spread` policy we can select `Node2`.
 
 ### GPU-scheduler-policy
 
-![gpu-scheduler-policy-demo.png](../resources/gpu-scheduler-policy-demo.png)
+![gpu-scheduler-policy-demo.png](/img/docs/common/developers/scheduling/gpu-scheduler-policy-demo.png)
 
 #### Binpack
 

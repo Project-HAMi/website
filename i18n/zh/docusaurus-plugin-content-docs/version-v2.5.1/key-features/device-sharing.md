@@ -8,4 +8,4 @@ translated: true
 - 通过指定设备核心使用情况允许部分设备分配。
 - 不需要对现有程序进行任何更改。
 
-![HAMi 设备共享示例，展示多个任务共享单个 GPU](../resources/example.png)
+![HAMi 设备共享示例，展示多个任务共享单个 GPU](/img/docs/common/key-features/example.png)
