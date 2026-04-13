@@ -21,7 +21,8 @@
       "type": "category",
       "label": "Get Started",
       "items": [
-        "get-started/deploy-with-helm"
+        "get-started/deploy-with-helm",
+        "get-started/verify-hami"
       ]
     },
     {
