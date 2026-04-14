@@ -36,7 +36,8 @@ module.exports = {
         "description": "Install and run HAMi quickly with a guided first deployment path."
       },
       "items": [
-        "get-started/deploy-with-helm"
+        "get-started/deploy-with-helm",
+        "get-started/verify-hami"
       ]
     },
     {
