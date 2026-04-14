@@ -14,8 +14,10 @@ module.exports = {
 
   // Performance optimization: Enable fast build mode and v4 future flags
   future: {
-    v4: true,
-    experimental_faster: {
+    v4: {
+      removeLegacyPostBuildHeadAttribute: true,
+    },
+    faster: {
       swcJsLoader: true,
       ssgWorkerThreads: true,
     },
