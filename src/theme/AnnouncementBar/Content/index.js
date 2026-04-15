@@ -25,6 +25,10 @@ export default function AnnouncementBarContent(props) {
   const localizedContent =
     localeMessages[content] ?? fallbackMessages[content] ?? content;
 
+  if (!localizedContent || localizedContent === content) {
+    return null;
+  }
+
   return (
     <div
       {...props}

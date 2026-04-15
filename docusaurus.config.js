@@ -233,10 +233,10 @@ module.exports = {
       defaultMode: "dark",
       respectPrefersColorScheme: false,
     },
-    // announcementBar: {
-    //   id: "kubecon-2026-europe", // Increment on change
-    //   content: 'theme.announcementBar.message',
-    // },
+    announcementBar: {
+      id: "hami-meetup-shenzhen-3rd", // Increment on change
+      content: 'theme.announcementBar.message',
+    },
     navbar: {
       title: "HAMi",
       logo: {

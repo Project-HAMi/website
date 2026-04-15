@@ -415,5 +415,11 @@
     "nameZh": "博维智慧科技",
     "logo": "/img/adopters/boardware.jpg",
     "website": "https://www.boardware.com.mo"
+  },
+  {
+    "name": "Weidian",
+    "nameZh": "微店",
+    "logo": "/img/adopters/weidian.png",
+    "website": "https://www.weidian.com/"
   }
 ]
