@@ -1,0 +1,55 @@
+@startuml
+skinparam sequenceMessageAlign center
+skinparam responseMessageBelowArrow true
+
+participant "Kubelet" as K
+participant "Device Plugin\n(DaemonSet Pod)" as DP
+participant "API Server" as API
+participant "kube-scheduler" as SCH
+actor "用户" as U
+
+== 节点启动：Kubelet 准备注册服务 ==
+
+note over K
+  ① 启动 Registration gRPC 服务
+  创建 kubelet.sock（Unix Socket）
+  路径：/var/lib/kubelet/device-plugins/kubelet.sock
+end note
+
+== Device Plugin 启动并注册 ==
+
+note over DP
+  ② Device Plugin Pod 启动
+  将宿主机 kubelet.sock 挂载到容器内
+end note
+
+DP -> K : ③ Register(endpoint, version, resourceName)\n通过 kubelet.sock 调用
+K --> DP : 注册成功
+
+== 设备发现与资源上报 ==
+
+K -> DP : ④ ListAndWatch()\n通过 Device Plugin 的 Unix Socket 调用
+DP --> K : 返回设备列表 [{ID, Health}, ...]\n（持续监听设备上下线变化）
+
+K -> API : ⑤ 更新 Node 状态\nNode.status.capacity[nvidia.com/gpu] = 1
+
+== 用户提交 Pod ==
+
+U -> API : ⑥ 创建 Pod\n(resources.limits: nvidia.com/gpu: 1)
+API -> SCH : 通知待调度 Pod
+SCH -> SCH : ⑦ 筛选满足资源要求的节点
+SCH -> API : 绑定结果（写入 Pod.spec.nodeName）
+
+== 设备分配与容器启动 ==
+
+API -> K : 通知本节点有 Pod 待启动
+K -> DP : ⑧ Allocate(deviceIDs)
+DP --> K : 返回分配结果\n（设备文件路径、环境变量等）
+
+note over K
+  ⑨ 启动容器，注入设备信息
+  挂载 /dev/nvidia0
+  注入 NVIDIA_VISIBLE_DEVICES
+end note
+
+@enduml
