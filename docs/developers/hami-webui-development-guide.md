@@ -20,7 +20,7 @@ The architecture includes frontend UI, backend services, and underlying cluster 
 
 <div align="center">
 
-![HAMi WebUI architecture](/img/docs/common/developers/hami-webui-archticture-diagram.svg)
+![HAMi WebUI architecture](/img/docs/common/developers/hami-webui-architecture-diagram.svg)
 
 </div>
 
