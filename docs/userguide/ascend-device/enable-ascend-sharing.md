@@ -2,7 +2,7 @@
 title: Enable Ascend sharing
 ---
 
-Memory slicing is supported based on virtualization template, lease available template is automatically used. For detailed information, check [device-template](./device-template.md).
+Memory slicing is supported based on virtualization template, latest available template is automatically used. For detailed information, check [device-template](./device-template.md).
 
 ## Prerequisites
 
@@ -50,7 +50,7 @@ Memory slicing is supported based on virtualization template, lease available te
 * [Download YAML for Ascend-vgpu-device-plugin](https://github.com/Project-HAMi/ascend-device-plugin/blob/master/build/ascendplugin-hami.yaml) from HAMi Project, and run the following commands to deploy
 
   ```bash
-  wge https://raw.githubusercontent.com/Project-HAMi/ascend-device-plugin/refs/heads/main/ascend-device-plugin.yaml
+  wget https://raw.githubusercontent.com/Project-HAMi/ascend-device-plugin/refs/heads/main/ascend-device-plugin.yaml
   kubectl apply -f ascend-device-plugin.yaml
   ```
 
