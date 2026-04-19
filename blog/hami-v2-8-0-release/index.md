@@ -6,7 +6,7 @@ tags: ["Release", "GPU", "Kubernetes", "DRA"]
 authors: [hami_community]
 ---
 
-Te HAMi community is proud to announce the official release of **HAMi v2.8.0**. This represents a milestone version in terms of **architectural completeness, scheduling reliability, and ecosystem alignment**.
+The HAMi community is proud to announce the official release of **HAMi v2.8.0**. This represents a milestone version in terms of **architectural completeness, scheduling reliability, and ecosystem alignment**.
 
 v2.8.0 not only introduces multiple key feature updates but also delivers systematic enhancements in **Kubernetes native standard alignment, heterogeneous device support, production readiness, and observability**, making HAMi more suitable for AI production clusters that require long-term operation with high stability and clear evolution paths.
 
