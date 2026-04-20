@@ -110,11 +110,11 @@ Add the Helm repository:
 helm repo add hami-charts https://project-hami.github.io/HAMi/
 ```
 
-During installation, set the Kubernetes scheduler image to match your cluster version. For example, if your cluster version is 1.16.8:
+During installation, set the Kubernetes scheduler image to match your cluster version. For example, if your cluster version is 1.29.0:
 
 ```bash
 helm install hami hami-charts/hami \
-  --set scheduler.kubeScheduler.imageTag=v1.16.8 \
+  --set scheduler.kubeScheduler.imageTag=v1.29.0 \
   -n kube-system
 ```
 
