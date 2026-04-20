@@ -331,7 +331,7 @@ module.exports = {
               "label": "Examples",
               "key": "kueue-examples",
               "items": [
-                "userguide/kueue/examples/defalt-use"
+                "userguide/kueue/examples/default-use"
               ]
             }
           ]
