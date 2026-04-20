@@ -95,7 +95,7 @@ status:
 
 ### Running vGPU Jobs
 
-vGPU can be requested by both set "volcano.sh/vgpu-number" , "volcano.sh/vgpu-cores" and "volcano.sh/vgpu-memory" in resource.limit
+vGPU can be requested by both set "volcano.sh/vgpu-number", "volcano.sh/vgpu-cores" and "volcano.sh/vgpu-memory" in resource.limit
 
 ```shell
 cat <<EOF | kubectl apply -f -
