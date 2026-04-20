@@ -36,7 +36,7 @@ title: Enable Mthreads GPU sharing
 * set the 'devices.mthreads.enabled = true' when installing hami
 
 ```bash
-helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag={your kubernetes version} --set device.mthreads.enabled=true -n kube-system
+helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag={your kubernetes version} --set devices.mthreads.enabled=true -n kube-system
 ```
 
 ## Running Mthreads jobs
