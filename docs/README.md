@@ -1,4 +1,1 @@
----
-title: readme
-slug: /readme
----
+---title: readmeslug: /readme---

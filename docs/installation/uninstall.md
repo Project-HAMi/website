@@ -1,15 +1,1 @@
----
-title: Uninstall
----
-
-The step to uninstall HAMi is simple:
-
-```bash
-helm uninstall hami -n kube-system
-```
-
-:::note
-
-Uninstallation won't kill running tasks.
-
-:::
+---title: Uninstall---The step to uninstall HAMi is simple:```bashhelm uninstall hami -n kube-system```:::noteUninstallation won't kill running tasks.:::
