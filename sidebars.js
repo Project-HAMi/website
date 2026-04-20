@@ -142,7 +142,7 @@ module.exports = {
               "items": [
                 "userguide/hygon-device/examples/allocate-core-and-memory",
                 "userguide/hygon-device/examples/allocate-exclusive",
-                "userguide/hygon-device/examples/specify-certain-cards",
+                "userguide/hygon-device/examples/specify-certain-cards"
               ]
             }
           ]
@@ -216,7 +216,7 @@ module.exports = {
               "label": "Examples",
               "key": "vastai-examples",
               "items": [
-                "userguide/vastai/examples/default-use",
+                "userguide/vastai/examples/default-use"
               ]
             }
           ]
