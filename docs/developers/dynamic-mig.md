@@ -16,7 +16,7 @@ HAMi is done by using [hami-core](https://github.com/Project-HAMi/HAMi-core), wh
 ## Targets
 
 - CPU, Mem, and GPU combined schedule
-- GPU dynamic slice: Hami-core and MIG
+- GPU dynamic slice: HAMi-core and MIG
 - Support node-level binpack and spread by GPU memory, CPU and Mem
 - A unified vGPU Pool different virtualization techniques
 - Tasks can choose to use MIG, use HAMi-core, or use both.
