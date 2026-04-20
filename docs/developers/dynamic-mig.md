@@ -140,7 +140,7 @@ spec:
       resources:
         limits:
           nvidia.com/gpu: 2 # requesting 2 vGPUs
-          nvidia.com/gpumem: 8000 # Each vGPU contains 8000m device memory (Optional,Integer
+          nvidia.com/gpumem: 8000 # Each vGPU contains 8000m device memory (Optional,Integer)
 ```
 
 ## Procedures
