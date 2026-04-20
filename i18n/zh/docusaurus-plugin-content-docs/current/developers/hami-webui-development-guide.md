@@ -18,7 +18,7 @@ translated: true
 
 <div align="center">
 
-![HAMi WebUI 系统架构图](/img/docs/common/developers/hami-webui-archticture-diagram.svg)
+![HAMi WebUI 系统架构图](/img/docs/common/developers/hami-webui-architecture-diagram.svg)
 
 </div>
 

@@ -44,7 +44,7 @@ It provides a unified GPU monitoring experience centered on GPU resources, enabl
 
 HAMi WebUI adopts a frontend-backend separation architecture with three layers:
 
-![HAMi WebUI Architecture - GPU monitoring dashboard for Kubernetes](/img/docs/common/developers/hami-webui-archticture-diagram.svg)
+![HAMi WebUI Architecture - GPU monitoring dashboard for Kubernetes](/img/docs/common/developers/hami-webui-architecture-diagram.svg)
 
 | Layer              | Technology            | Role                                       |
 | ------------------ | --------------------- | ------------------------------------------ |
