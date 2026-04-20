@@ -105,7 +105,7 @@ data:
 ## Examples
 
 Dynamic mig is compatible with hami tasks, as the example below:
-Just Setting `nvidia.com/gpu` and `nvidia.com/gpumem`.
+Just set `nvidia.com/gpu` and `nvidia.com/gpumem`.
 
 ```yaml
 apiVersion: v1
