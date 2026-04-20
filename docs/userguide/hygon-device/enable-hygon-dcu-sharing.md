@@ -60,7 +60,7 @@ source /opt/hygondriver/env.sh
 check if you have successfully enabled vDCU by using following command
 
 ```bash
-hy-virtual -show-device-info
+hy-smi virtual -show-device-info
 ```
 
 If you have an output like this, then you have successfully enabled vDCU inside container.
