@@ -166,6 +166,4 @@ Involuntary removal/demotion of a contributor happens when responsibilities and 
 Involuntary removal or demotion is handled through a vote by a majority of the current Maintainers.
 
 [two-factor authentication]: https://help.github.com/articles/about-two-factor-authentication
-ibutor happens when responsibilities and requirements aren't being met. This may include repeated patterns of inactivity, extended period of inactivity, a period of failing to meet the requirements of your role, and/or a violation of the Code of Conduct. This process is important because it protects the community and its deliverables while also opens up opportunities for new contributors to step in.
-
-Involuntary removal or demotion is handled through a vote by a majority of the current Maintainers.
+[membership request]: https://github.com/Project-HAMi/HAMi/issues/new
