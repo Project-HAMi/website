@@ -5,7 +5,7 @@ title: Enable Enflame GPU Sharing
 
 ## Introduction
 
-**We now support sharing on enflame.com/gcu(i.e S60) by implementing most device-sharing features as nvidia-GPU**, including:
+**We now support sharing on enflame.com/gcu(i.e., S60) by implementing most device-sharing features as nvidia-GPU**, including:
 
 ***GCU sharing***: Each task can allocate a portion of GCU instead of a whole GCU card, thus GCU can be shared among multiple tasks.
 
@@ -118,7 +118,7 @@ Look for annotations containing device information in the node status.
 
 ## Notes
 
-1. GCUshare takes effect only for containers that apply for one GCU(i.e enflame.com/vgcu=1 ).
+1. GCUshare takes effect only for containers that apply for one GCU(i.e., enflame.com/vgcu=1 ).
 
 2. Multiple GCU allocation in one container is not supported yet
 
