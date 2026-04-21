@@ -1,5 +1,5 @@
 ---
-title: Enable Illuvatar GPU Sharing
+title: Enable Iluvatar GPU Sharing
 ---
 
 ## Introduction
