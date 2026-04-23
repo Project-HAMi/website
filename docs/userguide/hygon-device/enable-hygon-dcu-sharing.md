@@ -26,7 +26,7 @@ title: Enable Hygon DCU sharing
 ## Running DCU jobs
 
 Hygon DCUs can now be requested by a container
-using the `hygon.com/dcunum` , `hygon.com/dcumem` and `hygon.com/dcucores` resource type:
+using the `hygon.com/dcunum`, `hygon.com/dcumem` and `hygon.com/dcucores` resource type:
 
 ```yaml
 apiVersion: v1
