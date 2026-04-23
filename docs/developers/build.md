@@ -4,20 +4,20 @@ title: Build HAMi
 
 ## Make Binary
 
-### prerequisites
+### Prerequisites
 
 The following tools are required:
 
 - go v1.20+
 - make
 
-### build
+### Build
 
 ```bash
 make
 ```
 
-If everything are successfully built, the following output are printed
+If everything is successfully built, the following output is printed
 
 ```bash
 go build -ldflags '-s -w -X github.com/Project-HAMi/HAMi/pkg/version.version=v0.0.1' -o bin/scheduler ./cmd/scheduler
@@ -34,13 +34,13 @@ The following tools are required:
 - docker
 - make
 
-### build
+### Build
 
 ```bash
 make docker
 ```
 
-If everything are successfully built, the following output are printed
+If everything is successfully built, the following output is printed
 
 ```bash
 go build -ldflags '-s -w -X github.com/Project-HAMi/HAMi/pkg/version.version=v0.0.1' -o bin/scheduler ./cmd/scheduler
