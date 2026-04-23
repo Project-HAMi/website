@@ -167,9 +167,9 @@ module.exports = {
         },
         {
           "type": "category",
-          "label": "Share Illuvatar GPU devices",
+          "label": "Share Iluvatar GPU devices",
           "items": [
-            "userguide/iluvatar-device/enable-illuvatar-gpu-sharing",
+            "userguide/iluvatar-device/enable-iluvatar-gpu-sharing",
             {
               "type": "category",
               "label": "Examples",
