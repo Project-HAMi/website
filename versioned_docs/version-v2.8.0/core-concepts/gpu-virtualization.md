@@ -246,5 +246,5 @@ The two dimensions are orthogonal. Common combinations:
 
 Here are some recommended next steps:
 
-- Learn about HAMi's [architecture](./architecture.md)
-- [Install HAMi](../installation/prerequisites.md) in your Kubernetes cluster
+- Learn about HAMi's [architecture](./architecture)
+- [Install HAMi](../installation/prerequisites) in your Kubernetes cluster

@@ -1,5 +1,5 @@
 ---
-title: GPU 虚拟化原理]
+title: GPU 虚拟化原理
 linktitle: GPU 虚拟化
 translated: true
 ---
@@ -247,5 +247,5 @@ GPU2 得分 = ((1+6)/10 + (20+70)/100 + (1000+6000)/8000) × 10 = 24.75
 
 推荐继续了解：
 
-- 学习 HAMi 的[架构设计](./architecture.md)
-- 在你的 Kubernetes 集群中[安装 HAMi](../installation/prerequisites.md)
+- 学习 HAMi 的[架构设计](./architecture)
+- 在你的 Kubernetes 集群中[安装 HAMi](../installation/prerequisites)
