@@ -62,7 +62,7 @@ kubectl -n <namespace> edit cm hami-device-plugin
 You can customize your vGPU support by setting the following arguments using `-set`, for example
 
 ```bash
-helm install hami hami-charts/hami --set devicePlugin.deviceMemoryScaling=5 ...
+helm install hami hami-charts/hami --set devicePlugin.deviceMemoryScaling=5 -n kube-system
 ```
 
 | Argument | Type | Description | Default |
