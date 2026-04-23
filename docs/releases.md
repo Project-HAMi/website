@@ -37,7 +37,7 @@ Typically only critical fixes are selected for patch releases. Usually there wil
 
 ### Versioning
 
-HAMi uses GitHub tags to manage versions. New releases and release candidates are published using the wildcard tag`v<major>.<minor>.<patch>`.
+HAMi uses GitHub tags to manage versions. New releases and release candidates are published using the wildcard tag `v<major>.<minor>.<patch>`.
 
 Whenever a PR is merged into the master branch, CI will pull the latest code, generate an image and upload it to the mirror repository.
 The latest image of HAMi components can usually be downloaded online using the latest tag.
