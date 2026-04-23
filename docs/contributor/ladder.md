@@ -42,7 +42,6 @@ Description: A Contributor contributes directly to the project and adds value to
   * Run or helps run events
   * Promote the project in public
   * Help run the project infrastructure
-  * [TODO: other small contributions]
 * Privileges:
   * Invitations to contributor events
   * Eligible to become an Organization Member
@@ -80,7 +79,7 @@ An Organization Member must meet the responsibilities and has the requirements o
 * Privileges:
   * May be assigned Issues and Reviews
   * May give commands to CI/CD automation
-  * Can be added to [TODO: Repo Host] teams
+  * Can be added to HAMi project teams
   * Can recommend other contributors to become Org Members
 
 The process for a Contributor to become an Organization Member is as follows:
