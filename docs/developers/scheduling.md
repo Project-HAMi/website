@@ -13,7 +13,7 @@ use can set Pod annotation to change this default policy, use `hami.io/node-sche
 
 ### User Stories
 
-This is a GPU cluster, having two node, the following story takes this cluster as a prerequisite.
+This is a GPU cluster, having two nodes, the following story takes this cluster as a prerequisite.
 
 ![HAMi scheduler policy story diagram, showing node and GPU resource distribution](/img/docs/common/developers/scheduling/scheduler-policy-story.png)
 
