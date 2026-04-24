@@ -232,4 +232,4 @@ spec:
 
 ## Notes
 1. When requesting Vastai resources, you cannot specify the memory size.
-2. The `vastai-device-plugin` does not mount the `vasmi` into the container.If you need to use the `vasmi` command inside the container, please mount it manually.
+2. The `vastai-device-plugin` does not mount the `vasmi` into the container. If you need to use the `vasmi` command inside the container, please mount it manually.
