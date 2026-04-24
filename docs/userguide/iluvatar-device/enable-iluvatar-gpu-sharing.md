@@ -78,7 +78,7 @@ HAMi divides each Iluvatar GPU into 100 units for resource allocation. When you 
 ## Running Iluvatar jobs
 
 Iluvatar GPUs can now be requested by a container
-using the `iluvatar.ai/BI-V150-vgpu`, `iluvatar.ai/BI-V150.vMem` and `iluvatar.ai/BI-V150.vCore`  resource type:
+using the `iluvatar.ai/BI-V150-vgpu`, `iluvatar.ai/BI-V150.vMem` and `iluvatar.ai/BI-V150.vCore` resource type:
 
 ```yaml
 apiVersion: v1

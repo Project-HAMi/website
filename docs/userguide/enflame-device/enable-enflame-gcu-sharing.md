@@ -54,7 +54,7 @@ HAMi divides each Enflame GCU into 100 units for resource allocation. When you r
 ## Running Enflame jobs
 
 Enflame GCUs can now be requested by a container
-using the `enflame.com/vgcu` and `enflame.com/vgcu-percentage`  resource type:
+using the `enflame.com/vgcu` and `enflame.com/vgcu-percentage` resource type:
 
 ```yaml
 apiVersion: v1
