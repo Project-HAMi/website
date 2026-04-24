@@ -66,7 +66,7 @@ spec:
   terminationGracePeriodSeconds: 0
   containers:
     - name: pod-gcu-example1
-      image: ubuntu:18.04
+      image: ubuntu:22.04
       imagePullPolicy: IfNotPresent
       command:
         - sleep
