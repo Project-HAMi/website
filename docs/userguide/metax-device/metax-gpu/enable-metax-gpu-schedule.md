@@ -54,7 +54,8 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: gpu-pod1
-  annotations: hami.io/node-scheduler-policy: "spread" # when this parameter is set to spread, the scheduler will try to find the best topology for this task.
+  annotations:
+    hami.io/node-scheduler-policy: "spread" # when this parameter is set to spread, the scheduler will try to find the best topology for this task.
 spec:
   containers:
     - name: ubuntu-container
