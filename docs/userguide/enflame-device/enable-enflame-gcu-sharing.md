@@ -78,7 +78,7 @@ spec:
           enflame.com/vgcu-percentage: 22
 ```
 
-> **NOTICE:** *You can find more examples in [examples/enflame folder](https://github.com/Project-HAMi/HAMi/tree/release-v2.6/examples/enflame/)*
+> **NOTICE:** *You can find more examples in [examples/enflame folder](https://github.com/Project-HAMi/HAMi/tree/master/examples/enflame/)*
 
 ## Device UUID Selection
 

@@ -65,4 +65,4 @@ spec:
 ```
 
 > **NOTICE1:** *Each unit of sgpu-memory indicates 512M device memory*
-> **NOTICE2:** *You can find more examples in [examples/mthreads folder](https://github.com/Project-HAMi/HAMi/tree/release-v2.6/examples/mthreads/)*
+> **NOTICE:** *You can find more examples in [examples/mthreads folder](https://github.com/Project-HAMi/HAMi/tree/master/examples/mthreads/)*

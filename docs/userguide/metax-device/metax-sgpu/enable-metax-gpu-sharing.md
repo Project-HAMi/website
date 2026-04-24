@@ -46,4 +46,4 @@ spec:
           metax-tech.com/vmemory: 4 # each GPU require 4 GiB device memory
 ```
 
-> **NOTICE:** *You can find more examples in [examples/metax folder](https://github.com/Project-HAMi/HAMi/tree/release-v2.6/examples/metax/sgpu)*
+> **NOTICE:** *You can find more examples in [examples/metax folder](https://github.com/Project-HAMi/HAMi/tree/master/examples/metax/sgpu)*
