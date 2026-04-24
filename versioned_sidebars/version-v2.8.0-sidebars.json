@@ -6,7 +6,8 @@
       "collapsed": false,
       "items": [
         "core-concepts/introduction",
-        "core-concepts/architecture"
+        "core-concepts/architecture",
+        "core-concepts/gpu-virtualization"
       ]
     },
     {

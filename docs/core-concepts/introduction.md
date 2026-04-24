@@ -39,5 +39,6 @@ HAMi is a [Cloud Native Computing Foundation](https://cncf.io/) [Sandbox project
 
 Here are some recommended next steps:
 
+- Understand HAMi's [GPU virtualization principles](./gpu-virtualization.md)
 - Learn about HAMi's [architecture](./architecture.md)
 - [Install HAMi](../installation/prerequisites.md) in your Kubernetes cluster
