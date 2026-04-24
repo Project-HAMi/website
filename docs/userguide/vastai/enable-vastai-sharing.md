@@ -4,7 +4,7 @@ title: Enable Vastai Sharing
 
 ## Introduction
 
-We now support sharing `vastaitech.com/va` (Vastaitech) devices and provides the following capabilities:
+We now support sharing `vastaitech.com/va` (Vastaitech) devices and provide the following capabilities:
 
 ***Supports both Full-Card mode and Die mode***: Only Full-Card mode and Die mode are supported currently.
 
