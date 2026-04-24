@@ -4,7 +4,7 @@ title: Enable Iluvatar GPU Sharing
 
 ## Introduction
 
-**We now support iluvatar.ai/gpu(i.e MR-V100, BI-V150, BI-V100) by implementing most device-sharing features as nvidia-GPU**, including:
+**We now support iluvatar.ai/gpu(i.e., MR-V100, BI-V150, BI-V100) by implementing most device-sharing features as nvidia-GPU**, including:
 
 ***GPU sharing***: Each task can allocate a portion of GPU instead of a whole GPU card, thus GPU can be shared among multiple tasks.
 
@@ -160,7 +160,7 @@ Look for annotations containing device information in the node status.
       source /root/.bashrc
 ```
 
-1. Virtualization takes effect only for containers that apply for one GPU(i.e iluvatar.ai/vgpu=1 ). When requesting multiple GPUs, the system will automatically set the core resources based on the number of GPUs requested.
+1. Virtualization takes effect only for containers that apply for one GPU(i.e., iluvatar.ai/vgpu=1). When requesting multiple GPUs, the system will automatically set the core resources based on the number of GPUs requested.
 
 2. The `iluvatar.ai/<card-type>.vMem` resource is only effective when `iluvatar.ai/<card-type>-vgpu=1`.
 

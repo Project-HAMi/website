@@ -8,9 +8,9 @@ title: Enable Mthreads GPU sharing
 
 ***GPU sharing***: Each task can allocate a portion of GPU instead of a whole GPU card, thus GPU can be shared among multiple tasks.
 
-***Device Memory Control***: GPUs can be allocated with certain device memory size on certain type(i.e MTT S4000) and have made it that it does not exceed the boundary.
+***Device Memory Control***: GPUs can be allocated with certain device memory size on certain type(i.e., MTT S4000) and have made it that it does not exceed the boundary.
 
-***Device Core Control***: GPUs can be allocated with limited compute cores on certain type(i.e MTT S4000) and have made it that it does not exceed the boundary.
+***Device Core Control***: GPUs can be allocated with limited compute cores on certain type(i.e., MTT S4000) and have made it that it does not exceed the boundary.
 
 ## Important Notes
 

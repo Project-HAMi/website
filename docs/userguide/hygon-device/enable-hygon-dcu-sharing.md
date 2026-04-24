@@ -8,9 +8,9 @@ title: Enable Hygon DCU sharing
 
 ***DCU sharing***: Each task can allocate a portion of DCU instead of a whole DCU card, thus DCU can be shared among multiple tasks.
 
-***Device Memory Control***: DCUs can be allocated with certain device memory size on certain type(i.e Z100) and have made it that it does not exceed the boundary.
+***Device Memory Control***: DCUs can be allocated with certain device memory size on certain type(i.e., Z100) and have made it that it does not exceed the boundary.
 
-***Device compute core limitation***: DCUs can be allocated with certain percentage of device core(i.e hygon.com/dcucores:60 indicate this container uses 60% compute cores of this device)
+***Device compute core limitation***: DCUs can be allocated with certain percentage of device core(i.e., hygon.com/dcucores:60 indicates this container uses 60% compute cores of this device)
 
 ***DCU Type Specification***: You can specify which type of DCU to use or to avoid for a certain task, by setting "hygon.com/use-dcutype" or "hygon.com/nouse-dcutype" annotations.
 
