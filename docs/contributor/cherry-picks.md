@@ -34,7 +34,7 @@ branches.
 
 Compared to the normal master branch's merge volume across time,
 the release branches see one or two orders of magnitude less PRs.
-This is because there is an order or two of magnitude higher scrutiny.
+This is because there is an order of magnitude or two higher scrutiny.
 Again, the emphasis is on critical bug fixes, e.g.,
 
 - Loss of data
