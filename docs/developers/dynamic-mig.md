@@ -115,7 +115,7 @@ metadata:
 spec:
   containers:
     - name: ubuntu-container1
-      image: ubuntu:20.04
+      image: ubuntu:22.04
       command: ["bash", "-c", "sleep 86400"]
       resources:
         limits:
@@ -135,7 +135,7 @@ metadata:
 spec:
   containers:
     - name: ubuntu-container1
-      image: ubuntu:20.04
+      image: ubuntu:22.04
       command: ["bash", "-c", "sleep 86400"]
       resources:
         limits:

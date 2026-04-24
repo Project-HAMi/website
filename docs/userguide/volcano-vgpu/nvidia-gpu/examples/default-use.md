@@ -13,7 +13,7 @@ spec:
   restartPolicy: OnFailure
   schedulerName: volcano
   containers:
-  - image: ubuntu:20.04
+  - image: ubuntu:22.04
     name: pod1-ctr
     command: ["sleep"]
     args: ["100000"]
