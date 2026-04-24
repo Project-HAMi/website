@@ -19,11 +19,11 @@ the GPU device plugin (gpu-device) handles fine-grained allocation based on the 
    - A connection is considered a MetaXLink connection when there is a MetaXLink connection and a PCIe Switch connection between the two cards.
    - When both the MetaXLink and the PCIe Switch can meet the job request, equipped with MetaXLink interconnected resources.
 
-2. When using `node-scheduler-policy=spread`, allocate Metax resources to be under the same Metaxlink or Paiswich as much as possible, as shown below:
+2. When using `node-scheduler-policy=spread`, allocate Metax resources to be under the same MetaXLink or PaiSwitch as much as possible, as shown below:
 
    ![Metax spread scheduling policy diagram showing resource allocation](/img/docs/common/userguide/metax-device/metax-gpu/metax-spread.jpg)
 
-3. When using `node-scheduler-policy=binpack`, assign GPU resources, so minimize the damage to MetaxXLink topology, as shown below:
+3. When using `node-scheduler-policy=binpack`, assign GPU resources, so minimize the damage to MetaXLink topology, as shown below:
 
    ![Metax binpack scheduling policy diagram showing topology-aware allocation](/img/docs/common/userguide/metax-device/metax-gpu/metax-binpack.jpg)
 
