@@ -16,9 +16,9 @@ title: Enable Mthreads GPU sharing
 
 1. Device sharing for multi-cards is not supported.
 
-2. Only one mthreads device can be shared in a pod(even there are multiple containers).
+2. Only one Mthreads device can be shared in a pod(even there are multiple containers).
 
-3. Support allocating exclusive mthreads GPU by specifying mthreads.com/vgpu only.
+3. Support allocating exclusive Mthreads GPU by specifying mthreads.com/vgpu only.
 
 4. These features are tested on MTT S4000
 
@@ -29,7 +29,7 @@ title: Enable Mthreads GPU sharing
 
 ## Enabling GPU-sharing Support
 
-* Deploy MT-CloudNative Toolkit on mthreads nodes (Please consult your device provider to acquire its package and document)
+* Deploy MT-CloudNative Toolkit on Mthreads nodes (Please consult your device provider to acquire its package and document)
 
 > **NOTICE:** *You can remove mt-mutating-webhook and mt-gpu-scheduler after installation(optional).*
 
