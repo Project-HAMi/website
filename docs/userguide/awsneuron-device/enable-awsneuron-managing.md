@@ -35,7 +35,7 @@ HAMi divides each AWS Neuron device into 2 units for resource allocation. You co
 
 * Each unit of `aws.amazon.com/neuroncore` represents 1/2 of neuron device
 * Don't assign `aws.amazon.com/neuron` like other devices, only assigning `aws.amazon.com/neuroncore` is enough
-* When the number of `aws.amazon.com/neuroncore`>=2, it equals to setting `awa.amazon.com/neuron=1/2 * neuronCoreNumber`
+* When the number of `aws.amazon.com/neuroncore`>=2, it equals to setting `aws.amazon.com/neuron=1/2 * neuronCoreNumber`
 * The topology awareness scheduling is automatically enabled when tasks require multiple neuron devices.
 
 ## Running Neuron jobs
