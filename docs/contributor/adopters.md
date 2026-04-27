@@ -10,7 +10,7 @@ You just need to add an entry for your company and upon merging it will automati
 
 To add your organisation follow these steps:
 
-1. Fork the [HAMi-io/website](https://github.com/Project-HAMi/website) repository.
+1. Fork the [Project-HAMi/website](https://github.com/Project-HAMi/website) repository.
 2. Clone it locally with `git clone https://github.com/<YOUR-GH-USERNAME>/website.git`.
 3. (Optional) Add the logo of your organisation to `static/img/supporters`. Good practice is for the logo to be called e.g. `<company>.png`.
    This will not be used for commercial purposes.
@@ -19,10 +19,10 @@ To add your organisation follow these steps:
 
    | Organization | Contact                           | Environment | Description of Use                            |
    | ------------ | --------------------------------- | ----------- | --------------------------------------------- |
-   | My Company   | [email](mailto:email@company.com) | Production  | We use HAMi to Manage our GPU infrastructure. |
+   | My Company   | [email](mailto:email@company.com) | Production  | We use HAMi to manage our GPU infrastructure. |
 
 5. Save the file, then do `git add -A` and commit using `git commit -s -m "Add MY-ORG to adopters"`.
 6. Push the commit with `git push origin main`.
-7. Open a Pull Request to [HAMi-io/website](https://github.com/Project-HAMi/website) and a preview build will turn up.
+7. Open a Pull Request to [Project-HAMi/website](https://github.com/Project-HAMi/website) and a preview build will turn up.
 
 Thanks a lot for being part of our community - we very much appreciate it!
