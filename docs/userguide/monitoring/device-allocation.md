@@ -33,4 +33,4 @@ If you are using [HAMi DRA](../../installation/how-to-use-hami-dra), the metrics
 | vGPUDeviceCoreAllocated | vGPU core allocated from a container | `{devicebrand="Tesla",deviceidx="0",devicename="hami-gpu-0",deviceproductname="Tesla P4",deviceuuid="GPU-82be-83fe-3068",nodeid="k8s-node01",podname="pod-0",podnamespace="default"}` 100 |
 | vGPUDeviceMemoryAllocated | vGPU memory allocated from a container | `{devicebrand="Tesla",deviceidx="0",devicename="hami-gpu-0",deviceproductname="Tesla P4",deviceuuid="GPU-82be-83fe-3068",nodeid="k8s-node01",podname="pod-0",podnamespace="default"}` 4000 |
 
-> **Note:** This is the overview of device allocation, it is NOT device real-time usage metrics. For that part, see real-time device usage.
+> **NOTICE:** This is the overview of device allocation, it is NOT device real-time usage metrics. For that part, see real-time device usage.

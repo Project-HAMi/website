@@ -109,7 +109,7 @@ spec:
   # ... rest of pod spec
 ```
 
-> **NOTE:** The device ID format is `{node-name}-AWSNeuron-{index}`. You can find the available device IDs in the node annotations.
+> **NOTICE:** The device ID format is `{node-name}-AWSNeuron-{index}`. You can find the available device IDs in the node annotations.
 
 ### Finding Device UUIDs
 
