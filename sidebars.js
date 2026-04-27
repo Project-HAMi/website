@@ -79,6 +79,7 @@ module.exports = {
           "label": "Monitoring",
           "items": [
             "userguide/monitoring/device-allocation",
+            "userguide/monitoring/real-time-usage",
             "userguide/monitoring/real-time-device-usage"
           ]
         },
