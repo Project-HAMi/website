@@ -13,12 +13,12 @@ metadata:
 spec:
   containers:
     - name: ubuntu-container
-      image: ubuntu:22.04 
+      image: ubuntu:22.04
       imagePullPolicy: IfNotPresent
       command: ["sleep","infinity"]
       resources:
         limits:
-          metax-tech.com/sgpu: 1 # requesting 1 GPU 
+          metax-tech.com/sgpu: 1 # requesting 1 GPU
           metax-tech.com/vcore: 60 # each GPU use 60% of total compute cores
           metax-tech.com/vmemory: 4 # each GPU require 4 GiB device memory
 ```

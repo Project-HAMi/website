@@ -30,8 +30,8 @@ You can customize the installation by adjusting the [configuration](../userguide
 
 ## Install with AWS Add-on
 
-Before installing HAMi using the AWS add-on, you need to install **cert-manager**.  
-You can find it in the AWS Marketplace add-ons section and install it through the AWS Console.  
+Before installing HAMi using the AWS add-on, you need to install **cert-manager**.
+You can find it in the AWS Marketplace add-ons section and install it through the AWS Console.
 You may also refer to the [AWS User Guide](https://docs.aws.amazon.com/eks/latest/userguide/lbc-manifest.html#lbc-cert) for installation instructions.
 
 Once cert-manager is installed, you can install the HAMi add-on from the AWS Marketplace.

@@ -9,8 +9,8 @@ title: User Guide for Ascend Devices in Volcano
 
 **Use case**:
 
-- NPU and vNPU cluster for Ascend 910 series  
-- NPU and vNPU cluster for Ascend 310 series  
+- NPU and vNPU cluster for Ascend 910 series
+- NPU and vNPU cluster for Ascend 310 series
 - Heterogeneous Ascend cluster
 
 This feature is only available in volcano >= 1.14.

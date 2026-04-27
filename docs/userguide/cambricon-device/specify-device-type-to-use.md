@@ -6,7 +6,7 @@ To enable device type specification, you need to add the `--enable-device-type` 
 
 When this option is enabled, different MLU types will expose distinct resource names. For example:
 
-- `cambricon.com/mlu370.smlu.vcore`  
+- `cambricon.com/mlu370.smlu.vcore`
 - `cambricon.com/mlu370.smlu.vmemory`
 
 This allows fine-grained control over resource allocation based on MLU model types.
