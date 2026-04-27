@@ -90,7 +90,7 @@ title: A doc with tags
 The top section between two lines of --- is the Front Matter section.
 Here we define a couple of entries which tell Docusaurus how to handle the article:
 
-- Title is the equivalent of the `<h1>` in a HTML document or `# <title>` in a Markdown article.
+- Title is the equivalent of the `<h1>` in an HTML document or `# <title>` in a Markdown article.
 - Each document has a unique ID. By default, a document ID is the name of the document
   (without the extension) related to the root docs directory.
 
