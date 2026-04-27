@@ -42,7 +42,7 @@ helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag={your 
 ## Running Mthreads jobs
 
 Mthreads GPUs can now be requested by a container
-using the `mthreads.com/vgpu`, `mthreads.com/sgpu-memory` and `mthreads.com/sgpu-core`  resource type:
+using the `mthreads.com/vgpu`, `mthreads.com/sgpu-memory` and `mthreads.com/sgpu-core` resource type:
 
 ```yaml
 apiVersion: v1
