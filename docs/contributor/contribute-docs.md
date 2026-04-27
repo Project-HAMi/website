@@ -16,7 +16,7 @@ the `Project-HAMi/website` repository.
 - For our docs we use markdown. If you are unfamiliar with Markdown,
   please see [https://guides.github.com/features/mastering-markdown/](https://guides.github.com/features/mastering-markdown/) or
   [https://www.markdownguide.org/](https://www.markdownguide.org/) if you are looking for something more substantial.
-- We get some additions through [Docusaurus 2](https://docusaurus.io/), a model static website generator.
+- We get some additions through [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
 
 ## Setup
 
