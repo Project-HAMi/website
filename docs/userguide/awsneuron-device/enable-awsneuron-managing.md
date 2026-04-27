@@ -10,7 +10,7 @@ HAMi now integrates with [my-scheduler](https://awsdocs-neuron.readthedocs-hoste
 
 * **Neuron sharing**: HAMi now supports sharing on aws.amazon.com/neuron by allocating device cores(aws.amazon.com/neuroncore), each Neuron core equals to 1/2 neuron device.
 
-* **Topology awareness**: When allocating multiple aws-neuron devices in a container, HAMi will make sure these devices are connected with one another, so to minimize the communication cost between neuron devices. For details about how these devices are connected, refer to [Container Device Allocation On Different Instance Types](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/containers/kubernetes-getting-started.html#container-device-allocation-on-different-instance-types).
+* **Topology awareness**: When allocating multiple aws-neuron devices in a container, HAMi will make sure these devices are connected with one another, so as to minimize the communication cost between neuron devices. For details about how these devices are connected, refer to [Container Device Allocation On Different Instance Types](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/containers/kubernetes-getting-started.html#container-device-allocation-on-different-instance-types).
 
 ## Prerequisites
 
