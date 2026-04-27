@@ -49,7 +49,7 @@ metadata:
 spec:
   containers:
     - name: ubuntu-container
-      image: docker.io/library/ubuntu:latest
+      image: ubuntu:22.04
       imagePullPolicy: IfNotPresent
       command: ["sleep", "infinity"]
       resources:
