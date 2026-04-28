@@ -112,7 +112,7 @@ spec:
         iluvatar.ai/BI-V150.vMem: 64
 ```
 
-> **NOTICE1:** *Each unit of vcuda-memory indicates 256M device memory*
+> **NOTICE:** *Each unit of vcuda-memory indicates 256M device memory*
 
 ## Device UUID Selection
 
