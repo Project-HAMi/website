@@ -37,4 +37,4 @@ spec:
         iluvatar.ai/MR-V100.vMem: 64
 ```
 
-> **NOTE:** *Each `iluvatar.ai/<card-type>.vCore` unit represents 1% of an available compute core, and each `iluvatar.ai/<card-type>.vMem` unit represents 256MB of device memory*
+> **NOTICE:** *Each `iluvatar.ai/<card-type>.vCore` unit represents 1% of an available compute core, and each `iluvatar.ai/<card-type>.vMem` unit represents 256MB of device memory*

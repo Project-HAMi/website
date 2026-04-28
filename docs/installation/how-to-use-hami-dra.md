@@ -28,7 +28,7 @@ Then install with the following command:
 helm install hami hami-charts/hami --set dra.enable=true -n hami-system
 ```
 
-> **Note:** *DRA mode is not compatible with traditional mode. Do not enable both at the same time.*
+> **NOTICE:** *DRA mode is not compatible with traditional mode. Do not enable both at the same time.*
 
 ## Supported Devices
 

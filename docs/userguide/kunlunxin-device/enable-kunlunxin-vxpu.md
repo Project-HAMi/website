@@ -176,7 +176,7 @@ spec:
   # ... rest of Pod configuration
 ```
 
-> **Note:** Device ID format is `{BusID}`. You can find available device IDs in the node status.
+> **NOTICE:** Device ID format is `{BusID}`. You can find available device IDs in the node status.
 
 ### Finding Device UUIDs
 
