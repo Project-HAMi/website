@@ -17,7 +17,7 @@ HAMi now integrates with [my-scheduler](https://awsdocs-neuron.readthedocs-hoste
 * Neuron-device-plugin
 * EC2 instance of type `Inf` or `Trn`
 
-## Enabling GCU-sharing Support
+## Enabling Neuron-sharing Support
 
 * Deploy neuron-device-plugin on EC2 neuron nodes according to the AWS document: [Neuro Device Plugin](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/containers/kubernetes-getting-started.html#neuron-device-plugin)
 
