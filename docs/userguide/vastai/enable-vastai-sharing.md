@@ -18,7 +18,7 @@ We now support sharing `vastaitech.com/va` (Vastaitech) devices and provide the 
 
 #### Label the Node
 
-```
+```bash
 kubectl label node {vastai-node} vastai=on
 ```
 
@@ -26,7 +26,7 @@ kubectl label node {vastai-node} vastai=on
 
 ##### Full Card Mode
 
-```
+```yaml
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -120,7 +120,7 @@ spec:
 
 ##### Die Mode
 
-```
+```yaml
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -214,7 +214,7 @@ spec:
 
 ### Run Vastai jobs
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
