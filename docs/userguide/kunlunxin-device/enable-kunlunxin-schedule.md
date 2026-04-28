@@ -15,13 +15,13 @@ Kubernetes schedules the pods onto appropriate nodes with the goal of minimizing
 and maximizing performance. The `xpu-device` then performs fine-grained allocation
 of the requested resources on the selected node, following these rules:
 
-1. Only 1, 2, 4, or 8-card allocations are allowed.  
-2. Allocations of 1, 2, or 4 XPUs must not span across NUMA nodes.  
+1. Only 1, 2, 4, or 8-card allocations are allowed.
+2. Allocations of 1, 2, or 4 XPUs must not span across NUMA nodes.
 3. Fragmentation should be minimized after allocation.
 
 ## Important Notes
 
-1. Device sharing is **not** supported at this time.  
+1. Device sharing is **not** supported at this time.
 2. These features have been tested on Kunlunxin P800 hardware.
 
 ## Prerequisites
@@ -33,7 +33,7 @@ of the requested resources on the selected node, following these rules:
 ## Enabling Topology-Aware Scheduling
 
 * Deploy the Kunlunxin device plugin on P800 nodes.
-  (Please contact your device vendor to obtain the appropriate package and documentation.)  
+  (Please contact your device vendor to obtain the appropriate package and documentation.)
 * Deploy HAMi according to the instructions in `README.md`.
 
 ## Running Kunlunxin Jobs

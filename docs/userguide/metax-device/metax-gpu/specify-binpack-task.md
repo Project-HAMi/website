@@ -6,6 +6,6 @@ To allocate metax device with minimum damage to topology, you need to only assig
 
 ```yaml
 metadata:
-  annotations: 
+  annotations:
     hami.io/node-scheduler-policy: "binpack" # when this parameter is set to binpack, the scheduler will try to minimize the topology loss.
 ```

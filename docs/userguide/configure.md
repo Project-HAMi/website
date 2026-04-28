@@ -17,7 +17,7 @@ You can update these configurations using one of the following methods:
    ```bash
    kubectl edit configmap hami-scheduler-device -n <namespace>
    ```
-  
+
    After making changes, restart the related HAMi components to apply the updated configurations.
 
 2. Modify Helm Chart: Update the corresponding values in the

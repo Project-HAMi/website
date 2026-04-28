@@ -6,6 +6,6 @@ To allocate metax device with best performance, you need to only assign `metax-t
 
 ```yaml
 metadata:
-  annotations: 
+  annotations:
     hami.io/node-scheduler-policy: "spread" # when this parameter is set to spread, the scheduler will try to find the best topology for this task.
 ```

@@ -1,5 +1,5 @@
 ---
-title: Scheduler Policy 
+title: Scheduler Policy
 ---
 
 ## Summary
@@ -90,7 +90,7 @@ GPU spread, use different GPU cards when possible, egs:
 Binpack mainly considers node resource usage. The more full the usage, the higher the score.
 
 ```text
-score: ((request + used) / allocatable) * 10 
+score: ((request + used) / allocatable) * 10
 ```
 
 1. Binpack scoring information for Node 1 is as follows
@@ -112,7 +112,7 @@ So, in `Binpack` policy we can select `Node1`.
 Spread mainly considers node resource usage. The less it is used, the higher the score.
 
 ```text
-score: ((request + used) / allocatable) * 10 
+score: ((request + used) / allocatable) * 10
 ```
 
 1. Spread scoring information for Node 1 is as follows

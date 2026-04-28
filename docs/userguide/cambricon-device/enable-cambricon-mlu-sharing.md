@@ -97,7 +97,7 @@ spec:
    Pods with the `cambricon.com/mlumem` resource specified in an init container will not be scheduled.
 
 2. **Resource constraints only apply to shared mode (`vmlu=1`).**
-  
+
    The `cambricon.com/mlu.smlu.vmemory` and `cambricon.com/mlu.smlu.vcore` resources are only effective
    when `cambricon.com/vmlu` is set to `1`. If `vmlu > 1`, a full MLU device will be allocated
    regardless of `vmemory` and `vcore` values.
