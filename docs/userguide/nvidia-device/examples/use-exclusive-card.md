@@ -1,5 +1,5 @@
 ---
-title: Allocate device core to container
+title: Use Exclusive GPU
 linktitle: Use exclusive GPU
 ---
 
