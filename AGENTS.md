@@ -81,7 +81,7 @@ Builds and deploys the website to the `gh-pages` branch for GitHub Pages hosting
 ### Docusaurus Configuration
 
 - **Config file:** `docusaurus.config.js`
-- **Node version:** 18 (required - see `netlify.toml` and `.github/workflows/pr-test.yml`)
+- **Node version:** 20 (required - see `netlify.toml` and `.github/workflows/pr-test.yml`)
 - **Default locale:** English (`en`)
 - **Supported locales:** English, Chinese (`zh`)
 
@@ -247,7 +247,7 @@ The changelog plugin (`src/plugins/changelog/index.js`) is a customized Docusaur
 - **Production:** Netlify (configured in `netlify.toml`)
 - **Custom domain:** project-hami.io (via `static/CNAME`)
 - **Build command:** `npm run build`
-- **Node version:** 18
+- **Node version:** 20
 
 ## Content Guidelines
 
