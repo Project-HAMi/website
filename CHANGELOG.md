@@ -16,7 +16,7 @@
 
 - Update HAMi-core to fix vllm-related issues: #1381 #1461 by ([@archlitchi](https://github.com/archlitchi)) in [#1478](https://github.com/Project-HAMi/HAMi/pull/1478)
 - Fix: Calculation error for quotas by ([@luohua13](https://github.com/luohua13)) in [#1400](https://github.com/Project-HAMi/HAMi/pull/1400)
-- Fix: vXPU feature may not working properly on P800 node (#1569)
+- Fix: vXPU feature may not work properly on P800 node (#1569)
 - Fix scheduler allocate incorrect mig instance (#1518)
 
 #### :memo: What's Changed
