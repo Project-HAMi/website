@@ -57,7 +57,7 @@ You need to enable vDCU inside container in order to use it.
 source /opt/hygondriver/env.sh
 ```
 
-check if you have successfully enabled vDCU by using following command
+Check if you have successfully enabled vDCU by using the following command:
 
 ```bash
 hy-smi virtual -show-device-info
