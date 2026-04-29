@@ -29,7 +29,7 @@ helm install hami hami-charts/hami -n kube-system
 
 ## Device Granularity
 
-HAMi divides each AWS Neuron device into 2 units for resource allocation. You could allocate half of neuron device.
+HAMi divides each AWS Neuron device into 2 units for resource allocation. You can allocate half of a neuron device.
 
 ### Neuron Allocation
 
