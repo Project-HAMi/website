@@ -51,7 +51,7 @@ spec:
 
 ## Enable vDCU inside container
 
-You need to enable vDCU inside container in order to use it.
+You need to enable vDCU inside the container to use it.
 
 ```bash
 source /opt/hygondriver/env.sh
