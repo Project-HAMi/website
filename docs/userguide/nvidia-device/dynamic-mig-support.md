@@ -137,7 +137,7 @@ Please note that HAMi will identify and use the first MIG template that matches 
 ## Running MIG jobs
 
 A MIG instance can now be requested by a container in the same way as `hami-core`,
-simply by specifying the `nvidia.com/gpu` and `nvidia.com/gpumem` resource types.
+by specifying the `nvidia.com/gpu` and `nvidia.com/gpumem` resource types.
 
 ```yaml
 apiVersion: v1

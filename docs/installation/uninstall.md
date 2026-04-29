@@ -88,7 +88,7 @@ All commands should return no results if uninstallation was successful.
 
 ## Reinstalling HAMi
 
-If you need to reinstall HAMi after uninstalling, simply follow the [installation guide](./online-installation.md) again. Your cluster will be ready for HAMi deployment without any residual configuration.
+To reinstall HAMi, follow the [installation guide](./online-installation.md).
 
 ## Troubleshooting
 
