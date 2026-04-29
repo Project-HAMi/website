@@ -69,7 +69,7 @@ In summary, while HAMi's own priority serves a different, device-specific purpos
 **Currently Supported**:
 
 - **Volcano**: Can be integrated with Volcano by using the [`volcano-vgpu-device-plugin`](https://github.com/Project-HAMi/volcano-vgpu-device-plugin) under the HAMi project for GPU resource scheduling and management.
-- **Koordinator**: HAMi can also be integrated with Koordinator to provide end-to-end GPU sharing solutions. By deploying HAMi-core on nodes and configuring the appropriate labels and resource requests in Pods, Koordinator can leverage HAMi’s GPU isolation capabilities, allowing multiple Pods to share the same GPU and significantly improve GPU resource utilization.
+- **Koordinator**: HAMi can also be integrated with Koordinator to provide end-to-end GPU sharing solutions. By deploying HAMi-core on nodes and configuring the appropriate labels and resource requests in Pods, Koordinator uses HAMi’s GPU isolation capabilities, allowing multiple Pods to share the same GPU and improve GPU resource utilization.
 
   For detailed configuration and usage instructions, refer to the Koordinator documentation:
   [Device Scheduling - GPU Share With HAMi](https://koordinator.sh/docs/user-manuals/device-scheduling-gpu-share-with-hami/)
