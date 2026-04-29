@@ -66,7 +66,7 @@ An Organization Member must meet the responsibilities and has the requirements o
     * Resolved and closed 3 Issues,
     * Become responsible for a key project management area,
     * Or some equivalent combination or contribution
-  * Must have been contributing for at least 1 months
+  * Must have been contributing for at least 1 month
   * Must be actively contributing to at least one project area
   * Must have two sponsors who are also Organization Members, at least one of whom does not work for the same employer
   * **[Open an issue][membership request] against the HAMi-project/HAMi repo**
