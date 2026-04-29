@@ -61,4 +61,4 @@ Run the following command:
 kubectl get pods -n kube-system
 ```
 
-If you can see both the 'device-plugin' and 'scheduler' running, then HAMi is installed successfully,
+If you can see both the 'device-plugin' and 'scheduler' running, then HAMi is installed successfully.
