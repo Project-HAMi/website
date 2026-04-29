@@ -2,7 +2,7 @@
 title: Allocate device memory
 ---
 
-Allocate a percentage size of device memory by specify resources such as `hygon.com/dcumem`.
+Allocate a percentage size of device memory by specifying resources such as `hygon.com/dcumem`.
 Optional, each unit of `hygon.com/dcumem` equals 1 MiB of device memory.
 
 ```yaml
