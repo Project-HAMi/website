@@ -19,7 +19,7 @@ This is a GPU cluster, having two nodes, the following story takes this cluster 
 
 #### Story 1
 
-node binpack, use one node’s GPU card whenever possible, egs:
+node binpack, use one node’s GPU card whenever possible, e.g.:
 
 - cluster resources:
   - node1: GPU having 4 GPU device
@@ -35,7 +35,7 @@ node binpack, use one node’s GPU card whenever possible, egs:
 
 #### Story 2
 
-node spread, use GPU cards from different nodes as much as possible, egs:
+node spread, use GPU cards from different nodes as much as possible, e.g.:
 
 - cluster resources:
   - node1: GPU having 4 GPU device
@@ -51,7 +51,7 @@ node spread, use GPU cards from different nodes as much as possible, egs:
 
 #### Story 3
 
-GPU binpack, use the same GPU card as much as possible, egs:
+GPU binpack, use the same GPU card as much as possible, e.g.:
 
 - cluster resources:
   - node1: GPU having 4 GPU device, they are GPU1,GPU2,GPU3,GPU4
@@ -66,7 +66,7 @@ GPU binpack, use the same GPU card as much as possible, egs:
 
 #### Story 4
 
-GPU spread, use different GPU cards when possible, egs:
+GPU spread, use different GPU cards when possible, e.g.:
 
 - cluster resources:
   - node1: GPU having 4 GPU device, they are GPU1,GPU2,GPU3,GPU4
