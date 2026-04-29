@@ -17,7 +17,7 @@ HAMi consists of the following components:
 
 HAMi MutatingWebhook checks if this task can be handled by HAMi,
 It scans the resource field of each pod submitted,
-If each resource these pod requires is either 'CPU', 'Memory' or a HAMi-resource,
+If each resource the pod requires is either 'CPU', 'Memory' or a HAMi-resource,
 Then it will set the schedulerName field of this pod to 'HAMi-scheduler'.
 
 ## HAMi scheduler {#hami-scheduler}
