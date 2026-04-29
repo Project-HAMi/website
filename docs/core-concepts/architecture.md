@@ -6,7 +6,7 @@ The overall architecture of HAMi is shown as below:
 
 ![Architecture](/img/docs/common/core-concepts/architect.jpg)
 
-The HAMi consists of the following components:
+HAMi consists of the following components:
 
 - HAMi MutatingWebhook
 - HAMi scheduler-extender
