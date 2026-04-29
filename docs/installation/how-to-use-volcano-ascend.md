@@ -5,7 +5,7 @@ title: User Guide for Ascend Devices in Volcano
 
 ## Introduction
 
- Volcano supports vNPU feature for both Ascend 310 and Ascend 910 using the `ascend-device-plugin`. It also supports managing heterogeneous Ascend cluster(Cluster with multiple Ascend types, i.e., 910A, 910B2, 910B3, 310p)
+ Volcano supports vNPU feature for both Ascend 310 and Ascend 910 using the `ascend-device-plugin`. It also supports managing heterogeneous Ascend cluster (Cluster with multiple Ascend types, i.e., 910A, 910B2, 910B3, 310P)
 
 **Use case**:
 
