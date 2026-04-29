@@ -8,7 +8,7 @@ AWS Neuron devices are specialized hardware accelerators designed by AWS to opti
 
 HAMi now integrates with [my-scheduler](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/containers/kubernetes-getting-started.html#deploy-neuron-scheduler-extension), providing the following capabilities:
 
-* **Neuron sharing**: HAMi now supports sharing on aws.amazon.com/neuron by allocating device cores(aws.amazon.com/neuroncore), each Neuron core equals to 1/2 neuron device.
+* **Neuron sharing**: HAMi now supports sharing on aws.amazon.com/neuron by allocating device cores(aws.amazon.com/neuroncore), each Neuron core equals 1/2 of a neuron device.
 
 * **Topology awareness**: When allocating multiple aws-neuron devices in a container, HAMi will make sure these devices are connected with one another, so as to minimize the communication cost between neuron devices. For details about how these devices are connected, refer to [Container Device Allocation On Different Instance Types](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/containers/kubernetes-getting-started.html#container-device-allocation-on-different-instance-types).
 
@@ -35,7 +35,7 @@ HAMi divides each AWS Neuron device into 2 units for resource allocation. You co
 
 * Each unit of `aws.amazon.com/neuroncore` represents 1/2 of neuron device
 * Don't assign `aws.amazon.com/neuron` like other devices, only assigning `aws.amazon.com/neuroncore` is enough
-* When the number of `aws.amazon.com/neuroncore`>=2, it equals to setting `aws.amazon.com/neuron=1/2 * neuronCoreNumber`
+* When the number of `aws.amazon.com/neuroncore`>=2, it is equivalent to setting `aws.amazon.com/neuron=1/2 * neuronCoreNumber`
 * The topology awareness scheduling is automatically enabled when tasks require multiple neuron devices.
 
 ## Running Neuron jobs
