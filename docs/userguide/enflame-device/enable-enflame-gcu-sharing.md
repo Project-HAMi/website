@@ -5,7 +5,7 @@ title: Enable Enflame GPU Sharing
 
 ## Introduction
 
-**We now support sharing on enflame.com/gcu(i.e., S60) by implementing most device-sharing features as nvidia-GPU**, including:
+**HAMi now supports sharing on enflame.com/gcu(i.e., S60) by implementing most device-sharing features as nvidia-GPU**, including:
 
 ***GCU sharing***: Each task can allocate a portion of GCU instead of a whole GCU card, thus GCU can be shared among multiple tasks.
 

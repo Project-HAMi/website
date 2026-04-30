@@ -4,7 +4,7 @@ title: Enable Hygon DCU sharing
 
 ## Introduction
 
-**We now support hygon.com/dcu by implementing most device-sharing features as nvidia-GPU**, including:
+**HAMi now supports hygon.com/dcu by implementing most device-sharing features as nvidia-GPU**, including:
 
 ***DCU sharing***: Each task can allocate a portion of DCU instead of a whole DCU card, thus DCU can be shared among multiple tasks.
 
