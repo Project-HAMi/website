@@ -87,7 +87,7 @@ The push refers to repository [docker.io/projecthami/hami]
 
 ## Make HAMi-Core
 
-HAMi-Core is recommended to be built in a nvidia/cuda image:
+Build HAMi-Core inside a nvidia/cuda image:
 
 ```bash
 git clone https://github.com/Project-HAMi/HAMi-core.git
