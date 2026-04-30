@@ -105,7 +105,7 @@ Node1 score: ((1+3)/4) * 10= 10
 Node2 score: ((1+2)/4) * 10= 7.5
 ```
 
-So, in `Binpack` policy we can select `Node1`.
+In `Binpack` policy, `Node1` is selected.
 
 #### Spread
 
@@ -127,7 +127,7 @@ Node1 score: ((1+3)/4) * 10= 10
 Node2 score: ((1+2)/4) * 10= 7.5
 ```
 
-So, in `Spread` policy we can select `Node2`.
+In `Spread` policy, `Node2` is selected.
 
 ### GPU-scheduler-policy
 
@@ -153,7 +153,7 @@ GPU1 Score: ((20+10)/100 + (1000+2000)/8000)) * 10 = 6.75
 GPU2 Score: ((20+70)/100 + (1000+6000)/8000)) * 10 = 17.75
 ```
 
-So, in `Binpack` policy we can select `GPU2`.
+In `Binpack` policy, `GPU2` is selected.
 
 #### Spread
 
@@ -175,4 +175,4 @@ GPU1 Score: ((20+10)/100 + (1000+2000)/8000)) * 10 = 6.75
 GPU2 Score: ((20+70)/100 + (1000+6000)/8000)) * 10 = 17.75
 ```
 
-So, in `Spread` policy we can select `GPU1`.
+In `Spread` policy, `GPU1` is selected.
