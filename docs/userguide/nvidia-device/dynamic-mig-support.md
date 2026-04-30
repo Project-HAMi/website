@@ -131,7 +131,7 @@ nvidia:
 :::note
 Helm installations and updates will follow the configuration specified in this file, overriding the default Helm settings.
 
-Please note that HAMi will identify and use the first MIG template that matches the job, in the order defined in this configMap.
+HAMi uses the first MIG template that matches the job, in the order defined in this configMap.
 :::
 
 ## Running MIG jobs
