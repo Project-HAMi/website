@@ -53,7 +53,7 @@ HAMi currently remains based on Device Plugin, but the official team has launche
 
 ## HAMi Virtual GPU Scheduling Principles
 
-HAMi leverages three Kubernetes extension mechanisms simultaneously (MutatingWebhook, Scheduler Extender, and Device Plugin), each with its own responsibility:
+HAMi uses three Kubernetes extension mechanisms simultaneously (MutatingWebhook, Scheduler Extender, and Device Plugin), each with its own responsibility:
 
 - **Fine-grained resource declaration**: Users can declare `nvidia.com/gpumem` (VRAM in MiB) and `nvidia.com/gpucores` (compute %)
 - **Resource-aware scheduling**: The Scheduler-Extender reads GPU specifications from Node Annotations, performing Filter and Bind based on remaining VRAM/compute capacity
