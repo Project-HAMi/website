@@ -40,7 +40,7 @@ kubectl get all -n kube-system -l app=hami -o yaml > hami-state-backup.yaml
 
 ### 3. Clear Running Workloads
 
-⚠️ **CRITICAL:** Before upgrading, stop or reschedule all GPU workloads. Upgrading with running tasks can cause segmentation faults and unpredictable behavior.
+**CRITICAL:** Before upgrading, stop or reschedule all GPU workloads. Upgrading with running tasks can cause segmentation faults and unpredictable behavior.
 
 **Gracefully drain GPU workloads:**
 
