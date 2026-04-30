@@ -36,7 +36,7 @@ change as the community grows, such as by adopting an elected steering committee
 Time zones permitting, Maintainers are expected to participate in the public
 developer meeting. Details can be found in this [Google Docs](https://docs.google.com/document/d/1YC6hco03_oXbF9IOUPJ29VWEddmITIKIfSmBX8JtGBw/edit) document.
 
-Maintainers will also have closed meetings in order to discuss security reports
+Maintainers will also have closed meetings to discuss security reports
 or Code of Conduct violations. Such meetings should be scheduled by any
 Maintainer on receipt of a security issue or CoC report. All current Maintainers
 must be invited to such closed meetings, except for any Maintainer who is
