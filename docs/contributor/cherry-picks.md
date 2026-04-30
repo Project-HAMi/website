@@ -116,6 +116,6 @@ cherry pick.
 
 ## Cherry Picks for Unsupported Releases
 
-The community supports & patches releases need to be discussed.
+Community support and patches for these releases need to be discussed.
 
 [cherry-pick-script]: https://github.com/Project-HAMi/HAMi/blob/master/hack/cherry_pick_pull.sh
