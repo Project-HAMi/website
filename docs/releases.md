@@ -75,5 +75,4 @@ Major features follow the HAMi Design Proposal process. You can refer to
 During the start of a release, there may be many issues assigned to the release milestone.
 The priorities for the release are discussed in the bi-weekly community meetings.
 As the release progresses several issues may be moved to the next milestone.
-Hence, if an issue is important it is important to advocate its priority early in the release cycle.
-
+If an issue is a priority, advocate for it early in the release cycle.
