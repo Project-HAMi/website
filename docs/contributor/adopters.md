@@ -1,3 +1,7 @@
+---
+title: HAMi Adopters
+---
+
 # HAMi Adopters
 
 So you and your organisation are using HAMi? That's great. We would love to hear from you! 💖
