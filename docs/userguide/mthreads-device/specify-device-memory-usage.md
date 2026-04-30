@@ -4,7 +4,7 @@ linktitle: Allocate device memory
 ---
 
 Allocate a percentage size of device memory by specify resources such as `mthreads.com/sgpu-memory`.
-Optional, Each unit of `mthreads.com/sgpu-memory` equals to 512M of device memory.
+Optional, each unit of `mthreads.com/sgpu-memory` equals 512 MiB of device memory.
 
 ```yaml
       resources:
