@@ -55,7 +55,7 @@ kubectl -n <namespace> edit cm hami-device-plugin
 * `filterdevices`: Devices that are not registered to HAMi.
   * `uuid`: UUIDs of devices to ignore
   * `index`: Indexes of devices to ignore.
-  * A device is ignored by HAMi if it's in `uuid` or `index` list.
+  * A device is ignored by HAMi if it is in the `uuid` or `index` list.
 
 ## Chart Configs: arguments
 
