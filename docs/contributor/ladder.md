@@ -35,7 +35,7 @@ Description: A Contributor contributes directly to the project and adds value to
   * Report and sometimes resolve issues
   * Occasionally submit PRs
   * Contribute to the documentation
-  * Show up at meetings, takes notes
+  * Show up at meetings, take notes
   * Answer questions from other community members
   * Submit feedback on issues and PRs
   * Test releases and patches and submit reviews
