@@ -3,7 +3,7 @@ title: Allocate device core to container
 linktitle: Allocate device core usage
 ---
 
-Allocate a percentage of device core resources by specify resource `nvidia.com/gpucores`.
+Allocate a percentage of device core resources by specifying resource `nvidia.com/gpucores`.
 Optional, each unit of `nvidia.com/gpucores` equals 1% of device cores.
 
 ```yaml
