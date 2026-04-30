@@ -10,7 +10,7 @@ title: Enable Hygon DCU sharing
 
 ***Device Memory Control***: DCUs can be allocated with a specific device memory size on certain types (e.g., Z100), with hard limits enforced to prevent exceeding the allocation.
 
-***Device compute core limitation***: DCUs can be allocated with certain percentage of device core(i.e., hygon.com/dcucores:60 indicates this container uses 60% compute cores of this device)
+***Device compute core limitation***: DCUs can be allocated with certain percentage of device core (i.e., hygon.com/dcucores:60 indicates this container uses 60% compute cores of this device)
 
 ***DCU Type Specification***: You can specify which type of DCU to use or to avoid for a certain task, by setting "hygon.com/use-dcutype" or "hygon.com/nouse-dcutype" annotations.
 

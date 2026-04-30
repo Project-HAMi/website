@@ -118,7 +118,7 @@ Look for annotations containing device information in the node status.
 
 ## Notes
 
-1. GCUshare takes effect only for containers that apply for one GCU(i.e., enflame.com/vgcu=1 ).
+1. GCUshare takes effect only for containers that apply for one GCU (i.e., enflame.com/vgcu=1 ).
 
 2. Multiple GCU allocation in one container is not supported yet
 
