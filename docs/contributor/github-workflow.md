@@ -25,15 +25,15 @@ Define a local working directory:
 # If your GOPATH has multiple paths, pick
 # just one and use it instead of $GOPATH here.
 # You must follow exactly this pattern,
-# neither `$GOPATH/src/github.com/${your GitHub profile name/`
+# neither `$GOPATH/src/github.com/${your github profile name/`
 # nor any other pattern will work.
 export working_dir="$(go env GOPATH)/src/github.com/Project-HAMi"
 ```
 
-Set `user` to match your GitHub profile name:
+Set `user` to match your github profile name:
 
 ```sh
-export user={your GitHub profile name}
+export user={your github profile name}
 ```
 
 Both `$working_dir` and `$user` are mentioned in the figure above.
