@@ -149,7 +149,7 @@ The Procedure of a vGPU task which uses dynamic-mig is shown below:
 
 <img src="https://github.com/Project-HAMi/HAMi/blob/master/docs/develop/imgs/hami-dynamic-mig-procedure.png?raw=true" width="800" alt="HAMi dynamic MIG procedure flowchart showing task scheduling process" />
 
-Note that after submitted a task, deviceshare plugin will iterate over templates defined in configMap `hami-scheduler-device`, and find the first available template to fit. You can always change the content of that configMap, and restart vc-scheduler to customize.
+After submitting a task, the deviceshare plugin iterates over templates defined in configMap `hami-scheduler-device` and finds the first available template to fit. You can always change the content of that configMap, and restart vc-scheduler to customize.
 
 If you submit the example on an empty A100-PCIE-40GB node, then it will select a GPU and choose MIG template below:
 
