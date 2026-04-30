@@ -23,7 +23,7 @@ the GPU device plugin (gpu-device) handles fine-grained allocation based on the 
 
    ![Metax spread scheduling policy diagram showing resource allocation](/img/docs/common/userguide/metax-device/metax-gpu/metax-spread.jpg)
 
-3. When using `node-scheduler-policy=binpack`, assign GPU resources so as to minimize the damage to MetaXLink topology, as shown below:
+3. When using `node-scheduler-policy=binpack`, assign GPU resources to minimize the damage to MetaXLink topology, as shown below:
 
    ![Metax binpack scheduling policy diagram showing topology-aware allocation](/img/docs/common/userguide/metax-device/metax-gpu/metax-binpack.jpg)
 
