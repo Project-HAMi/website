@@ -8,9 +8,9 @@ title: Enable Iluvatar GPU Sharing
 
 ***GPU sharing***: Each task can allocate a portion of GPU instead of a whole GPU card, thus GPU can be shared among multiple tasks.
 
-***Device Memory Control***: GPUs can be allocated with certain device memory size and have made it that it does not exceed the boundary.
+***Device Memory Control***: GPUs can be allocated with a specific device memory size, with hard limits enforced to prevent exceeding the allocation.
 
-***Device Core Control***: GPUs can be allocated with limited compute cores and have made it that it does not exceed the boundary.
+***Device Core Control***: GPUs can be allocated with limited compute cores, with hard limits enforced to prevent exceeding the allocation.
 
 ***Device UUID Selection***: You can specify which GPU devices to use or exclude using annotations.
 
