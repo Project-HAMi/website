@@ -112,7 +112,7 @@ Expected: Both `hami-scheduler` and `vgpu-device-plugin` pods should be in the `
 
 ## Step 3: Launch and Verify a vGPU Task
 
-Let's prove HAMi is enforcing fractional resource limits (vGPU).
+This step verifies HAMi is enforcing fractional resource limits (vGPU).
 
 ### 1. Submit a vGPU demo task
 
