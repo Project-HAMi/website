@@ -4,12 +4,11 @@ title: Scheduler Policy
 
 ## Summary
 
-Current in a cluster with many GPU nodes, nodes are not `binpack` or `spread` when making scheduling decisions, nor are GPU cards `binpack` or `spread` when using vGPU.
+Currently in a cluster with many GPU nodes, nodes are not `binpack` or `spread` when making scheduling decisions, nor are GPU cards `binpack` or `spread` when using vGPU.
 
 ## Proposal
 
-We add a `node-scheduler-policy` and `gpu-scheduler-policy` to config, then scheduler to use this policy can impl node `binpack` or `spread` or GPU `binpack` or `spread`. and
-use can set Pod annotation to change this default policy, use `hami.io/node-scheduler-policy` and `hami.io/gpu-scheduler-policy` to overlay scheduler config.
+We add a `node-scheduler-policy` and `gpu-scheduler-policy` to config, then the scheduler can use this policy to implement node `binpack` or `spread` or GPU `binpack` or `spread`. Users can also set Pod annotation to change this default policy, use `hami.io/node-scheduler-policy` and `hami.io/gpu-scheduler-policy` to overlay scheduler config.
 
 ### User Stories
 
