@@ -59,7 +59,7 @@ To request shared MLU resources in a container, use the following resource types
 * `cambricon.com/mlu.smlu.vmemory`
 * `cambricon.com/mlu.smlu.vcore`
 
-Here is an YAML example:
+Here is a YAML example:
 
 ```yaml
 apiVersion: apps/v1
