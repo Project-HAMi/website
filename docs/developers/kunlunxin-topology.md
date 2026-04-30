@@ -43,7 +43,7 @@ The table below shows examples of XPU occupation and proper MTF values:
 | 00000001       | 3   | A 4-XPU, 2-XPU, and 1-XPU task can fill it       |
 | 00010001       | 4   | Two 2-XPU tasks and two 1-XPU tasks can fill it  |
 
-The node score is derived from the **delta(MTF)** — the change in MTF value after allocation.
+The node score is derived from the **delta(MTF)** - the change in MTF value after allocation.
 A smaller delta(MTF) indicates a better fit and results in a higher score.
 The scoring logic is shown below:
 

@@ -174,7 +174,7 @@ nodeGPUMigInstance{deviceidx="1",deviceuuid="GPU-30f90f49-43ab-0a78-bf5c-93ed41e
 
 :::note
 
-1. No action is required on MIG nodes — everything is managed by `mig-parted` in `hami-device-plugin`.
+1. No action is required on MIG nodes - everything is managed by `mig-parted` in `hami-device-plugin`.
 2. NVIDIA devices older than the Ampere architecture do not support MIG mode.
 3. MIG resources (e.g., `nvidia.com/mig-1g.10gb`) won’t be visible on the node.
    HAMi uses a unified resource name for both MIG and hami-core nodes.
