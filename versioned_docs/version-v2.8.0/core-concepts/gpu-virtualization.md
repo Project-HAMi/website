@@ -5,11 +5,11 @@ linktitle: GPU Virtualization
 
 In AI inference scenarios, a common dilemma is that GPUs are expensive, but mostly idle.
 
-A typical inference service often only uses 20%~40% of the GPU's compute and a small amount of VRAM, leaving the rest idle. Kubernetes' default GPU scheduling model is exclusive: `nvidia.com/gpu: 1` means the entire card is yours, and all other Pods must wait. Want to share a single GPU across multiple inference services? The standard Device Plugin can't do it, because it can only report device counts (integers) to the scheduler — there is no concept of "VRAM quota."
+A typical inference service often only uses 20%~40% of the GPU's compute and a small amount of VRAM, leaving the rest idle. Kubernetes' default GPU scheduling model is exclusive: `nvidia.com/gpu: 1` means the entire card is yours, and all other Pods must wait. Want to share a single GPU across multiple inference services? The standard Device Plugin can't do it, because it can only report device counts (integers) to the scheduler - there is no concept of "VRAM quota."
 
-This led to various GPU sharing solutions. NVIDIA's official Time-Slicing allows multiple Pods to be scheduled concurrently, but provides no VRAM isolation — a Pod OOM can crash all tasks on the card. MIG hardware partitioning offers true isolation, but only datacenter-grade cards like A100 and H100 support it.
+This led to various GPU sharing solutions. NVIDIA's official Time-Slicing allows multiple Pods to be scheduled concurrently, but provides no VRAM isolation - a Pod OOM can crash all tasks on the card. MIG hardware partitioning offers true isolation, but only datacenter-grade cards like A100 and H100 support it.
 
-HAMi takes a different approach: **no driver changes, no application changes** — it achieves GPU virtualization at the software layer through CUDA API interception. Multiple Pods share the same physical GPU, and each Pod can only "see" the VRAM it requested. Over-allocation directly returns OOM. HAMi is a CNCF Sandbox project, formerly known as `k8s-vGPU-scheduler`.
+HAMi takes a different approach: **no driver changes, no application changes** - it achieves GPU virtualization at the software layer through CUDA API interception. Multiple Pods share the same physical GPU, and each Pod can only "see" the VRAM it requested. Over-allocation directly returns OOM. HAMi is a CNCF Sandbox project, formerly known as `k8s-vGPU-scheduler`.
 
 This article starts with the fundamentals of Kubernetes GPU scheduling, explains the limitations of the default model, and then dives into HAMi's architecture and implementation to show how it works around these constraints.
 
@@ -172,7 +172,7 @@ After the container starts, libvgpu.so hijacks NVIDIA dynamic library symbol res
 **VRAM Limit:**
 
 - Intercepts `nvmlDeviceGetMemoryInfo` / `nvmlDeviceGetMemoryInfo_v2`: Makes `nvidia-smi` only display the quota value set by `CUDA_DEVICE_MEMORY_LIMIT_<index>`, rather than the total physical VRAM
-- Intercepts VRAM allocation functions such as `cuMemAlloc_v2` / `cuMemAllocManaged` / `cuMemAllocHost_v2`: Performs OOM check before allocation — if the Pod's current VRAM usage + current request > `CUDA_DEVICE_MEMORY_LIMIT_<index>`, it directly returns `CUDA_ERROR_OUT_OF_MEMORY`, preventing over-allocation
+- Intercepts VRAM allocation functions such as `cuMemAlloc_v2` / `cuMemAllocManaged` / `cuMemAllocHost_v2`: Performs OOM check before allocation - if the Pod's current VRAM usage + current request > `CUDA_DEVICE_MEMORY_LIMIT_<index>`, it directly returns `CUDA_ERROR_OUT_OF_MEMORY`, preventing over-allocation
 
 **Core Limit:**
 
@@ -214,7 +214,7 @@ Node 1 Score = (3/4 + 240/400 + 20480/32768) × 10 = 19.75
 Node 2 Score = (2/4 + 120/400 + 8192/32768)  × 10 = 10.50
 ```
 
-**Binpack** selects the higher-scoring node, prioritizing filling up more heavily loaded nodes and leaving empty nodes with complete resources — suitable for scenarios where you want to free up an entire machine for training tasks. Both Pods would be scheduled to Node 1. **Spread** selects the lower-scoring node, dispersing tasks — suitable for online inference horizontal scaling. Pod 1 would be scheduled to Node 2, Pod 2 to Node 1.
+**Binpack** selects the higher-scoring node, prioritizing filling up more heavily loaded nodes and leaving empty nodes with complete resources - suitable for scenarios where you want to free up an entire machine for training tasks. Both Pods would be scheduled to Node 1. **Spread** selects the lower-scoring node, dispersing tasks - suitable for online inference horizontal scaling. Pod 1 would be scheduled to Node 2, Pod 2 to Node 1.
 
 #### GPU Card Scheduling Strategy
 
@@ -231,7 +231,7 @@ GPU1 Score = ((1+2)/10 + (20+10)/100 + (1000+2000)/8000) × 10 = 9.75
 GPU2 Score = ((1+6)/10 + (20+70)/100 + (1000+6000)/8000) × 10 = 24.75
 ```
 
-**Binpack** selects the higher-scoring card (GPU2), packing multiple Pods onto the same already-loaded card, leaving GPU1 free for exclusive tasks. **Spread** selects the lower-scoring card (GPU1), reducing per-card contention pressure — suitable for latency-sensitive inference services.
+**Binpack** selects the higher-scoring card (GPU2), packing multiple Pods onto the same already-loaded card, leaving GPU1 free for exclusive tasks. **Spread** selects the lower-scoring card (GPU1), reducing per-card contention pressure - suitable for latency-sensitive inference services.
 
 The two dimensions are orthogonal. Common combinations:
 
