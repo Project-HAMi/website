@@ -173,7 +173,7 @@ So, in `Spread` policy we can select `GPU1`.
 
 ##### Nvidia Topology-aware (Nvidia GPU Only)  
 
-Nvidia Topology-aware primarily focuses on the topological relationships between each GPU (queried using the `nvidia-smi topo -m` command). The hami-device-plugin calculates scores between GPUs based on these relationships—the higher the bandwidth between GPUs, the higher the score. For example:  
+Nvidia Topology-aware primarily focuses on the topological relationships between each GPU (queried using the `nvidia-smi topo -m` command). The hami-device-plugin calculates scores between GPUs based on these relationships - the higher the bandwidth between GPUs, the higher the score. For example:  
 
 ```json  
 [  
@@ -212,7 +212,7 @@ Nvidia Topology-aware primarily focuses on the topological relationships between
 ]  
 ```  
 ###### One GPU
-When a Pod requests only one GPU, the GPU with the worst communication performance with other GPUs is prioritized—the lower the score, the higher the scheduling priority. For example:  
+When a Pod requests only one GPU, the GPU with the worst communication performance with other GPUs is prioritized - the lower the score, the higher the scheduling priority. For example:  
 
 1. The sum of scores for gpu0 with other GPUs is as follows:  
 ```  
@@ -235,7 +235,7 @@ Therefore, when a **Pod requests only one GPU**, we randomly select either **gpu
 
 ###### More than one GPU
 
-When a Pod requests multiple GPUs (more than one), the combination with the highest score is prioritized—the higher the score, the higher the scheduling priority.  
+When a Pod requests multiple GPUs (more than one), the combination with the highest score is prioritized - the higher the score, the higher the scheduling priority.  
 
 For example: If a Pod requests 3 GPUs, take **gpu0, gpu1, gpu2** as an example. The score is calculated as:  
 `totalScore = score(gpu0, gpu1) + score(gpu0, gpu2) + score(gpu1, gpu2)`  
