@@ -1,5 +1,5 @@
 ---
-title: "HAMi v2.8.0 Release: Full DRA Support and High Availability Scheduling—Towards Standardized GPU Resource Management"
+title: "HAMi v2.8.0 Release: Full DRA Support and High Availability Scheduling - Towards Standardized GPU Resource Management"
 date: "2026-01-20"
 description: "HAMi v2.8.0 is now officially released. This milestone release delivers architectural completeness, enhanced scheduling reliability, and ecosystem alignment, featuring DRA support, Leader election mechanism, CDI mode support, and more."
 tags: ["Release", "GPU", "Kubernetes", "DRA"]
