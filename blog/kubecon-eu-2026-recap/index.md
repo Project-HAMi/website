@@ -47,7 +47,7 @@ This discussion was particularly representative, as it didn't stay at the level 
 
 > **When LLM serving, GPU resource management, and Kubernetes begin converging in real production environments, what new abstractions does the infrastructure layer need?**
 
-During the exchange, the direction HAMi is pushing drew noticeable attention. There is a growing realization that GPUs can no longer be treated as simple devices — they are becoming an infrastructure resource layer that can be scheduled, shared, and governed.
+During the exchange, the direction HAMi is pushing drew noticeable attention. There is a growing realization that GPUs can no longer be treated as simple devices - they are becoming an infrastructure resource layer that can be scheduled, shared, and governed.
 
 This is also why the collaboration between HAMi and projects like vLLM is becoming increasingly natural. At this event, both sides began exploring joint content collaboration and technical exchange, indicating that the AI Infra ecosystem is accelerating from "standalone projects" to "composable collaboration."
 
@@ -59,9 +59,9 @@ Additionally, HAMi is currently applying for CNCF Incubation and participated in
 
 ## Two Technical Sessions: From Community Problems to Engineering Solutions
 
-### Xiao Zhang: K8s Issue #52757 — Sharing GPUs Among Multiple Containers
+### Xiao Zhang: K8s Issue #52757 - Sharing GPUs Among Multiple Containers
 
-This issue ([#52757](https://github.com/kubernetes/kubernetes/issues/52757)) is not new — it's a long-standing "unsolved problem" in the Kubernetes community.
+This issue ([#52757](https://github.com/kubernetes/kubernetes/issues/52757)) is not new - it's a long-standing "unsolved problem" in the Kubernetes community.
 
 With the explosion of AI workloads, this problem has been amplified:
 
@@ -90,9 +90,9 @@ HAMi Maintainer Mengxuan Li's talk focused on HAMi's core architecture and capab
 
 ![Mengxuan Li presenting HAMi at KubeCon](/img/kubecon-eu-2026-recap/limengxuan-hami-talk.png)
 
-This wasn't just a project feature introduction — it was answering a more practical question:
+This wasn't just a project feature introduction - it was answering a more practical question:
 
-> **Before Kubernetes natively solves the GPU sharing problem, how can enterprises actually run AI workloads — stably and efficiently?**
+> **Before Kubernetes natively solves the GPU sharing problem, how can enterprises actually run AI workloads - stably and efficiently?**
 
 ## Project Pavilion: Face-to-Face Global Community Exchange
 
@@ -108,7 +108,7 @@ Over the course of the event, the booth became a hub for intensive exchanges. Vi
 - Cloud providers and GPU ecosystem professionals
 - Community members interested in AI infra, heterogeneous compute, and Kubernetes GPU scheduling
 
-We also connected with more community contributors on-site, including contributors from India — Rudraksh Karpe and Shivay Lamba.
+We also connected with more community contributors on-site, including contributors from India - Rudraksh Karpe and Shivay Lamba.
 
 ![Indian contributors Rudraksh Karpe (center) and Shivay Lamba (right)](/img/kubecon-eu-2026-recap/indian-contributors.png)
 
@@ -116,7 +116,7 @@ In the Poster Session, community contributors created a diagram illustrating "Ku
 
 ![Kubernetes as the Universal GPU Control Plane](/img/kubecon-eu-2026-recap/k8s-gpu-control-plane.jpg)
 
-The value of these exchanges goes beyond "increasing visibility" — it helps validate something:
+The value of these exchanges goes beyond "increasing visibility" - it helps validate something:
 
 > **GPU scheduling, resource sharing, and heterogeneous compute management have become a real global demand, not a niche problem for any single market.**
 
@@ -164,7 +164,7 @@ Following the main KubeCon conference, the co-located AI Native Summit was also 
 
 Compared to the main KubeCon, the AI Native Summit's discussions focused more directly on one question: **AI workload operational efficiency is becoming the new infrastructure bottleneck.**
 
-In this context, GPU virtualization and scheduling are no longer internal Kubernetes optimizations — they are key factors directly impacting model serving costs, response times, and system throughput.
+In this context, GPU virtualization and scheduling are no longer internal Kubernetes optimizations - they are key factors directly impacting model serving costs, response times, and system throughput.
 
 Reza Jelveh presented "HAMi: Heterogeneous GPU Virtualization and Scheduling for AI-Native Infrastructure on Kubernetes."
 
@@ -174,7 +174,7 @@ Reza also participated in a panel discussion titled "AI Native Technology."
 
 ![Reza participating in the AI Native Technology panel discussion](/img/kubecon-eu-2026-recap/reza-panel-discussion.png)
 
-The AI Native Summit brought together technical experts from cloud native, AI infrastructure, and the telecom industry for in-depth discussions on the evolution of AI-native architectures. The conference focused on how infrastructure can evolve from traditional service-oriented, request-response patterns to a new generation of platforms designed for inference, conversation, and autonomous decision-making — covering key topics such as AI gateways, inference scheduling, multi-model routing, and multi-tenant isolation.
+The AI Native Summit brought together technical experts from cloud native, AI infrastructure, and the telecom industry for in-depth discussions on the evolution of AI-native architectures. The conference focused on how infrastructure can evolve from traditional service-oriented, request-response patterns to a new generation of platforms designed for inference, conversation, and autonomous decision-making - covering key topics such as AI gateways, inference scheduling, multi-model routing, and multi-tenant isolation.
 
 ## A Notable Detail: HAMi Enters the Broader Cloud Native Context
 
@@ -182,7 +182,7 @@ Beyond the live demo and talks, there was another important external signal from
 
 ![HAMi highlighted as a Cloud Native Landscape expansion project during Keynote](/img/kubecon-eu-2026-recap/landscape-mention.jpg)
 
-This indicates that HAMi's significance extends beyond "a project doing GPU scheduling" — it's being viewed as a representative of next-generation infrastructure problems within the broader cloud native evolution.
+This indicates that HAMi's significance extends beyond "a project doing GPU scheduling" - it's being viewed as a representative of next-generation infrastructure problems within the broader cloud native evolution.
 
 The cloud native community is realizing:
 
@@ -217,9 +217,9 @@ HAMi is no longer just "a project that does GPU sharing." It's gradually forming
 
 ## Conclusion
 
-KubeCon EU 2026 has reinforced our conviction: **cloud native won't be replaced by AI — it will be redefined by AI.**
+KubeCon EU 2026 has reinforced our conviction: **cloud native won't be replaced by AI - it will be redefined by AI.**
 
-From booth exchanges to technical sessions to the main stage demo, HAMi's presence at this conference was more than just an event appearance — it was a signal:
+From booth exchanges to technical sessions to the main stage demo, HAMi's presence at this conference was more than just an event appearance - it was a signal:
 
 > **Cloud native infrastructure around GPUs, inference, and heterogeneous compute is entering a new phase.**
 
