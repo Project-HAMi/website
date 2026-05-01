@@ -7,13 +7,13 @@ title: Enable Enflame GPU Sharing
 
 **HAMi now supports sharing on enflame.com/gcu(i.e., S60) by implementing most device-sharing features as nvidia-GPU**, including:
 
-***GCU sharing***: Each task can allocate a portion of GCU instead of a whole GCU card, thus GCU can be shared among multiple tasks.
+**GCU sharing**: Each task can allocate a portion of GCU instead of a whole GCU card, thus GCU can be shared among multiple tasks.
 
-***Device Memory and Core Control***: GCUs can be allocated with certain percentage of device memory and core, we make sure that it does not exceed the boundary.
+**Device Memory and Core Control**: GCUs can be allocated with a certain percentage of device memory and core, with hard limits enforced to prevent exceeding the allocation.
 
-***Device UUID Selection***: You can specify which GCU devices to use or exclude using annotations.
+**Device UUID Selection**: You can specify which GCU devices to use or exclude using annotations.
 
-***Very Easy to use***: You don't need to modify your task yaml to use our scheduler. All your GPU jobs will be automatically supported after installation.
+**No task YAML changes required**: All GCU jobs are automatically supported after installation.
 
 ## Prerequisites
 
