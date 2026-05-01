@@ -47,7 +47,7 @@ Please see [Contributor Workflow](#contributor-workflow) below for the workflow.
 
 #### Work on an issue
 
-When you are willing to take on an issue, just reply on the issue. The maintainer will assign it to you.
+When you are willing to take on an issue, reply on the issue. The maintainer will assign it to you.
 
 ### File an Issue
 
@@ -71,7 +71,7 @@ This is a rough outline of what a contributor's workflow looks like:
 
 ## Creating Pull Requests
 
-Pull requests are often called simply "PR".
+Pull requests are often called "PR".
 HAMi generally follows the standard [github pull request](https://help.github.com/articles/about-pull-requests/) process.
 To submit a proposed change, please develop the code/fix and add new test cases.
 After that, run these local verifications before submitting a pull request to predict the pass or
