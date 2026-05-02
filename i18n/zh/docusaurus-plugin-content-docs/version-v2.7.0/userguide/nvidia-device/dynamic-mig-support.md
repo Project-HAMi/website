@@ -7,15 +7,15 @@ translated: true
 
 **我们现在支持通过使用 mig-parted 动态调整 mig-devices 来支持 dynamic-mig**，包括：
 
-***动态 MIG 实例管理***：用户无需在 GPU 节点上操作，使用 'nvidia-smi -i 0 -mig 1' 或其他命令来管理 MIG 实例，所有操作将由 HAMi-device-plugin 完成。
+**动态 MIG 实例管理**：用户无需在 GPU 节点上操作，使用 'nvidia-smi -i 0 -mig 1' 或其他命令来管理 MIG 实例，所有操作将由 HAMi-device-plugin 完成。
 
-***动态 MIG 调整***：HAMi 管理的每个 MIG 设备将根据提交的任务在必要时动态调整其 MIG 模板。
+**动态 MIG 调整**：HAMi 管理的每个 MIG 设备将根据提交的任务在必要时动态调整其 MIG 模板。
 
-***设备 MIG 观察***：HAMi 生成的每个 MIG 实例将在调度器监视器中显示，包括任务信息。用户可以清晰地查看 MIG 节点的概况。
+**设备 MIG 观察**：HAMi 生成的每个 MIG 实例将在调度器监视器中显示，包括任务信息。用户可以清晰地查看 MIG 节点的概况。
 
-***兼容 HAMi-core 节点***：HAMi 可以管理 `HAMi-core 节点` 和 `mig 节点` 的统一 GPU 池。如果没有通过 `nvidia.com/vgpu-mode` 注释手动指定，任务可以被调度到任一节点。
+**兼容 HAMi-core 节点**：HAMi 可以管理 `HAMi-core 节点` 和 `mig 节点` 的统一 GPU 池。如果没有通过 `nvidia.com/vgpu-mode` 注释手动指定，任务可以被调度到任一节点。
 
-***与 HAMi-core 统一的 API***：无需进行任何工作即可使作业与 dynamic-mig 功能兼容。
+**与 HAMi-core 统一的 API**：无需进行任何工作即可使作业与 dynamic-mig 功能兼容。
 
 ## 前提条件
 

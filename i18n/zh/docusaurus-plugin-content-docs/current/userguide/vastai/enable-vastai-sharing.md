@@ -6,9 +6,9 @@ title: 启用 Vastai 设备共享
 
 HAMi 现在支持共享 `vastaitech.com/va`（Vastaitech）设备，并提供以下能力：
 
-- ***支持整卡模式和 Die 模式***：当前仅支持整卡模式（Full-Card mode）和 Die 模式（Die mode）。
-- ***Die 模式拓扑感知***：在 Die 模式下申请多个资源时，调度器会尽量将它们分配到同一块 AIC 上。
-- ***设备 UUID 选择***：可以通过注解指定或排除某些特定设备。
+- **支持整卡模式和 Die 模式**：当前仅支持整卡模式（Full-Card mode）和 Die 模式（Die mode）。
+- **Die 模式拓扑感知**：在 Die 模式下申请多个资源时，调度器会尽量将它们分配到同一块 AIC 上。
+- **设备 UUID 选择**：可以通过注解指定或排除某些特定设备。
 
 ## 使用 Vastai 设备
 

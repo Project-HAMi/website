@@ -6,11 +6,11 @@ title: Enable Mthreads GPU sharing
 
 **We now support mthreads.com/vgpu by implementing most device-sharing features as nvidia-GPU**, including:
 
-***GPU sharing***: Each task can allocate a portion of GPU instead of a whole GPU card, thus GPU can be shared among multiple tasks.
+**GPU sharing**: Each task can allocate a portion of GPU instead of a whole GPU card, thus GPU can be shared among multiple tasks.
 
-***Device Memory Control***: GPUs can be allocated with certain device memory size on certain type(i.e MTT S4000) and have made it that it does not exceed the boundary.
+**Device Memory Control**: GPUs can be allocated with certain device memory size on certain type(i.e MTT S4000) and have made it that it does not exceed the boundary.
 
-***Device Core Control***: GPUs can be allocated with limited compute cores on certain type(i.e MTT S4000) and have made it that it does not exceed the boundary.
+**Device Core Control**: GPUs can be allocated with limited compute cores on certain type(i.e MTT S4000) and have made it that it does not exceed the boundary.
 
 ## Important Notes
 
