@@ -6,11 +6,11 @@ title: Enable Mthreads GPU sharing
 
 **HAMi now supports mthreads.com/vgpu by implementing most device-sharing features as nvidia-GPU**, including:
 
-***GPU sharing***: Each task can allocate a portion of GPU instead of a whole GPU card, thus GPU can be shared among multiple tasks.
+**GPU sharing**: Each task can allocate a portion of GPU instead of a whole GPU card, thus GPU can be shared among multiple tasks.
 
-***Device Memory Control***: GPUs can be allocated with a specific device memory size on certain types (e.g., MTT S4000), with hard limits enforced to prevent exceeding the allocation.
+**Device Memory Control**: GPUs can be allocated with a specific device memory size on certain types (e.g., MTT S4000), with hard limits enforced to prevent exceeding the allocation.
 
-***Device Core Control***: GPUs can be allocated with limited compute cores on certain types (e.g., MTT S4000), with hard limits enforced to prevent exceeding the allocation.
+**Device Core Control**: GPUs can be allocated with limited compute cores on certain types (e.g., MTT S4000), with hard limits enforced to prevent exceeding the allocation.
 
 ## Important Notes
 

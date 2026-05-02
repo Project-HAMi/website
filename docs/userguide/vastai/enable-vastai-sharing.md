@@ -6,11 +6,11 @@ title: Enable Vastai Sharing
 
 HAMi now supports sharing `vastaitech.com/va` (Vastaitech) devices and provide the following capabilities:
 
-***Supports both Full-Card mode and Die mode***: Only Full-Card mode and Die mode are supported currently.
+**Supports both Full-Card mode and Die mode**: Only Full-Card mode and Die mode are supported currently.
 
-***die-mode topology awareness***: When multiple resources are requested in die mode, the scheduler will try to allocate them on the same AIC whenever possible.
+**Die-mode topology awareness**: When multiple resources are requested in die mode, the scheduler will try to allocate them on the same AIC whenever possible.
 
-***Device UUID selection***: You can specify or exclude particular devices through annotations.
+**Device UUID selection**: You can specify or exclude particular devices through annotations.
 
 ## Using Vastai Devices
 
