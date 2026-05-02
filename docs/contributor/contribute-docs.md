@@ -77,7 +77,7 @@ Contributors mainly contribute documentation to the current version.
 
 It's important for your article to specify metadata concerning an article at the top of the Markdown file, in a section called **Front Matter**.
 
-For now, let's take a look at a quick example which should explain the most relevant entries in **Front Matter**:
+Here is a quick example covering the most relevant **Front Matter** entries:
 
 ```yaml
 ---
