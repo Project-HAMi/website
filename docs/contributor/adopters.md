@@ -4,13 +4,13 @@ title: HAMi Adopters
 
 # HAMi Adopters
 
-So you and your organisation are using HAMi? That's great. We would love to hear from you! 💖
+So you and your organisation are using HAMi? That's great. Reach out and let the community know.
 
 ## Adding yourself
 
 [See the list of HAMi adopters](https://github.com/Project-HAMi/website/blob/master/src/pages/adopters.mdx) for organisations who have adopted the HAMi project in production.
 
-You just need to add an entry for your company and upon merging it will automatically be added to our website.
+Add an entry for your company and upon merging it will automatically be added to the website.
 
 To add your organisation follow these steps:
 
@@ -29,4 +29,4 @@ To add your organisation follow these steps:
 6. Push the commit with `git push origin main`.
 7. Open a Pull Request to [Project-HAMi/website](https://github.com/Project-HAMi/website) and a preview build will turn up.
 
-Thanks a lot for being part of our community - we very much appreciate it!
+Thanks for being part of the community!
