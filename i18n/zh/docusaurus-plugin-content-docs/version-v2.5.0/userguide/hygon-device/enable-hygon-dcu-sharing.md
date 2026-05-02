@@ -7,13 +7,13 @@ translated: true
 
 **我们现在通过实现大多数设备共享功能支持 hygon.com/dcu，就像 nvidia-GPU 一样**，包括：
 
-***DCU 共享***：每个任务可以分配一部分 DCU，而不是整个 DCU 卡，因此 DCU 可以在多个任务之间共享。
+**DCU 共享**：每个任务可以分配一部分 DCU，而不是整个 DCU 卡，因此 DCU 可以在多个任务之间共享。
 
-***设备显存控制***：DCU 可以分配特定类型（如 Z100）的设备显存大小，并确保不超过边界。
+**设备显存控制**：DCU 可以分配特定类型（如 Z100）的设备显存大小，并确保不超过边界。
 
-***设备计算核心限制***：DCU 可以分配一定百分比的设备核心（如 hygon.com/dcucores:60 表示此容器使用该设备的 60% 计算核心）。
+**设备计算核心限制**：DCU 可以分配一定百分比的设备核心（如 hygon.com/dcucores:60 表示此容器使用该设备的 60% 计算核心）。
 
-***DCU 类型规范***：你可以通过设置 "hygon.com/use-dcutype" 或 "hygon.com/nouse-dcutype" 注释来指定某个任务使用或避免使用哪种类型的 DCU。
+**DCU 类型规范**：你可以通过设置 "hygon.com/use-dcutype" 或 "hygon.com/nouse-dcutype" 注释来指定某个任务使用或避免使用哪种类型的 DCU。
 
 ## 先决条件
 
