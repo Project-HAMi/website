@@ -13,7 +13,7 @@ title: 启用燧原 GPU 共享
 
 ***设备 UUID 选择***: 你可以通过注解指定使用或排除特定的 GCU 设备
 
-***方便易用***:  部署本组件后，只需要部署厂家提供的 gcushare-device-plugin 即可使用
+**部署说明**:  部署本组件后，只需要部署厂家提供的 gcushare-device-plugin 即可使用
 
 ## 节点需求
 
