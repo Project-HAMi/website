@@ -20,15 +20,15 @@ HAMi is a community project driven by its community which strives to promote a h
 
 ## Your First Contribution
 
-We will help you to contribute in different areas like filing issues, developing features, fixing critical bugs and
-getting your work reviewed and merged.
+Help is available for contributing in different areas: filing issues, developing features, fixing critical bugs and
+getting work reviewed and merged.
 
 If you have questions about the development process,
 feel free to [file an issue](https://github.com/Project-HAMi/HAMi/issues/new/choose).
 
 ## Find something to work on
 
-We are always in need of help, be it fixing documentation, reporting bugs or writing some code.
+The project always needs help, be it fixing documentation, reporting bugs or writing code.
 Look at places where you feel best coding practices aren't followed, code refactoring is needed or tests are missing.
 Here is how you get started.
 
@@ -40,7 +40,7 @@ For example, [Project-HAMi/HAMi](https://github.com/Project-HAMi/HAMi) has
 [help wanted](https://github.com/Project-HAMi/HAMi/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22) and
 [good first issue](https://github.com/Project-HAMi/HAMi/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22)
 labels for issues that should not need deep knowledge of the system.
-We can help new contributors who wish to work on such issues.
+New contributors working on such issues can reach out for help.
 
 Another good way to contribute is to find a documentation improvement, such as a missing/broken link.
 Please see [Contributor Workflow](#contributor-workflow) below for the workflow.
@@ -51,7 +51,7 @@ When you are willing to take on an issue, just reply on the issue. The maintaine
 
 ### File an Issue
 
-While we encourage everyone to contribute code, it is also appreciated when someone reports an issue.
+Code contributions are welcome, but reporting an issue is equally appreciated.
 Issues should be filed under the appropriate HAMi sub-repository.
 
 *Example:* a HAMi issue should be opened to [Project-HAMi/HAMi](https://github.com/Project-HAMi/HAMi/issues).

@@ -6,7 +6,7 @@ This document describes different ways to get involved and level up within the p
 
 ## Overview
 
-Hello! We are excited that you want to learn more about our project contributor ladder! This contributor ladder outlines the different contributor roles within the project, along with the responsibilities and privileges that come with them. Community members generally start at the first levels of the "ladder" and advance up it as their involvement in the project grows. Our project members are happy to help you advance along the contributor ladder.
+This contributor ladder outlines the different contributor roles within the project, along with the responsibilities and privileges that come with them. Community members generally start at the first levels of the "ladder" and advance up it as their involvement in the project grows. Project members are happy to help you advance along the contributor ladder.
 
 Each of the contributor roles below is organized into lists of three types of things. "Responsibilities" are things that a contributor is expected to do. "Requirements" are qualifications a person needs to meet to be in that role, and "Privileges" are things contributors on that level are entitled to.
 
@@ -46,7 +46,7 @@ Description: A Contributor contributes directly to the project and adds value to
   * Invitations to contributor events
   * Eligible to become an Organization Member
 
-A very special thanks to the [long list of people](https://github.com/Project-HAMi/HAMi/blob/master/AUTHORS.md) who have contributed to and helped maintain the project. We wouldn't be where we are today without your contributions. Thank you! 💖
+A very special thanks to the [long list of people](https://github.com/Project-HAMi/HAMi/blob/master/AUTHORS.md) who have contributed to and helped maintain the project. The project wouldn't be where it is today without your contributions. Thank you!
 
 As long as you contribute to HAMi, your name will be added to the [AUTHORS.md file](https://github.com/Project-HAMi/HAMi/blob/master/AUTHORS.md). If you don't find your name, please contact us to add it.
 
@@ -141,7 +141,7 @@ The current list of maintainers can be found in the [MAINTAINERS](https://github
 
 New maintainers are added by consensus among the current group of maintainers. This can be done via a private discussion via Slack or email. A majority of maintainers should support the addition of the new person, and no single maintainer should object to adding the new maintainer.
 
-When adding a new maintainer, we should file a PR to [HAMi](https://github.com/Project-HAMi/HAMi) and update [MAINTAINERS](https://github.com/Project-HAMi/HAMi/blob/master/MAINTAINERS.md). Once this PR is merged, you will become a maintainer of HAMi.
+When adding a new maintainer, file a PR to [HAMi](https://github.com/Project-HAMi/HAMi) and update [MAINTAINERS](https://github.com/Project-HAMi/HAMi/blob/master/MAINTAINERS.md). Once this PR is merged, the new person becomes a maintainer of HAMi.
 
 ### Removing Maintainers
 

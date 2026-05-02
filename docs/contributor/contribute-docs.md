@@ -13,21 +13,21 @@ the `Project-HAMi/website` repository.
 - Docs need to be translated into multiple languages for readers from different regions.
   The community now supports both Chinese and English.
   English is the official language of documentation.
-- For our docs we use markdown. If you are unfamiliar with Markdown,
+- Docs are written in Markdown. If you are unfamiliar with Markdown,
   please see [https://guides.github.com/features/mastering-markdown/](https://guides.github.com/features/mastering-markdown/) or
   [https://www.markdownguide.org/](https://www.markdownguide.org/) if you are looking for something more substantial.
-- We get some additions through [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
+- The site uses [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
 
 ## Setup
 
-You can set up your local environment by cloning our website repository.
+Set up your local environment by cloning the website repository.
 
 ```shell
 git clone https://github.com/Project-HAMi/website.git
 cd website
 ```
 
-Our website is organized like below:
+The website is organized like this:
 
 ```text
 website
@@ -106,7 +106,7 @@ You can easily route to other places by adding any of the following links:
   You can use relative paths to index the corresponding files.
 - Link to pictures or other resources.
 If your article contains images, prefer storing them in `/static/img/docs/` and linking
-  with absolute paths. We use language-aware folders:
+  with absolute paths. Language-aware folders:
   - `/static/img/docs/common/` for shared images
   - `/static/img/docs/en/` for English-only images
   - `/static/img/docs/zh/` for Chinese-only images
@@ -125,8 +125,8 @@ Creating a sidebar is useful to:
 - Display a sidebar on each of those documents
 - Provide paginated navigation, with next/previous button
 
-For our docs, you can know how our documents are organized from
-[https://github.com/Project-HAMi/website/blob/main/sidebars.js](https://github.com/Project-HAMi/website/blob/main/sidebars.js).
+The document organization is defined in
+[sidebars.js](https://github.com/Project-HAMi/website/blob/main/sidebars.js).
 
 ```js
 module.exports = {
@@ -175,8 +175,8 @@ If you're not sure where your docs are located, you can ask community members in
 
 There are two situations about the Chinese version of the document:
 
-- You want to translate our existing English docs to Chinese. In this case,
-  you need to modify the corresponding file content from
+- You want to translate existing English docs to Chinese. In this case,
+  modify the corresponding file in
   [https://github.com/Project-HAMi/website/tree/main/i18n/zh/docusaurus-plugin-content-docs/current](https://github.com/Project-HAMi/website/tree/main/i18n/zh/docusaurus-plugin-content-docs/current).
   The organization of this directory is exactly the same as the outer layer.
   `current.json` holds translations for the documentation directory.
