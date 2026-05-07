@@ -140,7 +140,7 @@ The current list of maintainers can be found in the [MAINTAINERS](https://github
 
 New maintainers are added by consensus among the current group of maintainers. This can be done via a private discussion via Slack or email. A majority of maintainers should support the addition of the new person, and no single maintainer should object to adding the new maintainer.
 
-When adding a new maintainer, we should file a PR to [HAMi](https://github.com/Project-HAMi/HAMi) and update [MAINTAINERS](https://github.com/Project-HAMi/HAMi/blob/master/MAINTAINERS.md). Once this PR is merged, you will become a maintainer of HAMi.
+When adding a new maintainer, file a PR to [HAMi](https://github.com/Project-HAMi/HAMi) and update [MAINTAINERS](https://github.com/Project-HAMi/HAMi/blob/master/MAINTAINERS.md). Once this PR is merged, you will become a maintainer of HAMi.
 
 ### Removing Maintainers
 

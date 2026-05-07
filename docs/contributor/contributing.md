@@ -6,7 +6,7 @@ Welcome to HAMi!
 
 ## Code of Conduct
 
-Please make sure to read and observe our [Code of Conduct](https://github.com/cncf/foundation/blob/main/code-of-conduct.md)
+Please make sure to read and observe the [Code of Conduct](https://github.com/cncf/foundation/blob/main/code-of-conduct.md)
 
 ## Community Expectations
 
