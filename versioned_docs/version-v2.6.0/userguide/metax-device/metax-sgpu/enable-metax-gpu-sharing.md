@@ -7,11 +7,11 @@ translated: true
 
 HAMi now supports metax.com/gpu with most device-sharing features available for nvidia-GPU. Supported features:
 
-***GPU sharing***: Each task can allocate a portion of GPU instead of a whole GPU card, thus GPU can be shared among multiple tasks.
+**GPU sharing**: Each task can allocate a portion of GPU instead of a whole GPU card, thus GPU can be shared among multiple tasks.
 
-***Device Memory Control***: GPUs can be allocated with certain device memory size and have made it that it does not exceed the boundary.
+**Device Memory Control**: GPUs can be allocated with certain device memory size and have made it that it does not exceed the boundary.
 
-***Device compute core limitation***: GPUs can be allocated with certain percentage of device core(60 indicate this container uses 60% compute cores of this device)
+**Device compute core limitation**: GPUs can be allocated with certain percentage of device core(60 indicate this container uses 60% compute cores of this device)
 
 ### Prerequisites
 

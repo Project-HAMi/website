@@ -6,15 +6,15 @@ title: Enable Iluvatar GCU sharing
 
 **We now support iluvatar.ai/gpu(i.e MR-V100、BI-V150、BI-V100) by implementing most device-sharing features as nvidia-GPU**, including:
 
-***GPU sharing***: Each task can allocate a portion of GPU instead of a whole GPU card, thus GPU can be shared among multiple tasks.
+**GPU sharing**: Each task can allocate a portion of GPU instead of a whole GPU card, thus GPU can be shared among multiple tasks.
 
-***Device Memory Control***: GPUs can be allocated with certain device memory size and have made it that it does not exceed the boundary.
+**Device Memory Control**: GPUs can be allocated with certain device memory size and have made it that it does not exceed the boundary.
 
-***Device Core Control***: GPUs can be allocated with limited compute cores and have made it that it does not exceed the boundary.
+**Device Core Control**: GPUs can be allocated with limited compute cores and have made it that it does not exceed the boundary.
 
-***Device UUID Selection***: You can specify which GPU devices to use or exclude using annotations.
+**Device UUID Selection**: You can specify which GPU devices to use or exclude using annotations.
 
-***Very Easy to use***: You don't need to modify your task yaml to use the HAMi scheduler. All your GPU jobs will be automatically supported after installation.
+**Very Easy to use**: You don't need to modify your task yaml to use the HAMi scheduler. All your GPU jobs will be automatically supported after installation.
 
 ## Prerequisites
 

@@ -6,13 +6,13 @@ title: Enable cambricon MLU sharing
 
 **We now support cambricon.com/mlu by implementing most device-sharing features as nvidia-GPU**, including:
 
-***MLU sharing***: Each task can allocate a portion of MLU instead of a whole MLU card, thus MLU can be shared among multiple tasks.
+**MLU sharing**: Each task can allocate a portion of MLU instead of a whole MLU card, thus MLU can be shared among multiple tasks.
 
-***Device Memory Control***: MLUs can be allocated with certain device memory size and guarantee it that it does not exceed the boundary.
+**Device Memory Control**: MLUs can be allocated with certain device memory size and guarantee it that it does not exceed the boundary.
 
-***Device Core Control***: MLUs can be allocated with certain compute cores and guarantee it that it does not exceed the boundary.
+**Device Core Control**: MLUs can be allocated with certain compute cores and guarantee it that it does not exceed the boundary.
 
-***MLU Type Specification***: You can specify which type of MLU to use or to avoid for a certain task, by setting "cambricon.com/use-mlutype" or "cambricon.com/nouse-mlutype" annotations. 
+**MLU Type Specification**: You can specify which type of MLU to use or to avoid for a certain task, by setting "cambricon.com/use-mlutype" or "cambricon.com/nouse-mlutype" annotations. 
 
 
 ## Prerequisites
