@@ -23,4 +23,4 @@ It contains the following metrics:
 | QuotaUsed | resourcequota usage for a certain device | `{quotaName="nvidia.com/gpucores", quotanamespace="default",limit="200",zone="vGPU"}` 100 |
 | vGPUPodsDeviceAllocated | vGPU Allocated from pods (This metric will be deprecated in v2.8.0, use vGPUMemoryAllocated and vGPUCoreAllocated instead.)| `{containeridx="Ascend310P",deviceusedcore="0",deviceuuid="aio-node74-arm-Ascend310P-0",nodename="aio-node74-arm",podname="ascend310p-pod",podnamespace="default",zone="vGPU"}` 3.221225472e+09 |
 
-> **Note** Please note that, this is the overview about device allocation, it is NOT device real-time usage metrics. For that part, see real-time device usage.
+> **Note** This is the overview about device allocation, it is NOT device real-time usage metrics. For that part, see real-time device usage.

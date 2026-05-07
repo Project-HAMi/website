@@ -40,7 +40,7 @@ kubectl get all -n kube-system -l app=hami -o yaml > hami-state-backup.yaml
 
 ### 3. 清理运行中的工作负载
 
-⚠️ **关键提醒：** 升级前必须停止或重新调度所有 GPU 工作负载。在存在运行任务的情况下升级，可能导致段错误（segmentation fault）或不可预测行为。
+**关键提醒：** 升级前必须停止或重新调度所有 GPU 工作负载。在存在运行任务的情况下升级，可能导致段错误（segmentation fault）或不可预测行为。
 
 **优雅清理 GPU 工作负载：**
 

@@ -6,7 +6,7 @@ title:  Karmada Roadmap
 
 This document defines a high level roadmap for Karmada development and upcoming releases.
 Community and contributor involvement is vital for successfully implementing all desired items for each release.
-We hope that the items listed below will inspire further engagement from the community to keep karmada progressing and shipping exciting and valuable features.
+The items below are intended to inspire further community engagement to keep HAMi progressing and shipping exciting and valuable features.
 
 
 ## 2022 H1

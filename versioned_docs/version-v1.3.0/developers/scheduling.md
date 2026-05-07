@@ -8,7 +8,7 @@ Current in a cluster with many GPU nodes, nodes are not `binpack` or `spread` wh
 
 ## Proposal
 
-We add a `node-scheduler-policy` and `gpu-scheduler-policy` to config, then scheduler to use this policy can impl node `binpack` or `spread` or GPU `binpack` or `spread`. and
+The scheduler adds a `node-scheduler-policy` and `gpu-scheduler-policy` to config, then scheduler to use this policy can impl node `binpack` or `spread` or GPU `binpack` or `spread`. and
 use can set Pod annotation to change this default policy, use `hami.io/node-scheduler-policy` and `hami.io/gpu-scheduler-policy` to overlay scheduler config.
 
 ### User Stories
@@ -104,7 +104,7 @@ Node1 score: ((1+3)/4) * 10= 10
 Node2 score: ((1+2)/4) * 10= 7.5
 ```
 
-So, in `Binpack` policy we can select `Node1`.
+So, in `Binpack` policy, the selected node is `Node1`.
 
 #### Spread
 
@@ -124,7 +124,7 @@ Node1 score: ((1+3)/4) * 10= 10
 Node2 score: ((1+2)/4) * 10= 7.5
 ```
 
-So, in `Spread` policy we can select `Node2`.
+So, in `Spread` policy, the selected node is `Node2`.
 
 ### GPU-scheduler-policy
 
@@ -147,7 +147,7 @@ GPU1 Score: ((20+10)/100 + (1000+2000)/8000)) * 10 = 6.75
 GPU2 Score: ((20+70)/100 + (1000+6000)/8000)) * 10 = 17.75
 ```
 
-So, in `Binpack` policy we can select `GPU2`.
+So, in `Binpack` policy, the selected node is `GPU2`.
 
 #### Spread
 
@@ -166,4 +166,4 @@ GPU1 Score: ((20+10)/100 + (1000+2000)/8000)) * 10 = 6.75
 GPU2 Score: ((20+70)/100 + (1000+6000)/8000)) * 10 = 17.75
 ```
 
-So, in `Spread` policy we can select `GPU1`.
+So, in `Spread` policy, the selected node is `GPU1`.

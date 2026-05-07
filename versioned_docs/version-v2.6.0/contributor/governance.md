@@ -19,7 +19,7 @@ The HAMi and its leadership embrace the following values:
   priority over shipping code or sponsors' organizational goals. Each
   contributor participates in the project as an individual.
 
-* Inclusivity: We innovate through different perspectives and skill sets, which
+* Inclusivity: Innovation comes from different perspectives and skill sets, and this
   can only be accomplished in a welcoming and respectful environment.
 
 * Participation: Responsibilities within the project are earned through

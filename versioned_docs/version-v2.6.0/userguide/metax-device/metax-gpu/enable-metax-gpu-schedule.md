@@ -4,7 +4,7 @@ title: Enable Metax GPU topology-aware scheduling
 
 ## Introduction
 
-**we now support metax.com/gpu by implementing topo-awareness among metax GPUs**
+**HAMi now supports metax.com/gpu with topo-awareness among metax GPUs**
 
 When multiple GPUs are configured on a single server, the GPU cards are connected to the same PCIe Switch or MetaXLink depending on whether they are connected
 , there is a near-far relationship. This forms a topology among all the cards on the server, as shown in the following figure:
