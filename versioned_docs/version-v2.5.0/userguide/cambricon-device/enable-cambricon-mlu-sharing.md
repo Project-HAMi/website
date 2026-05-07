@@ -4,7 +4,7 @@ title: Enable cambricon MLU sharing
 
 ## Introduction
 
-**We now support cambricon.com/mlu by implementing most device-sharing features as nvidia-GPU**, including:
+**HAMi now supports cambricon.com/mlu by implementing most device-sharing features as nvidia-GPU**, including:
 
 ***MLU sharing***: Each task can allocate a portion of MLU instead of a whole MLU card, thus MLU can be shared among multiple tasks.
 

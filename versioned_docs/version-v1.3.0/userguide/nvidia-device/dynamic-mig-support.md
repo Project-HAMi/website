@@ -4,7 +4,7 @@ title: Enable dynamic-mig feature
 
 ## Introduction
 
-**We now support dynamic-mig by using mig-parted to adjust mig-devices dynamically**, including:
+**HAMi now supports dynamic-mig by using mig-parted to adjust mig-devices dynamically**, including:
 
 ***Dynamic MIG instance management***: User don't need to operate on GPU node, using 'nvidia-smi -i 0 -mig 1' or other command to manage MIG instance, all will be done by HAMi-device-plugin.
 

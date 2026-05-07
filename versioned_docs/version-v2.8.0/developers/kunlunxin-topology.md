@@ -30,7 +30,7 @@ The selection process is shown below:
 ## Score
 
 In the scoring phase, all filtered nodes are evaluated and scored to select the optimal one
-for scheduling. We introduce a metric called **MTF** (Minimized Tasks to Fill),
+for scheduling. The metric used is called **MTF** (Minimized Tasks to Fill),
 which quantifies how well a node can accommodate future tasks after allocation.
 
 The table below shows examples of XPU occupation and proper MTF values:

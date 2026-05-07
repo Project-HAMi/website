@@ -25,9 +25,8 @@ It's worth noting that not all controllers are needed by Karmada, for the recomm
 ## Can I install Karmada in a Kubernetes cluster and reuse the kube-apiserver as Karmada apiserver?
 
 The quick answer is `yes`. In that case, you can save the effort to deploy
-[karmada-apiserver](https://github.com/karmada-io/karmada/blob/master/artifacts/deploy/karmada-apiserver.yaml) and just
-share the APIServer between Kubernetes and Karmada. In addition, the high availability capabilities in the origin clusters
-can be inherited seamlessly. We do have some users using Karmada in this way.
+[karmada-apiserver](https://github.com/karmada-io/karmada/blob/master/artifacts/deploy/karmada-apiserver.yaml) and share the APIServer between Kubernetes and Karmada. In addition, the high availability capabilities in the origin clusters
+can be inherited. Some users run Karmada this way.
 
 There are some things you should consider before doing so:
 

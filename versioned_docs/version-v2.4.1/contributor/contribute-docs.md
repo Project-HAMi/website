@@ -9,12 +9,12 @@ the `Project-HAMi/website` repository.
 ## Prerequisites
 
 - Docs, like codes, are also categorized and stored by version.
-  1.3 is the first version we have archived.
+  1.3 is the first version is the first archived.
 - Docs need to be translated into multiple languages for readers from different regions.
   The community now supports both Chinese and English.
   English is the official language of documentation.
-- For our docs we use markdown. If you are unfamiliar with Markdown, please see [https://guides.github.com/features/mastering-markdown/](https://guides.github.com/features/mastering-markdown/) or [https://www.markdownguide.org/](https://www.markdownguide.org/) if you are looking for something more substantial.
-- We get some additions through [Docusaurus 2](https://docusaurus.io/), a model static website generator.
+- The docs use markdown. If you are unfamiliar with Markdown, please see [https://guides.github.com/features/mastering-markdown/](https://guides.github.com/features/mastering-markdown/) or [https://www.markdownguide.org/](https://www.markdownguide.org/) if you are looking for something more substantial.
+- The site uses [Docusaurus 2](https://docusaurus.io/), a model static website generator.
 
 ## Setup
 
@@ -85,7 +85,7 @@ title: A doc with tags
 ## secondary title
 ```
 
-The top section between two lines of --- is the Front Matter section. Here we define a couple of entries which tell Docusaurus how to handle the article:
+The top section between two lines of --- is the Front Matter section. These entries tell Docusaurus how to handle the article:
 
 - Title is the equivalent of the `<h1>` in a HTML document or `# <title>` in a Markdown article.
 - Each document has a unique ID. By default, a document ID is the name of the document (without the extension) related to the root docs directory.
@@ -101,7 +101,7 @@ You can easily route to other places by adding any of the following links:
   You can use relative paths to index the corresponding files.
 - Link to pictures or other resources.
 If your article contains images, prefer storing them in `/static/img/docs/` and linking
-  with absolute paths. We use language-aware folders:
+  with absolute paths. Language-aware folders are used:
   - `/static/img/docs/common/` for shared images
   - `/static/img/docs/en/` for English-only images
   - `/static/img/docs/zh/` for Chinese-only images
@@ -187,5 +187,5 @@ If the previewed page is not what you expected, please check your docs again.
 
 ### Versioning
 
-For the newly supplemented documents of each version, we will synchronize to the latest version on the release date of each version, and the documents of the old version will not be modified.
-For errata found in the documentation, we will fix it with every release.
+For the newly supplemented documents of each version, they are synchronized to the latest version on the release date of each version, and the documents of the old version will not be modified.
+For errata found in the documentation, fixes are applied with every release.

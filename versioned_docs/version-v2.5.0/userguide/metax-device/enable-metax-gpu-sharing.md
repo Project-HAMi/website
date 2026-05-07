@@ -4,7 +4,7 @@ title: Enable Metax GPU sharing
 
 ## Introduction
 
-We support metax.com/gpu as follows:
+HAMi supports metax.com/gpu as follows:
 
 - support metax.com/gpu by implementing most device-sharing features as nvidia-GPU
 - support metax.com/gpu by implementing topo-awareness among metax GPUs

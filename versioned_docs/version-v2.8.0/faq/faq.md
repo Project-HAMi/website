@@ -41,7 +41,7 @@ A vGPU is a logical instance of a physical GPU created using virtualization, all
 4. **Design Intent**
    The design of vGPU aims to **allow one GPU to be shared by multiple tasks**, rather than letting one task occupy multiple vGPUs on the same GPU. The purpose of vGPU overcommitment is to improve GPU utilization, not to increase resource allocation for individual tasks.
 
-## HAMi's `nvidia.com/priority` field only supports two levels. How can we implement multi-level, user-defined priority-based scheduling for a queue of jobs, especially when cluster resources are limited?
+## HAMi's `nvidia.com/priority` field only supports two levels. How to implement multi-level, user-defined priority-based scheduling for a queue of jobs, especially when cluster resources are limited?
 
 **TL;DR**
 

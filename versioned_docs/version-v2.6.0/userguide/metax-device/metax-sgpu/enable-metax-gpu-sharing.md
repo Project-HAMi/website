@@ -5,7 +5,7 @@ translated: true
 
 ## Introduction
 
-**we now support metax.com/gpu by implementing most device-sharing features as nvidia-GPU**, device-sharing features include the following:
+**HAMi now supports metax.com/gpu with most device-sharing features as nvidia-GPU**, device-sharing features include the following:
 
 ***GPU sharing***: Each task can allocate a portion of GPU instead of a whole GPU card, thus GPU can be shared among multiple tasks.
 
