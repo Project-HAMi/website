@@ -6,7 +6,7 @@ Welcome to HAMi!
 
 ## Code of Conduct
 
-Please make sure to read and observe our [Code of Conduct](https://github.com/cncf/foundation/blob/main/code-of-conduct.md)
+Please make sure to read and observe the [Code of Conduct](https://github.com/cncf/foundation/blob/main/code-of-conduct.md)
 
 ## Community Expectations
 
@@ -51,7 +51,7 @@ When you are willing to take on an issue, just reply on the issue. The maintaine
 
 ### File an Issue
 
-While we encourage everyone to contribute code, it is also appreciated when someone reports an issue.
+Code contributions are welcome, and bug reports are equally appreciated.
 Issues should be filed under the appropriate HAMi sub-repository.
 
 *Example:* a HAMi issue should be opened to [Project-HAMi/HAMi](https://github.com/Project-HAMi/HAMi/issues).
