@@ -18,7 +18,7 @@ the `Project-HAMi/website` repository.
 
 ## Setup
 
-You can set up your local environment by cloning our website repository.
+You can set up your local environment by cloning the website repository.
 
 ```shell
 git clone https://github.com/Project-HAMi/website.git
@@ -120,7 +120,7 @@ Creating a sidebar is useful to:
 - Display a sidebar on each of those documents
 - Provide paginated navigation, with next/previous button
 
-For our docs, you can know how our documents are organized from [https://github.com/Project-HAMi/website/blob/main/sidebars.js](https://github.com/Project-HAMi/website/blob/main/sidebars.js).
+The document organization can be found from [https://github.com/Project-HAMi/website/blob/main/sidebars.js](https://github.com/Project-HAMi/website/blob/main/sidebars.js).
 
 ```js
 module.exports = {
@@ -168,7 +168,7 @@ If you add a document, you must add it to `sidebars.js` to make it display prope
 
 There are two situations about the Chinese version of the document:
 
-- You want to translate our existing English docs to Chinese. In this case, you need to modify the corresponding file content from [https://github.com/Project-HAMi/website/tree/main/i18n/zh/docusaurus-plugin-content-docs/current](https://github.com/Project-HAMi/website/tree/main/i18n/zh/docusaurus-plugin-content-docs/current).
+- You want to translate the existing English docs to Chinese. In this case, you need to modify the corresponding file content from [https://github.com/Project-HAMi/website/tree/main/i18n/zh/docusaurus-plugin-content-docs/current](https://github.com/Project-HAMi/website/tree/main/i18n/zh/docusaurus-plugin-content-docs/current).
   The organization of this directory is exactly the same as the outer layer. `current.json` holds translations for the documentation directory. You can edit it if you want to translate the name of directory.
 - You want to contribute Chinese docs without English version. Any articles of any kind are welcomed. In this case, you can add articles and titles to the main directory first. Article content can be TBD first, like this.
   Then add the corresponding Chinese content to the Chinese directory.

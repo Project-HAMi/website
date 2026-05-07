@@ -14,7 +14,7 @@ title: Enable Iluvatar GCU sharing
 
 **Device UUID Selection**: You can specify which GPU devices to use or exclude using annotations.
 
-**Very Easy to use**: You don't need to modify your task yaml to use our scheduler. All your GPU jobs will be automatically supported after installation.
+**Very Easy to use**: You don't need to modify your task yaml to use the HAMi scheduler. All your GPU jobs will be automatically supported after installation.
 
 ## Prerequisites
 

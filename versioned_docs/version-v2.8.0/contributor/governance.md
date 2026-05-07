@@ -15,7 +15,7 @@ The HAMi and its leadership embrace the following values:
 * Fairness: All stakeholders have the opportunity to provide feedback and submit
   contributions, which will be considered on their merits.
 
-* Community over Product or Company: Sustaining and growing our community takes
+* Community over Product or Company: Sustaining and growing the community takes
   priority over shipping code or sponsors' organizational goals. Each
   contributor participates in the project as an individual.
 
