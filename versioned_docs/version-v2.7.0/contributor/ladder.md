@@ -6,7 +6,7 @@ This docs different ways to get involved and level up within the project. You ca
 
 ## Contributor Ladder
 
-Hello! We are excited that you want to learn more about our project contributor ladder! This contributor ladder outlines the different contributor roles within the project, along with the responsibilities and privileges that come with them. Community members generally start at the first levels of the "ladder" and advance up it as their involvement in the project grows.  Our project members are happy to help you advance along the contributor ladder.
+This contributor ladder outlines the different contributor roles within the project.
 
 Each of the contributor roles below is organized into lists of three types of things. "Responsibilities" are things that a contributor is expected to do. "Requirements" are qualifications a person needs to meet to be in that role, and "Privileges" are things contributors on that level are entitled to.
 
@@ -128,7 +128,7 @@ The current list of maintainers can be found in the [MAINTAINERS](https://github
 
 ## An active maintainer should
 
-* Actively participate in reviewing pull requests and incoming issues. Note that there are no hard rules on what is “active enough” and this is left up to the judgement of the current group of maintainers.
+* Actively participate in reviewing pull requests and incoming issues. There are no hard rules on what is “active enough” and this is left up to the judgement of the current group of maintainers.
 
 * Actively participate in discussions about design and the future of the project.
 

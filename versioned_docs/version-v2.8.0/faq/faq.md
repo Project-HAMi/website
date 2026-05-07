@@ -41,7 +41,7 @@ A vGPU is a logical instance of a physical GPU created using virtualization, all
 4. **Design Intent**
    The design of vGPU aims to **allow one GPU to be shared by multiple tasks**, rather than letting one task occupy multiple vGPUs on the same GPU. The purpose of vGPU overcommitment is to improve GPU utilization, not to increase resource allocation for individual tasks.
 
-## HAMi's `nvidia.com/priority` field only supports two levels. How can we implement multi-level, user-defined priority-based scheduling for a queue of jobs, especially when cluster resources are limited?
+## HAMi's `nvidia.com/priority` field only supports two levels. How to implement multi-level, user-defined priority-based scheduling for a queue of jobs, especially when cluster resources are limited?
 
 **TL;DR**
 
@@ -62,7 +62,7 @@ However, achieving multi-level priority scheduling **is feasible**. The recommen
     1. HAMi integrates with Volcano via the [volcano-vgpu-device-plugin](https://github.com/Project-HAMi/volcano-vgpu-device-plugin).
     2. It continues to manage the vGPU sharing and its own two-level runtime priority for tasks contending on the *same physical GPU*, as described earlier.
 
-In summary, while HAMi's own priority serves a different, device-specific purpose (runtime preemption on a single card), implementing multi-level job scheduling priority is achievable by using **Volcano in conjunction with HAMi**. Volcano would handle which job from the queue is prioritized for resource allocation based on multiple priority levels, and HAMi would manage the GPU sharing and its specific on-device preemption.
+While HAMi's own priority serves a different, device-specific purpose (runtime preemption on a single card), implementing multi-level job scheduling priority is achievable by using **Volcano in conjunction with HAMi**. Volcano would handle which job from the queue is prioritized for resource allocation based on multiple priority levels, and HAMi would manage the GPU sharing and its specific on-device preemption.
 
 ## Integration with Other Open-Source Tools
 

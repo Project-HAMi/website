@@ -62,7 +62,7 @@ your case by supplementing your PR with e.g.,
 - Key stakeholder reviewers/approvers attesting to their confidence in the
   change being a required backport
 
-It is critical that our full community is actively engaged on enhancements in
+It is critical that the full community is actively engaged on enhancements in
 the project. If a released feature was not enabled on a particular provider's
 platform, this is a community miss that needs to be resolved in the `master`
 branch for subsequent releases. Such enabling will not be backported to the

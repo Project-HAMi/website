@@ -18,7 +18,7 @@ You can update these configurations using one of the following methods:
 2. Modify Helm Chart: Update the corresponding values in the [ConfigMap](https://raw.githubusercontent.com/archlitchi/HAMi/refs/heads/master/charts/hami/templates/scheduler/device-configmap.yaml), then reapply the Helm Chart to regenerate the ConfigMap.
 
 * `nvidia.deviceMemoryScaling:` 
-  Float type, by default: 1. The ratio for NVIDIA device memory scaling, can be greater than 1 (enable virtual device memory, experimental feature). For NVIDIA GPU with *M* memory, if we set `nvidia.deviceMemoryScaling` argument to *S*, vGPUs split by this GPU will totally get `S * M` memory in Kubernetes with our device plugin.
+  Float type, by default: 1. The ratio for NVIDIA device memory scaling, can be greater than 1 (enable virtual device memory, experimental feature). For NVIDIA GPU with *M* memory, if `nvidia.deviceMemoryScaling` is set to *S*, vGPUs split by this GPU will totally get `S * M` memory in Kubernetes with the HAMi device plugin.
 * `nvidia.deviceSplitCount:` 
   Integer type, by default: equals 10. Maximum tasks assigned to a simple GPU device.
 * `nvidia.migstrategy:`
