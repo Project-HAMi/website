@@ -105,7 +105,7 @@ Node1 score: ((1+3)/4) * 10= 10
 Node2 score: ((1+2)/4) * 10= 7.5
 ```
 
-So, in `Binpack` policy we can select `Node1`.
+So, in `Binpack` policy the scheduler selects `Node1`.
 
 #### Spread
 
@@ -125,7 +125,7 @@ Node1 score: ((1+3)/4) * 10= 10
 Node2 score: ((1+2)/4) * 10= 7.5
 ```
 
-So, in `Spread` policy we can select `Node2`.
+So, in `Spread` policy the scheduler selects `Node2`.
 
 ### GPU-scheduler-policy
 
@@ -148,7 +148,7 @@ GPU1 Score: ((20+10)/100 + (1000+2000)/8000)) * 10 = 6.75
 GPU2 Score: ((20+70)/100 + (1000+6000)/8000)) * 10 = 17.75
 ```
 
-So, in `Binpack` policy we can select `GPU2`.
+So, in `Binpack` policy the scheduler selects `GPU2`.
 
 #### Spread
 
@@ -167,7 +167,7 @@ GPU1 Score: ((20+10)/100 + (1000+2000)/8000)) * 10 = 6.75
 GPU2 Score: ((20+70)/100 + (1000+6000)/8000)) * 10 = 17.75
 ```
 
-So, in `Spread` policy we can select `GPU1`.
+So, in `Spread` policy the scheduler selects `GPU1`.
 
 #### Topology-aware  
 
@@ -231,7 +231,7 @@ gpu2 score: 100 + 200 + 200 = 500
 gpu3 score: 200 + 100 + 200 = 500  
 ```  
 
-Therefore, when a **Pod requests only one GPU**, we randomly select either **gpu0** or **gpu1**.  
+Therefore, when a **Pod requests only one GPU**, the scheduler randomly selects either **gpu0** or **gpu1**.  
 
 ###### More than one GPU
 
@@ -253,4 +253,4 @@ For example: If a Pod requests 3 GPUs, take **gpu0, gpu1, gpu2** as an example. 
 (gpu1, gpu2, gpu3) totalScore: 200 + 100 + 200 = 500  
 ```  
 
-Therefore, when a **Pod requests 3 GPUs**, we allocate **gpu1, gpu2, gpu3**.
+Therefore, when a **Pod requests 3 GPUs**, the scheduler allocates **gpu1, gpu2, gpu3**.

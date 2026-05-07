@@ -12,7 +12,7 @@ title: Enable cambricon MLU sharing
 
 **MLU Type Specification**: You can specify which type of MLU to use or to avoid for a certain task, by setting "cambricon.com/use-mlutype" or "cambricon.com/nouse-mlutype" annotations. 
 
-**Very Easy to use**: You don't need to modify your task yaml to use our scheduler. All your MLU jobs will be automatically supported after installation. The only thing you need to do is tag the MLU node.
+**Very Easy to use**: You don't need to modify your task yaml to use the HAMi scheduler. All your MLU jobs will be automatically supported after installation. The only thing you need to do is tag the MLU node.
 
 ## Prerequisites
 

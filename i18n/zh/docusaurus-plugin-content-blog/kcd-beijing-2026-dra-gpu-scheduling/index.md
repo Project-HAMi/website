@@ -69,7 +69,7 @@ HAMi 社区不仅受邀进行了技术分享，也在现场设立了展台，与
   - 多卡组合
   - 拓扑（NUMA / NVLink）
 
-👉 这直接导致：
+这直接导致：
 
 - 调度逻辑外溢（extender / sidecar）
 - 系统复杂度上升
@@ -91,7 +91,7 @@ DRA 的核心优势是：
 
 PPT 里有一页非常关键，很多人会忽略：
 
-### 👉 DRA 请求长这样
+### DRA 请求长这样
 
 ```yaml
 spec:
@@ -119,7 +119,7 @@ resources:
     nvidia.com/gpu: 1
 ```
 
-👉 结论非常明确：
+结论非常明确：
 
 > **DRA 是能力升级，但 UX 明显退化。**
 
@@ -127,7 +127,7 @@ resources:
 
 这是这次分享最有价值的部分之一：
 
-### 👉 Webhook 自动生成 ResourceClaim
+### Webhook 自动生成 ResourceClaim
 
 HAMi 的做法不是让用户"直接用 DRA"，而是：
 
@@ -178,7 +178,7 @@ DRA driver 并不只是"注册资源"，而是完整 lifecycle 管理：
 - 环境变量管理
 - 临时目录（cache / lock）
 
-👉 这意味着：
+这意味着：
 
 > **GPU 调度已经进入 runtime orchestration 层，而不是简单资源分配。**
 
@@ -191,7 +191,7 @@ PPT 中给出了一个很关键的 benchmark：
 - HAMi（传统）：最高 ~42,000
 - HAMi-DRA：显著下降（~30%+ 改善）
 
-👉 这说明：
+这说明：
 
 > **DRA 的资源预绑定机制，可以减少调度阶段冲突和重试**
 
@@ -211,7 +211,7 @@ PPT 中给出了一个很关键的 benchmark：
 - ResourceClaim：资源分配
 - → **资源视角是第一等公民**
 
-👉 这带来的变化：
+这带来的变化：
 
 > **Observability 从"推导"变成"直接建模"**
 
@@ -227,7 +227,7 @@ PPT 提出了一个非常关键的未来方向：
 - PCI bus ID
 - GPU attributes
 
-👉 这其实是一个更大的叙事：
+这其实是一个更大的叙事：
 
 > **DRA 是 heterogeneous compute abstraction 的起点**
 
@@ -249,7 +249,7 @@ PPT 提出了一个非常关键的未来方向：
 
 - 调度逻辑 → 资源声明
 
-👉 本质上：
+本质上：
 
 > **Kubernetes 正在进化为 AI Infra Control Plane**
 

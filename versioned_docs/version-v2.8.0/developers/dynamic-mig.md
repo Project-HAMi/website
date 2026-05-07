@@ -9,8 +9,8 @@ This feature will not be implemented without the help of @sailorvii.
 
 ## Introduction
 
-The NVIDIA GPU build-in sharing method includes: time-slice, MPS and MIG. The context switch for time slice sharing would waste some time, so we chose the MPS and MIG. The GPU MIG profile is variable, the user could acquire the MIG device in the profile definition, but current implementation only defines the dedicated profile before the user requirement. That limits the usage of MIG. We want to develop an automatic slice plugin and create the slice when the user require it.
-For the scheduling method, node-level binpack and spread will be supported. Referring to the binpack plugin, we consider the CPU, Mem, GPU memory and other user-defined resource.
+The NVIDIA GPU build-in sharing method includes: time-slice, MPS and MIG. The context switch for time slice sharing would waste some time, MPS and MIG were chosen. The GPU MIG profile is variable, the user could acquire the MIG device in the profile definition, but current implementation only defines the dedicated profile before the user requirement. That limits the usage of MIG. An automatic slice plugin is planned to create slices on demand.
+For the scheduling method, node-level binpack and spread will be supported. Referring to the binpack plugin, CPU, Mem, GPU memory, and other user-defined resources are considered.
 HAMi is done by using [hami-core](https://github.com/Project-HAMi/HAMi-core), which is a cuda-hacking library. But mig is also widely used across the world. A unified API for dynamic-mig and hami-core is needed.
 
 ## Targets
@@ -149,7 +149,7 @@ The Procedure of a vGPU task which uses dynamic-mig is shown below:
 
 <img src="https://github.com/Project-HAMi/HAMi/blob/master/docs/develop/imgs/hami-dynamic-mig-procedure.png?raw=true" width="800" alt="HAMi dynamic MIG procedure flowchart showing task scheduling process" />
 
-Note that after submitted a task, deviceshare plugin will iterate over templates defined in configMap `hami-scheduler-device`, and find the first available template to fit. You can always change the content of that configMap, and restart vc-scheduler to customize.
+After submitting a task, the deviceshare plugin iterates over templates defined in configMap `hami-scheduler-device`, and find the first available template to fit. You can always change the content of that configMap, and restart vc-scheduler to customize.
 
 If you submit the example on an empty A100-PCIE-40GB node, then it will select a GPU and choose MIG template below:
 
