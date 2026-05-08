@@ -1,282 +1,189 @@
 ---
-title: "GitHub Workflow"
-description: An overview of the GitHub workflow used by the HAMi project. It includes some tips and suggestions on things such as keeping your local environment in sync with upstream and commit hygiene.
+title: GitHub Workflow
+sidebar_label: GitHub Workflow
 ---
 
-> This doc is lifted from [Kubernetes github-workflow](https://github.com/kubernetes/community/blob/master/contributors/guide/github-workflow.md).
+This guide covers the end-to-end Git and GitHub workflow for contributing to HAMi. It applies to both the [HAMi core repository](https://github.com/Project-HAMi/HAMi) and the [documentation website](https://github.com/Project-HAMi/website).
 
 ![Git workflow](/img/docs/common/contributor/github-workflow/git-workflow.png)
 
-## Fork in the cloud
+## Fork and clone
 
-1. Visit [https://github.com/Project-HAMi/HAMi](https://github.com/Project-HAMi/HAMi)
-2. Click `Fork` button (top right) to establish a cloud-based fork.
+Fork the target repository on GitHub, then clone your fork locally:
 
-## Clone fork to local storage
+```bash
+export user="your-github-username"
 
-Per Go's [workspace instructions][go-workspace], place HAMi' code on your
-`GOPATH` using the following cloning procedure.
-
-[go-workspace]: https://golang.org/doc/code.html#Workspaces
-
-Define a local working directory:
-
-```sh
-# If your GOPATH has multiple paths, pick
-# just one and use it instead of $GOPATH here.
-# You must follow exactly this pattern,
-# neither `$GOPATH/src/github.com/${your github profile name/`
-# nor any other pattern will work.
-export working_dir="$(go env GOPATH)/src/github.com/Project-HAMi"
-```
-
-Set `user` to match your github profile name:
-
-```sh
-export user={your github profile name}
-```
-
-Both `$working_dir` and `$user` are mentioned in the figure above.
-
-Create your clone:
-
-```sh
-mkdir -p $working_dir
-cd $working_dir
+# For HAMi core
 git clone https://github.com/$user/HAMi.git
-# or: git clone git@github.com:$user/HAMi.git
-
-cd $working_dir/HAMi
-git remote add upstream https://github.com/Project-HAMi/HAMi
-# or: git remote add upstream git@github.com:Project-HAMi/HAMi.git
-
-# Never push to upstream master
+cd HAMi
+git remote add upstream https://github.com/Project-HAMi/HAMi.git
 git remote set-url --push upstream no_push
 
-# Confirm that your remotes make sense:
+# For the docs website
+git clone https://github.com/$user/website.git
+cd website
+git remote add upstream https://github.com/Project-HAMi/website.git
+git remote set-url --push upstream no_push
+```
+
+Verify your remotes:
+
+```bash
 git remote -v
 ```
 
-## Branch
+Expected output:
 
-Get your local master up to date:
+```
+origin    https://github.com/<your-username>/HAMi.git (fetch)
+origin    https://github.com/<your-username>/HAMi.git (push)
+upstream  https://github.com/Project-HAMi/HAMi.git (fetch)
+upstream  no_push (push)
+```
 
-```sh
-# Depending on which repository you are working from,
-# the default branch may be called 'main' instead of 'master'.
+The `no_push` setting prevents accidental pushes to the upstream repository.
 
-cd $working_dir/HAMi
+## Keep master in sync
+
+Before starting any new work, sync your local master with upstream:
+
+```bash
 git fetch upstream
 git checkout master
 git rebase upstream/master
 ```
 
-Branch from it:
+Use `rebase`, not `merge`. Merge commits clutter the history and make it harder to cherry-pick fixes.
 
-```sh
-git checkout -b myfeature
+## Create a branch
+
+Branch off master with a short, descriptive name:
+
+```bash
+git checkout -b fix/gpu-memory-calculation
+git checkout -b feat/kunlunxin-multi-card
+git checkout -b docs/update-ascend-guide
 ```
 
-Then edit code on the `myfeature` branch.
+Work entirely on this branch. Do not commit directly to master.
 
 ## Keep your branch in sync
 
-```sh
-# Depending on which repository you are working from,
-# the default branch may be called 'main' instead of 'master'.
+If upstream master has moved while you are working:
 
-# While on your myfeature branch
+```bash
 git fetch upstream
 git rebase upstream/master
 ```
 
-Please don't use `git pull` instead of the above `fetch` / `rebase`. `git pull`
-does a merge, which leaves merge commits. These make the commit history messy
-and violate the principle that commits ought to be individually understandable
-and useful (see below). You can also consider changing your `.git/config` file via
-`git config branch.autoSetupRebase always` to change the behavior of `git pull`,
-or another non-merge option such as `git pull --rebase`.
+Resolve any conflicts, then continue:
+
+```bash
+git rebase --continue
+```
 
 ## Commit
 
-Commit your changes.
+HAMi uses [Conventional Commits](https://www.conventionalcommits.org/) and requires a DCO sign-off on every commit.
 
-```sh
-git commit --signoff
+```bash
+git commit -s -m "fix: correct memory calculation for MLU devices"
 ```
 
-Likely you go back and edit/build/test some more then `commit --amend`
-in a few cycles.
+The `-s` flag adds the required `Signed-off-by` line. Without it, CI will block the PR.
+
+See the [contributing guide](contributing.md) for commit type conventions and message rules.
 
 ## Push
 
-When ready to review (or just to establish an offsite backup of your work),
-push your branch to your fork on `github.com`:
+Push your branch to your fork:
 
-```sh
-git push -f ${your_remote_name} myfeature
+```bash
+git push origin fix/gpu-memory-calculation
 ```
 
-## Create a pull request
+If you have rebased after a previous push, use `--force-with-lease` rather than `--force`:
 
-1. Visit your fork at `https://github.com/$user/HAMi`
-2. Click the `Compare & Pull Request` button next to your `myfeature` branch.
+```bash
+git push origin fix/gpu-memory-calculation --force-with-lease
+```
 
-_If you have upstream write access_, please refrain from using the GitHub UI for
-creating PRs, because GitHub will create the PR branch inside the main
-repository rather than inside your fork.
+`--force-with-lease` refuses the push if someone else has pushed to the same branch since your last fetch, preventing accidental overwrites.
 
-### Get a code review
+## Open a pull request
 
-Once your pull request has been opened it will be assigned to one or more
-reviewers. Those reviewers will do a thorough code review, looking for
-correctness, bugs, opportunities for improvement, documentation and comments,
-and style.
+1. Go to your fork on GitHub: `https://github.com/<your-username>/HAMi`
+2. Click **Compare & Pull Request** next to your branch.
+3. Set the base repository to `Project-HAMi/HAMi` and the base branch to `master`.
+4. Fill in the PR description: what the change does, why it is needed, and how it was tested.
+5. Reference any related issue: `Fixes #123` or `Relates to #456`.
 
-Commit changes made in response to review comments to the same branch on your
-fork.
+Keep the PR focused on one logical change. See the [contributing guide](contributing.md) for guidance on PR scope.
 
-Very small PRs are easy to review. Very large PRs are very difficult to review.
+## Squash commits
 
-### Squash commits
+Before a PR is merged, clean up the commit history. Squash fixup commits, review-feedback commits, and typo corrections into the logical commit they belong to. Each remaining commit should represent a meaningful unit of work.
 
-After a review, prepare your PR for merging by squashing your commits.
+To squash interactively:
 
-All commits left on your branch after a review should represent meaningful milestones
-or units of work. Use commits to add clarity to the development and review process.
+```bash
+# Replace 3 with the number of commits to rebase
+git rebase -i HEAD~3
+```
 
-Before merging a PR, squash the following kinds of commits:
+The editor opens with a list of commits:
 
-- Fixes/review feedback
-- Typos
-- Merges and rebases
-- Work in progress
+```
+pick abc1234 fix: correct memory calculation for MLU devices
+pick def5678 address review feedback
+pick ghi9012 fix typo
+```
 
-Aim to have every commit in a PR compile and pass tests independently if you can,
-but it's not a requirement. In particular, `merge` commits must be removed, as they will not pass tests.
+Change `pick` to `squash` (or `s`) for commits to fold into the one above:
 
-To squash your commits, perform an [interactive
-rebase](https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History):
+```
+pick abc1234 fix: correct memory calculation for MLU devices
+squash def5678 address review feedback
+squash ghi9012 fix typo
+```
 
-1. Check your git branch:
+Save and close the editor. Git opens another editor to combine the commit messages - write a single clean message and save.
 
-   ```bash
-   git status
-   ```
+Force-push the result:
 
-   Output is similar to:
+```bash
+git push origin fix/gpu-memory-calculation --force-with-lease
+```
 
-   ```text
-   On branch your-contribution
-   Your branch is up to date with 'origin/your-contribution'.
-   ```
+## Address review feedback
 
-2. Start an interactive rebase using a specific commit hash, or count backwards from
-   your last commit using `HEAD~<n>`, where `<n>` represents the number of commits to include in the rebase.
+Push additional commits to the same branch as you address feedback. Do not close and reopen the PR.
 
-   ```bash
-   git rebase -i HEAD~3
-   ```
+```bash
+# Make changes, then:
+git add <files>
+git commit -s -m "fix: address review feedback on memory limit check"
+git push origin fix/gpu-memory-calculation
+```
 
-   Output is similar to:
+Squash these into the relevant commits before the PR is merged.
 
-   ```text
-   pick 2ebe926 Original commit
-   pick 31f33e9 Address feedback
-   pick b0315fe Second unit of work
+## Revert a commit
 
-   # Rebase 7c34fc9..b0315ff onto 7c34fc9 (3 commands)
-   #
-   # Commands:
-   # p, pick <commit> = use commit
-   # r, reword <commit> = use commit, but edit the commit message
-   # e, edit <commit> = use commit, but stop for amending
-   # s, squash <commit> = use commit, but meld into previous commit
-   # f, fixup <commit> = like "squash", but discard this commit's log message
-   ...
+To revert a merged commit, create a new branch off master and use `git revert`:
 
-   ```
+```bash
+git fetch upstream
+git checkout master
+git rebase upstream/master
+git checkout -b revert/fix-gpu-memory-calculation
 
-3. Use a command line text editor to change the word `pick` to `squash` for
-   the commits you want to squash, then save your changes and continue the rebase:
+# For a single commit
+git revert <SHA>
 
-   ```text
-   pick 2ebe926 Original commit
-   squash 31f33e9 Address feedback
-   pick b0315fe Second unit of work
-   ...
-   ```
+# For a merge commit
+git revert -m 1 <SHA>
+```
 
-   Output (after saving changes) is similar to:
-
-   ```text
-   [detached HEAD 61fdded] Second unit of work
-   Date: Thu Mar 5 19:01:32 2020 +0100
-   2 files changed, 15 insertions(+), 1 deletion(-)
-   ...
-
-   Successfully rebased and updated refs/heads/master.
-   ```
-
-4. Force push your changes to your remote branch:
-
-   ```bash
-   git push --force
-   ```
-
-For mass automated fixups (e.g. automated doc formatting), use one or more
-commits for the changes to tooling and a final commit to apply the fixup en
-masse. This makes reviews easier.
-
-## Merging a commit
-
-Once you've received review and approval, your commits are squashed, your PR is ready for merging.
-
-Merging happens automatically after both a Reviewer and Approver have approved the PR.
-If you haven't squashed your commits, they may ask you to do so before approving a PR.
-
-## Reverting a commit
-
-In case you wish to revert a commit, use the following instructions.
-
-_If you have upstream write access_, please refrain from using the
-`Revert` button in the GitHub UI for creating the PR, because GitHub
-will create the PR branch inside the main repository rather than inside your fork.
-
-- Create a branch and sync it with upstream.
-
-  ```sh
-  # Depending on which repository you are working from,
-  # the default branch may be called 'main' instead of 'master'.
-
-  # create a branch
-  git checkout -b myrevert
-
-  # sync the branch with upstream
-  git fetch upstream
-  git rebase upstream/master
-  ```
-
-- If the commit you wish to revert is a:
-
-  - **merge commit:**
-
-    ```sh
-    # SHA is the hash of the merge commit you wish to revert
-    git revert -m 1 SHA
-    ```
-
-  - **single commit:**
-
-    ```sh
-    # SHA is the hash of the single commit you wish to revert
-    git revert SHA
-    ```
-
-- This will create a new commit reverting the changes. Push this new commit to your remote.
-
-  ```sh
-  git push ${your_remote_name} myrevert
-  ```
-
-- [Create a Pull Request](#create-a-pull-request) using this branch.
+Push the branch and open a PR as normal. Do not use the GitHub UI **Revert** button - it creates the branch inside the upstream repository instead of your fork.
