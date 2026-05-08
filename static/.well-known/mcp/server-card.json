@@ -1,0 +1,25 @@
+{
+  "serverInfo": {
+    "name": "HAMi Website",
+    "version": "1.0.0"
+  },
+  "transport": {
+    "type": "webmcp",
+    "endpoint": "https://project-hami.io/"
+  },
+  "capabilities": {
+    "tools": true,
+    "resources": true,
+    "prompts": false
+  },
+  "resources": [
+    {
+      "name": "HAMi documentation",
+      "uri": "https://project-hami.io/docs"
+    },
+    {
+      "name": "HAMi GitHub repository",
+      "uri": "https://github.com/Project-HAMi/HAMi"
+    }
+  ]
+}

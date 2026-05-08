@@ -4,3 +4,48 @@
 [build]
     command = "npm run build"
     publish = "build"
+
+[[headers]]
+    for = "/"
+    [headers.values]
+        Link = "</.well-known/api-catalog>; rel=\"api-catalog\", </.well-known/openapi.json>; rel=\"service-desc\"; type=\"application/openapi+json\", </docs>; rel=\"service-doc\"; type=\"text/html\", </.well-known/agent-skills/index.json>; rel=\"describedby\"; type=\"application/json\", </.well-known/mcp/server-card.json>; rel=\"describedby\"; type=\"application/json\""
+
+[[headers]]
+    for = "/robots.txt"
+    [headers.values]
+        Content-Type = "text/plain; charset=utf-8"
+
+[[headers]]
+    for = "/.well-known/api-catalog"
+    [headers.values]
+        Content-Type = "application/linkset+json; charset=utf-8"
+
+[[headers]]
+    for = "/.well-known/oauth-protected-resource"
+    [headers.values]
+        Content-Type = "application/json; charset=utf-8"
+
+[[headers]]
+    for = "/.well-known/mcp/server-card.json"
+    [headers.values]
+        Content-Type = "application/json; charset=utf-8"
+
+[[headers]]
+    for = "/.well-known/openapi.json"
+    [headers.values]
+        Content-Type = "application/openapi+json; charset=utf-8"
+
+[[headers]]
+    for = "/.well-known/site-status.json"
+    [headers.values]
+        Content-Type = "application/json; charset=utf-8"
+
+[[headers]]
+    for = "/.well-known/agent-skills/index.json"
+    [headers.values]
+        Content-Type = "application/json; charset=utf-8"
+
+[[headers]]
+    for = "/.well-known/agent-skills/hami-docs/SKILL.md"
+    [headers.values]
+        Content-Type = "text/markdown; charset=utf-8"

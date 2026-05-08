@@ -1,0 +1,25 @@
+{
+  "linkset": [
+    {
+      "anchor": "https://project-hami.io/.well-known/",
+      "service-desc": [
+        {
+          "href": "https://project-hami.io/.well-known/openapi.json",
+          "type": "application/openapi+json"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://project-hami.io/docs",
+          "type": "text/html"
+        }
+      ],
+      "status": [
+        {
+          "href": "https://project-hami.io/.well-known/site-status.json",
+          "type": "application/json"
+        }
+      ]
+    }
+  ]
+}
