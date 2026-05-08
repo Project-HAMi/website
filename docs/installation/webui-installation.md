@@ -81,8 +81,8 @@ When troubleshooting, check the HAMi WebUI component logs.
 Run:
 
 ```bash
-kubectl logs --namespace=hami deploy/my-hami-webui -c hami-webui-fe-oss
-kubectl logs --namespace=hami deploy/my-hami-webui -c hami-webui-be-oss
+kubectl logs --namespace=kube-system deploy/my-hami-webui -c hami-webui-fe-oss
+kubectl logs --namespace=kube-system deploy/my-hami-webui -c hami-webui-be-oss
 ```
 
 For more information, see [Pods](https://kubernetes.io/docs/reference/kubectl/cheatsheet/#interacting-with-running-pods) and [Deployments](https://kubernetes.io/docs/reference/kubectl/cheatsheet/#interacting-with-deployments-and-services).
@@ -91,18 +91,8 @@ For more information, see [Pods](https://kubernetes.io/docs/reference/kubectl/ch
 
 To remove the Helm release, use:
 
-`helm uninstall <RELEASE-NAME> <NAMESPACE-NAME>`
-
 ```bash
-helm uninstall my-hami-webui -n hami
-```
-
-This removes the resources associated with that release in the `hami` namespace.
-
-To delete the `hami` namespace (if you no longer need it):
-
-```bash
-kubectl delete namespace hami
+helm uninstall my-hami-webui -n kube-system
 ```
 
 ## Related documentation

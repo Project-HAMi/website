@@ -48,7 +48,7 @@ When running `Kubernetes` with `Docker`, edit the configuration file, typically 
 And then restart `Docker`:
 
 ```
-sudo systemctl daemon-reload && systemctl restart docker
+sudo systemctl daemon-reload && sudo systemctl restart docker
 ```
 
 

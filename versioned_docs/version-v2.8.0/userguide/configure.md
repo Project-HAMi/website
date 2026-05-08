@@ -36,7 +36,7 @@ You can update these configurations using one of the following methods:
    | `nvidia.resourceCountName` | String | vGPU number resource name. | `"nvidia.com/gpu"` |
    | `nvidia.resourceMemoryName` | String | vGPU memory size resource name. | `"nvidia.com/gpumem"` |
    | `nvidia.resourceMemoryPercentageName` | String | vGPU memory fraction resource name. | `"nvidia.com/gpumem-percentage"` |
-   | `nvidia.resourceCoreName` | String | vGPU core resource name. | `"nvidia.com/cores"` |
+   | `nvidia.resourceCoreName` | String | vGPU core resource name. | `"nvidia.com/gpucores"` |
    | `nvidia.resourcePriorityName` | String | vGPU job priority name. | `"nvidia.com/priority"` |
 
 ## Node Configs: ConfigMap
