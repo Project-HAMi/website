@@ -1,5 +1,5 @@
 ---
-title: Allocate AWS Neuron core
+title: Allocate AWS Neuron device
 ---
 
 To allocate one or more AWS Neuron devices exclusively, use `aws.amazon.com/neuron`
