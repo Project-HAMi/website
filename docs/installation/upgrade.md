@@ -275,8 +275,7 @@ kubectl apply -f hami-state-backup.yaml
 
 | HAMi Version | Min Kubernetes | Max Kubernetes | NVIDIA Driver | Notes |
 |---|---|---|---|---|
-| v2.9.x | 1.24 | 1.29 | ≥450.x | Latest stable |
-| v2.8.x | 1.23 | 1.28 | ≥450.x | |
+| v2.8.x | 1.23 | 1.28 | ≥450.x | Latest stable |
 | v2.7.x | 1.21 | 1.27 | ≥450.x | |
 | v2.6.x | 1.20 | 1.26 | ≥450.x | |
 
