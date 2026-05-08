@@ -117,7 +117,7 @@ After the main conference, the AI Native Summit is also worth attention. This ev
 
 ## Beyond HAMi: Other Topics to Follow
 
-If you're attending this KubeCon, in addition to HAMi-related activities, we recommend focusing on these areas:
+If you're attending this KubeCon, in addition to HAMi-related activities, these areas are worth following:
 
 - Device Management / DRA
 - AI workload scheduling
