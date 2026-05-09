@@ -21,7 +21,7 @@ translated: true
 
 * NVIDIA Blackwell 和 Hopper™ 及 Ampere 设备
 * HAMi > v2.5.0
-* Nvidia-container-toolkit
+* NVIDIA Container Toolkit
 
 ## 启用 Dynamic-mig 支持
 

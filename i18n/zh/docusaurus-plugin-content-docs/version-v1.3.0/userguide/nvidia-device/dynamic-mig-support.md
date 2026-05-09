@@ -20,7 +20,7 @@ title: Enable dynamic-mig feature
 
 * NVIDIA Blackwell and Hopper™ and Ampere Devices
 * HAMi > v2.5.0
-* Nvidia-container-toolkit
+* NVIDIA Container Toolkit
 
 ## Enabling Dynamic-mig Support
 
