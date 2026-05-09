@@ -1,207 +1,257 @@
 ---
-title: How to contribute docs
+title: How to Contribute Docs
+sidebar_label: Contribute Docs
 ---
 
-Starting from version 1.3, the community documentation will be available on the HAMi website.
-This document explains how to contribute docs to
-the `Project-HAMi/website` repository.
+This guide covers everything needed to contribute to the HAMi documentation website - from setting up the local environment to writing, previewing, and submitting changes.
+
+The documentation site is built with [Docusaurus 3](https://docusaurus.io/) and supports English (primary) and Simplified Chinese. English is the source language for all content.
 
 ## Prerequisites
 
-- Docs, like codes, are also categorized and stored by version.
-  1.3 is the first archived version.
-- Docs need to be translated into multiple languages for readers from different regions.
-  The community now supports both Chinese and English.
-  English is the official language of documentation.
-- Docs are written in Markdown. If you are unfamiliar with Markdown,
-  please see [https://guides.github.com/features/mastering-markdown/](https://guides.github.com/features/mastering-markdown/) or
-  [https://www.markdownguide.org/](https://www.markdownguide.org/) if you are looking for something more substantial.
-- The site uses [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
+- Node.js v20 (required - other versions are not supported)
+- npm
+- Git with a GitHub account
+
+Verify your Node version:
+
+```bash
+node -v   # should print v20.x.x
+```
 
 ## Setup
 
-Set up your local environment by cloning the website repository.
+Fork the [Project-HAMi/website](https://github.com/Project-HAMi/website) repository on GitHub, then clone your fork:
 
-```shell
-git clone https://github.com/Project-HAMi/website.git
+```bash
+git clone https://github.com/<your-username>/website.git
 cd website
+git remote add upstream https://github.com/Project-HAMi/website.git
+npm install
 ```
 
-The website is organized like this:
+## Local Development
 
-```text
-website
-├── sidebars.json        # sidebar for the current docs version
-├── docs                 # docs directory for the current docs version
-│   ├── foo
-│   │   └── bar.md       # https://mysite.com/docs/next/foo/bar
-│   └── hello.md         # https://mysite.com/docs/next/hello
-├── versions.json        # file to indicate what versions are available
-├── versioned_docs
-│   ├── version-1.1.0
-│   │   ├── foo
-│   │   │   └── bar.md   # https://mysite.com/docs/foo/bar
-│   │   └── hello.md
-│   └── version-1.0.0
-│       ├── foo
-│       │   └── bar.md   # https://mysite.com/docs/1.0.0/foo/bar
-│       └── hello.md
-├── versioned_sidebars
-│   ├── version-1.1.0-sidebars.json
-│   └── version-1.0.0-sidebars.json
-├── docusaurus.config.js
-└── package.json
+```bash
+npm run start          # dev server at http://localhost:3000 with hot-reload
+npm run start:network  # same, but accessible on your local network
+npm run build:fast     # English-only production build, ~45 seconds (use for validation)
+npm run build          # full build including Chinese and all versions, ~80 seconds (mirrors CI)
+npm run clear          # clear Docusaurus cache (use when you see stale build errors)
 ```
 
-The `versions.json` file is a list of versions, from the latest to earliest.
-The table below explains how a versioned file maps to its version and the generated URL.
+Use `npm run start` while writing. Use `npm run build:fast` before opening a PR. CI runs the full `npm run build` on every PR to `master`.
 
-| Path                                    | Version        | URL               |
-| --------------------------------------- | -------------- | ----------------- |
-| `versioned_docs/version-1.0.0/hello.md` | 1.0.0          | /docs/1.0.0/hello |
-| `versioned_docs/version-1.1.0/hello.md` | 1.1.0 (latest) | /docs/hello       |
-| `docs/hello.md`                         | current        | /docs/next/hello  |
+## Repository Structure
 
-:::tip
+```
+website/
+├── docs/                          # English source docs (authoritative)
+├── i18n/zh/
+│   └── docusaurus-plugin-content-docs/
+│       └── current/               # Chinese translations
+├── versioned_docs/version-vX.Y.Z/ # archived doc snapshots
+├── blog/                          # blog posts
+├── sidebars.js                    # navigation structure
+├── docusaurus.config.js           # site configuration
+└── versions.json                  # available versioned snapshots
+```
 
-The files in the `docs` directory belong to the `current` docs version.
+Contributors primarily work in `docs/` (English source) and `i18n/zh/` (Chinese translations).
 
-The `current` docs version is labeled as `Next` and hosted under `/docs/next/*`.
+## Adding a New Document
 
-Contributors mainly contribute documentation to the current version.
-:::
+### 1. Create the file
 
-## Writing docs
+Place the file in the appropriate subdirectory under `docs/`:
 
-### Starting a title at the top
+```
+docs/userguide/nvidia-device/new-feature.md
+docs/get-started/new-guide.md
+docs/contributor/new-policy.md
+```
 
-It's important for your article to specify metadata concerning an article at the top of the Markdown file, in a section called **Front Matter**.
+### 2. Add frontmatter
 
-Here is a quick example covering the most relevant **Front Matter** entries:
+Every document must start with frontmatter:
 
 ```yaml
 ---
-title: A doc with tags
+title: Full Page Title
+sidebar_label: Short Nav Label
 ---
-
-## secondary title
 ```
 
-The top section between two lines of --- is the Front Matter section.
-The following entries tell Docusaurus how to handle the article:
+- `title` - used as the page `<h1>` heading and in metadata
+- `sidebar_label` - shorter version shown in the sidebar; omit if the same as `title`
 
-- Title is the equivalent of the `<h1>` in an HTML document or `# <title>` in a Markdown article.
-- Each document has a unique ID. By default, a document ID is the name of the document
-  (without the extension) related to the root docs directory.
+### 3. Register in sidebars.js
 
-### Linking to other docs
-
-You can easily route to other places by adding any of the following links:
-
-- Absolute URLs to external sites like `https://github.com` or `https://k8s.io` -
-  you can use any of the Markdown notations for this, so
-  - `<https://github.com>` or
-  - `[kubernetes](https://k8s.io)` will work.
-- Link to markdown files or the resulting path.
-  You can use relative paths to index the corresponding files.
-- Link to pictures or other resources.
-If your article contains images, prefer storing them in `/static/img/docs/` and linking
-  with absolute paths. Language-aware folders:
-  - `/static/img/docs/common/` for shared images
-  - `/static/img/docs/en/` for English-only images
-  - `/static/img/docs/zh/` for Chinese-only images
-Example:
-  - `![WebUI Overview](/img/docs/en/userguide/webui-overview.png)`
-  - `![WebUI 集群概览](/img/docs/zh/userguide/webui-overview.png)`
-  - `![Architecture](/img/docs/common/architecture/hami-arch.png)`
-
-### Directory organization
-
-Docusaurus 2 uses a sidebar to manage documents.
-
-Creating a sidebar is useful to:
-
-- Group multiple related documents
-- Display a sidebar on each of those documents
-- Provide paginated navigation, with next/previous button
-
-The document organization is defined in
-[sidebars.js](https://github.com/Project-HAMi/website/blob/main/sidebars.js).
+Every new document must be added to `sidebars.js` to appear in navigation. Find the right category and add the doc ID (path relative to `docs/`, without `.md`):
 
 ```js
-module.exports = {
-    docs: [
-        {
-            type: "category",
-            label: "Core Concepts",
-            collapsed: false,
-            items: [
-                "core-concepts/introduction",
-                "core-concepts/concepts",
-                "core-concepts/architecture",
-            ],
-        },
-        {
-            type: "doc",
-            id: "key-features/features",
-        },
-        {
-            type: "category",
-            label: "Get Started",
-            items: [
-                "get-started/deploy-with-helm"
-            ],
-        },
-....
+{
+  type: "category",
+  label: "Get Started",
+  items: [
+    "get-started/deploy-with-helm",
+    "get-started/verify-hami",
+    "get-started/your-new-doc"   // add here
+  ]
+}
 ```
 
-The order of documents in a directory is strictly in the order of items.
+If you are unsure which category fits, mention it in the PR and a maintainer will help.
 
-```yaml
-type: "category",
-label: "Core Concepts",
-collapsed: false,
-items: [
-  "core-concepts/introduction",
-  "core-concepts/concepts",
-  "core-concepts/architecture",
-],
+### 4. Add a Chinese translation (optional)
+
+Mirror the file path under `i18n/zh/docusaurus-plugin-content-docs/current/`. The structure is identical to `docs/`. Keep the frontmatter the same; translate only the content.
+
+If the translation is not ready, a placeholder body is acceptable:
+
+```md
+---
+title: Full Page Title
+sidebar_label: Short Nav Label
+---
+
+(Translation in progress)
 ```
 
-If you add a document, you must add it to `sidebars.js` to make it display properly.
-If you're not sure where your docs are located, you can ask community members in the PR.
+## Linking
 
-### About Chinese docs
+**Internal links** - link to other docs using relative paths to the `.md` file:
 
-There are two situations about the Chinese version of the document:
+```md
+[GitHub Workflow](github-workflow.md)
+[Installation](../get-started/deploy-with-helm.md)
+```
 
-- You want to translate existing English docs to Chinese. In this case,
-  modify the corresponding file in
-  [https://github.com/Project-HAMi/website/tree/main/i18n/zh/docusaurus-plugin-content-docs/current](https://github.com/Project-HAMi/website/tree/main/i18n/zh/docusaurus-plugin-content-docs/current).
-  The organization of this directory is exactly the same as the outer layer.
-  `current.json` holds translations for the documentation directory.
-  You can edit it if you want to translate the name of directory.
-- You want to contribute Chinese docs without English version.
-  Any articles of any kind are welcomed. In this case, you can add
-  articles and titles to the main directory first. Article content can be TBD first, like this.
-  Then add the corresponding Chinese content to the Chinese directory.
+Docusaurus resolves these to correct URLs automatically, including version and locale.
 
-## Debugging docs
+**External links** - use full URLs:
 
-Now you have already completed docs. After you start a PR to `Project-HAMi/website`,
-if you have passed CI, you can get a preview of your document on the website.
+```md
+[Kubernetes](https://kubernetes.io)
+```
 
-Click **Details** marked in red, and you will enter the preview view of the website.
+**Broken links** - the full build (`npm run build`) reports broken internal links. Fix them before opening a PR.
 
-Click **Next** and you can see the corresponding changes. If you have changes
-related to the Chinese version, click the language drop-down box next to it to switch to Chinese.
+## Images
 
-If the previewed page is not what you expected, please check your docs again.
+Store images under `/static/img/docs/` using language-aware subdirectories:
+
+| Path | Use for |
+| --- | --- |
+| `/static/img/docs/common/` | Images shared across languages |
+| `/static/img/docs/en/` | English-only images |
+| `/static/img/docs/zh/` | Chinese-only images |
+
+Reference images with absolute paths from the site root:
+
+```md
+![Architecture diagram](/img/docs/common/architecture/hami-arch.png)
+![WebUI Overview](/img/docs/en/userguide/webui-overview.png)
+```
+
+Use descriptive alt text. Do not link to external images - host them in the repository.
+
+## Writing Style
+
+The following rules apply to all documentation on this site.
+
+**Language and tone:**
+- Short, direct sentences
+- Active voice
+- Casual but professional - write like a developer explaining something to another developer
+- No filler words: "simply", "just", "Note that", "It's worth noting", "Please note"
+- No first-person: avoid "I", "we", "our", "let's"
+- Exception: direct quotes or official project announcements where "we" refers to the HAMi project team
+
+**Formatting:**
+- Use `-` for unordered lists, never `*` or `•`
+- Use regular hyphens (`-`), never em-dashes (`—`)
+- Headings: use `##` and `###` hierarchy; do not skip levels
+- Code: always specify the language in fenced code blocks (` ```bash`, ` ```yaml`, ` ```go`)
+- No emoji in documentation content
+
+**Avoid marketing language:**
+- Do not use: "innovative", "seamless", "robust", "powerful", "cutting-edge", "state-of-the-art"
+- Do not use: "streamline", "leverage", "intuitive", "comprehensive"
+- Do not use: "In conclusion,", "In summary,", "To summarize,"
+
+## Versioning
+
+HAMi docs are versioned alongside each release:
+
+| Location | Version | URL |
+| --- | --- | --- |
+| `docs/` | current (unreleased) | `/docs/next/*` |
+| `versioned_docs/version-v2.8.0/` | v2.8.0 (latest stable) | `/docs/*` |
+| `versioned_docs/version-v2.7.0/` | v2.7.0 | `/docs/v2.7.0/*` |
+
+**Contribute to `docs/`** for changes that apply to the next release. These are the files most contributors should edit.
+
+Fixes to existing versioned docs are handled by maintainers through cherry-picks. If you find an error in a versioned doc, open an issue or submit a fix to `docs/` - a maintainer will backport if needed.
+
+## Chinese Translation Workflow
+
+There are two cases:
+
+**Translating an existing English doc:**
+
+1. Find the corresponding file path under `i18n/zh/docusaurus-plugin-content-docs/current/`.
+2. The directory structure mirrors `docs/` exactly.
+3. Translate the content; keep frontmatter fields identical to the English source.
+4. To translate a sidebar category label, edit `i18n/zh/docusaurus-plugin-content-docs/current.json`.
+
+**Adding a Chinese doc without an English version:**
+
+This is not recommended. English is the source language. If you want to contribute in Chinese, write the English version first (even a draft), then add the Chinese translation.
+
+## Previewing Changes
+
+The dev server shows English only:
+
+```bash
+npm run start
+```
+
+To preview Chinese translations locally:
+
+```bash
+npm run start -- --locale zh
+```
+
+To preview both languages, run the full build and serve it:
+
+```bash
+npm run build
+npm run serve
+```
+
+## CI and PR Preview
+
+When you open a PR against `master`, CI runs `npm run build` (full build). If the build fails, the PR cannot be merged.
+
+PRs also receive a preview deployment link automatically. Click it to see your changes rendered on the live site before requesting review. Use this to verify links, images, and formatting.
+
+## Changelog
+
+The changelog is auto-generated from `CHANGELOG.md` at the repo root by a custom Docusaurus plugin. Do not edit files under `changelog/source/` directly - they are overwritten on every build.
+
+To update the changelog, edit `CHANGELOG.md` directly.
 
 ## FAQ
 
-### Versioning
+**The build fails with a broken link error.**
+Run `npm run build` locally to see the exact file and line. Fix the link and rebuild.
 
-Newly supplemented documents for each version are synchronized to the latest version
-on the release date of each version, and the documents of the old version will not be modified.
-Errata found in the documentation are fixed with every release.
+**My new page does not appear in the sidebar.**
+Check that the doc ID in `sidebars.js` matches the file path exactly (relative to `docs/`, no `.md` extension).
+
+**The dev server shows a cached version of my changes.**
+Stop the server and run `npm run clear`, then restart.
+
+**How do I document a new feature for an upcoming release?**
+Add the documentation to `docs/` (not `versioned_docs/`). It will be snapshotted into `versioned_docs/` when the release is cut.

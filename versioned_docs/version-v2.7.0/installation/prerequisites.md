@@ -40,7 +40,7 @@ sudo nvidia-ctk runtime configure --runtime=docker
 And then restart Docker:
 
 ```bash
-sudo systemctl daemon-reload && systemctl restart docker
+sudo systemctl daemon-reload && sudo systemctl restart docker
 ```
 
 #### Configure containerd
