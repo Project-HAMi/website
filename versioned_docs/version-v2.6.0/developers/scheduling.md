@@ -8,7 +8,7 @@ Current in a cluster with many GPU nodes, nodes are not `binpack` or `spread` wh
 
 ## Proposal
 
-The scheduler adds a `node-scheduler-policy` and `gpu-scheduler-policy` to config, then scheduler to use this policy can impl node `binpack` or `spread` or GPU `binpack` or `spread` or `topology-aware`. The `topology-aware` policy only takes effect with Nvidia GPUs.
+The scheduler adds a `node-scheduler-policy` and `gpu-scheduler-policy` to config, then scheduler to use this policy can impl node `binpack` or `spread` or GPU `binpack` or `spread` or `topology-aware`. The `topology-aware` policy only takes effect with NVIDIA GPUs.
 
 User can set Pod annotation to change this default policy, use `hami.io/node-scheduler-policy` and `hami.io/gpu-scheduler-policy` to overlay scheduler config.
 

@@ -5,7 +5,7 @@ title: Enable Illuvatar GPU Sharing
 
 ## Introduction
 
-**HAMi now supports iluvatar.ai/gpu(i.e MR-V100、BI-V150、BI-V100) by implementing most device-sharing features as nvidia-GPU**, including:
+**HAMi now supports iluvatar.ai/gpu(i.e MR-V100、BI-V150、BI-V100) by implementing most device-sharing features as NVIDIA GPUs**, including:
 
 **GPU sharing**: Each task can allocate a portion of GPU instead of a whole GPU card, thus GPU can be shared among multiple tasks.
 

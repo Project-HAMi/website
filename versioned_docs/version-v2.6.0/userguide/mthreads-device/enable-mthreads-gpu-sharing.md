@@ -4,7 +4,7 @@ title: Enable Mthreads GPU sharing
 
 ## Introduction
 
-**HAMi now supports mthreads.com/vgpu by implementing most device-sharing features as nvidia-GPU**, including:
+**HAMi now supports mthreads.com/vgpu by implementing most device-sharing features as NVIDIA GPUs**, including:
 
 **GPU sharing**: Each task can allocate a portion of GPU instead of a whole GPU card, thus GPU can be shared among multiple tasks.
 
