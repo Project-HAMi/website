@@ -295,7 +295,8 @@ module.exports = {
               "items": [
                 "userguide/ascend-device/examples/allocate-310p",
                 "userguide/ascend-device/examples/allocate-910b",
-                "userguide/ascend-device/examples/allocate-exclusive"
+                "userguide/ascend-device/examples/allocate-exclusive",
+                "userguide/ascend-device/examples/allocate-soft-slicing"
               ]
             }
           ]
