@@ -70,7 +70,7 @@ An Organization Member must meet the responsibilities and has the requirements o
   * Must have been contributing for at least 1 months
   * Must be actively contributing to at least one project area
   * Must have two sponsors who are also Organization Members, at least one of whom does not work for the same employer
-  * **Open an issue against the HAMi-project/HAMi repo**
+  * **Open an issue against the Project-HAMi/HAMi repo**
     * Ensure your sponsors are @mentioned on the issue
     * Complete every item on the issue checklist
     * Make sure that the list of contributions included is representative of your work on the project.

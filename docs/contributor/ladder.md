@@ -65,7 +65,7 @@ An Organization Member must meet all Contributor responsibilities and requiremen
   - Contributing for at least 1 month
   - Actively contributing to at least one project area
   - Two sponsors who are also Organization Members, at least one of whom works for a different employer
-  - [Open a membership request issue][membership request] against the HAMi-project/HAMi repo:
+  - [Open a membership request issue][membership request] against the Project-HAMi/HAMi repo:
     - Mention sponsors in the issue
     - Complete every item on the issue checklist
     - Ensure the contributions listed are representative of the work done
