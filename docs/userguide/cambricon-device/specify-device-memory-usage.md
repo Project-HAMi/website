@@ -10,7 +10,7 @@ This field is optional. Each unit of `cambricon.com/mlu.smlu.vmemory` represents
       resources:
         limits:
           cambricon.com/vmlu: 1 # requesting 1 MLU
-          cambricon.com/mlu.smlu.vmemory: "20" # Each GPU contains 20% device memory
+          cambricon.com/mlu.smlu.vmemory: "20" # Each MLU contains 20% device memory
 ```
 
 :::note

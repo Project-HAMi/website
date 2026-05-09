@@ -133,7 +133,7 @@ During the conference, the HAMi community will continue to curate and publish re
 
 Stay connected:
 
-- [HAMi GitHub Repository](https://github.com/project-hami/hami)
+- [HAMi GitHub Repository](https://github.com/Project-HAMi/HAMi)
 - [HAMi Community Website](https://project-hami.io)
 
 If you'll be in Amsterdam, come find us at Project Pavilion.
