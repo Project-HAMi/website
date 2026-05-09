@@ -1,0 +1,88 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "HAMi Website Discovery",
+    "version": "1.0.0",
+    "description": "Machine-readable discovery endpoints for the HAMi documentation website."
+  },
+  "servers": [
+    {
+      "url": "https://project-hami.io"
+    }
+  ],
+  "paths": {
+    "/robots.txt": {
+      "get": {
+        "summary": "Robots exclusion rules and content usage preferences",
+        "responses": {
+          "200": {
+            "description": "robots.txt",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/.well-known/api-catalog": {
+      "get": {
+        "summary": "API catalog linkset",
+        "responses": {
+          "200": {
+            "description": "RFC 9727 API catalog",
+            "content": {
+              "application/linkset+json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/.well-known/agent-skills/index.json": {
+      "get": {
+        "summary": "Agent skills discovery index",
+        "responses": {
+          "200": {
+            "description": "Agent skills discovery document",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/.well-known/site-status.json": {
+      "get": {
+        "summary": "Website status",
+        "responses": {
+          "200": {
+            "description": "Static status metadata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

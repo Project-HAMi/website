@@ -1,0 +1,12 @@
+{
+  "$schema": "https://schemas.agentskills.io/discovery/0.2.0/schema.json",
+  "skills": [
+    {
+      "name": "hami-docs",
+      "type": "skill-md",
+      "description": "Discover, search, and cite HAMi documentation and release resources.",
+      "url": "https://project-hami.io/.well-known/agent-skills/hami-docs/SKILL.md",
+      "digest": "sha256:412deb896b3f005e65c4aafeb8c2d37dbb7c188b4100f4bb3020b53905fec7a3"
+    }
+  ]
+}
