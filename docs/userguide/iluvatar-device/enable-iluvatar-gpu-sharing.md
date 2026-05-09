@@ -25,7 +25,7 @@ title: Enable Iluvatar GPU Sharing
 
 * Deploy gpu-manager on iluvatar nodes (Please consult your device provider to acquire its package and document)
 
-> **NOTICE:** *Install only gpu-manager, don't install gpu-admission package.*
+  > **NOTICE:** *Install only gpu-manager, don't install gpu-admission package.*
 
 * set the devices.iluvatar.enabled=true when install hami
 
@@ -150,18 +150,18 @@ Look for annotations containing device information in the node status.
 
 ## Notes
 
-1. You need to set the following prestart command in order for the device-share to work properly
+* You need to set the following prestart command in order for the device-share to work properly
 
-```sh
+  ```sh
       set -ex
       echo "export LD_LIBRARY_PATH=/usr/local/corex/lib64:$LD_LIBRARY_PATH">> /root/.bashrc
       cp -f /usr/local/iluvatar/lib64/libcuda.* /usr/local/corex/lib64/
       cp -f /usr/local/iluvatar/lib64/libixml.* /usr/local/corex/lib64/
       source /root/.bashrc
-```
+  ```
 
-1. Virtualization takes effect only for containers that apply for one GPU (i.e., iluvatar.ai/vgpu=1). When requesting multiple GPUs, the system will automatically set the core resources based on the number of GPUs requested.
+* Virtualization takes effect only for containers that apply for one GPU (i.e., iluvatar.ai/vgpu=1). When requesting multiple GPUs, the system will automatically set the core resources based on the number of GPUs requested.
 
-2. The `iluvatar.ai/<card-type>.vMem` resource is only effective when `iluvatar.ai/<card-type>-vgpu=1`.
+* The `iluvatar.ai/<card-type>.vMem` resource is only effective when `iluvatar.ai/<card-type>-vgpu=1`.
 
-3. Multi-device requests (`iluvatar.ai/<card-type>-vgpu= > 1`) do not support vGPU mode.
+* Multi-device requests (`iluvatar.ai/<card-type>-vgpu= > 1`) do not support vGPU mode.
