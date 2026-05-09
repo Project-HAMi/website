@@ -6,10 +6,10 @@ title: Enable Metax GPU sharing
 
 We support metax.com/gpu as follows:
 
-- support metax.com/gpu by implementing most device-sharing features as nvidia-GPU
+- support metax.com/gpu by implementing most device-sharing features as NVIDIA GPUs
 - support metax.com/gpu by implementing topo-awareness among metax GPUs
 
-## support metax.com/gpu by implementing most device-sharing features as nvidia-GPU
+## support metax.com/gpu by implementing most device-sharing features as NVIDIA GPUs
 
 device-sharing features include the following:
 

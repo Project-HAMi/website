@@ -5,7 +5,7 @@ translated: true
 
 ## 介绍
 
-**我们现在通过实现大多数设备共享功能支持 hygon.com/dcu，就像 nvidia-GPU 一样**，包括：
+**我们现在通过实现大多数设备共享功能支持 hygon.com/dcu，就像 NVIDIA GPUs 一样**，包括：
 
 **DCU 共享**：每个任务可以分配一部分 DCU，而不是整个 DCU 卡，因此 DCU 可以在多个任务之间共享。
 
