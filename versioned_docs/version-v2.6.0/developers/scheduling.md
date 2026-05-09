@@ -8,7 +8,7 @@ Current in a cluster with many GPU nodes, nodes are not `binpack` or `spread` wh
 
 ## Proposal
 
-We add a `node-scheduler-policy` and `gpu-scheduler-policy` to config, then scheduler to use this policy can impl node `binpack` or `spread` or GPU `binpack` or `spread` or `topology-aware`. The `topology-aware` policy only takes effect with Nvidia GPUs.
+We add a `node-scheduler-policy` and `gpu-scheduler-policy` to config, then scheduler to use this policy can impl node `binpack` or `spread` or GPU `binpack` or `spread` or `topology-aware`. The `topology-aware` policy only takes effect with NVIDIA GPUs.
 
 User can set Pod annotation to change this default policy, use `hami.io/node-scheduler-policy` and `hami.io/gpu-scheduler-policy` to overlay scheduler config.
 
@@ -171,9 +171,9 @@ So, in `Spread` policy we can select `GPU1`.
 
 #### Topology-aware  
 
-##### Nvidia Topology-aware (Nvidia GPU Only)  
+##### NVIDIA Topology-aware (NVIDIA GPU Only)  
 
-Nvidia Topology-aware primarily focuses on the topological relationships between each GPU (queried using the `nvidia-smi topo -m` command). The hami-device-plugin calculates scores between GPUs based on these relationships - the higher the bandwidth between GPUs, the higher the score. For example:  
+NVIDIA Topology-aware primarily focuses on the topological relationships between each GPU (queried using the `nvidia-smi topo -m` command). The hami-device-plugin calculates scores between GPUs based on these relationships - the higher the bandwidth between GPUs, the higher the score. For example:  
 
 ```json  
 [  

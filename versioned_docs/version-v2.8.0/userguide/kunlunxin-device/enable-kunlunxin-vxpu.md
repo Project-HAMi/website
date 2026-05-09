@@ -155,7 +155,7 @@ spec:
       resources:
         limits:
           kunlunxin.com/vxpu: 1 # requesting a VXPU
-          kunlunxin.com/vxpu-memory: 24576 # requesting a virtual XPU that requires 24576 MiB of device memorymemory
+          kunlunxin.com/vxpu-memory: 24576 # requesting a virtual XPU that requires 24576 MiB of device memory
 ```
 
 ## Device UUID Selection
