@@ -8,7 +8,7 @@ translated: true
 - [Helm](https://helm.sh/zh/docs/) 版本 v3+
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) 版本 v1.16+
 - [CUDA](https://developer.nvidia.com/cuda-toolkit) 版本 v10.2+
-- [NvidiaDriver](https://www.nvidia.cn/drivers/unix/) v440+
+- [NVIDIA Driver](https://www.nvidia.cn/drivers/unix/) v440+
 
 ## 准备你的 GPU 节点
 
