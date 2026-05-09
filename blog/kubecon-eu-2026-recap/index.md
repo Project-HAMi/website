@@ -202,8 +202,8 @@ People are no longer satisfied with just discussing models and applications. The
 
 - How does it run at the infrastructure level?
 - How are resources scheduled?
-- How do we improve efficiency?
-- How do we ensure system stability?
+- How to improve efficiency?
+- How to ensure system stability?
 
 ### 2. The Kubernetes-AI Convergence Is Entering Deep Waters
 
@@ -217,12 +217,12 @@ HAMi is no longer just "a project that does GPU sharing." It's gradually forming
 
 ## Conclusion
 
-KubeCon EU 2026 has reinforced our conviction: **cloud native won't be replaced by AI - it will be redefined by AI.**
+KubeCon EU 2026 made one thing clear: **cloud native won't be replaced by AI - it will be redefined by AI.**
 
 From booth exchanges to technical sessions to the main stage demo, HAMi's presence at this conference was more than just an event appearance - it was a signal:
 
 > **Cloud native infrastructure around GPUs, inference, and heterogeneous compute is entering a new phase.**
 
-If you're also interested in AI infrastructure, GPU virtualization, and the evolution of Kubernetes in the AI era, we invite you to join the HAMi community and help drive the next steps in this space.
+If you're interested in AI infrastructure, GPU virtualization, and the evolution of Kubernetes in the AI era, join the HAMi community and help drive the next steps in this space.
 
 ![HAMi community members and contributors group photo at KubeCon](/img/kubecon-eu-2026-recap/team-photo.jpg)
