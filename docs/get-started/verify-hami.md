@@ -108,7 +108,7 @@ helm install hami hami-charts/hami -n kube-system
 kubectl get pods -n kube-system | grep hami
 ```
 
-Expected: Both `hami-scheduler` and `vgpu-device-plugin` pods should be in the `Running` state.
+Expected: Both `hami-scheduler` and `hami-device-plugin` pods should be in the `Running` state.
 
 ## Step 3: Launch and Verify a vGPU Task
 

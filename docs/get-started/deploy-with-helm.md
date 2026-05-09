@@ -118,7 +118,7 @@ helm install hami hami-charts/hami \
   -n kube-system
 ```
 
-If successful, both `vgpu-device-plugin` and `vgpu-scheduler` pods should be in the `Running` state.
+If successful, both `hami-device-plugin` and `hami-scheduler` pods should be in the `Running` state.
 
 ## Demo {#demo}
 

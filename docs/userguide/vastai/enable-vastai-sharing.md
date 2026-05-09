@@ -84,7 +84,7 @@ spec:
       priorityClassName: "system-node-critical"
       serviceAccountName: hami-vastai
       nodeSelector:
-        vastai-device: "vastai"
+        vastai: "on"
       containers:
         - image: projecthami/vastai-device-plugin:latest
           imagePullPolicy: Always
@@ -114,8 +114,6 @@ spec:
         - name: libvaml-lib64
           hostPath:
             path: /usr/lib64/libvaml.so
-      nodeSelector:
-        vastai: "on"
 ```
 
 ##### Die Mode
@@ -178,7 +176,7 @@ spec:
       priorityClassName: "system-node-critical"
       serviceAccountName: hami-vastai
       nodeSelector:
-        vastai-device: "vastai"
+        vastai: "on"
       containers:
         - image: projecthami/vastai-device-plugin:latest
           imagePullPolicy: Always
@@ -208,8 +206,6 @@ spec:
         - name: libvaml-lib64
           hostPath:
             path: /usr/lib64/libvaml.so
-      nodeSelector:
-        vastai: "on"
 ```
 
 ### Run Vastai jobs
