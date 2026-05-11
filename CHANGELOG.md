@@ -1,5 +1,119 @@
 # Changelog
 
+## v2.9.0 (2026-05-09)
+
+#### Major features
+
+- Add HAMi-core mode for Ascend devices, enabling user-space virtualization for fine-grained memory and compute sharing.
+- Optimize HAMi-core performance and add the latest benchmark data for HAMi-core.
+- HAMi-DRA for NVIDIA is ready for use.
+- Sync Volcano vGPU Device Plugin with version 0.19 and add CDI support.
+- Add HAMi skills for debugging and development workflows.
+- Support module-pair allocation for Ascend 910C devices in SuperPod environments by ([@ashergaga](https://github.com/ashergaga)) in [#1610](https://github.com/Project-HAMi/HAMi/pull/1610)
+- Add support for Vast.ai devices by ([@DSFans2014](https://github.com/DSFans2014)) in [#1645](https://github.com/Project-HAMi/HAMi/pull/1645)
+- Add Ascend `ResourceCoreName` and `Ascendxxx-core` resources to support hami-vnpu-core virtualization by ([@ashergaga](https://github.com/ashergaga)) and ([@DSFans2014](https://github.com/DSFans2014)) in [#1771](https://github.com/Project-HAMi/HAMi/pull/1771) and [#1804](https://github.com/Project-HAMi/HAMi/pull/1804)
+- Support node filtering based on hami-vnpu-core annotations and multi-device requests with hami-vnpu-core enabled by ([@ashergaga](https://github.com/ashergaga)) in [#1812](https://github.com/Project-HAMi/HAMi/pull/1812) and [#1837](https://github.com/Project-HAMi/HAMi/pull/1837)
+
+#### Major bug fixes
+
+- Fix initialization errors when using tensor parallelism on vLLM versions greater than 0.18.
+- Fix schedulerName precedence checks by ([@hoteye](https://github.com/hoteye)) in [#1627](https://github.com/Project-HAMi/HAMi/pull/1627)
+- Add nil checks to prevent leader election panics by ([@haitwang-cloud](https://github.com/haitwang-cloud)) in [#1603](https://github.com/Project-HAMi/HAMi/pull/1603)
+- Fix panic on nil resource requests in scheduler scoring by ([@yxxhero](https://github.com/yxxhero)) in [#1626](https://github.com/Project-HAMi/HAMi/pull/1626)
+- Fix reversed binpack and spread scheduling policies for Iluvatar devices by ([@qiangwei1983](https://github.com/qiangwei1983)) in [#1631](https://github.com/Project-HAMi/HAMi/pull/1631)
+- Resolve cardinality explosion in `Device_memory_desc_of_container` by ([@maishivamhoo123](https://github.com/maishivamhoo123)) in [#1628](https://github.com/Project-HAMi/HAMi/pull/1628)
+- Handle `GetMemoryInfo` `ERROR_NOT_SUPPORTED` for unified memory GPUs by ([@jsl9208](https://github.com/jsl9208)) in [#1637](https://github.com/Project-HAMi/HAMi/pull/1637)
+- Optimize nodelock scalability with exponential backoff and listers by ([@maishivamhoo123](https://github.com/maishivamhoo123)) in [#1663](https://github.com/Project-HAMi/HAMi/pull/1663)
+- Fix readiness probes when replicas are greater than one by ([@Shouren](https://github.com/Shouren)) in [#1677](https://github.com/Project-HAMi/HAMi/pull/1677)
+- Fix scheduler slot usage prediction and device type filtering by ([@maishivamhoo123](https://github.com/maishivamhoo123)) in [#1700](https://github.com/Project-HAMi/HAMi/pull/1700)
+- Retain terminating pods in cache to prevent premature eviction by ([@maishivamhoo123](https://github.com/maishivamhoo123)) in [#1719](https://github.com/Project-HAMi/HAMi/pull/1719)
+- Fix multi-container allocation when init containers are present by ([@haitwang-cloud](https://github.com/haitwang-cloud)) in [#1650](https://github.com/Project-HAMi/HAMi/pull/1650)
+- Align kubelet allocation with scheduler annotations by ([@xrwang8](https://github.com/xrwang8)) in [#1743](https://github.com/Project-HAMi/HAMi/pull/1743)
+- Handle Linux kernel 6.17 handshake edge cases in NVIDIA health checks by ([@maishivamhoo123](https://github.com/maishivamhoo123)) in [#1810](https://github.com/Project-HAMi/HAMi/pull/1810)
+- Fix MIG allocation failures in CDI mode by ([@DSFans2014](https://github.com/DSFans2014)) in [#1826](https://github.com/Project-HAMi/HAMi/pull/1826)
+
+#### What's changed
+
+### Other changes
+
+- Add `vGPUmonitor --metrics-bind-address` flag by ([@dongjiang1989](https://github.com/dongjiang1989)) in [#1613](https://github.com/Project-HAMi/HAMi/pull/1613)
+- Add Prometheus ServiceMonitor support in Helm charts and device plugins by ([@dongjiang1989](https://github.com/dongjiang1989)) in [#1614](https://github.com/Project-HAMi/HAMi/pull/1614) and [#1633](https://github.com/Project-HAMi/HAMi/pull/1633)
+- Check resource quota in webhook by ([@DSFans2014](https://github.com/DSFans2014)) in [#1605](https://github.com/Project-HAMi/HAMi/pull/1605)
+- Add namespaceSelector and objectSelector configuration for the webhook Helm chart by ([@haitwang-cloud](https://github.com/haitwang-cloud)) in [#1653](https://github.com/Project-HAMi/HAMi/pull/1653)
+- Align Prometheus metric and label names with best practices by ([@MyoungHaSong](https://github.com/MyoungHaSong)) in [#1644](https://github.com/Project-HAMi/HAMi/pull/1644)
+- Optimize log verbosity and add unit tests by ([@haitwang-cloud](https://github.com/haitwang-cloud)) in [#1710](https://github.com/Project-HAMi/HAMi/pull/1710)
+- Add local-deploy target for minikube and kind clusters by ([@anandj91](https://github.com/anandj91)) in [#1760](https://github.com/Project-HAMi/HAMi/pull/1760)
+- Add `hami_vgpu_metrics_summarizer` and `k8s-debug-gpu-pod` skills by ([@haitwang-cloud](https://github.com/haitwang-cloud)) in [#1755](https://github.com/Project-HAMi/HAMi/pull/1755) and [#1654](https://github.com/Project-HAMi/HAMi/pull/1654)
+- Add DeepCopy functions for `DeviceUsage` and nested types by ([@Shouren](https://github.com/Shouren)) in [#1818](https://github.com/Project-HAMi/HAMi/pull/1818)
+- Add `enableGetPreferredAllocation` flag by ([@DSFans2014](https://github.com/DSFans2014)) in [#1824](https://github.com/Project-HAMi/HAMi/pull/1824)
+- Add device type labels to metrics by ([@xiyichan](https://github.com/xiyichan)) in [#1612](https://github.com/Project-HAMi/HAMi/pull/1612)
+- Add `io.LimitReader` to scheduler routes to prevent denial-of-service risks by ([@maishivamhoo123](https://github.com/maishivamhoo123)) in [#1620](https://github.com/Project-HAMi/HAMi/pull/1620)
+- Remove deprecated scheduler policy ConfigMap by ([@haitwang-cloud](https://github.com/haitwang-cloud)) in [#1651](https://github.com/Project-HAMi/HAMi/pull/1651)
+- Update NVIDIA device plugin and NVIDIA container runtime modules by ([@archlitchi](https://github.com/archlitchi)) in [#1731](https://github.com/Project-HAMi/HAMi/pull/1731)
+- Upgrade Go to 1.26.2 and address related security issues by ([@luohua13](https://github.com/luohua13)) and ([@Shouren](https://github.com/Shouren)) in [#1791](https://github.com/Project-HAMi/HAMi/pull/1791) and [#1772](https://github.com/Project-HAMi/HAMi/pull/1772)
+- Disable host network for the device plugin by ([@luohua13](https://github.com/luohua13)) in [#1789](https://github.com/Project-HAMi/HAMi/pull/1789)
+- Bump HAMi-DRA version to v0.2.0 by ([@FouoF](https://github.com/FouoF)) in [#1845](https://github.com/Project-HAMi/HAMi/pull/1845)
+
+#### New contributors
+
+- maishivamhoo123 ([@maishivamhoo123](https://github.com/maishivamhoo123))
+- hoteye ([@hoteye](https://github.com/hoteye))
+- jsl9208 ([@jsl9208](https://github.com/jsl9208))
+- ashergaga ([@ashergaga](https://github.com/ashergaga))
+- Atroxgod ([@Atroxgod](https://github.com/Atroxgod))
+- MyoungHaSong ([@MyoungHaSong](https://github.com/MyoungHaSong))
+- charford ([@charford](https://github.com/charford))
+- jcustenborder ([@jcustenborder](https://github.com/jcustenborder))
+- Nov11 ([@Nov11](https://github.com/Nov11))
+- ilia-medvedev ([@ilia-medvedev](https://github.com/ilia-medvedev))
+- Yonsun-w ([@Yonsun-w](https://github.com/Yonsun-w))
+- CFH2436 ([@CFH2436](https://github.com/CFH2436))
+- kenwoodjw ([@kenwoodjw](https://github.com/kenwoodjw))
+- anandj91 ([@anandj91](https://github.com/anandj91))
+- ManishSharma1609 ([@ManishSharma1609](https://github.com/ManishSharma1609))
+- maverick123123 ([@maverick123123](https://github.com/maverick123123))
+- almazkhalikov ([@almazkhalikov](https://github.com/almazkhalikov))
+- lin121291 ([@lin121291](https://github.com/lin121291))
+- mesutoezdil ([@mesutoezdil](https://github.com/mesutoezdil))
+
+#### Committers: Contributors
+
+- anandj91 ([@anandj91](https://github.com/anandj91))
+- archlitchi ([@archlitchi](https://github.com/archlitchi))
+- ashergaga ([@ashergaga](https://github.com/ashergaga))
+- Atroxgod ([@Atroxgod](https://github.com/Atroxgod))
+- CFH2436 ([@CFH2436](https://github.com/CFH2436))
+- charford ([@charford](https://github.com/charford))
+- CoderTH ([@CoderTH](https://github.com/CoderTH))
+- dongjiang1989 ([@dongjiang1989](https://github.com/dongjiang1989))
+- DSFans2014 ([@DSFans2014](https://github.com/DSFans2014))
+- FouoF ([@FouoF](https://github.com/FouoF))
+- haitwang-cloud ([@haitwang-cloud](https://github.com/haitwang-cloud))
+- hoteye ([@hoteye](https://github.com/hoteye))
+- ilia-medvedev ([@ilia-medvedev](https://github.com/ilia-medvedev))
+- jcustenborder ([@jcustenborder](https://github.com/jcustenborder))
+- jsl9208 ([@jsl9208](https://github.com/jsl9208))
+- kenwoodjw ([@kenwoodjw](https://github.com/kenwoodjw))
+- lin121291 ([@lin121291](https://github.com/lin121291))
+- luohua13 ([@luohua13](https://github.com/luohua13))
+- maishivamhoo123 ([@maishivamhoo123](https://github.com/maishivamhoo123))
+- ManishSharma1609 ([@ManishSharma1609](https://github.com/ManishSharma1609))
+- maverick123123 ([@maverick123123](https://github.com/maverick123123))
+- mesutoezdil ([@mesutoezdil](https://github.com/mesutoezdil))
+- MyoungHaSong ([@MyoungHaSong](https://github.com/MyoungHaSong))
+- Nov11 ([@Nov11](https://github.com/Nov11))
+- peachest ([@peachest](https://github.com/peachest))
+- qiangwei1983 ([@qiangwei1983](https://github.com/qiangwei1983))
+- saiyam1814 ([@saiyam1814](https://github.com/saiyam1814))
+- Shouren ([@Shouren](https://github.com/Shouren))
+- wawa0210 ([@wawa0210](https://github.com/wawa0210))
+- xiyichan ([@xiyichan](https://github.com/xiyichan))
+- xrwang8 ([@xrwang8](https://github.com/xrwang8))
+- Yonsun-w ([@Yonsun-w](https://github.com/Yonsun-w))
+- yxxhero ([@yxxhero](https://github.com/yxxhero))
+
+**Full Changelog**: <https://github.com/Project-HAMi/HAMi/compare/v2.8.0...v2.9.0>
+
 ## v2.8.0 (2026-01-20)
 
 #### :rocket: Major features
