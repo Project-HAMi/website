@@ -32,7 +32,11 @@ translated: true
 
 * 在 mthreads 节点上部署 MT-CloudNative Toolkit（请咨询你的设备提供商以获取其软件包和文档）
 
-> **注意：** 安装后可以移除 mt-mutating-webhook 和 mt-gpu-scheduler（可选）。
+:::note
+
+安装后可以移除 mt-mutating-webhook 和 mt-gpu-scheduler（可选）。
+
+:::
 
 * 在安装 HAMi 时设置 'devices.mthreads.enabled = true'
 
@@ -64,6 +68,14 @@ spec:
           mthreads.com/sgpu-core: 8
 ```
 
-> **注意 1：** 每个 sgpu-memory 单位表示 512M 设备显存
+:::note
+
+每个 sgpu-memory 单位表示 512M 设备显存
+
+:::
 >
-> **注意 2：** 你可以在 examples 文件夹中找到更多示例
+:::note
+
+你可以在 examples 文件夹中找到更多示例
+
+:::

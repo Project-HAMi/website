@@ -9,4 +9,8 @@ translated: true
 helm uninstall hami -n kube-system
 ```
 
-> **注意：** *卸载不会终止正在运行的任务。*
+:::note
+
+卸载不会终止正在运行的任务。
+
+:::

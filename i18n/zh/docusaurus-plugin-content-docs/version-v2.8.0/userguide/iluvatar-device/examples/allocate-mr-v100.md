@@ -37,4 +37,8 @@ spec:
         iluvatar.ai/MR-V100.vMem: 64
 ```
 
-> **注意：** *每个 `iluvatar.ai/<card-type>.vCore` 单位代表 1% 的可用计算核心，每个 `iluvatar.ai/<card-type>.vMem` 单位代表 256MB 的设备显存*
+:::note
+
+每个 `iluvatar.ai/<card-type>.vCore` 单位代表 1% 的可用计算核心，每个 `iluvatar.ai/<card-type>.vMem` 单位代表 256MB 的设备显存
+
+:::

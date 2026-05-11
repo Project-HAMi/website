@@ -176,7 +176,11 @@ spec:
   # ... rest of Pod configuration
 ```
 
-> **注意：** 设备 ID 格式为 `{BusID}`。你可以在节点状态中找到可用的设备 ID。
+:::note
+
+设备 ID 格式为 `{BusID}`。你可以在节点状态中找到可用的设备 ID。
+
+:::
 
 ### 查找设备 UUID
 

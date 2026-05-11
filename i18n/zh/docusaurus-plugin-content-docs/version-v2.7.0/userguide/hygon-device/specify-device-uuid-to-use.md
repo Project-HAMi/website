@@ -15,4 +15,8 @@ metadata:
     hygon.com/use-gpuuuid: "DCU-123456"
 ```
 
-> **注意：** *每个DCU UUID在集群中是唯一的，因此分配某个UUID意味着将此任务分配到具有该DCU的特定节点上*
+:::note
+
+每个DCU UUID在集群中是唯一的，因此分配某个UUID意味着将此任务分配到具有该DCU的特定节点上
+
+:::

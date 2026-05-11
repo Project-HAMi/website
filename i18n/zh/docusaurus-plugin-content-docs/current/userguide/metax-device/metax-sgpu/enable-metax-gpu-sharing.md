@@ -45,4 +45,8 @@ spec:
           metax-tech.com/vmemory: 4 # 每个 GPU 需要 4 GiB 设备显存
 ```
 
-> **注意：** 你可以在 [examples 文件夹](https://github.com/Project-HAMi/HAMi/tree/release-v2.6/examples/metax/sgpu)中找到更多示例。
+:::note
+
+你可以在 [examples 文件夹](https://github.com/Project-HAMi/HAMi/tree/release-v2.6/examples/metax/sgpu)中找到更多示例。
+
+:::

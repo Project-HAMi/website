@@ -23,4 +23,8 @@ translated: true
           nvidia.com/gpumem-percentage: 50 # 每个 GPU 包含 50% 设备显存
 ```
 
-> **注意：** *`nvidia.com/gpumem` 和 `nvidia.com/gpumem-percentage` 不能同时分配*
+:::note
+
+`nvidia.com/gpumem` 和 `nvidia.com/gpumem-percentage` 不能同时分配
+
+:::

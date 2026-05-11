@@ -40,7 +40,11 @@ echo 'alias km=karmadactl' >>~/.bashrc
 echo 'complete -F __start_karmadactl km' >>~/.bashrc
 ```
 
-> **Note:** bash-completion sources all completion scripts in /etc/bash_completion.d.
+:::note
+
+bash-completion sources all completion scripts in /etc/bash_completion.d.
+
+:::
 
 Both approaches are equivalent. After reloading your shell, karmadactl autocompletion should be working.
 

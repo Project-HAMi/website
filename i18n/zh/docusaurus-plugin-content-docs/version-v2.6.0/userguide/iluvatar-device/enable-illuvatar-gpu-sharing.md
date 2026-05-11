@@ -26,7 +26,11 @@ title: 启用天数智芯 GPU 共享
 
 * 部署'gpu-manager'，天数智芯的 GPU 共享需要配合厂家提供的'gpu-manager'一起使用，联系设备提供方获取
 
-> **注意：** *只需要安装 gpu-manager，不要安装 gpu-admission.*
+:::note
+
+只需要安装 gpu-manager，不要安装 gpu-admission.
+
+:::
 
 * 部署'gpu-manager'之后，你需要确认显存和核组对应的资源名称 (例如 'iluvatar.ai/vcuda-core', 'iluvatar.ai/vcuda-memory')
 
@@ -94,9 +98,17 @@ spec:
         iluvatar.ai/vcuda-memory: 64
 ```
 
-> **注意 1:** *每一单位的 vcuda-memory 代表 256M 的显存。*
+:::note
 
-> **注意 2:** *查看更多的[用例](https://github.com/Project-HAMi/HAMi/tree/release-v2.6/examples/iluvatar/).*
+每一单位的 vcuda-memory 代表 256M 的显存。
+
+:::
+
+:::note
+
+查看更多的[用例](https://github.com/Project-HAMi/HAMi/tree/release-v2.6/examples/iluvatar/).
+
+:::
 
 ## 设备 UUID 选择
 

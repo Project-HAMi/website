@@ -22,4 +22,8 @@ spec:
           nvidia.com/gpumem: 3000 # 每个 vGPU 请求 3G 设备显存
 ```
 
-> **注意：** *`nvidia.com/gpumem` 不能与 `nvidia.com/gpumem-percentage` 一起使用*
+:::note
+
+`nvidia.com/gpumem` 不能与 `nvidia.com/gpumem-percentage` 一起使用
+
+:::

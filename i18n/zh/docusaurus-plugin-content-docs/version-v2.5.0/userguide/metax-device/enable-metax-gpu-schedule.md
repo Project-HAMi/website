@@ -62,4 +62,8 @@ spec:
           metax-tech.com/gpu: 1 # 请求 1 个 vGPU
 ```
 
-> **注意 2：** 你可以在 examples 文件夹中找到更多示例。
+:::note
+
+你可以在 examples 文件夹中找到更多示例。
+
+:::

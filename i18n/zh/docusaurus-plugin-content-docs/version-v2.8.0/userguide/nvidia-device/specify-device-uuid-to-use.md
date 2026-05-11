@@ -14,4 +14,8 @@ metadata:
     nvidia.com/use-gpuuuid: "GPU-123456"
 ```
 
-> **注意：** *每个 GPU UUID 在集群中是唯一的，因此分配某个 UUID 意味着将此任务分配到具有该 GPU 的特定节点上*
+:::note
+
+每个 GPU UUID 在集群中是唯一的，因此分配某个 UUID 意味着将此任务分配到具有该 GPU 的特定节点上
+
+:::

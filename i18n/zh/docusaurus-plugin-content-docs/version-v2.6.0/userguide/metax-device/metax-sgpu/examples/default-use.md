@@ -25,4 +25,8 @@ spec:
           metax-tech.com/vmemory: 4 # each GPU require 4 GiB device memory
 ```
 
-> **注意：** 当未申请 `metax-tech.com/vcore` 或 `metax-tech.com/vmemory` 资源时，则表示对应资源的满配额
+:::note
+
+当未申请 `metax-tech.com/vcore` 或 `metax-tech.com/vmemory` 资源时，则表示对应资源的满配额
+
+:::

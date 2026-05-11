@@ -22,7 +22,11 @@ spec:
           huawei.com/Ascend910B-memory: 2000 # 请求 2000m 设备显存
 ```
 
-> **注意：** *Ascend910B 的计算资源也受 `huawei.com/Ascend910B-memory` 限制，等于分配的设备显存的百分比。*
+:::note
+
+Ascend910B 的计算资源也受 `huawei.com/Ascend910B-memory` 限制，等于分配的设备显存的百分比。
+
+:::
 
 ## 通过 UUID 选择设备
 

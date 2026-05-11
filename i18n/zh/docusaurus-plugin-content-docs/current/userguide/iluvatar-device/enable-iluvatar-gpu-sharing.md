@@ -112,7 +112,11 @@ spec:
         iluvatar.ai/BI-V150.vMem: 64
 ```
 
-> **注意：** 每个 vcuda-memory 单位表示 256MB 显存
+:::note
+
+每个 vcuda-memory 单位表示 256MB 显存
+
+:::
 
 ## 设备 UUID 选择
 

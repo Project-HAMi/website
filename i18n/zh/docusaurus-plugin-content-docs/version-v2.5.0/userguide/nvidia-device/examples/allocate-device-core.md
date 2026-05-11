@@ -23,4 +23,8 @@ spec:
           nvidia.com/gpucores: 50 # 请求每个vGPU核心资源的50%
 ```
 
-> **注意：** *HAMi 使用时间片实现 `nvidia.com/gpucores`，因此，当通过 nvidia-smi 命令查询核心利用率时，会有波动*
+:::note
+
+HAMi 使用时间片实现 `nvidia.com/gpucores`，因此，当通过 nvidia-smi 命令查询核心利用率时，会有波动
+
+:::

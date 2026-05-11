@@ -64,4 +64,8 @@ spec:
           cambricon.com/mlu.smlu.vcore: 10 # 每个 MLU 请求 10% 的 MLU 设备核心
 ```
 
-> **注意：** *`vmemory` 和 `vcore` 只能在 `cambricon.com/mlunum=1` 时工作*
+:::note
+
+`vmemory` 和 `vcore` 只能在 `cambricon.com/mlunum=1` 时工作
+
+:::

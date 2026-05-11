@@ -33,7 +33,11 @@ translated: true
 
 * 部署'gpu-manager'，天数智芯的GPU共享需要配合厂家提供的'MT-CloudNative Toolkit'一起使用，联系设备提供方获取
 
-> **注意:** *（可选），部署完之后，卸载掉mt-mutating-webhook与mt-scheduler组件，因为这部分功能将由HAMi调度器提供*
+:::note
+
+（可选），部署完之后，卸载掉mt-mutating-webhook与mt-scheduler组件，因为这部分功能将由HAMi调度器提供
+
+:::
 
 * 在安装HAMi时配置'devices.mthreads.enabled = true'参数
 
@@ -65,6 +69,14 @@ spec:
           mthreads.com/sgpu-core: 8
 ```
 
-> **注意1:** *每一单位的sgpu-memory代表512M的显存.*
+:::note
 
-> **注意2:** *查看更多的[用例](https://github.com/Project-HAMi/HAMi/tree/release-v2.6/examples/mthreads/).*
+每一单位的sgpu-memory代表512M的显存.
+
+:::
+
+:::note
+
+查看更多的[用例](https://github.com/Project-HAMi/HAMi/tree/release-v2.6/examples/mthreads/).
+
+:::
