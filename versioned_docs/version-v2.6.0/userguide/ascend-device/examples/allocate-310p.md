@@ -24,4 +24,8 @@ spec:
           huawei.com/Ascend310P-memory: 1024
 ```
 
-> **NOTICE:** *compute resource of Ascend910B is also limited with `huawei.com/Ascend310P-memory`, equals to the percentage of device memory allocated.*
+:::note
+
+compute resource of Ascend910B is also limited with `huawei.com/Ascend310P-memory`, equals to the percentage of device memory allocated.
+
+:::

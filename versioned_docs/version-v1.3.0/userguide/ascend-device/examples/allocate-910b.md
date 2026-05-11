@@ -22,4 +22,8 @@ spec:
           huawei.com/Ascend910-memory: 2000 # requesting 2000m device memory
 ```
 
-> **NOTICE:** * compute resource of Ascend910B is also limited with `huawei.com/Ascend910-memory`, equals to the percentage of device memory allocated. *
+:::note
+
+compute resource of Ascend910B is also limited with `huawei.com/Ascend910-memory`, equals to the percentage of device memory allocated.
+
+:::

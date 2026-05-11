@@ -14,4 +14,8 @@ metadata:
     hygon.com/use-gpuuuid: "DCU-123456"
 ```
 
-> **NOTICE:** *Each DCU UUID is unique in a cluster, so assign a certain UUID means assigning this task to certain node with that DCU*
+:::note
+
+Each DCU UUID is unique in a cluster, so assign a certain UUID means assigning this task to certain node with that DCU
+
+:::

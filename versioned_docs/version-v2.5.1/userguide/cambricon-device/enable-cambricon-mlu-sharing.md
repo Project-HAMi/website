@@ -63,4 +63,8 @@ spec:
           cambricon.com/mlu.smlu.vcore: 10 # each MLU requesting 10% MLU device core
 ```
 
-> **NOTICE:** *`vmemory` and `vcore` can only work when `cambricon.com/mlunum=1`* 
+:::note
+
+`vmemory` and `vcore` can only work when `cambricon.com/mlunum=1`*
+
+:::

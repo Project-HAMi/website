@@ -23,4 +23,8 @@ spec:
           metax-tech.com/vmemory: 4 # each GPU require 4 GiB device memory
 ```
 
-> **NOTICE:** *When a `metax-tech.com/vcore` or `metax-tech.com/vmemory` resource is not applied for, it indicates that the quota for the corresponding resource is full*
+:::note
+
+When a `metax-tech.com/vcore` or `metax-tech.com/vmemory` resource is not applied for, it indicates that the quota for the corresponding resource is full
+
+:::
