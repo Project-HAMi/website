@@ -4,7 +4,7 @@ title: HAMi-core design
 
 ## Introduction
 
-HAMi-core is a hook library for CUDA environment, it is the in-container gpu resource controller, it has been adopted by [HAMi](https://github.com/HAMi-project/HAMi), [volcano](https://github.com/volcano-sh/devices)
+HAMi-core is a hook library for CUDA environment, it is the in-container gpu resource controller, it has been adopted by [HAMi](https://github.com/Project-HAMi/HAMi), [volcano](https://github.com/volcano-sh/devices)
 
 ![HAMi-core 架构图，显示 GPU 资源控制器设计](/img/docs/common/developers/hami-core-design/hami-arch.png)
 

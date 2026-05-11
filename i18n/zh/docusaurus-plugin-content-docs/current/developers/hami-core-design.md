@@ -3,7 +3,7 @@ title: HAMi-core 设计
 ---
 
 HAMi-core是一个为 CUDA 环境设计的 hook 库，作为容器内的 GPU 资源控制器，已被
-[HAMi](https://github.com/HAMi-project/HAMi) 和
+[HAMi](https://github.com/Project-HAMi/HAMi) 和
 [Volcano](https://github.com/volcano-sh/devices) 等项目采用。
 
 ![HAMi-core 架构图，显示 GPU 资源控制器设计](/img/docs/common/developers/hami-core-design/hami-arch.png)

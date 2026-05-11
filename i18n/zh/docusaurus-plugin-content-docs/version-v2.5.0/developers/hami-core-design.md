@@ -5,7 +5,7 @@ translated: true
 
 ## 介绍
 
-HAMi-core 是一个用于 CUDA 环境的钩子库，它是容器内的 GPU 资源控制器，已被 [HAMi](https://github.com/HAMi-project/HAMi) 和 [volcano](https://github.com/volcano-sh/devices) 采用。
+HAMi-core 是一个用于 CUDA 环境的钩子库，它是容器内的 GPU 资源控制器，已被 [HAMi](https://github.com/Project-HAMi/HAMi) 和 [volcano](https://github.com/volcano-sh/devices) 采用。
 
 ![HAMi-core 架构图，显示 GPU 资源控制器设计](/img/docs/common/developers/hami-core-design/hami-arch.png)
 
