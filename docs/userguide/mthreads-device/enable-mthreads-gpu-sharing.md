@@ -31,7 +31,11 @@ title: Enable Mthreads GPU sharing
 
 * Deploy MT-CloudNative Toolkit on Mthreads nodes (Please consult your device provider to acquire its package and document)
 
-> **NOTICE:** *You can remove mt-mutating-webhook and mt-gpu-scheduler after installation(optional).*
+:::note
+
+You can remove `mt-mutating-webhook` and `mt-gpu-scheduler` after installation (optional).
+
+:::
 
 * set the 'devices.mthreads.enabled = true' when installing hami
 
@@ -64,5 +68,8 @@ spec:
           mthreads.com/sgpu-core: 8
 ```
 
-> **NOTICE:** *Each unit of sgpu-memory indicates 512M device memory*
-> **NOTICE:** *You can find more examples in [examples/mthreads folder](https://github.com/Project-HAMi/HAMi/tree/master/examples/mthreads/)*
+:::note
+
+Each unit of `sgpu-memory` represents 512 MB of device memory. More examples are available in the [examples/mthreads folder](https://github.com/Project-HAMi/HAMi/tree/master/examples/mthreads/).
+
+:::

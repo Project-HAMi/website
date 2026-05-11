@@ -26,13 +26,18 @@ title: Enable Enflame GPU Sharing
 
 * Deploy gcushare-device-plugin on enflame nodes (Please consult your device provider to acquire its package and document)
 
-> **NOTICE:** *Install only gpushare-device-plugin, don't install gpu-scheduler-plugin package.*
-> **NOTICE:** The default resource names are:
->
-> * `enflame.com/vgcu` for GCU count, only support 1 now.
-> * `enflame.com/vgcu-percentage` for the percentage of memory and cores in a gcu slice.
->
-> You can customize these names by modifying `hami-scheduler-device` configMap above.
+:::caution
+Install only `gcushare-device-plugin`. Do not install the `gcushare-scheduler-plugin` package.
+:::
+
+:::note
+The default resource names are:
+
+- `enflame.com/vgcu` for GCU count (only 1 is supported currently)
+- `enflame.com/vgcu-percentage` for the percentage of memory and cores in a GCU slice
+
+You can customize these names by modifying the `hami-scheduler-device` ConfigMap.
+:::
 
 * Set 'devices.enflame.enabled=true' when deploy HAMi
 
@@ -78,7 +83,9 @@ spec:
           enflame.com/vgcu-percentage: 22
 ```
 
-> **NOTICE:** *You can find more examples in [examples/enflame folder](https://github.com/Project-HAMi/HAMi/tree/master/examples/enflame/)*
+:::tip
+More examples are available in the [examples/enflame folder](https://github.com/Project-HAMi/HAMi/tree/master/examples/enflame/).
+:::
 
 ## Device UUID Selection
 
@@ -98,7 +105,9 @@ spec:
   # ... rest of pod spec
 ```
 
-> **NOTICE:** The device ID format is `{node-name}-enflame-{index}`. You can find the available device IDs in the node status.
+:::note
+The device ID format is `{node-name}-enflame-{index}`. You can find the available device IDs in the node status.
+:::
 
 ### Finding Device UUIDs
 

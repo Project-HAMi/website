@@ -21,7 +21,11 @@ spec:
           huawei.com/Ascend310P-memory: 2000 # requesting 2000m device memory
 ```
 
-> **NOTICE:** *Compute resource of Ascend310P is also limited with `huawei.com/Ascend310P-memory`, equal to the percentage of device memory allocated.*
+:::note
+
+Compute resource of Ascend310P is also limited with `huawei.com/Ascend310P-memory`, equal to the percentage of device memory allocated.
+
+:::
 
 ## Select Device by UUID
 

@@ -13,4 +13,8 @@ Optional, each unit of `nvidia.com/gpucores` equals 1% of device cores.
           nvidia.com/gpucores: 50 # Each GPU allocates 50% device cores.
 ```
 
-> **NOTICE:** *HAMi-core uses time-slice to limit device core usage. Therefore, there will be fluctuations when looking at GPU utilization through nvidia-smi*
+:::note
+
+HAMi-core uses time-slice to limit device core usage. Therefore, there will be fluctuations when looking at GPU utilization through nvidia-smi
+
+:::
