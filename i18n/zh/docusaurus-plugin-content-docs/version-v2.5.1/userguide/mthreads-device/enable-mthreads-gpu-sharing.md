@@ -5,7 +5,7 @@ translated: true
 
 ## 介绍
 
-**我们现在通过实现大多数设备共享功能支持 mthreads.com/vgpu，类似于 nvidia-GPU**，包括：
+**我们现在通过实现大多数设备共享功能支持 mthreads.com/vgpu，类似于 NVIDIA GPUs**，包括：
 
 **GPU 共享**：每个任务可以分配一部分 GPU，而不是整个 GPU 卡，因此 GPU 可以在多个任务之间共享。
 

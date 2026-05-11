@@ -29,7 +29,7 @@ hami.io/node-nvidia-register: GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec,10,32768,
 
 ```
 
-In this example, this node has two different AI devices, 2 Nvidia-V100 GPUs, and 2 Cambircon 370-X4 MLUs
+In this example, this node has two different AI devices, 2 Nvidia-V100 GPUs, and 2 Cambricon 370-X4 MLUs
 
 A device node may become unavailable due to hardware or network failure, if a node hasn't registered in last 5 minutes, scheduler will mark that node as 'unavailable'.
 

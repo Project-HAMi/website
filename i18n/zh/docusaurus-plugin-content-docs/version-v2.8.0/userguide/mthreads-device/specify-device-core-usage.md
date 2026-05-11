@@ -4,7 +4,7 @@ linktitle: 指定核心
 translated: true
 ---
 
-通过指定资源 `mthreads.com/sgpu-core` 来分配部分设备核心资源。可选项，每个 `mthreads.com/smlu-core` 单位等于 1/16 的设备核心。
+通过指定资源 `mthreads.com/sgpu-core` 来分配部分设备核心资源。可选项，每个 `mthreads.com/sgpu-core` 单位等于 1/16 的设备核心。
 
 ```yaml
       resources:

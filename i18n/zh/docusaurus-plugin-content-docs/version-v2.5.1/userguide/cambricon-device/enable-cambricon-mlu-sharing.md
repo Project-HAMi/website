@@ -5,7 +5,7 @@ translated: true
 
 ## 介绍
 
-**我们现在通过实现大多数设备共享功能来支持 cambricon.com/mlu，与 nvidia-GPU 类似**，包括：
+**我们现在通过实现大多数设备共享功能来支持 cambricon.com/mlu，与 NVIDIA GPUs 类似**，包括：
 
 **MLU 共享**：每个任务可以分配部分 MLU，而不是整个 MLU 卡，因此 MLU 可以在多个任务之间共享。
 

@@ -106,5 +106,5 @@ spec:
 
 2. 不支持在初始化容器中使用 Ascend-sharing。
 
-3. `huawei.com/Ascend910B-memory` 仅在 `huawei.com/Ascend91B0=1` 时有效。
-   `huawe.com/Ascend310P-memory` 仅在 `huawei.com/Ascend310P=1` 时有效。
+3. `huawei.com/Ascend910B-memory` 仅在 `huawei.com/Ascend910B=1` 时有效。
+   `huawei.com/Ascend310P-memory` 仅在 `huawei.com/Ascend310P=1` 时有效。
