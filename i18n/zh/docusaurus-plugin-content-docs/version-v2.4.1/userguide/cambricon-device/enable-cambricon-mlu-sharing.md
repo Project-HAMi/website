@@ -4,7 +4,7 @@ title: Enable cambricon MLU sharing
 
 ## Introduction
 
-**We now support cambricon.com/mlu by implementing most device-sharing features as nvidia-GPU**, including:
+**HAMi now supports cambricon.com/mlu by implementing most device-sharing features as NVIDIA GPUs**, including:
 
 **MLU sharing**: Each task can allocate a portion of MLU instead of a whole MLU card, thus MLU can be shared among multiple tasks.
 
@@ -12,7 +12,7 @@ title: Enable cambricon MLU sharing
 
 **MLU Type Specification**: You can specify which type of MLU to use or to avoid for a certain task, by setting "cambricon.com/use-mlutype" or "cambricon.com/nouse-mlutype" annotations. 
 
-**Very Easy to use**: You don't need to modify your task yaml to use our scheduler. All your MLU jobs will be automatically supported after installation. The only thing you need to do is tag the MLU node.
+**Very Easy to use**: You don't need to modify your task yaml to use the HAMi scheduler. All your MLU jobs will be automatically supported after installation. The only thing you need to do is tag the MLU node.
 
 ## Prerequisites
 

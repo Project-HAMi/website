@@ -99,7 +99,7 @@ sudo systemctl daemon-reload && systemctl restart containerd
 #### 2. Label your nodes {#label-your-nodes}
 
 Label your GPU nodes for scheduling with HAMi by adding the label "gpu=on".
-Without this label, the nodes cannot be managed by our scheduler.
+Without this label, the nodes cannot be managed by the HAMi scheduler.
 
 ```bash
 kubectl label nodes {nodeid} gpu=on
@@ -113,7 +113,7 @@ First, you need to check your Kubernetes version by using the following command:
 kubectl version
 ```
 
-Then, add our repo in helm
+Then, add the HAMi repo in helm
 
 ```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/

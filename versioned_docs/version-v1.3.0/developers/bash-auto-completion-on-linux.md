@@ -47,4 +47,4 @@ Both approaches are equivalent. After reloading your shell, karmadactl autocompl
 ## Enable kubectl-karmada autocompletion
 Currently, kubectl plugins do not support autocomplete, but it is already planned in [Command line completion for kubectl plugins](https://github.com/kubernetes/kubernetes/issues/74178). 
 
-We will update the documentation as soon as it does.
+Documentation will be updated when support is added.

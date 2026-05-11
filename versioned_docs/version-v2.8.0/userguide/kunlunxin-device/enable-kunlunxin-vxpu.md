@@ -6,11 +6,11 @@ title: Enable Kunlunxin VXPU
 
 This component supports multiplexing Kunlunxin XPU devices (P800-OAM) and provides the following vGPU-like multiplexing capabilities, Special thanks for rise-union and kunlunxin for contributing:
 
-***XPU Sharing***: Each task can occupy only a portion of the device, allowing multiple tasks to share a single XPU
+**XPU Sharing**: Each task can occupy only a portion of the device, allowing multiple tasks to share a single XPU
 
-***Memory Allocation Limits***: You can now allocate XPUs using memory values (e.g., 24576M), and the component ensures that tasks do not exceed the allocated memory limit
+**Memory Allocation Limits**: You can now allocate XPUs using memory values (e.g., 24576M), and the component ensures that tasks do not exceed the allocated memory limit
 
-***Device UUID Selection***: You can specify to use or exclude specific XPU devices through annotations
+**Device UUID Selection**: You can specify to use or exclude specific XPU devices through annotations
 
 ## Prerequisites
 

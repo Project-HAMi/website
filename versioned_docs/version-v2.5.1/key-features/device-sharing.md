@@ -2,7 +2,7 @@
 title: Device sharing
 ---
 
-HAMi offers robust device-sharing capabilities, enabling multiple tasks to share the same GPU, MLU, or NPU device,
+HAMi provides device-sharing capabilities, enabling multiple tasks to share the same GPU, MLU, or NPU device,
 maximizing the utilization of heterogeneous AI computing resources.  
 
 HAMi's device sharing enables:
