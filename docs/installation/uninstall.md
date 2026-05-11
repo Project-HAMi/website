@@ -26,9 +26,9 @@ This command will remove all HAMi resources, including:
 - ConfigMaps and Secrets
 - RBAC roles and bindings
 
-:::note
+:::warning
 
-**Important:** Uninstalling HAMi won't automatically stop or kill running GPU tasks. Container processes will continue to use GPU resources even after HAMi components are removed.
+Uninstalling HAMi won't automatically stop or kill running GPU tasks. Container processes will continue to use GPU resources even after HAMi components are removed.
 
 :::
 

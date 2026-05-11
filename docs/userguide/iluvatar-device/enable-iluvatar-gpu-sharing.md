@@ -33,7 +33,7 @@ title: Enable Iluvatar GPU Sharing
 helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag={your kubernetes version} --set devices.iluvatar.enabled=true -n kube-system
 ```
 
-**Note:** The currently supported GPU models and resource names are defined in ([https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/templates/scheduler/device-configmap.yaml](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/templates/scheduler/device-configmap.yaml)):
+The currently supported GPU models and resource names are defined in [device-configmap.yaml](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/templates/scheduler/device-configmap.yaml):
 
 ```yaml
     iluvatars:
