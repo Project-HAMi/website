@@ -13,15 +13,15 @@ translated: true
 
 ## Prerequisites
 
-* Metax Driver >= 2.32.0
-* Metax GPU Operator >= 0.10.2
-* Kubernetes >= 1.23
+- Metax Driver >= 2.32.0
+- Metax GPU Operator >= 0.10.2
+- Kubernetes >= 1.23
 
 ## Enabling GPU-sharing support
 
-* Deploy Metax GPU Operator on metax nodes (Please consult your device provider to obtain the installation package and documentation)
+- Deploy Metax GPU Operator on metax nodes (Please consult your device provider to obtain the installation package and documentation)
 
-* Deploy HAMi according to README.md
+- Deploy HAMi according to README.md
 
 ## Running Metax jobs
 
@@ -41,9 +41,9 @@ spec:
       command: ["sleep","infinity"]
       resources:
         limits:
-          metax-tech.com/sgpu: 1 # requesting 1 GPU 
+          metax-tech.com/sgpu: 1 # requesting 1 GPU
           metax-tech.com/vcore: 60 # each GPU use 60% of total compute cores
           metax-tech.com/vmemory: 4 # each GPU require 4 GiB device memory
 ```
 
-> **NOTICE:** *You can find more examples in [examples/metax folder](https://github.com/Project-HAMi/HAMi/tree/release-v2.6/examples/metax/sgpu)*
+> **NOTICE:** *You can find more examples in [examples/metax folder](https://github.com/Project-HAMi/HAMi/tree/master/examples/metax/sgpu)*

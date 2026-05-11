@@ -1,9 +1,8 @@
 ---
-title: HAMi DRA
+linktitle: HAMi DRA
+title: HAMi DRA for Kubernetes
 translated: true
 ---
-
-# HAMi DRA for Kubernetes
 
 ## Introduction
 
@@ -29,7 +28,7 @@ Then install with the following command:
 helm install hami hami-charts/hami --set dra.enable=true -n hami-system
 ```
 
-> **Note:** *DRA mode is not compatible with traditional mode. Do not enable both at the same time.*
+> **NOTICE:** *DRA mode is not compatible with traditional mode. Do not enable both at the same time.*
 
 ## Supported Devices
 
@@ -43,6 +42,6 @@ Please refer to the corresponding page to install the device driver.
 
 HAMi DRA provides the same monitoring capabilities as the traditional model. When installing HAMi DRA, the monitoring service will be enabled by default. You can expose the monitoring service to the local environment via NodePort or add Prometheus collection to access monitoring metrics.
 
-You can view the monitoring metrics provided by HAMi DRA [here](../userguide/monitoring/device-allocation).
+You can view the monitoring metrics provided by HAMi DRA on the [Device Allocation Monitoring page](../userguide/monitoring/device-allocation).
 
 For more information, please refer to [HAMi DRA monitor](https://github.com/Project-HAMi/HAMi-DRA/blob/main/docs/MONITOR.md)

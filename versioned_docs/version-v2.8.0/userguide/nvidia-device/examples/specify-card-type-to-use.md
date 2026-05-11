@@ -11,15 +11,15 @@ metadata:
   name: gpu-pod
   annotations:
     nvidia.com/use-gputype: "A100,V100"
-    #In this example, we want to run this job on A100 or V100
+    #In this example, the job runs on A100 or V100
 spec:
   containers:
     - name: ubuntu-container
-      image: ubuntu:18.04
+      image: ubuntu:22.04
       command: ["bash", "-c", "sleep 86400"]
       resources:
         limits:
           nvidia.com/gpu: 2 # requesting 2 vGPUs
 ```
 
-> **NOTICE:** *You can assign this task to multiple GPU types, use comma to separate,In this example, the job targets A100 or V100*
+> **NOTICE:** *You can assign this task to multiple GPU types, use comma to separate. In this example, the job runs on A100 or V100.*

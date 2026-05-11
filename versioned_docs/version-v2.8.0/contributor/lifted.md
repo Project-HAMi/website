@@ -3,11 +3,7 @@ title: How to manage lifted codes
 ---
 
 This document explains how lifted code is managed.
-A common user case for this task is developer lifting code from other repositories to `pkg/util/lifted` directory.
-
-- [Steps of lifting code](#steps-of-lifting-code)
-- [How to write lifted comments](#how-to-write-lifted-comments)
-- [Examples](#examples)
+A common use case for this task is developer lifting code from other repositories to `pkg/util/lifted` directory.
 
 ## Steps of lifting code
 
@@ -21,9 +17,9 @@ A common user case for this task is developer lifting code from other repositori
 Lifted comments shall be placed just before the lifted code (could be a func, type, var or const).
 Only empty lines and comments are allowed between lifted comments and lifted code.
 
-Lifted comments are composed by one or multi comment lines, each in the format of `+lifted:KEY[=VALUE]`. Value is optional for some keys.
+Lifted comments are composed by one or multiple comment lines, each in the format of `+lifted:KEY[=VALUE]`. Value is optional for some keys.
 
-Valid keys are as follow：
+Valid keys are as follow:
 
 - source:
 
@@ -47,7 +43,7 @@ Lift function `IsQuotaHugePageResourceName` to `corehelpers.go`:
 // IsQuotaHugePageResourceName returns true if the resource name has the quota
 // related huge page resource prefix.
 func IsQuotaHugePageResourceName(name corev1.ResourceName) bool {
-	return strings.HasPrefix(string(name), corev1.ResourceHugePagesPrefix) || strings.HasPrefix(string(name), corev1.ResourceRequestsHugePagesPrefix)
+ return strings.HasPrefix(string(name), corev1.ResourceHugePagesPrefix) || strings.HasPrefix(string(name), corev1.ResourceRequestsHugePagesPrefix)
 }
 ```
 
@@ -70,11 +66,11 @@ Lift and change function `GetNewReplicaSet` to `deployment.go`
 // GetNewReplicaSet returns a replica set that matches the intent of the given deployment; get ReplicaSetList from client interface.
 // Returns nil if the new replica set doesn't exist yet.
 func GetNewReplicaSet(deployment *appsv1.Deployment, f ReplicaSetListFunc) (*appsv1.ReplicaSet, error) {
-	rsList, err := ListReplicaSetsByDeployment(deployment, f)
-	if err != nil {
-		return nil, err
-	}
-	return FindNewReplicaSet(deployment, rsList), nil
+ rsList, err := ListReplicaSetsByDeployment(deployment, f)
+ if err != nil {
+  return nil, err
+ }
+ return FindNewReplicaSet(deployment, rsList), nil
 }
 ```
 
@@ -88,7 +84,7 @@ Added in `doc.go`:
 
 ### Lifting const
 
-Lift const `isNegativeErrorMsg` to `corevalidation.go `:
+Lift const `isNegativeErrorMsg` to `corevalidation.go`:
 
 ```go
 // +lifted:source=https://github.com/kubernetes/kubernetes/blob/release-1.22/pkg/apis/core/validation/validation.go#L59

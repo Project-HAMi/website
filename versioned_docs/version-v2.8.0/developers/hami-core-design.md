@@ -16,7 +16,7 @@ HAMi-core offers the following key features:
 
    ![nvidia-smi output showing virtualized GPU memory with HAMi-core](/img/docs/common/developers/hami-core-design/sample-nvidia-smi.png)
 
-2. Limit the device utilization  
+2. Limit the device utilization
 
    Implements a custom time-slicing mechanism to control GPU usage.
 

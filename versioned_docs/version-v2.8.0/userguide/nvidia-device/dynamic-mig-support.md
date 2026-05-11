@@ -64,18 +64,19 @@ You can customize the MIG configuration by following the steps below:
 
 ```yaml
 nvidia:
-  resourceCountName: { { .Values.resourceName } }
-  resourceMemoryName: { { .Values.resourceMem } }
-  resourceMemoryPercentageName: { { .Values.resourceMemPercentage } }
-  resourceCoreName: { { .Values.resourceCores } }
-  resourcePriorityName: { { .Values.resourcePriority } }
+  resourceCountName: {{ .Values.resourceName }}
+  resourceMemoryName: {{ .Values.resourceMem }}
+  resourceMemoryPercentageName: {{ .Values.resourceMemPercentage }}
+  resourceCoreName: {{ .Values.resourceCores }}
+  resourcePriorityName: {{ .Values.resourcePriority }}
   overwriteEnv: false
   defaultMemory: 0
   defaultCores: 0
   defaultGPUNum: 1
-  deviceSplitCount: { { .Values.devicePlugin.deviceSplitCount } }
-  deviceMemoryScaling: { { .Values.devicePlugin.deviceMemoryScaling } }
-  deviceCoreScaling: { { .Values.devicePlugin.deviceCoreScaling } }
+  memoryFactor: 1
+  deviceSplitCount: {{ .Values.devicePlugin.deviceSplitCount }}
+  deviceMemoryScaling: {{ .Values.devicePlugin.deviceMemoryScaling }}
+  deviceCoreScaling: {{ .Values.devicePlugin.deviceCoreScaling }}
   knownMigGeometries:
     - models: ["A30"]
       allowedGeometries:
@@ -130,7 +131,7 @@ nvidia:
 :::note
 Helm installations and updates will follow the configuration specified in this file, overriding the default Helm settings.
 
-HAMi identifies and use the first MIG template that matches the job, in the order defined in this configMap.
+HAMi uses the first MIG template that matches the job, in the order defined in this configMap.
 :::
 
 ## Running MIG jobs
@@ -148,7 +149,7 @@ metadata:
 spec:
   containers:
     - name: ubuntu-container
-      image: ubuntu:18.04
+      image: ubuntu:22.04
       command: ["bash", "-c", "sleep 86400"]
       resources:
         limits:

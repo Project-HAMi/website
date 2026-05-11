@@ -3,8 +3,8 @@ title: Allocate device core to container
 linktitle: Allocate device core usage
 ---
 
-Allocate a percentage of device core resources by specify resource `hygon.com/dcucores`.
-Optional, each unit of `hygon.com/dcucores` equals to 1% device cores.
+Allocate a percentage of device core resources by specifying resource `hygon.com/dcucores`.
+Optional, each unit of `hygon.com/dcucores` equals 1% of device cores.
 
 ```yaml
       resources:

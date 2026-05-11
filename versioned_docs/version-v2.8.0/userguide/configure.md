@@ -12,12 +12,12 @@ All the configurations listed below are managed within the hami-scheduler-device
 You can update these configurations using one of the following methods:
 
 1. Directly edit the ConfigMap: If HAMi has already been successfully installed, you can manually update
-   the hami-scheduler-device ConfigMap using the kubectl edit command to manually update the hami-scheduler-device ConfigMap.
+   the hami-scheduler-device ConfigMap using the kubectl edit command.
 
    ```bash
    kubectl edit configmap hami-scheduler-device -n <namespace>
    ```
-  
+
    After making changes, restart the related HAMi components to apply the updated configurations.
 
 2. Modify Helm Chart: Update the corresponding values in the
@@ -33,6 +33,7 @@ You can update these configurations using one of the following methods:
    | `nvidia.defaultMem` | Integer | The default device memory of the current job, in MB. '0' means using 100% of the device memory. | `0` |
    | `nvidia.defaultCores` | Integer | Percentage of GPU cores reserved for the current job. `0` allows any GPU with enough memory; `100` reserves the entire GPU exclusively. | `0` |
    | `nvidia.defaultGPUNum` | Integer | Default number of GPUs. If set to `0`, it will be filtered out. If `nvidia.com/gpu` is not set in the pod resource, the webhook checks `nvidia.com/gpumem`, `resource-mem-percentage`, and `nvidia.com/gpucores`, adding `nvidia.com/gpu` with this default value if any of them are set. | `1` |
+   | `nvidia.memoryFactor` | Integer | During resource requests, the actual value of `nvidia.com/gpumem` will be multiplied by this factor. If `mock-device-plugin` is deployed, the actual value `nvidia.com/gpumem` in `node.status.capacity` will also be amplified by the corresponding multiple. | `1` |
    | `nvidia.resourceCountName` | String | vGPU number resource name. | `"nvidia.com/gpu"` |
    | `nvidia.resourceMemoryName` | String | vGPU memory size resource name. | `"nvidia.com/gpumem"` |
    | `nvidia.resourceMemoryPercentageName` | String | vGPU memory fraction resource name. | `"nvidia.com/gpumem-percentage"` |
@@ -41,12 +42,11 @@ You can update these configurations using one of the following methods:
 
 ## Node Configs: ConfigMap
 
-HAMi allows configuring per-node behavior for device plugin. Edit
+HAMi allows configuring per-node behavior for device plugin. Edit the ConfigMap:
 
 ```sh
 kubectl -n <namespace> edit cm hami-device-plugin
 ```
-
 * `name`: Name of the node.
 * `operatingmode`: Operating mode of the node, can be "hami-core" or "mig", default: "hami-core".
 * `devicememoryscaling`: Overcommit ratio of device memory.
@@ -55,14 +55,14 @@ kubectl -n <namespace> edit cm hami-device-plugin
 * `filterdevices`: Devices that are not registered to HAMi.
   * `uuid`: UUIDs of devices to ignore
   * `index`: Indexes of devices to ignore.
-  * A device is ignored by HAMi if it's in `uuid` or `index` list.
+  * A device is ignored by HAMi if it is in the `uuid` or `index` list.
 
 ## Chart Configs: arguments
 
 You can customize your vGPU support by setting the following arguments using `-set`, for example
 
 ```bash
-helm install hami hami-charts/hami --set devicePlugin.deviceMemoryScaling=5 ...
+helm install hami hami-charts/hami --set devicePlugin.deviceMemoryScaling=5 -n kube-system
 ```
 
 | Argument | Type | Description | Default |
@@ -71,7 +71,7 @@ helm install hami hami-charts/hami --set devicePlugin.deviceMemoryScaling=5 ...
 | `scheduler.defaultSchedulerPolicy.nodeSchedulerPolicy` | String | GPU node scheduling policy: `"binpack"` allocates jobs to the same GPU node as much as possible. `"spread"` allocates jobs to different GPU nodes as much as possible. | `"binpack"` |
 | `scheduler.defaultSchedulerPolicy.gpuSchedulerPolicy` | String | GPU scheduling policy: `"binpack"` allocates jobs to the same GPU as much as possible. `"spread"` allocates jobs to different GPUs as much as possible. | `"spread"` |
 
-## Pod configs: annotations
+## Pod Configs: Annotations
 
 | Argument | Type | Description | Example |
 |----------|------|-------------|---------|
@@ -83,7 +83,7 @@ helm install hami hami-charts/hami --set devicePlugin.deviceMemoryScaling=5 ...
 | `hami.io/gpu-scheduler-policy` | String | GPU scheduling policy: `"binpack"` allocates the pod to the same GPU card for execution. `"spread"` allocates the pod to different GPU cards for execution. | `"binpack"` or `"spread"` |
 | `nvidia.com/vgpu-mode` | String | The type of vGPU instance this pod wishes to use. | `"hami-core"` or `"mig"` |
 
-## Container configs: env
+## Container Configs: Env
 
 | Argument | Type | Description | Default |
 |----------|------|-------------|---------|

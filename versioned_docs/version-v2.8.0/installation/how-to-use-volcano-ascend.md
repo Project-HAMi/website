@@ -1,17 +1,16 @@
 ---
-title: Volcano Ascend vNPU
+linktitle: Volcano Ascend vNPU
+title: User Guide for Ascend Devices in Volcano
 ---
-
-# User Guide for Ascend Devices in Volcano
 
 ## Introduction
 
- Volcano supports vNPU feature for both Ascend 310 and Ascend 910 using the `ascend-device-plugin`. It also supports managing heterogeneous Ascend cluster(Cluster with multiple Ascend types, i.e. 910A,910B2,910B3,310p)
+ Volcano supports vNPU feature for both Ascend 310 and Ascend 910 using the `ascend-device-plugin`. It also supports managing heterogeneous Ascend cluster (Cluster with multiple Ascend types, i.e., 910A, 910B2, 910B3, 310P)
 
 **Use case**:
 
-- NPU and vNPU cluster for Ascend 910 series  
-- NPU and vNPU cluster for Ascend 310 series  
+- NPU and vNPU cluster for Ascend 910 series
+- NPU and vNPU cluster for Ascend 310 series
 - Heterogeneous Ascend cluster
 
 This feature is only available in volcano >= 1.14.
@@ -29,7 +28,7 @@ helm repo add volcano-sh https://volcano-sh.github.io/helm-charts
 helm install volcano volcano-sh/volcano -n volcano-system --create-namespace
 ```
 
-Additional installation methods can be found [here](https://github.com/volcano-sh/volcano?tab=readme-ov-file#quick-start-guide).
+Additional installation methods can be found in [the Volcano Quick Start Guide](https://github.com/volcano-sh/volcano?tab=readme-ov-file#quick-start-guide).
 
 ### Label the Node with ascend=on
 
@@ -109,7 +108,7 @@ spec:
 The supported Ascend chips and their `ResourceNames` are shown in the following table:
 
 | ChipName | ResourceName | ResourceMemoryName |
-|-------|-------|-------|
+| ------- | ------- | ------- |
 | 910A | huawei.com/Ascend910A | huawei.com/Ascend910A-memory |
 | 910B2 | huawei.com/Ascend910B2 | huawei.com/Ascend910B2-memory |
 | 910B3 | huawei.com/Ascend910B3 | huawei.com/Ascend910B3-memory |

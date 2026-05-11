@@ -8,17 +8,17 @@ title: Enable Mthreads GPU sharing
 
 **GPU sharing**: Each task can allocate a portion of GPU instead of a whole GPU card, thus GPU can be shared among multiple tasks.
 
-**Device Memory Control**: GPUs can be allocated with certain device memory size on certain type(i.e MTT S4000) and have made it that it does not exceed the boundary.
+**Device Memory Control**: GPUs can be allocated with a specific device memory size on certain types (e.g., MTT S4000), with hard limits enforced to prevent exceeding the allocation.
 
-**Device Core Control**: GPUs can be allocated with limited compute cores on certain type(i.e MTT S4000) and have made it that it does not exceed the boundary.
+**Device Core Control**: GPUs can be allocated with limited compute cores on certain types (e.g., MTT S4000), with hard limits enforced to prevent exceeding the allocation.
 
 ## Important Notes
 
 1. Device sharing for multi-cards is not supported.
 
-2. Only one mthreads device can be shared in a pod(even there are multiple containers).
+2. Only one Mthreads device can be shared in a pod (even if there are multiple containers).
 
-3. Support allocating exclusive mthreads GPU by specifying mthreads.com/vgpu only.
+3. Support allocating exclusive Mthreads GPU by specifying mthreads.com/vgpu only.
 
 4. These features are tested on MTT S4000
 
@@ -29,20 +29,20 @@ title: Enable Mthreads GPU sharing
 
 ## Enabling GPU-sharing Support
 
-* Deploy MT-CloudNative Toolkit on mthreads nodes (Please consult your device provider to acquire its package and document)
+* Deploy MT-CloudNative Toolkit on Mthreads nodes (Please consult your device provider to acquire its package and document)
 
 > **NOTICE:** *You can remove mt-mutating-webhook and mt-gpu-scheduler after installation(optional).*
 
 * set the 'devices.mthreads.enabled = true' when installing hami
 
 ```bash
-helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag={your kubernetes version} --set device.mthreads.enabled=true -n kube-system
+helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag={your kubernetes version} --set devices.mthreads.enabled=true -n kube-system
 ```
 
 ## Running Mthreads jobs
 
 Mthreads GPUs can now be requested by a container
-using the `mthreads.com/vgpu`, `mthreads.com/sgpu-memory` and `mthreads.com/sgpu-core`  resource type:
+using the `mthreads.com/vgpu`, `mthreads.com/sgpu-memory` and `mthreads.com/sgpu-core` resource type:
 
 ```yaml
 apiVersion: v1
@@ -64,5 +64,5 @@ spec:
           mthreads.com/sgpu-core: 8
 ```
 
-> **NOTICE1:** *Each unit of sgpu-memory indicates 512M device memory*
-> **NOTICE2:** *You can find more examples in [examples/mthreads folder](https://github.com/Project-HAMi/HAMi/tree/release-v2.6/examples/mthreads/)*
+> **NOTICE:** *Each unit of sgpu-memory indicates 512M device memory*
+> **NOTICE:** *You can find more examples in [examples/mthreads folder](https://github.com/Project-HAMi/HAMi/tree/master/examples/mthreads/)*

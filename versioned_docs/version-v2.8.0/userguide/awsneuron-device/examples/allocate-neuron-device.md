@@ -1,8 +1,8 @@
 ---
-title: Allocate AWS Neuron core
+title: Allocate AWS Neuron device
 ---
 
-To allocate one or more aws neuron devices exclusively, you could allocate using `aws.amazon.com/neuron`
+To allocate one or more AWS Neuron devices exclusively, use `aws.amazon.com/neuron`
 
 ```yaml
 apiVersion: v1

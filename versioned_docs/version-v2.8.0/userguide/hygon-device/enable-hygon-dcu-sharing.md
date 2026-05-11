@@ -8,9 +8,9 @@ title: Enable Hygon DCU sharing
 
 **DCU sharing**: Each task can allocate a portion of DCU instead of a whole DCU card, thus DCU can be shared among multiple tasks.
 
-**Device Memory Control**: DCUs can be allocated with certain device memory size on certain type(i.e Z100) and have made it that it does not exceed the boundary.
+**Device Memory Control**: DCUs can be allocated with a specific device memory size on certain types (e.g., Z100), with hard limits enforced to prevent exceeding the allocation.
 
-**Device compute core limitation**: DCUs can be allocated with certain percentage of device core(i.e hygon.com/dcucores:60 indicate this container uses 60% compute cores of this device)
+**Device compute core limitation**: DCUs can be allocated with certain percentage of device core (i.e., hygon.com/dcucores:60 indicates this container uses 60% compute cores of this device)
 
 **DCU Type Specification**: You can specify which type of DCU to use or to avoid for a certain task, by setting "hygon.com/use-dcutype" or "hygon.com/nouse-dcutype" annotations.
 
@@ -21,12 +21,12 @@ title: Enable Hygon DCU sharing
 
 ## Enabling DCU-sharing Support
 
-* Deploy the dcu-vgpu-device-plugin [here](https://github.com/Project-HAMi/dcu-vgpu-device-plugin)
+* Deploy the [dcu-vgpu-device-plugin](https://github.com/Project-HAMi/dcu-vgpu-device-plugin)
 
 ## Running DCU jobs
 
 Hygon DCUs can now be requested by a container
-using the `hygon.com/dcunum` , `hygon.com/dcumem` and `hygon.com/dcucores` resource type:
+using the `hygon.com/dcunum`, `hygon.com/dcumem` and `hygon.com/dcucores` resource type:
 
 ```yaml
 apiVersion: v1
@@ -51,21 +51,21 @@ spec:
 
 ## Enable vDCU inside container
 
-You need to enable vDCU inside container in order to use it.
+You need to enable vDCU inside the container to use it.
 
-```yaml
+```bash
 source /opt/hygondriver/env.sh
 ```
 
-check if you have successfully enabled vDCU by using following command
+Check if you have successfully enabled vDCU by using the following command:
 
-```yaml
-hy-virtual -show-device-info
+```bash
+hy-smi virtual -show-device-info
 ```
 
 If you have an output like this, then you have successfully enabled vDCU inside container.
 
-```yaml
+```text
 Device 0:
  Actual Device: 0
  Compute units: 60

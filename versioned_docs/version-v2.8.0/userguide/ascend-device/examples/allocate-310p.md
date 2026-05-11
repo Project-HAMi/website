@@ -1,30 +1,27 @@
 ---
-title: Allocate 310p slice
+title: Allocate 310P slice
 ---
 
-To allocate a certain size of GPU device memory, you need only to assign `huawei.com/ascend310P-memory` besides `huawei.com/ascend310P`.
+To allocate a certain size of device memory, assign `huawei.com/Ascend310P-memory` alongside `huawei.com/Ascend310P`.
 
 ```yaml
 apiVersion: v1
 kind: Pod
 metadata:
-  name: ascend310p-pod
+  name: ascend310p-job
 spec:
-  tolerations:
-    - key: aaa
-      operator: Exists
-      effect: NoSchedule
+  runtimeClassName: ascend
   containers:
     - name: ubuntu-container
       image: swr.cn-south-1.myhuaweicloud.com/ascendhub/ascend-pytorch:24.0.RC1-A2-1.11.0-ubuntu20.04
       command: ["bash", "-c", "sleep 86400"]
       resources:
         limits:
-          huawei.com/Ascend310P: 1
-          huawei.com/Ascend310P-memory: 1024
+          huawei.com/Ascend310P: 1 # requesting 1 NPU
+          huawei.com/Ascend310P-memory: 2000 # requesting 2000m device memory
 ```
 
-> **NOTICE:** *compute resource of Ascend310P is also limited with `huawei.com/Ascend310P-memory`, equals to the percentage of device memory allocated.*
+> **NOTICE:** *Compute resource of Ascend310P is also limited with `huawei.com/Ascend310P-memory`, equal to the percentage of device memory allocated.*
 
 ## Select Device by UUID
 
@@ -43,4 +40,3 @@ metadata:
 spec:
   # ... rest of pod spec
 ```
-

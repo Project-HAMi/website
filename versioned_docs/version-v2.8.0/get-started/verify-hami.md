@@ -20,10 +20,11 @@ HAMi requires the `nvidia-container-toolkit` to be installed and set as the defa
 ### 1. Install nvidia-container-toolkit (Debian/Ubuntu example)
 
 ```bash
-distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
-curl -s -L https://nvidia.github.io/libnvidia-container/$distribution/libnvidia-container.list \
-  | sudo tee /etc/apt/sources.list.d/libnvidia-container.list
-curl -s -L https://nvidia.github.io/libnvidia-container/gpgkey | sudo apt-key add -
+curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
+  && curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
+    sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+    sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+
 sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
 ```
 
@@ -107,11 +108,11 @@ helm install hami hami-charts/hami -n kube-system
 kubectl get pods -n kube-system | grep hami
 ```
 
-Expected: Both `hami-scheduler` and `vgpu-device-plugin` pods should be in the `Running` state.
+Expected: Both `hami-scheduler` and `hami-device-plugin` pods should be in the `Running` state.
 
 ## Step 3: Launch and Verify a vGPU Task
 
-HAMi enforces fractional resource limits (vGPU):
+This step verifies HAMi is enforcing fractional resource limits (vGPU).
 
 ### 1. Submit a vGPU demo task
 
@@ -124,7 +125,7 @@ metadata:
 spec:
   containers:
     - name: ubuntu-container
-      image: ubuntu:18.04
+      image: ubuntu:22.04
       command: ["bash", "-c", "sleep 86400"]
       resources:
         limits:
