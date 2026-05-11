@@ -6,7 +6,7 @@ translated: true
 ## Introduction
 
 HAMi has supported K8s [DRA](https://kubernetes.io/docs/concepts/scheduling-eviction/dynamic-resource-allocation/) (Dynamic Resource Allocation) on NVIDIA devices.
-By installing hami-k8s-dra-driver, your cluster scheduler can discover Nvidia GPU devices on nodes.
+By installing hami-k8s-dra-driver, your cluster scheduler can discover NVIDIA GPU devices on nodes.
 
 ## Prerequisites
 
@@ -14,7 +14,7 @@ By installing hami-k8s-dra-driver, your cluster scheduler can discover Nvidia GP
 
 ## Installation
 
-The Nvidia DRA driver is built into HAMi and does not need to be installed separately. You only need to specify the `--set hami-dra-webhook.drivers.nvidia.enabled=true` parameter when [installing HAMi DRA](../../installation/how-to-use-hami-dra). For more information, please refer to [Installing Nvidia DRA driver](https://github.com/Project-HAMi/HAMi-DRA?tab=readme-ov-file#installation)
+The NVIDIA DRA driver is built into HAMi and does not need to be installed separately. You only need to specify the `--set hami-dra-webhook.drivers.nvidia.enabled=true` parameter when [installing HAMi DRA](../../installation/how-to-use-hami-dra). For more information, please refer to [Installing NVIDIA DRA driver](https://github.com/Project-HAMi/HAMi-DRA?tab=readme-ov-file#installation)
 
 ## Verify Installation
 

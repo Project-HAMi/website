@@ -1,5 +1,5 @@
 ---
-title: GPU 虚拟化原理]
+title: GPU 虚拟化原理
 linktitle: GPU 虚拟化
 translated: true
 ---
