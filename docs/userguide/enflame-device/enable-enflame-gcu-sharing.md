@@ -1,5 +1,5 @@
 ---
-title: Enable Enflame GPU Sharing
+title: Enable Enflame GCU Sharing
 ---
 
 
@@ -82,7 +82,7 @@ spec:
 
 ## Device UUID Selection
 
-You can specify which GPU devices to use or exclude using annotations:
+You can specify which GCU devices to use or exclude using annotations:
 
 ```yaml
 apiVersion: v1
@@ -90,9 +90,9 @@ kind: Pod
 metadata:
   name: poddemo
   annotations:
-    # Use specific GPU devices (comma-separated list)
+    # Use specific GCU devices (comma-separated list)
     enflame.com/use-gpuuuid: "node1-enflame-0,node1-enflame-1"
-    # Or exclude specific GPU devices (comma-separated list)
+    # Or exclude specific GCU devices (comma-separated list)
     enflame.com/nouse-gpuuuid: "node1-enflame-2,node1-enflame-3"
 spec:
   # ... rest of pod spec
