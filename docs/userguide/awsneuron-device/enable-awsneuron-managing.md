@@ -93,7 +93,7 @@ spec:
 
 ## Selecting by Device UUID
 
-You can specify which GPU devices to use or exclude using annotations:
+You can specify which Neuron devices to use or exclude using annotations:
 
 ```yaml
 apiVersion: v1
@@ -101,9 +101,9 @@ kind: Pod
 metadata:
   name: poddemo
   annotations:
-    # Use specific GPU devices (comma-separated list)
+    # Use specific Neuron devices (comma-separated list)
     aws.amazon.com/use-gpuuuid: "node1-AWSNeuron-0,node1-AWSNeuron-1"
-    # Or exclude specific GPU devices (comma-separated list)
+    # Or exclude specific Neuron devices (comma-separated list)
     aws.amazon.com/nouse-gpuuuid: "node1-AWSNeuron-2,node1-AWSNeuron-3"
 spec:
   # ... rest of pod spec

@@ -92,7 +92,7 @@ spec:
 
 ## 按设备 UUID 选择
 
-可通过注解指定使用或排除特定 GPU 设备：
+可通过注解指定使用或排除特定 Neuron 设备：
 
 ```yaml
 apiVersion: v1
@@ -100,9 +100,9 @@ kind: Pod
 metadata:
   name: poddemo
   annotations:
-    # 指定使用的 GPU 设备 (逗号分隔列表)
+    # 指定使用的 Neuron 设备 (逗号分隔列表)
     aws.amazon.com/use-gpuuuid: "node1-AWSNeuron-0,node1-AWSNeuron-1"
-    # 或排除特定 GPU 设备 (逗号分隔列表)
+    # 或排除特定 Neuron 设备 (逗号分隔列表)
     aws.amazon.com/nouse-gpuuuid: "node1-AWSNeuron-2,node1-AWSNeuron-3"
 spec:
   # ... 其他 pod 配置
