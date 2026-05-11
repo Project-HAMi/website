@@ -1,8 +1,8 @@
 ---
-title: Allocate exclusive BI-V100 device
+title: Allocate exclusive MR-V100 device
 ---
 
-To allocate multiple BI-V100 devices, you only need to assign `iluvatar.ai/BI-V150-vgpu` with no other fields required.
+To allocate multiple MR-V100 devices, you only need to assign `iluvatar.ai/MR-V100-vgpu` with no other fields required.
 
 ```yaml
 apiVersion: v1

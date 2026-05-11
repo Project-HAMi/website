@@ -4,7 +4,7 @@ title: Scheduler Policy
 
 ## Summary
 
-Current in a cluster with many GPU nodes, nodes are not `binpack` or `spread` when making scheduling decisions, nor are GPU cards `binpack` or `spread` when using vGPU.
+Currently, in a cluster with many GPU nodes, nodes are not `binpack` or `spread` when making scheduling decisions, nor are GPU cards `binpack` or `spread` when using vGPU.
 
 ## Proposal
 
@@ -26,12 +26,12 @@ node binpack, use one node’s GPU card whenever possible, e.g.:
   - node2: GPU having 4 GPU device
 
 - request:
-  - pod1: User 1 GPU
-  - pod2: User 1 GPU
+  - pod1: Use 1 GPU
+  - pod2: Use 1 GPU
 
 - scheduler result:
-  - pod1: scheduler to node1
-  - pod2: scheduler to node1
+  - pod1: scheduled to node1
+  - pod2: scheduled to node1
 
 #### Story 2
 
@@ -42,12 +42,12 @@ node spread, use GPU cards from different nodes as much as possible, e.g.:
   - node2: GPU having 4 GPU device
 
 - request:
-  - pod1: User 1 GPU
-  - pod2: User 1 GPU
+  - pod1: Use 1 GPU
+  - pod2: Use 1 GPU
 
 - scheduler result:
-  - pod1: scheduler to node1
-  - pod2: scheduler to node2
+  - pod1: scheduled to node1
+  - pod2: scheduled to node2
 
 #### Story 3
 
@@ -57,12 +57,12 @@ GPU binpack, use the same GPU card as much as possible, e.g.:
   - node1: GPU having 4 GPU device, they are GPU1,GPU2,GPU3,GPU4
 
 - request:
-  - pod1: User 1 GPU, gpucore is 20%, gpumem-percentage is 20%
-  - pod2: User 1 GPU, gpucore is 20%, gpumem-percentage is 20%
+  - pod1: Use 1 GPU, gpucore is 20%, gpumem-percentage is 20%
+  - pod2: Use 1 GPU, gpucore is 20%, gpumem-percentage is 20%
 
 - scheduler result:
-  - pod1: scheduler to node1, select GPU1 this device
-  - pod2: scheduler to node1, select GPU1 this device
+  - pod1: scheduled to node1, select GPU1
+  - pod2: scheduled to node1, select GPU1
 
 #### Story 4
 
@@ -72,12 +72,12 @@ GPU spread, use different GPU cards when possible, e.g.:
   - node1: GPU having 4 GPU device, they are GPU1,GPU2,GPU3,GPU4
 
 - request:
-  - pod1: User 1 GPU, gpucore is 20%, gpumem-percentage is 20%
-  - pod2: User 1 GPU, gpucore is 20%, gpumem-percentage is 20%
+  - pod1: Use 1 GPU, gpucore is 20%, gpumem-percentage is 20%
+  - pod2: Use 1 GPU, gpucore is 20%, gpumem-percentage is 20%
 
 - scheduler result:
-  - pod1: scheduler to node1, select GPU1 this device
-  - pod2: scheduler to node1, select GPU2 this device
+  - pod1: scheduled to node1, select GPU1
+  - pod2: scheduled to node1, select GPU2
 
 ## Design Details
 
