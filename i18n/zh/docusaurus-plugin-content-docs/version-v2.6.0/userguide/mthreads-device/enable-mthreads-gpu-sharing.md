@@ -64,6 +64,14 @@ spec:
           mthreads.com/sgpu-core: 8
 ```
 
-> **注意1:** *每一单位的sgpu-memory代表512M的显存.*
+:::note
 
-> **注意2:** *查看更多的[用例](https://github.com/Project-HAMi/HAMi/tree/release-v2.6/examples/mthreads/).*
+每一单位的sgpu-memory代表512M的显存.
+
+:::
+
+:::note
+
+查看更多的[用例](https://github.com/Project-HAMi/HAMi/tree/release-v2.6/examples/mthreads/).
+
+:::

@@ -64,8 +64,16 @@ spec:
           mthreads.com/sgpu-core: 8
 ```
 
-> **NOTICE1:** *Each unit of sgpu-memory indicates 512M device memory*
+:::note
 
-> **NOTICE2:** *You can find more examples in examples folder*
+Each unit of sgpu-memory indicates 512M device memory
+
+:::
+
+:::note
+
+You can find more examples in the [examples folder](https://github.com/Project-HAMi/HAMi/tree/master/examples)
+
+:::
 
     
