@@ -6,7 +6,7 @@ title: Enable AWS-Neuron device Sharing
 
 AWS Neuron devices are specialized hardware accelerators designed by AWS to optimize machine learning workloads, particularly for deep learning inference and training. They are part of the AWS Inferentia and Trainium families, which provide high performance, cost-effective, and scalable solutions for AI applications on AWS.
 
-HAMi now integrates with [Neuron scheduler extension](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/containers/kubernetes-getting-started.html#deploy-neuron-scheduler-extension), providing the following capabilities:
+HAMi now integrates with the [Neuron scheduler extension](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/containers/kubernetes-getting-started.html#deploy-neuron-scheduler-extension), providing the following capabilities:
 
 * **Neuron sharing**: HAMi now supports sharing on aws.amazon.com/neuron by allocating device cores(aws.amazon.com/neuroncore), each Neuron core equals 1/2 of a neuron device.
 
@@ -43,7 +43,7 @@ HAMi divides each AWS Neuron device into 2 units for resource allocation. You ca
 AWS Neuron devices can now be requested by a container
 by either using `aws.amazon.com/neuron` or `aws.amazon.com/neuroncore` resource type.
 
-More examples can be found in the [examples/awsneuron folder](https://github.com/Project-HAMi/HAMi/tree/master/examples/awsneuron/).
+More examples can be found in examples folder
 
 Allocate a whole device:
 
@@ -109,11 +109,7 @@ spec:
   # ... rest of pod spec
 ```
 
-:::note
-
-The device ID format is `{node-name}-AWSNeuron-{index}`. You can find the available device IDs in the node annotations.
-
-:::
+> **NOTICE:** The device ID format is `{node-name}-AWSNeuron-{index}`. You can find the available device IDs in the node annotations.
 
 ### Finding Device UUIDs
 

@@ -47,7 +47,7 @@ helm install hami hami-charts/hami --set devices.enflame.enabled=true -n kube-sy
 
 ## Device Granularity
 
-HAMi divides each Enflame GCU into 100 units for resource allocation. When you request a portion of a GPU, you're actually requesting a certain number of these units.
+HAMi divides each Enflame GCU into 100 units for resource allocation. When you request a portion of a GCU, you're actually requesting a certain number of these units.
 
 ### GCU Slice Allocation
 
