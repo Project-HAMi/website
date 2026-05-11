@@ -23,7 +23,7 @@ translated: true
 
 * Deploy Metax GPU Operator on metax nodes (Please consult your device provider to acquire its package and document)
 
-* Deploy HAMi according to README.md
+- Deploy HAMi using the [online installation guide](../../../installation/online-installation.md)
 
 ### Running Metax jobs
 
