@@ -9,7 +9,7 @@ translated: true
 
 ## 提案
 
-我们在配置中添加 `node-scheduler-policy` 和 `gpu-scheduler-policy`，然后调度器可以使用此策略实现节点 `binpack` 或 `spread` 或 GPU `binpack`、`spread` 或 `topology-aware`。`topology-aware` 策略只在Nvidia GPU卡下生效。
+我们在配置中添加 `node-scheduler-policy` 和 `gpu-scheduler-policy`，然后调度器可以使用此策略实现节点 `binpack` 或 `spread` 或 GPU `binpack`、`spread` 或 `topology-aware`。`topology-aware` 策略只在NVIDIA GPU卡下生效。
 
 用户可以设置 Pod 注释来更改此默认策略，使用 `hami.io/node-scheduler-policy` 和 `hami.io/gpu-scheduler-policy` 来覆盖调度器配置。
 
@@ -172,9 +172,9 @@ GPU2 Score: ((20+70)/100 + (1000+6000)/8000)) * 10 = 17.75
 
 #### 拓扑感知
 
-##### Nvidia 拓扑感知（仅 Nvidia GPU 支持）
+##### NVIDIA 拓扑感知（仅 NVIDIA GPU 支持）
 
-Nvidia 拓扑感知主要关注每张卡之间的拓扑关系（使用`nvidia-smi topo-m` 命令查询），hami-device-plugin 会根据拓扑关系计算出卡与卡之间的得分，GPU 之间带宽越大，得分越高。如下所示：
+NVIDIA 拓扑感知主要关注每张卡之间的拓扑关系（使用`nvidia-smi topo-m` 命令查询），hami-device-plugin 会根据拓扑关系计算出卡与卡之间的得分，GPU 之间带宽越大，得分越高。如下所示：
 ```json
 [
   {

@@ -771,7 +771,7 @@ func (s *Scheduler) RegisterFromNodeAnnotations() {
 `pkg/device/nvidia/device.go:209`
 
 ```golang
-ffunc (dev *NvidiaGPUDevices) GetNodeDevices(n corev1.Node) ([]*util.DeviceInfo, error) {
+func (dev *NvidiaGPUDevices) GetNodeDevices(n corev1.Node) ([]*util.DeviceInfo, error) {
  devEncoded, ok := n.Annotations[RegisterAnnos]
  if !ok {
   return []*util.DeviceInfo{}, errors.New("annos not found " + RegisterAnnos)

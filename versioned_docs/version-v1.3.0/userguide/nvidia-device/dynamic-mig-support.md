@@ -20,7 +20,7 @@ title: Enable dynamic-mig feature
 
 * NVIDIA Blackwell and Hopper™ and Ampere Devices
 * HAMi > v2.5.0
-* Nvidia-container-toolkit
+* NVIDIA Container Toolkit
 
 ## Enabling Dynamic-mig Support
 
@@ -176,6 +176,6 @@ nodeGPUMigInstance{deviceidx="1",deviceuuid="GPU-30f90f49-43ab-0a78-bf5c-93ed41e
 
 1. You don't need to do anything on MIG node, all are managed by mig-parted in hami-device-plugin.
 
-2. Nvidia devices before Ampere architect can't use 'mig' mode
+2. NVIDIA devices before Ampere architect can't use 'mig' mode
 
 3. You won't see any mig resources(ie, `nvidia.com/mig-1g.10gb`) on node, hami uses a unified resource name for both 'mig' and 'hami-core' node

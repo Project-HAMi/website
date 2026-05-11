@@ -9,7 +9,7 @@ translated: true
 使用 volcano-vgpu 时，**不需要** 安装 HAMi，仅使用  
 [Volcano vGPU device-plugin](https://github.com/Project-HAMi/volcano-vgpu-device-plugin) 即可。它可以为由 Volcano 管理的 NVIDIA 设备提供设备共享机制。
 
-该插件基于 [Nvidia Device Plugin](https://github.com/NVIDIA/k8s-device-plugin)，并使用 [HAMi-core](https://github.com/Project-HAMi/HAMi-core) 实现对 GPU 卡的硬隔离支持。
+该插件基于 [NVIDIA Device Plugin](https://github.com/NVIDIA/k8s-device-plugin)，并使用 [HAMi-core](https://github.com/Project-HAMi/HAMi-core) 实现对 GPU 卡的硬隔离支持。
 
 Volcano vGPU 仅在 Volcano v1.9 及更高版本中可用。
 

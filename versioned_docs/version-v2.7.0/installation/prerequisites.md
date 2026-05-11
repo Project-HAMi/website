@@ -7,7 +7,7 @@ Before installing HAMi, make sure the following tools and dependencies are prope
 - [Helm](https://helm.sh/zh/docs/) v3+
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) v1.16+
 - [CUDA](https://developer.nvidia.com/cuda-toolkit) v10.2+
-- [NvidiaDriver](https://www.nvidia.cn/drivers/unix/) v440+
+- [NVIDIA Driver](https://www.nvidia.cn/drivers/unix/) v440+
 
 ## Preparing your GPU Nodes
 

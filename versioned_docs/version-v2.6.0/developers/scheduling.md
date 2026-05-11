@@ -171,9 +171,9 @@ So, in `Spread` policy, the selected node is `GPU1`.
 
 #### Topology-aware  
 
-##### Nvidia Topology-aware (Nvidia GPU Only)  
+##### NVIDIA Topology-aware (NVIDIA GPU Only)  
 
-Nvidia Topology-aware primarily focuses on the topological relationships between each GPU (queried using the `nvidia-smi topo -m` command). The hami-device-plugin calculates scores between GPUs based on these relationships - the higher the bandwidth between GPUs, the higher the score. For example:  
+NVIDIA Topology-aware primarily focuses on the topological relationships between each GPU (queried using the `nvidia-smi topo -m` command). The hami-device-plugin calculates scores between GPUs based on these relationships - the higher the bandwidth between GPUs, the higher the score. For example:  
 
 ```json  
 [  
