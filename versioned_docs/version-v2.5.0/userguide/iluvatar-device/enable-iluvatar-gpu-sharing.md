@@ -25,11 +25,7 @@ title: Enable Iluvatar GCU sharing
 
 * Deploy gpu-manager on iluvatar nodes (Please consult your device provider to acquire its package and document)
 
-:::note
-
-Install only gpu-manager, don't install gpu-admission package.
-
-:::
+> **NOTICE:** *Install only gpu-manager, don't install gpu-admission package.*
 
 * Identify the resource name about core and memory usage(i.e 'iluvatar.ai/vcuda-core', 'iluvatar.ai/vcuda-memory')
 
@@ -107,7 +103,7 @@ Each unit of vcuda-memory indicates 256M device memory
 
 :::note
 
-You can find more examples in examples folder
+You can find more examples in the [examples/iluvatar folder](https://github.com/Project-HAMi/HAMi/tree/master/examples/iluvatar)
 
 :::
 

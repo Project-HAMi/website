@@ -38,7 +38,7 @@ Equipped with MetaXLink interconnected resources.
 
 * Deploy Metax GPU Extensions on metax nodes (Please consult your device provider to acquire its package and document)
 
-- Deploy HAMi using the online installation guide
+* Deploy HAMi according to README.md
 
 ## Running Metax jobs
 
@@ -64,7 +64,7 @@ spec:
 
 :::note
 
-You can find more examples in examples folder
+You can find more examples in the [examples/metax/gpu folder](https://github.com/Project-HAMi/HAMi/tree/master/examples/metax/gpu)
 
 :::
 
