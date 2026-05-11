@@ -11,9 +11,9 @@ We hope that the items listed below will inspire further engagement from the com
 
 ## 2022 H1
 - Multi-cluster HA scheduling policy
-    * spread by region
-    * spread by zone
-    * spread by provider
+    - spread by region
+    - spread by zone
+    - spread by provider
 - Multi-cluster Ingress
 - Multi-cluster HPA (Horizontal Pod Autoscaling)
 - Federated resource quota

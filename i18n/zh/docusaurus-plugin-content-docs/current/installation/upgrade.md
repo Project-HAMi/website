@@ -304,6 +304,6 @@ kubectl apply -f hami-state-backup.yaml
 
 ## 另请参阅
 
-* [安装指南](./online-installation.md)
-* [卸载指南](./uninstall.md)
-* [HAMi 文档](../core-concepts/introduction.md)
+- [安装指南](./online-installation.md)
+- [卸载指南](./uninstall.md)
+- [HAMi 文档](../core-concepts/introduction.md)

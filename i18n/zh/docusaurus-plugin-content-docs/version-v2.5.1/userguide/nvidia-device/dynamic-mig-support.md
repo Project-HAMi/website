@@ -19,15 +19,15 @@ translated: true
 
 ## 前提条件
 
-* NVIDIA Blackwell 和 Hopper™ 及 Ampere 设备
-* HAMi > v2.5.0
-* NVIDIA Container Toolkit
+- NVIDIA Blackwell 和 Hopper™ 及 Ampere 设备
+- HAMi > v2.5.0
+- NVIDIA Container Toolkit
 
 ## 启用 Dynamic-mig 支持
 
-* 使用 Helm 安装 Chart，参见[此处](https://github.com/Project-HAMi/HAMi#enabling-vgpu-support-in-kubernetes)的“在 Kubernetes 中启用 vGPU 支持”部分
+- 使用 Helm 安装 Chart，参见[此处](https://github.com/Project-HAMi/HAMi#enabling-vgpu-support-in-kubernetes)的“在 Kubernetes 中启用 vGPU 支持”部分
 
-* 在 device-plugin configMap 中将 `mode` 配置为 `mig` 以支持 MIG 节点
+- 在 device-plugin configMap 中将 `mode` 配置为 `mig` 以支持 MIG 节点
 
 ```bash
 kubectl describe cm  hami-device-plugin -n kube-system
@@ -48,10 +48,10 @@ kubectl describe cm  hami-device-plugin -n kube-system
 }
 ```
 
-* 重启以下 Pod 以使更改生效：
+- 重启以下 Pod 以使更改生效：
 
-  * hami-scheduler 
-  * 'MIG-NODE-A' 上的 hami-device-plugin
+  - hami-scheduler 
+  - 'MIG-NODE-A' 上的 hami-device-plugin
 
 ## 自定义 mig 配置（可选）
 

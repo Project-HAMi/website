@@ -7,13 +7,13 @@ translated: true
 
 ## 先决条件
 
-* Ascend 设备类型：910B, 910A, 310P
-* 驱动版本 >= 24.1.rc1
-* Ascend docker 运行时
+- Ascend 设备类型：910B, 910A, 310P
+- 驱动版本 >= 24.1.rc1
+- Ascend docker 运行时
 
 ## 启用 Ascend-sharing 支持
 
-* 由于与 HAMi 的依赖关系，你需要在 HAMi 安装期间设置以下参数：
+- 由于与 HAMi 的依赖关系，你需要在 HAMi 安装期间设置以下参数：
 
   ```yaml
   devices.ascend.enabled=true
@@ -40,15 +40,15 @@ translated: true
         - huawei.com/Ascend310P-memory
   ```
 
-* 使用以下命令标记 Ascend 节点：
+- 使用以下命令标记 Ascend 节点：
 
   ```bash
   kubectl label node {ascend-node} ascend=on
   ```
 
-* 安装 [Ascend docker 运行时](https://gitee.com/ascend/ascend-docker-runtime)
+- 安装 [Ascend docker 运行时](https://gitee.com/ascend/ascend-docker-runtime)
 
-* 从 HAMi 项目[下载 Ascend-vgpu-device-plugin 的 yaml](https://github.com/Project-HAMi/ascend-device-plugin/blob/master/build/ascendplugin-hami.yaml)，并执行以下命令来部署：
+- 从 HAMi 项目[下载 Ascend-vgpu-device-plugin 的 yaml](https://github.com/Project-HAMi/ascend-device-plugin/blob/master/build/ascendplugin-hami.yaml)，并执行以下命令来部署：
 
   ```bash
   wge https://raw.githubusercontent.com/Project-HAMi/ascend-device-plugin/refs/heads/main/ascend-device-plugin.yaml

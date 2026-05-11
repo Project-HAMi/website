@@ -16,13 +16,13 @@ title: Enable cambricon MLU sharing
 
 ## Prerequisites
 
-* neuware-mlu370-driver > 5.0.0
-* cambricon-device-plugin > 2.0.9
-* cntoolkit > 2.5.3
+- neuware-mlu370-driver > 5.0.0
+- cambricon-device-plugin > 2.0.9
+- cntoolkit > 2.5.3
 
 ## Enabling MLU-sharing Support
 
-* Contact your device provider to acquire cambricon-device-plugin>2.0.9, edit parameter `mode` to 'dynamic-smlu` in containers.args field.
+- Contact your device provider to acquire cambricon-device-plugin>2.0.9, edit parameter `mode` to 'dynamic-smlu` in containers.args field.
 
 ```
         args:
@@ -30,11 +30,11 @@ title: Enable cambricon MLU sharing
 	...
 ```
 
-* Deploy modified cambricon-device-plugin
+- Deploy modified cambricon-device-plugin
 
-* Install the chart using helm, See 'enabling vGPU support in kubernetes' section [here](https://github.com/Project-HAMi/HAMi#enabling-vgpu-support-in-kubernetes)
+- Install the chart using helm, See 'enabling vGPU support in kubernetes' section [here](https://github.com/Project-HAMi/HAMi#enabling-vgpu-support-in-kubernetes)
 
-* Tag MLU node with the following command
+- Tag MLU node with the following command
 ```
 kubectl label node {mlu-node} mlu=on
 ```
@@ -61,4 +61,8 @@ spec:
           cambricon.com/mlu.smlu.vcore: 10 # each MLU requesting 10% MLU device core
 ```
 
-> **NOTICE:** *`vmemory` and `vcore` can only work when `cambricon.com/mlunum=1`* 
+:::note
+
+`vmemory` and `vcore` can only work when `cambricon.com/mlunum=1`*
+
+:::

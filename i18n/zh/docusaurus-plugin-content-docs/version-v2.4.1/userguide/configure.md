@@ -10,52 +10,52 @@ These global configurations apply for all tasks. You can customize your HAMi ins
 helm install vgpu-charts/vgpu vgpu --set devicePlugin.deviceMemoryScaling=5 ...
 ```
 
-* `devicePlugin.service.schedulerPort:`
+- `devicePlugin.service.schedulerPort:`
   Integer type, by default: 31998, scheduler webhook service nodePort.
-* `devicePlugin.deviceMemoryScaling:` 
+- `devicePlugin.deviceMemoryScaling:` 
   Float type, by default: 1. The ratio for NVIDIA device memory scaling, can be greater than 1 (enable virtual device memory, experimental feature). For NVIDIA GPU with *M* memory, if `devicePlugin.deviceMemoryScaling` is set argument to *S*, vGPUs split by this GPU will totally get `S * M` memory in Kubernetes with the HAMi device plugin.
-* `devicePlugin.deviceSplitCount:` 
+- `devicePlugin.deviceSplitCount:` 
   Integer type, by default: equals 10. Maximum tasks assigned to a simple GPU device.
-* `devicePlugin.migstrategy:`
+- `devicePlugin.migstrategy:`
   String type, "none" for ignoring MIG features or "mixed" for allocating MIG device by separate resources. Default "none"
-* `devicePlugin.disablecorelimit:`
+- `devicePlugin.disablecorelimit:`
   String type, "true" for disable core limit, "false" for enable core limit, default: false
-* `scheduler.defaultMem:` 
+- `scheduler.defaultMem:` 
   Integer type, by default: 5000. The default device memory of the current task, in MB
-* `scheduler.defaultCores:` 
+- `scheduler.defaultCores:` 
   Integer type, by default: equals 0. Percentage of GPU cores reserved for the current task. If assigned to 0, it may fit in any GPU with enough device memory. If assigned to 100, it will use an entire GPU card exclusively.
-* `scheduler.defaultGPUNum:`
+- `scheduler.defaultGPUNum:`
   Integer type, by default: equals 1, if configuration value is 0, then the configuration value will not take effect and will be filtered. when a user does not set nvidia.com/gpu this key in pod resource, webhook should check nvidia.com/gpumem、resource-mem-percentage、nvidia.com/gpucores this three key, anyone a key having value, webhook should add nvidia.com/gpu key and this default value to resources limits map.
-* `scheduler.defaultSchedulerPolicy.nodeSchedulerPolicy:` String type, default value is "binpack", representing the GPU node scheduling policy. "binpack" means trying to allocate tasks to the same GPU node as much as possible, while "spread" means trying to allocate tasks to different GPU nodes as much as possible.
-* `scheduler.defaultSchedulerPolicy.gpuSchedulerPolicy:` String type, default value is "spread", representing the GPU scheduling policy. "binpack" means trying to allocate tasks to the same GPU as much as possible, while "spread" means trying to allocate tasks to different GPUs as much as possible.
-* `resourceName:`
+- `scheduler.defaultSchedulerPolicy.nodeSchedulerPolicy:` String type, default value is "binpack", representing the GPU node scheduling policy. "binpack" means trying to allocate tasks to the same GPU node as much as possible, while "spread" means trying to allocate tasks to different GPU nodes as much as possible.
+- `scheduler.defaultSchedulerPolicy.gpuSchedulerPolicy:` String type, default value is "spread", representing the GPU scheduling policy. "binpack" means trying to allocate tasks to the same GPU as much as possible, while "spread" means trying to allocate tasks to different GPUs as much as possible.
+- `resourceName:`
   String type, vgpu number resource name, default: "nvidia.com/gpu"
-* `resourceMem:`
+- `resourceMem:`
   String type, vgpu memory size resource name, default: "nvidia.com/gpumem"
-* `resourceMemPercentage:`
+- `resourceMemPercentage:`
   String type, vgpu memory fraction resource name, default: "nvidia.com/gpumem-percentage" 
-* `resourceCores:`
+- `resourceCores:`
   String type, vgpu cores resource name, default: "nvidia.com/cores"
-* `resourcePriority:`
+- `resourcePriority:`
   String type, vgpu task priority name, default: "nvidia.com/priority"
 
 ## Container configuration
 
 These container configurations are local to container, you can set the following configuration in container environment variables:
 
-* `GPU_CORE_UTILIZATION_POLICY:`
+- `GPU_CORE_UTILIZATION_POLICY:`
   String type, "default", "force", "disable"
   default: "default"
   "default" means the default utilization policy
   "force" means the container will always limit the core utilization below "nvidia.com/gpucores"
   "disable" means the container will ignore the utilization limitation set by "nvidia.com/gpucores" during task execution
 
-* `ACTIVE_OOM_KILLER:`
+- `ACTIVE_OOM_KILLER:`
   Bool type, "true","false"
   default: false
   "true" means there will be a daemon process which monitors all running tasks inside this container, and instantly kill any process which exceeds the limitation set by "nvidia.com/gpumem" or "nvidia.com/gpumemory"
 
-* `CUDA_DISABLE_CONTROL`
+- `CUDA_DISABLE_CONTROL`
   Bool type, "true","false"
   default: false
   "true" means the HAMi-core will not be used inside container, as a result, there will be no resource isolation and limitation in that container, only for debug. 

@@ -31,14 +31,14 @@ translated: true
 
 ## 前提条件
 
-* Metax GPU 扩展版本 >= 0.8.0
-* Kubernetes 版本 >= 1.23
+- Metax GPU 扩展版本 >= 0.8.0
+- Kubernetes 版本 >= 1.23
 
 ## 启用拓扑感知调度
 
-* 在 metax 节点上部署 Metax GPU 扩展（请咨询你的设备提供商以获取其软件包和文档）
+- 在 metax 节点上部署 Metax GPU 扩展（请咨询你的设备提供商以获取其软件包和文档）
 
-* 根据 README.md 部署 HAMi
+- 根据 README.md 部署 HAMi
 
 ## 运行 Metax 作业
 

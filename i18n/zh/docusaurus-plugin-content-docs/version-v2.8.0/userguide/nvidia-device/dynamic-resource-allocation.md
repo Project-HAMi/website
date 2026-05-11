@@ -10,7 +10,7 @@ HAMi 已经在 NVIDIA 设备上支持了 K8s [DRA](https://kubernetes.io/docs/co
 
 ## 前提条件
 
-* 底层容器运行时（例如 containerd 或 CRI-O）启用 [CDI](https://github.com/cncf-tags/container-device-interface?tab=readme-ov-file#how-to-configure-cdi)
+- 底层容器运行时（例如 containerd 或 CRI-O）启用 [CDI](https://github.com/cncf-tags/container-device-interface?tab=readme-ov-file#how-to-configure-cdi)
 
 ## 安装
 

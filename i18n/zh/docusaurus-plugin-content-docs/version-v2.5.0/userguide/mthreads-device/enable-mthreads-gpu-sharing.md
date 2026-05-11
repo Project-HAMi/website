@@ -25,12 +25,12 @@ translated: true
 
 ## 先决条件
 
-* [MT CloudNative Toolkits > 1.9.0](https://docs.mthreads.com/cloud-native/cloud-native-doc-online/)
-* 驱动版本 >= 1.2.0
+- [MT CloudNative Toolkits > 1.9.0](https://docs.mthreads.com/cloud-native/cloud-native-doc-online/)
+- 驱动版本 >= 1.2.0
 
 ## 启用 GPU 共享支持
 
-* 在 mthreads 节点上部署 MT-CloudNative Toolkit（请咨询你的设备提供商以获取其软件包和文档）
+- 在 mthreads 节点上部署 MT-CloudNative Toolkit（请咨询你的设备提供商以获取其软件包和文档）
 
 :::note
 
@@ -38,7 +38,7 @@ translated: true
 
 :::
 
-* 在安装 HAMi 时设置 'devices.mthreads.enabled = true'
+- 在安装 HAMi 时设置 'devices.mthreads.enabled = true'
 
 ```bash
 helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag={your kubernetes version} --set device.mthreads.enabled=true -n kube-system
