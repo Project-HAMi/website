@@ -32,11 +32,15 @@ Install only gpushare-device-plugin, don't install gpu-scheduler-plugin package.
 
 :::
 
-> **NOTE:** The default resource names are:
-> - `enflame.com/vgcu` for GCU count, only support 1 now.
-> - `enflame.com/vgcu-percentage` for the percentage of memory and cores in a gcu slice.
->
-> You can customize these names by modifying `hami-scheduler-device` configMap above.
+:::note
+
+The default resource names are:
+- `enflame.com/vgcu` for GCU count, only support 1 now.
+- `enflame.com/vgcu-percentage` for the percentage of memory and cores in a gcu slice.
+
+You can customize these names by modifying `hami-scheduler-device` configMap above.
+
+:::
 
 * Set 'devices.enflame.enabled=true' when deploy HAMi
 
@@ -106,7 +110,11 @@ spec:
   # ... rest of pod spec
 ```
 
-> **NOTE:** The device ID format is `{node-name}-enflame-{index}`. You can find the available device IDs in the node status.
+:::note
+
+The device ID format is `{node-name}-enflame-{index}`. You can find the available device IDs in the node status.
+
+:::
 
 ### Finding Device UUIDs
 

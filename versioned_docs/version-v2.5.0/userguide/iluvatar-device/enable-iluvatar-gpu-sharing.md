@@ -35,12 +35,16 @@ title: Enable Iluvatar GCU sharing
 helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag={your kubernetes version} --set iluvatarResourceMem=iluvatar.ai/vcuda-memory --set iluvatarResourceCore=iluvatar.ai/vcuda-core -n kube-system
 ```
 
-> **NOTE:** The default resource names are:
-> - `iluvatar.ai/vgpu` for GPU count
-> - `iluvatar.ai/vcuda-memory` for memory allocation
-> - `iluvatar.ai/vcuda-core` for core allocation
->
-> You can customize these names using the parameters above.
+:::note
+
+The default resource names are:
+- `iluvatar.ai/vgpu` for GPU count
+- `iluvatar.ai/vcuda-memory` for memory allocation
+- `iluvatar.ai/vcuda-core` for core allocation
+
+You can customize these names using the parameters above.
+
+:::
 
 ## Device Granularity
 

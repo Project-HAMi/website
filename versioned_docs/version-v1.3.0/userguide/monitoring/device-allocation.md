@@ -21,4 +21,8 @@ It contains the following metrics:
 | GPUDeviceSharedNum | Number of containers sharing this GPU | `{deviceidx="0",deviceuuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",nodeid="aio-node67",zone="vGPU"}` 1 |
 | vGPUPodsDeviceAllocated | vGPU Allocated from pods | `{containeridx="Ascend310P",deviceusedcore="0",deviceuuid="aio-node74-arm-Ascend310P-0",nodename="aio-node74-arm",podname="ascend310p-pod",podnamespace="default",zone="vGPU"}` 3.221225472e+09 |
 
-> **Note** This is the overview about device allocation, it is NOT device real-time usage metrics. For that part, see real-time device usage.
+:::note
+
+This is the overview about device allocation, it is NOT device real-time usage metrics. For that part, see real-time device usage.
+
+:::
