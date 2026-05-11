@@ -10,7 +10,7 @@ By installing hami-k8s-dra-driver, your cluster scheduler can discover NVIDIA GP
 
 ## Prerequisites
 
-* The underlying container runtime (e.g., containerd or CRI-O) has [CDI](https://github.com/cncf-tags/container-device-interface?tab=readme-ov-file#how-to-configure-cdi) enabled
+- The underlying container runtime (e.g., containerd or CRI-O) has [CDI](https://github.com/cncf-tags/container-device-interface?tab=readme-ov-file#how-to-configure-cdi) enabled
 
 ## Installation
 

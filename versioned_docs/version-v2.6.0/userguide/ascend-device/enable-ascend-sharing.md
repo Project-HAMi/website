@@ -6,13 +6,13 @@ Memory slicing is supported based on virtualization template, lease available te
 
 ## Prerequisites
 
-* Ascend device type: 910B, 910A, 310P
-* driver version >= 24.1.rc1
-* Ascend docker runtime
+- Ascend device type: 910B, 910A, 310P
+- driver version >= 24.1.rc1
+- Ascend docker runtime
 
 ## Enabling Ascend-sharing support
 
-* Due to dependencies with HAMi, you need to set the arguments in the process of installing HAMi:
+- Due to dependencies with HAMi, you need to set the arguments in the process of installing HAMi:
 
   ```
   devices.ascend.enabled=true
@@ -39,15 +39,15 @@ Memory slicing is supported based on virtualization template, lease available te
         - huawei.com/Ascend310P-memory
   ```
 
-* Tag Ascend node with the following command
+- Tag Ascend node with the following command
 
   ```bash
   kubectl label node {ascend-node} ascend=on
   ```
 
-* Install [Ascend docker runtime](https://gitee.com/ascend/ascend-docker-runtime)
+- Install [Ascend docker runtime](https://gitee.com/ascend/ascend-docker-runtime)
 
-* [Download YAML for Ascend-vgpu-device-plugin](https://github.com/Project-HAMi/ascend-device-plugin/blob/master/build/ascendplugin-hami.yaml) from HAMi Project, and run the following commands to deploy
+- [Download YAML for Ascend-vgpu-device-plugin](https://github.com/Project-HAMi/ascend-device-plugin/blob/master/build/ascendplugin-hami.yaml) from HAMi Project, and run the following commands to deploy
 
   ```bash
   wge https://raw.githubusercontent.com/Project-HAMi/ascend-device-plugin/refs/heads/main/ascend-device-plugin.yaml

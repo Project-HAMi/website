@@ -18,18 +18,18 @@ title: Enable Iluvatar GCU sharing
 
 ## Prerequisites
 
-* Iluvatar gpu-manager (please consult your device provider)
-* driver version > 3.1.0
+- Iluvatar gpu-manager (please consult your device provider)
+- driver version > 3.1.0
 
 ## Enabling GPU-sharing Support
 
-* Deploy gpu-manager on iluvatar nodes (Please consult your device provider to acquire its package and document)
+- Deploy gpu-manager on iluvatar nodes (Please consult your device provider to acquire its package and document)
 
 > **NOTICE:** *Install only gpu-manager, don't install gpu-admission package.*
 
-* Identify the resource name about core and memory usage(i.e 'iluvatar.ai/vcuda-core', 'iluvatar.ai/vcuda-memory')
+- Identify the resource name about core and memory usage(i.e 'iluvatar.ai/vcuda-core', 'iluvatar.ai/vcuda-memory')
 
-* set the 'iluvatarResourceMem' and 'iluvatarResourceCore' parameters when install hami
+- set the 'iluvatarResourceMem' and 'iluvatarResourceCore' parameters when install hami
 
 ```
 helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag={your kubernetes version} --set iluvatarResourceMem=iluvatar.ai/vcuda-memory --set iluvatarResourceCore=iluvatar.ai/vcuda-core -n kube-system

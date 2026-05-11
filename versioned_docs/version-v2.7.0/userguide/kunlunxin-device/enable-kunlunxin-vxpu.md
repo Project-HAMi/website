@@ -14,13 +14,13 @@ This component supports multiplexing Kunlunxin XPU devices (P800-OAM) and provid
 
 
 ## Prerequisites
-* driver version >= 5.0.21.16
-* xpu-container-toolkit >= xpu_container_1.0.2-1
-* XPU device type: P800-OAM
+- driver version >= 5.0.21.16
+- xpu-container-toolkit >= xpu_container_1.0.2-1
+- XPU device type: P800-OAM
 
 ## Enable XPU-sharing Support
 
-* Deploy [vxpu-device-plugin]
+- Deploy [vxpu-device-plugin]
 ```yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole

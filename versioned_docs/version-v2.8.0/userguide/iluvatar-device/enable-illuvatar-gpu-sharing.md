@@ -18,12 +18,12 @@ title: Enable Illuvatar GPU Sharing
 
 ## Prerequisites
 
-* Iluvatar gpu-manager (please consult your device provider)
-* driver version > 3.1.0
+- Iluvatar gpu-manager (please consult your device provider)
+- driver version > 3.1.0
 
 ## Enabling GPU-sharing Support
 
-* Deploy gpu-manager on iluvatar nodes (Please consult your device provider to acquire its package and document)
+- Deploy gpu-manager on iluvatar nodes (Please consult your device provider to acquire its package and document)
 
 :::note
 
@@ -31,7 +31,7 @@ Install only gpu-manager, don't install gpu-admission package.
 
 :::
 
-* set the devices.iluvatar.enabled=true when install hami
+- set the devices.iluvatar.enabled=true when install hami
 
 ```bash
 helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag={your kubernetes version} --set devices.iluvatar.enabled=true

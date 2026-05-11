@@ -17,14 +17,14 @@ title: Enable Enflame GCU Sharing
 
 ## Prerequisites
 
-* Enflame gcushare-device-plugin >= 2.1.6 (please consult your device provider, gcushare has two components: gcushare-scheduler-plugin and gcushare-device-plugin, only gcushare-device-plugin is needed here )
-* driver version >= 1.2.3.14
-* kubernetes >= 1.24
-* enflame-container-toolkit >=2.0.50
+- Enflame gcushare-device-plugin >= 2.1.6 (please consult your device provider, gcushare has two components: gcushare-scheduler-plugin and gcushare-device-plugin, only gcushare-device-plugin is needed here )
+- driver version >= 1.2.3.14
+- kubernetes >= 1.24
+- enflame-container-toolkit >=2.0.50
 
 ## Enabling GCU-sharing Support
 
-* Deploy gcushare-device-plugin on enflame nodes (Please consult your device provider to acquire its package and document)
+- Deploy gcushare-device-plugin on enflame nodes (Please consult your device provider to acquire its package and document)
 
 :::note
 
@@ -42,7 +42,7 @@ You can customize these names by modifying `hami-scheduler-device` configMap abo
 
 :::
 
-* Set 'devices.enflame.enabled=true' when deploy HAMi
+- Set 'devices.enflame.enabled=true' when deploy HAMi
 
 ```
 helm install hami hami-charts/hami --set devices.enflame.enabled=true -n kube-system

@@ -26,14 +26,14 @@ Minor releases contain features, enhancements, and fixes that are introduced in 
 Since HAMi is a fast growing project and features continue to iterate rapidly,
 having a minor release approximately every few months helps balance speed and stability.
 
-* Roughly every 3 months
+- Roughly every 3 months
 
 ### PATCH release
 
 Patch releases are for backwards-compatible bug fixes and very minor enhancements which do not impact stability or compatibility.
 Typically only critical fixes are selected for patch releases. Usually there will be at least one patch release in a minor release cycle.
 
-* When critical fixes are required, or roughly each month
+- When critical fixes are required, or roughly each month
 
 ### Versioning
 
@@ -53,17 +53,17 @@ Critical issues, with no work-arounds, are added to the next patch release.
 
 Release branches and PRs are managed as follows:
 
-* All changes are always first committed to `master`.
-* Branches are created for each major or minor release.
-* The branch name will contain the version, for example release-1.2.
-* Patch releases are created from a release branch.
-* For critical fixes that need to be included in a patch release, PRs should always be first merged to master
+- All changes are always first committed to `master`.
+- Branches are created for each major or minor release.
+- The branch name will contain the version, for example release-1.2.
+- Patch releases are created from a release branch.
+- For critical fixes that need to be included in a patch release, PRs should always be first merged to master
   and then cherry-picked to the release branch. PRs need to be guaranteed to have a release note written and
   these descriptions will be reflected in the next patch release.
   The cherry-pick process of PRs is executed through the script. See usage [here](https://project-hami.io/docs/contributor/cherry-picks).
-* For complex changes, specially critical bugfixes, separate PRs may be required for master and release branches.
-* The milestone mark (for example v1.4) will be added to PRs which means changes in PRs are one of the contents of the corresponding release.
-* During PR review, the Assignee selection is used to indicate the reviewer.
+- For complex changes, specially critical bugfixes, separate PRs may be required for master and release branches.
+- The milestone mark (for example v1.4) will be added to PRs which means changes in PRs are one of the contents of the corresponding release.
+- During PR review, the Assignee selection is used to indicate the reviewer.
 
 ### Release Planning
 
@@ -85,26 +85,26 @@ For example, [here](https://hub.docker.com/r/karmada/karmada-controller-manager)
 
 Since v1.2.0, the following artifacts are uploaded:
 
-* crds.tar.gz
-* karmada-chart-v\<version_number\>.tgz
-* karmadactl-darwin-amd64.tgz
-* karmadactl-darwin-amd64.tgz.sha256
-* karmadactl-darwin-arm64.tgz
-* karmadactl-darwin-arm64.tgz.sha256
-* karmadactl-linux-amd64.tgz
-* karmadactl-linux-amd64.tgz.sha256
-* karmadactl-linux-arm64.tgz
-* karmadactl-linux-arm64.tgz.sha256
-* kubectl-karmada-darwin-amd64.tgz
-* kubectl-karmada-darwin-amd64.tgz.sha256
-* kubectl-karmada-darwin-arm64.tgz
-* kubectl-karmada-darwin-arm64.tgz.sha256
-* kubectl-karmada-linux-amd64.tgz
-* kubectl-karmada-linux-amd64.tgz.sha256
-* kubectl-karmada-linux-arm64.tgz
-* kubectl-karmada-linux-arm64.tgz.sha256
-* Source code(zip)
-* Source code(tar.gz)
+- crds.tar.gz
+- karmada-chart-v\<version_number\>.tgz
+- karmadactl-darwin-amd64.tgz
+- karmadactl-darwin-amd64.tgz.sha256
+- karmadactl-darwin-arm64.tgz
+- karmadactl-darwin-arm64.tgz.sha256
+- karmadactl-linux-amd64.tgz
+- karmadactl-linux-amd64.tgz.sha256
+- karmadactl-linux-arm64.tgz
+- karmadactl-linux-arm64.tgz.sha256
+- kubectl-karmada-darwin-amd64.tgz
+- kubectl-karmada-darwin-amd64.tgz.sha256
+- kubectl-karmada-darwin-arm64.tgz
+- kubectl-karmada-darwin-arm64.tgz.sha256
+- kubectl-karmada-linux-amd64.tgz
+- kubectl-karmada-linux-amd64.tgz.sha256
+- kubectl-karmada-linux-arm64.tgz
+- kubectl-karmada-linux-arm64.tgz.sha256
+- Source code(zip)
+- Source code(tar.gz)
 
 You can visit `https://github.com/Project-HAMi/HAMi/releases/download/v<version_number>/<artifact_name>` to download the artifacts above.
 
