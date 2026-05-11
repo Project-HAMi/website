@@ -205,11 +205,11 @@ helm upgrade hami hami-charts/hami -n hami-system
 
 For complete installation documentation, refer to: [https://project-hami.io/docs/installation/online-installation](https://project-hami.io/docs/installation/online-installation)
 
-> **Upgrade notes:**
->
-> - If using Volcano vGPU mode, please note CDI-related configuration changes
-> - If using Ascend devices and wish to enable HAMi-core mode, refer to the Ascend configuration section in the latest documentation
-> - It is recommended to verify compatibility in a test environment before upgrading
+:::warning Upgrade notes
+- If using Volcano vGPU mode, please note CDI-related configuration changes
+- If using Ascend devices and wish to enable HAMi-core mode, refer to the Ascend configuration section in the latest documentation
+- It is recommended to verify compatibility in a test environment before upgrading
+:::
 
 ## Community Updates
 
