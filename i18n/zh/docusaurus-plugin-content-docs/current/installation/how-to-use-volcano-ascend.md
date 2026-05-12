@@ -81,7 +81,7 @@ data:
 
  你可能会注意到 `volcano-vgpu` 有自己的 `GeometriesCMName` 和 `KnownGeometriesCMNamespace`，这意味着如果要在同一个 Volcano 集群中同时使用 vNPU 和 vGPU，你需要合并两边的 configMap。
 
- :::
+:::
 
 ## 使用方法
 
