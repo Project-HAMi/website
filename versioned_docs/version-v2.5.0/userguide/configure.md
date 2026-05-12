@@ -6,8 +6,12 @@ title: Configuration
 
 ## Device Configs: ConfigMap
 
-**Note:**
+:::note
+
 All the configurations listed below are managed within the hami-scheduler-device ConfigMap.
+
+:::
+
 You can update these configurations using one of the following methods:
 
 1. Directly edit the ConfigMap: If HAMi has already been successfully installed, you can manually update the hami-scheduler-device ConfigMap using the kubectl edit command to manually update the hami-scheduler-device ConfigMap.
