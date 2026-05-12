@@ -23,11 +23,13 @@ title: Enable Iluvatar GPU Sharing
 
 ## Enabling GPU-sharing Support
 
-* Deploy gpu-manager on iluvatar nodes (Please consult your device provider to acquire its package and document)
+- Deploy gpu-manager on iluvatar nodes (please consult your device provider to acquire its package and document)
 
-  > **NOTICE:** *Install only gpu-manager, don't install gpu-admission package.*
+:::caution
+Install only gpu-manager. Do not install the gpu-admission package.
+:::
 
-* set the devices.iluvatar.enabled=true when installing HAMi
+- Set `devices.iluvatar.enabled=true` when installing HAMi
 
 ```bash
 helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag={your kubernetes version} --set devices.iluvatar.enabled=true -n kube-system
@@ -112,7 +114,11 @@ spec:
         iluvatar.ai/BI-V150.vMem: 64
 ```
 
-> **NOTICE:** *Each unit of `iluvatar.ai/<card-type>.vMem` represents 256 MB of device memory*
+:::note
+
+Each unit of `iluvatar.ai/<card-type>.vMem` represents 256 MB of device memory.
+
+:::
 
 ## Device UUID Selection
 

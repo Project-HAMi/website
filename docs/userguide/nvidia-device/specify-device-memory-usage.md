@@ -23,4 +23,8 @@ Optional, each unit of `nvidia.com/gpumem-percentage` equals 1% of device memory
           nvidia.com/gpumem-percentage: 50 # Each GPU contains 50% device memory
 ```
 
-> **NOTICE:** *`nvidia.com/gpumem` and `nvidia.com/gpumem-percentage` can't be assigned together*
+:::note
+
+`nvidia.com/gpumem` and `nvidia.com/gpumem-percentage` can't be assigned together
+
+:::
