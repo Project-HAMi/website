@@ -29,7 +29,7 @@ device-sharing features include the following:
 
 * Deploy Metax GPU Operator on metax nodes (Please consult your device provider to acquire its package and document)
 
-* Deploy HAMi according to README.md
+- Deploy HAMi using the online installation guide
 
 ### Running Metax jobs
 
