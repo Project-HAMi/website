@@ -6,7 +6,7 @@ title: Enable AWS-Neuron device Sharing
 
 AWS Neuron devices are specialized hardware accelerators designed by AWS to optimize machine learning workloads, particularly for deep learning inference and training. They are part of the AWS Inferentia and Trainium families, which provide high performance, cost-effective, and scalable solutions for AI applications on AWS.
 
-HAMi now integrates with [my-scheduler](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/containers/kubernetes-getting-started.html#deploy-neuron-scheduler-extension), providing the following capabilities:
+HAMi now integrates with [Neuron scheduler extension](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/containers/kubernetes-getting-started.html#deploy-neuron-scheduler-extension), providing the following capabilities:
 
 * **Neuron sharing**: HAMi now supports sharing on aws.amazon.com/neuron by allocating device cores(aws.amazon.com/neuroncore), each Neuron core equals to 1/2 neuron device.
 
