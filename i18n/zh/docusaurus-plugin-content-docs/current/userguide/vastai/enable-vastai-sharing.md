@@ -1,30 +1,30 @@
 ---
-title: 启用 Vastai 设备共享
+title: 启用翰博半导体设备共享
 ---
 
 ## 介绍
 
-HAMi 现在支持共享 `vastaitech.com/va`（Vastaitech）设备，并提供以下能力：
+HAMi 现在支持共享 `vastaitech.com/va`（翰博半导体）设备，并提供以下能力：
 
 - **支持整卡模式和 Die 模式**：当前仅支持整卡模式（Full-Card mode）和 Die 模式（Die mode）。
 - **Die 模式拓扑感知**：在 Die 模式下申请多个资源时，调度器会尽量将它们分配到同一块 AIC 上。
 - **设备 UUID 选择**：可以通过注解指定或排除某些特定设备。
 
-## 使用 Vastai 设备
+## 使用翰博半导体设备
 
-### 启用 Vastai 设备共享
+### 启用翰博半导体设备共享
 
 #### 给节点打标签
 
-```
+```bash
 kubectl label node {vastai-node} vastai=on
 ```
 
 #### 部署 `vastai-device-plugin`
 
-##### 整卡模式（Full Card Mode）
+##### 整卡模式
 
-```
+```yaml
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -82,7 +82,7 @@ spec:
       priorityClassName: "system-node-critical"
       serviceAccountName: hami-vastai
       nodeSelector:
-        vastai-device: "vastai"
+        vastai: "on"
       containers:
         - image: projecthami/vastai-device-plugin:latest
           imagePullPolicy: Always
@@ -112,13 +112,11 @@ spec:
         - name: libvaml-lib64
           hostPath:
             path: /usr/lib64/libvaml.so
-      nodeSelector:
-        vastai: "on"
 ```
 
-##### Die 模式（Die Mode）
+##### Die 模式
 
-```
+```yaml
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -176,7 +174,7 @@ spec:
       priorityClassName: "system-node-critical"
       serviceAccountName: hami-vastai
       nodeSelector:
-        vastai-device: "vastai"
+        vastai: "on"
       containers:
         - image: projecthami/vastai-device-plugin:latest
           imagePullPolicy: Always
@@ -206,13 +204,11 @@ spec:
         - name: libvaml-lib64
           hostPath:
             path: /usr/lib64/libvaml.so
-      nodeSelector:
-        vastai: "on"
 ```
 
-### 运行 Vastai 作业
+### 运行翰博半导体的作业
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -230,6 +226,5 @@ spec:
 
 ## 注意事项
 
-1. 在申请 Vastai 资源时，**不能**指定显存大小。
+1. 在申请翰博半导体资源时，你**不能**指定显存大小。
 2. `vastai-device-plugin` **不会**自动把 `vasmi` 挂载到容器内。如果你需要在容器内使用 `vasmi` 命令，请手动将其挂载到容器中。
-
