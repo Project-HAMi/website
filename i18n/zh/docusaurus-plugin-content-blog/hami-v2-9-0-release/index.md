@@ -68,7 +68,7 @@ resources:
 
 > 该特性已在招商银行生产环境中得到验证。招商银行基于 HAMi-vNPU-Core 软切分方案，实现了昇腾 910C 算力资源 100% 入池与大模型高性能通信，显著提升了国产算力资源利用率。
 
-感谢华为加拿大研究院 [ICI-Infra-RTV](https://github.com/ICI-Infra-RTV) 和招商银行 [@ashergaga](https://github.com/ashergaga) 对本功能的贡献。
+感谢华为云加拿大实验室和招商银行 [@ashergaga](https://github.com/ashergaga) 对本功能的贡献。
 
 本版本同时更新了 [HAMi-core 性能基准测试数据](https://github.com/Project-HAMi/HAMi/blob/master/docs/benchmark_cn.md)，详细的 benchmark 流程请参考[项目文档](https://github.com/Project-HAMi/HAMi/tree/master/benchmarks)。
 

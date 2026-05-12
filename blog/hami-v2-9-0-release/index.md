@@ -68,7 +68,7 @@ Note that in v2.9, user Pods must explicitly declare `huawei.com/vnpu-mode: 'ham
 
 > This feature has been validated in China Merchants Bank's production environment. Based on the HAMi-vNPU-Core software partitioning solution, China Merchants Bank achieved 100% resource pooling of Ascend 910C compute and high-performance communication for large models, significantly improving domestic compute resource utilization.
 
-Thanks to Huawei Canada Research Center [ICI-Infra-RTV](https://github.com/ICI-Infra-RTV) and China Merchants Bank [@ashergaga](https://github.com/ashergaga) for their contributions.
+Thanks to Huawei Cloud Canada Lab and China Merchants Bank [@ashergaga](https://github.com/ashergaga) for their contributions.
 
 This release also updates the [HAMi-core performance benchmark data](https://github.com/Project-HAMi/HAMi/blob/master/docs/benchmark_cn.md). For detailed benchmark procedures, refer to the [project documentation](https://github.com/Project-HAMi/HAMi/tree/master/benchmarks).
 
