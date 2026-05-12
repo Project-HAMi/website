@@ -4,7 +4,7 @@ title: How to use volcano vgpu
 
 # Volcano vgpu device plugin for Kubernetes
 
-**Note**:
+:::note
 
 You *DON'T* need to install HAMi when using volcano-vgpu, only use  
 [Volcano vgpu device-plugin](https://github.com/Project-HAMi/volcano-vgpu-device-plugin) is good enough. It can provide device-sharing mechanism for NVIDIA devices managed by volcano.
@@ -12,6 +12,8 @@ You *DON'T* need to install HAMi when using volcano-vgpu, only use
 This is based on [NVIDIA Device Plugin](https://github.com/NVIDIA/k8s-device-plugin), it uses [HAMi-core](https://github.com/Project-HAMi/HAMi-core) to support hard isolation of GPU card.
 
 Volcano vgpu is only available in volcano > 1.9
+
+:::
 
 ## Quick Start
 

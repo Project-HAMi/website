@@ -102,7 +102,7 @@ HAMi supports distributed training in Kubernetes by running multiple Pods across
 1. **Cross-Host**: Multiple Pods are scheduled on different nodes, and inter-node communication synchronizes gradients and updates parameters.
 2. **Cross-GPU**: A single Pod can utilize multiple GPUs on the same node for computation tasks.
 
-**Note**: A single Pod cannot span multiple nodes. If cross-host resource coordination is required, adopt **multi-Pod distributed training**, where the distributed framework manages task execution across hosts.
+A single Pod cannot span multiple nodes. If cross-host resource coordination is required, adopt **multi-Pod distributed training**, where the distributed framework manages task execution across hosts.
 
 
 ## Relationship and Compatibility Between HAMi Device Plugin, Volcano vGPU Device Plugin, and NVIDIA Official Device Plugin
