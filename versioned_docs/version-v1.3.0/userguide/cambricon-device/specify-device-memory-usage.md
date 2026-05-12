@@ -14,4 +14,8 @@ Optional, Each unit of `cambricon.com/mlu.smlu.vmemory` equals to 1% of device m
           cambricon.com/mlu.smlu.vmemory: "20" # Each GPU contains 20% device memory
 ```
 
-> **NOTICE:** *Depending on the parameters of cambricon-device-plugin, resource name can be `cambricon.com/mlu370.smlu.vmemory` or other types*
+:::note
+
+Depending on the parameters of cambricon-device-plugin, resource name can be `cambricon.com/mlu370.smlu.vmemory` or other types
+
+:::

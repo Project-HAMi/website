@@ -26,7 +26,11 @@ title: Enable Illuvatar GPU Sharing
 
 * Deploy gpu-manager on iluvatar nodes (Please consult your device provider to acquire its package and document)
 
-> **NOTICE:** *Install only gpu-manager, don't install gpu-admission package.*
+:::note
+
+Install only gpu-manager, don't install gpu-admission package.
+
+:::
 
 * Identify the resource name about core and memory usage(i.e 'iluvatar.ai/vcuda-core', 'iluvatar.ai/vcuda-memory')
 
@@ -96,9 +100,17 @@ spec:
         iluvatar.ai/vcuda-memory: 64
 ```
 
-> **NOTICE1:** *Each unit of vcuda-memory indicates 256M device memory*
+:::note
 
-> **NOTICE2:** *You can find more examples in [examples/iluvatar folder](https://github.com/Project-HAMi/HAMi/tree/release-v2.6/examples/iluvatar/)*
+Each unit of vcuda-memory indicates 256M device memory
+
+:::
+
+:::note
+
+You can find more examples in [examples/iluvatar folder](https://github.com/Project-HAMi/HAMi/tree/release-v2.6/examples/iluvatar/)
+
+:::
 
 ## Device UUID Selection
 

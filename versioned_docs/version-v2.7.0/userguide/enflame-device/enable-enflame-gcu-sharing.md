@@ -26,7 +26,11 @@ title: Enable Enflame GCU Sharing
 
 * Deploy gcushare-device-plugin on enflame nodes (Please consult your device provider to acquire its package and document)
 
-> **NOTICE:** *Install only gpushare-device-plugin, don't install gpu-scheduler-plugin package.*
+:::note
+
+Install only gpushare-device-plugin, don't install gpu-scheduler-plugin package.
+
+:::
 
 > **NOTE:** The default resource names are:
 > - `enflame.com/vgcu` for GCU count, only support 1 now.
@@ -78,7 +82,11 @@ spec:
           enflame.com/vgcu-percentage: 22
 ```
 
-> **NOTICE:** *You can find more examples in [examples/enflame folder](https://github.com/Project-HAMi/HAMi/tree/release-v2.6/examples/enflame/)*
+:::note
+
+You can find more examples in [examples/enflame folder](https://github.com/Project-HAMi/HAMi/tree/release-v2.6/examples/enflame/)
+
+:::
 
 ## Device UUID Selection
 
