@@ -43,7 +43,7 @@ HAMi divides each AWS Neuron device into 2 units for resource allocation. You ca
 AWS Neuron devices can now be requested by a container
 by either using `aws.amazon.com/neuron` or `aws.amazon.com/neuroncore` resource type.
 
-More examples can be found in examples folder
+More examples can be found in the [examples/awsneuron folder](https://github.com/Project-HAMi/HAMi/tree/master/examples/awsneuron/).
 
 Allocate a whole device:
 
