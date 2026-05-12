@@ -26,7 +26,11 @@ title: 启用燧原 GPU 共享
 
 * 部署'gcushare-device-plugin'，燧原的 GCU 共享需要配合厂家提供的'gcushare-device-plugin'一起使用，联系设备提供方获取
 
-> **注意：** *只需要安装 gcushare-device-plugin，不要安装 gcushare-scheduler-plugin.*
+:::note
+
+只需要安装 gcushare-device-plugin，不要安装 gcushare-scheduler-plugin.
+
+:::
 
 * 在安装 HAMi 时配置参数'devices.enflame.enabled=true'
 
@@ -75,7 +79,11 @@ spec:
           enflame.com/vgcu-percentage: 22
 ```
 
-> **注意：** *查看更多的[用例](https://github.com/Project-HAMi/HAMi/tree/release-v2.6/examples/enflame/).*
+:::note
+
+查看更多的[用例](https://github.com/Project-HAMi/HAMi/tree/release-v2.6/examples/enflame/).
+
+:::
 
 ## 设备 UUID 选择
 

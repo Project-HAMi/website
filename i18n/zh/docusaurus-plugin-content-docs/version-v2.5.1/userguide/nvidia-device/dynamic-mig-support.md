@@ -134,9 +134,17 @@ HAMi 目前有一个 [内置的 mig 配置](https://github.com/Project-HAMi/HAMi
             count: 1
   ```
 
-> **注意** Helm 安装和更新将基于此文件中的配置，覆盖 Helm 的内置配置
+:::note
+
+Helm 安装和更新将基于此文件中的配置，覆盖 Helm 的内置配置
+
+:::
 >
-> **注意** 请注意 HAMi 将按照此 configMap 的顺序找到并使用适合任务的第一个 MIG 模板
+:::note
+
+请注意 HAMi 将按照此 configMap 的顺序找到并使用适合任务的第一个 MIG 模板
+
+:::
 
 ## 运行 MIG 作业
 

@@ -27,7 +27,11 @@ translated: true
 
 * 部署'gpu-manager'，天数智芯的 GPU 共享需要配合厂家提供的'gpu-manager'一起使用，联系设备提供方获取
 
-> **注意：** *只需要安装 gpu-manager，不要安装 gpu-admission.*
+:::note
+
+只需要安装 gpu-manager，不要安装 gpu-admission.
+
+:::
 
 * 在安装 HAMi 时配置设置 devices.iluvatar.enabled=true
 
@@ -113,7 +117,11 @@ spec:
         iluvatar.ai/BI-V150.vMem: 64
 ```
 
-> **注意 1:** *每一单位的 vMem 代表 256M 的显存。*
+:::note
+
+每一单位的 vMem 代表 256M 的显存。
+
+:::
 
 ## 设备 UUID 选择
 

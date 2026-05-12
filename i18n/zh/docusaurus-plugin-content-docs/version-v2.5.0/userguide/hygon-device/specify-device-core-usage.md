@@ -13,4 +13,8 @@ translated: true
           cambricon.com/mlu.smlu.vcore: "10" # 每个 MLU 包含 10% 的设备核心
 ```
 
-> **注意：** *根据 cambricon-device-plugin 的参数，资源名称可以是 `cambricon.com/mlu370.smlu.vcore` 或其他类型*
+:::note
+
+根据 cambricon-device-plugin 的参数，资源名称可以是 `cambricon.com/mlu370.smlu.vcore` 或其他类型
+
+:::

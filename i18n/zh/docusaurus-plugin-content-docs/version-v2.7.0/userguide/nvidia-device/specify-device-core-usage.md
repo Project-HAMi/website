@@ -12,4 +12,8 @@ translated: true
           nvidia.com/gpucores: 50 # 每个 GPU 分配 50% 的设备核心。
 ```
 
-> **注意：** *HAMi-core 使用时间片来限制设备核心的使用。因此，通过 nvidia-smi 查看 GPU 利用率时会有波动*
+:::note
+
+HAMi-core 使用时间片来限制设备核心的使用。因此，通过 nvidia-smi 查看 GPU 利用率时会有波动
+
+:::

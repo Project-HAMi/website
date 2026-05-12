@@ -25,4 +25,8 @@ spec:
           huawei.com/Ascend310P-memory: 1024
 ```
 
-> **注意：** *Ascend910B 的计算资源也受到 `huawei.com/Ascend310P-memory` 的限制，等于分配的设备显存的百分比。*
+:::note
+
+Ascend910B 的计算资源也受到 `huawei.com/Ascend310P-memory` 的限制，等于分配的设备显存的百分比。
+
+:::

@@ -23,4 +23,8 @@ spec:
           metax-tech.com/vmemory: 4 # 每个 GPU 需要 4 GiB 设备显存
 ```
 
-> **注意：** 当未申请 `metax-tech.com/vcore` 或 `metax-tech.com/vmemory` 资源时，则表示对应资源配额已满。
+:::note
+
+当未申请 `metax-tech.com/vcore` 或 `metax-tech.com/vmemory` 资源时，则表示对应资源配额已满。
+
+:::

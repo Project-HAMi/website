@@ -46,4 +46,8 @@ spec:
           metax-tech.com/vmemory: 4 # each GPU require 4 GiB device memory
 ```
 
-> **注意：** 你可以在 examples 文件夹中找到更多示例。
+:::note
+
+你可以在 examples 文件夹中找到更多示例。
+
+:::

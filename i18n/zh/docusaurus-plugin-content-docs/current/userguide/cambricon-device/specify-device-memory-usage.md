@@ -13,4 +13,8 @@ translated: true
           cambricon.com/mlu.smlu.vmemory: "20" # 每个 GPU 包含 20% 的设备显存
 ```
 
-> **注意：** *根据 cambricon-device-plugin 的参数，资源名称可以是 `cambricon.com/mlu370.smlu.vmemory` 或其他类型*
+:::note
+
+根据 cambricon-device-plugin 的参数，资源名称可以是 `cambricon.com/mlu370.smlu.vmemory` 或其他类型
+
+:::

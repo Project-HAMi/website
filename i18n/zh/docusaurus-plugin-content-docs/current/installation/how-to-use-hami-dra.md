@@ -28,7 +28,11 @@ helm dependency build
 helm install hami hami-charts/hami --set dra.enable=true -n hami-system
 ```
 
-> **注意：** *DRA 模式与传统模式不兼容，请勿同时启用。*
+:::note
+
+DRA 模式与传统模式不兼容，请勿同时启用。
+
+:::
 
 ## 支持的设备
 
