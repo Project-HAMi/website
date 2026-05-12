@@ -4,8 +4,8 @@ title: Device supported by HAMi
 
 The table below lists the devices supported by HAMi:
 
-| Type | Manufactor | Models | MemoryIsolation | CoreIsolation | MultiCard Support |
-|------|------------|------|-----------------|---------------|-------------------|
+| Type | Manufacturer | Models | MemoryIsolation | CoreIsolation | MultiCard Support |
+| ---- | ---------- | ------ | --------------- | ------------- | ----------------- |
 | GPU | NVIDIA | All | Yes | Yes | Yes |
 | MLU | Cambricon | 370, 590 | Yes | Yes | No |
 | DCU | Hygon | Z100, Z100L | Yes | Yes | No |
@@ -14,5 +14,6 @@ The table below lists the devices supported by HAMi:
 | GPU | Mthreads | MTT S4000 | Yes | Yes | No |
 | GPU | Metax    | MXC500 | Yes | Yes | No |
 | GCU | Enflame  | S60    | Yes | Yes | No |
-| XPU | Kunlunxin | P800  | Yes | Yes | No | 
+| XPU | Kunlunxin | P800  | Yes | Yes | No |
+| GPU | Vastai | VA16  | Yes | Yes | No |
 | DPU | Teco | Checking | In progress | In progress | No |

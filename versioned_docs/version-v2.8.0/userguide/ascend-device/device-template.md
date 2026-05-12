@@ -14,6 +14,7 @@ vnpus:
   resourceMemoryName: huawei.com/Ascend910A-memory
   memoryAllocatable: 32768
   memoryCapacity: 32768
+  memoryFactor: 1
   aiCore: 30
   templates:
     - name: vir02
@@ -34,6 +35,7 @@ vnpus:
   resourceMemoryName: huawei.com/Ascend910B3-memory
   memoryAllocatable: 65536
   memoryCapacity: 65536
+  memoryFactor: 1
   aiCore: 20
   aiCPU: 7
   templates:
@@ -51,6 +53,7 @@ vnpus:
   resourceMemoryName: huawei.com/Ascend310P-memory
   memoryAllocatable: 21527
   memoryCapacity: 24576
+  memoryFactor: 1
   aiCore: 8
   aiCPU: 7
   templates:

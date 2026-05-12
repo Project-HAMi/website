@@ -30,8 +30,8 @@ You can customize the installation by adjusting the [configuration](../userguide
 
 ## Install with AWS Add-on
 
-Before installing HAMi using the AWS add-on, you need to install **cert-manager**.  
-You can find it in the AWS Marketplace add-ons section and install it through the AWS Console.  
+Before installing HAMi using the AWS add-on, you need to install **cert-manager**.
+You can find it in the AWS Marketplace add-ons section and install it through the AWS Console.
 You may also refer to the [AWS User Guide](https://docs.aws.amazon.com/eks/latest/userguide/lbc-manifest.html#lbc-cert) for installation instructions.
 
 Once cert-manager is installed, you can install the HAMi add-on from the AWS Marketplace.
@@ -40,7 +40,7 @@ Once cert-manager is installed, you can install the HAMi add-on from the AWS Mar
 
 You can verify your installation with the following command:
 
-```
+```bash
 kubectl get pods -n kube-system
 ```
 
@@ -50,7 +50,7 @@ If both the **hami-device-plugin** and **hami-scheduler** pods are in the `Runni
 
 ### NVIDIA Devices
 
-[Use Exclusive GPU](https://project-hami.io/docs/userguide/nvidia-device/examples/use-exclusive-card)
-[Allocate Specific Device Memory to a Container](https://project-hami.io/docs/userguide/nvidia-device/examples/allocate-device-memory)
-[Allocate Device Core Resources to a Container](https://project-hami.io/docs/userguide/nvidia-device/examples/allocate-device-core)
-[Assign Tasks to MIG Instances](https://project-hami.io/docs/userguide/nvidia-device/examples/dynamic-mig-example)
+- [Use Exclusive GPU](https://project-hami.io/docs/userguide/nvidia-device/examples/use-exclusive-card)
+- [Allocate Specific Device Memory to a Container](https://project-hami.io/docs/userguide/nvidia-device/examples/allocate-device-memory)
+- [Allocate Device Core Resources to a Container](https://project-hami.io/docs/userguide/nvidia-device/examples/allocate-device-core)
+- [Assign Tasks to MIG Instances](https://project-hami.io/docs/userguide/nvidia-device/examples/dynamic-mig-example)

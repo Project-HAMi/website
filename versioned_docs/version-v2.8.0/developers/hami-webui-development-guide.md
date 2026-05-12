@@ -151,4 +151,3 @@ Prefer extracting reusable fetch/filter/pagination logic into hooks:
 - Quickly understand how the project runs (BFF + Vite + API proxy)
 - Clarify where to place code and how to connect routes/menus/i18n/API
 - Reduce PR rework caused by inconsistent conventions
-

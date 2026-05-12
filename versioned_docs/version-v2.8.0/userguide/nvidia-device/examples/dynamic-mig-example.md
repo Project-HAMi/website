@@ -2,7 +2,7 @@
 title: Assign task to mig instance
 ---
 
-This example will allocate `2g.10gb x 2` for A100-40GB-PCIE device  or `1g.10gb x 2` for A100-80GB-SXM device.
+This example will allocate `2g.10gb * 2` for A100-40GB-PCIE device or `1g.10gb * 2` for A100-80GB-SXM device.
 
 ```yaml
 apiVersion: v1
@@ -15,7 +15,7 @@ metadata:
 spec:
   containers:
     - name: ubuntu-container
-      image: ubuntu:18.04
+      image: ubuntu:22.04
       command: ["bash", "-c", "sleep 86400"]
       resources:
         limits:

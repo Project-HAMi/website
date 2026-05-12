@@ -9,14 +9,14 @@ This feature will not be implemented without the help of @sailorvii.
 
 ## Introduction
 
-The NVIDIA GPU build-in sharing method includes: time-slice, MPS and MIG. The context switch for time slice sharing would waste some time, MPS and MIG are preferred. The GPU MIG profile is variable, the user could acquire the MIG device in the profile definition, but current implementation only defines the dedicated profile before the user requirement. That limits the usage of MIG. The goal is an automatic slice plugin that creates slices on demand.
-For the scheduling method, node-level binpack and spread will be supported. Referring to the binpack plugin, the scheduler considers CPU, memory, GPU memory, and other user-defined resources.
+The NVIDIA GPU built-in sharing method includes: time-slice, MPS and MIG. The context switch for time slice sharing would waste some time, so MPS and MIG are preferred. The GPU MIG profile is variable, the user could acquire the MIG device in the profile definition, but current implementation only defines the dedicated profile before the user requirement. That limits the usage of MIG. The goal is to develop an automatic slice plugin and create the slice when the user requires it.
+For the scheduling method, node-level binpack and spread will be supported. Referring to the binpack plugin, the scheduler considers CPU, Mem, GPU memory and other user-defined resources.
 HAMi is done by using [hami-core](https://github.com/Project-HAMi/HAMi-core), which is a cuda-hacking library. But mig is also widely used across the world. A unified API for dynamic-mig and hami-core is needed.
 
 ## Targets
 
 - CPU, Mem, and GPU combined schedule
-- GPU dynamic slice: Hami-core and MIG
+- GPU dynamic slice: HAMi-core and MIG
 - Support node-level binpack and spread by GPU memory, CPU and Mem
 - A unified vGPU Pool different virtualization techniques
 - Tasks can choose to use MIG, use HAMi-core, or use both.
@@ -37,61 +37,61 @@ data:
       knownMigGeometries:
       - models: [ "A30" ]
         allowedGeometries:
-          - 
+          -
             - name: 1g.6gb
               memory: 6144
               count: 4
-          - 
+          -
             - name: 2g.12gb
               memory: 12288
               count: 2
-          - 
+          -
             - name: 4g.24gb
               memory: 24576
               count: 1
       - models: [ "A100-SXM4-40GB", "A100-40GB-PCIe", "A100-PCIE-40GB", "A100-SXM4-40GB" ]
         allowedGeometries:
-          - 
+          -
             - name: 1g.5gb
               memory: 5120
               count: 7
-          - 
+          -
             - name: 2g.10gb
               memory: 10240
               count: 3
             - name: 1g.5gb
               memory: 5120
               count: 1
-          - 
+          -
             - name: 3g.20gb
               memory: 20480
               count: 2
-          - 
+          -
             - name: 7g.40gb
               memory: 40960
               count: 1
       - models: [ "A100-SXM4-80GB", "A100-80GB-PCIe", "A100-PCIE-80GB"]
         allowedGeometries:
-          - 
+          -
             - name: 1g.10gb
               memory: 10240
               count: 7
-          - 
+          -
             - name: 2g.20gb
               memory: 20480
               count: 3
             - name: 1g.10gb
               memory: 10240
               count: 1
-          - 
+          -
             - name: 3g.40gb
               memory: 40960
               count: 2
-          - 
+          -
             - name: 7g.79gb
               memory: 80896
               count: 1
-      nodeconfig: 
+      nodeconfig:
           - name: nodeA
             operatingmode: hami-core
           - name: nodeB
@@ -105,7 +105,7 @@ data:
 ## Examples
 
 Dynamic mig is compatible with hami tasks, as the example below:
-Just Setting `nvidia.com/gpu` and `nvidia.com/gpumem`.
+Set `nvidia.com/gpu` and `nvidia.com/gpumem`.
 
 ```yaml
 apiVersion: v1
@@ -115,7 +115,7 @@ metadata:
 spec:
   containers:
     - name: ubuntu-container1
-      image: ubuntu:20.04
+      image: ubuntu:22.04
       command: ["bash", "-c", "sleep 86400"]
       resources:
         limits:
@@ -135,12 +135,12 @@ metadata:
 spec:
   containers:
     - name: ubuntu-container1
-      image: ubuntu:20.04
+      image: ubuntu:22.04
       command: ["bash", "-c", "sleep 86400"]
       resources:
         limits:
           nvidia.com/gpu: 2 # requesting 2 vGPUs
-          nvidia.com/gpumem: 8000 # Each vGPU contains 8000m device memory (Optional,Integer
+          nvidia.com/gpumem: 8000 # Each vGPU contains 8000m device memory (Optional,Integer)
 ```
 
 ## Procedures
@@ -149,7 +149,7 @@ The Procedure of a vGPU task which uses dynamic-mig is shown below:
 
 <img src="https://github.com/Project-HAMi/HAMi/blob/master/docs/develop/imgs/hami-dynamic-mig-procedure.png?raw=true" width="800" alt="HAMi dynamic MIG procedure flowchart showing task scheduling process" />
 
-After a task is submitted, deviceshare plugin will iterate over templates defined in configMap `hami-scheduler-device`, and find the first available template to fit. You can always change the content of that configMap, and restart vc-scheduler to customize.
+After submitting a task, the deviceshare plugin iterates over templates defined in configMap `hami-scheduler-device` and finds the first available template to fit. You can always change the content of that configMap, and restart vc-scheduler to customize.
 
 If you submit the example on an empty A100-PCIE-40GB node, then it will select a GPU and choose MIG template below:
 

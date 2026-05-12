@@ -19,11 +19,11 @@ the GPU device plugin (gpu-device) handles fine-grained allocation based on the 
    - A connection is considered a MetaXLink connection when there is a MetaXLink connection and a PCIe Switch connection between the two cards.
    - When both the MetaXLink and the PCIe Switch can meet the job request, equipped with MetaXLink interconnected resources.
 
-2. When using `node-scheduler-policy=spread`, allocate Metax resources to be under the same Metaxlink or Paiswich as much as possible, as shown below:
+2. When using `node-scheduler-policy=spread`, allocate Metax resources to be under the same MetaXLink or PCIe Switch as much as possible, as shown below:
 
    ![Metax spread scheduling policy diagram showing resource allocation](/img/docs/common/userguide/metax-device/metax-gpu/metax-spread.jpg)
 
-3. When using `node-scheduler-policy=binpack`, assign GPU resources, so minimize the damage to MetaxXLink topology, as shown below:
+3. When using `node-scheduler-policy=binpack`, assign GPU resources to minimize the damage to MetaXLink topology, as shown below:
 
    ![Metax binpack scheduling policy diagram showing topology-aware allocation](/img/docs/common/userguide/metax-device/metax-gpu/metax-binpack.jpg)
 
@@ -54,11 +54,12 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: gpu-pod1
-  annotations: hami.io/node-scheduler-policy: "spread" # when this parameter is set to spread, the scheduler will try to find the best topology for this task.
+  annotations:
+    hami.io/node-scheduler-policy: "spread" # when this parameter is set to spread, the scheduler will try to find the best topology for this task.
 spec:
   containers:
     - name: ubuntu-container
-      image: cr.metax-tech.com/public-ai-release/c500/colossalai:2.24.0.5-py38-ubuntu20.04-amd64 
+      image: cr.metax-tech.com/public-ai-release/c500/colossalai:2.24.0.5-py38-ubuntu20.04-amd64
       imagePullPolicy: IfNotPresent
       command: ["sleep","infinity"]
       resources:
@@ -66,4 +67,4 @@ spec:
           metax-tech.com/gpu: 1 # requesting 1 GPU
 ```
 
-> **NOTICE:** *You can find more examples in [examples/metax folder](https://github.com/Project-HAMi/HAMi/tree/release-v2.6/examples/metax/gpu)*
+> **NOTICE:** *You can find more examples in [examples/metax folder](https://github.com/Project-HAMi/HAMi/tree/master/examples/metax/gpu)*

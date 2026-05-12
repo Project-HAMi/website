@@ -187,6 +187,12 @@ module.exports = {
         showLastUpdateAuthor: false,
         showLastUpdateTime: true,
         includeCurrentVersion: true,
+        lastVersion: 'current',
+        versions: {
+          current: {
+            label: 'latest',
+          },
+        },
         // Performance optimization: Disable number prefix parser
         numberPrefixParser: false,
         // Performance optimization: Disable breadcrumbs for performance

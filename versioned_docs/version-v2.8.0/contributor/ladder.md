@@ -2,165 +2,149 @@
 title: Contributor Ladder
 ---
 
-This docs different ways to get involved and level up within the project. You can see different roles within the project in the contributor roles.
+This document describes the contributor roles within the HAMi project, along with the responsibilities and privileges that come with each role. Contributors generally start at the first level and advance as their involvement grows.
 
-This contributor ladder outlines the different contributor roles within the project, along with the responsibilities and privileges that come with them.
+## Overview
 
-Each of the contributor roles below is organized into lists of three types of things. "Responsibilities" are things that a contributor is expected to do. "Requirements" are qualifications a person needs to meet to be in that role, and "Privileges" are things contributors on that level are entitled to.
+Each role below lists three things: **Responsibilities** (what is expected), **Requirements** (what qualifies someone for the role), and **Privileges** (what the role grants).
 
 ### Community Participant
 
-Description: A Community Participant engages with the project and its community, contributing their time, thoughts, etc. Community participants are usually users who have stopped being anonymous and started being active in project discussions.
+A Community Participant engages with the project and its community. These are typically users who have moved from anonymous usage to active participation in discussions.
 
-* Responsibilities:
-  * Must follow the [CNCF CoC](https://github.com/cncf/foundation/blob/main/code-of-conduct.md)
-* How users can get involved with the community:
-  * Participating in community discussions
-  * Helping other users
-  * Submitting bug reports
-  * Commenting on issues
-  * Trying out new releases
-  * Attending community events
+- Responsibilities:
+  - Follow the [CNCF Code of Conduct](https://github.com/cncf/foundation/blob/main/code-of-conduct.md)
+- Ways to get involved:
+  - Participate in community discussions
+  - Help other users
+  - Submit bug reports
+  - Comment on issues
+  - Try out new releases
+  - Attend community events
 
 ### Contributor
 
-Description: A Contributor contributes directly to the project and adds value to it. Contributions need not be code. People at the Contributor level may be new contributors, or they may only contribute occasionally.
+A Contributor contributes directly to the project. Contributions do not have to be code. Contributors may be new or may contribute only occasionally.
 
-* Responsibilities include:
-  * Follow the CNCF CoC
-  * Follow the project contributing guide
-* Requirements (one or several of the below):
-  * Report and sometimes resolve issues
-  * Occasionally submit PRs
-  * Contribute to the documentation
-  * Show up at meetings, takes notes
-  * Answer questions from other community members
-  * Submit feedback on issues and PRs
-  * Test releases and patches and submit reviews
-  * Run or helps run events
-  * Promote the project in public
-  * Help run the project infrastructure
-  * [TODO: other small contributions]
-* Privileges:
-  * Invitations to contributor events
-  * Eligible to become an Organization Member
+- Responsibilities:
+  - Follow the CNCF Code of Conduct
+  - Follow the project contributing guide
+- Requirements (one or more of the following):
+  - Report and sometimes resolve issues
+  - Submit PRs occasionally
+  - Contribute to documentation
+  - Attend meetings and take notes
+  - Answer questions from other community members
+  - Submit feedback on issues and PRs
+  - Test releases and patches and submit reviews
+  - Run or help run events
+  - Promote the project publicly
+  - Help maintain project infrastructure
+- Privileges:
+  - Invitations to contributor events
+  - Eligible to become an Organization Member
 
-A very special thanks to the [long list of people](https://github.com/Project-HAMi/HAMi/blob/master/AUTHORS.md) who have contributed to and helped maintain the project. Thanks to everyone who contributed and helped maintain the project.
-
-As long as you contribute to HAMi, your name will be added [here](https://github.com/Project-HAMi/HAMi/blob/master/AUTHORS.md). If you don't find your name, please contact us to add it.
+Contributors are listed in the [AUTHORS.md file](https://github.com/Project-HAMi/HAMi/blob/master/AUTHORS.md). If a name is missing, open an issue on the HAMi repository to have it added.
 
 ### Organization Member
 
-Description: An Organization Member is an established contributor who regularly participates in the project. Organization Members have privileges in both project repositories and elections, and as such are expected to act in the interests of the whole project.
+An Organization Member is an established contributor who participates regularly. Organization Members have privileges in both project repositories and elections, and are expected to act in the interests of the whole project.
 
-An Organization Member must meet the responsibilities and has the requirements of a Contributor, plus:
+An Organization Member must meet all Contributor responsibilities and requirements, plus:
 
-* Responsibilities include:
-  * Continues to contribute regularly, as demonstrated by having at least 50 GitHub contributions per year
-* Requirements:
-  * Enabled [two-factor authentication] on their GitHub account
-  * Must have successful contributions to the project or community, including at least one of the following:
-    * 5 accepted PRs,
-    * Reviewed 5 PRs,
-    * Resolved and closed 3 Issues,
-    * Become responsible for a key project management area,
-    * Or some equivalent combination or contribution
-  * Must have been contributing for at least 1 months
-  * Must be actively contributing to at least one project area
-  * Must have two sponsors who are also Organization Members, at least one of whom does not work for the same employer
-  * **[Open an issue][membership request] against the Project-HAMi/HAMi repo**
-    * Ensure your sponsors are @mentioned on the issue
-    * Complete every item on the issue checklist
-    * Make sure that the list of contributions included is representative of your work on the project.
-  * Have your sponsoring reviewers reply confirmation of sponsorship: `+1`
-  * Once your sponsors have responded, your request will be handled by the `HAMi GitHub Admin team`.
-
-* Privileges:
-  * May be assigned Issues and Reviews
-  * May give commands to CI/CD automation
-  * Can be added to [TODO: Repo Host] teams
-  * Can recommend other contributors to become Org Members
-
-The process for a Contributor to become an Organization Member is as follows:
-
-1. Contact Maintainers and get at least two maintainers to agree
-2. Submit an Issue application to become a Member
+- Responsibilities:
+  - Continue contributing regularly, as demonstrated by at least 50 GitHub contributions per year
+- Requirements:
+  - [Two-factor authentication][two-factor authentication] enabled on their GitHub account
+  - Successful contributions to the project or community, including at least one of the following:
+    - 5 accepted PRs
+    - 5 PRs reviewed
+    - 3 issues resolved and closed
+    - Responsibility for a key project management area
+    - An equivalent combination of contributions
+  - Contributing for at least 1 month
+  - Actively contributing to at least one project area
+  - Two sponsors who are also Organization Members, at least one of whom works for a different employer
+  - [Open a membership request issue][membership request] against the Project-HAMi/HAMi repo:
+    - Mention sponsors in the issue
+    - Complete every item on the issue checklist
+    - Ensure the contributions listed are representative of the work done
+  - Sponsors reply with confirmation: `+1`
+  - After sponsor confirmation, the request is handled by the HAMi GitHub Admin team
+- Privileges:
+  - May be assigned issues and reviews
+  - May issue commands to CI/CD automation
+  - Can be added to HAMi project teams
+  - Can recommend other contributors for Org Member status
 
 ### Reviewer
 
-Description: A Reviewer has responsibility for specific code, documentation, test, or other project areas. They are collectively responsible, with other Reviewers, for reviewing all changes to those areas and indicating whether those changes are ready to merge. They have a track record of contribution and review in the project.
-
-Reviewers are responsible for a "specific area." This can be a specific code directory, driver, chapter of the docs, test job, event, or other clearly-defined project component that is smaller than an entire repository or subproject. Most often it is one or a set of directories in one or more Git repositories. The "specific area" below refers to this area of responsibility.
+A Reviewer is responsible for a specific area of the project: a code directory, a section of the docs, a test suite, or another clearly-defined component. Reviewers are collectively responsible for reviewing all changes to their area and indicating whether changes are ready to merge.
 
 Reviewers have all the rights and responsibilities of an Organization Member, plus:
 
-* Responsibilities include:
-  * Following the reviewing guide
-  * Reviewing most Pull Requests against their specific areas of responsibility
-  * Reviewing at least 20 PRs per year
-  * Helping other contributors become reviewers
-* Requirements:
-  * Experience as a Contributor for at least 3 months
-  * Is an Organization Member
-  * Has reviewed, or helped review, at least 10 Pull Requests
-  * Has analyzed and resolved test failures in their specific area
-  * Has demonstrated an in-depth knowledge of the specific area
-  * Commits to being responsible for that specific area
-  * Is supportive of new and occasional contributors and helps get useful PRs in shape to commit
-* Additional privileges:
-  * Has GitHub or CI/CD rights to approve pull requests in specific directories
-  * Can recommend and review other contributors to become Reviewers
+- Responsibilities:
+  - Follow the reviewing guide
+  - Review most pull requests against their specific area of responsibility
+  - Review at least 20 PRs per year
+  - Help other contributors become reviewers
+- Requirements:
+  - At least 3 months of experience as a Contributor
+  - Organization Member status
+  - At least 10 pull requests reviewed or co-reviewed
+  - Demonstrated ability to analyze and resolve test failures in their area
+  - In-depth knowledge of the specific area
+  - Commitment to ongoing responsibility for that area
+  - Supportive of new and occasional contributors
+- Privileges:
+  - GitHub or CI/CD rights to approve pull requests in specific directories
+  - Can recommend and review other contributors for Reviewer status
 
-The process of becoming a Reviewer is:
+To become a Reviewer:
 
-1. The contributor is nominated by opening a PR against the appropriate repository, which adds their GitHub username to the OWNERS file for one or more directories.
-2. At least two members of the team that owns that repository or main directory, who are already Approvers, approve the PR.
+1. A contributor opens a PR against the appropriate repository, adding their GitHub username to the OWNERS file for one or more directories.
+2. At least two existing Approvers for that repository or directory approve the PR.
 
 ### Maintainer
 
-Description: Maintainers are very established contributors who are responsible for the entire project. As such, they have the ability to approve PRs against any area of the project, and are expected to participate in making decisions about the strategy and priorities of the project.
+A Maintainer is a highly established contributor responsible for the entire project. Maintainers can approve PRs against any area of the project and are expected to participate in decisions about project strategy and priorities.
 
-A Maintainer must meet the responsibilities and requirements of a Reviewer, plus:
+A Maintainer must meet all Reviewer responsibilities and requirements.
 
-The current list of maintainers can be found in the [MAINTAINERS](https://github.com/Project-HAMi/HAMi/blob/master/MAINTAINERS.md).
+The current list of maintainers is in [MAINTAINERS](https://github.com/Project-HAMi/HAMi/blob/master/MAINTAINERS.md).
 
-### An active maintainer should
+**An active maintainer:**
 
-* Actively participate in reviewing pull requests and incoming issues. There are no hard rules on what is “active enough” and this is left up to the judgement of the current group of maintainers.
+- Actively reviews pull requests and incoming issues. There are no hard rules on what counts as active - this is left to the judgement of the current maintainer group.
+- Participates in discussions about design and the future of the project.
+- Takes responsibility for backports to appropriate branches for PRs they approve and merge.
+- Follows code, testing, and design conventions as determined by consensus among active maintainers.
+- Steps down gracefully when no longer planning to actively participate.
 
-* Actively participate in discussions about design and the future of the project.
+**Becoming a maintainer:**
 
-* Take responsibility for backports to appropriate branches for PRs they approve and merge.
+New maintainers are added by consensus among the current maintainer group, via Slack or email discussion. A majority must support the addition, and no single maintainer should object.
 
-* Do their best to follow all code, testing, and design conventions as determined by consensus among active maintainers.
+When adding a new maintainer, open a PR to [HAMi](https://github.com/Project-HAMi/HAMi) and update [MAINTAINERS](https://github.com/Project-HAMi/HAMi/blob/master/MAINTAINERS.md). Once merged, the person becomes a maintainer.
 
-* Gracefully step down from their maintainership role when they are no longer planning to actively participate in the project.
+**Removing maintainers:**
 
-### How to be a maintainer
-
-New maintainers are added by consensus among the current group of maintainers. This can be done via a private discussion via Slack or email. A majority of maintainers should support the addition of the new person, and no single maintainer should object to adding the new maintainer.
-
-When adding a new maintainer, file a PR to [HAMi](https://github.com/Project-HAMi/HAMi) and update [MAINTAINERS](https://github.com/Project-HAMi/HAMi/blob/master/MAINTAINERS.md). Once this PR is merged, you will become a maintainer of HAMi.
-
-### Removing Maintainers
-
-It is normal for maintainers to come and go based on their other responsibilities. Inactive maintainers may be removed if there is no expectation of ongoing participation. If a former maintainer resumes participation, they should be given quick consideration for re-adding to the team.
+Maintainers may step back as their other responsibilities change. Inactive maintainers may be removed if there is no expectation of renewed participation. Former maintainers who return should be given prompt consideration for reinstatement.
 
 ## Inactivity
 
-It is important for contributors to be and stay active to set an example and show commitment to the project. Inactivity is harmful to the project as it may lead to unexpected delays, contributor attrition, and a lost of trust in the project.
+Active participation is important for project health. Inactivity is measured by:
 
-* Inactivity is measured by:
-  * Periods of no contributions for longer than 3 months
-  * Periods of no communication for longer than 3 months
-* Consequences of being inactive include:
-  * Involuntary removal or demotion
-  * Being asked to move to Emeritus status
+- No contributions for more than 3 months
+- No communication for more than 3 months
 
-## Involuntary Removal or Demotion
+Consequences may include involuntary removal, demotion, or a move to Emeritus status.
 
-Involuntary removal/demotion of a contributor happens when responsibilities and requirements aren't being met. This may include repeated patterns of inactivity, extended period of inactivity, a period of failing to meet the requirements of your role, and/or a violation of the Code of Conduct. This process is important because it protects the community and its deliverables while also opens up opportunities for new contributors to step in.
+## Involuntary removal or demotion
 
-Involuntary removal or demotion is handled through a vote by a majority of the current Maintainers.
+Involuntary removal or demotion happens when a contributor's responsibilities and requirements are no longer being met. This may result from repeated or extended inactivity, failure to meet role requirements, or a Code of Conduct violation.
+
+Involuntary removal or demotion is decided by a majority vote of the current Maintainers.
 
 [two-factor authentication]: https://help.github.com/articles/about-two-factor-authentication
+[membership request]: https://github.com/Project-HAMi/HAMi/issues/new

@@ -1,5 +1,5 @@
 ---
-title: Assign to certain device type
+title: Assign to Certain Device UUID
 linktitle: Assign to certain device
 ---
 

@@ -1,8 +1,8 @@
 ---
-title: Default vGPU job
+title: Default vGPU Job
 ---
 
-vGPU can be requested by both set "volcano.sh/vgpu-number", "volcano.sh/vgpu-cores" and "volcano.sh/vgpu-memory" in resources.limits
+vGPU can be requested by setting `volcano.sh/vgpu-number`, `volcano.sh/vgpu-cores` and `volcano.sh/vgpu-memory` in `resources.limits`
 
 ```yaml
 apiVersion: v1
@@ -13,7 +13,7 @@ spec:
   restartPolicy: OnFailure
   schedulerName: volcano
   containers:
-  - image: ubuntu:20.04
+  - image: ubuntu:22.04
     name: pod1-ctr
     command: ["sleep"]
     args: ["100000"]

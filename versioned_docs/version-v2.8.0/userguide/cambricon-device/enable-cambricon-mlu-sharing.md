@@ -59,7 +59,7 @@ To request shared MLU resources in a container, use the following resource types
 * `cambricon.com/mlu.smlu.vmemory`
 * `cambricon.com/mlu.smlu.vcore`
 
-Here is an YAML example:
+Here is a YAML example:
 
 ```yaml
 apiVersion: apps/v1
@@ -80,7 +80,7 @@ spec:
     spec:
       containers:
         - name: c-1
-          image: ubuntu:18.04
+          image: ubuntu:22.04
           command: ["sleep"]
           args: ["100000"]
           resources:
@@ -97,7 +97,7 @@ spec:
    Pods with the `cambricon.com/mlumem` resource specified in an init container will not be scheduled.
 
 2. **Resource constraints only apply to shared mode (`vmlu=1`).**
-  
+
    The `cambricon.com/mlu.smlu.vmemory` and `cambricon.com/mlu.smlu.vcore` resources are only effective
    when `cambricon.com/vmlu` is set to `1`. If `vmlu > 1`, a full MLU device will be allocated
    regardless of `vmemory` and `vcore` values.

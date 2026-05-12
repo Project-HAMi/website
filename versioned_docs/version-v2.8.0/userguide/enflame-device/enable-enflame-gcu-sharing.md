@@ -5,19 +5,19 @@ title: Enable Enflame GPU Sharing
 
 ## Introduction
 
-**HAMi now supports sharing on enflame.com/gcu(i.e S60) by implementing most device-sharing features as NVIDIA GPUs**, including:
+**HAMi now supports sharing on enflame.com/gcu (i.e., S60) by implementing most device-sharing features as NVIDIA GPUs**, including:
 
 **GCU sharing**: Each task can allocate a portion of GCU instead of a whole GCU card, thus GCU can be shared among multiple tasks.
 
-**Device Memory and Core Control**: GCUs can be allocated with certain percentage of device memory and core, HAMi ensures it does not exceed the boundary.
+**Device Memory and Core Control**: GCUs can be allocated with a certain percentage of device memory and core, with hard limits enforced to prevent exceeding the allocation.
 
 **Device UUID Selection**: You can specify which GCU devices to use or exclude using annotations.
 
-**Very Easy to use**: You don't need to modify your task yaml to use the HAMi scheduler. All your GPU jobs will be automatically supported after installation.
+**No task YAML changes required**: All GCU jobs are automatically supported after installation.
 
 ## Prerequisites
 
-* Enflame gcushare-device-plugin >= 2.1.6 (please consult your device provider, gcushare has two components: gcushare-scheduler-plugin and gcushare-device-plugin, only gcushare-device-plugin is needed here )
+* Enflame gcushare-device-plugin >= 2.1.6 (please consult your device provider, gcushare has two components: gcushare-scheduler-plugin and gcushare-device-plugin; only gcushare-device-plugin is needed here)
 * driver version >= 1.2.3.14
 * kubernetes >= 1.24
 * enflame-container-toolkit >=2.0.50
@@ -27,8 +27,7 @@ title: Enable Enflame GPU Sharing
 * Deploy gcushare-device-plugin on enflame nodes (Please consult your device provider to acquire its package and document)
 
 > **NOTICE:** *Install only gpushare-device-plugin, don't install gpu-scheduler-plugin package.*
-
-> **NOTE:** The default resource names are:
+> **NOTICE:** The default resource names are:
 >
 > * `enflame.com/vgcu` for GCU count, only support 1 now.
 > * `enflame.com/vgcu-percentage` for the percentage of memory and cores in a gcu slice.
@@ -55,7 +54,7 @@ HAMi divides each Enflame GCU into 100 units for resource allocation. When you r
 ## Running Enflame jobs
 
 Enflame GCUs can now be requested by a container
-using the `enflame.com/vgcu` and `enflame.com/vgcu-percentage`  resource type:
+using the `enflame.com/vgcu` and `enflame.com/vgcu-percentage` resource type:
 
 ```yaml
 apiVersion: v1
@@ -67,7 +66,7 @@ spec:
   terminationGracePeriodSeconds: 0
   containers:
     - name: pod-gcu-example1
-      image: ubuntu:18.04
+      image: ubuntu:22.04
       imagePullPolicy: IfNotPresent
       command:
         - sleep
@@ -79,7 +78,7 @@ spec:
           enflame.com/vgcu-percentage: 22
 ```
 
-> **NOTICE:** *You can find more examples in [examples/enflame folder](https://github.com/Project-HAMi/HAMi/tree/release-v2.6/examples/enflame/)*
+> **NOTICE:** *You can find more examples in [examples/enflame folder](https://github.com/Project-HAMi/HAMi/tree/master/examples/enflame/)*
 
 ## Device UUID Selection
 
@@ -99,7 +98,7 @@ spec:
   # ... rest of pod spec
 ```
 
-> **NOTE:** The device ID format is `{node-name}-enflame-{index}`. You can find the available device IDs in the node status.
+> **NOTICE:** The device ID format is `{node-name}-enflame-{index}`. You can find the available device IDs in the node status.
 
 ### Finding Device UUIDs
 
@@ -119,7 +118,7 @@ Look for annotations containing device information in the node status.
 
 ## Notes
 
-1. GCUshare takes effect only for containers that apply for one GCU(i.e enflame.com/vgcu=1 ).
+1. GCUshare takes effect only for containers that apply for one GCU (i.e., enflame.com/vgcu=1 ).
 
 2. Multiple GCU allocation in one container is not supported yet
 

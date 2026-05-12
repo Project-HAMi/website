@@ -69,7 +69,7 @@ While HAMi's own priority serves a different, device-specific purpose (runtime p
 **Currently Supported**:
 
 - **Volcano**: Can be integrated with Volcano by using the [`volcano-vgpu-device-plugin`](https://github.com/Project-HAMi/volcano-vgpu-device-plugin) under the HAMi project for GPU resource scheduling and management.
-- **Koordinator**: HAMi can also be integrated with Koordinator to provide end-to-end GPU sharing solutions. By deploying HAMi-core on nodes and configuring the appropriate labels and resource requests in Pods, Koordinator can use HAMi’s GPU isolation capabilities, allowing multiple Pods to share the same GPU and significantly improve GPU resource utilization.
+- **Koordinator**: HAMi can also be integrated with Koordinator to provide end-to-end GPU sharing solutions. By deploying HAMi-core on nodes and configuring the appropriate labels and resource requests in Pods, Koordinator uses HAMi’s GPU isolation capabilities, allowing multiple Pods to share the same GPU and improve GPU resource utilization.
 
   For detailed configuration and usage instructions, refer to the Koordinator documentation:
   [Device Scheduling - GPU Share With HAMi](https://koordinator.sh/docs/user-manuals/device-scheduling-gpu-share-with-hami/)
@@ -78,7 +78,7 @@ While HAMi's own priority serves a different, device-specific purpose (runtime p
 
 - **KubeVirt & Kata Containers**: Incompatible due to their reliance on virtualization for resource isolation, whereas HAMi’s GPU Device Plugin depends on direct GPU mounting into containers. Supporting these would require adapting the device allocation logic, balancing performance overhead and implementation complexity. HAMi prioritizes high-performance scenarios with direct GPU mounting and thus does not currently support these virtualization solutions.
 
-## Why are there [HAMI-core Warn(...)] logs in my Pod's output? Can I disable them?
+## Why are there [HAMi-core Warn(...)] logs in my Pod's output? Can I disable them?
 
 This is normal and can be ignored. If needed, disable the logs by setting the environment variable `LIBCUDA_LOG_LEVEL=0` in the container.
 
@@ -150,7 +150,7 @@ Device Plugins can only report a single resource type. GPU memory and compute in
 - HAMi stores detailed GPU resource information (e.g., compute power, memory, model) as **node annotations** for use by the scheduler.
 - Example annotation:
 
-   ```
+   ```yaml
    hami.io/node-nvidia-register: GPU-fc28df76-54d2-c387-e52e-5f0a9495968c,10,49140,100,NVIDIA-NVIDIA L40S,0,true:GPU-b97db201-0442-8531-56d4-367e0c7d6edd,10,49140,100,...
    ```
 
@@ -158,8 +158,8 @@ Device Plugins can only report a single resource type. GPU memory and compute in
 
 **Why does the Node Capacity show `volcano.sh/vgpu-number` and `volcano.sh/vgpu-memory` when using `volcano-vgpu-device-plugin`?**
 
-- volcano-vgpu-device-plugin creates  **[three independent Device Plugin instances](https://github.com/Project-HAMi/volcano-vgpu-device-plugin/blob/2bf6dfe37f7b716f05d0d3210f89898087c06d99/pkg/plugin/vgpu/mig-strategy.go#L65-L85)** , each registering with kubelet for volcano.sh/vgpu-number, volcano.sh/vgpu-memory, and volcano.sh/vgpu-cores resources respectively. After kubelet receives the registration, it automatically writes the resources into Capacity and Allocatable.
-- **Note** : volcano.sh/vgpu-memory resource is subject to Kubernetes extended resources quantity limit (**maximum 32,767** ). For GPUs with large memory (e.g., A100 80GB), configure the `--gpu-memory-factor` parameter to avoid exceeding the limit.
+- volcano-vgpu-device-plugin creates **[three independent Device Plugin instances](https://github.com/Project-HAMi/volcano-vgpu-device-plugin/blob/2bf6dfe37f7b716f05d0d3210f89898087c06d99/pkg/plugin/vgpu/mig-strategy.go#L65-L85)**, each registering with kubelet for volcano.sh/vgpu-number, volcano.sh/vgpu-memory, and volcano.sh/vgpu-cores resources respectively. After kubelet receives the registration, it automatically writes the resources into Capacity and Allocatable.
+- **Note:** volcano.sh/vgpu-memory resource is subject to Kubernetes extended resources quantity limit (**maximum 32,767**). For GPUs with large memory (e.g., A100 80GB), configure the `--gpu-memory-factor` parameter to avoid exceeding the limit.
 
 ## Why don’t some domestic vendors require a runtime for installation?
 

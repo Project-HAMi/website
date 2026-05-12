@@ -9,7 +9,7 @@ If your cluster can’t directly access the internet, you can install HAMi offli
 You need to save the following images into a tarball file and copy it into the cluster.
 
 ```yaml
-projecthami/hami:{HAMi version} 
+projecthami/hami:{HAMi version}
 docker.io/jettech/kube-webhook-certgen:v1.5.2
 liangjw/kube-webhook-certgen:v1.1.1
 registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:{your kubernetes version}
@@ -61,4 +61,4 @@ Run the following command:
 kubectl get pods -n kube-system
 ```
 
-If you can see both the 'device-plugin' and 'scheduler' running, then HAMi is installed successfully,
+If you can see both the 'device-plugin' and 'scheduler' running, then HAMi is installed successfully.
