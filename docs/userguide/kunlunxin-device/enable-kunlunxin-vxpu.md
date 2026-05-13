@@ -14,13 +14,13 @@ This component supports multiplexing Kunlunxin XPU devices (P800-OAM) and provid
 
 ## Prerequisites
 
-* driver version >= 5.0.21.16
-* xpu-container-toolkit >= xpu_container_1.0.2-1
-* XPU device type: P800-OAM
+- driver version >= 5.0.21.16
+- xpu-container-toolkit >= xpu_container_1.0.2-1
+- XPU device type: P800-OAM
 
 ## Enable XPU-sharing Support
 
-* Deploy [vxpu-device-plugin]
+- Deploy [vxpu-device-plugin]
 
 ```yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -125,8 +125,8 @@ spec:
 :::note
 Default resource names are as follows:
 
-* `kunlunxin.com/vxpu` for VXPU count
-* `kunlunxin.com/vxpu-memory` for memory allocation
+- `kunlunxin.com/vxpu` for VXPU count
+- `kunlunxin.com/vxpu-memory` for memory allocation
 
 You can customize these names using the parameters above.
 :::

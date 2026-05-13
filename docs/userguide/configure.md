@@ -47,15 +47,15 @@ HAMi allows configuring per-node behavior for device plugin. Edit the ConfigMap:
 ```sh
 kubectl -n <namespace> edit cm hami-device-plugin
 ```
-* `name`: Name of the node.
-* `operatingmode`: Operating mode of the node, can be "hami-core" or "mig", default: "hami-core".
-* `devicememoryscaling`: Overcommit ratio of device memory.
-* `devicecorescaling`: Overcommit ratio of device core.
-* `devicesplitcount`: Allowed number of tasks sharing a device.
-* `filterdevices`: Devices that are not registered to HAMi.
-  * `uuid`: UUIDs of devices to ignore
-  * `index`: Indexes of devices to ignore.
-  * A device is ignored by HAMi if it is in the `uuid` or `index` list.
+- `name`: Name of the node.
+- `operatingmode`: Operating mode of the node, can be "hami-core" or "mig", default: "hami-core".
+- `devicememoryscaling`: Overcommit ratio of device memory.
+- `devicecorescaling`: Overcommit ratio of device core.
+- `devicesplitcount`: Allowed number of tasks sharing a device.
+- `filterdevices`: Devices that are not registered to HAMi.
+  - `uuid`: UUIDs of devices to ignore
+  - `index`: Indexes of devices to ignore.
+  - A device is ignored by HAMi if it is in the `uuid` or `index` list.
 
 ## Chart Configs: arguments
 

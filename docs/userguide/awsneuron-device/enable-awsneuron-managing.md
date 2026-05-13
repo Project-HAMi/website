@@ -8,20 +8,20 @@ AWS Neuron devices are specialized hardware accelerators designed by AWS to opti
 
 HAMi now integrates with [Neuron scheduler extension](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/containers/kubernetes-getting-started.html#deploy-neuron-scheduler-extension), providing the following capabilities:
 
-* **Neuron sharing**: HAMi now supports sharing on aws.amazon.com/neuron by allocating device cores(aws.amazon.com/neuroncore), each Neuron core equals 1/2 of a neuron device.
+- **Neuron sharing**: HAMi now supports sharing on aws.amazon.com/neuron by allocating device cores(aws.amazon.com/neuroncore), each Neuron core equals 1/2 of a neuron device.
 
-* **Topology awareness**: When allocating multiple aws-neuron devices in a container, HAMi ensures these devices are connected to minimize the communication cost between neuron devices. For details about how these devices are connected, refer to [Container Device Allocation On Different Instance Types](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/containers/kubernetes-getting-started.html#container-device-allocation-on-different-instance-types).
+- **Topology awareness**: When allocating multiple aws-neuron devices in a container, HAMi ensures these devices are connected to minimize the communication cost between neuron devices. For details about how these devices are connected, refer to [Container Device Allocation On Different Instance Types](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/containers/kubernetes-getting-started.html#container-device-allocation-on-different-instance-types).
 
 ## Prerequisites
 
-* Neuron-device-plugin
-* EC2 instance of type `Inf` or `Trn`
+- Neuron-device-plugin
+- EC2 instance of type `Inf` or `Trn`
 
 ## Enabling Neuron-sharing Support
 
-* Deploy neuron-device-plugin on EC2 neuron nodes according to the AWS document: [Neuro Device Plugin](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/containers/kubernetes-getting-started.html#neuron-device-plugin)
+- Deploy neuron-device-plugin on EC2 neuron nodes according to the AWS document: [Neuro Device Plugin](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/containers/kubernetes-getting-started.html#neuron-device-plugin)
 
-* Deploy HAMi
+- Deploy HAMi
 
 ```bash
 helm install hami hami-charts/hami -n kube-system
@@ -33,10 +33,10 @@ HAMi divides each AWS Neuron device into 2 units for resource allocation. You ca
 
 ### Neuron Allocation
 
-* Each unit of `aws.amazon.com/neuroncore` represents 1/2 of neuron device
-* Don't assign `aws.amazon.com/neuron` like other devices, only assigning `aws.amazon.com/neuroncore` is enough
-* When the number of `aws.amazon.com/neuroncore`>=2, it is equivalent to setting `aws.amazon.com/neuron=1/2 * neuronCoreNumber`
-* The topology awareness scheduling is automatically enabled when tasks require multiple neuron devices.
+- Each unit of `aws.amazon.com/neuroncore` represents 1/2 of neuron device
+- Don't assign `aws.amazon.com/neuron` like other devices, only assigning `aws.amazon.com/neuroncore` is enough
+- When the number of `aws.amazon.com/neuroncore`>=2, it is equivalent to setting `aws.amazon.com/neuron=1/2 * neuronCoreNumber`
+- The topology awareness scheduling is automatically enabled when tasks require multiple neuron devices.
 
 ## Running Neuron jobs
 

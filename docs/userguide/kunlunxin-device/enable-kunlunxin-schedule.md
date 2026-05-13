@@ -26,15 +26,15 @@ of the requested resources on the selected node, following these rules:
 
 ## Prerequisites
 
-* Kunlunxin driver >= v5.0.21
-* Kubernetes >= v1.23
-* kunlunxin k8s-device-plugin
+- Kunlunxin driver >= v5.0.21
+- Kubernetes >= v1.23
+- kunlunxin k8s-device-plugin
 
 ## Enabling Topology-Aware Scheduling
 
-* Deploy the Kunlunxin device plugin on P800 nodes.
+- Deploy the Kunlunxin device plugin on P800 nodes.
   (Please contact your device vendor to obtain the appropriate package and documentation.)
-* Deploy HAMi according to the instructions in `README.md`.
+- Deploy HAMi according to the instructions in `README.md`.
 
 ## Running Kunlunxin Jobs
 

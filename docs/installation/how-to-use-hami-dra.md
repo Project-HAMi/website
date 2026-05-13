@@ -11,7 +11,7 @@ By installing the [HAMi DRA webhook](https://github.com/Project-HAMi/HAMi-DRA) i
 
 ## Prerequisites
 
-* Kubernetes version >= 1.34 with DRA Consumable Capacity [featuregate](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/) enabled
+- Kubernetes version >= 1.34 with DRA Consumable Capacity [featuregate](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/) enabled
 
 ## Installation
 
@@ -38,7 +38,7 @@ DRA mode is not compatible with traditional mode. Do not enable both at the same
 
 The implementation of DRA functionality requires support from the corresponding device's DRA Driver. Currently supported devices include:
 
-* [NVIDIA GPU](../userguide/nvidia-device/dynamic-resource-allocation)
+- [NVIDIA GPU](../userguide/nvidia-device/dynamic-resource-allocation)
 
 Please refer to the corresponding page to install the device driver.
 

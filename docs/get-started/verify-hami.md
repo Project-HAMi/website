@@ -30,17 +30,17 @@ sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
 
 ### 2. Configure your runtime
 
-* For containerd: Edit `/etc/containerd/config.toml` to set the default runtime name to `"nvidia"` and the binary name to `"/usr/bin/nvidia-container-runtime"`.
+- For containerd: Edit `/etc/containerd/config.toml` to set the default runtime name to `"nvidia"` and the binary name to `"/usr/bin/nvidia-container-runtime"`.
 
-  * Restart:
+  - Restart:
 
     ```bash
     sudo systemctl daemon-reload && sudo systemctl restart containerd
     ```
 
-* For Docker: Edit `/etc/docker/daemon.json` to set `"default-runtime": "nvidia"`.
+- For Docker: Edit `/etc/docker/daemon.json` to set `"default-runtime": "nvidia"`.
 
-  * Restart:
+  - Restart:
 
     ```bash
     sudo systemctl daemon-reload && sudo systemctl restart docker

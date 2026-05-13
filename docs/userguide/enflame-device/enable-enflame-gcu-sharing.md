@@ -17,14 +17,14 @@ title: Enable Enflame GCU Sharing
 
 ## Prerequisites
 
-* Enflame gcushare-device-plugin >= 2.1.6 (please consult your device provider, gcushare has two components: gcushare-scheduler-plugin and gcushare-device-plugin; only gcushare-device-plugin is needed here)
-* driver version >= 1.2.3.14
-* kubernetes >= 1.24
-* enflame-container-toolkit >=2.0.50
+- Enflame gcushare-device-plugin >= 2.1.6 (please consult your device provider, gcushare has two components: gcushare-scheduler-plugin and gcushare-device-plugin; only gcushare-device-plugin is needed here)
+- driver version >= 1.2.3.14
+- kubernetes >= 1.24
+- enflame-container-toolkit >=2.0.50
 
 ## Enabling GCU-sharing Support
 
-* Deploy gcushare-device-plugin on enflame nodes (Please consult your device provider to acquire its package and document)
+- Deploy gcushare-device-plugin on enflame nodes (Please consult your device provider to acquire its package and document)
 
 :::caution
 Install only `gcushare-device-plugin`. Do not install the `gcushare-scheduler-plugin` package.
@@ -39,7 +39,7 @@ The default resource names are:
 You can customize these names by modifying the `hami-scheduler-device` ConfigMap.
 :::
 
-* Set 'devices.enflame.enabled=true' when deploy HAMi
+- Set 'devices.enflame.enabled=true' when deploy HAMi
 
 ```bash
 helm install hami hami-charts/hami --set devices.enflame.enabled=true -n kube-system
@@ -51,10 +51,10 @@ HAMi divides each Enflame GCU into 100 units for resource allocation. When you r
 
 ### GCU Slice Allocation
 
-* Each unit of `enflame.com/vgcu-percentage` represents 1% device memory and 1% core
-* If you don't specify a memory request, the system will default to using 100% of the available memory
-* Memory allocation is enforced with hard limits to ensure tasks don't exceed their allocated memory
-* Core allocation is enforced with hard limits to ensure tasks don't exceed their allocated cores
+- Each unit of `enflame.com/vgcu-percentage` represents 1% device memory and 1% core
+- If you don't specify a memory request, the system will default to using 100% of the available memory
+- Memory allocation is enforced with hard limits to ensure tasks don't exceed their allocated memory
+- Core allocation is enforced with hard limits to ensure tasks don't exceed their allocated cores
 
 ## Running Enflame jobs
 
