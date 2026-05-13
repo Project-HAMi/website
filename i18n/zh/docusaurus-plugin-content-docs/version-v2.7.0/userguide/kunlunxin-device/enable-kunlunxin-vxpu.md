@@ -14,13 +14,13 @@ title: 启用昆仑芯 VXPU
 
 ## 前置条件
 
-* driver version >= 5.0.21.16
-* xpu-container-toolkit >= xpu_container_1.0.2-1
-* XPU device type: P800-OAM
+- driver version >= 5.0.21.16
+- xpu-container-toolkit >= xpu_container_1.0.2-1
+- XPU device type: P800-OAM
 
 ## 启用 XPU 共享支持
 
-* 部署 [vxpu-device-plugin]
+- 部署 [vxpu-device-plugin]
 
 ```yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -125,8 +125,8 @@ spec:
 :::note
 默认资源名称如下：
 
-* `kunlunxin.com/vxpu` 用于 VXPU 计数
-* `kunlunxin.com/vxpu-memory` 用于显存分配
+- `kunlunxin.com/vxpu` 用于 VXPU 计数
+- `kunlunxin.com/vxpu-memory` 用于显存分配
 
 你可以使用上述参数自定义这些名称。
 :::

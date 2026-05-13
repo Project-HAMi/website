@@ -18,15 +18,15 @@ title: Enable dynamic-mig feature
 
 ## Prerequisites
 
-* NVIDIA Blackwell and Hopper™ and Ampere Devices
-* HAMi > v2.5.0
-* NVIDIA Container Toolkit
+- NVIDIA Blackwell and Hopper™ and Ampere Devices
+- HAMi > v2.5.0
+- NVIDIA Container Toolkit
 
 ## Enabling Dynamic-mig Support
 
-* Install the chart using helm, See 'enabling vGPU support in kubernetes' section [here](https://github.com/Project-HAMi/HAMi#enabling-vgpu-support-in-kubernetes)
+- Install the chart using helm, See 'enabling vGPU support in kubernetes' section [here](https://github.com/Project-HAMi/HAMi#enabling-vgpu-support-in-kubernetes)
 
-* Configure `mode` in device-plugin configMap to `mig` for MIG nodes
+- Configure `mode` in device-plugin configMap to `mig` for MIG nodes
 ```
 kubectl describe cm  hami-device-plugin -n kube-system
 ```
@@ -46,9 +46,9 @@ kubectl describe cm  hami-device-plugin -n kube-system
 }
 ```
 
-* Restart the following pods for the change to take effect:
-  * hami-scheduler 
-  * hami-device-plugin on 'MIG-NODE-A'
+- Restart the following pods for the change to take effect:
+  - hami-scheduler 
+  - hami-device-plugin on 'MIG-NODE-A'
 
 ## Custom mig configuration (Optional)
 HAMi currently has a [built-in mig configuration](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/templates/scheduler/device-configmap.yaml) for MIG.

@@ -18,12 +18,12 @@ translated: true
 
 ## 节点需求
 
-* dtk driver >= 24.04
-* hy-smi v1.6.0
+- dtk driver >= 24.04
+- hy-smi v1.6.0
 
 ## 开启 DCU 复用
 
-* 部署[dcu-vgpu-device-plugin](https://github.com/Project-HAMi/dcu-vgpu-device-plugin)
+- 部署[dcu-vgpu-device-plugin](https://github.com/Project-HAMi/dcu-vgpu-device-plugin)
 
 ## 运行 DCU 任务
 

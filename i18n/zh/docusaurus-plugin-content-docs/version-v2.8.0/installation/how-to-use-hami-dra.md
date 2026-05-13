@@ -11,7 +11,7 @@ HAMi 已经提供了对 K8s [DRA](https://kubernetes.io/docs/concepts/scheduling
 
 ## 前提条件
 
-* Kubernetes 版本 >= 1.34 并且 DRA Consumable Capacity [featuregate](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/) 启用
+- Kubernetes 版本 >= 1.34 并且 DRA Consumable Capacity [featuregate](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/) 启用
 
 ## 安装
 
@@ -38,7 +38,7 @@ DRA 模式与传统模式不兼容，请勿同时启用。
 
 DRA 功能的实现需要对应设备的 DRA Driver 提供支持，目前支持的设备包括：
 
-* [NVIDIA GPU](../userguide/nvidia-device/dynamic-resource-allocation)
+- [NVIDIA GPU](../userguide/nvidia-device/dynamic-resource-allocation)
 
 参照对应的页面安装设备驱动。
 

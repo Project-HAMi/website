@@ -25,15 +25,15 @@ Kubernetes 将 Pod 调度到适当的节点上，目标是减少碎片化
 
 ## 前置条件
 
-* Kunlunxin driver >= v5.0.21
-* Kubernetes >= v1.23
-* kunlunxin k8s-device-plugin
+- Kunlunxin driver >= v5.0.21
+- Kubernetes >= v1.23
+- kunlunxin k8s-device-plugin
 
 ## 启用拓扑感知调度
 
-* 在 P800 节点上部署昆仑芯设备插件。
+- 在 P800 节点上部署昆仑芯设备插件。
   （联系你的设备供应商获取相应的软件包和文档。）  
-* 按照 `README.md` 中的说明部署 HAMi。
+- 按照 `README.md` 中的说明部署 HAMi。
 
 ## 运行昆仑芯作业
 

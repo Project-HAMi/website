@@ -17,11 +17,11 @@ translated: true
 
 ## 先决条件
 
-* dtk 驱动程序 >= 24.04
+- dtk 驱动程序 >= 24.04
 
 ## 启用 DCU 共享支持
 
-* 部署 dcu-vgpu-device-plugin [这里](https://github.com/Project-HAMi/dcu-vgpu-device-plugin)
+- 部署 dcu-vgpu-device-plugin [这里](https://github.com/Project-HAMi/dcu-vgpu-device-plugin)
 
 ## 运行 DCU 任务
 

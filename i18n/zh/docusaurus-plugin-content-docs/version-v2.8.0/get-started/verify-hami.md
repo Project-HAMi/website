@@ -29,17 +29,17 @@ sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
 
 ### 2. 配置运行时
 
-* 对于 containerd：编辑 `/etc/containerd/config.toml`，将默认运行时名称设置为 `"nvidia"`，二进制文件名称设置为 `"/usr/bin/nvidia-container-runtime"`。
+- 对于 containerd：编辑 `/etc/containerd/config.toml`，将默认运行时名称设置为 `"nvidia"`，二进制文件名称设置为 `"/usr/bin/nvidia-container-runtime"`。
 
-  * 重启服务：
+  - 重启服务：
 
     ```bash
     sudo systemctl daemon-reload && sudo systemctl restart containerd
     ```
 
-* 对于 Docker：编辑 `/etc/docker/daemon.json`，设置 `"default-runtime": "nvidia"`。
+- 对于 Docker：编辑 `/etc/docker/daemon.json`，设置 `"default-runtime": "nvidia"`。
 
-  * 重启服务：
+  - 重启服务：
 
     ```bash
     sudo systemctl daemon-reload && sudo systemctl restart docker

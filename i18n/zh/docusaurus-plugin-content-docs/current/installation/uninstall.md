@@ -6,9 +6,9 @@ title: 卸载
 
 在卸载 HAMi 之前，请确保你具备以下条件：
 
-* 可以访问 Kubernetes 集群，并已配置 `kubectl`
-* 已安装 Helm 3.x
-* 具备从 `kube-system` 命名空间卸载资源的管理员权限
+- 可以访问 Kubernetes 集群，并已配置 `kubectl`
+- 已安装 Helm 3.x
+- 具备从 `kube-system` 命名空间卸载资源的管理员权限
 
 ## 卸载 HAMi
 
@@ -22,10 +22,10 @@ helm uninstall hami -n kube-system
 
 该命令将移除所有 HAMi 资源，包括：
 
-* 调度器 Pod
-* 设备插件 DaemonSet
-* ConfigMap 和 Secret
-* RBAC 角色与绑定
+- 调度器 Pod
+- 设备插件 DaemonSet
+- ConfigMap 和 Secret
+- RBAC 角色与绑定
 
 ### 完全清理（可选）
 
@@ -126,5 +126,5 @@ kubectl uncordon <node-name>
 
 ## 另请参阅
 
-* [安装指南](./online-installation.md)
-* [HAMi 介绍](../core-concepts/introduction.md)
+- [安装指南](./online-installation.md)
+- [HAMi 介绍](../core-concepts/introduction.md)

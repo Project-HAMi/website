@@ -25,12 +25,12 @@ translated: true
 
 ## 节点需求
 
-* [MT CloudNative Toolkits > 1.9.0](https://docs.mthreads.com/cloud-native/cloud-native-doc-online/)
-* 驱动版本 >= 1.2.0
+- [MT CloudNative Toolkits > 1.9.0](https://docs.mthreads.com/cloud-native/cloud-native-doc-online/)
+- 驱动版本 >= 1.2.0
 
 ## 开启GPU复用
 
-* 部署'gpu-manager'，天数智芯的GPU共享需要配合厂家提供的'MT-CloudNative Toolkit'一起使用，联系设备提供方获取
+- 部署'gpu-manager'，天数智芯的GPU共享需要配合厂家提供的'MT-CloudNative Toolkit'一起使用，联系设备提供方获取
 
 :::note
 
@@ -38,7 +38,7 @@ translated: true
 
 :::
 
-* 在安装HAMi时配置'devices.mthreads.enabled = true'参数
+- 在安装HAMi时配置'devices.mthreads.enabled = true'参数
 
 ```
 helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag={your kubernetes version} --set device.mthreads.enabled=true -n kube-system

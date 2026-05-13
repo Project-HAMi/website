@@ -16,11 +16,11 @@ title: Enable Hygon DCU sharing
 
 ## Prerequisites
 
-* dtk driver >= 24.04
+- dtk driver >= 24.04
 
 ## Enabling DCU-sharing Support
 
-* Deploy the dcu-vgpu-device-plugin [here](https://github.com/Project-HAMi/dcu-vgpu-device-plugin)
+- Deploy the dcu-vgpu-device-plugin [here](https://github.com/Project-HAMi/dcu-vgpu-device-plugin)
 
 ## Running DCU jobs
 

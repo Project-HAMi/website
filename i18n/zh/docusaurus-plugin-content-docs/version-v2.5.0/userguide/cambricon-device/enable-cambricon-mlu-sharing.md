@@ -17,13 +17,13 @@ translated: true
 
 ## 前提条件
 
-* neuware-mlu370-driver > 5.0.0
-* cambricon-device-plugin > 2.0.9
-* cntoolkit > 2.5.3
+- neuware-mlu370-driver > 5.0.0
+- cambricon-device-plugin > 2.0.9
+- cntoolkit > 2.5.3
 
 ## 启用 MLU 共享支持
 
-* 联系你的设备提供商以获取 cambricon-device-plugin>2.0.9，在 containers.args 字段中将参数 `mode` 编辑为 'dynamic-smlu'。
+- 联系你的设备提供商以获取 cambricon-device-plugin>2.0.9，在 containers.args 字段中将参数 `mode` 编辑为 'dynamic-smlu'。
 
 ```yaml
         args:
@@ -31,11 +31,11 @@ translated: true
  ...
 ```
 
-* 部署修改后的 cambricon-device-plugin
+- 部署修改后的 cambricon-device-plugin
 
-* 使用 helm 安装图表，参阅[此处](https://github.com/Project-HAMi/HAMi#enabling-vgpu-support-in-kubernetes)的“在 Kubernetes 中启用 vGPU 支持”部分
+- 使用 helm 安装图表，参阅[此处](https://github.com/Project-HAMi/HAMi#enabling-vgpu-support-in-kubernetes)的“在 Kubernetes 中启用 vGPU 支持”部分
 
-* 为该节点上的每个 MLU 激活 smlu 模式
+- 为该节点上的每个 MLU 激活 smlu 模式
 
 ```bash
 cnmon set -c 0 -smlu on

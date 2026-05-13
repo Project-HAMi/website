@@ -17,26 +17,26 @@ translated: true
 
 ## 节点需求
 
-* neuware-mlu370-driver > 5.10
-* cntoolkit > 2.5.3
+- neuware-mlu370-driver > 5.10
+- cntoolkit > 2.5.3
 
 ## 开启 MLU 复用
 
-* 通过 helm 部署本组件，参照[主文档中的开启 vgpu 支持章节](https://github.com/Project-HAMi/HAMi/blob/master/README_cn.md#kubernetes开启vgpu支持)
+- 通过 helm 部署本组件，参照[主文档中的开启 vgpu 支持章节](https://github.com/Project-HAMi/HAMi/blob/master/README_cn.md#kubernetes开启vgpu支持)
 
-* 使用以下指令，为 MLU 节点打上 label
+- 使用以下指令，为 MLU 节点打上 label
 
 ```bash
 kubectl label node {mlu-node} mlu=on
 ```
 
-* 从你的设备提供商处获取 cambricon-device-plugin，并配置以下两个参数：
+- 从你的设备提供商处获取 cambricon-device-plugin，并配置以下两个参数：
 
 `mode=dynamic-smlu`, `min-dsmlu-unit=256`
 
 它们分别代表开启 MLU 复用功能，与设置最小可分配的显存单元为 256M，你可以参考设备提供方的文档来获取更多的配置信息。
 
-* 部署配置后的`cambricon-device-plugin`
+- 部署配置后的`cambricon-device-plugin`
 
 ```bash
 kubectl apply -f cambricon-device-plugin-daemonset.yaml
