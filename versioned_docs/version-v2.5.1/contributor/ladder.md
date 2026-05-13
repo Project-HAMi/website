@@ -12,38 +12,38 @@ Each of the contributor roles below is organized into lists of three types of th
 
 Description: A Community Participant engages with the project and its community, contributing their time, thoughts, etc. Community participants are usually users who have stopped being anonymous and started being active in project discussions.
 
-* Responsibilities:
-  * Must follow the [CNCF CoC](https://github.com/cncf/foundation/blob/main/code-of-conduct.md)
-* How users can get involved with the community:
-  * Participating in community discussions
-  * Helping other users
-  * Submitting bug reports
-  * Commenting on issues
-  * Trying out new releases
-  * Attending community events
+- Responsibilities:
+  - Must follow the [CNCF CoC](https://github.com/cncf/foundation/blob/main/code-of-conduct.md)
+- How users can get involved with the community:
+  - Participating in community discussions
+  - Helping other users
+  - Submitting bug reports
+  - Commenting on issues
+  - Trying out new releases
+  - Attending community events
 
 ## Contributor
 
 Description: A Contributor contributes directly to the project and adds value to it. Contributions need not be code. People at the Contributor level may be new contributors, or they may only contribute occasionally.
 
-* Responsibilities include:
-  * Follow the CNCF CoC
-  * Follow the project contributing guide
-* Requirements (one or several of the below):
-  * Report and sometimes resolve issues
-  * Occasionally submit PRs
-  * Contribute to the documentation
-  * Show up at meetings, takes notes
-  * Answer questions from other community members
-  * Submit feedback on issues and PRs
-  * Test releases and patches and submit reviews
-  * Run or helps run events
-  * Promote the project in public
-  * Help run the project infrastructure
-  * [TODO: other small contributions]
-* Privileges:
-  * Invitations to contributor events
-  * Eligible to become an Organization Member
+- Responsibilities include:
+  - Follow the CNCF CoC
+  - Follow the project contributing guide
+- Requirements (one or several of the below):
+  - Report and sometimes resolve issues
+  - Occasionally submit PRs
+  - Contribute to the documentation
+  - Show up at meetings, takes notes
+  - Answer questions from other community members
+  - Submit feedback on issues and PRs
+  - Test releases and patches and submit reviews
+  - Run or helps run events
+  - Promote the project in public
+  - Help run the project infrastructure
+  - [TODO: other small contributions]
+- Privileges:
+  - Invitations to contributor events
+  - Eligible to become an Organization Member
 
 A very special thanks to the [long list of people](https://github.com/Project-HAMi/HAMi/blob/master/AUTHORS.md) who have contributed to and helped maintain the project. Thanks to everyone who contributed and helped maintain the project.
 
@@ -55,31 +55,31 @@ Description: An Organization Member is an established contributor who regularly 
 
 An Organization Member must meet the responsibilities and has the requirements of a Contributor, plus:
 
-* Responsibilities include:
-  * Continues to contribute regularly, as demonstrated by having at least 50 GitHub contributions per year
-* Requirements:
-  * Enabled [two-factor authentication] on their GitHub account
-  * Must have successful contributions to the project or community, including at least one of the following:
-    * 5 accepted PRs,
-    * Reviewed 5 PRs,
-    * Resolved and closed 3 Issues,
-    * Become responsible for a key project management area,
-    * Or some equivalent combination or contribution
-  * Must have been contributing for at least 1 months
-  * Must be actively contributing to at least one project area
-  * Must have two sponsors who are also Organization Members, at least one of whom does not work for the same employer
-  * **Open an issue against the Project-HAMi/HAMi repo**
-    * Ensure your sponsors are @mentioned on the issue
-    * Complete every item on the issue checklist
-    * Make sure that the list of contributions included is representative of your work on the project.
-  * Have your sponsoring reviewers reply confirmation of sponsorship: `+1`
-  * Once your sponsors have responded, your request will be handled by the `HAMi GitHub Admin team`.
+- Responsibilities include:
+  - Continues to contribute regularly, as demonstrated by having at least 50 GitHub contributions per year
+- Requirements:
+  - Enabled [two-factor authentication] on their GitHub account
+  - Must have successful contributions to the project or community, including at least one of the following:
+    - 5 accepted PRs,
+    - Reviewed 5 PRs,
+    - Resolved and closed 3 Issues,
+    - Become responsible for a key project management area,
+    - Or some equivalent combination or contribution
+  - Must have been contributing for at least 1 months
+  - Must be actively contributing to at least one project area
+  - Must have two sponsors who are also Organization Members, at least one of whom does not work for the same employer
+  - **Open an issue against the Project-HAMi/HAMi repo**
+    - Ensure your sponsors are @mentioned on the issue
+    - Complete every item on the issue checklist
+    - Make sure that the list of contributions included is representative of your work on the project.
+  - Have your sponsoring reviewers reply confirmation of sponsorship: `+1`
+  - Once your sponsors have responded, your request will be handled by the `HAMi GitHub Admin team`.
 
-* Privileges:
-  * May be assigned Issues and Reviews
-  * May give commands to CI/CD automation
-  * Can be added to [TODO: Repo Host] teams
-  * Can recommend other contributors to become Org Members
+- Privileges:
+  - May be assigned Issues and Reviews
+  - May give commands to CI/CD automation
+  - Can be added to [TODO: Repo Host] teams
+  - Can recommend other contributors to become Org Members
 
 The process for a Contributor to become an Organization Member is as follows:
 
@@ -94,22 +94,22 @@ Reviewers are responsible for a "specific area." This can be a specific code dir
 
 Reviewers have all the rights and responsibilities of an Organization Member, plus:
 
-* Responsibilities include:
-  * Following the reviewing guide
-  * Reviewing most Pull Requests against their specific areas of responsibility
-  * Reviewing at least 20 PRs per year
-  * Helping other contributors become reviewers
-* Requirements:
-  * Experience as a Contributor for at least 3 months
-  * Is an Organization Member
-  * Has reviewed, or helped review, at least 10 Pull Requests
-  * Has analyzed and resolved test failures in their specific area
-  * Has demonstrated an in-depth knowledge of the specific area
-  * Commits to being responsible for that specific area
-  * Is supportive of new and occasional contributors and helps get useful PRs in shape to commit
-* Additional privileges:
-  * Has GitHub or CI/CD rights to approve pull requests in specific directories
-  * Can recommend and review other contributors to become Reviewers
+- Responsibilities include:
+  - Following the reviewing guide
+  - Reviewing most Pull Requests against their specific areas of responsibility
+  - Reviewing at least 20 PRs per year
+  - Helping other contributors become reviewers
+- Requirements:
+  - Experience as a Contributor for at least 3 months
+  - Is an Organization Member
+  - Has reviewed, or helped review, at least 10 Pull Requests
+  - Has analyzed and resolved test failures in their specific area
+  - Has demonstrated an in-depth knowledge of the specific area
+  - Commits to being responsible for that specific area
+  - Is supportive of new and occasional contributors and helps get useful PRs in shape to commit
+- Additional privileges:
+  - Has GitHub or CI/CD rights to approve pull requests in specific directories
+  - Can recommend and review other contributors to become Reviewers
 
 The process of becoming a Reviewer is:
 
@@ -126,15 +126,15 @@ The current list of maintainers can be found in the [MAINTAINERS](https://github
 
 ## An active maintainer should
 
-* Actively participate in reviewing pull requests and incoming issues. There are no hard rules on what is “active enough” and this is left up to the judgement of the current group of maintainers.
+- Actively participate in reviewing pull requests and incoming issues. There are no hard rules on what is “active enough” and this is left up to the judgement of the current group of maintainers.
 
-* Actively participate in discussions about design and the future of the project.
+- Actively participate in discussions about design and the future of the project.
 
-* Take responsibility for backports to appropriate branches for PRs they approve and merge.
+- Take responsibility for backports to appropriate branches for PRs they approve and merge.
 
-* Do their best to follow all code, testing, and design conventions as determined by consensus among active maintainers.
+- Do their best to follow all code, testing, and design conventions as determined by consensus among active maintainers.
 
-* Gracefully step down from their maintainership role when they are no longer planning to actively participate in the project.
+- Gracefully step down from their maintainership role when they are no longer planning to actively participate in the project.
 
 ## How to be a maintainer
 
@@ -150,12 +150,12 @@ It is normal for maintainers to come and go based on their other responsibilitie
 
 It is important for contributors to be and stay active to set an example and show commitment to the project. Inactivity is harmful to the project as it may lead to unexpected delays, contributor attrition, and a lost of trust in the project.
 
-* Inactivity is measured by:
-  * Periods of no contributions for longer than 3 months
-  * Periods of no communication for longer than 3 months
-* Consequences of being inactive include:
-  * Involuntary removal or demotion
-  * Being asked to move to Emeritus status
+- Inactivity is measured by:
+  - Periods of no contributions for longer than 3 months
+  - Periods of no communication for longer than 3 months
+- Consequences of being inactive include:
+  - Involuntary removal or demotion
+  - Being asked to move to Emeritus status
 
 ## Involuntary Removal or Demotion
 

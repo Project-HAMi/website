@@ -4,22 +4,22 @@ title: Enable Cambricon MLU Sharing
 
 **HAMi now supports `cambricon.com/mlu` by implementing most device-sharing features similar to NVIDIA GPUs**, including:
 
-* **MLU Sharing**: Tasks can request a fraction of an MLU instead of an entire MLU card.
+- **MLU Sharing**: Tasks can request a fraction of an MLU instead of an entire MLU card.
   This enables multiple tasks to share the same MLU device.
 
-* **Device Memory Control**: You can allocate MLUs with a specified memory size, with
+- **Device Memory Control**: You can allocate MLUs with a specified memory size, with
   guaranteed enforcement to ensure usage does not exceed the requested limit.
 
-* **Device Core Control**: MLUs can be assigned a specific number of compute cores,
+- **Device Core Control**: MLUs can be assigned a specific number of compute cores,
   and enforcement ensures core usage remains within bounds.
 
-* **MLU Type Selection**: You can use annotations to specify which MLU types a task *must use* or
+- **MLU Type Selection**: You can use annotations to specify which MLU types a task *must use* or
   *must avoid* by setting `cambricon.com/use-mlutype` or `cambricon.com/nouse-mlutype`.
 
 ## Prerequisites
 
-* neuware-mlu370-driver > 5.10
-* cntoolkit > 2.5.3
+- neuware-mlu370-driver > 5.10
+- cntoolkit > 2.5.3
 
 ## Enabling MLU Sharing
 
@@ -40,8 +40,8 @@ title: Enable Cambricon MLU Sharing
 
    Get the `cambricon-device-plugin` from your device provider, and configure it with the following parameters:
 
-   * `mode=dynamic-smlu`: Enables dynamic SMLU support.
-   * `min-dsmlu-unit=256`: Sets the minimum allocatable memory unit to 256 MB.
+   - `mode=dynamic-smlu`: Enables dynamic SMLU support.
+   - `min-dsmlu-unit=256`: Sets the minimum allocatable memory unit to 256 MB.
 
    Refer to your provider’s documentation for additional details.
 
@@ -55,9 +55,9 @@ title: Enable Cambricon MLU Sharing
 
 To request shared MLU resources in a container, use the following resource types:
 
-* `cambricon.com/vmlu`
-* `cambricon.com/mlu.smlu.vmemory`
-* `cambricon.com/mlu.smlu.vcore`
+- `cambricon.com/vmlu`
+- `cambricon.com/mlu.smlu.vmemory`
+- `cambricon.com/mlu.smlu.vcore`
 
 Here is an YAML example:
 

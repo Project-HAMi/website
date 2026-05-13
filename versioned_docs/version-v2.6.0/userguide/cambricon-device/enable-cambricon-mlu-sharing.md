@@ -17,14 +17,14 @@ title: Enable cambricon MLU sharing
 
 ## Prerequisites
 
-* neuware-mlu370-driver > 5.10
-* cntoolkit > 2.5.3
+- neuware-mlu370-driver > 5.10
+- cntoolkit > 2.5.3
 
 ## Enabling MLU-sharing Support
 
-* Install the chart using helm, See 'enabling vGPU support in kubernetes' section [here](https://github.com/Project-HAMi/HAMi#enabling-vgpu-support-in-kubernetes)
+- Install the chart using helm, See 'enabling vGPU support in kubernetes' section [here](https://github.com/Project-HAMi/HAMi#enabling-vgpu-support-in-kubernetes)
 
-* Activate the smlu mode for each MLUs on that node
+- Activate the smlu mode for each MLUs on that node
 
 ```sh
 cnmon set -c 0 -smlu on
@@ -32,13 +32,13 @@ cnmon set -c 1 -smlu on
 # ...
 ```
 
-* Get cambricon-device-plugin from your device provider and specify the following parameters during deployment:
+- Get cambricon-device-plugin from your device provider and specify the following parameters during deployment:
 
 `mode=dynamic-smlu`, `min-dsmlu-unit=256`
 
 These two parameters represent enabling the dynamic smlu function and setting the minimum allocable memory unit to 256 MB, respectively. You can refer to the document from device provider for more details
 
-* Deploy the cambricon-device-plugin you specified
+- Deploy the cambricon-device-plugin you specified
 
 ```
 kubectl apply -f cambricon-device-plugin-daemonset.yaml

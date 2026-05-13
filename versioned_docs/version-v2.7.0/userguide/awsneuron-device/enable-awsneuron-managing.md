@@ -8,21 +8,21 @@ AWS Neuron devices are specialized hardware accelerators designed by AWS to opti
 
 HAMi now integrates with [Neuron scheduler extension](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/containers/kubernetes-getting-started.html#deploy-neuron-scheduler-extension), providing the following capabilities:
 
-* **Neuron sharing**: HAMi now supports sharing on aws.amazon.com/neuron by allocating device cores(aws.amazon.com/neuroncore), each Neuron core equals to 1/2 neuron device.
+- **Neuron sharing**: HAMi now supports sharing on aws.amazon.com/neuron by allocating device cores(aws.amazon.com/neuroncore), each Neuron core equals to 1/2 neuron device.
 
-* **Topology awareness**: When allocating multiple aws-neuron devices in a container, HAMi will make sure these devices are connected with one another, so to minimize the communication cost between neuron devices. For details about how these devices are connected, refer to [Container Device Allocation On Different Instance Types](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/containers/kubernetes-getting-started.html#container-device-allocation-on-different-instance-types).
+- **Topology awareness**: When allocating multiple aws-neuron devices in a container, HAMi will make sure these devices are connected with one another, so to minimize the communication cost between neuron devices. For details about how these devices are connected, refer to [Container Device Allocation On Different Instance Types](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/containers/kubernetes-getting-started.html#container-device-allocation-on-different-instance-types).
 
 
 ## Prerequisites
 
-* Neuron-device-plugin
-* EC2 instance of type `Inf` or `Trn`
+- Neuron-device-plugin
+- EC2 instance of type `Inf` or `Trn`
 
 ## Enabling GCU-sharing Support
 
-* Deploy neuron-device-plugin on EC2 neuron nodes according to document the AWS document: [Neuro Device Plugin](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/containers/kubernetes-getting-started.html#neuron-device-plugin)
+- Deploy neuron-device-plugin on EC2 neuron nodes according to document the AWS document: [Neuro Device Plugin](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/containers/kubernetes-getting-started.html#neuron-device-plugin)
 
-* Deploy HAMi
+- Deploy HAMi
 
 ```
 helm install hami hami-charts/hami -n kube-system
