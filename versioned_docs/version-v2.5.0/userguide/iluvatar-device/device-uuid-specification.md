@@ -20,7 +20,11 @@ spec:
   # ... rest of pod spec
 ```
 
-> **NOTE:** The device ID format is `{node-name}-iluvatar-{index}`. You can find the available device IDs in the node status.
+:::note
+
+The device ID format is `{node-name}-iluvatar-{index}`. You can find the available device IDs in the node status.
+
+:::
 
 ### Finding Device UUIDs
 
