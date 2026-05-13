@@ -44,7 +44,7 @@ spec:
         limits:
           hygon.com/dcunum: 1 # 请求一个 DCU
           hygon.com/dcumem: 2000 # 每个 DCU 包含 2000M 设备显存
-          hygon.com/dcucores: 60 # 每个 DCU 分配 15% 的设备核心
+          hygon.com/dcucores: 60 # 每个 DCU 分配 60% 的设备核心
 
 ```
 
