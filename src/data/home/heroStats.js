@@ -7,7 +7,7 @@ const heroStats = [
   {
     key: 'release',
     label: { en: 'Latest Release', zh: '最新版本' },
-    value: 'v2.8.0',
+    value: 'v2.9.0',
   },
 ];
 
