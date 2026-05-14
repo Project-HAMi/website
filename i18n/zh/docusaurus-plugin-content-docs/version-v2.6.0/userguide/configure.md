@@ -17,7 +17,7 @@ translated: true
 
     更改后，重启相关的 HAMi 组件以应用更新的配置。
 
-2. 修改 Helm Chart：更新 [ConfigMap](https://raw.githubusercontent.com/archlitchi/HAMi/refs/heads/master/charts/hami/templates/scheduler/device-configmap.yaml) 中的相应值，然后重新应用 Helm Chart 以重新生成 ConfigMap。
+2. 修改 Helm Chart：更新 [ConfigMap](https://raw.githubusercontent.com/Project-HAMi/HAMi/refs/heads/master/charts/hami/templates/scheduler/device-configmap.yaml) 中的相应值，然后重新应用 Helm Chart 以重新生成 ConfigMap。
 
 - `nvidia.deviceMemoryScaling`：
   浮点类型，默认值：1。NVIDIA 设备显存缩放比例，可以大于 1（启用虚拟设备显存，实验性功能）。对于具有 *M* 内存的 NVIDIA GPU，如果我们将 `nvidia.deviceMemoryScaling` 参数设置为 *S*，则通过此 GPU 分割的 vGPU 在 Kubernetes 中将总共获得 `S * M` 内存。
