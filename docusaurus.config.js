@@ -319,7 +319,7 @@ module.exports = {
             },
             {
               label: "Slack (#hami-dev)",
-              href: "https://slack.cncf.io/",
+              href: "https://cloud-native.slack.com/archives/C07T10BU4R2/",
             },
             {
               label: "WeChat Group",

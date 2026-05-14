@@ -105,6 +105,36 @@ const caseStudiesData = [
     url: 'https://www.cncf.io/case-studies/sf-technology/',
   },
   {
+    name: 'SNOW Corp.',
+    nameZh: 'SNOW',
+    logo: '/img/case-studies/snow-corp.webp',
+    website: 'https://snow.me',
+    publishedAt: '2026-05-05',
+    metric: {
+      en: '2× fewer GPUs with HAMi GPU sharing, handling 700% traffic spikes',
+      zh: '借助 HAMi GPU 共享减少 50% GPU 需求，从容应对 700% 流量洪峰',
+    },
+    summary: {
+      en: 'Orchestrating 1,000+ A100 GPUs for GenAI features serving 200M+ global users with HAMi GPU sharing and KEDA autoscaling.',
+      zh: '通过 HAMi GPU 共享和 KEDA 自动伸缩，编排 1000+ A100 GPU 为全球 2 亿用户提供 GenAI 服务。',
+    },
+    highlights: [
+      {
+        en: '2× fewer GPUs needed for training + inference pipelines via HAMi GPU sharing.',
+        zh: '通过 HAMi GPU 共享，训练与推理流水线所需 GPU 减少一半。',
+      },
+      {
+        en: 'USD 17.4M in estimated cost savings compared to equivalent on-demand cloud GPU provisioning.',
+        zh: '相比等量按需云 GPU，预估节省成本 1740 万美元。',
+      },
+      {
+        en: 'MTTR reduced by 91% (from ~2 hrs to ~10 min); GPU surge errors dropped by 85%.',
+        zh: 'MTTR 降低 91%（约 2 小时缩短至约 10 分钟）；GPU 涌流错误减少 85%。',
+      },
+    ],
+    url: 'https://www.cncf.io/case-studies/snow-corp/',
+  },
+  {
     name: 'PREP EDU',
     nameZh: 'PREP EDU',
     logo: '/img/case-studies/prep.svg',
@@ -132,4 +162,6 @@ const caseStudiesData = [
   },
 ];
 
-export default caseStudiesData;
+export default [...caseStudiesData].sort(
+  (a, b) => new Date(b.publishedAt) - new Date(a.publishedAt),
+);
