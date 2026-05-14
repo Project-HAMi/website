@@ -130,9 +130,17 @@ You can customize the mig configuration by following the steps below:
               count: 1
   ```
 
-  > **Note** Helm installation and updates will be based on the configuration in this file, overwriting the built-in configuration of Helm
+  :::note
 
-  > **Note** Be aware HAMi will find and use the first MIG template suitable to the task in the order of this configMap
+  Helm installation and updates will be based on the configuration in this file, overwriting the built-in configuration of Helm.
+
+  :::
+
+  :::note
+
+  HAMi will find and use the first MIG template suitable to the task in the order of this configMap.
+
+  :::
 
 ## Running MIG jobs
 
