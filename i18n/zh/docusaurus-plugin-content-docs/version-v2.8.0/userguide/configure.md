@@ -39,7 +39,7 @@ translated: true
 
 ## Chart 配置：参数
 
-你可以通过使用 `-set` 设置以下参数来自定义你的 vGPU 支持，例如
+你可以通过使用 `--set` 设置以下参数来自定义你的 vGPU 支持，例如
 
 ```bash
 helm install hami hami-charts/hami --set devicePlugin.deviceMemoryScaling=5 ...
