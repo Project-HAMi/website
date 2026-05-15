@@ -17,7 +17,7 @@ This matters more in HAMi than in most projects. Code that manages GPU memory, d
 
 ## Code of Conduct
 
-All community members must follow the [CNCF Code of Conduct](https://github.com/cncf/foundation/blob/main/code-of-conduct.md). Report violations to the CNCF CoC committee via cncf-coc@lists.cncf.io.
+All community members must follow the [CNCF Code of Conduct](https://github.com/cncf/foundation/blob/main/code-of-conduct.md). Report violations to the CNCF CoC committee via `cncf-coc@lists.cncf.io`.
 
 ## Ways to Contribute
 
@@ -41,25 +41,29 @@ Writing code is not the only way to contribute.
 | --- | --- |
 | [GitHub Issues](https://github.com/Project-HAMi/HAMi/issues) | Bug reports and feature requests |
 | [GitHub Discussions](https://github.com/Project-HAMi/HAMi/discussions) | Questions, ideas, design proposals |
-| [CNCF Slack #hami](https://cloud-native.slack.com/archives/C03E57Q30FY) | Real-time chat |
+| [Discord](https://discord.gg/Amhy7XmbNq) | Real-time chat (recommended) |
+| [CNCF Slack #hami-dev](https://cloud-native.slack.com/archives/C07T10BU4R2) | Real-time chat |
 | [MAINTAINERS](https://github.com/Project-HAMi/HAMi/blob/master/MAINTAINERS.md) | Current maintainer list |
-| [Community Meetings](https://github.com/Project-HAMi/community) | Bi-weekly video meetings |
+| [Community Meetings](https://docs.google.com/document/d/1YC6hco03_oXbF9IOUPJ29VWEddmITIKIfSmBX8JtGBw/edit#heading=h.g61sgp7w0d0c) | Bi-weekly community meetings |
 
 Before opening an issue or PR, search existing issues and discussions for related work.
 
-**New to HAMi?** Join [CNCF Slack](https://cloud-native.slack.com/archives/C03E57Q30FY) and introduce yourself in `#hami`. Maintainers and existing contributors are happy to help you find a good first issue, review a draft, or answer questions before you open a PR.
+**New to HAMi?** Join [Discord](https://discord.gg/Amhy7XmbNq) or [CNCF Slack #hami-dev](https://cloud-native.slack.com/archives/C07T10BU4R2) and introduce yourself. Maintainers and existing contributors are happy to help you find a good first issue, review a draft, or answer questions before you open a PR.
 
 ## Prerequisites
 
 **For all contributions:**
+
 - Git with a GitHub account
 - You must be able to certify contributions under the [Developer Certificate of Origin](https://developercertificate.org/)
 
 **For HAMi core (Go):**
+
 - Go 1.21+
 - `kubectl` and access to a Kubernetes cluster with a supported GPU or accelerator
 
 **For documentation (website):**
+
 - Node.js v20
 - npm
 
@@ -171,7 +175,7 @@ See the [Writing Style](contribute-docs.md#writing-style) section in the docs co
 
 HAMi uses [Conventional Commits](https://www.conventionalcommits.org/):
 
-```
+```plaintext
 <type>(<optional scope>): <description>
 
 [optional body]
@@ -193,7 +197,7 @@ HAMi uses [Conventional Commits](https://www.conventionalcommits.org/):
 
 **Good examples:**
 
-```
+```plaintext
 feat(scheduler): add memory oversell ratio config option
 fix(deviceplugin): handle graceful shutdown on SIGTERM
 docs: correct vGPU memory limit example in Ascend guide
@@ -202,6 +206,7 @@ test: add unit tests for MLU device discovery
 ```
 
 **Rules:**
+
 - Subject line: 72 characters or fewer
 - Imperative mood: "add", "fix", "update" - not "added", "fixed", "updates"
 - Body: explain *what* and *why*, not *how*
@@ -217,7 +222,7 @@ git commit -s -m "fix: correct memory calculation for MLU"
 
 The `-s` flag appends:
 
-```
+```plaintext
 Signed-off-by: Your Name <your@email.com>
 ```
 
@@ -255,6 +260,7 @@ Keep it short and factual:
 - Reference related issues: `Fixes #123` or `Relates to #456`
 
 **Formatting rules for PR descriptions, issue bodies, and commit messages:**
+
 - No em-dashes (`—`) - use a regular hyphen (`-`) instead
 - No emojis
 - No filler phrases ("This PR aims to...", "In this PR, we...")
@@ -298,12 +304,14 @@ AI tools may be used to assist with writing code, documentation, or commit messa
 Maintainers need to communicate with the person behind the contribution - not with a language model. Write in your own words, even if AI helped you draft a starting point. Text that is clearly AI-generated (verbose summaries, excessive lists, filler phrases, "In conclusion") will be flagged and the author asked to rewrite.
 
 What is acceptable:
+
 - Using AI to help understand unfamiliar code
 - Using AI to draft a commit message that you then edit and own
 - Using AI to check grammar or clarity
 - Using AI to generate code that you review, test, and understand
 
 What is not acceptable:
+
 - Pasting an AI-generated PR description without reading and rewriting it
 - Submitting code you cannot explain if asked during review
 - Using AI-generated text as issue comments or discussion posts
@@ -317,6 +325,7 @@ Documentation lives in the [Project-HAMi/website](https://github.com/Project-HAM
 For a complete guide covering frontmatter, sidebar registration, image paths, local preview, and Chinese translation workflow, see [How to Contribute Docs](contribute-docs.md).
 
 **Quick rules:**
+
 - English is the source language. All new docs go to `docs/` first.
 - Chinese translations go under `i18n/zh/docusaurus-plugin-content-docs/current/`.
 - Every new doc must be added to `sidebars.js`.
@@ -369,6 +378,7 @@ Use the [HAMi issue tracker](https://github.com/Project-HAMi/HAMi/issues) for bu
 For website issues, use the [website issue tracker](https://github.com/Project-HAMi/website/issues).
 
 When filing a bug, include:
+
 - HAMi version and installation method
 - Kubernetes version and cluster setup
 - GPU or accelerator type and driver version

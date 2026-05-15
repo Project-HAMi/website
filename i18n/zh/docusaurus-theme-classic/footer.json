@@ -73,7 +73,7 @@
   },
   "link.item.label.Slack ": {
     "message": "Slack ",
-    "description": "The label of footer link with label=Slack  linking to https://slack.cncf.io/"
+    "description": "The label of footer link with label=Slack  linking to https://cloud-native.slack.com/archives/C07T10BU4R2/"
   },
   "copyright": {
     "message": "\n        <br />\n        <strong>© HAMi Authors 2026 | Documentation Distributed under <a href=\"https://creativecommons.org/licenses/by/4.0\">CC-BY-4.0</a> </strong> <strong>| Powered by <a href=\"https://www.netlify.com\">Netlify</a></strong>\n        <br />\n        <br />\n        The Linux Foundation has registered trademarks and uses trademarks. For a list of trademarks of The Linux Foundation, please see our <a href=\"https://www.linuxfoundation.org/trademark-usage/\">Trademark Usage</a> page.\n        <br />\n        <a href=\"https://www.linuxfoundation.org/privacy/\">Privacy Policy</a> and <a href=\"https://www.linuxfoundation.org/terms/\">Terms of Use</a>.\n      ",
