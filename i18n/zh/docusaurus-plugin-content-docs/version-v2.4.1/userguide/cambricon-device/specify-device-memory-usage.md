@@ -7,7 +7,7 @@ title: Allocate device memory
 Allocate a percentage size of device memory by specify resources such as `cambricon.com/mlu.smlu.vmemory`.
 Optional, Each unit of `cambricon.com/mlu.smlu.vmemory` equals to 1% of device memory.
 
-```
+```text
       resources:
         limits:
           cambricon.com/mlu: 1 # requesting 1 MLU

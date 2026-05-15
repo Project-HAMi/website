@@ -9,7 +9,7 @@ translated: true
 
 你需要将以下镜像保存到一个 tarball 文件中，并将其复制到集群中。
 
-```
+```text
 projecthami/hami:{HAMi 版本}
 docker.io/jettech/kube-webhook-certgen:v1.5.2
 liangjw/kube-webhook-certgen:v1.1.1

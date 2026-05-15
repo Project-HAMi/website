@@ -7,7 +7,7 @@ translated: true
 
 要分配整个寒武纪设备，你只需分配 `hygon.com/dcunum`，无需其他字段。
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:

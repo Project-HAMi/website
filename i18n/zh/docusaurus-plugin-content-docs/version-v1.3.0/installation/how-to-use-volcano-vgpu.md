@@ -53,7 +53,7 @@ data:
 Once you have enabled this option on *all* the GPU nodes you wish to use,
 you can then enable GPU support in your cluster by deploying the following Daemonset:
 
-```
+```text
 $ kubectl create -f https://raw.githubusercontent.com/Project-HAMi/volcano-vgpu-device-plugin/main/volcano-vgpu-device-plugin.yml
 ```
 
@@ -123,7 +123,7 @@ You can validate device memory using nvidia-smi inside container:
 
 volcano-scheduler-metrics records every GPU usage and limitation, visit the following address to get these metrics.
 
-```
+```bash
 curl {volcano scheduler cluster ip}:8080/metrics
 ```
 

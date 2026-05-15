@@ -8,7 +8,7 @@ If your cluster does not have direct access to the external network, you can use
 
 You need to save the following images into a tarball and copy it into the cluster.
 Image list:
-```
+```text
 projecthami/hami:{HAMi version} 
 docker.io/jettech/kube-webhook-certgen:v1.5.2
 liangjw/kube-webhook-certgen:v1.1.1
@@ -17,7 +17,7 @@ registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:{your kuberne
 
 Load these images, tag these images with your inner registry, and push them into your registry
 
-```
+```bash
 docker load -i {HAMi_image}.tar
 docker tag projecthami/hami:{HAMi version} {your_inner_registry}/hami:{HAMi version} 
 docker push {your_inner_registry}/hami:{HAMi version}
@@ -32,7 +32,7 @@ docker push {your_inner_registry}/kube-scheduler:{your kubernetes version}
 
 Download the charts folder from [github](https://github.com/Project-HAMi/HAMi/tree/master/charts), place it into $\{CHART_PATH\} inside cluster, then edit the following fields in $\{CHART_PATH\}/hami/values.yaml. 
 
-```
+```yaml
 scheduler.kubeScheduler.image
 scheduler.extender.image
 scheduler.patch.image
@@ -43,14 +43,14 @@ scheduler.devicePlugin.monitorimage
 
 ## Execute the following command in your $\{CHART_PATH\} folder
 
-```
+```bash
 helm install hami hami --set scheduler.kubeScheduler.imageTag={your k8s server version} -n kube-system
 ```
 
 7. Verify your installation
 
 execute the following command
-```
+```bash
 kubectl get pods -n kube-system
 ```
 

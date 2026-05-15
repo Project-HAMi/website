@@ -9,7 +9,7 @@ translated: true
 
 你需要将以下镜像保存到一个 tarball 文件中，并将其复制到集群中。
 
-```
+```text
 projecthami/hami:{HAMi 版本} 
 docker.io/jettech/kube-webhook-certgen:v1.5.2
 liangjw/kube-webhook-certgen:v1.1.1
@@ -18,7 +18,7 @@ registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:{你的 kuber
 
 加载这些镜像，将这些镜像标记为你的内部镜像仓库，并将它们推送到你的镜像仓库中。
 
-```
+```bash
 docker load -i {HAMi_image}.tar
 docker tag projecthami/hami:{HAMi 版本} {your_inner_registry}/hami:{HAMi 版本}
 docker push {your_inner_registry}/hami:{HAMi 版本}

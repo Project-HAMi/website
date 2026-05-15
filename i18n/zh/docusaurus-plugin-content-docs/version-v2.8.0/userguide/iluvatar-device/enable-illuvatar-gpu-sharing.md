@@ -35,7 +35,7 @@ translated: true
 
 - 在安装 HAMi 时配置设置 devices.iluvatar.enabled=true
 
-```
+```bash
 helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag={your kubernetes version} --set devices.iluvatar.enabled=true
 ```
 

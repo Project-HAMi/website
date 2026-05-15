@@ -58,7 +58,7 @@ When running `Kubernetes` with `Docker`, edit the configuration file, typically 
 
 And then restart `Docker`:
 
-```
+```bash
 sudo systemctl daemon-reload && systemctl restart docker
 ```
 
@@ -67,7 +67,7 @@ sudo systemctl daemon-reload && systemctl restart docker
 When running `Kubernetes` with `containerd`, modify the configuration file typically located at `/etc/containerd/config.toml`, to set up
 `nvidia-container-runtime` as the default low-level runtime:
 
-```
+```text
 version = 2
 [plugins]
   [plugins."io.containerd.grpc.v1.cri"]
@@ -86,7 +86,7 @@ version = 2
 
 And then restart `containerd`:
 
-```
+```bash
 sudo systemctl daemon-reload && systemctl restart containerd
 ```
 
@@ -94,7 +94,7 @@ sudo systemctl daemon-reload && systemctl restart containerd
 
 Label your GPU nodes for scheduling with HAMi by adding the label "gpu=on". Without this label, the nodes cannot be managed by the HAMi scheduler.
 
-```
+```bash
 kubectl label nodes {nodeid} gpu=on
 ```
 
@@ -102,19 +102,19 @@ kubectl label nodes {nodeid} gpu=on
 
 First, you need to check your Kubernetes version by using the following command:
 
-```
+```bash
 kubectl version
 ```
 
 Then, add the HAMi repo in helm
 
-```
+```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/
 ```
 
 During installation, set the Kubernetes scheduler image version to match your Kubernetes server version. For instance, if your cluster server version is 1.16.8, use the following command for deployment:
 
-```
+```bash
 helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag=v1.16.8 -n kube-system
 ```
 
@@ -126,7 +126,7 @@ If everything goes well, you will see both vgpu-device-plugin and vgpu-scheduler
 
 Containers can now request NVIDIA vGPUs using the `nvidia.com/gpu`` resource type.
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -146,13 +146,13 @@ spec:
 
 Execute the following query command:
 
-```
+```bash
 kubectl exec -it gpu-pod nvidia-smi
 ```
 
 The result should be
 
-```
+```console
 [HAMI-core Msg(28:140561996502848:libvgpu.c:836)]: Initializing.....
 Wed Apr 10 09:28:58 2024       
 +-----------------------------------------------------------------------------------------+

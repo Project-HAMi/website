@@ -155,26 +155,26 @@ rebase](https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History):
 
 1. Check your git branch:
 
-  ```
+  ```bash
   git status
   ```
 
 Output is similar to:
 
-  ```
+  ```text
   On branch your-contribution
   Your branch is up to date with 'origin/your-contribution'.
   ```
 
 2. Start an interactive rebase using a specific commit hash, or count backwards from your last commit using `HEAD~<n>`, where `<n>` represents the number of commits to include in the rebase.
 
-  ```
+  ```bash
   git rebase -i HEAD~3
   ```
 
 Output is similar to:
 
-  ```
+  ```text
   pick 2ebe926 Original commit
   pick 31f33e9 Address feedback
   pick b0315fe Second unit of work
@@ -194,7 +194,7 @@ Output is similar to:
 
 3. Use a command line text editor to change the word `pick` to `squash` for the commits you want to squash, then save your changes and continue the rebase:
 
-  ```
+  ```text
   pick 2ebe926 Original commit
   squash 31f33e9 Address feedback
   pick b0315fe Second unit of work
@@ -205,7 +205,7 @@ Output is similar to:
 
 Output (after saving changes) is similar to:
 
-  ```
+  ```console
   [detached HEAD 61fdded] Second unit of work
    Date: Thu Mar 5 19:01:32 2020 +0100
    2 files changed, 15 insertions(+), 1 deletion(-)
@@ -216,7 +216,7 @@ Output (after saving changes) is similar to:
   ```
 4. Force push your changes to your remote branch:
 
-  ```
+  ```bash
   git push --force
   ```
 

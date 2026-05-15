@@ -40,7 +40,7 @@ These two parameters represent enabling the dynamic smlu function and setting th
 
 - Deploy the cambricon-device-plugin you specified
 
-```
+```bash
 kubectl apply -f cambricon-device-plugin-daemonset.yaml
 ```
 

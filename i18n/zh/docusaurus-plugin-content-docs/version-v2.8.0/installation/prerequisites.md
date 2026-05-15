@@ -65,5 +65,5 @@ sudo systemctl daemon-reload && systemctl restart containerd
 
 通过添加标签 "gpu=on" 来为 HAMi 调度标记你的 GPU 节点。没有此标签，节点无法被我们的调度器管理。
 
-```
+```bash
 kubectl label nodes {nodeid} gpu=on

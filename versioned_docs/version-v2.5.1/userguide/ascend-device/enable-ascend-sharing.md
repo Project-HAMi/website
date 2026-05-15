@@ -14,7 +14,7 @@ Memory slicing is supported based on virtualization template, lease available te
 
 - Due to dependencies with HAMi, you need to set the arguments in the process of installing HAMi:
 
-  ```
+  ```yaml
   devices.ascend.enabled=true
   ```
 

@@ -7,7 +7,7 @@ title: Allocate device core usage
 Allocate a percentage of device core resources by specify resource `cambricon.com/mlu.smlu.vcore`.
 Optional, each unit of `cambricon.com/mlu.smlu.vcore` equals to 1% device cores.
 
-```
+```text
       resources:
         limits:
           cambricon.com/mlu: 1 # requesting 1 MLU

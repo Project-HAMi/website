@@ -6,7 +6,7 @@ title: Allocate certain device memory
 
 To allocate a certain size of GPU device memory, you need only to assign `nvidia.com/gpumem` besides `nvidia.com/gpu`.
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:

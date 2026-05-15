@@ -6,7 +6,7 @@ title: Allocate device core and memory resource
 
 To allocate a certain part of device core resource, you need only to assign the `cambricon.com/mlu370.smlu.vmemory` and `cambricon.com/mlu370.smlu.vcore` along with the number of cambricon MLUs you requested in the container using `cambricon.com/vmlu`
 
-```
+```yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:

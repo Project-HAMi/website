@@ -36,7 +36,7 @@ title: 启用天数智芯 GPU 共享
 
 - 在安装 HAMi 时配置'iluvatarResourceMem'和'iluvatarResourceCore'参数
 
-```
+```bash
 helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag={your kubernetes version} --set iluvatarResourceMem=iluvatar.ai/vcuda-memory --set iluvatarResourceCore=iluvatar.ai/vcuda-core -n kube-system
 ```
 

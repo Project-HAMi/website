@@ -20,7 +20,7 @@ make
 
 如果一切成功构建，将打印以下输出
 
-```
+```bash
 go build -ldflags '-s -w -X github.com/Project-HAMi/HAMi/pkg/version.version=v0.0.1' -o bin/scheduler ./cmd/scheduler
 go build -ldflags '-s -w -X github.com/Project-HAMi/HAMi/pkg/version.version=v0.0.1' -o bin/vGPUmonitor ./cmd/vGPUmonitor
 go build -ldflags '-s -w -X github.com/Project-HAMi/HAMi/pkg/version.version=v0.0.1' -o bin/nvidia-device-plugin ./cmd/device-plugin/nvidia
@@ -43,7 +43,7 @@ make docker
 
 如果一切成功构建，将打印以下输出
 
-```
+```bash
 go build -ldflags '-s -w -X github.com/Project-HAMi/HAMi/pkg/version.version=v0.0.1' -o bin/scheduler ./cmd/scheduler
 go build -ldflags '-s -w -X github.com/Project-HAMi/HAMi/pkg/version.version=v0.0.1' -o bin/vGPUmonitor ./cmd/vGPUmonitor
 go build -ldflags '-s -w -X github.com/Project-HAMi/HAMi/pkg/version.version=v0.0.1' -o bin/nvidia-device-plugin ./cmd/device-plugin/nvidia

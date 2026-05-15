@@ -8,7 +8,7 @@ If your cluster can’t directly access the internet, you can install HAMi offli
 
 You need to save the following images into a tarball file and copy it into the cluster.
 
-```
+```text
 projecthami/hami:{HAMi version} 
 docker.io/jettech/kube-webhook-certgen:v1.5.2
 liangjw/kube-webhook-certgen:v1.1.1
@@ -17,7 +17,7 @@ registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:{your kuberne
 
 Load the images, tag them with your internal registry, and push them to your registry.
 
-```
+```bash
 docker load -i {HAMi_image}.tar
 docker tag projecthami/hami:{HAMi version} {your_inner_registry}/hami:{HAMi version}
 docker push {your_inner_registry}/hami:{HAMi version}

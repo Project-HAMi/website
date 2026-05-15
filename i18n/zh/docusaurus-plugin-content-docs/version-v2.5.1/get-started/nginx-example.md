@@ -59,7 +59,7 @@ sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
 
 然后重启 `Docker`：
 
-```
+```bash
 sudo systemctl daemon-reload && systemctl restart docker
 ```
 
@@ -67,7 +67,7 @@ sudo systemctl daemon-reload && systemctl restart docker
 
 在使用 `containerd` 运行 `Kubernetes` 时，修改配置文件，通常位于 `/etc/containerd/config.toml`，以设置 `nvidia-container-runtime` 为默认的低级运行时：
 
-```
+```text
 version = 2
 [plugins]
   [plugins."io.containerd.grpc.v1.cri"]
@@ -86,7 +86,7 @@ version = 2
 
 然后重启 `containerd`：
 
-```
+```bash
 sudo systemctl daemon-reload && systemctl restart containerd
 ```
 
@@ -94,7 +94,7 @@ sudo systemctl daemon-reload && systemctl restart containerd
 
 通过添加标签 "gpu=on" 来为调度 HAMi 标记你的 GPU 节点。没有此标签，节点无法被我们的调度器管理。
 
-```
+```bash
 kubectl label nodes {nodeid} gpu=on
 ```
 
@@ -102,19 +102,19 @@ kubectl label nodes {nodeid} gpu=on
 
 首先，你需要使用以下命令检查你的 Kubernetes 版本：
 
-```
+```bash
 kubectl version
 ```
 
 然后，在 helm 中添加我们的仓库
 
-```
+```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/
 ```
 
 在安装过程中，将 Kubernetes 调度器镜像版本设置为与你的 Kubernetes 服务器版本匹配。例如，如果你的集群服务器版本是 1.16.8，使用以下命令进行部署：
 
-```
+```bash
 helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag=v1.16.8 -n kube-system
 ```
 
@@ -126,7 +126,7 @@ helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag=v1.16.
 
 容器现在可以使用 `nvidia.com/gpu` 资源类型请求 NVIDIA vGPUs。
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -146,13 +146,13 @@ spec:
 
 执行以下查询命令：
 
-```
+```bash
 kubectl exec -it gpu-pod nvidia-smi
 ```
 
 结果应为
 
-```
+```console
 [HAMI-core Msg(28:140561996502848:libvgpu.c:836)]: Initializing.....
 Wed Apr 10 09:28:58 2024       
 +-----------------------------------------------------------------------------------------+

@@ -35,7 +35,7 @@ title: Enable Mthreads GPU sharing
 
 * set the 'devices.mthreads.enabled = true' when installing hami
 
-```
+```bash
 helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag={your kubernetes version} --set device.mthreads.enabled=true -n kube-system
 ```
 
@@ -44,7 +44,7 @@ helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag={your 
 Mthreads GPUs can now be requested by a container
 using the `mthreads.com/vgpu`, `mthreads.com/sgpu-memory` and `mthreads.com/sgpu-core`  resource type:
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:

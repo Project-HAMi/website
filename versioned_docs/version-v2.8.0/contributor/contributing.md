@@ -171,7 +171,7 @@ See the [Writing Style](contribute-docs.md#writing-style) section in the docs co
 
 HAMi uses [Conventional Commits](https://www.conventionalcommits.org/):
 
-```
+```text
 <type>(<optional scope>): <description>
 
 [optional body]
@@ -193,7 +193,7 @@ HAMi uses [Conventional Commits](https://www.conventionalcommits.org/):
 
 **Good examples:**
 
-```
+```text
 feat(scheduler): add memory oversell ratio config option
 fix(deviceplugin): handle graceful shutdown on SIGTERM
 docs: correct vGPU memory limit example in Ascend guide
@@ -217,7 +217,7 @@ git commit -s -m "fix: correct memory calculation for MLU"
 
 The `-s` flag appends:
 
-```
+```text
 Signed-off-by: Your Name <your@email.com>
 ```
 

@@ -52,19 +52,19 @@ spec:
 
 使用 vDCU 首先需要激活虚拟环境
 
-```
+```bash
 source /opt/hygondriver/env.sh
 ```
 
 随后，使用 hdmcli 指令查看虚拟设备是否已经激活
 
-```
+```bash
 hy-virtual -show-device-info
 ```
 
 若输出如下，则代表虚拟设备已经成功激活
 
-```
+```console
 Device 0:
  Actual Device: 0
  Compute units: 60

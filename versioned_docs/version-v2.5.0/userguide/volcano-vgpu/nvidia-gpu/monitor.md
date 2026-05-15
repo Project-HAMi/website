@@ -6,7 +6,7 @@ title: Monitor volcano-vgpu
 
 volcano-scheduler-metrics records every GPU usage and limitation, visit the following address to get these metrics.
 
-```
+```bash
 curl {volcano scheduler cluster ip}:8080/metrics
 ```
 

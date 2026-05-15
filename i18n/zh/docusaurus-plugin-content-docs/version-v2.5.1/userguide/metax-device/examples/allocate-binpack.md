@@ -7,7 +7,7 @@ translated: true
 
 要在最小化拓扑损失的情况下分配 metax 设备，你只需将 `metax-tech.com/gpu` 与注释 `hami.io/node-scheduler-policy`=`binpack` 一起分配。
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:

@@ -29,7 +29,7 @@ translated: true
 
 - 在 device-plugin configMap 中将 `mode` 配置为 `mig` 以支持 MIG 节点
 
-```
+```bash
 kubectl describe cm  hami-device-plugin -n kube-system
 ```
 

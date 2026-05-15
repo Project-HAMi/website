@@ -6,7 +6,7 @@ title: Configuration
 
 These global configurations apply for all tasks. You can customize your HAMi installation by setting the following parameters using `--set`, for example
 
-```
+```bash
 helm install vgpu-charts/vgpu vgpu --set devicePlugin.deviceMemoryScaling=5 ...
 ```
 

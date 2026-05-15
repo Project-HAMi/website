@@ -27,7 +27,7 @@ title: Enable Hygon DCU sharing
 Hygon DCUs can now be requested by a container
 using the `hygon.com/dcunum` , `hygon.com/dcumem` and `hygon.com/dcucores` resource type:
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -51,19 +51,19 @@ spec:
 ## Enable vDCU inside container
 
 You need to enable vDCU inside container in order to use it.
-```
+```bash
 source /opt/hygondriver/env.sh
 ```
 
 check if you have successfully enabled vDCU by using following command
 
-```
+```bash
 hy-virtual -show-device-info
 ```
 
 If you have an output like this, then you have successfully enabled vDCU inside container.
 
-```
+```console
 Device 0:
 	Actual Device: 0
 	Compute units: 60

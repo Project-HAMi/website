@@ -156,7 +156,7 @@ Device Plugins can only report a single resource type. GPU memory and compute in
 
 - HAMi stores detailed GPU resource information (e.g., compute power, memory, model) as **node annotations** for use by the scheduler.
 - Example annotation:
-   ```
+   ```text
    hami.io/node-nvidia-register: GPU-fc28df76-54d2-c387-e52e-5f0a9495968c,10,49140,100,NVIDIA-NVIDIA L40S,0,true:GPU-b97db201-0442-8531-56d4-367e0c7d6edd,10,49140,100,...
    ```
 

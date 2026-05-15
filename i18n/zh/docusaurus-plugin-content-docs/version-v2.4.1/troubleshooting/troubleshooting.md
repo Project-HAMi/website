@@ -33,7 +33,7 @@ The cause of the problem was that the firewall did not close the already existin
 - login to the node where the member cluster apiserver is located
 - use the `tcpkill` command to close the tcp connection. 
 
-```
+```text
 # ens192 is the name of the network-card used by the member cluster to communicate with karmada.
 tcpkill -9  -i ens192 src host ${KARMADA_APISERVER_IP} and dst port ${MEMBER_CLUSTER_APISERVER_IP}
 ```
