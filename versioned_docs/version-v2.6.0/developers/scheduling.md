@@ -1,5 +1,5 @@
 ---
-title: Scheduler Policy 
+title: Scheduler Policy
 ---
 
 ## Summary
@@ -57,7 +57,7 @@ GPU binpack, use the same GPU card as much as possible, egs:
     - node1: GPU having 4 GPU device, they are GPU1,GPU2,GPU3,GPU4
 
 - request:
-    - pod1: User 1 GPU, gpucore is 20%, gpumem-percentage is 20% 
+    - pod1: User 1 GPU, gpucore is 20%, gpumem-percentage is 20%
     - pod2: User 1 GPU, gpucore is 20%, gpumem-percentage is 20%
 
 - scheduler result:
@@ -90,7 +90,7 @@ GPU spread, use different GPU cards when possible, egs:
 Binpack mainly considers node resource usage. The more full the usage, the higher the score.
 
 ```text
-score: ((request + used) / allocatable) * 10 
+score: ((request + used) / allocatable) * 10
 ```
 
 1. Binpack scoring information for Node 1 is as follows
@@ -112,7 +112,7 @@ So, in `Binpack` policy, the selected node is `Node1`.
 Spread mainly considers node resource usage. The less it is used, the lower the score, but the higher the priority.
 
 ```text
-score: ((request + used) / allocatable) * 10 
+score: ((request + used) / allocatable) * 10
 ```
 
 1. Spread scoring information for Node 1 is as follows
@@ -169,88 +169,88 @@ GPU2 Score: ((20+70)/100 + (1000+6000)/8000)) * 10 = 17.75
 
 So, in `Spread` policy, the selected node is `GPU1`.
 
-#### Topology-aware  
+#### Topology-aware
 
-##### NVIDIA Topology-aware (NVIDIA GPU Only)  
+##### NVIDIA Topology-aware (NVIDIA GPU Only)
 
-NVIDIA Topology-aware primarily focuses on the topological relationships between each GPU (queried using the `nvidia-smi topo -m` command). The hami-device-plugin calculates scores between GPUs based on these relationships - the higher the bandwidth between GPUs, the higher the score. For example:  
+NVIDIA Topology-aware primarily focuses on the topological relationships between each GPU (queried using the `nvidia-smi topo -m` command). The hami-device-plugin calculates scores between GPUs based on these relationships - the higher the bandwidth between GPUs, the higher the score. For example:
 
-```json  
-[  
-  {  
-    "uuid": "gpu0",  
-    "score": {  
-      "gpu1": "100",  
-      "gpu2": "100",  
-      "gpu3": "200"  
-    }  
-  },  
-  {  
-    "uuid": "gpu1",  
-    "score": {  
-      "gpu0": "100",  
-      "gpu2": "200",  
-      "gpu3": "100"  
-    }  
-  },  
-  {  
-    "uuid": "gpu2",  
-    "score": {  
-      "gpu0": "100",  
-      "gpu1": "200",  
-      "gpu3": "200"  
-    }  
-  },  
-  {  
-    "uuid": "gpu3",  
-    "score": {  
-      "gpu0": "200",  
-      "gpu1": "100",  
-      "gpu2": "200"  
-    }  
-  }  
-]  
-```  
+```json
+[
+  {
+    "uuid": "gpu0",
+    "score": {
+      "gpu1": "100",
+      "gpu2": "100",
+      "gpu3": "200"
+    }
+  },
+  {
+    "uuid": "gpu1",
+    "score": {
+      "gpu0": "100",
+      "gpu2": "200",
+      "gpu3": "100"
+    }
+  },
+  {
+    "uuid": "gpu2",
+    "score": {
+      "gpu0": "100",
+      "gpu1": "200",
+      "gpu3": "200"
+    }
+  },
+  {
+    "uuid": "gpu3",
+    "score": {
+      "gpu0": "200",
+      "gpu1": "100",
+      "gpu2": "200"
+    }
+  }
+]
+```
 ###### One GPU
-When a Pod requests only one GPU, the GPU with the worst communication performance with other GPUs is prioritized - the lower the score, the higher the scheduling priority. For example:  
+When a Pod requests only one GPU, the GPU with the worst communication performance with other GPUs is prioritized - the lower the score, the higher the scheduling priority. For example:
 
-1. The sum of scores for gpu0 with other GPUs is as follows:  
+1. The sum of scores for gpu0 with other GPUs is as follows:
 ```text
-gpu0 score: 100 + 100 + 200 = 400  
-```  
-2. The sum of scores for gpu1 with other GPUs is as follows:  
+gpu0 score: 100 + 100 + 200 = 400
+```
+2. The sum of scores for gpu1 with other GPUs is as follows:
 ```text
-gpu1 score: 100 + 200 + 100 = 400  
-```  
-3. The sum of scores for gpu2 with other GPUs is as follows:  
+gpu1 score: 100 + 200 + 100 = 400
+```
+3. The sum of scores for gpu2 with other GPUs is as follows:
 ```text
-gpu2 score: 100 + 200 + 200 = 500  
-```  
-4. The sum of scores for gpu3 with other GPUs is as follows:  
+gpu2 score: 100 + 200 + 200 = 500
+```
+4. The sum of scores for gpu3 with other GPUs is as follows:
 ```text
-gpu3 score: 200 + 100 + 200 = 500  
-```  
+gpu3 score: 200 + 100 + 200 = 500
+```
 
-Therefore, when a **Pod requests only one GPU**, the scheduler randomly selects either **gpu0** or **gpu1**.  
+Therefore, when a **Pod requests only one GPU**, the scheduler randomly selects either **gpu0** or **gpu1**.
 
 ###### More than one GPU
 
-When a Pod requests multiple GPUs (more than one), the combination with the highest score is prioritized - the higher the score, the higher the scheduling priority.  
+When a Pod requests multiple GPUs (more than one), the combination with the highest score is prioritized - the higher the score, the higher the scheduling priority.
 
-For example: If a Pod requests 3 GPUs, take **gpu0, gpu1, gpu2** as an example. The score is calculated as:  
-`totalScore = score(gpu0, gpu1) + score(gpu0, gpu2) + score(gpu1, gpu2)`  
+For example: If a Pod requests 3 GPUs, take **gpu0, gpu1, gpu2** as an example. The score is calculated as:
+`totalScore = score(gpu0, gpu1) + score(gpu0, gpu2) + score(gpu1, gpu2)`
 
-1. The score for gpu0, gpu1, gpu2 is as follows:  
+1. The score for gpu0, gpu1, gpu2 is as follows:
 ```text
-(gpu0, gpu1, gpu2) totalScore: 100 + 100 + 200 = 400  
-```  
-2. The score for gpu0, gpu1, gpu3 is as follows:  
+(gpu0, gpu1, gpu2) totalScore: 100 + 100 + 200 = 400
+```
+2. The score for gpu0, gpu1, gpu3 is as follows:
 ```text
-(gpu0, gpu1, gpu3) totalScore: 100 + 200 + 100 = 400  
-```  
-3. The score for gpu1, gpu2, gpu3 is as follows:  
+(gpu0, gpu1, gpu3) totalScore: 100 + 200 + 100 = 400
+```
+3. The score for gpu1, gpu2, gpu3 is as follows:
 ```text
-(gpu1, gpu2, gpu3) totalScore: 200 + 100 + 200 = 500  
-```  
+(gpu1, gpu2, gpu3) totalScore: 200 + 100 + 200 = 500
+```
 
 Therefore, when a **Pod requests 3 GPUs**, the scheduler allocates **gpu1, gpu2, gpu3**.

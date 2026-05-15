@@ -37,61 +37,61 @@ data:
       knownMigGeometries:
       - models: [ "A30" ]
         allowedGeometries:
-          - 
+          -
             - name: 1g.6gb
               memory: 6144
               count: 4
-          - 
+          -
             - name: 2g.12gb
               memory: 12288
               count: 2
-          - 
+          -
             - name: 4g.24gb
               memory: 24576
               count: 1
       - models: [ "A100-SXM4-40GB", "A100-40GB-PCIe", "A100-PCIE-40GB", "A100-SXM4-40GB" ]
         allowedGeometries:
-          - 
+          -
             - name: 1g.5gb
               memory: 5120
               count: 7
-          - 
+          -
             - name: 2g.10gb
               memory: 10240
               count: 3
             - name: 1g.5gb
               memory: 5120
               count: 1
-          - 
+          -
             - name: 3g.20gb
               memory: 20480
               count: 2
-          - 
+          -
             - name: 7g.40gb
               memory: 40960
               count: 1
       - models: [ "A100-SXM4-80GB", "A100-80GB-PCIe", "A100-PCIE-80GB"]
         allowedGeometries:
-          - 
+          -
             - name: 1g.10gb
               memory: 10240
               count: 7
-          - 
+          -
             - name: 2g.20gb
               memory: 20480
               count: 3
             - name: 1g.10gb
               memory: 10240
               count: 1
-          - 
+          -
             - name: 3g.40gb
               memory: 40960
               count: 2
-          - 
+          -
             - name: 7g.79gb
               memory: 80896
               count: 1
-      nodeconfig: 
+      nodeconfig:
           - name: nodeA
             operatingmode: hami-core
           - name: nodeB
@@ -100,11 +100,11 @@ data:
 
 ## Structure
 
-<img src="https://github.com/Project-HAMi/HAMi/blob/master/docs/develop/imgs/hami-dynamic-mig-structure.png?raw=true" width="600" alt="HAMi dynamic MIG structure diagram showing vGPU Pool and Scheduler components" /> 
+<img src="https://github.com/Project-HAMi/HAMi/blob/master/docs/develop/imgs/hami-dynamic-mig-structure.png?raw=true" width="600" alt="HAMi dynamic MIG structure diagram showing vGPU Pool and Scheduler components" />
 
 ## Examples
 
-Dynamic mig is compatible with hami tasks, as the example below: 
+Dynamic mig is compatible with hami tasks, as the example below:
 Just Setting `nvidia.com/gpu` and `nvidia.com/gpumem`.
 
 ```yaml
@@ -147,7 +147,7 @@ spec:
 
 The Procedure of a vGPU task which uses dynamic-mig is shown below:
 
-<img src="https://github.com/Project-HAMi/HAMi/blob/master/docs/develop/imgs/hami-dynamic-mig-procedure.png?raw=true" width="800" alt="HAMi dynamic MIG procedure flowchart showing task scheduling process" /> 
+<img src="https://github.com/Project-HAMi/HAMi/blob/master/docs/develop/imgs/hami-dynamic-mig-procedure.png?raw=true" width="800" alt="HAMi dynamic MIG procedure flowchart showing task scheduling process" />
 
 After a task is submitted, deviceshare plugin will iterate over templates defined in configMap `hami-scheduler-device`, and find the first available template to fit. You can always change the content of that configMap, and restart vc-scheduler to customize.
 

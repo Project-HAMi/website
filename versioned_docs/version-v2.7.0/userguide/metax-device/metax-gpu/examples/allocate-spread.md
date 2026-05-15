@@ -9,12 +9,12 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: gpu-pod1
-  annotations: 
+  annotations:
     hami.io/node-scheduler-policy: "spread" # when this parameter is set to spread, the scheduler will try to find the best topology for this task.
 spec:
   containers:
     - name: ubuntu-container
-      image: cr.metax-tech.com/public-ai-release/c500/colossalai:2.24.0.5-py38-ubuntu20.04-amd64 
+      image: cr.metax-tech.com/public-ai-release/c500/colossalai:2.24.0.5-py38-ubuntu20.04-amd64
       imagePullPolicy: IfNotPresent
       command: ["sleep","infinity"]
       resources:

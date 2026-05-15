@@ -9,12 +9,12 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: gpu-pod1
-  annotations: 
+  annotations:
     hami.io/node-scheduler-policy: "binpack" # when this parameter is set to binpack, the scheduler will try to minimize the topology loss.
 spec:
   containers:
     - name: ubuntu-container
-      image: cr.metax-tech.com/public-ai-release/c500/colossalai:2.24.0.5-py38-ubuntu20.04-amd64 
+      image: cr.metax-tech.com/public-ai-release/c500/colossalai:2.24.0.5-py38-ubuntu20.04-amd64
       imagePullPolicy: IfNotPresent
       command: ["sleep","infinity"]
       resources:

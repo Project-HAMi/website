@@ -10,7 +10,7 @@ translated: true
 你需要将以下镜像保存到一个 tarball 文件中，并将其复制到集群中。
 镜像列表：
 ```text
-projecthami/hami:{HAMi 版本} 
+projecthami/hami:{HAMi 版本}
 docker.io/jettech/kube-webhook-certgen:v1.5.2
 liangjw/kube-webhook-certgen:v1.1.1
 registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:{你的 kubernetes 版本}
@@ -20,13 +20,13 @@ registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:{你的 kuber
 
 ```bash
 docker load -i {HAMi_image}.tar
-docker tag projecthami/hami:{HAMi 版本} {your_inner_registry}/hami:{HAMi 版本} 
+docker tag projecthami/hami:{HAMi 版本} {your_inner_registry}/hami:{HAMi 版本}
 docker push {your_inner_registry}/hami:{HAMi 版本}
 docker tag docker.io/jettech/kube-webhook-certgen:v1.5.2 {your inner_registry}/kube-webhook-certgen:v1.5.2
 docker push {your inner_registry}/kube-webhook-certgen:v1.5.2
 docker tag liangjw/kube-webhook-certgen:v1.1.1 {your_inner_registry}/kube-webhook-certgen:v1.1.1
 docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:{你的 kubernetes 版本} {your_inner_registry}/kube-scheduler:{你的 kubernetes 版本}
-docker push {your_inner_registry}/kube-scheduler:{你的 kubernetes 版本}  
+docker push {your_inner_registry}/kube-scheduler:{你的 kubernetes 版本}
 ```
 
 ## 准备 HAMi chart

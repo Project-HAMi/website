@@ -243,7 +243,7 @@ will create the PR branch inside the main repository rather than inside your for
   ```sh
   # Depending on which repository you are working from,
   # the default branch may be called 'main' instead of 'master'.
-  
+
   # create a branch
   git checkout -b myrevert
 

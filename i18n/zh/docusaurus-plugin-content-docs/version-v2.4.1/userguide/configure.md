@@ -12,17 +12,17 @@ helm install vgpu-charts/vgpu vgpu --set devicePlugin.deviceMemoryScaling=5 ...
 
 - `devicePlugin.service.schedulerPort:`
   Integer type, by default: 31998, scheduler webhook service nodePort.
-- `devicePlugin.deviceMemoryScaling:` 
+- `devicePlugin.deviceMemoryScaling:`
   Float type, by default: 1. The ratio for NVIDIA device memory scaling, can be greater than 1 (enable virtual device memory, experimental feature). For NVIDIA GPU with *M* memory, if `devicePlugin.deviceMemoryScaling` is set argument to *S*, vGPUs split by this GPU will totally get `S * M` memory in Kubernetes with the HAMi device plugin.
-- `devicePlugin.deviceSplitCount:` 
+- `devicePlugin.deviceSplitCount:`
   Integer type, by default: equals 10. Maximum tasks assigned to a simple GPU device.
 - `devicePlugin.migstrategy:`
   String type, "none" for ignoring MIG features or "mixed" for allocating MIG device by separate resources. Default "none"
 - `devicePlugin.disablecorelimit:`
   String type, "true" for disable core limit, "false" for enable core limit, default: false
-- `scheduler.defaultMem:` 
+- `scheduler.defaultMem:`
   Integer type, by default: 5000. The default device memory of the current task, in MB
-- `scheduler.defaultCores:` 
+- `scheduler.defaultCores:`
   Integer type, by default: equals 0. Percentage of GPU cores reserved for the current task. If assigned to 0, it may fit in any GPU with enough device memory. If assigned to 100, it will use an entire GPU card exclusively.
 - `scheduler.defaultGPUNum:`
   Integer type, by default: equals 1, if configuration value is 0, then the configuration value will not take effect and will be filtered. when a user does not set nvidia.com/gpu this key in pod resource, webhook should check nvidia.com/gpumem、resource-mem-percentage、nvidia.com/gpucores this three key, anyone a key having value, webhook should add nvidia.com/gpu key and this default value to resources limits map.
@@ -33,7 +33,7 @@ helm install vgpu-charts/vgpu vgpu --set devicePlugin.deviceMemoryScaling=5 ...
 - `resourceMem:`
   String type, vgpu memory size resource name, default: "nvidia.com/gpumem"
 - `resourceMemPercentage:`
-  String type, vgpu memory fraction resource name, default: "nvidia.com/gpumem-percentage" 
+  String type, vgpu memory fraction resource name, default: "nvidia.com/gpumem-percentage"
 - `resourceCores:`
   String type, vgpu cores resource name, default: "nvidia.com/cores"
 - `resourcePriority:`
@@ -58,4 +58,4 @@ These container configurations are local to container, you can set the following
 - `CUDA_DISABLE_CONTROL`
   Bool type, "true","false"
   default: false
-  "true" means the HAMi-core will not be used inside container, as a result, there will be no resource isolation and limitation in that container, only for debug. 
+  "true" means the HAMi-core will not be used inside container, as a result, there will be no resource isolation and limitation in that container, only for debug.

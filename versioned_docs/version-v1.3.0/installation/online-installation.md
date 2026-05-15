@@ -2,7 +2,7 @@
 title: Online Installation from Helm (Recommended)
 ---
 
-The best practice to deploy HAMi is using helm. 
+The best practice to deploy HAMi is using helm.
 
 ## Add HAMi repo
 

@@ -15,7 +15,7 @@ spec:
   containers:
   - name: MR-V100-poddemo
     image: registry.iluvatar.com.cn:10443/saas/mr-bi150-4.3.0-x86-ubuntu22.04-py3.10-base-base:v1.0
-    command: 
+    command:
     - bash
     args:
     - -c
