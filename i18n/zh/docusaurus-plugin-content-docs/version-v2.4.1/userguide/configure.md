@@ -4,7 +4,7 @@ title: Configuration
 
 ## Global configuration
 
-These global configurations apply for all tasks. You can customize your HAMi installation by setting the following parameters using `-set`, for example
+These global configurations apply for all tasks. You can customize your HAMi installation by setting the following parameters using `--set`, for example
 
 ```
 helm install vgpu-charts/vgpu vgpu --set devicePlugin.deviceMemoryScaling=5 ...

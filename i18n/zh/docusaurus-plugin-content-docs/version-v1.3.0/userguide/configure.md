@@ -48,7 +48,7 @@ You can update these configurations using one of the following methods:
 
 ## Chart Configs: parameters
 
-you can customize your vGPU support by setting the following parameters using `-set`, for example
+you can customize your vGPU support by setting the following parameters using `--set`, for example
 
 ```
 helm install hami hami-charts/hami --set devicePlugin.deviceMemoryScaling=5 ...
