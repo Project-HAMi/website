@@ -35,4 +35,4 @@ There are some things you should consider before doing so:
   Deployment and update the status persistently, Karmada system will reconcile these changes too, so there might be
   conflicts.
 
-TODO: Link to adoption use case once it gets on board.
+See the [list of HAMi adopters](https://github.com/Project-HAMi/website/blob/master/src/pages/adopters.mdx) for organizations using HAMi in production.
