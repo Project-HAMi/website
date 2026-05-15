@@ -7,43 +7,63 @@ translated: true
 ## Introduction
 
 HAMi has provided support for K8s [DRA](https://kubernetes.io/docs/concepts/scheduling-eviction/dynamic-resource-allocation/) (Dynamic Resource Allocation).
-By installing the [HAMi DRA webhook](https://github.com/Project-HAMi/HAMi-DRA) in your cluster, you can get a consistent user experience in DRA mode that matches the traditional usage.
+The [HAMi DRA webhook](https://github.com/Project-HAMi/HAMi-DRA) is a Kubernetes mutating webhook that automatically converts GPU device resource requests into DRA ResourceClaims, enabling dynamic resource allocation for GPU workloads. It provides a consistent user experience in DRA mode that matches traditional DevicePlugin usage.
+
+## Features
+
+- **Automatic Resource Conversion**: Converts GPU resource requests to ResourceClaims
+- **Resource Cleanup**: Automatically removes GPU resources from Pod specs and creates corresponding ResourceClaims
+- **Annotation Support**: Supports device selection via Pod annotations (UUID, device type)
+- **Metrics Monitoring**: Optional monitor component that collects and exposes GPU resource metrics via Prometheus
 
 ## Prerequisites
 
 - Kubernetes version >= 1.34 with DRA Consumable Capacity [featuregate](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/) enabled
 - [CDI](https://github.com/cncf-tags/container-device-interface?tab=readme-ov-file#how-to-configure-cdi) must be enabled in the underlying container runtime (such as containerd or CRI-O)
+- NVIDIA GPU Driver 440 or later
 
 ## Installation
 
-The HAMi DRA webhook requires cert-manager for TLS certificates. Install it first:
+### 1. Install cert-manager
+
+The HAMi DRA webhook requires [cert-manager](https://cert-manager.io/docs/installation/) for TLS certificates. Install it first:
 
 ```bash
 helm repo add jetstack https://charts.jetstack.io
-helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --set crds.enabled=true
+helm install cert-manager jetstack/cert-manager \
+  --namespace cert-manager \
+  --create-namespace \
+  --set crds.enabled=true
 ```
 
-Add the HAMi chart repository and update:
+### 2. Add the HAMi-DRA Helm repository
 
 ```bash
-helm repo add hami-charts https://project-hami.github.io/HAMi/
+helm repo add hami-dra https://project-hami.github.io/HAMi-DRA
 helm repo update
 ```
 
-Then install HAMi with DRA enabled:
+### 3. Install HAMi-DRA
 
 ```bash
-helm -n hami-system install hami hami-charts/hami \
-  --set dra.enabled=true \
-  --create-namespace
-# If the GPU driver is pre-installed on the host (not managed by GPU Operator), add `--set hami-dra.drivers.nvidia.containerDriver=false`.
+helm install hami-dra hami-dra/hami-dra
 ```
 
-:::note
+If you are not using GPU Operator provided containerd drivers (i.e., the GPU driver is pre-installed on the host), add the `--set` flag:
 
-DRA mode is not compatible with traditional mode. Do not enable both at the same time.
+```bash
+helm install hami-dra hami-dra/hami-dra \
+  --set drivers.nvidia.containerDriver=false
+```
 
-:::
+### Upgrade
+
+To upgrade to the latest version in the future:
+
+```bash
+helm repo update
+helm upgrade hami-dra hami-dra/hami-dra
+```
 
 ### Verify installation
 
@@ -65,6 +85,41 @@ NAME                                             NODE         DRIVER            
 ecs-a10-sh-hami-core-gpu.project-hami.io-nnxrv   ecs-a10-sh   hami-core-gpu.project-hami.io   ecs-a10-sh   73m
 ```
 
+## Configuration
+
+### Device Resources
+
+Configure device resource names via `--set` flags or a custom `values.yaml`. The default resource names are:
+
+```yaml
+resourceName: "nvidia.com/gpu"
+resourceMem: "nvidia.com/gpumem"
+resourceCores: "nvidia.com/gpucores"
+```
+
+### Monitor Component
+
+The monitor component is optional and collects GPU resource metrics via Prometheus. It is enabled by default.
+
+To expose the monitor service via NodePort:
+
+```yaml
+monitor:
+  enabled: true
+  service:
+    type: NodePort
+    nodePort:
+      metrics: 31995
+```
+
+Access metrics:
+
+```bash
+curl http://<node-ip>:31995/metrics
+```
+
+For detailed monitor configuration, metrics reference, and Prometheus integration, see [HAMi DRA Monitor documentation](https://github.com/Project-HAMi/HAMi-DRA/blob/main/docs/MONITOR.md).
+
 ## Supported Devices
 
 The implementation of DRA functionality requires support from the corresponding device's DRA Driver. Currently supported devices include:
@@ -79,7 +134,7 @@ HAMi DRA supports two usage modes: **DRA native mode** and **DevicePlugin-compat
 
 ### DRA native mode
 
-Create a ResourceClaim to request GPU with specific cores and memory:
+Create a ResourceClaim to request a GPU with specific cores and memory:
 
 ```yaml
 apiVersion: resource.k8s.io/v1
@@ -145,8 +200,8 @@ spec:
 
 ## Monitoring
 
-HAMi DRA provides the same monitoring capabilities as the traditional model. When installing HAMi DRA, the monitoring service will be enabled by default. You can expose the monitoring service to the local environment via NodePort or add Prometheus collection to access monitoring metrics.
+HAMi DRA provides the same monitoring capabilities as the traditional model. When installing HAMi DRA, the monitoring service will be enabled by default. You can expose the monitoring service via NodePort or add Prometheus scraping to access monitoring metrics.
 
 You can view the monitoring metrics provided by HAMi DRA on the [Device Allocation Monitoring page](../userguide/monitoring/device-allocation).
 
-For more information, please refer to [HAMi DRA monitor](https://github.com/Project-HAMi/HAMi-DRA/blob/main/docs/MONITOR.md)
+For more information, please refer to [HAMi DRA Monitor](https://github.com/Project-HAMi/HAMi-DRA/blob/main/docs/MONITOR.md).
