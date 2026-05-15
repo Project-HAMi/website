@@ -19,7 +19,7 @@ translated: true
   
     更改后，重启相关的 HAMi 组件以应用更新的配置。
   
-2. 修改 Helm Chart：更新 [ConfigMap](https://raw.githubusercontent.com/archlitchi/HAMi/refs/heads/master/charts/hami/templates/scheduler/device-configmap.yaml)
+2. 修改 Helm Chart：更新 [ConfigMap](https://raw.githubusercontent.com/Project-HAMi/HAMi/refs/heads/master/charts/hami/templates/scheduler/device-configmap.yaml)
    中的相应值，然后重新应用 Helm Chart 以重新生成 ConfigMap。
 
 - `nvidia.deviceMemoryScaling`：

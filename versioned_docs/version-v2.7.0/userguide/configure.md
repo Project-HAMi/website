@@ -22,7 +22,7 @@ You can update these configurations using one of the following methods:
    After making changes, restart the related HAMi components to apply the updated configurations.
 
 2. Modify Helm Chart: Update the corresponding values in the
-   [ConfigMap](https://raw.githubusercontent.com/archlitchi/HAMi/refs/heads/master/charts/hami/templates/scheduler/device-configmap.yaml),
+   [ConfigMap](https://raw.githubusercontent.com/Project-HAMi/HAMi/refs/heads/master/charts/hami/templates/scheduler/device-configmap.yaml),
    then reapply the Helm Chart to regenerate the ConfigMap.
 
    | Argument | Type | Description | Default |
