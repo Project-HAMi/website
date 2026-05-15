@@ -115,9 +115,11 @@ EOF
 
 You can validate device memory using nvidia-smi inside container:
 
-> **WARNING:** *if you don't request GPUs when using the device plugin with NVIDIA images all
-> the GPUs on the machine will be exposed inside your container.
-> The number of vgpu used by a container can not exceed the number of gpus on that node.*
+:::warning
+
+if you don't request GPUs when using the device plugin with NVIDIA images all the GPUs on the machine will be exposed inside your container. The number of vgpu used by a container can not exceed the number of gpus on that node.
+
+:::
 
 ### Monitor
 

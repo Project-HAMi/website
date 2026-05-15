@@ -13,4 +13,8 @@ metadata:
     nvidia.com/use-gpuuuid: "GPU-123456"
 ```
 
-> **NOTICE:** *Each GPU UUID is unique in a cluster, so assign a certain UUID means assigning this task to certain node with that GPU*
+:::note
+
+Each GPU UUID is unique in a cluster, so assign a certain UUID means assigning this task to certain node with that GPU
+
+:::
