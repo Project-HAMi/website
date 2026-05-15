@@ -21,13 +21,13 @@ device-sharing features include the following:
 
 ### Prerequisites
 
-* Metax Driver >= 2.31.0
-* Metax GPU Operator >= 0.10.1
-* Kubernetes >= 1.23
+- Metax Driver >= 2.31.0
+- Metax GPU Operator >= 0.10.1
+- Kubernetes >= 1.23
 
 ### Enabling GPU-sharing Support
 
-* Deploy Metax GPU Operator on metax nodes (Please consult your device provider to acquire its package and document)
+- Deploy Metax GPU Operator on metax nodes (Please consult your device provider to acquire its package and document)
 
 - Deploy HAMi using the online installation guide
 
