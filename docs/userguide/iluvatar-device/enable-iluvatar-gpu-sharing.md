@@ -63,19 +63,19 @@ The currently supported GPU models and resource names are defined in [device-con
 
 ## Device Granularity
 
-HAMi divides each Iluvatar GPU into 100 units for resource allocation. When you request a portion of a GPU, you're actually requesting a certain number of these units.
+HAMi divides each Iluvatar GPU into 100 units for resource allocation. Requesting a portion of a GPU corresponds to requesting a specific number of these units.
 
 ### Memory Allocation
 
-- Each unit of `iluvatar.ai/<card-type>.vMem` represents 256MB of device memory
-- If you don't specify a memory request, the system will default to using 100% of the available memory
-- Memory allocation is enforced with hard limits to ensure tasks don't exceed their allocated memory
+* Each unit of `iluvatar.ai/<card-type>.vMem` represents 256MB of device memory
+* If no memory request is specified, the system defaults to using 100% of the available memory
+* Memory allocation is enforced with hard limits to ensure tasks do not exceed their allocated memory
 
 ### Core Allocation
 
-- Each unit of `iluvatar.ai/<card-type>.vCore` represents 1% of the available compute cores
-- Core allocation is enforced with hard limits to ensure tasks don't exceed their allocated cores
-- When requesting multiple GPUs, the system will automatically set the core resources based on the number of GPUs requested
+* Each unit of `iluvatar.ai/<card-type>.vCore` represents 1% of the available compute cores
+* Core allocation is enforced with hard limits to ensure tasks do not exceed their allocated cores
+* When requesting multiple GPUs, the system will automatically set the core resources based on the number of GPUs requested
 
 ## Running Iluvatar jobs
 
