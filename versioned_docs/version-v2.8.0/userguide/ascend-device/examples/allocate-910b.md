@@ -21,8 +21,11 @@ spec:
           huawei.com/Ascend910B-memory: 2000 # requesting 2000m device memory
 ```
 
-> **NOTICE:** *Compute resource of Ascend910B is also limited with `huawei.com/Ascend910B-memory`, equal to the percentage of device memory allocated.*
+:::note
 
+Compute resource of Ascend910B is also limited with `huawei.com/Ascend910B-memory`, equal to the percentage of device memory allocated.
+
+:::
 ## Select Device by UUID
 
 You can specify which Ascend devices a pod uses or excludes by using annotations:

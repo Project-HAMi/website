@@ -67,4 +67,8 @@ spec:
           metax-tech.com/gpu: 1 # requesting 1 GPU
 ```
 
-> **NOTICE:** *You can find more examples in [examples/metax folder](https://github.com/Project-HAMi/HAMi/tree/master/examples/metax/gpu)*
+:::note
+
+You can find more examples in [examples/metax folder](https://github.com/Project-HAMi/HAMi/tree/master/examples/metax/gpu)
+
+:::

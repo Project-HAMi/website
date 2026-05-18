@@ -10,4 +10,8 @@ helm repo update
 helm install hami hami-charts/hami -n kube-system
 ```
 
-> **WARNING:** *If you upgrade HAMi without clearing your submitted tasks, it may result in segmentation fault.*
+:::warning
+
+If you upgrade HAMi without clearing your submitted tasks, it may result in segmentation fault.
+
+:::

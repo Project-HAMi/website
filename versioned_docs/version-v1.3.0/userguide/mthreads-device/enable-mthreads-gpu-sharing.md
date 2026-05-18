@@ -31,8 +31,11 @@ title: Enable Mthreads GPU sharing
 
 - Deploy MT-CloudNative Toolkit on mthreads nodes (Please consult your device provider to acquire its package and document)
 
-> **NOTICE:** *You can remove mt-mutating-webhook and mt-gpu-scheduler after installation(optional).*
+:::note
 
+You can remove mt-mutating-webhook and mt-gpu-scheduler after installation(optional).
+
+:::
 - set the 'devices.mthreads.enabled = true' when installing hami
 
 ```bash

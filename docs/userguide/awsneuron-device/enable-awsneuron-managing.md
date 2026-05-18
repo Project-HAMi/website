@@ -109,8 +109,11 @@ spec:
   # ... rest of pod spec
 ```
 
-> **NOTICE:** The device ID format is `{node-name}-AWSNeuron-{index}`. You can find the available device IDs in the node annotations.
+:::note
 
+The device ID format is `{node-name}-AWSNeuron-{index}`. You can find the available device IDs in the node annotations.
+
+:::
 ### Finding Device UUIDs
 
 You can find the UUIDs of AWS Neuron devices on a node using the following command:
