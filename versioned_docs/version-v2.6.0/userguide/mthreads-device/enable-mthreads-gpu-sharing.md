@@ -39,7 +39,7 @@ You can remove mt-mutating-webhook and mt-gpu-scheduler after installation(optio
 
 - set the 'devices.mthreads.enabled = true' when installing hami
 
-```
+```bash
 helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag={your kubernetes version} --set device.mthreads.enabled=true -n kube-system
 ```
 

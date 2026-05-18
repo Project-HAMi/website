@@ -6,7 +6,7 @@ title: Assign task to a certain GPU
 
 To assign a task to a certain GPU, you need only to assign the `nvidia.com/use-gpuuuid` in annotations field.
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:

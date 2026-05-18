@@ -45,7 +45,7 @@ Equipped with MetaXLink interconnected resources.
 Mthreads GPUs can now be requested by a container
 using the `metax-tech.com/gpu`  resource type:
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:

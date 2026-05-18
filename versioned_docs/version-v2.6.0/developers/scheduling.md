@@ -89,19 +89,19 @@ GPU spread, use different GPU cards when possible, egs:
 
 Binpack mainly considers node resource usage. The more full the usage, the higher the score.
 
-```
+```text
 score: ((request + used) / allocatable) * 10 
 ```
 
 1. Binpack scoring information for Node 1 is as follows
 
-```
+```text
 Node1 score: ((1+3)/4) * 10= 10
 ```
 
 2. Binpack scoring information for Node 2 is as follows
 
-```
+```text
 Node2 score: ((1+2)/4) * 10= 7.5
 ```
 
@@ -111,17 +111,17 @@ So, in `Binpack` policy, the selected node is `Node1`.
 
 Spread mainly considers node resource usage. The less it is used, the lower the score, but the higher the priority.
 
-```
+```text
 score: ((request + used) / allocatable) * 10 
 ```
 
 1. Spread scoring information for Node 1 is as follows
-```
+```text
 Node1 score: ((1+3)/4) * 10= 10
 ```
 
 2. Spread scoring information for Node 2 is as follows
-```
+```text
 Node2 score: ((1+2)/4) * 10= 7.5
 ```
 
@@ -134,17 +134,17 @@ So, in `Spread` policy, the selected node is `Node2`.
 #### Binpack
 
 Binpack mainly focuses on the computing power and video memory usage of each card. The more it is used, the higher the score.
-```
+```text
 score: ((request.core + used.core) / allocatable.core + (request.mem + used.mem) / allocatable.mem)) * 10
 ```
 
 1. Binpack scoring information for GPU 1 is as follows
-```
+```text
 GPU1 Score: ((20+10)/100 + (1000+2000)/8000)) * 10 = 6.75
 ```
 
 2. Binpack scoring information for GPU 2 is as follows
-```
+```text
 GPU2 Score: ((20+70)/100 + (1000+6000)/8000)) * 10 = 17.75
 ```
 
@@ -153,17 +153,17 @@ So, in `Binpack` policy, the selected node is `GPU2`.
 #### Spread
 
 Spread mainly focuses on the computing power and video memory usage of each card. The less it is used, the higher the score.
-```
+```text
 score: ((request.core + used.core) / allocatable.core + (request.mem + used.mem) / allocatable.mem)) * 10
 ```
 
 1. Spread scoring information for GPU 1 is as follows
-```
+```text
 GPU1 Score: ((20+10)/100 + (1000+2000)/8000)) * 10 = 6.75
 ```
 
 2. Spread scoring information for GPU 2 is as follows
-```
+```text
 GPU2 Score: ((20+70)/100 + (1000+6000)/8000)) * 10 = 17.75
 ```
 
@@ -215,19 +215,19 @@ NVIDIA Topology-aware primarily focuses on the topological relationships between
 When a Pod requests only one GPU, the GPU with the worst communication performance with other GPUs is prioritized - the lower the score, the higher the scheduling priority. For example:  
 
 1. The sum of scores for gpu0 with other GPUs is as follows:  
-```  
+```text
 gpu0 score: 100 + 100 + 200 = 400  
 ```  
 2. The sum of scores for gpu1 with other GPUs is as follows:  
-```  
+```text
 gpu1 score: 100 + 200 + 100 = 400  
 ```  
 3. The sum of scores for gpu2 with other GPUs is as follows:  
-```  
+```text
 gpu2 score: 100 + 200 + 200 = 500  
 ```  
 4. The sum of scores for gpu3 with other GPUs is as follows:  
-```  
+```text
 gpu3 score: 200 + 100 + 200 = 500  
 ```  
 
@@ -241,15 +241,15 @@ For example: If a Pod requests 3 GPUs, take **gpu0, gpu1, gpu2** as an example. 
 `totalScore = score(gpu0, gpu1) + score(gpu0, gpu2) + score(gpu1, gpu2)`  
 
 1. The score for gpu0, gpu1, gpu2 is as follows:  
-```  
+```text
 (gpu0, gpu1, gpu2) totalScore: 100 + 100 + 200 = 400  
 ```  
 2. The score for gpu0, gpu1, gpu3 is as follows:  
-```  
+```text
 (gpu0, gpu1, gpu3) totalScore: 100 + 200 + 100 = 400  
 ```  
 3. The score for gpu1, gpu2, gpu3 is as follows:  
-```  
+```text
 (gpu1, gpu2, gpu3) totalScore: 200 + 100 + 200 = 500  
 ```  
 

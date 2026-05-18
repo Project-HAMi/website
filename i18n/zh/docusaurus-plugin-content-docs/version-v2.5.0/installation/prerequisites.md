@@ -48,7 +48,7 @@ sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
 
 然后重启 `Docker`：
 
-```
+```bash
 sudo systemctl daemon-reload && systemctl restart docker
 ```
 
@@ -57,7 +57,7 @@ sudo systemctl daemon-reload && systemctl restart docker
 在使用 `containerd` 运行 `Kubernetes` 时，修改配置文件，通常位于 `/etc/containerd/config.toml`，以设置
 `nvidia-container-runtime` 作为默认的低级运行时：
 
-```
+```text
 version = 2
 [plugins]
   [plugins."io.containerd.grpc.v1.cri"]
@@ -76,7 +76,7 @@ version = 2
 
 然后重启 `containerd`：
 
-```
+```bash
 sudo systemctl daemon-reload && systemctl restart containerd
 ```
 
@@ -84,5 +84,5 @@ sudo systemctl daemon-reload && systemctl restart containerd
 
 通过添加标签 "gpu=on" 来为 HAMi 调度标记你的 GPU 节点。没有此标签，节点无法被我们的调度器管理。
 
-```
+```bash
 kubectl label nodes {nodeid} gpu=on

@@ -16,7 +16,7 @@ Memory slicing is supported based on virtualization template, lease available te
 
 - Due to dependencies with HAMi, you need to set 
 
-```
+```yaml
 devices.ascend.enabled=true
 ``` 
 
@@ -42,7 +42,7 @@ devices:
 ```
 
 - Tag Ascend node with the following command
-```
+```bash
 kubectl label node {ascend-node} ascend=on
 ```
 
@@ -50,7 +50,7 @@ kubectl label node {ascend-node} ascend=on
 
 - Download yaml for Ascend-vgpu-device-plugin from HAMi Project [here](https://github.com/Project-HAMi/ascend-device-plugin/blob/master/build/ascendplugin-hami.yaml), and deploy
 
-```
+```text
 wge https://raw.githubusercontent.com/Project-HAMi/ascend-device-plugin/refs/heads/main/ascend-device-plugin.yaml
 kubectl apply -f ascend-device-plugin.yaml
 ```
@@ -62,7 +62,7 @@ kubectl apply -f ascend-device-plugin.yaml
 Ascend 910Bs can now be requested by a container
 using the `huawei.com/ascend910B` and `huawei.com/ascend910B-memory` resource type:
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -83,7 +83,7 @@ spec:
 Ascend 310Ps can now be requested by a container
 using the `huawei.com/ascend310P` and `huawei.com/ascend310P-memory` resource type:
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:

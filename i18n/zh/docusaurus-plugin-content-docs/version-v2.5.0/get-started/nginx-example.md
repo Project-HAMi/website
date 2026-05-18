@@ -102,7 +102,7 @@ kubectl label nodes {nodeid} gpu=on
 
 首先，你需要使用以下命令检查你的 Kubernetes 版本：
 
-```
+```bash
 kubectl version
 ```
 

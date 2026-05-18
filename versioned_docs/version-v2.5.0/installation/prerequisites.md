@@ -47,7 +47,7 @@ When running `Kubernetes` with `Docker`, edit the configuration file, typically 
 
 And then restart `Docker`:
 
-```
+```bash
 sudo systemctl daemon-reload && sudo systemctl restart docker
 ```
 
@@ -57,7 +57,7 @@ sudo systemctl daemon-reload && sudo systemctl restart docker
 When running `Kubernetes` with `containerd`, modify the configuration file typically located at `/etc/containerd/config.toml`, to set up
 `nvidia-container-runtime` as the default low-level runtime:
 
-```
+```text
 version = 2
 [plugins]
   [plugins."io.containerd.grpc.v1.cri"]
@@ -76,7 +76,7 @@ version = 2
 
 And then restart `containerd`:
 
-```
+```bash
 sudo systemctl daemon-reload && systemctl restart containerd
 ```
 
@@ -84,6 +84,6 @@ sudo systemctl daemon-reload && systemctl restart containerd
 
 Label your GPU nodes for scheduling with HAMi by adding the label "gpu=on". Without this label, the nodes cannot be managed by the HAMi scheduler.
 
-```
+```bash
 kubectl label nodes {nodeid} gpu=on
 ```

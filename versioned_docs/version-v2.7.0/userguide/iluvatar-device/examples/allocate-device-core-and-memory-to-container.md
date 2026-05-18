@@ -6,7 +6,7 @@ title: Allocate device core and memory resource
 
 To allocate a certain part of device core resource, you need only to assign the iluvatar.ai/vcuda-memory and iluvatar.ai/vcuda-core along with the number of cambricon MLUs you requested in the container using iluvatar.ai/vgpu
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:

@@ -88,19 +88,19 @@ GPU spread，尽可能使用不同的 GPU 卡，例如：
 
 Binpack 主要考虑节点资源使用情况。使用越满，得分越高。
 
-```
+```text
 score: ((request + used) / allocatable) * 10 
 ```
 
 1. 节点1的 Binpack 评分信息如下
 
-```
+```text
 Node1 score: ((1+3)/4) * 10= 10
 ```
 
 2. 节点2的 Binpack 评分信息如下
 
-```
+```text
 Node2 score: ((1+2)/4) * 10= 7.5
 ```
 
@@ -110,17 +110,17 @@ Node2 score: ((1+2)/4) * 10= 7.5
 
 Spread 主要考虑节点资源使用情况。使用越少，得分越高。
 
-```
+```text
 score: ((request + used) / allocatable) * 10 
 ```
 
 1. 节点1的 Spread 评分信息如下
-```
+```text
 Node1 score: ((1+3)/4) * 10= 10
 ```
 
 2. 节点2的 Spread 评分信息如下
-```
+```text
 Node2 score: ((1+2)/4) * 10= 7.5
 ```
 
@@ -133,17 +133,17 @@ Node2 score: ((1+2)/4) * 10= 7.5
 #### Binpack
 
 Binpack 主要关注每张卡的计算能力和显存使用情况。使用越多，得分越高。
-```
+```text
 score: ((request.core + used.core) / allocatable.core + (request.mem + used.mem) / allocatable.mem)) * 10
 ```
 
 1. GPU1 的 Binpack 评分信息如下
-```
+```text
 GPU1 Score: ((20+10)/100 + (1000+2000)/8000)) * 10 = 6.75
 ```
 
 2. GPU2 的 Binpack 评分信息如下
-```
+```text
 GPU2 Score: ((20+70)/100 + (1000+6000)/8000)) * 10 = 17.75
 ```
 
@@ -152,17 +152,17 @@ GPU2 Score: ((20+70)/100 + (1000+6000)/8000)) * 10 = 17.75
 #### Spread
 
 Spread 主要关注每张卡的计算能力和显存使用情况。使用越少，得分越高。
-```
+```text
 score: ((request.core + used.core) / allocatable.core + (request.mem + used.mem) / allocatable.mem)) * 10
 ```
 
 1. GPU1 的 Spread 评分信息如下
-```
+```text
 GPU1 Score: ((20+10)/100 + (1000+2000)/8000)) * 10 = 6.75
 ```
 
 2. GPU2 的 Spread 评分信息如下
-```
+```text
 GPU2 Score: ((20+70)/100 + (1000+6000)/8000)) * 10 = 17.75
 ```
 

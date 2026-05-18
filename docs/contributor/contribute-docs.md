@@ -44,7 +44,7 @@ Use `npm run start` while writing. Use `npm run build:fast` before opening a PR.
 
 ## Repository Structure
 
-```
+```text
 website/
 ├── docs/                          # English source docs (authoritative)
 ├── i18n/zh/
@@ -65,7 +65,7 @@ Contributors primarily work in `docs/` (English source) and `i18n/zh/` (Chinese 
 
 Place the file in the appropriate subdirectory under `docs/`:
 
-```
+```text
 docs/userguide/nvidia-device/new-feature.md
 docs/get-started/new-guide.md
 docs/contributor/new-policy.md

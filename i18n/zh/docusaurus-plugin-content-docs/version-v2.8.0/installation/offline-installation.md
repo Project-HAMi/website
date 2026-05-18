@@ -9,7 +9,7 @@ translated: true
 
 你需要将以下镜像保存到一个 tarball 文件中，并将其复制到集群中。
 镜像列表：
-```
+```text
 projecthami/hami:{HAMi 版本} 
 docker.io/jettech/kube-webhook-certgen:v1.5.2
 liangjw/kube-webhook-certgen:v1.1.1
@@ -18,7 +18,7 @@ registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:{你的 kuber
 
 加载这些镜像，将这些镜像标记为你的内部注册表，并将它们推送到你的注册表中
 
-```
+```bash
 docker load -i {HAMi_image}.tar
 docker tag projecthami/hami:{HAMi 版本} {your_inner_registry}/hami:{HAMi 版本} 
 docker push {your_inner_registry}/hami:{HAMi 版本}
@@ -33,7 +33,7 @@ docker push {your_inner_registry}/kube-scheduler:{你的 kubernetes 版本}
 
 从 [github](https://github.com/Project-HAMi/HAMi/tree/master/charts) 下载 charts 文件夹，将其放置在集群内的 $\{CHART_PATH\}，然后编辑 $\{CHART_PATH\}/hami/values.yaml 中的以下字段。
 
-```
+```yaml
 scheduler.kubeScheduler.image
 scheduler.extender.image
 scheduler.patch.image
@@ -44,14 +44,14 @@ scheduler.devicePlugin.monitorimage
 
 ## 在你的 $\{CHART_PATH\} 文件夹中执行以下命令
 
-```
+```bash
 helm install hami hami --set scheduler.kubeScheduler.imageTag={你的 k8s 服务器版本} -n kube-system
 ```
 
 7. 验证你的安装
 
 执行以下命令
-```
+```bash
 kubectl get pods -n kube-system
 ```
 

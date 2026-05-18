@@ -4,7 +4,7 @@ title: Uninstall
 
 The step to uninstall hami is simple:
 
-```
+```bash
 helm uninstall hami -n kube-system
 ```
 

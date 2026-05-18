@@ -36,7 +36,7 @@ Install only gpu-manager, don't install gpu-admission package.
 
 - set the 'iluvatarResourceMem' and 'iluvatarResourceCore' parameters when install hami
 
-```
+```bash
 helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag={your kubernetes version} --set iluvatarResourceMem=iluvatar.ai/vcuda-memory --set iluvatarResourceCore=iluvatar.ai/vcuda-core -n kube-system
 ```
 

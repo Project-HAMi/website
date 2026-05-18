@@ -44,7 +44,7 @@ You can customize these names by modifying `hami-scheduler-device` configMap abo
 
 - Set 'devices.enflame.enabled=true' when deploy HAMi
 
-```
+```bash
 helm install hami hami-charts/hami --set devices.enflame.enabled=true -n kube-system
 ```
 

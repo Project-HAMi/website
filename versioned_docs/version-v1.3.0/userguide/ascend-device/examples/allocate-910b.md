@@ -6,7 +6,7 @@ title: Allocate 910b slice
 
 To allocate a certain size of GPU device memory, you need only to assign `huawei.com/ascend910-memory` besides `huawei.com/ascend910`.
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:

@@ -5,7 +5,7 @@ translated: true
 
 卸载 hami 的步骤很简单：
 
-```
+```bash
 helm uninstall hami -n kube-system
 ```
 

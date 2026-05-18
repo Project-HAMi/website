@@ -24,7 +24,7 @@ title: Enable cambricon MLU sharing
 
 - Contact your device provider to acquire cambricon-device-plugin>2.0.9, edit parameter `mode` to 'dynamic-smlu` in containers.args field.
 
-```
+```text
         args:
             - --mode=dynamic-smlu # device plugin mode: default, sriov, env-share, topology-aware, dynamic-mim, smlu or dynamic-smlu
 	...
@@ -35,7 +35,7 @@ title: Enable cambricon MLU sharing
 - Install the chart using helm, See 'enabling vGPU support in kubernetes' section [here](https://github.com/Project-HAMi/HAMi#enabling-vgpu-support-in-kubernetes)
 
 - Activate the smlu mode for each MLUs on that node
-```
+```text
 cnmon set -c 0 -smlu on
 cnmon set -c 1 -smlu on
 ...
@@ -46,7 +46,7 @@ cnmon set -c 1 -smlu on
 Cambricon MMLUs can now be requested by a container
 using the `cambricon.com/mlu.smlu.vmemory` and `cambricon.com/mlu.smlu.vcore` resource type:
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:

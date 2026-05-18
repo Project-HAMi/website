@@ -6,7 +6,7 @@ title: Assign to certain device type
 
 You need to add parameters `- --enable-device-type` in `cambricon-device-plugin` in order to support device type specification.When this option is set, different types of MLUs will generate different resource names，such as `cambricon.com/mlu370.smlu.vcore` and `cambricon.com/mlu370.smlu.vmemory`.
 
-```
+```text
       resources:
         limits:
           cambricon.com/mlu: 1 # requesting 1 MLU

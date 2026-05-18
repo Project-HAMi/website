@@ -4,7 +4,7 @@ title: Upgrade
 
 Upgrading HAMi to the latest version is a simple process, update the repository and restart the chart:
 
-```
+```bash
 helm uninstall hami -n kube-system
 helm repo update
 helm install hami hami-charts/hami -n kube-system

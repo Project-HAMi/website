@@ -38,7 +38,7 @@ hack/remote-up-karmada.sh $HOME/.kube/config mycluster
 ```
 
 If everything goes well, at the end of the script output, you will see similar messages as follows:
-```
+```text
 ------------------------------------------------------------------------------------------------------
 █████   ████   █████████   ███████████   ██████   ██████   █████████   ██████████     █████████
 ░░███   ███░   ███░░░░░███ ░░███░░░░░███ ░░██████ ██████   ███░░░░░███ ░░███░░░░███   ███░░░░░███

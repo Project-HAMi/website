@@ -27,7 +27,7 @@ title: Enable dynamic-mig feature
 - Install the chart using helm, See 'enabling vGPU support in kubernetes' section [here](https://github.com/Project-HAMi/HAMi#enabling-vgpu-support-in-kubernetes)
 
 - Configure `mode` in device-plugin configMap to `mig` for MIG nodes
-```
+```bash
 kubectl describe cm  hami-device-plugin -n kube-system
 ```
 

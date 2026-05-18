@@ -24,7 +24,7 @@ HAMi now integrates with [Neuron scheduler extension](https://awsdocs-neuron.rea
 
 - Deploy HAMi
 
-```
+```bash
 helm install hami hami-charts/hami -n kube-system
 ```
 

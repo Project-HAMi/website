@@ -41,7 +41,7 @@ Once cert-manager is installed, you can install the HAMi add-on from the AWS Mar
 You can verify your installation with the following command:
 
 
-```
+```bash
 kubectl get pods -n kube-system
 ```
 

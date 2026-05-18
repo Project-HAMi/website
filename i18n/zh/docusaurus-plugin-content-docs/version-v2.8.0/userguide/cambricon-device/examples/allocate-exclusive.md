@@ -6,7 +6,7 @@ translated: true
 
 要分配整个寒武纪设备，你只需分配 `cambricon.com/vmlu`，无需其他字段。
 
-```
+```yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:

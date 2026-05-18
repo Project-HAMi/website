@@ -7,7 +7,7 @@ translated: true
 
 要分配整个海光 DCU 设备，你只需分配 `hygon.com/dcunum`，无需其他字段。
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:

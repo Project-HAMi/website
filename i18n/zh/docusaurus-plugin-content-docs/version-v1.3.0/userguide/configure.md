@@ -50,7 +50,7 @@ You can update these configurations using one of the following methods:
 
 you can customize your vGPU support by setting the following parameters using `--set`, for example
 
-```
+```bash
 helm install hami hami-charts/hami --set devicePlugin.deviceMemoryScaling=5 ...
 ```
 

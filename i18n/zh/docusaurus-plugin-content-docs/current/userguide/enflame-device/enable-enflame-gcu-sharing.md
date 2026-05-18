@@ -35,7 +35,7 @@ linktitle: GPU 共享
 
 - 在安装 HAMi 时配置参数'devices.enflame.enabled=true'
 
-```
+```bash
 helm install hami hami-charts/hami --set devices.enflame.enabled=true -n kube-system
 ```
 

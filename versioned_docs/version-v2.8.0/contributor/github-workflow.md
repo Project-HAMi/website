@@ -35,7 +35,7 @@ git remote -v
 
 Expected output:
 
-```
+```text
 origin    https://github.com/<your-username>/HAMi.git (fetch)
 origin    https://github.com/<your-username>/HAMi.git (push)
 upstream  https://github.com/Project-HAMi/HAMi.git (fetch)
@@ -134,7 +134,7 @@ git rebase -i HEAD~3
 
 The editor opens with a list of commits:
 
-```
+```text
 pick abc1234 fix: correct memory calculation for MLU devices
 pick def5678 address review feedback
 pick ghi9012 fix typo
@@ -142,7 +142,7 @@ pick ghi9012 fix typo
 
 Change `pick` to `squash` (or `s`) for commits to fold into the one above:
 
-```
+```text
 pick abc1234 fix: correct memory calculation for MLU devices
 squash def5678 address review feedback
 squash ghi9012 fix typo

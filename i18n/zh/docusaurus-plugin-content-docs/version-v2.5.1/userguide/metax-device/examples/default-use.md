@@ -7,7 +7,7 @@ translated: true
 
 要分配 metax 设备，你只需分配 `metax-tech.com/gpu`，无需其他字段。
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
