@@ -19,6 +19,12 @@
     "website": "https://www.4paradigm.com"
   },
   {
+    "name": "CenCloud",
+    "nameZh": "琛云科技",
+    "logo": "/img/adopters/cencloud.svg",
+    "website": ""
+  },
+  {
     "name": "RiseUnion",
     "nameZh": "睿思智联",
     "logo": "/img/contributors/riseunion.png",
