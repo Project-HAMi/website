@@ -195,8 +195,8 @@ const vendorEcosystem = [
   { key: 'hygon', name: 'Hygon', logo: 'img/contributors/hygon.png', href: 'https://www.hygon.cn' },
   { key: 'iluvatar', name: 'Iluvatar', logo: 'img/contributors/iluvatar.png', href: 'https://www.iluvatar.com' },
   { key: 'kunlunxin', name: 'Kunlunxin', logo: 'img/contributors/kunlunxin.jpg', href: 'https://www.kunlunxin.com' },
-  { key: 'metax', name: 'Metax', logo: 'img/contributors/metax.png', href: 'https://www.metax-tech.com' },
-  { key: 'mthreads', name: 'Mthreads', logo: 'img/contributors/mthread.png', href: 'https://www.mthreads.com' },
+  { key: 'metax', name: 'MetaX', logo: 'img/contributors/metax.png', href: 'https://www.metax-tech.com' },
+  { key: 'mthreads', name: 'Moore Threads', logo: 'img/contributors/mthread.png', href: 'https://www.mthreads.com' },
   { key: 'vaststream', name: 'Vaststream', logo: 'img/ecosystem/vaststream.jpg', href: 'https://www.vastaitech.com' },
 ];
 
