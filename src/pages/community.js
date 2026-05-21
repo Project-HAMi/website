@@ -178,7 +178,7 @@ export default function CommunityPage() {
             <p className={styles.sectionIntro}>
               {isZh
                 ? '从交流渠道、例会和资料入口快速开始参与社区。'
-                : 'Start quickly through chat channels, weekly meetings, and shared resources.'}
+                : 'Start quickly through chat channels, biweekly meetings, and shared resources.'}
             </p>
             <div className={styles.dashboardGrid}>
               {cardConfig.map((card) => (
