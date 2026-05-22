@@ -148,43 +148,43 @@
     "description": "The label for category 'Examples' in sidebar 'docs'"
   },
   "sidebar.docs.category.Core Concepts.link.generated-index.title": {
-    "message": "Core Concepts",
+    "message": "核心概念",
     "description": "The generated-index page title for category 'Core Concepts' in sidebar 'docs'"
   },
   "sidebar.docs.category.Core Concepts.link.generated-index.description": {
-    "message": "Learn what HAMi is and how the core architecture works.",
+    "message": "了解 HAMi 是什么，以及核心架构如何工作。",
     "description": "The generated-index page description for category 'Core Concepts' in sidebar 'docs'"
   },
   "sidebar.docs.category.Key Features.link.generated-index.title": {
-    "message": "Key Features",
+    "message": "核心功能",
     "description": "The generated-index page title for category 'Key Features' in sidebar 'docs'"
   },
   "sidebar.docs.category.Key Features.link.generated-index.description": {
-    "message": "Explore the most important capabilities in HAMi.",
+    "message": "了解 HAMi 最重要的能力。",
     "description": "The generated-index page description for category 'Key Features' in sidebar 'docs'"
   },
   "sidebar.docs.category.Get Started.link.generated-index.title": {
-    "message": "Get Started",
+    "message": "快速开始",
     "description": "The generated-index page title for category 'Get Started' in sidebar 'docs'"
   },
   "sidebar.docs.category.Get Started.link.generated-index.description": {
-    "message": "Install and run HAMi quickly with a guided first deployment path.",
+    "message": "按照引导路径快速安装并运行 HAMi。",
     "description": "The generated-index page description for category 'Get Started' in sidebar 'docs'"
   },
   "sidebar.docs.category.Installation.link.generated-index.title": {
-    "message": "Installation",
+    "message": "安装",
     "description": "The generated-index page title for category 'Installation' in sidebar 'docs'"
   },
   "sidebar.docs.category.Installation.link.generated-index.description": {
-    "message": "Installation methods, prerequisites, upgrades and integrations.",
+    "message": "安装方式、环境要求、升级流程和集成指南。",
     "description": "The generated-index page description for category 'Installation' in sidebar 'docs'"
   },
   "sidebar.docs.category.User Guide.link.generated-index.title": {
-    "message": "User Guide",
+    "message": "用户指南",
     "description": "The generated-index page title for category 'User Guide' in sidebar 'docs'"
   },
   "sidebar.docs.category.User Guide.link.generated-index.description": {
-    "message": "Configure devices, request resources, monitor workloads and troubleshoot usage.",
+    "message": "配置设备、申请资源、监控工作负载并排查使用问题。",
     "description": "The generated-index page description for category 'User Guide' in sidebar 'docs'"
   },
   "sidebar.docs.category.Volcano vGPU": {
@@ -196,19 +196,19 @@
     "description": "The label for category 'NVIDIA GPU' in sidebar 'docs'"
   },
   "sidebar.docs.category.Developer Guide.link.generated-index.title": {
-    "message": "Developer Guide",
+    "message": "开发者指南",
     "description": "The generated-index page title for category 'Developer Guide' in sidebar 'docs'"
   },
   "sidebar.docs.category.Developer Guide.link.generated-index.description": {
-    "message": "Architecture deep dive, build workflow and scheduler internals.",
+    "message": "深入了解架构、构建流程和调度器内部机制。",
     "description": "The generated-index page description for category 'Developer Guide' in sidebar 'docs'"
   },
   "sidebar.docs.category.Contributor Guide.link.generated-index.title": {
-    "message": "Contributor Guide",
+    "message": "贡献者指南",
     "description": "The generated-index page title for category 'Contributor Guide' in sidebar 'docs'"
   },
   "sidebar.docs.category.Contributor Guide.link.generated-index.description": {
-    "message": "Contribution workflow, governance and maintainer ladder.",
+    "message": "贡献流程、社区治理和维护者晋升机制。",
     "description": "The generated-index page description for category 'Contributor Guide' in sidebar 'docs'"
   }
 }
