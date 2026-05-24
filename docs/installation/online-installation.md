@@ -18,7 +18,7 @@ helm repo add hami-charts https://project-hami.github.io/HAMi/
 A Kubernetes version is required for proper installation. You can retrieve your Kubernetes server version with:
 
 ```bash
-kubectl version --short
+kubectl version
 ```
 
 ## Installation
