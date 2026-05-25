@@ -8,6 +8,6 @@ translated: true
 
 ```yaml
 metadata:
-  annotations: 
+  annotations:
     hami.io/node-scheduler-policy: "spread" # 当此参数设置为 spread 时，调度器将尝试为此任务找到最佳拓扑。
 ```

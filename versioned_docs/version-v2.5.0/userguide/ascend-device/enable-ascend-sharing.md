@@ -14,11 +14,11 @@ Memory slicing is supported based on virtualization template, lease available te
 
 ## Enabling Ascend-sharing Support
 
-- Due to dependencies with HAMi, you need to set 
+- Due to dependencies with HAMi, you need to set
 
 ```yaml
 devices.ascend.enabled=true
-``` 
+```
 
 during HAMi installation. For more details, see 'devices' section in values.yaml.
 

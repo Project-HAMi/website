@@ -6,7 +6,7 @@ translated: true
 
 :::note
 
-使用 volcano-vgpu 时，你*不需要*安装 HAMi，只需使用  
+使用 volcano-vgpu 时，你*不需要*安装 HAMi，只需使用
 [Volcano vgpu 设备插件](https://github.com/Project-HAMi/volcano-vgpu-device-plugin) 就足够了。它可以为由 volcano 管理的 NVIDIA 设备提供设备共享机制。
 
 这基于 [Nvidia 设备插件](https://github.com/NVIDIA/k8s-device-plugin)，使用 [HAMi-core](https://github.com/Project-HAMi/HAMi-core) 支持 GPU 卡的硬隔离。
@@ -111,7 +111,7 @@ spec:
         limits:
           volcano.sh/vgpu-number: 2 # 请求 2 个 gpu 卡
           volcano.sh/vgpu-memory: 3000 # （可选）每个 vGPU 使用 3G 设备显存
-          volcano.sh/vgpu-cores: 50 # （可选）每个 vGPU 使用 50% 核心  
+          volcano.sh/vgpu-cores: 50 # （可选）每个 vGPU 使用 50% 核心
 EOF
 ```
 

@@ -9,6 +9,6 @@ translated: true
 
 ```yaml
 metadata:
-  annotations: 
+  annotations:
     hami.io/node-scheduler-policy: "binpack" # 当此参数设置为 binpack 时，调度器将尝试最小化拓扑损失。
 ```

@@ -27,7 +27,7 @@ const valueCards = [
     id: 'advanced-scheduling',
     icon: 'gauge-high',
     title: {
-      en: 'Advanced scheduling',
+      en: 'Advanced Scheduling',
       zh: '动态控制与调度',
     },
     description: {
@@ -39,7 +39,7 @@ const valueCards = [
     id: 'standards',
     icon: 'kubernetes',
     title: {
-      en: 'Kubernetes native',
+      en: 'Kubernetes Native',
       zh: 'Kubernetes 原生',
     },
     description: {

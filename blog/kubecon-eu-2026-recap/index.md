@@ -55,8 +55,6 @@ Additionally, HAMi is currently applying for CNCF Incubation and participated in
 
 ![TAG Workshop discussing CNCF project governance](/img/kubecon-eu-2026-recap/tag-workshop.jpg)
 
-<!-- truncate -->
-
 ## Two Technical Sessions: From Community Problems to Engineering Solutions
 
 ### Xiao Zhang: K8s Issue #52757 - Sharing GPUs Among Multiple Containers

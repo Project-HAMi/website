@@ -49,6 +49,6 @@ bash-completion sources all completion scripts in /etc/bash_completion.d.
 Both approaches are equivalent. After reloading your shell, karmadactl autocompletion should be working.
 
 ## Enable kubectl-karmada autocompletion
-Currently, kubectl plugins do not support autocomplete, but it is already planned in [Command line completion for kubectl plugins](https://github.com/kubernetes/kubernetes/issues/74178). 
+Currently, kubectl plugins do not support autocomplete, but it is already planned in [Command line completion for kubectl plugins](https://github.com/kubernetes/kubernetes/issues/74178).
 
 Documentation will be updated when support is added.

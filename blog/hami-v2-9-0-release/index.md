@@ -64,7 +64,7 @@ Core capabilities include:
 
 To enable this feature, set `ascend.hamiVnpuCore` to `true` in the Helm values. It can also be enabled in the `ascend-device-plugin` node configuration. The cluster supports mixed mode where some nodes have it enabled and others do not.
 
-Note that in v2.9, user Pods must explicitly declare `huawei.com/vnpu-mode: 'hami-core'` in annotations to use this feature. Pods without this declaration will continue to use the template-based vNPU partitioning from the previous version, and may result in pending tasks if no compatible nodes are available.
+In v2.9, user Pods must explicitly declare `huawei.com/vnpu-mode: 'hami-core'` in annotations to use this feature. Pods without this declaration will continue to use the template-based vNPU partitioning from the previous version, and may result in pending tasks if no compatible nodes are available.
 
 > This feature has been validated in China Merchants Bank's production environment. Based on the HAMi-vNPU-Core software partitioning solution, China Merchants Bank achieved 100% resource pooling of Ascend 910C compute and high-performance communication for large models, significantly improving domestic compute resource utilization.
 
@@ -130,7 +130,7 @@ resources:
 #   vastaitech.com/nouse-va: "1"
 ```
 
-With Vastai device support, HAMi now covers over a dozen heterogeneous compute devices including **NVIDIA, Huawei Ascend, Cambricon, Hygon DCU, Biren, Enflame, MetaX, Kunlunxin, AMD, Iluvatar, Enflame, AWS Neuron, and Vastai Technologies**, making it one of the most comprehensive heterogeneous device virtualization and scheduling projects in the Kubernetes ecosystem.
+With Vastai device support, HAMi now covers over a dozen heterogeneous compute devices including **NVIDIA, Huawei Ascend, Cambricon, Hygon DCU, Biren, Enflame, MetaX, Kunlunxin, AMD, Iluvatar, Enflame, AWS Neuron, and Vastai Technologies**, making it one of the widest-supported heterogeneous device virtualization and scheduling projects in the Kubernetes ecosystem.
 
 ## Observability and Security Enhancements
 

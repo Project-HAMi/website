@@ -152,7 +152,7 @@ spec:
       command: ["bash", "-c", "sleep 86400"]
       resources:
         limits:
-          nvidia.com/gpu: 2 
+          nvidia.com/gpu: 2
           nvidia.com/gpumem: 8000
 ```
 

@@ -18,8 +18,8 @@ title: Enable Iluvatar GPU Sharing
 
 ## Prerequisites
 
-* Iluvatar gpu-manager (please consult your device provider)
-* driver version > 3.1.0
+- Iluvatar gpu-manager (please consult your device provider)
+- driver version > 3.1.0
 
 ## Enabling GPU-sharing Support
 
@@ -67,15 +67,15 @@ HAMi divides each Iluvatar GPU into 100 units for resource allocation. When you 
 
 ### Memory Allocation
 
-* Each unit of `iluvatar.ai/<card-type>.vMem` represents 256MB of device memory
-* If you don't specify a memory request, the system will default to using 100% of the available memory
-* Memory allocation is enforced with hard limits to ensure tasks don't exceed their allocated memory
+- Each unit of `iluvatar.ai/<card-type>.vMem` represents 256MB of device memory
+- If you don't specify a memory request, the system will default to using 100% of the available memory
+- Memory allocation is enforced with hard limits to ensure tasks don't exceed their allocated memory
 
 ### Core Allocation
 
-* Each unit of `iluvatar.ai/<card-type>.vCore` represents 1% of the available compute cores
-* Core allocation is enforced with hard limits to ensure tasks don't exceed their allocated cores
-* When requesting multiple GPUs, the system will automatically set the core resources based on the number of GPUs requested
+- Each unit of `iluvatar.ai/<card-type>.vCore` represents 1% of the available compute cores
+- Core allocation is enforced with hard limits to ensure tasks don't exceed their allocated cores
+- When requesting multiple GPUs, the system will automatically set the core resources based on the number of GPUs requested
 
 ## Running Iluvatar jobs
 
@@ -156,7 +156,7 @@ Look for annotations containing device information in the node status.
 
 ## Notes
 
-* You need to set the following prestart command in order for the device-share to work properly
+- You need to set the following prestart command in order for the device-share to work properly
 
   ```sh
       set -ex
@@ -166,8 +166,8 @@ Look for annotations containing device information in the node status.
       source /root/.bashrc
   ```
 
-* Virtualization takes effect only for containers that apply for one GPU (i.e., iluvatar.ai/vgpu=1). When requesting multiple GPUs, the system will automatically set the core resources based on the number of GPUs requested.
+- Virtualization takes effect only for containers that apply for one GPU (i.e., iluvatar.ai/vgpu=1). When requesting multiple GPUs, the system will automatically set the core resources based on the number of GPUs requested.
 
-* The `iluvatar.ai/<card-type>.vMem` resource is only effective when `iluvatar.ai/<card-type>-vgpu=1`.
+- The `iluvatar.ai/<card-type>.vMem` resource is only effective when `iluvatar.ai/<card-type>-vgpu=1`.
 
-* Multi-device requests (`iluvatar.ai/<card-type>-vgpu= > 1`) do not support vGPU mode.
+- Multi-device requests (`iluvatar.ai/<card-type>-vgpu= > 1`) do not support vGPU mode.

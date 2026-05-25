@@ -14,7 +14,7 @@ metadata:
     nvidia.com/use-gputype: "A100,V100" # Specify the card type for this job, use comma to separate, will not launch job on non-specified card
 ```
 
-A task may use `nvidia.com/nouse-gputype` to evade certain type of GPU. In this following example, that job won't be assigned to 1080(include 1080Ti) or 2080(include 2080Ti) type of card. 
+A task may use `nvidia.com/nouse-gputype` to evade certain type of GPU. In this following example, that job won't be assigned to 1080(include 1080Ti) or 2080(include 2080Ti) type of card.
 
 ```yaml
 metadata:

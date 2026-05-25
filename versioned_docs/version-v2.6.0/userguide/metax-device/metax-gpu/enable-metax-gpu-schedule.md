@@ -33,12 +33,12 @@ Equipped with MetaXLink interconnected resources.
 
 ## Prerequisites
 
-* Metax GPU extensions >= 0.8.0
-* Kubernetes >= 1.23
+- Metax GPU extensions >= 0.8.0
+- Kubernetes >= 1.23
 
 ## Enabling topo-awareness scheduling
 
-* Deploy Metax GPU Extensions on metax nodes (Please consult your device provider to acquire its package and document)
+- Deploy Metax GPU Extensions on metax nodes (Please consult your device provider to acquire its package and document)
 
 - Deploy HAMi using the [online installation guide](../../../installation/online-installation.md)
 
@@ -56,7 +56,7 @@ metadata:
 spec:
   containers:
     - name: ubuntu-container
-      image: cr.metax-tech.com/public-ai-release/c500/colossalai:2.24.0.5-py38-ubuntu20.04-amd64 
+      image: cr.metax-tech.com/public-ai-release/c500/colossalai:2.24.0.5-py38-ubuntu20.04-amd64
       imagePullPolicy: IfNotPresent
       command: ["sleep","infinity"]
       resources:

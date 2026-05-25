@@ -12,7 +12,7 @@ title: Enable cambricon MLU sharing
 
 **Device Core Control**: MLUs can be allocated with certain compute cores and guarantee it that it does not exceed the boundary.
 
-**MLU Type Specification**: You can specify which type of MLU to use or to avoid for a certain task, by setting "cambricon.com/use-mlutype" or "cambricon.com/nouse-mlutype" annotations. 
+**MLU Type Specification**: You can specify which type of MLU to use or to avoid for a certain task, by setting "cambricon.com/use-mlutype" or "cambricon.com/nouse-mlutype" annotations.
 
 
 ## Prerequisites

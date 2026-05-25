@@ -55,7 +55,7 @@ metadata:
 spec:
   restartPolicy: OnFailure
   containers:
-    - image: core.harbor.zlidc.mthreads.com:30003/mt-ai/lm-qy2:v17-mpc 
+    - image: core.harbor.zlidc.mthreads.com:30003/mt-ai/lm-qy2:v17-mpc
       imagePullPolicy: IfNotPresent
       name: gpushare-pod-1
       command: ["sleep"]
@@ -79,4 +79,3 @@ You can find more examples in the [examples folder](https://github.com/Project-H
 
 :::
 
-    

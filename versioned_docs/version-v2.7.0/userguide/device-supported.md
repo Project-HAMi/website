@@ -14,5 +14,5 @@ The table below lists the devices supported by HAMi:
 | GPU | Mthreads | MTT S4000 | Yes | Yes | No |
 | GPU | Metax    | MXC500 | Yes | Yes | No |
 | GCU | Enflame  | S60    | Yes | Yes | No |
-| XPU | Kunlunxin | P800  | Yes | Yes | No | 
+| XPU | Kunlunxin | P800  | Yes | Yes | No |
 | DPU | Teco | Checking | In progress | In progress | No |

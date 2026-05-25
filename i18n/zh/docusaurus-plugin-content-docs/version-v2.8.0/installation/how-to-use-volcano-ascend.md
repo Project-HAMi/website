@@ -35,7 +35,7 @@ helm install volcano volcano-sh/volcano -n volcano-system --create-namespace
 
 ```shell
 kubectl label node {ascend-node} ascend=on
-``` 
+```
 
 ### 部署 hami-scheduler-device ConfigMap
 

@@ -89,7 +89,7 @@ GPU spread，尽可能使用不同的 GPU 卡，例如：
 Binpack 主要考虑节点资源使用情况。使用越满，得分越高。
 
 ```text
-score: ((request + used) / allocatable) * 10 
+score: ((request + used) / allocatable) * 10
 ```
 
 1. 节点1的 Binpack 评分信息如下
@@ -111,7 +111,7 @@ Node2 score: ((1+2)/4) * 10= 7.5
 Spread 主要考虑节点资源使用情况。使用越少，得分越高。
 
 ```text
-score: ((request + used) / allocatable) * 10 
+score: ((request + used) / allocatable) * 10
 ```
 
 1. 节点1的 Spread 评分信息如下

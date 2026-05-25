@@ -14,12 +14,12 @@ metadata:
 spec:
   containers:
     - name: ubuntu-container
-      image: ubuntu:22.04 
+      image: ubuntu:22.04
       imagePullPolicy: IfNotPresent
       command: ["sleep","infinity"]
       resources:
         limits:
-          metax-tech.com/sgpu: 1 # 请求 1 个 GPU 
+          metax-tech.com/sgpu: 1 # 请求 1 个 GPU
           metax-tech.com/vcore: 60 # 每个 GPU 使用 60% 的计算核
           metax-tech.com/vmemory: 4 # 每个 GPU 需要 4 GiB 设备显存
 ```

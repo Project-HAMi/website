@@ -8,8 +8,7 @@ title: 使用 Helm Charts 部署 HAMi WebUI
 
 HAMi WebUI 默认仅通过本地访问（localhost）提供服务，因此在部署完成后，需要通过配置本地 `~/.kube/config` 文件以连接目标集群并访问 WebUI。
 
-官方仓库提供了用于部署 HAMi WebUI 的 Helm Chart，详见：
-https://github.com/Project-HAMi/HAMi-WebUI/tree/main/charts/hami-webui
+官方仓库提供了用于部署 HAMi WebUI 的 [Helm Chart](https://github.com/Project-HAMi/HAMi-WebUI/tree/main/charts/hami-webui)。
 
 如在使用过程中遇到问题，可在 [HAMi-WebUI](https://github.com/Project-HAMi/HAMi-WebUI) 仓库提交 Issue 进行反馈。
 

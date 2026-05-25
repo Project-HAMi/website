@@ -10,7 +10,7 @@ title: Enable cambricon MLU sharing
 
 **Device Memory Control**: MLUs can be allocated with certain device memory size on certain type(i.e 370) and have made it that it does not exceed the boundary.
 
-**MLU Type Specification**: You can specify which type of MLU to use or to avoid for a certain task, by setting "cambricon.com/use-mlutype" or "cambricon.com/nouse-mlutype" annotations. 
+**MLU Type Specification**: You can specify which type of MLU to use or to avoid for a certain task, by setting "cambricon.com/use-mlutype" or "cambricon.com/nouse-mlutype" annotations.
 
 **Very Easy to use**: You don't need to modify your task yaml to use the HAMi scheduler. All your MLU jobs will be automatically supported after installation. The only thing you need to do is tag the MLU node.
 

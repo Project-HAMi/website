@@ -1,5 +1,5 @@
 ---
-title: Scheduler Policy 
+title: Scheduler Policy
 ---
 
 ## Summary
@@ -56,7 +56,7 @@ GPU binpack, use the same GPU card as much as possible, egs:
     - node1: GPU having 4 GPU device, they are GPU1,GPU2,GPU3,GPU4
 
 - request:
-    - pod1: User 1 GPU, gpucore is 20%, gpumem-percentage is 20% 
+    - pod1: User 1 GPU, gpucore is 20%, gpumem-percentage is 20%
     - pod2: User 1 GPU, gpucore is 20%, gpumem-percentage is 20%
 
 - scheduler result:
@@ -89,7 +89,7 @@ GPU spread, use different GPU cards when possible, egs:
 Binpack mainly considers node resource usage. The more full the usage, the higher the score.
 
 ```text
-score: ((request + used) / allocatable) * 10 
+score: ((request + used) / allocatable) * 10
 ```
 
 1. Binpack scoring information for Node 1 is as follows
@@ -111,7 +111,7 @@ So, in `Binpack` policy, the selected node is `Node1`.
 Spread mainly considers node resource usage. The less it is used, the higher the score.
 
 ```text
-score: ((request + used) / allocatable) * 10 
+score: ((request + used) / allocatable) * 10
 ```
 
 1. Spread scoring information for Node 1 is as follows

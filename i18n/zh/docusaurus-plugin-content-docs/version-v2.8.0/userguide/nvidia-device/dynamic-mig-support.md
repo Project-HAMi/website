@@ -77,57 +77,57 @@ HAMi 目前有一个 [内置的 mig 配置](https://github.com/Project-HAMi/HAMi
       knownMigGeometries:
       - models: [ "A30" ]
         allowedGeometries:
-          - 
+          -
             - name: 1g.6gb
               memory: 6144
               count: 4
-          - 
+          -
             - name: 2g.12gb
               memory: 12288
               count: 2
-          - 
+          -
             - name: 4g.24gb
               memory: 24576
               count: 1
       - models: [ "A100-SXM4-40GB", "A100-40GB-PCIe", "A100-PCIE-40GB", "A100-SXM4-40GB" ]
         allowedGeometries:
-          - 
+          -
             - name: 1g.5gb
               memory: 5120
               count: 7
-          - 
+          -
             - name: 2g.10gb
               memory: 10240
               count: 3
             - name: 1g.5gb
               memory: 5120
               count: 1
-          - 
+          -
             - name: 3g.20gb
               memory: 20480
               count: 2
-          - 
+          -
             - name: 7g.40gb
               memory: 40960
               count: 1
       - models: [ "A100-SXM4-80GB", "A100-80GB-PCIe", "A100-PCIE-80GB"]
         allowedGeometries:
-          - 
+          -
             - name: 1g.10gb
               memory: 10240
               count: 7
-          - 
+          -
             - name: 2g.20gb
               memory: 20480
               count: 3
             - name: 1g.10gb
               memory: 10240
               count: 1
-          - 
+          -
             - name: 3g.40gb
               memory: 40960
               count: 2
-          - 
+          -
             - name: 7g.79gb
               memory: 80896
               count: 1
@@ -154,7 +154,7 @@ spec:
       command: ["bash", "-c", "sleep 86400"]
       resources:
         limits:
-          nvidia.com/gpu: 2 
+          nvidia.com/gpu: 2
           nvidia.com/gpumem: 8000
 ```
 
