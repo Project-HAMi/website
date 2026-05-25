@@ -18,7 +18,6 @@ function addFigureNumbers() {
   // Find all images in markdown content
   const articleContent = document.querySelector('article');
   if (!articleContent) {
-    console.log('[ImageFigureNumber] No article content found');
     return;
   }
 
@@ -31,15 +30,12 @@ function addFigureNumbers() {
     return !isLogo && !isIcon;
   });
 
-  console.log(`[ImageFigureNumber] Found ${images.length} images`);
-
   let figureCount = 0;
 
   images.forEach((img) => {
     // Get alt text
     const altText = img.getAttribute('alt') || '';
     if (!altText.trim()) {
-      console.log('[ImageFigureNumber] Skipping image with no alt text');
       return;
     }
 
@@ -48,7 +44,6 @@ function addFigureNumbers() {
     if (existingFigure) {
       const existingFigcaption = existingFigure.querySelector('figcaption');
       if (existingFigcaption && existingFigcaption.textContent.match(/^[图Figure]\d+:/)) {
-        console.log('[ImageFigureNumber] Image already has figure caption, skipping');
         figureCount++;
         return;
       }
@@ -56,7 +51,6 @@ function addFigureNumbers() {
 
     // Increment counter
     figureCount++;
-    console.log(`[ImageFigureNumber] Processing figure ${figureCount}: ${altText}`);
 
     // Create figure wrapper if it doesn't exist
     let figure = img.closest('figure');
@@ -107,7 +101,5 @@ function addFigureNumbers() {
       color: var(--ifm-color-emphasis-600);
       font-style: italic;
     `;
-
-    console.log(`[ImageFigureNumber] Added caption: ${figcaption.textContent}`);
   });
 }
