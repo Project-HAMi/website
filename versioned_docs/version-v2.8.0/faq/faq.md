@@ -53,7 +53,7 @@ HAMi's native `nvidia.com/priority` field (0 for high, 1 for low/default) is spe
 
 Regarding the scenario where resources are insufficient, 'n' jobs are waiting, and you need to sort them for scheduling based on multiple user-submitted priorities, HAMi's two-level system isn't intended for this broader scheduling requirement.
 
-However, achieving multi-level priority scheduling **is feasible**. The recommended approach is to integrate HAMi with a more comprehensive scheduler like **Volcano**:
+However, achieving multi-level priority scheduling **is feasible**. The recommended approach is to integrate HAMi with a full-featured scheduler like **Volcano**:
 
 1. **Volcano for Multi-Level Scheduling Priority**:
     1. Volcano allows you to define multiple queues with different priority levels.
