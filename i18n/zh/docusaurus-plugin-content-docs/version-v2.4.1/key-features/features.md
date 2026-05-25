@@ -14,7 +14,7 @@ Karmada supports:
   - Support for private cloud.
   - Support self-built clusters.
 
-The overall relationship between the member cluster and the control plane is shown in the following figure:  
+The overall relationship between the member cluster and the control plane is shown in the following figure:
 
 ![overall-relationship.png](/img/docs/common/key-features/features/overall-relationship.png)
 
@@ -35,11 +35,11 @@ Karmada supports:
   - Descheduler(karmada-descheduler): Trigger rescheduling based on instance state changes in member clusters.
   - Scheduler-estimator(karmada-scheduler-estimator): Provides the scheduler with a more precise desired state of the running instances of the member cluster.
 
-Much like k8s scheduling, Karmada support different scheduling policy. The overall scheduling process is shown in the figure below:  
+Much like k8s scheduling, Karmada support different scheduling policy. The overall scheduling process is shown in the figure below:
 
 ![overall-relationship.png](/img/docs/common/key-features/features/overall-scheduling.png)
 
-If one cluster does not have enough resource to accommodate their pods, Karamda will reschedule the pods. The overall rescheduling process is shown in the following figure:  
+If one cluster does not have enough resource to accommodate their pods, Karamda will reschedule the pods. The overall rescheduling process is shown in the following figure:
 
 ![overall-relationship.png](/img/docs/common/key-features/features/overall-rescheduling.png)
 
@@ -53,7 +53,7 @@ Karmada supports:
 - Uninterrupted service:
   - During the replicas migration process, Karmada can ensure that the service replicas does not drop to zero, thereby ensuring that the service will not be interrupted.
 
-Karmada supports failover for clusters, one cluster failure will cause failover of replicas as follows:  
+Karmada supports failover for clusters, one cluster failure will cause failover of replicas as follows:
 
 ![overall-relationship.png](/img/docs/common/key-features/features/cluster-failover.png)
 
@@ -68,11 +68,11 @@ Karmada supports:
   - Cache query: global fuzzy search and global precise search are supported.
   - Third-party storage: Search engine (Elasticsearch or OpenSearch), relational database, graph database are supported.
 
-Users can access and operate all member clusters via karmada-apiserver:  
+Users can access and operate all member clusters via karmada-apiserver:
 
 ![overall-relationship.png](/img/docs/common/key-features/features/unified-operation.png)
 
-Users also can check and search all member clusters resources via karmada-apiserver:  
+Users also can check and search all member clusters resources via karmada-apiserver:
 
 ![overall-relationship.png](/img/docs/common/key-features/features/unified-search.png)
 
@@ -92,7 +92,7 @@ Users can access all member clusters with unified authentication:
 
 ![overall-relationship.png](/img/docs/common/key-features/features/unified-access.png)
 
-Users also can defined global resource quota via `FederatedResourceQuota`:  
+Users also can defined global resource quota via `FederatedResourceQuota`:
 
 ![overall-relationship.png](/img/docs/common/key-features/features/unified-resourcequota.png)
 
@@ -103,7 +103,7 @@ karmada supports:
 - [Multi-cluster network support](https://karmada.io/docs/userguide/network/working-with-submariner):
   - Use `Submariner` to open up the container network between clusters.
 
-Users can enable service governance for cross-cluster with Karmada:  
+Users can enable service governance for cross-cluster with Karmada:
 
 ![overall-relationship.png](/img/docs/common/key-features/features/service-governance.png)
 

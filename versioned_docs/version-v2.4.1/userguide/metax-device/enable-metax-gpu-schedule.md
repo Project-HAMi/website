@@ -54,7 +54,7 @@ metadata:
 spec:
   containers:
     - name: ubuntu-container
-      image: cr.metax-tech.com/public-ai-release/c500/colossalai:2.24.0.5-py38-ubuntu20.04-amd64 
+      image: cr.metax-tech.com/public-ai-release/c500/colossalai:2.24.0.5-py38-ubuntu20.04-amd64
       imagePullPolicy: IfNotPresent
       command: ["sleep","infinity"]
       resources:
@@ -68,4 +68,4 @@ You can find more examples in the [examples/metax/gpu folder](https://github.com
 
 :::
 
-   
+

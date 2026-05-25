@@ -20,7 +20,7 @@ hami.io/node-nvidia-register: 'GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec,10,32768
 ```
 
 
-### Schedule Decision Making 
+### Schedule Decision Making
 
 The kube-scheduler calls device-plugin to mount devices during the `bind` process, but only the `UUID` of the device is provided to device-plugin. Therefore, in the scenario of device-sharing, device-plugin cannot obtain the specifications of the corresponding device, such as the `device memory` and `computing cores` requested by the task.
 

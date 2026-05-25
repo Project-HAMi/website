@@ -12,7 +12,7 @@ title: Enable Hygon DCU sharing
 
 **Device compute core limitation**: DCUs can be allocated with certain percentage of device core(i.e hygon.com/dcucores:60 indicate this container uses 60% compute cores of this device)
 
-**DCU Type Specification**: You can specify which type of DCU to use or to avoid for a certain task, by setting "hygon.com/use-dcutype" or "hygon.com/nouse-dcutype" annotations. 
+**DCU Type Specification**: You can specify which type of DCU to use or to avoid for a certain task, by setting "hygon.com/use-dcutype" or "hygon.com/nouse-dcutype" annotations.
 
 ## Prerequisites
 

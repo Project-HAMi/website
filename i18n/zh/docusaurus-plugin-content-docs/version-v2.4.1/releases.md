@@ -14,7 +14,7 @@ This section provides guidelines on release timelines and release branch mainten
 
 Karmada uses the Semantic Versioning schema. Karmada v1.0.0 was released in December 2021. This project follows a given version number MAJOR.MINOR.PATCH.
 
-### MAJOR release 
+### MAJOR release
 
 Major releases contain large features, design and architectural changes, and may include incompatible API changes. Major releases are low frequency and stable over a long period of time.
 
@@ -34,7 +34,7 @@ Patch releases are for backwards-compatible bug fixes and very minor enhancement
 
 Karmada uses GitHub tags to manage versions. New releases and release candidates are published using the wildcard tag`v<major>.<minor>.<patch>`.
 
-Whenever a PR is merged into the master branch, CI will pull the latest code, generate an image and upload it to the mirror repository. The latest image of Karmada components can usually be downloaded online using the latest tag. 
+Whenever a PR is merged into the master branch, CI will pull the latest code, generate an image and upload it to the mirror repository. The latest image of Karmada components can usually be downloaded online using the latest tag.
 Whenever a release is released, the image will also be released, and the tag is the same as the tag of the release above.
 
 ### Issues
@@ -63,12 +63,12 @@ A minor release will contain a mix of features, enhancements, and bug fixes.
 
 Major features follow the Karmada Design Proposal process. You can refer to [here](https://github.com/Project-HAMi/HAMi/tree/master/docs/proposals/resource-interpreter-webhook) as a proposal example.
 
-During the start of a release, there may be many issues assigned to the release milestone. The priorities for the release are discussed in the bi-weekly community meetings. 
+During the start of a release, there may be many issues assigned to the release milestone. The priorities for the release are discussed in the bi-weekly community meetings.
 As the release progresses several issues may be moved to the next milestone. Hence, if an issue is important it is important to advocate its priority early in the release cycle.
 
 ### Release Artifacts
 
-The Karmada container images are available at `dockerHub`. 
+The Karmada container images are available at `dockerHub`.
 You can visit `https://hub.docker.com/r/karmada/<component_name>` to see the details of images.
 For example, [here](https://hub.docker.com/r/karmada/karmada-controller-manager) for karmada-controller-manager.
 

@@ -22,7 +22,7 @@ HAMi is a [Cloud Native Computing Foundation](https://cncf.io/) sandbox project 
   - Support memory allocation by MB or by percentage
 
 - __Device Specification__
-  - Support specify a type of certain heterogeneous AI computing devices  
+  - Support specify a type of certain heterogeneous AI computing devices
   - Support specify a certain heterogeneous AI computing devices using device UUID
 
 - __Easy to try__

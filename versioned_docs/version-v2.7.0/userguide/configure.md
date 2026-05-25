@@ -18,7 +18,7 @@ You can update these configurations using one of the following methods:
    ```bash
    kubectl edit configmap hami-scheduler-device -n <namespace>
    ```
-  
+
    After making changes, restart the related HAMi components to apply the updated configurations.
 
 2. Modify Helm Chart: Update the corresponding values in the
@@ -41,7 +41,7 @@ You can update these configurations using one of the following methods:
    | `nvidia.resourcePriorityName` | String | vGPU job priority name. | `"nvidia.com/priority"` |
 
 ## Node Configs: ConfigMap
-HAMi allows configuring per-node behavior for device plugin. Edit 
+HAMi allows configuring per-node behavior for device plugin. Edit
 ```sh
 kubectl -n <namespace> edit cm hami-device-plugin
 ```

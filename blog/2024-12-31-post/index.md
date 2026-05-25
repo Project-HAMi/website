@@ -11,7 +11,7 @@ authors: [elrond_wang]
 
 During the use of HAMi, it is common for Pods to be created and remain in a Pending state, particularly due to the following two issues:
 
-- Pod UnexpectedAdmissionError  
+- Pod UnexpectedAdmissionError
 - Pod Pending
 
 This section provides a rough walkthrough of the related code to explain the interactions between components during scheduling and how resources are calculated. Other details may be omitted.
@@ -25,7 +25,7 @@ The official documentation provides a clear overview before looking at the code:
 
 The process can be broken down into three phases:
 
-- **Preparation Phase**: The diagram shows the prerequisites: a Mutating Webhook, device-plugin, etc.  
+- **Preparation Phase**: The diagram shows the prerequisites: a Mutating Webhook, device-plugin, etc.
   This phase primarily analyzes the preparation of dependencies, which are only needed during the initial service startup.
 
   ![Preparation before Pod creation](https://github.com/elrondwong/elrond.wang/raw/master/img/posts/Hami-GPU-Pod-Scheduler/%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C.png)
@@ -57,7 +57,7 @@ From the process, this error indicates the kube-apiserver failed to call the ext
   - DNS resolution failure.
   - Cross-node communication issues.
   - Extended scheduler service failure.
-- **TLS Verification Error**: Typically shows `webhook x509: certificate signed by unknown authority`.  
+- **TLS Verification Error**: Typically shows `webhook x509: certificate signed by unknown authority`.
   During Helm chart deployment, there's a `jobs.batch` job called `hami-vgpu.admission-patch`. If it hasn't completed, this issue may occur.
 
 #### Scheduling Issues
@@ -67,7 +67,7 @@ The container remains in the `Pending` state. Use the `kubectl describe` command
 - `card Insufficient remaining memory`
 - `calcScore: node not fit pod`
 
-The main causes are usually either actual resource shortage or misconfiguration.  
+The main causes are usually either actual resource shortage or misconfiguration.
 Misconfiguration often refers to an incorrect `devicememoryscaling` setting. This can be configured in two places, with node-level config taking precedence over global config. A common pitfall is that the `name` must exactly match the nodename shown by `kubectl get node`.
 
 - **Global Configuration**: `kubectl get cm hami-scheduler-device`
@@ -97,7 +97,7 @@ Misconfiguration often refers to an incorrect `devicememoryscaling` setting. Thi
 
 ### MutatingWebhook
 
-Kubernetes provides the `admissionWebhook` resource, which is triggered by resource operations in Kubernetes.  
+Kubernetes provides the `admissionWebhook` resource, which is triggered by resource operations in Kubernetes.
 Its most common use is intercepting Pod creation and injecting YAML content into the Pod - for example, adding an init container to inject files.
 
 #### Webhook Configuration
@@ -162,7 +162,7 @@ webhooks:
   timeoutSeconds: 10
 ```
 
-When a Pod is created, `https://hami-scheduler.kube-system:443/webhook` is called for TLS verification, with the CA certificate configured via `caBundle`.  
+When a Pod is created, `https://hami-scheduler.kube-system:443/webhook` is called for TLS verification, with the CA certificate configured via `caBundle`.
 If the namespace has the label `hami.io/webhook: ignore`, the webhook is not triggered.
 
 #### Webhook Server Implementation
@@ -271,7 +271,7 @@ func (dev *NvidiaGPUDevices) MutateAdmission(ctr *corev1.Container, p *corev1.Po
 }
 ```
 
-The scheduler mainly checks whether the `Resources Limit` section of the Pod includes configurations defined in `device-config.yaml`.  
+The scheduler mainly checks whether the `Resources Limit` section of the Pod includes configurations defined in `device-config.yaml`.
 If such configurations are present, the HAMi scheduling process is used.
 
 An example of `device-config` for NVIDIA GPUs:
@@ -365,13 +365,13 @@ metadata:
   uid: 3a61a72c-0bab-432f-b4d7-5c1ae46ee14d
 ```
 
-The extended scheduler is customized through [extension points](https://kubernetes.io/docs/reference/scheduling/config/#extension-points).  
+The extended scheduler is customized through [extension points](https://kubernetes.io/docs/reference/scheduling/config/#extension-points).
 In this case, the `filter` and `bind` extension points are implemented:
 
 - **filter**: Identifies the most suitable node.
 - **bind**: Creates a `binding` resource for the Pod.
 
-During scheduling, the extended scheduler's implementations are invoked in the order of the extension points.  
+During scheduling, the extended scheduler's implementations are invoked in the order of the extension points.
 Here, it first calls `https://127.0.0.1:443/filter`, followed by `https://127.0.0.1:443/bind`.
 
 #### Starting the Extended Scheduler HTTP Server
@@ -766,7 +766,7 @@ func (s *Scheduler) RegisterFromNodeAnnotations() {
 
 A 15-second periodic task is started to retrieve Node information and maintain the Node cache.
 
-The core logic here is in `for devhandsk, devInstance := range device.GetDevices()`, which retrieves all devices.  
+The core logic here is in `for devhandsk, devInstance := range device.GetDevices()`, which retrieves all devices.
 Different handlers are registered for each device type, and the corresponding device is used to get GPU resource information through `devInstance.GetNodeDevices`.
 
 In this case, the registered device is NVIDIA, and the `GetNodeDevices` implementation for each GPU is called. The specifics of the `device` will be explained later.
@@ -1377,7 +1377,7 @@ func main() {
 
 #### Starting the Plugin
 
-The plugin here is designed to implement different methods for devices from different vendors. The plugin controller defines operations such as start, restart, exit, etc.  
+The plugin here is designed to implement different methods for devices from different vendors. The plugin controller defines operations such as start, restart, exit, etc.
 The main focus here is on `plugins, restartPlugins, err := startPlugins(c, flags, restarting)`.
 
 `cmd/device-plugin/nvidia/main.go:156`
@@ -1554,8 +1554,8 @@ type Interface interface {
 }
 ```
 
-Additionally, to allow kubelet to recognize extended fields like `nvidia.com/gpu: 1` in the resource, a GRPC service needs to be started and mounted to `/var/lib/kubelet/device-plugins/`, implementing the necessary methods.  
-This is not closely related to scheduling, so it will not be expanded upon here.  
+Additionally, to allow kubelet to recognize extended fields like `nvidia.com/gpu: 1` in the resource, a GRPC service needs to be started and mounted to `/var/lib/kubelet/device-plugins/`, implementing the necessary methods.
+This is not closely related to scheduling, so it will not be expanded upon here.
 For more details, refer to [device-plugins](https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/device-plugins/).
 
 `k8s.io/kubelet@v0.28.3/pkg/apis/deviceplugin/v1beta1/api.pb.go:1419`
@@ -1767,7 +1767,7 @@ func (plugin *NvidiaDevicePlugin) getAPIDevices() *[]*util.DeviceInfo {
 }
 ```
 
-The device information is obtained through the NVIDIA driver. It's important to note that there is a configuration for DeviceMemoryScaling, which is an overcommit configuration for memory.  
+The device information is obtained through the NVIDIA driver. It's important to note that there is a configuration for DeviceMemoryScaling, which is an overcommit configuration for memory.
 The values for this configuration are taken from the scheduler configuration specified via the `--config-file` parameter when the service is started, and the `config/config.json` file in the code. The `config.json` file takes precedence over the `--config-file` parameter.
 
 At this point, everything required for scheduling is prepared, and the Pod can be successfully assigned to the appropriate node.

@@ -16,7 +16,7 @@ spec:
   containers:
   - name: poddemo
     image: harbor.4pd.io/vgpu/corex_transformers@sha256:36a01ec452e6ee63c7aa08bfa1fa16d469ad19cc1e6000cf120ada83e4ceec1e
-    command: 
+    command:
     - bash
     args:
     - -c

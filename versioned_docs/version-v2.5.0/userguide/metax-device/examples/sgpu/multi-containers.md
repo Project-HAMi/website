@@ -10,7 +10,7 @@ metadata:
 spec:
   containers:
     - name: ubuntu-container-1
-      image: cr.metax-tech.com/public-ai-release/c500/colossalai:2.24.0.5-py38-ubuntu20.04-amd64 
+      image: cr.metax-tech.com/public-ai-release/c500/colossalai:2.24.0.5-py38-ubuntu20.04-amd64
       imagePullPolicy: IfNotPresent
       command: ["sleep","infinity"]
       resources:
@@ -19,7 +19,7 @@ spec:
           metax-tech.com/vcore: 60 # each GPU use 60% of total compute cores
           metax-tech.com/vmemory: 4 # each GPU require 4 GiB device memory
     - name: ubuntu-container-2
-      image: cr.metax-tech.com/public-ai-release/c500/colossalai:2.24.0.5-py38-ubuntu20.04-amd64 
+      image: cr.metax-tech.com/public-ai-release/c500/colossalai:2.24.0.5-py38-ubuntu20.04-amd64
       imagePullPolicy: IfNotPresent
       command: ["sleep","infinity"]
       resources:

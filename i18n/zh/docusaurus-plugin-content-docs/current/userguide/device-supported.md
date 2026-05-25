@@ -15,5 +15,5 @@ HAMi 支持的设备如下表所示：
 | GPU | Mthreads | MTT S4000 | Yes | Yes | No |
 | GPU | Metax | MXC500 | Yes | Yes | No |
 | GCU | Enflame | S60 | Yes | Yes | No |
-| XPU | Kunlunxin | P800 | Yes | Yes | No | 
+| XPU | Kunlunxin | P800 | Yes | Yes | No |
 | DPU | Teco | 检查中 | 进行中 | 进行中 | No |

@@ -19,8 +19,8 @@ title: Troubleshooting
   ```shell
   export GOPROXY=https://goproxy.cn
   ```
-  
-  
+
+
 ## Member cluster healthy checking does not work
 If your environment is similar to the following.
 >
@@ -31,7 +31,7 @@ If your environment is similar to the following.
 The cause of the problem was that the firewall did not close the already existing TCP connection between the member cluster and karmada.
 
 - login to the node where the member cluster apiserver is located
-- use the `tcpkill` command to close the tcp connection. 
+- use the `tcpkill` command to close the tcp connection.
 
 ```text
 # ens192 is the name of the network-card used by the member cluster to communicate with karmada.

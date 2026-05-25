@@ -21,17 +21,17 @@ You can update these configurations using one of the following methods:
     After making changes, restart the related HAMi components to apply the updated configurations.
 2. Modify Helm Chart: Update the corresponding values in the [ConfigMap](https://raw.githubusercontent.com/Project-HAMi/HAMi/refs/heads/master/charts/hami/templates/scheduler/device-configmap.yaml), then reapply the Helm Chart to regenerate the ConfigMap.
 
-- `nvidia.deviceMemoryScaling:` 
+- `nvidia.deviceMemoryScaling:`
   Float type, by default: 1. The ratio for NVIDIA device memory scaling, can be greater than 1 (enable virtual device memory, experimental feature). For NVIDIA GPU with *M* memory, if `nvidia.deviceMemoryScaling` is set argument to *S*, vGPUs split by this GPU will totally get `S * M` memory in Kubernetes with the HAMi device plugin.
-- `nvidia.deviceSplitCount:` 
+- `nvidia.deviceSplitCount:`
   Integer type, by default: equals 10. Maximum tasks assigned to a simple GPU device.
 - `nvidia.migstrategy:`
   String type, "none" for ignoring MIG features or "mixed" for allocating MIG device by separate resources. Default "none"
 - `nvidia.disablecorelimit:`
   String type, "true" for disable core limit, "false" for enable core limit, default: false
-- `nvidia.defaultMem:` 
+- `nvidia.defaultMem:`
   Integer type, by default: 0. The default device memory of the current task, in MB.'0' means use 100% device memory
-- `nvidia.defaultCores:` 
+- `nvidia.defaultCores:`
   Integer type, by default: equals 0. Percentage of GPU cores reserved for the current task. If assigned to 0, it may fit in any GPU with enough device memory. If assigned to 100, it will use an entire GPU card exclusively.
 - `nvidia.defaultGPUNum:`
   Integer type, by default: equals 1, if configuration value is 0, then the configuration value will not take effect and will be filtered. when a user does not set nvidia.com/gpu this key in pod resource, webhook should check nvidia.com/gpumem、resource-mem-percentage、nvidia.com/gpucores this three key, anyone a key having value, webhook should add nvidia.com/gpu key and this default value to resources limits map.
@@ -40,7 +40,7 @@ You can update these configurations using one of the following methods:
 - `nvidia.resourceMemoryName:`
   String type, vgpu memory size resource name, default: "nvidia.com/gpumem"
 - `nvidia.resourceMemoryPercentageName:`
-  String type, vgpu memory fraction resource name, default: "nvidia.com/gpumem-percentage" 
+  String type, vgpu memory fraction resource name, default: "nvidia.com/gpumem-percentage"
 - `nvidia.resourceCoreName:`
   String type, vgpu cores resource name, default: "nvidia.com/cores"
 - `nvidia.resourcePriorityName:`
@@ -61,7 +61,7 @@ helm install hami hami-charts/hami --set devicePlugin.deviceMemoryScaling=5 ...
 
 ## Pod configs: annotations
 
-- `nvidia.com/use-gpuuuid:` 
+- `nvidia.com/use-gpuuuid:`
   String type, ie: "GPU-AAA,GPU-BBB"
   If set, devices allocated by this pod must be one of UUIDs defined in this string.
 - `nvidia.com/nouse-gpuuuid`
@@ -75,12 +75,12 @@ helm install hami hami-charts/hami --set devicePlugin.deviceMemoryScaling=5 ...
   If set, devices allocated by this pod MUST be one of types defined in this string.
 - `hami.io/node-scheduler-policy`
   String type, "binpack" or "spread"
-  binpack: the scheduler will try to allocate the pod to used GPU nodes for execution. 
+  binpack: the scheduler will try to allocate the pod to used GPU nodes for execution.
   spread: the scheduler will try to allocate the pod to different GPU nodes for execution.
 - `hami.io/gpu-scheduler-policy`
   String type, "binpack" or "spread"
   binpack: the scheduler will try to allocate the pod to the same GPU card for execution.
-  spread:the scheduler will try to allocate the pod to different GPU card for execution. 
+  spread:the scheduler will try to allocate the pod to different GPU card for execution.
 - `nvidia.com/vgpu-mode`
   String type, "hami-core" or "mig"
   Which type of vgpu instance this pod wish to use
@@ -97,7 +97,6 @@ helm install hami hami-charts/hami --set devicePlugin.deviceMemoryScaling=5 ...
 - `CUDA_DISABLE_CONTROL`
   Bool type, "true","false"
   default: false
-  "true" means the HAMi-core will not be used inside container, as a result, there will be no resource isolation and limitation in that container, only for debug. 
+  "true" means the HAMi-core will not be used inside container, as a result, there will be no resource isolation and limitation in that container, only for debug.
 
 
-  
