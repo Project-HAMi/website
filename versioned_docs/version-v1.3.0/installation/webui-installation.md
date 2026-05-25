@@ -7,8 +7,7 @@ This section describes how to deploy and run HAMi WebUI on a Kubernetes cluster 
 
 HAMi WebUI is exposed via localhost only. After deployment, you need to configure your local `~/.kube/config` file to connect to the target cluster and access the WebUI.
 
-The official repository provides the Helm chart for deploying HAMi WebUI:
-https://github.com/Project-HAMi/HAMi-WebUI/tree/main/charts/hami-webui
+The official repository provides the [Helm chart](https://github.com/Project-HAMi/HAMi-WebUI/tree/main/charts/hami-webui) for deploying HAMi WebUI.
 
 If you encounter any issues, please open an issue in the [HAMi-WebUI](https://github.com/Project-HAMi/HAMi-WebUI) repository.
 
