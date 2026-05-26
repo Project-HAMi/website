@@ -14,7 +14,7 @@ HAMi WebUI focuses on GPU resource management and observability, and provides th
 
 On the cluster overview page, you can quickly understand the overall running status of the current cluster, including:
 
-- GPU resource usage (utilization, allocation, etc.)
+- GPU resource usage (utilization, allocation, and consumption trends)
 - Node resource status
 - Key metric trends
 - Time range filtering and trend display

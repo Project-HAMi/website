@@ -11,7 +11,7 @@ HAMi is a [Cloud Native Computing Foundation](https://cncf.io/) [Sandbox project
 
 ### Device Sharing
 
-- **Multi-device Support**: Compatible with various heterogeneous AI computing devices (GPUs, NPUs, etc.)
+- **Multi-device Support**: Compatible with various heterogeneous AI computing devices (GPUs, NPUs, and other accelerators)
 - **Shared Access**: Multiple containers can simultaneously share devices for improved resource utilization
 
 ### Memory Management
