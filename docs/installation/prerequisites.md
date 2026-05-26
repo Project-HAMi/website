@@ -41,7 +41,7 @@ When running Kubernetes with Docker, use the `nvidia-ctk` tool to automatically 
 sudo nvidia-ctk runtime configure --runtime=docker
 ```
 
-And then restart Docker:
+Then restart Docker:
 
 ```bash
 sudo systemctl daemon-reload && sudo systemctl restart docker
@@ -55,7 +55,7 @@ When running Kubernetes with containerd, use the `nvidia-ctk` tool to automatica
 sudo nvidia-ctk runtime configure --runtime=containerd
 ```
 
-And then restart containerd:
+Then restart containerd:
 
 ```bash
 sudo systemctl daemon-reload && sudo systemctl restart containerd
