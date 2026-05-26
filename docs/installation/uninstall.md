@@ -28,7 +28,7 @@ This command will remove all HAMi resources, including:
 
 :::warning
 
-Uninstalling HAMi won't automatically stop or kill running GPU tasks. Container processes will continue to use GPU resources even after HAMi components are removed.
+Uninstalling HAMi does not automatically stop or kill running GPU tasks. Container processes will continue to use GPU resources even after HAMi components are removed.
 
 :::
 

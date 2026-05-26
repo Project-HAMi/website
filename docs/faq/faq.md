@@ -15,7 +15,7 @@ title: FAQ
 | Mthreads | MTT S4000 | Core 1 core group, Memory 512M | Supported, but splitting is not supported when `gpu > 1`. The entire card is exclusively allocated. |
 | Metax | MXC500 | Does not support splitting, only whole card allocation is possible. | Supported, but all allocations are for whole cards. |
 
-## What is vGPU? Why can't I allocate two vGPUs on the same card despite seeing 10 vGPUs?
+## What is vGPU? Why cannot I allocate two vGPUs on the same card despite seeing 10 vGPUs?
 
 **TL;DR**
 
@@ -27,7 +27,7 @@ vGPU increases GPU utilization by enabling multiple tasks to share one GPU throu
 
 A vGPU is a logical instance of a physical GPU created using virtualization, allowing multiple tasks to share the same physical GPU. For example, setting `deviceSplitCount: 10` means a physical GPU can allocate resources to up to 10 tasks. This allocation does not increase physical resources; it only defines logical visibility.
 
-**Why can't I allocate two vGPUs on the same card?**
+**Why cannot I allocate two vGPUs on the same card?**
 
 1. **Significance of vGPU**
    vGPU represents different task views of the same physical GPU. It is not a separate partition of physical resources. When a task requests `nvidia.com/gpu: 2`, it is interpreted as requiring two physical GPUs, not two vGPUs from the same GPU.
@@ -51,7 +51,7 @@ HAMi's built-in two-level priority is for runtime preemption on a single GPU (e.
 
 HAMi's native `nvidia.com/priority` field (0 for high, 1 for low/default) is specifically designed for **runtime preemption on a single GPU**. The typical scenario it addresses is when a low-priority task (e.g., training) is running, and a high-priority task (e.g., inference) needs immediate access to that same GPU. In this case, the high-priority task will cause the low-priority task to pause, effectively ceding compute resources. Once the high-priority task completes, the low-priority task resumes. This mechanism is focused on immediate resource contention on a specific device, rather than for sorting a queue of many pending jobs with multiple priority levels for initial scheduling.
 
-Regarding the scenario where resources are insufficient, 'n' jobs are waiting, and you need to sort them for scheduling based on multiple user-submitted priorities, HAMi's two-level system isn't intended for this broader scheduling requirement.
+Regarding the scenario where resources are insufficient, 'n' jobs are waiting, and you need to sort them for scheduling based on multiple user-submitted priorities, HAMi's two-level system is not intended for this broader scheduling requirement.
 
 However, achieving multi-level priority scheduling **is feasible**. The recommended approach is to integrate HAMi with a full-featured scheduler like **Volcano**:
 
