@@ -73,7 +73,7 @@ This is why what appears to be a low-level problem has become one of the core is
 
 HAMi Maintainer Xiao Zhang's talk started from a classic, long-standing problem in the Kubernetes community: **How can multiple containers share a GPU?**
 
-While this question seems specific, it actually points to a challenge the entire AI infrastructure ecosystem faces. Once you enter inference, batch processing, online serving, and multi-tenant mixed scenarios, GPUs can no longer be allocated in an "exclusive whole-card" manner.
+While this question seems specific, it points to a challenge the entire AI infrastructure ecosystem faces. Once you enter inference, batch processing, online serving, and multi-tenant mixed scenarios, GPUs can no longer be allocated in an "exclusive whole-card" manner.
 
 The significance of this talk lies in putting HAMi's solution back into the original context of the Kubernetes community: not building an isolated solution from scratch, but addressing a long-standing upstream problem that hasn't been fully resolved.
 
@@ -192,7 +192,7 @@ HAMi sits precisely at this inflection point, offering a clear, pragmatic, and i
 
 ## Key Takeaways
 
-Looking back at KubeCon, several things stand out for the community:
+Looking back at KubeCon, several key observations stand out for the community:
 
 ### 1. Global Community Focus on AI Infra Is Rapidly Increasing
 
