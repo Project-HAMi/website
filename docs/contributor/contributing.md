@@ -297,7 +297,7 @@ When reviewing others' PRs:
 
 ## AI Usage
 
-AI tools may be used to assist with writing code, documentation, or commit messages. There is one hard rule:
+AI tools may be used to assist with writing code, documentation, or commit messages. One hard rule applies:
 
 **Do not submit AI-generated text directly as your PR description, issue body, or commit message.**
 

@@ -129,7 +129,7 @@ These three Device Plugins all manage GPU resources but differ in usage scenario
 ### Coexistence
 
 - **HAMi Device Plugin and NVIDIA Official Device Plugin**: Should not coexist to avoid resource conflicts.
-- **HAMi Device Plugin and Volcano vGPU Device Plugin**: Can theoretically coexist, but using only one is recommended.
+- **HAMi Device Plugin and Volcano vGPU Device Plugin**: Can theoretically coexist; use only one to avoid conflicts.
 - **NVIDIA Official Device Plugin and Volcano vGPU Device Plugin**: Can theoretically coexist, but mixed usage is not advised.
 
 ## Why do Node Capacity and Allocatable show only `nvidia.com/gpu` and not `nvidia.com/gpucores` or `nvidia.com/gpumem`?
