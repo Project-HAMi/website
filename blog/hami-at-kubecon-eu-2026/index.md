@@ -22,9 +22,9 @@ The discussions around GPUs are no longer limited to "device visibility" or "dri
 
 The official agenda of KubeCon Europe 2026 reflects this trend across keynotes, AI-related sessions, Project Pavilion, and co-located events.
 
-In this context, HAMi's problem space becomes clearer: it's not only about "making Kubernetes recognize GPUs," but making GPUs a resource layer capability that can be abstracted, shared, and scheduled.
+In this context, HAMi's problem space becomes clearer: it is not only about "making Kubernetes recognize GPUs," but making GPUs a resource layer capability that can be abstracted, shared, and scheduled.
 
-This is why this KubeCon is more than a project showcase for the HAMi community - it's an opportunity to engage with the broader cloud native ecosystem.
+This is why this KubeCon is more than a project showcase for the HAMi community - it is an opportunity to engage with the broader cloud native ecosystem.
 
 ## Finding HAMi at KubeCon
 
@@ -37,7 +37,7 @@ HAMi will have a booth at Project Pavilion for in-person exchanges with communit
   - **March 24 (Tuesday) 15:10–19:00**
   - **March 26 (Thursday) 12:30–14:00**
 
-If you're attending, stop by the HAMi Booth to discuss:
+If you are attending, stop by the HAMi Booth to discuss:
 
 - GPU virtualization and sharing in Kubernetes
 - Resource scheduling and utilization optimization for AI workloads
@@ -117,7 +117,7 @@ After the main conference, the AI Native Summit is also worth attention. This ev
 
 ## Beyond HAMi: Other Topics to Follow
 
-If you're attending this KubeCon, in addition to HAMi-related activities, these areas are worth following:
+If you are attending this KubeCon, in addition to HAMi-related activities, these areas are worth following:
 
 - Device Management / DRA
 - AI workload scheduling
