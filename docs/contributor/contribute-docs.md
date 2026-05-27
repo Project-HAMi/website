@@ -196,7 +196,7 @@ Fixes to existing versioned docs are handled by maintainers through cherry-picks
 
 ## Chinese Translation Workflow
 
-There are two cases:
+Two cases apply:
 
 **Translating an existing English doc:**
 

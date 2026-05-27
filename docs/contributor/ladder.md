@@ -115,7 +115,7 @@ The current list of maintainers is in [MAINTAINERS](https://github.com/Project-H
 
 **An active maintainer:**
 
-- Actively reviews pull requests and incoming issues. There are no hard rules on what counts as active - this is left to the judgement of the current maintainer group.
+- Actively reviews pull requests and incoming issues. No hard rules define what counts as active - this is left to the judgement of the current maintainer group.
 - Participates in discussions about design and the future of the project.
 - Takes responsibility for backports to appropriate branches for PRs they approve and merge.
 - Follows code, testing, and design conventions as determined by consensus among active maintainers.
