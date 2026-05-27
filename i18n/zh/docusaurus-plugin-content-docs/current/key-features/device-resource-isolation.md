@@ -13,6 +13,6 @@ translated: true
           nvidia.com/gpumem: 3000 # 每个 vGPU 包含 3000m 设备显存
 ```
 
-将在容器内看到 3G 设备显存
+将在容器内看到 3G 设备显存。
 
 ![GPU 内存硬限制演示，显示容器内 3GB 设备内存](/img/docs/common/key-features/hard-limit.jpg)
