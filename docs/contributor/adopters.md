@@ -4,7 +4,7 @@ title: HAMi Adopters
 
 # HAMi Adopters
 
-So you and your organisation are using HAMi? That's great. Reach out and let the community know.
+Using HAMi in your organisation? Reach out and let the community know.
 
 ## Adding yourself
 

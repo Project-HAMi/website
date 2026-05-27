@@ -105,7 +105,7 @@ spec:
             count: 1
 ```
 
-And you also need to write a CEL selector:
+You also need to write a CEL selector:
 
 ```yaml
 device.attributes["gpu.hami.io"].type == "hami-gpu"
