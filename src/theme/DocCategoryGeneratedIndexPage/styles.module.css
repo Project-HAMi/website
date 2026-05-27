@@ -1,0 +1,29 @@
+@media (min-width: 997px) {
+  .generatedIndexPage {
+    max-width: 75% !important;
+  }
+}
+
+.breadcrumbsRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.breadcrumbsRow nav {
+  margin-bottom: 0;
+}
+
+.indexCard header + *,
+.indexCard article > *:first-child {
+  margin-top: 0;
+}
+
+@media (max-width: 996px) {
+  .breadcrumbsRow {
+    gap: 0.25rem;
+  }
+}
