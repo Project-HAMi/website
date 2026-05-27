@@ -5,7 +5,7 @@ linktitle: GPU Virtualization
 
 In AI inference scenarios, a common dilemma is that GPUs are expensive, but mostly idle.
 
-A typical inference service often only uses 20%~40% of the GPU's compute and a small amount of VRAM, leaving the rest idle. Kubernetes' default GPU scheduling model is exclusive: `nvidia.com/gpu: 1` means the entire card is yours, and all other Pods must wait. Want to share a single GPU across multiple inference services? The standard Device Plugin can't do it, because it can only report device counts (integers) to the scheduler - there is no concept of "VRAM quota."
+A typical inference service often only uses 20%~40% of the GPU's compute and a small amount of VRAM, leaving the rest idle. Kubernetes' default GPU scheduling model is exclusive: `nvidia.com/gpu: 1` means the entire card is yours, and all other Pods must wait. Want to share a single GPU across multiple inference services? The standard Device Plugin cannot do it, because it can only report device counts (integers) to the scheduler - there is no concept of "VRAM quota."
 
 This led to various GPU sharing solutions. NVIDIA's official Time-Slicing allows multiple Pods to be scheduled concurrently, but provides no VRAM isolation - a Pod OOM can crash all tasks on the card. MIG hardware partitioning offers true isolation, but only datacenter-grade cards like A100 and H100 support it.
 

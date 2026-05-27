@@ -94,7 +94,7 @@ helm upgrade hami hami-charts/hami -n kube-system -f current-values.yaml
 
 ### In-Place Upgrade (If Using Existing Installation)
 
-If you don't have a custom values file, you can upgrade directly:
+If you do not have a custom values file, you can upgrade directly:
 
 ```bash
 helm repo update hami-charts
@@ -261,7 +261,7 @@ helm rollback hami <revision-number> -n kube-system
 
 ### Manual Rollback
 
-If helm rollback doesn't work:
+If helm rollback does not work:
 
 ```bash
 # Get previous HAMi version from backup
