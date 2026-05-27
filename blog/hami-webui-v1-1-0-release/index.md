@@ -8,7 +8,7 @@ authors: [hami_community]
 image: /img/docs/en/userguide/webui-overview.png
 ---
 
-Managing GPU resources in Kubernetes has long been a "blind spot" for operators. You know GPUs are being used, but answering questions like "which node has idle capacity?", "is this workload actually utilizing its allocated GPU?", or "what's the overall cluster utilization trend?" often requires piecing together `kubectl get`, Prometheus PromQL, and log output.
+Managing GPU resources in Kubernetes has long been a "blind spot" for operators. You know GPUs are being used, but answering questions like "which node has idle capacity?", "is this workload actually utilizing its allocated GPU?", or "what is the overall cluster utilization trend?" often requires piecing together `kubectl get`, Prometheus PromQL, and log output.
 
 Today, the HAMi community is introducing **[HAMi WebUI](https://github.com/Project-HAMi/HAMi-WebUI)** - an open-source GPU monitoring dashboard that puts your entire GPU cluster into a single, visual interface.
 
@@ -20,11 +20,11 @@ Together with the core HAMi scheduler, WebUI completes the full loop: **from GPU
 
 ## The Challenge of GPU Monitoring in Kubernetes
 
-[HAMi](https://github.com/Project-HAMi/HAMi), a [CNCF Sandbox project](https://www.cncf.io/projects/hami/), has long been focused on the scheduling and management layer of GPU resources in Kubernetes. The scheduler decides which GPU a workload gets - but once workloads are running, understanding what's happening at the resource level has been difficult.
+[HAMi](https://github.com/Project-HAMi/HAMi), a [CNCF Sandbox project](https://www.cncf.io/projects/hami/), has long been focused on the scheduling and management layer of GPU resources in Kubernetes. The scheduler decides which GPU a workload gets - but once workloads are running, understanding what is happening at the resource level has been difficult.
 
 Consider a typical day-to-day scenario:
 
-- A team lead wants to know if there's room to schedule another training job.
+- A team lead wants to know if there is room to schedule another training job.
 - An SRE receives an alert about high GPU memory usage and needs to pinpoint the source.
 - A cluster admin wants to compare GPU utilization across nodes to rebalance workloads.
 

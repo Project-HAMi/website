@@ -58,7 +58,7 @@ From the process, this error indicates the kube-apiserver failed to call the ext
   - Cross-node communication issues.
   - Extended scheduler service failure.
 - **TLS Verification Error**: Typically shows `webhook x509: certificate signed by unknown authority`.
-  During Helm chart deployment, there's a `jobs.batch` job called `hami-vgpu.admission-patch`. If it hasn't completed, this issue may occur.
+  During Helm chart deployment, there is a `jobs.batch` job called `hami-vgpu.admission-patch`. If it has not completed, this issue may occur.
 
 #### Scheduling Issues
 

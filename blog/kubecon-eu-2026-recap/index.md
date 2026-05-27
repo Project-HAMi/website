@@ -59,7 +59,7 @@ Additionally, HAMi is currently applying for CNCF Incubation and participated in
 
 ### Xiao Zhang: K8s Issue #52757 - Sharing GPUs Among Multiple Containers
 
-This issue ([#52757](https://github.com/kubernetes/kubernetes/issues/52757)) is not new - it's a long-standing "unsolved problem" in the Kubernetes community.
+This issue ([#52757](https://github.com/kubernetes/kubernetes/issues/52757)) is not new - it is a long-standing "unsolved problem" in the Kubernetes community.
 
 With the explosion of AI workloads, this problem has been amplified:
 
@@ -75,7 +75,7 @@ HAMi Maintainer Xiao Zhang's talk started from a classic, long-standing problem 
 
 While this question seems specific, it points to a challenge the entire AI infrastructure ecosystem faces. Once you enter inference, batch processing, online serving, and multi-tenant mixed scenarios, GPUs can no longer be allocated in an "exclusive whole-card" manner.
 
-The significance of this talk lies in putting HAMi's solution back into the original context of the Kubernetes community: not building an isolated solution from scratch, but addressing a long-standing upstream problem that hasn't been fully resolved.
+The significance of this talk lies in putting HAMi's solution back into the original context of the Kubernetes community: not building an isolated solution from scratch, but addressing a long-standing upstream problem that has not been fully resolved.
 
 ### Mengxuan Li: Dynamic, Smart, Stable GPU-Sharing Middleware in Kubernetes
 
@@ -150,7 +150,7 @@ GPU sharing, virtualization, resource isolation, and heterogeneous scheduling we
 
 **Third, this is the result of accumulated HAMi community effort.**
 
-An open source project making it to the KubeCon main stage isn't just about "having a feature to demo." Behind it is the alignment of technical direction with industry trends, community value being recognized, and the project's position in the ecosystem becoming clearer.
+An open source project making it to the KubeCon main stage is not just about "having a feature to demo." Behind it is the alignment of technical direction with industry trends, community value being recognized, and the project's position in the ecosystem becoming clearer.
 
 This keynote demo also served as a positioning confirmation:
 
@@ -180,11 +180,11 @@ Beyond the live demo and talks, there was another important external signal from
 
 ![HAMi highlighted as a Cloud Native Landscape expansion project during Keynote](/img/kubecon-eu-2026-recap/landscape-mention.jpg)
 
-This indicates that HAMi's significance extends beyond "a project doing GPU scheduling" - it's being viewed as a representative of next-generation infrastructure problems within the broader cloud native evolution.
+This indicates that HAMi's significance extends beyond "a project doing GPU scheduling" - it is being viewed as a representative of next-generation infrastructure problems within the broader cloud native evolution.
 
 The cloud native community is realizing:
 
-- The existing resource model built around CPU / memory / network / storage isn't enough
+- The existing resource model built around CPU / memory / network / storage is not enough
 - The AI era demands new resource abstractions
 - GPUs, inference, heterogeneous devices, and workload governance are becoming key infrastructure topics for the next phase
 
@@ -215,12 +215,12 @@ HAMi is no longer just "a project that does GPU sharing." It's gradually forming
 
 ## Conclusion
 
-KubeCon EU 2026 made one thing clear: **cloud native won't be replaced by AI - it will be redefined by AI.**
+KubeCon EU 2026 made one thing clear: **cloud native will not be replaced by AI - it will be redefined by AI.**
 
 From booth exchanges to technical sessions to the main stage demo, HAMi's presence at this conference was more than just an event appearance - it was a signal:
 
 > **Cloud native infrastructure around GPUs, inference, and heterogeneous compute is entering a new phase.**
 
-If you're interested in AI infrastructure, GPU virtualization, and the evolution of Kubernetes in the AI era, join the HAMi community and help drive the next steps in this space.
+If you are interested in AI infrastructure, GPU virtualization, and the evolution of Kubernetes in the AI era, join the HAMi community and help drive the next steps in this space.
 
 ![HAMi community members and contributors group photo at KubeCon](/img/kubecon-eu-2026-recap/team-photo.jpg)
