@@ -55,7 +55,7 @@ At the booth, the HAMi community discussed with attendees questions such as:
 
 ## GPU Scheduling Paradigm is Changing
 
-The core of this talk is not just DRA itself, but a bigger shift:
+The core of this talk extends beyond DRA itself, pointing to a broader shift:
 
 > **GPUs are evolving from "devices" to "resource objects".**
 
@@ -163,7 +163,7 @@ Output (system internal):
 
 ## DRA Driver: Real Implementation Complexity
 
-DRA driver is not just "registering resources", but full lifecycle management:
+A DRA driver encompasses more than resource registration; it provides full lifecycle management:
 
 ### Three core interfaces
 
@@ -281,7 +281,7 @@ This is the way HAMi has always insisted on:
 
 ## Summary
 
-The real value of this talk is not just introducing DRA, but answering a key question:
+The real value of this talk lies in answering a key question, beyond introducing DRA:
 
 > **How to turn a "correct but hard to use" model into a system you can use today?**
 

@@ -88,7 +88,7 @@ The following diagram shows the three-layer architecture's component composition
 
 #### Step 1: Device Registration and Resource Reporting
 
-After `hami-device-plugin` starts, it does two things:
+After `hami-device-plugin` starts, it performs two operations:
 
 ##### ① Inflating GPU Count to Kubelet
 
@@ -158,7 +158,7 @@ hami.io/vgpu-devices-to-allocate: ;    ← Already empty, device allocation comp
 
 #### Step 3: Device Injection and Library Hijacking
 
-After the Pod is scheduled to the target node, Kubelet calls the Device Plugin's `Allocate` interface. The Device Plugin completes four things in its response:
+After the Pod is scheduled to the target node, Kubelet calls the Device Plugin's `Allocate` interface. The Device Plugin performs four operations in its response:
 
 1. **Mount device files**: Injects device files such as `/dev/nvidia*` into the container
 2. **hostPath mount libvgpu.so**: Mounts `libvgpu.so` from the host (default path `/usr/local/vgpu/libvgpu.so`) into the container at the same path via hostPath
