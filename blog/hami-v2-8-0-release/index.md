@@ -16,7 +16,7 @@ This article provides a detailed overview of the major updates in v2.8.0.
 
 ## Core Features and Capability Updates
 
-This section introduces the core features and capability updates in HAMi v2.8.0, covering standard interface support, high availability mechanisms, device compatibility, and more.
+This section introduces the core features and capability updates in HAMi v2.8.0, covering standard interface support, high availability mechanisms, and device compatibility.
 
 ### Official Support for Kubernetes Device Resource Assignment (DRA)
 

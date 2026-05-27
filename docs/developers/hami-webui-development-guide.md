@@ -67,16 +67,16 @@ The architecture includes frontend UI, backend services, and underlying cluster 
 
 1. **Common foundation layer** (`packages/web/src/`)
    - `layout/`: global layout (Sidebar / TopBar / AppMain)
-   - `components/`: common components (BackHeader / BlockBox / Echarts-plus / Message / Confirm, etc.)
+   - `components/`: common components (BackHeader, BlockBox, Echarts-plus, Message, Confirm, and others)
    - `hooks/`: common hooks (for example, `useFetchList`)
    - `utils/`: utility helpers (for example, `request.js` and calculation helpers)
    - `icons/` and `components/SvgIcon/`: SVG icon registration and rendering
 2. **Business module layer** (`packages/web/projects/vgpu/`)
    - `router.js`: module routes
-   - `views/`: page components (monitoring, nodes, cards, tasks, etc.)
+   - `views/`: page components (monitoring, nodes, cards, and tasks)
    - `api/`: API wrappers (`apiPrefix = '/api/vgpu'`)
    - `hooks/`: business hooks
-   - `components/`: business components (charts/dashboards, etc.)
+   - `components/`: business components (charts and dashboards)
 
 ### Routing and menu conventions
 
