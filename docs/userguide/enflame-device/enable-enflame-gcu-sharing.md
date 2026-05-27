@@ -47,14 +47,14 @@ helm install hami hami-charts/hami --set devices.enflame.enabled=true -n kube-sy
 
 ## Device Granularity
 
-HAMi divides each Enflame GCU into 100 units for resource allocation. When you request a portion of a GCU, you're actually requesting a certain number of these units.
+HAMi divides each Enflame GCU into 100 units for resource allocation. Requesting a portion of a GCU corresponds to requesting a specific number of these units.
 
 ### GCU Slice Allocation
 
 - Each unit of `enflame.com/vgcu-percentage` represents 1% device memory and 1% core
-- If you don't specify a memory request, the system will default to using 100% of the available memory
-- Memory allocation is enforced with hard limits to ensure tasks don't exceed their allocated memory
-- Core allocation is enforced with hard limits to ensure tasks don't exceed their allocated cores
+- If no memory request is specified, the system defaults to using 100% of the available memory
+- Memory allocation is enforced with hard limits to ensure tasks do not exceed their allocated memory
+- Core allocation is enforced with hard limits to ensure tasks do not exceed their allocated cores
 
 ## Running Enflame jobs
 

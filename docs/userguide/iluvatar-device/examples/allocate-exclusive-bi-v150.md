@@ -34,6 +34,6 @@ spec:
 
 :::note
 
-When applying for exclusive use of a GPU, `iluvatar.ai/<card-type>-vgpu=1`, you need to set the values of `iluvatar.ai/<card-type>.vCore` and `iluvatar.ai/<card-type>.vMem` to the maximum number of GPU resources. `iluvatar.ai/<card-type>-vgpu>1` no longer supports the vGPU function, so you don't need to fill in the core and memory values
+When applying for exclusive use of a GPU with `iluvatar.ai/<card-type>-vgpu=1`, set `iluvatar.ai/<card-type>.vCore` and `iluvatar.ai/<card-type>.vMem` to the maximum GPU resource values. When `iluvatar.ai/<card-type>-vgpu>1`, the vGPU function is not supported and core and memory values do not need to be specified.
 
 :::
