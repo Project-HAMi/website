@@ -73,6 +73,7 @@ module.exports = {
       "items": [
         "userguide/configure",
         "userguide/device-supported",
+        "userguide/benchmark",
         "userguide/hami-webui-user-guide",
         {
           "type": "category",
@@ -89,6 +90,7 @@ module.exports = {
           "items": [
             "userguide/nvidia-device/dynamic-resource-allocation",
             "userguide/nvidia-device/dynamic-mig-support",
+            "userguide/nvidia-device/scheduling-policy",
             "userguide/nvidia-device/specify-device-memory-usage",
             "userguide/nvidia-device/specify-device-core-usage",
             "userguide/nvidia-device/specify-device-type-to-use",
@@ -355,7 +357,12 @@ module.exports = {
         "developers/scheduling",
         "developers/hami-core-design",
         "developers/dynamic-mig",
+        "developers/gpu-topology-scheduling",
         "developers/kunlunxin-topology",
+        "developers/profiling-scheduler",
+        "developers/scheduler-event-log",
+        "developers/gpu-utilization-metrics",
+        "developers/hami-vnpu-core-integration",
         "developers/hami-webui-development-guide",
         "developers/mindmap"
       ]
@@ -373,7 +380,9 @@ module.exports = {
         "contributor/contribute-docs",
         "contributor/github-workflow",
         "contributor/governance",
-        "contributor/ladder"
+        "contributor/ladder",
+        "contributor/roadmap",
+        "contributor/e2e-testing"
       ]
     },
     {
