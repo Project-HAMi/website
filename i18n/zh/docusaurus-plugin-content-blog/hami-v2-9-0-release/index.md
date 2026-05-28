@@ -70,7 +70,7 @@ resources:
 
 感谢华为云加拿大实验室和招商银行 [@ashergaga](https://github.com/ashergaga) 对本功能的贡献。
 
-本版本同时更新了 [HAMi-core 性能基准测试数据](https://github.com/Project-HAMi/HAMi/blob/master/docs/benchmark_cn.md)，详细的 benchmark 流程请参考[项目文档](https://github.com/Project-HAMi/HAMi/tree/master/benchmarks)。
+本版本同时更新了 [HAMi-core 性能基准测试数据](/docs/userguide/benchmark)，详细的 benchmark 流程请参考[项目文档](https://github.com/Project-HAMi/HAMi/tree/master/benchmarks)。
 
 ### HAMi-DRA 解决方案：轻量版 HAMi
 

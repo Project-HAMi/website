@@ -19,7 +19,7 @@ authors: [elrond_wang]
 
 看代码之前可以先看下官方文档说明，大体上比较明确：
 
-![flowchart](https://github.com/Project-HAMi/HAMi/blob/master/docs/develop/imgs/flowchart.jpeg?raw=true)
+![flowchart](/img/blog/flowchart.jpeg)
 
 细节上可以分为三个阶段：
 

@@ -548,9 +548,9 @@
 
 #### :rocket: Major features
 
-- Support dynamic mig feature, please refer to this [document](https://github.com/Project-HAMi/HAMi/blob/master/docs/dynamic-mig-support.md)
+- Support dynamic mig feature, please refer to this [document](/docs/userguide/nvidia-device/dynamic-mig-support)
 - Reinstall Hami will NOT crash GPU tasks
-- Put all configurations into a configMap, you can customize hami installation by modify its content: see [details](https://github.com/Project-HAMi/HAMi/blob/master/docs/config.md)
+- Put all configurations into a configMap, you can customize hami installation by modify its content: see [details](/docs/userguide/configure)
 
 #### :bug: Major bug fixes
 

@@ -61,7 +61,7 @@ Release branches and PRs are managed as follows:
 
 A minor release will contain a mix of features, enhancements, and bug fixes.
 
-Major features follow the Karmada Design Proposal process. You can refer to [here](https://github.com/Project-HAMi/HAMi/tree/master/docs/proposals/resource-interpreter-webhook) as a proposal example.
+Major features follow the Karmada Design Proposal process. Proposals are submitted as pull requests to the HAMi repository.
 
 During the start of a release, there may be many issues assigned to the release milestone. The priorities for the release are discussed in the bi-weekly community meetings.
 As the release progresses several issues may be moved to the next milestone. Hence, if an issue is important it is important to advocate its priority early in the release cycle.

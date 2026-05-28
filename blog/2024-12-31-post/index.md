@@ -21,7 +21,7 @@ This section provides a rough walkthrough of the related code to explain the int
 
 The official documentation provides a clear overview before looking at the code:
 
-![flowchart](https://github.com/Project-HAMi/HAMi/blob/master/docs/develop/imgs/flowchart.jpeg?raw=true)
+![flowchart](/img/blog/flowchart.jpeg)
 
 The process can be broken down into three phases:
 

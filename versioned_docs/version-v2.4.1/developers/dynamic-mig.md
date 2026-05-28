@@ -100,7 +100,7 @@ data:
 
 ## Structure
 
-<img src="https://github.com/Project-HAMi/HAMi/blob/master/docs/develop/imgs/hami-dynamic-mig-structure.png?raw=true" width="600" alt="HAMi dynamic MIG structure diagram showing vGPU Pool and Scheduler components" />
+<img src="/img/docs/en/dynamic-mig/hami-dynamic-mig-structure.png" width="600" alt="HAMi dynamic MIG structure diagram showing vGPU Pool and Scheduler components" />
 
 ## Examples
 
@@ -147,7 +147,7 @@ spec:
 
 The Procedure of a vGPU task which uses dynamic-mig is shown below:
 
-<img src="https://github.com/Project-HAMi/HAMi/blob/master/docs/develop/imgs/hami-dynamic-mig-procedure.png?raw=true" width="800" alt="HAMi dynamic MIG procedure flowchart showing task scheduling process" />
+<img src="/img/docs/en/dynamic-mig/hami-dynamic-mig-procedure.png" width="800" alt="HAMi dynamic MIG procedure flowchart showing task scheduling process" />
 
 After a task is submitted, deviceshare plugin will iterate over templates defined in configMap `hami-scheduler-device`, and find the first available template to fit. You can always change the content of that configMap, and restart vc-scheduler to customize.
 
