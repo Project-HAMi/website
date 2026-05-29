@@ -70,7 +70,7 @@ In v2.9, user Pods must explicitly declare `huawei.com/vnpu-mode: 'hami-core'` i
 
 Thanks to Huawei Cloud Canada Lab and China Merchants Bank [@ashergaga](https://github.com/ashergaga) for their contributions.
 
-This release also updates the [HAMi-core performance benchmark data](https://github.com/Project-HAMi/HAMi/blob/master/docs/benchmark_cn.md). For detailed benchmark procedures, refer to the [project documentation](https://github.com/Project-HAMi/HAMi/tree/master/benchmarks).
+This release also updates the [HAMi-core performance benchmark data](/docs/userguide/benchmark). For detailed benchmark procedures, refer to the [project documentation](https://github.com/Project-HAMi/HAMi/tree/master/benchmarks).
 
 ### HAMi-DRA Solution: Lightweight HAMi
 
