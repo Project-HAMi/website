@@ -220,13 +220,13 @@ These are UI captures, not architecture or flow diagrams. They do not require re
 
 `docs/contributor/contribute-docs.md` (line 153) references:
 
-```
+```text
 /img/docs/common/architecture/hami-arch.png
 ```
 
 The directory `static/img/docs/common/architecture/` does not exist. The file at that path does not exist. The correct path for the HAMi core architecture image is:
 
-```
+```text
 /img/docs/common/developers/hami-core-design/hami-arch.png
 ```
 
