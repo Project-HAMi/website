@@ -6,10 +6,10 @@ authors: [mesut_oezdil]
 tags: ["HAMi", "kagent", "GPU 虚拟化", "AI Agent", "Kubernetes", "vGPU", "云原生"]
 ---
 
-作者：[Mesut Oezdil](https://www.linkedin.com/in/mesut-oezdil/) · [GitHub](https://github.com/mesutoezdil)
-原文：https://mesutoezdil.substack.com/p/kagent-hami-on-nebius-2-cncf-projects
-GitHub Repo：https://github.com/mesutoezdil/kagentWithHami
-中文翻译：Jimmy Song（原文发布于[微信公众号](https://mp.weixin.qq.com/s/WNzZh02_1CbMbVBfi4eRGw)）
+- **作者：** [Mesut Oezdil](https://www.linkedin.com/in/mesut-oezdil/) / [GitHub](https://github.com/mesutoezdil)
+- **原文：** [mesutoezdil.substack.com](https://mesutoezdil.substack.com/p/kagent-hami-on-nebius-2-cncf-projects)
+- **GitHub Repo：** [kagentWithHami](https://github.com/mesutoezdil/kagentWithHami)
+- **中文翻译：** Jimmy Song（原文发布于[微信公众号](https://mp.weixin.qq.com/s/WNzZh02_1CbMbVBfi4eRGw)）
 
 ---
 
