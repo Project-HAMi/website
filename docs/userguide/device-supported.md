@@ -16,4 +16,5 @@ The table below lists the devices supported by HAMi:
 | GCU | Enflame  | S60    | Yes | Yes | No |
 | XPU | Kunlunxin | P800  | Yes | Yes | No |
 | GPU | Vastai | VA16  | Yes | Yes | No |
+| GPU | Biren | Biren166M  | Yes | Yes | No |
 | DPU | Teco | Checking | In progress | In progress | No |
