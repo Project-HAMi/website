@@ -2,6 +2,21 @@
 title: Troubleshooting
 ---
 
+## GPU Memory Limit Not Enforced {#gpu-memory-limit-not-enforced}
+
+If a container exceeds its `nvidia.com/gpumem` limit, check the following causes:
+
+- **`CUDA_DISABLE_CONTROL=true` is set** - disables HAMi-core enforcement entirely. Remove it from production workloads.
+- **Docker-in-Docker (DinD)** - inner containers do not inherit the `/etc/ld.so.preload` hostPath mount. HAMi enforcement does not apply inside DinD.
+- **Direct driver API usage** - workloads calling NVML or the CUDA Driver API directly bypass `libvgpu.so`.
+- **`nvidia-container-runtime` not set as default** - verify with:
+
+  ```bash
+  containerd config dump | grep default_runtime_name
+  ```
+
+  The output must show `nvidia`. If not, follow the [Prerequisites](./installation/online-installation) guide.
+
 - If you don’t explicitly request vGPUs when using the device plugin with NVIDIA images, all GPUs on the host may be exposed to your container.
 - Currently, A100 MIG can be supported in only "none" and "mixed" modes.
 - Tasks with the "nodeName" field cannot be scheduled at the moment; please use "nodeSelector" instead.
