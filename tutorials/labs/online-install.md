@@ -37,6 +37,8 @@ flowchart LR
 - `gcloud` CLI installed and authenticated (`gcloud auth login`)
 - NVIDIA T4 GPU quota available in your GCP project
 
+> Cost note: the `n1-standard-4` + T4 VM costs about $0.55 per hour. [Lab 3](./gpu-partitioning.md) and [Lab 4](./hami-dra.md) continue on this same cluster, so one session covers all three labs. Delete the VM when you finish.
+
 ---
 
 ## Step 1: Create a GCP Virtual Machine

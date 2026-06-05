@@ -277,4 +277,7 @@ kubectl delete deviceclass hami-core-gpu.project-hami.io
 
 ## Next Steps
 
-Compare this hands-on with [Lab 3](./gpu-partitioning.md) and form your own view of the trade-off: extended resources work everywhere today, DRA is where the ecosystem is heading. Watch the [HAMi DRA driver repository](https://github.com/Project-HAMi/k8s-dra-driver) for new releases.
+- Run [Lab 3](./gpu-partitioning.md) on the same cluster and compare the two allocation paths side by side: extended resources work on any Kubernetes version today, while DRA gives you typed device selection, schema-validated capacity, and native scheduler accounting.
+- Experiment with the claims: change `cores` and `memory` in `setup.yaml`, request more than the remaining device capacity, and watch the claim stay `pending` instead of overcommitting the card.
+- On a multi-GPU node, try the `double-gpu-0` claim: it requests two devices with different capacities in a single claim, something extended resources cannot express.
+- The driver repository now ships a Helm chart (`chart/hami-dra-driver`); follow the [HAMi DRA driver releases](https://github.com/Project-HAMi/k8s-dra-driver/releases) for when this lab can switch to it, and the [HAMi v2.10 roadmap](https://github.com/Project-HAMi/HAMi/issues/1889) for where DRA support is heading next.

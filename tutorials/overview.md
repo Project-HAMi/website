@@ -20,6 +20,4 @@ Background knowledge that the labs build on.
 - [Lab 3: GPU Partitioning](./labs/gpu-partitioning.md): run multiple Pods on one GPU with enforced VRAM and compute limits
 - [Lab 4: GPU Slicing with DRA](./labs/hami-dra.md): the same outcome through Kubernetes-native Dynamic Resource Allocation (experimental)
 
-## Requirements
-
-Lab 2 runs on any laptop. Labs 1, 3, and 4 use one cloud VM with an NVIDIA T4 (about $0.55/hour on GCP); Labs 3 and 4 continue from the cluster Lab 1 builds, so a single VM session covers all three.
+Each lab lists its own prerequisites. Labs 3 and 4 continue from the cluster Lab 1 builds, so a single session covers all three; Lab 2 runs on any laptop with no GPU required.
