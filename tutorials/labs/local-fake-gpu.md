@@ -779,4 +779,4 @@ kubectl annotate node ${NODE_NAME} hami.io/node-nvidia-register- hami.io/node-ha
 
 ## Next Steps
 
-After completing this lab, we recommend continuing with [HAMi Cluster Architecture](../concepts/hami-architecture.md), focusing on understanding the responsibility boundaries of the scheduler, device-plugin, webhook, and GPU Operator.
+After completing this lab, we recommend continuing with [HAMi Cluster Architecture](/docs/core-concepts/hami-architecture), focusing on understanding the responsibility boundaries of the scheduler, device-plugin, webhook, and GPU Operator.

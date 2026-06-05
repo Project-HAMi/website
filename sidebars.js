@@ -12,7 +12,10 @@ module.exports = {
       "items": [
         "core-concepts/introduction",
         "core-concepts/gpu-virtualization",
-        "core-concepts/architecture"
+        "core-concepts/architecture",
+        "core-concepts/gpu-stack",
+        "core-concepts/gpu-driver",
+        "core-concepts/hami-architecture"
       ]
     },
     {

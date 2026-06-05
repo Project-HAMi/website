@@ -9,9 +9,9 @@ Hands-on tutorials for learning HAMi by doing. Each lab is a step-by-step exerci
 
 Background knowledge that the labs build on.
 
-- [GPU Software Stack Overview](./concepts/gpu-stack.md): the 5 layers from hardware to Kubernetes scheduling
-- [Understanding GPU Drivers](./concepts/gpu-driver.md): kernel modules, NVML, and how to troubleshoot from the bottom up
-- [HAMi Cluster Architecture](./concepts/hami-architecture.md): every component in a HAMi cluster and what breaks without it
+- [GPU Software Stack Overview](/docs/core-concepts/gpu-stack): the 5 layers from hardware to Kubernetes scheduling
+- [Understanding GPU Drivers](/docs/core-concepts/gpu-driver): kernel modules, NVML, and how to troubleshoot from the bottom up
+- [HAMi Cluster Architecture](/docs/core-concepts/hami-architecture): every component in a HAMi cluster and what breaks without it
 
 ## Labs
 

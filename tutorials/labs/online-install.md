@@ -6,7 +6,7 @@ This lab walks you through building a Kubernetes cluster from scratch on a Googl
 
 ## What You'll Get
 
-After completing this lab, you will have a fully functional GPU-virtualized Kubernetes cluster. For a detailed explanation of the cluster architecture and component responsibilities, see [HAMi Cluster Architecture](../concepts/hami-architecture.md).
+After completing this lab, you will have a fully functional GPU-virtualized Kubernetes cluster. For a detailed explanation of the cluster architecture and component responsibilities, see [HAMi Cluster Architecture](/docs/core-concepts/hami-architecture).
 
 ## Installation Overview
 
@@ -235,7 +235,7 @@ curl -fsSL https://raw.githubusercontent.com/projectcalico/calico/v3.28.0/manife
     sed 's|192.168.0.0/16|10.244.0.0/16|' | kubectl create -f -
 ```
 
-> The first manifest installs the tigera-operator, which manages Calico's lifecycle. The second creates the `Installation` resource that tells the operator to deploy Calico itself. The `sed` replaces Calico's default IP pool (`192.168.0.0/16`) with the `--pod-network-cidr` range passed to `kubeadm init`. Without it, the tigera-operator reports `Degraded` with `IPPool 192.168.0.0/16 is not within the platform's configured pod network CIDR(s)` and the node never becomes Ready. The role of each Calico component is described in [HAMi Cluster Architecture](../concepts/hami-architecture.md).
+> The first manifest installs the tigera-operator, which manages Calico's lifecycle. The second creates the `Installation` resource that tells the operator to deploy Calico itself. The `sed` replaces Calico's default IP pool (`192.168.0.0/16`) with the `--pod-network-cidr` range passed to `kubeadm init`. Without it, the tigera-operator reports `Degraded` with `IPPool 192.168.0.0/16 is not within the platform's configured pod network CIDR(s)` and the node never becomes Ready. The role of each Calico component is described in [HAMi Cluster Architecture](/docs/core-concepts/hami-architecture).
 
 Wait for the Calico Pods to be ready:
 
@@ -315,7 +315,7 @@ prometheus-prometheus-node-exporter-xxxxx              1/1     Running   0      
 
 ### Purpose
 
-The NVIDIA GPU Operator automates the management of the GPU software stack (drivers, container toolkit, metrics collection, feature discovery). For a detailed explanation of each GPU Operator component, see [HAMi Cluster Architecture](../concepts/hami-architecture.md).
+The NVIDIA GPU Operator automates the management of the GPU software stack (drivers, container toolkit, metrics collection, feature discovery). For a detailed explanation of each GPU Operator component, see [HAMi Cluster Architecture](/docs/core-concepts/hami-architecture).
 
 > **Important:** You must disable the GPU Operator's built-in device-plugin (`--set devicePlugin.enabled=false`) because HAMi provides its own enhanced device-plugin that supports VRAM partitioning and GPU sharing. The two cannot coexist.
 
@@ -363,7 +363,7 @@ nvidia-operator-validator-2jctf                                   1/1     Runnin
 
 ### Verify GPU Driver
 
-Enter the nvidia-driver-daemonset Pod to verify the GPU driver is loaded correctly (for details on the call chain behind nvidia-smi, see [Understanding GPU Drivers](../concepts/gpu-driver.md)):
+Enter the nvidia-driver-daemonset Pod to verify the GPU driver is loaded correctly (for details on the call chain behind nvidia-smi, see [Understanding GPU Drivers](/docs/core-concepts/gpu-driver)):
 
 ```bash
 kubectl -n gpu-operator exec -it $(kubectl get pods -n gpu-operator -l app=nvidia-driver-daemonset -o name | head -1) -- nvidia-smi
@@ -389,7 +389,7 @@ The expected output includes GPU information (driver version, CUDA version, GPU 
 
 ### Purpose
 
-Install the HAMi GPU virtualization platform to allow multiple Pods to share the same GPU. For HAMi's architecture and component details, see [HAMi Cluster Architecture](../concepts/hami-architecture.md).
+Install the HAMi GPU virtualization platform to allow multiple Pods to share the same GPU. For HAMi's architecture and component details, see [HAMi Cluster Architecture](/docs/core-concepts/hami-architecture).
 
 ### Instructions
 

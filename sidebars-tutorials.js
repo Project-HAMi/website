@@ -3,21 +3,6 @@ module.exports = {
     "overview",
     {
       "type": "category",
-      "label": "Concepts",
-      "collapsed": false,
-      "link": {
-        "type": "generated-index",
-        "title": "Concepts",
-        "description": "Background knowledge the hands-on labs build on."
-      },
-      "items": [
-        "concepts/gpu-stack",
-        "concepts/gpu-driver",
-        "concepts/hami-architecture"
-      ]
-    },
-    {
-      "type": "category",
       "label": "Labs",
       "collapsed": false,
       "link": {

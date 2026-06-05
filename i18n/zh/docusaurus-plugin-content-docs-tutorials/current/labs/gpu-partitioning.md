@@ -310,4 +310,4 @@ kubectl delete pod gpumem-pod-a gpumem-pod-b oom-test-pod gpucores-pod --ignore-
 
 ## Next Steps
 
-Read [HAMi Cluster Architecture](../concepts/hami-architecture.md) to map every component you just exercised, or continue experimenting: try `nvidia.com/gpumem-percentage`, run more than two Pods on the card, or fill the card's 10 vGPU slots and watch the scheduler refuse the 11th Pod.
+Read [HAMi Cluster Architecture](/docs/core-concepts/hami-architecture) to map every component you just exercised, or continue experimenting: try `nvidia.com/gpumem-percentage`, run more than two Pods on the card, or fill the card's 10 vGPU slots and watch the scheduler refuse the 11th Pod.

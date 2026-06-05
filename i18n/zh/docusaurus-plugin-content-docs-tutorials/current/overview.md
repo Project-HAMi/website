@@ -9,9 +9,9 @@ slug: /
 
 实验所依赖的背景知识。
 
-- [GPU 软件栈全景](./concepts/gpu-stack.md)：从硬件到 Kubernetes 调度的 5 层结构
-- [理解 GPU 驱动](./concepts/gpu-driver.md)：内核模块、NVML，以及自底向上的排障方法
-- [HAMi 集群架构](./concepts/hami-architecture.md)：HAMi 集群中的每个组件及其作用
+- [GPU 软件栈全景](/zh/docs/core-concepts/gpu-stack)：从硬件到 Kubernetes 调度的 5 层结构
+- [理解 GPU 驱动](/zh/docs/core-concepts/gpu-driver)：内核模块、NVML，以及自底向上的排障方法
+- [HAMi 集群架构](/zh/docs/core-concepts/hami-architecture)：HAMi 集群中的每个组件及其作用
 
 ## 实验
 

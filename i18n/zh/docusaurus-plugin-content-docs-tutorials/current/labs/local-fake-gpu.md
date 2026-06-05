@@ -779,4 +779,4 @@ kubectl annotate node ${NODE_NAME} hami.io/node-nvidia-register- hami.io/node-ha
 
 ## 下一步
 
-完成本实验后，建议继续阅读 [HAMi 集群架构](../concepts/hami-architecture.md)，重点理解 scheduler、device-plugin、webhook 和 GPU Operator 的职责边界
+完成本实验后，建议继续阅读 [HAMi 集群架构](/zh/docs/core-concepts/hami-architecture)，重点理解 scheduler、device-plugin、webhook 和 GPU Operator 的职责边界

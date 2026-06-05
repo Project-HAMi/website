@@ -6,7 +6,7 @@ title: "实验 1: 在线安装 HAMi"
 
 ## 你将得到什么
 
-完成本实验后，你将拥有一台完整的 GPU 虚拟化 Kubernetes 集群。关于集群架构和各组件职责的详细解释，参见 [HAMi 集群架构](../concepts/hami-architecture.md)。
+完成本实验后，你将拥有一台完整的 GPU 虚拟化 Kubernetes 集群。关于集群架构和各组件职责的详细解释，参见 [HAMi 集群架构](/zh/docs/core-concepts/hami-architecture)。
 
 ## 安装全景图
 
@@ -235,7 +235,7 @@ curl -fsSL https://raw.githubusercontent.com/projectcalico/calico/v3.28.0/manife
     sed 's|192.168.0.0/16|10.244.0.0/16|' | kubectl create -f -
 ```
 
-> 第一个 manifest 安装 tigera-operator，负责管理 Calico 的生命周期。第二个创建 `Installation` 资源，告诉 operator 部署 Calico 本身。`sed` 把 Calico 默认的 IP 池（`192.168.0.0/16`）替换为 `kubeadm init` 时指定的 `--pod-network-cidr` 网段。如果不替换，tigera-operator 会报 `Degraded`（`IPPool 192.168.0.0/16 is not within the platform's configured pod network CIDR(s)`），节点永远不会变成 Ready。各 Calico 组件的职责参见 [HAMi 集群架构](../concepts/hami-architecture.md)。
+> 第一个 manifest 安装 tigera-operator，负责管理 Calico 的生命周期。第二个创建 `Installation` 资源，告诉 operator 部署 Calico 本身。`sed` 把 Calico 默认的 IP 池（`192.168.0.0/16`）替换为 `kubeadm init` 时指定的 `--pod-network-cidr` 网段。如果不替换，tigera-operator 会报 `Degraded`（`IPPool 192.168.0.0/16 is not within the platform's configured pod network CIDR(s)`），节点永远不会变成 Ready。各 Calico 组件的职责参见 [HAMi 集群架构](/zh/docs/core-concepts/hami-architecture)。
 
 等待 Calico Pod 就绪：
 
@@ -315,7 +315,7 @@ prometheus-prometheus-node-exporter-xxxxx              1/1     Running   0      
 
 ### 目的
 
-NVIDIA GPU Operator 自动管理 GPU 软件栈（驱动、容器工具包、指标采集、特征发现）。GPU Operator 各组件的详细说明参见 [HAMi 集群架构](../concepts/hami-architecture.md)。
+NVIDIA GPU Operator 自动管理 GPU 软件栈（驱动、容器工具包、指标采集、特征发现）。GPU Operator 各组件的详细说明参见 [HAMi 集群架构](/zh/docs/core-concepts/hami-architecture)。
 
 > **关键：** 必须禁用 GPU Operator 自带的 device-plugin（`--set devicePlugin.enabled=false`），因为 HAMi 会提供自己的增强版 device-plugin 来支持显存切分和 GPU 共享。两者不能共存。
 
@@ -361,7 +361,7 @@ nvidia-operator-validator-2jctf                                   1/1     Runnin
 
 ### 验证 GPU 驱动
 
-进入 nvidia-driver-daemonset Pod 验证 GPU 驱动是否正常加载（关于 nvidia-smi 背后的调用链，参见 [理解 GPU 驱动](../concepts/gpu-driver.md)）：
+进入 nvidia-driver-daemonset Pod 验证 GPU 驱动是否正常加载（关于 nvidia-smi 背后的调用链，参见 [理解 GPU 驱动](/zh/docs/core-concepts/gpu-driver)）：
 
 ```bash
 kubectl -n gpu-operator exec -it $(kubectl get pods -n gpu-operator -l app=nvidia-driver-daemonset -o name | head -1) -- nvidia-smi
@@ -387,7 +387,7 @@ kubectl -n gpu-operator exec -it $(kubectl get pods -n gpu-operator -l app=nvidi
 
 ### 目的
 
-安装 HAMi GPU 虚拟化平台，让多个 Pod 可以共享同一张 GPU。HAMi 的架构和组件说明参见 [HAMi 集群架构](../concepts/hami-architecture.md)。
+安装 HAMi GPU 虚拟化平台，让多个 Pod 可以共享同一张 GPU。HAMi 的架构和组件说明参见 [HAMi 集群架构](/zh/docs/core-concepts/hami-architecture)。
 
 ### 操作
 
