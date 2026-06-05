@@ -57,6 +57,23 @@ export default function LabMeta() {
           {lab.cost}
         </Item>
       )}
+      {Array.isArray(lab.authors) && lab.authors.length > 0 && (
+        <Item
+          label={
+            <Translate id="tutorials.lab.authors" description="Lab authors label">
+              By:
+            </Translate>
+          }>
+          {lab.authors.map((author, i) => (
+            <React.Fragment key={author}>
+              {i > 0 && ', '}
+              <a href={`https://github.com/${author}`} target="_blank" rel="noopener noreferrer">
+                @{author}
+              </a>
+            </React.Fragment>
+          ))}
+        </Item>
+      )}
     </div>
   );
 }

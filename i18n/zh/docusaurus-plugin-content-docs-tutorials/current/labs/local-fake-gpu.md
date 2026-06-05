@@ -6,6 +6,8 @@ lab:
   duration: 约 30 分钟
   environment: macOS 笔记本，无需 GPU
   cost: 免费
+  authors:
+    - saiyam1814
 toc_max_heading_level: 2
 ---
 

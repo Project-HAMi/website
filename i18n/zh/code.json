@@ -711,5 +711,9 @@
   "tutorials.lab.cost": {
     "message": "费用：",
     "description": "Lab cost label"
+  },
+  "tutorials.lab.authors": {
+    "message": "作者：",
+    "description": "Lab authors label"
   }
 }

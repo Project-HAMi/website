@@ -5,6 +5,8 @@ lab:
   level: Intermediate
   duration: about 30 minutes
   environment: continues the Lab 1 cluster
+  authors:
+    - saiyam1814
 toc_max_heading_level: 2
 ---
 

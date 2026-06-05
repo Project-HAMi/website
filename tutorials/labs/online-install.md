@@ -6,6 +6,8 @@ lab:
   duration: about 60 minutes
   environment: GCP VM with one NVIDIA T4
   cost: about $1 in VM time
+  authors:
+    - saiyam1814
 toc_max_heading_level: 2
 ---
 

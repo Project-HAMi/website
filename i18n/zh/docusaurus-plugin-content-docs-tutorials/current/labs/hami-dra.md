@@ -5,6 +5,8 @@ lab:
   level: Advanced
   duration: about 45 minutes
   environment: continues the Lab 1 cluster, Kubernetes 1.34+
+  authors:
+    - saiyam1814
 toc_max_heading_level: 2
 ---
 
