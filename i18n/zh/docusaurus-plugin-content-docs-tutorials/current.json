@@ -1,0 +1,14 @@
+{
+  "version.label": {
+    "message": "当前",
+    "description": "The label for version current"
+  },
+  "sidebar.tutorials.category.Concepts": {
+    "message": "概念",
+    "description": "The label for category Concepts in sidebar tutorials"
+  },
+  "sidebar.tutorials.category.Labs": {
+    "message": "实验",
+    "description": "The label for category Labs in sidebar tutorials"
+  }
+}
