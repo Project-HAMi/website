@@ -210,7 +210,6 @@ module.exports = {
         editUrl: function ({ locale, docPath }) {
           return `https://github.com/Project-HAMi/website/edit/master/tutorials/${docPath}`;
         },
-        showLastUpdateAuthor: false,
         showLastUpdateTime: true,
         numberPrefixParser: false,
         breadcrumbs: false,

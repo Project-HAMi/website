@@ -1218,7 +1218,10 @@ html[data-theme='dark'] .casestudies-wrapper .casestudy-card-link:hover {
   text-decoration: none !important;
 }
 
-/* --- Tutorials lab pages (plugin id: tutorials) --- */
+/* --- Tutorials lab pages (plugin id: tutorials) ---
+   The plugin-id-* class is applied to <html> by the docs plugin's DocsRoot.
+   It is not part of the documented ThemeClassNames API, so re-verify this
+   selector still matches after Docusaurus major upgrades. */
 html.plugin-id-tutorials article .markdown h2 {
   border-left: 4px solid var(--ifm-color-primary);
   padding-left: 0.6rem;

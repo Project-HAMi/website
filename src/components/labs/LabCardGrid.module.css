@@ -47,26 +47,3 @@
   font-size: 0.8rem;
   color: var(--ifm-color-emphasis-600);
 }
-
-.badge {
-  flex-shrink: 0;
-  padding: 0.1rem 0.55rem;
-  border-radius: 1rem;
-  font-weight: 700;
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  color: #fff;
-}
-
-.levelBeginner {
-  background: var(--ifm-color-success-dark);
-}
-
-.levelIntermediate {
-  background: var(--ifm-color-warning-darkest);
-}
-
-.levelAdvanced {
-  background: var(--ifm-color-danger-dark);
-}

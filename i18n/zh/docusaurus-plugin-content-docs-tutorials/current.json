@@ -1,8 +1,4 @@
 {
-  "version.label": {
-    "message": "当前",
-    "description": "The label for version current"
-  },
   "sidebar.tutorials.category.Labs": {
     "message": "实验",
     "description": "The label for category Labs in sidebar tutorials"

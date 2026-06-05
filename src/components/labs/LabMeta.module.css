@@ -12,28 +12,6 @@
   font-size: 0.85rem;
 }
 
-.badge {
-  padding: 0.15rem 0.6rem;
-  border-radius: 1rem;
-  font-weight: 700;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  color: #fff;
-}
-
-.levelBeginner {
-  background: var(--ifm-color-success-dark);
-}
-
-.levelIntermediate {
-  background: var(--ifm-color-warning-darkest);
-}
-
-.levelAdvanced {
-  background: var(--ifm-color-danger-dark);
-}
-
 .item {
   white-space: nowrap;
 }

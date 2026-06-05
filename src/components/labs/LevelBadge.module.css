@@ -1,0 +1,23 @@
+.badge {
+  flex-shrink: 0;
+  padding: 0.15rem 0.6rem;
+  border-radius: 1rem;
+  font-weight: 700;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #fff;
+  background: var(--ifm-color-emphasis-600);
+}
+
+.beginner {
+  background: var(--ifm-color-success-dark);
+}
+
+.intermediate {
+  background: var(--ifm-color-warning-darkest);
+}
+
+.advanced {
+  background: var(--ifm-color-danger-dark);
+}

@@ -5,37 +5,10 @@
  * safe to mount for every doc page.
  */
 import React from 'react';
-import clsx from 'clsx';
 import Translate from '@docusaurus/Translate';
 import {useDoc} from '@docusaurus/plugin-content-docs/client';
+import LevelBadge from './LevelBadge';
 import styles from './LabMeta.module.css';
-
-const LEVEL_META = {
-  Beginner: {
-    className: 'levelBeginner',
-    label: (
-      <Translate id="tutorials.lab.level.beginner" description="Beginner lab level badge">
-        Beginner
-      </Translate>
-    ),
-  },
-  Intermediate: {
-    className: 'levelIntermediate',
-    label: (
-      <Translate id="tutorials.lab.level.intermediate" description="Intermediate lab level badge">
-        Intermediate
-      </Translate>
-    ),
-  },
-  Advanced: {
-    className: 'levelAdvanced',
-    label: (
-      <Translate id="tutorials.lab.level.advanced" description="Advanced lab level badge">
-        Advanced
-      </Translate>
-    ),
-  },
-};
 
 function Item({label, children}) {
   return (
@@ -51,12 +24,9 @@ export default function LabMeta() {
   if (!lab) {
     return null;
   }
-  const level = LEVEL_META[lab.level];
   return (
     <div className={styles.labMeta}>
-      {level && (
-        <span className={clsx(styles.badge, styles[level.className])}>{level.label}</span>
-      )}
+      <LevelBadge level={lab.level} />
       {lab.duration && (
         <Item
           label={

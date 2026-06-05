@@ -24,7 +24,6 @@ import LabCardGrid from '@site/src/components/labs/LabCardGrid';
       title: '实验 1: 在线安装 HAMi',
       description: '在云虚拟机上从零搭建 GPU Kubernetes 集群并安装 HAMi。',
       level: 'Beginner',
-      levelLabel: '入门',
       duration: '约 60 分钟',
     },
     {
@@ -32,7 +31,6 @@ import LabCardGrid from '@site/src/components/labs/LabCardGrid';
       title: '实验 2: 本地 Fake GPU 安装',
       description: '在笔记本上学习 HAMi 控制面，无需 GPU。',
       level: 'Beginner',
-      levelLabel: '入门',
       duration: '约 30 分钟',
     },
     {
@@ -40,7 +38,6 @@ import LabCardGrid from '@site/src/components/labs/LabCardGrid';
       title: '实验 3: GPU 切分',
       description: '多个 Pod 共享一张 GPU，显存和算力限制可验证。（中文翻译整理中）',
       level: 'Intermediate',
-      levelLabel: '进阶',
       duration: '约 30 分钟',
     },
     {
@@ -48,7 +45,6 @@ import LabCardGrid from '@site/src/components/labs/LabCardGrid';
       title: '实验 4: 用 DRA 切分 GPU',
       description: '通过 Kubernetes 原生 Dynamic Resource Allocation 实现同样效果。（实验性，中文翻译整理中）',
       level: 'Advanced',
-      levelLabel: '高级',
       duration: '约 45 分钟',
     },
   ]}
