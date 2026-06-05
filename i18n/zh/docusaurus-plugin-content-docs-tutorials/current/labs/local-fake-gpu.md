@@ -7,7 +7,7 @@ lab:
   environment: macOS 笔记本，无需 GPU
   cost: 免费
   authors:
-    - saiyam1814
+    - rootsongjc
 toc_max_heading_level: 2
 ---
 

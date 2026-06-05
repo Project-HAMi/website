@@ -7,6 +7,7 @@ lab:
   environment: 带一块 NVIDIA T4 的 GCP 虚拟机
   cost: 约 $1 的虚拟机费用
   authors:
+    - rootsongjc
     - saiyam1814
 toc_max_heading_level: 2
 ---

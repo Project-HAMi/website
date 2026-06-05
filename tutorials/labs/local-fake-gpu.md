@@ -7,7 +7,7 @@ lab:
   environment: macOS laptop, no GPU required
   cost: free
   authors:
-    - saiyam1814
+    - rootsongjc
 toc_max_heading_level: 2
 ---
 

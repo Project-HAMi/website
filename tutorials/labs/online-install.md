@@ -7,6 +7,7 @@ lab:
   environment: GCP VM with one NVIDIA T4
   cost: about $1 in VM time
   authors:
+    - rootsongjc
     - saiyam1814
 toc_max_heading_level: 2
 ---
