@@ -351,7 +351,9 @@ body.hami-lightbox-open {
 }
 
 .hami-lightbox__svg {
-  max-width: min(96vw, 1600px);
+  /* Explicit width: the cloned SVG is width:100% of this box, so without
+     a definite width the box would shrink-to-fit and render tiny. */
+  width: min(96vw, 1600px);
   max-height: min(86vh, 1100px);
   overflow: auto;
   background: #ffffff;
@@ -359,6 +361,12 @@ body.hami-lightbox-open {
   box-shadow: 0 18px 48px rgba(0, 0, 0, 0.45);
   padding: 16px;
   cursor: zoom-out;
+}
+
+/* Mermaid renders a dark-theme variant in dark mode (light text, dark
+   fills), so the zoom card must follow the color mode or contrast breaks. */
+html[data-theme='dark'] .hami-lightbox__svg {
+  background: var(--ifm-background-surface-color);
 }
 
 .docusaurus-mermaid-container {
