@@ -7,6 +7,11 @@ lab:
   environment: continues the Lab 1 cluster, Kubernetes 1.34+
   authors:
     - saiyam1814
+  verified: "2026-06-04"
+tags:
+  - dra
+  - scheduling
+  - experimental
 toc_max_heading_level: 2
 ---
 

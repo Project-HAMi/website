@@ -715,5 +715,9 @@
   "tutorials.lab.authors": {
     "message": "作者：",
     "description": "Lab authors label"
+  },
+  "tutorials.lab.verified": {
+    "message": "验证于：",
+    "description": "Lab verified date label"
   }
 }

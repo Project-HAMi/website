@@ -8,6 +8,9 @@ lab:
   cost: free                 # omit if not applicable
   authors:
     - your-github-handle
+  verified: "YYYY-MM-DD"     # date you last ran the lab end to end
+tags:
+  - one-or-two-topic-tags    # used for the /tutorials/tags pages
 toc_max_heading_level: 2
 ---
 

@@ -7,6 +7,10 @@ lab:
   environment: continues the Lab 1 cluster
   authors:
     - saiyam1814
+  verified: "2026-06-04"
+tags:
+  - gpu-partitioning
+  - isolation
 toc_max_heading_level: 2
 ---
 

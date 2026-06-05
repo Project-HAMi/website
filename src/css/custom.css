@@ -350,6 +350,21 @@ body.hami-lightbox-open {
   cursor: zoom-out;
 }
 
+.hami-lightbox__svg {
+  max-width: min(96vw, 1600px);
+  max-height: min(86vh, 1100px);
+  overflow: auto;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.45);
+  padding: 16px;
+  cursor: zoom-out;
+}
+
+.docusaurus-mermaid-container {
+  cursor: zoom-in;
+}
+
 .hami-lightbox__caption {
   margin: 0;
   max-width: min(90vw, 980px);

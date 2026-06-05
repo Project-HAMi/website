@@ -9,6 +9,10 @@ lab:
   authors:
     - rootsongjc
     - saiyam1814
+  verified: "2026-06-04"
+tags:
+  - installation
+  - nvidia
 toc_max_heading_level: 2
 ---
 

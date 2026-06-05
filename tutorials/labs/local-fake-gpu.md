@@ -8,6 +8,10 @@ lab:
   cost: free
   authors:
     - rootsongjc
+  verified: "2026-05-21"
+tags:
+  - simulation
+  - local-setup
 toc_max_heading_level: 2
 ---
 

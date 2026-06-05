@@ -57,6 +57,16 @@ export default function LabMeta() {
           {lab.cost}
         </Item>
       )}
+      {lab.verified && (
+        <Item
+          label={
+            <Translate id="tutorials.lab.verified" description="Lab verified date label">
+              Verified:
+            </Translate>
+          }>
+          {lab.verified}
+        </Item>
+      )}
       {Array.isArray(lab.authors) && lab.authors.length > 0 && (
         <Item
           label={
