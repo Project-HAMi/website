@@ -104,19 +104,21 @@ function ensureLightbox() {
     document.body.classList.add('hami-lightbox-open');
   };
 
-  root.__hamiLightboxOpenSvg = (svg) => {
+  root.__hamiLightboxOpenSvg = (svg, captionText) => {
     const clone = svg.cloneNode(true);
-    // Mermaid caps the inline SVG at its rendered size; lift the cap so the
-    // diagram can use the full lightbox area.
+    // Mermaid caps the inline SVG at its rendered size; lift the cap and let
+    // it scale to fit the lightbox box in both dimensions (the viewBox keeps
+    // the aspect ratio), so the whole diagram is visible without scrolling.
     clone.style.maxWidth = 'none';
     clone.style.width = '100%';
-    clone.style.height = 'auto';
+    clone.style.height = '100%';
     clone.removeAttribute('height');
+    clone.removeAttribute('width');
     svgHost.replaceChildren(clone);
     svgHost.hidden = false;
     lightboxImage.hidden = true;
     lightboxImage.removeAttribute('src');
-    caption.textContent = '';
+    caption.textContent = captionText || '';
     root.hidden = false;
     document.body.classList.add('hami-lightbox-open');
   };
@@ -139,8 +141,10 @@ function handleImageClick(event) {
   ) {
     const svg = mermaidContainer.querySelector('svg');
     if (svg) {
+      const figure = mermaidContainer.closest('figure.mermaid-figure');
+      const captionText = figure?.querySelector('figcaption')?.textContent || '';
       const lightbox = ensureLightbox();
-      lightbox.__hamiLightboxOpenSvg(svg);
+      lightbox.__hamiLightboxOpenSvg(svg, captionText);
       return;
     }
   }
