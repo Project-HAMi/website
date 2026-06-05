@@ -2,21 +2,30 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem 1rem;
+  gap: 0.5rem 1.25rem;
   margin-bottom: 1.25rem;
-  padding: 0.6rem 0.9rem;
+  padding: 0.85rem 1.1rem;
   border: 1px solid var(--ifm-color-emphasis-300);
   border-left: 4px solid var(--ifm-color-primary);
-  border-radius: var(--ifm-global-radius);
-  background: var(--ifm-color-emphasis-100);
-  font-size: 0.85rem;
+  border-radius: var(--ifm-card-border-radius, var(--ifm-global-radius));
+  background: var(--ifm-card-background-color);
+  font-size: 0.9rem;
 }
 
 .item {
-  white-space: nowrap;
+  min-width: 0;
 }
 
 .itemLabel {
   font-weight: 600;
   color: var(--ifm-color-emphasis-700);
+}
+
+/* Stack the metadata rows on narrow screens instead of cramming them */
+@media (max-width: 768px) {
+  .labMeta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.55rem;
+  }
 }
