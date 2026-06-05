@@ -18,7 +18,6 @@ import DocBreadcrumbs from '@theme/DocBreadcrumbs';
 import ContentVisibility from '@theme/ContentVisibility';
 import styles from './styles.module.css';
 import useImageLightbox from '../../utils/useImageLightbox';
-import LabMeta from '@site/src/components/labs/LabMeta';
 
 function useDocTOC() {
   const {frontMatter, toc} = useDoc();
@@ -49,7 +48,6 @@ export default function DocItemLayout({children}) {
               <DocVersionBadge />
             </div>
             {docTOC.mobile}
-            <LabMeta />
             <DocItemContent>{children}</DocItemContent>
             <DocItemFooter />
           </article>
