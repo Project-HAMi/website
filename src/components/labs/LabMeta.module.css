@@ -1,0 +1,44 @@
+.labMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  margin-bottom: 1.25rem;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-left: 4px solid var(--ifm-color-primary);
+  border-radius: var(--ifm-global-radius);
+  background: var(--ifm-color-emphasis-100);
+  font-size: 0.85rem;
+}
+
+.badge {
+  padding: 0.15rem 0.6rem;
+  border-radius: 1rem;
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #fff;
+}
+
+.levelBeginner {
+  background: var(--ifm-color-success-dark);
+}
+
+.levelIntermediate {
+  background: var(--ifm-color-warning-darkest);
+}
+
+.levelAdvanced {
+  background: var(--ifm-color-danger-dark);
+}
+
+.item {
+  white-space: nowrap;
+}
+
+.itemLabel {
+  font-weight: 600;
+  color: var(--ifm-color-emphasis-700);
+}

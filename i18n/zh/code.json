@@ -687,5 +687,29 @@
   "theme.hami.blog.meta.publishedLabel": {
     "message": "发布时间",
     "description": "Label for blog post publish date metadata"
+  },
+  "tutorials.lab.level.beginner": {
+    "message": "入门",
+    "description": "Beginner lab level badge"
+  },
+  "tutorials.lab.level.intermediate": {
+    "message": "进阶",
+    "description": "Intermediate lab level badge"
+  },
+  "tutorials.lab.level.advanced": {
+    "message": "高级",
+    "description": "Advanced lab level badge"
+  },
+  "tutorials.lab.duration": {
+    "message": "时长：",
+    "description": "Lab duration label"
+  },
+  "tutorials.lab.environment": {
+    "message": "环境：",
+    "description": "Lab environment label"
+  },
+  "tutorials.lab.cost": {
+    "message": "费用：",
+    "description": "Lab cost label"
   }
 }

@@ -1,5 +1,12 @@
 ---
 title: "实验 1A: mac 本地 Fake GPU 安装 HAMi"
+linktitle: "实验 2: 本地 Fake GPU"
+lab:
+  level: Beginner
+  duration: 约 30 分钟
+  environment: macOS 笔记本，无需 GPU
+  cost: 免费
+toc_max_heading_level: 2
 ---
 
 本实验将在 macOS 上使用 OrbStack 自带 Kubernetes 和 [run-ai/fake-gpu-operator](https://github.com/run-ai/fake-gpu-operator) 搭建一个纯本地 Kubernetes 集群，然后在线安装 HAMi。

@@ -1,5 +1,12 @@
 ---
 title: "实验 1: 在线安装 HAMi"
+linktitle: "实验 1: 在线安装"
+lab:
+  level: Beginner
+  duration: 约 60 分钟
+  environment: 带一块 NVIDIA T4 的 GCP 虚拟机
+  cost: 约 $1 的虚拟机费用
+toc_max_heading_level: 2
 ---
 
 本实验将在一台 Google Cloud GPU 虚拟机上，从零搭建 Kubernetes 集群并在线安装 HAMi，形成完整的 GPU 虚拟化运行环境。

@@ -1,5 +1,12 @@
 ---
 title: "Lab 2: Local Fake GPU Setup on macOS"
+linktitle: "Lab 2: Local Fake GPU"
+lab:
+  level: Beginner
+  duration: about 30 minutes
+  environment: macOS laptop, no GPU required
+  cost: free
+toc_max_heading_level: 2
 ---
 
 This lab walks you through setting up a fully local Kubernetes cluster on macOS using OrbStack's built-in Kubernetes and [run-ai/fake-gpu-operator](https://github.com/run-ai/fake-gpu-operator), then installing HAMi online.

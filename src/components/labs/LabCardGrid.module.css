@@ -1,0 +1,72 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0 2rem;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: var(--ifm-global-radius);
+  background: var(--ifm-card-background-color);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  border-color: var(--ifm-color-primary);
+  box-shadow: var(--ifm-global-shadow-lw);
+  color: inherit;
+  text-decoration: none;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+}
+
+.cardTitle {
+  font-weight: 700;
+}
+
+.cardDescription {
+  flex: 1;
+  margin: 0 0 0.6rem;
+  font-size: 0.85rem;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.cardFooter {
+  font-size: 0.8rem;
+  color: var(--ifm-color-emphasis-600);
+}
+
+.badge {
+  flex-shrink: 0;
+  padding: 0.1rem 0.55rem;
+  border-radius: 1rem;
+  font-weight: 700;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #fff;
+}
+
+.levelBeginner {
+  background: var(--ifm-color-success-dark);
+}
+
+.levelIntermediate {
+  background: var(--ifm-color-warning-darkest);
+}
+
+.levelAdvanced {
+  background: var(--ifm-color-danger-dark);
+}

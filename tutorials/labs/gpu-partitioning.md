@@ -1,5 +1,11 @@
 ---
 title: "Lab 3: GPU Partitioning with HAMi"
+linktitle: "Lab 3: GPU Partitioning"
+lab:
+  level: Intermediate
+  duration: about 30 minutes
+  environment: continues the Lab 1 cluster
+toc_max_heading_level: 2
 ---
 
 This lab continues from [Lab 1](./online-install.md). You have one physical Tesla T4 with 15360 MiB of VRAM. In this lab you will run multiple Pods on that single card, each with its own enforced VRAM and compute limit, and verify that the isolation is real: a Pod that tries to allocate past its slice gets a CUDA OOM while its neighbors keep running.

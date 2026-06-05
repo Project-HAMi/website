@@ -1,5 +1,12 @@
 ---
 title: "Lab 1: Online Installation of HAMi"
+linktitle: "Lab 1: Online Install"
+lab:
+  level: Beginner
+  duration: about 60 minutes
+  environment: GCP VM with one NVIDIA T4
+  cost: about $1 in VM time
+toc_max_heading_level: 2
 ---
 
 This lab walks you through building a Kubernetes cluster from scratch on a Google Cloud GPU virtual machine and installing HAMi online, resulting in a complete GPU virtualization runtime environment.

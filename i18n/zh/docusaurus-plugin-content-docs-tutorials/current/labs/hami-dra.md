@@ -1,5 +1,11 @@
 ---
 title: "Lab 4: GPU Slicing with Dynamic Resource Allocation"
+linktitle: "Lab 4: DRA Slicing"
+lab:
+  level: Advanced
+  duration: about 45 minutes
+  environment: continues the Lab 1 cluster, Kubernetes 1.34+
+toc_max_heading_level: 2
 ---
 
 :::note
@@ -7,7 +13,6 @@ title: "Lab 4: GPU Slicing with Dynamic Resource Allocation"
 本页的中文翻译整理中，以下内容暂为英文版。
 
 :::
-
 
 :::warning[Experimental]
 

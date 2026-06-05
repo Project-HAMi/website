@@ -1217,3 +1217,9 @@ html[data-theme='dark'] .casestudies-wrapper .casestudy-card-link:hover {
   color: var(--ifm-color-primary) !important;
   text-decoration: none !important;
 }
+
+/* --- Tutorials lab pages (plugin id: tutorials) --- */
+html.plugin-id-tutorials article .markdown h2 {
+  border-left: 4px solid var(--ifm-color-primary);
+  padding-left: 0.6rem;
+}
