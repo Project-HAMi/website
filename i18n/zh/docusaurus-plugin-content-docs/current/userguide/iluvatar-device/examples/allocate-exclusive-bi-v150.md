@@ -34,6 +34,6 @@ spec:
 ```
 :::note
 
-当申请独占一张GPU时，`iluvatar.ai/<card-type>-vgpu=1`时，需要同时设置`iluvatar.ai/<card-type>.vCore`和`iluvatar.ai/<card-type>.vMem`的值为GPU的最大资源数量，`iluvatar.ai/<card-type>-vgpu>1`时不再支持vGPU功能可不必在填写核心和显存的数值
+当申请独占一张 GPU（`iluvatar.ai/<card-type>-vgpu=1`）时，需要同时设置 `iluvatar.ai/<card-type>.vCore` 和 `iluvatar.ai/<card-type>.vMem` 的值为 GPU 的最大资源数量。`iluvatar.ai/<card-type>-vgpu>1` 时不再支持 vGPU 功能，可不必填写核心和显存的数值
 
 :::

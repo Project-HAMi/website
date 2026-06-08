@@ -34,7 +34,7 @@ HAMi 将每个 AWS Neuron 设备划分为 2 个可分配单元，支持分配半
 
 - 每个`aws.amazon.com/neuroncore`单元对应 1/2 个物理设备
 - 无需像其他设备那样显式分配`aws.amazon.com/neuron`，仅需分配`aws.amazon.com/neuroncore`
-- 当`aws.amazon.com/neuroncore`≥2 时，等效于设置`awa.amazon.com/neuron=1/2 * neuronCoreNumber`
+- 当`aws.amazon.com/neuroncore`≥2 时，等效于设置`aws.amazon.com/neuron=1/2 * neuronCoreNumber`
 - 当任务需要多个 neuron 设备时，拓扑感知调度将自动生效
 
 ## 运行 Neuron 任务

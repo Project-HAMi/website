@@ -9,6 +9,6 @@ translated: true
 ```yaml
       resources:
         limits:
-          mthreads.com/vgpu: 1 # 请求 1 个 MLU
+          mthreads.com/vgpu: 1 # 请求 1 个 GPU
           mthreads.com/sgpu-memory: 32 # 每个 GPU 包含 16G 设备显存
 ```
