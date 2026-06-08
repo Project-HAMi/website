@@ -7,6 +7,8 @@ const MARKDOWN_IMAGE_SCOPE =
 const BLOCKED_SCOPE =
   '.no-lightbox, .avatar, .table-of-contents, .pagination-nav, .navbar, .footer';
 
+const MERMAID_CONTAINER = '.docusaurus-mermaid-container';
+
 function isImageHref(href = '') {
   return /\.(png|jpe?g|webp|gif|avif|svg)(\?|#|$)/i.test(href);
 }
@@ -50,11 +52,16 @@ function ensureLightbox() {
   lightboxImage.className = 'hami-lightbox__image';
   lightboxImage.alt = '';
 
+  const svgHost = document.createElement('div');
+  svgHost.className = 'hami-lightbox__svg';
+  svgHost.hidden = true;
+
   const caption = document.createElement('p');
   caption.className = 'hami-lightbox__caption';
 
   root.appendChild(closeButton);
   root.appendChild(lightboxImage);
+  root.appendChild(svgHost);
   root.appendChild(caption);
   document.body.appendChild(root);
 
@@ -63,6 +70,9 @@ function ensureLightbox() {
     document.body.classList.remove('hami-lightbox-open');
     lightboxImage.removeAttribute('src');
     lightboxImage.alt = '';
+    lightboxImage.hidden = false;
+    svgHost.hidden = true;
+    svgHost.replaceChildren();
     caption.textContent = '';
   };
 
@@ -73,6 +83,7 @@ function ensureLightbox() {
   });
 
   lightboxImage.addEventListener('click', close);
+  svgHost.addEventListener('click', close);
 
   closeButton.addEventListener('click', close);
 
@@ -85,7 +96,29 @@ function ensureLightbox() {
   root.__hamiLightboxOpen = ({src, alt}) => {
     lightboxImage.src = src;
     lightboxImage.alt = alt || '';
+    lightboxImage.hidden = false;
+    svgHost.hidden = true;
+    svgHost.replaceChildren();
     caption.textContent = alt || '';
+    root.hidden = false;
+    document.body.classList.add('hami-lightbox-open');
+  };
+
+  root.__hamiLightboxOpenSvg = (svg, captionText) => {
+    const clone = svg.cloneNode(true);
+    // Mermaid caps the inline SVG at its rendered size; lift the cap and let
+    // it scale to fit the lightbox box in both dimensions (the viewBox keeps
+    // the aspect ratio), so the whole diagram is visible without scrolling.
+    clone.style.maxWidth = 'none';
+    clone.style.width = '100%';
+    clone.style.height = '100%';
+    clone.removeAttribute('height');
+    clone.removeAttribute('width');
+    svgHost.replaceChildren(clone);
+    svgHost.hidden = false;
+    lightboxImage.hidden = true;
+    lightboxImage.removeAttribute('src');
+    caption.textContent = captionText || '';
     root.hidden = false;
     document.body.classList.add('hami-lightbox-open');
   };
@@ -97,6 +130,23 @@ function handleImageClick(event) {
   const target = event.target;
   if (!(target instanceof Element)) {
     return;
+  }
+
+  // Mermaid diagrams: clicking anywhere in the rendered container zooms it.
+  const mermaidContainer = target.closest(MERMAID_CONTAINER);
+  if (
+    mermaidContainer &&
+    mermaidContainer.closest(MARKDOWN_IMAGE_SCOPE) &&
+    !mermaidContainer.closest(BLOCKED_SCOPE)
+  ) {
+    const svg = mermaidContainer.querySelector('svg');
+    if (svg) {
+      const figure = mermaidContainer.closest('figure.mermaid-figure');
+      const captionText = figure?.querySelector('figcaption')?.textContent || '';
+      const lightbox = ensureLightbox();
+      lightbox.__hamiLightboxOpenSvg(svg, captionText);
+      return;
+    }
   }
 
   const image = target instanceof HTMLImageElement ? target : target.closest('img');

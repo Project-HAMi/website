@@ -1,0 +1,27 @@
+/* Lightweight metadata row under the page title: documentation metadata,
+   not a hero banner. Items are separated by middle dots. */
+.labMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.75rem;
+  margin: -0.5rem 0 1.5rem;
+  font-size: 0.85rem;
+  color: var(--ifm-color-emphasis-600);
+}
+
+.labMeta > :not(:first-child)::before {
+  content: '·';
+  margin-right: 0.75rem;
+  color: var(--ifm-color-emphasis-500);
+  font-weight: 700;
+}
+
+.item {
+  min-width: 0;
+}
+
+.itemLabel {
+  font-weight: 600;
+  color: var(--ifm-color-emphasis-700);
+}

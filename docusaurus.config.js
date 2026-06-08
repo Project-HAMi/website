@@ -26,6 +26,7 @@ module.exports = {
     defaultOgImage: "/img/hami-graph-color.png",
   },
   markdown: {
+    mermaid: true,
     hooks: {
       onBrokenMarkdownLinks: "throw",
     },
@@ -200,6 +201,21 @@ module.exports = {
       },
     ],
     [
+      './src/plugins/docs/index.js',
+      {
+        id: 'tutorials',
+        path: 'tutorials',
+        routeBasePath: 'tutorials',
+        sidebarPath: require.resolve("./sidebars-tutorials.js"),
+        editUrl: function ({ locale, docPath }) {
+          return `https://github.com/Project-HAMi/website/edit/master/tutorials/${docPath}`;
+        },
+        showLastUpdateTime: true,
+        numberPrefixParser: false,
+        breadcrumbs: false,
+      },
+    ],
+    [
       './src/plugins/changelog/index.js',
       {
         blogTitle: 'HAMi Changelog',
@@ -217,17 +233,18 @@ module.exports = {
     ],
   ],
   themes: [
+    "@docusaurus/theme-mermaid",
     [
       require.resolve("@easyops-cn/docusaurus-search-local"),
       {
         indexDocs: true,
         indexBlog: false,
         indexPages: false,
-        docsRouteBasePath: ["/docs", "/zh/docs"],
+        docsRouteBasePath: ["/docs", "/zh/docs", "/tutorials", "/zh/tutorials"],
         language: ["en", "zh"],
         hashed: "filename",
         docsPluginIdForPreferredVersion: "default",
-        searchContextByPaths: ["docs", "zh/docs"],
+        searchContextByPaths: ["docs", "zh/docs", "tutorials", "zh/tutorials"],
         useAllContextsWithNoSearchContext: true,
         explicitSearchResultPath: true,
         // Performance optimization: Limit search result snippets
@@ -260,6 +277,12 @@ module.exports = {
           to: "/docs",
           activeBasePath: "docs",
           label: "Docs",
+          position: "left",
+        },
+        {
+          to: "/tutorials",
+          activeBasePath: "tutorials",
+          label: "Tutorials",
           position: "left",
         },
         {
