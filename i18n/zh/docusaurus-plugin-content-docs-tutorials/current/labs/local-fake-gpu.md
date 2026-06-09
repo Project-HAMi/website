@@ -664,7 +664,7 @@ kubectl -n kube-system port-forward svc/my-hami-webui 8080:3000
 
 浏览器打开 `http://localhost:8080/admin/vgpu/monitor/overview`，可以看到集群概览页面：
 
-![HAMi WebUI 集群概览](/img/tutorials/Hami_Webui_Nodes_Chinese.png)
+![HAMi WebUI 集群概览](/img/tutorials/hami-webui-nodes-chinese.png)
 
 > 集群概览页面展示：
 >
@@ -675,7 +675,7 @@ kubectl -n kube-system port-forward svc/my-hami-webui 8080:3000
 
 点击左侧菜单「节点管理」查看 GPU 节点详情：
 
-![HAMi WebUI 节点管理](/img/tutorials/hami_WebUi-Overview_Chinese.png)
+![HAMi WebUI 节点管理](/img/tutorials/hami-webui-overview-chinese.png)
 
 > 节点管理页面可以看到每个节点的 GPU 设备列表、显存分配情况和运行的工作负载。
 
