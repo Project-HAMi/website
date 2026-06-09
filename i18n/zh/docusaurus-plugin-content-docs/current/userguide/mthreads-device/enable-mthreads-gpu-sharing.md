@@ -10,9 +10,9 @@ translated: true
 
 **GPU 共享**: 每个任务可以只占用一部分显卡，多个任务可以共享一张显卡
 
-**可限制分配的显存大小**: 你现在可以用显存值（例如3000M）来分配MLU，本组件会确保任务使用的显存不会超过分配数值、
+**可限制分配的显存大小**: 你现在可以用显存值（例如3000M）来分配GPU，本组件会确保任务使用的显存不会超过分配数值
 
-**可限制分配的算力核组比例**: 你现在可以用算力核组数量（例如8个）来分配GPU，本组件会确保任务使用的显存不会超过分配数值
+**可限制分配的算力核组比例**: 你现在可以用算力核组数量（例如8个）来分配GPU，本组件会确保任务使用的算力不会超过分配数值
 
 ## 注意事项
 
@@ -31,7 +31,7 @@ translated: true
 
 ## 开启GPU复用
 
-- 部署'gpu-manager'，天数智芯的GPU共享需要配合厂家提供的'MT-CloudNative Toolkit'一起使用，联系设备提供方获取
+- 部署'gpu-manager'，摩尔线程的GPU共享需要配合厂家提供的'MT-CloudNative Toolkit'一起使用，联系设备提供方获取
 
 :::note
 
@@ -42,7 +42,7 @@ translated: true
 - 在安装HAMi时配置'devices.mthreads.enabled = true'参数
 
 ```bash
-helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag={your kubernetes version} --set device.mthreads.enabled=true -n kube-system
+helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag={your kubernetes version} --set devices.mthreads.enabled=true -n kube-system
 ```
 
 ## 运行GPU任务

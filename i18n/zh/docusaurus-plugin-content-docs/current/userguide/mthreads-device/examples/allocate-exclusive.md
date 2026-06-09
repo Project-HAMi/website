@@ -4,7 +4,7 @@ linktitle: 独占设备
 translated: true
 ---
 
-要分配整个寒武纪设备，你只需分配 `mthreads.com/vgpu` 而无需其他字段。你可以为一个容器分配多个 GPU。
+要分配整个摩尔线程设备，你只需分配 `mthreads.com/vgpu` 而无需其他字段。你可以为一个容器分配多个 GPU。
 
 ```yaml
 apiVersion: v1

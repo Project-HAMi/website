@@ -20,5 +20,5 @@ spec:
       command: ["bash", "-c", "sleep 86400"]
       resources:
         limits:
-          hygon.com/dcunum: 1 # 请求两个 DCU 卡
+          hygon.com/dcunum: 1 # 请求一个 DCU 卡
 ```

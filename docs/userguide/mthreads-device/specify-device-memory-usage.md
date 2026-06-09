@@ -9,6 +9,6 @@ Optional, each unit of `mthreads.com/sgpu-memory` equals 512 MiB of device memor
 ```yaml
       resources:
         limits:
-          mthreads.com/vgpu: 1 # requesting 1 MLU
+          mthreads.com/vgpu: 1 # requesting 1 GPU
           mthreads.com/sgpu-memory: 32 # Each GPU contains 16G device memory
 ```
