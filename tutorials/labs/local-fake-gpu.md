@@ -41,6 +41,7 @@ fake GPU does not represent real GPU memory isolation, compute isolation, CUDA r
 The entire local installation process consists of 7 steps:
 
 ```mermaid
+%% title: Local Fake GPU Installation Overview
 flowchart LR
     Step1["Step 1\nSet Up & Verify Environment"] --> Step2["Step 2\nInstall fake-gpu-operator"]
     Step2 --> Step3["Step 3\nInstall HAMi"]
@@ -750,11 +751,11 @@ kubectl -n kube-system port-forward svc/my-hami-webui 8080:3000
 
 Open `http://localhost:8080/admin/vgpu/monitor/overview` in your browser.
 
-![HAMi WebUI Cluster Overview](/img/tutorials/hami-webui-overview.png)
+![HAMi WebUI Cluster Overview](/img/tutorials/hami_WebUi_Overview_English.png)
 
 Click **Node Management** in the left sidebar to view GPU node details:
 
-![HAMi WebUI Node Management](/img/tutorials/hami-webui-nodes.png)
+![HAMi WebUI Node Management](/img/tutorials/hami_WebUi_Nodes_English.png)
 
 ## Step 7: Observe the Boundaries of HAMi and fake GPU
 
