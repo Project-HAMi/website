@@ -83,7 +83,7 @@ nvidia-smi
 
 By the end of this article, it becomes 10 virtual GPUs.
 
-## 1 > Install k3s and Helm
+## 1. Install k3s and Helm
 
 k3s is the right choice for a single-node environment.
 
@@ -93,7 +93,7 @@ curl -sfL https://get.k3s.io | sh -
 
 (Subsequent commands follow as in the repository; full walkthrough in the GitHub repo.)
 
-## 2 > Install kagent
+## 2. Install kagent
 
 kagent ships two Helm charts.
 
@@ -109,7 +109,7 @@ helm install kagent-crds \
 
 Then install the main chart, wired to the Nebius Token Factory endpoint.
 
-## 3 > Install HAMi
+## 3. Install HAMi
 
 Without HAMi, Kubernetes sees no GPU at all:
 
@@ -132,7 +132,7 @@ After installing HAMi:
 
 One physical GPU, virtualized into 10.
 
-## 4 > First Agent Call
+## 4. First Agent Call
 
 The LLM automatically:
 
@@ -144,7 +144,7 @@ Final output:
 
 > "The cluster has 25 running pods across different namespaces, including kagent and kube-system."
 
-## 5 > GPU Check
+## 5. GPU Check
 
 Before HAMi:
 
@@ -156,7 +156,7 @@ After HAMi:
 
 The Agent reads and understands HAMi's Kubernetes annotations.
 
-## 6 > Self-Inspection Test
+## 6. Self-Inspection Test
 
 The Agent describes itself using the Kubernetes API.
 
@@ -169,7 +169,7 @@ It:
 
 An Agent reading and explaining its own definition via live API calls.
 
-## 7 > Create a Custom Agent
+## 7. Create a Custom Agent
 
 Created an SRE orchestrator that delegates metrics queries to a `promql-agent`.
 
@@ -181,7 +181,7 @@ type: Agent
 
 This enables Agent-to-Agent (A2A) delegation.
 
-## 8 > Agent Talks to Agent
+## 8. Agent Talks to Agent
 
 Two separate Agents with:
 
@@ -191,7 +191,7 @@ Two separate Agents with:
 
 The orchestrator sees only the sub-agent's final result, not its internal reasoning.
 
-## 9 > Agent Creates a HAMi GPU Pod
+## 9. Agent Creates a HAMi GPU Pod
 
 The Agent automatically creates a pod with:
 
@@ -209,7 +209,7 @@ Both pods co-scheduled to the same physical GPU.
 
 HAMi handles GPU sharing correctly.
 
-## 10 > Overcommit Protection
+## 10. Overcommit Protection
 
 When requesting:
 
@@ -227,7 +227,7 @@ The pod stays Pending.
 
 HAMi does not schedule requests it cannot satisfy.
 
-## 11 > HAMi Metrics
+## 11. HAMi Metrics
 
 HAMi exposes standard Prometheus metrics:
 
@@ -237,7 +237,7 @@ HAMi exposes standard Prometheus metrics:
 
 Plugs directly into existing monitoring stacks.
 
-## 12 > kagent CLI
+## 12. kagent CLI
 
 The kagent CLI shows:
 
@@ -294,9 +294,10 @@ And it does this:
 
 ---
 
-## About HAMi
+## Summary
 
-HAMi (Heterogeneous AI Computing Virtualization Middleware) is an all-in-one architecture for managing heterogeneous AI computing devices in Kubernetes clusters. It provides device sharing and resource isolation between tasks, aimed at improving utilization of heterogeneous computing devices with a unified reuse interface across device types. HAMi is a CNCF Sandbox project, included in the CNAI category of the CNCF landscape.
+One NVIDIA L40S, split into 10 virtual GPUs by HAMi. An AI Agent deployed as a Kubernetes CRD via kagent. A2A delegation across independent sessions. All running on an open-source model with no closed-source dependencies.
 
-- Website: https://project-hami.io
-- GitHub: https://github.com/Project-HAMi/HAMi
+The combination works end to end: the Agent reads HAMi annotations, schedules GPU pods, detects overcommit, and queries Prometheus metrics - entirely from inside the cluster.
+
+Full manifests and setup script: [github.com/mesutoezdil/kagentWithHami](https://github.com/mesutoezdil/kagentWithHami)
