@@ -1,5 +1,5 @@
 ---
-title: 分配多个独占设备
+title: 分配多个独占 BI-V150 设备
 translated: true
 ---
 

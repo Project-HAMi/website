@@ -10,7 +10,7 @@ translated: true
       resources:
         limits:
           cambricon.com/vmlu: 1 # 请求 1 个 MLU
-          cambricon.com/mlu.smlu.vmemory: "20" # 每个 GPU 包含 20% 的设备显存
+          cambricon.com/mlu.smlu.vmemory: "20" # 每个 MLU 包含 20% 的设备显存
 ```
 
 :::note

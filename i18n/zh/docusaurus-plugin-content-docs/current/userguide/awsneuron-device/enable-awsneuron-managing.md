@@ -16,7 +16,7 @@ HAMi 现已集成[Neuron scheduler extension](https://awsdocs-neuron.readthedocs
 - 已部署 Neuron-device-plugin
 - 使用`Inf`或`Trn`类型的 EC2 实例
 
-## 启用 GCU 共享支持
+## 启用 Neuron 共享支持
 
 - 按照 AWS 官方文档在 Neuron 节点部署 neuron-device-plugin：[Neuron 设备插件部署指南](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/containers/kubernetes-getting-started.html#neuron-device-plugin)
 

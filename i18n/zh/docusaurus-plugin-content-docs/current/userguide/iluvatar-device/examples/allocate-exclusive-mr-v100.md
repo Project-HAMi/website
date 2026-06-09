@@ -1,5 +1,5 @@
 ---
-title: 分配多个独占设备
+title: 分配多个独占 MR-V100 设备
 translated: true
 ---
 
