@@ -1,5 +1,5 @@
 ---
-title: "实验 1A: mac 本地 Fake GPU 安装 HAMi"
+title: "实验 2: mac 本地 Fake GPU 安装 HAMi"
 linktitle: "实验 2: 本地 Fake GPU"
 lab:
   level: Beginner

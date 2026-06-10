@@ -793,6 +793,7 @@ Capacity:
 ### What This Lab Cannot Verify
 
 :::warning Real GPU required for the following
+
 - HAMi device-plugin actually registering GPUs and writing `hami.io/node-nvidia-register`
 - `nvidia.com/gpumem` memory slicing
 - `nvidia.com/gpucores` compute ratio limits

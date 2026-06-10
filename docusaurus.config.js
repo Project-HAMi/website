@@ -254,6 +254,12 @@ module.exports = {
     ],
   ],
   themeConfig: {
+    announcementBar: {
+      content: "kubecon_india_2026",
+      backgroundColor: "#1a1a2e",
+      textColor: "#ffffff",
+      isCloseable: true,
+    },
     image: "img/hami-graph-color.png",
     colorMode: {
       defaultMode: "dark",
