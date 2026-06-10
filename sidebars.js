@@ -368,7 +368,8 @@ module.exports = {
         "developers/gpu-utilization-metrics",
         "developers/hami-vnpu-core-integration",
         "developers/hami-webui-development-guide",
-        "developers/mindmap"
+        "developers/mindmap",
+        "diagrams-inventory"
       ]
     },
     {
