@@ -11,7 +11,7 @@ lab:
     - saiyam1814
   verified: "2026-06-04"
 tags:
-  - installation
+  - 安装
   - nvidia
 toc_max_heading_level: 2
 ---

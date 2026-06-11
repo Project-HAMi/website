@@ -11,8 +11,8 @@ lab:
     - maishivamhoo123
   verified: "2026-05-21"
 tags:
-  - simulation
-  - local-setup
+  - 模拟
+  - 本地安装
 toc_max_heading_level: 2
 ---
 
