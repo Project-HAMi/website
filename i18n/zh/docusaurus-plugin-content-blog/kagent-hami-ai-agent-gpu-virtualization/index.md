@@ -86,7 +86,7 @@ nvidia-smi
 
 而在本文结束时，它会被变成 10 张虚拟 GPU。
 
-## 1 > 安装 k3s 与 Helm
+## 1. 安装 k3s 与 Helm
 
 k3s 是单节点环境的理想选择。
 
@@ -96,7 +96,7 @@ curl -sfL https://get.k3s.io | sh -
 
 （后续命令与原文一致，此处保留）
 
-## 2 > 安装 kagent
+## 2. 安装 kagent
 
 kagent 提供两个 Helm Chart。
 
@@ -112,7 +112,7 @@ helm install kagent-crds \
 
 之后安装主 Chart，并接入 Nebius Token Factory。
 
-## 3 > 安装 HAMi
+## 3. 安装 HAMi
 
 如果没有 HAMi，Kubernetes 根本看不到 GPU：
 
@@ -135,7 +135,7 @@ HAMi 安装完成后：
 
 一张物理 GPU 被虚拟化成了 10 张 GPU。
 
-## 4 > 第一次 Agent 调用
+## 4. 第一次 Agent 调用
 
 LLM 会自动：
 
@@ -147,7 +147,7 @@ LLM 会自动：
 
 > "The cluster has 25 running pods across different namespaces, including kagent and kube-system."
 
-## 5 > GPU 检查
+## 5. GPU 检查
 
 安装 HAMi 前：
 
@@ -159,7 +159,7 @@ LLM 会自动：
 
 Agent 可以读取并理解 HAMi 的 Kubernetes annotations。
 
-## 6 > Self-inspection 测试
+## 6. Self-inspection 测试
 
 Agent 使用 Kubernetes API 描述它自己。
 
@@ -172,7 +172,7 @@ Agent 使用 Kubernetes API 描述它自己。
 
 一个 Agent，通过实时 API 调用，读取并解释自己的定义。
 
-## 7 > 创建自定义 Agent
+## 7. 创建自定义 Agent
 
 创建了一个 SRE orchestrator，并将 metrics 查询委托给 promql-agent。
 
@@ -184,7 +184,7 @@ type: Agent
 
 这实现了 Agent-to-Agent（A2A）。
 
-## 8 > Agent 与 Agent 对话
+## 8. Agent 与 Agent 对话
 
 两个不同 Agent 拥有：
 
@@ -194,7 +194,7 @@ type: Agent
 
 orchestrator 只能看到子 Agent 的最终结果，而无法看到内部 reasoning。
 
-## 9 > Agent 创建 HAMi GPU Pod
+## 9. Agent 创建 HAMi GPU Pod
 
 Agent 自动创建：
 
@@ -212,7 +212,7 @@ annotations:
 
 HAMi 会正确处理 GPU sharing。
 
-## 10 > Overcommit 保护机制
+## 10. Overcommit 保护机制
 
 当请求：
 
@@ -230,7 +230,7 @@ Pod 会一直 Pending。
 
 HAMi 不会调度无法满足的资源请求。
 
-## 11 > HAMi Metrics
+## 11. HAMi Metrics
 
 HAMi 提供标准 Prometheus metrics：
 
@@ -240,7 +240,7 @@ HAMi 提供标准 Prometheus metrics：
 
 可以直接接入现有监控系统。
 
-## 12 > kagent CLI
+## 12. kagent CLI
 
 kagent CLI 可以查看：
 
