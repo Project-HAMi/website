@@ -13,6 +13,22 @@ translated: true
 
 HAMi 是一个由社区驱动的项目，致力于促进一个健康、友好和富有成效的环境。
 
+## 社区
+
+| 渠道 | 用途 |
+| --- | --- |
+| [GitHub Issues](https://github.com/Project-HAMi/HAMi/issues) | 缺陷报告和功能请求 |
+| [GitHub Discussions](https://github.com/Project-HAMi/HAMi/discussions) | 提问、想法、设计方案 |
+| [Discord](https://discord.gg/Amhy7XmbNq) | 实时聊天（推荐） |
+| [CNCF Slack #hami-dev](https://cloud-native.slack.com/archives/C07T10BU4R2) | 实时聊天 |
+| [MAINTAINERS](https://github.com/Project-HAMi/HAMi/blob/master/MAINTAINERS.md) | 当前维护者列表 |
+| [社区会议（英文）](https://docs.google.com/document/d/1YC6hco03_oXbF9IOUPJ29VWEddmITIKIfSmBX8JtGBw/edit#heading=h.g61sgp7w0d0c) | 双周 Zoom 会议，周三 16:30 UTC+8。[iCal 订阅](https://webcal.prod.itx.linuxfoundation.org/lfx/lfmd9wcrbnW1NXUzPl) |
+| [Zoom 会议链接](https://zoom-lfx.platform.linuxfoundation.org/meeting/95994137931?password=55b961b5-3e8e-4040-8657-0f2d26511f1d) | 加入英文双周社区会议 |
+| [社区会议（中文）](https://docs.google.com/document/d/1YC6hco03_oXbF9IOUPJ29VWEddmITIKIfSmBX8JtGBw/edit#heading=h.g61sgp7w0d0c) | 周五 16:00 UTC+8，每周 |
+| [腾讯会议链接](https://meeting.tencent.com/dm/Ntiwq1BICD1P) | 加入中文每周社区会议 |
+
+在提交 issue 或 PR 之前，请先搜索已有的 issue 和讨论，确认是否已有相关工作。
+
 ## 入门
 
 - 在 GitHub 上 fork 这个仓库。

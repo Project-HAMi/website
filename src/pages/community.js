@@ -65,7 +65,7 @@ export default function CommunityPage() {
       title: { en: 'Join Chat', zh: '加入交流' },
       items: [
         { label: { en: 'Discord (recommended)', zh: 'Discord（推荐）' }, href: 'https://discord.gg/Amhy7XmbNq', icon: faDiscord },
-        { label: { en: 'Slack (#hami-dev)', zh: 'Slack（#hami-dev）' }, href: 'https://cloud-native.slack.com/archives/C07T10BU4R2', icon: faSlack },
+        { label: { en: 'Slack (#hami-dev)', zh: 'Slack (#hami-dev)' }, href: 'https://cloud-native.slack.com/archives/C07T10BU4R2', icon: faSlack },
         { label: { en: 'GitHub', zh: 'GitHub' }, href: 'https://github.com/Project-HAMi', icon: faGithub },
         { label: { en: 'Mailing list', zh: '邮件列表' }, href: 'https://groups.google.com/forum/#!forum/hami-project', icon: faFileLines },
         { label: { en: 'Bilibili', zh: 'Bilibili' }, href: 'https://space.bilibili.com/1105878584', icon: faBilibili },
@@ -74,12 +74,13 @@ export default function CommunityPage() {
     {
       key: 'meeting',
       title: { en: 'Community Meeting', zh: '社区会议' },
-      meta: [
-        {
-          en: 'Wednesday 16:00 UTC+8, biweekly',
-          zh: '周五 16:00 UTC+8，每周',
-        },
-      ],
+      meta: isZh
+        ? [
+            { en: 'Friday 16:00 UTC+8, weekly', zh: '周五 16:00 UTC+8，每周' },
+          ]
+        : [
+            { en: 'Wednesday 16:30 UTC+8, biweekly', zh: '周三 16:30 UTC+8，双周' },
+          ],
       items: isZh
         ? [
             { label: { en: 'Meeting notes and agenda', zh: '会议纪要与议程' }, href: 'https://docs.google.com/document/d/1YC6hco03_oXbF9IOUPJ29VWEddmITIKIfSmBX8JtGBw/edit#heading=h.g61sgp7w0d0c', icon: faFileLines, external: true },
@@ -88,6 +89,7 @@ export default function CommunityPage() {
         : [
             { label: { en: 'Meeting notes and agenda', zh: '会议纪要与议程' }, href: 'https://docs.google.com/document/d/1YC6hco03_oXbF9IOUPJ29VWEddmITIKIfSmBX8JtGBw/edit#heading=h.g61sgp7w0d0c', icon: faFileLines, external: true },
             { label: { en: 'Meeting link', zh: '会议链接' }, href: 'https://zoom-lfx.platform.linuxfoundation.org/meeting/95994137931?password=55b961b5-3e8e-4040-8657-0f2d26511f1d', icon: faVideo, external: true },
+            { label: { en: 'iCal subscription', zh: 'iCal 订阅' }, href: 'https://webcal.prod.itx.linuxfoundation.org/lfx/lfmd9wcrbnW1NXUzPl', icon: faCalendarDays, external: true },
           ],
     },
     {
