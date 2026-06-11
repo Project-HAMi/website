@@ -12,6 +12,10 @@ Chinese translation by Jimmy Song, originally published on [WeChat](https://mp.w
 
 ---
 
+One physical NVIDIA L40S virtualized into 10 vGPUs with HAMi. An AI Agent deployed as a Kubernetes CRD via kagent. Agent-to-Agent delegation, GPU pod creation, overcommit protection - all driven by Llama 3.3 70B with no closed-source dependencies.
+
+<!-- truncate -->
+
 ## Before We Start
 
 This is not a documentation summary.
@@ -61,8 +65,6 @@ The question I wanted to answer:
 > "Can an AI Agent, running inside a Kubernetes cluster, using only open-source models, manage GPU-virtualized workloads?"
 
 The answer is yes.
-
-<!-- truncate -->
 
 ## Test Machine
 

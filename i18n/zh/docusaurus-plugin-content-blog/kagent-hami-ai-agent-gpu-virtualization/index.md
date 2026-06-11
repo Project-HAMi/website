@@ -13,26 +13,6 @@ tags: ["HAMi", "kagent", "GPU 虚拟化", "AI Agent", "Kubernetes", "vGPU", "云
 
 ---
 
-## 引言
-
-最近看到一篇很有意思的海外实战文章：一位来自德国的工程师，在真实 GPU 环境中，把 CNCF 项目 kagent 与 HAMi 跑在了一起，并验证了 AI Agent 如何直接管理 Kubernetes 中的 GPU 虚拟化资源。
-
-这篇文章最有价值的地方，不是"介绍功能"，而是完整记录了真实部署、踩坑、调试与验证过程。包括：
-
-- 使用 HAMi 将一张 NVIDIA L40S 虚拟化为 10 张 vGPU
-- 使用 kagent 让 AI Agent 直接调用 Kubernetes API
-- Agent 自动创建 GPU Pod 并理解 HAMi GPU 分配结果
-- 多 Agent 协作（A2A）
-- 基于开源模型与 OpenAI-compatible API 完整运行
-
-我们认为，这类真实工程实践，比单纯 benchmark 或功能介绍更能体现 AI Infra 的演进方向。
-
-尤其值得关注的是：
-
-Kubernetes 正在从"容器编排系统"，逐渐演化为 AI Runtime 与 GPU Control Plane，而 HAMi 也开始进入 AI Agent、AI Infra、GPU 资源抽象等更大的技术叙事中。
-
-以下为原文翻译。
-
 <!-- truncate -->
 
 ## 在开始之前
