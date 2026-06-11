@@ -14,7 +14,8 @@ module.exports = {
         "labs/online-install",
         "labs/local-fake-gpu",
         "labs/gpu-partitioning",
-        "labs/hami-dra"
+        "labs/hami-dra",
+        "labs/hami-vllm"
       ]
     }
   ]
