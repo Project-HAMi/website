@@ -16,7 +16,7 @@ translated: true
   containerd config dump | grep default_runtime_name
   ```
 
-  输出必须显示 `nvidia`。如未显示，请按照[前置条件](../installation/online-installation)指南操作。
+  输出必须显示 `nvidia`。如未显示，请按照[前置条件](./installation/online-installation)指南操作。
 
 - 如果在使用 NVIDIA 镜像的设备插件时不请求 vGPU，机器上的所有 GPU 可能会在容器内暴露。
 - 目前，A100 MIG 仅支持 "none" 和 "mixed" 模式。
