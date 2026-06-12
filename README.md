@@ -20,6 +20,42 @@ This repository contains:
 - **Issues**: https://github.com/Project-HAMi/website/issues
 - **Discussions**: https://github.com/Project-HAMi/HAMi/discussions
 
+## Why HAMi
+
+Running AI workloads on Kubernetes without GPU virtualization means each pod receives an entire physical GPU, regardless of how much memory or compute it actually needs. This leaves most GPU capacity idle when workloads are small, and blocks other workloads from running at all.
+
+Static partitioning approaches such as NVIDIA MIG divide a GPU at the hardware level, but partitions are fixed at creation time and require specific hardware support. They do not adapt to changing workload sizes.
+
+HAMi virtualizes GPU resources at the Kubernetes scheduler and CUDA driver levels. Multiple pods share a single physical GPU with isolated memory limits and enforced compute quotas. Workloads do not require modification - the limits are applied transparently through a library injected at container start.
+
+HAMi is a CNCF Sandbox project. It supports NVIDIA GPUs and a range of heterogeneous accelerators including Ascend NPU, Cambricon MLU, Hygon DCU, and others.
+
+## Architecture
+
+HAMi operates across two planes:
+
+**Control plane**
+
+- A scheduler extender intercepts pod scheduling decisions and selects the node and device that satisfy the pod's GPU resource request.
+- A mutating webhook injects the libvgpu library and sets environment variables into containers that request GPU resources.
+
+**Data plane**
+
+- A device plugin on each node advertises virtual GPU resources to the Kubernetes API and handles device allocation.
+- libvgpu, loaded inside each container, intercepts CUDA API calls and enforces the memory and compute limits set by the scheduler.
+
+The scheduler and device plugin communicate through Kubernetes node annotations. No sidecar containers are required.
+
+## Ecosystem Integrations
+
+| Project | What the integration enables |
+|---------|------------------------------|
+| [vLLM](https://github.com/vllm-project/vllm) | Run inference servers with GPU memory caps, enabling multiple models to share one GPU |
+| [Volcano](https://volcano.sh/) | Gang scheduling and queue-based batch scheduling for GPU workloads |
+| [Prometheus](https://prometheus.io/) | HAMi exposes per-container GPU metrics including memory usage and utilization |
+| [Grafana](https://grafana.com/) | Pre-built dashboard available for visualizing HAMi GPU metrics |
+| [NVIDIA GPU Operator](https://github.com/NVIDIA/gpu-operator) | Can coexist with GPU Operator when HAMi manages scheduling and the Operator manages drivers |
+
 ## Project Structure
 
 ```
