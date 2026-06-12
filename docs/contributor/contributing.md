@@ -44,7 +44,8 @@ Writing code is not the only way to contribute.
 | [Discord](https://discord.gg/Amhy7XmbNq) | Real-time chat (recommended) |
 | [CNCF Slack #hami-dev](https://cloud-native.slack.com/archives/C07T10BU4R2) | Real-time chat |
 | [MAINTAINERS](https://github.com/Project-HAMi/HAMi/blob/master/MAINTAINERS.md) | Current maintainer list |
-| [Community Meetings](https://docs.google.com/document/d/1YC6hco03_oXbF9IOUPJ29VWEddmITIKIfSmBX8JtGBw/edit#heading=h.g61sgp7w0d0c) | Bi-weekly community meetings |
+| [Community Meetings](https://docs.google.com/document/d/1YC6hco03_oXbF9IOUPJ29VWEddmITIKIfSmBX8JtGBw/edit#heading=h.g61sgp7w0d0c) | Bi-weekly on Zoom, Wednesday 16:30 UTC+8. [iCal subscription](https://webcal.prod.itx.linuxfoundation.org/lfx/lfmd9wcrbnW1NXUzPl) |
+| [Zoom Meeting Link](https://zoom-lfx.platform.linuxfoundation.org/meeting/95994137931?password=55b961b5-3e8e-4040-8657-0f2d26511f1d) | Join the bi-weekly community meeting |
 
 Before opening an issue or PR, search existing issues and discussions for related work.
 

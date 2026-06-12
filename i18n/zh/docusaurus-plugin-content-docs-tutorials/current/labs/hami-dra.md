@@ -9,9 +9,9 @@ lab:
     - saiyam1814
   verified: "2026-06-04"
 tags:
-  - dra
-  - scheduling
-  - experimental
+  - DRA
+  - 调度
+  - 实验性
 toc_max_heading_level: 2
 ---
 
