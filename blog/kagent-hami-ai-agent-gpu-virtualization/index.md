@@ -1,5 +1,5 @@
 ---
-title: "AI Agent Can Now Manage Kubernetes GPU Resources Directly"
+title: "Validating AI Agent-Driven GPU Management on Kubernetes with HAMi and kagent"
 date: "2026-05-28"
 description: "A real-world test of kagent and HAMi: one physical GPU virtualized into 10 vGPUs, an AI Agent managing Kubernetes workloads via CRDs, and Agent-to-Agent collaboration - all running on open-source models."
 authors: [mesut_oezdil]

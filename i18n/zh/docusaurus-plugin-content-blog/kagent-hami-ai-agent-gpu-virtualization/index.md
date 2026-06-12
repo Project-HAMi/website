@@ -295,11 +295,3 @@ AI Agent 可以直接在 Kubernetes 集群内部观察、理解并管理 GPU 虚
 - 不依赖闭源 AI Provider
 - 完全运行在 Kubernetes 内部
 
----
-
-## 关于 HAMi
-
-HAMi，全称是 Heterogeneous AI Computing Virtualization Middleware（异构算力虚拟化中间件），是一套为管理 Kubernetes 集群中的异构 AI 计算设备而设计的"一站式"架构，能够提供异构 AI 设备共享能力，提供任务间的资源隔离。HAMi 致力于提升 Kubernetes 集群中异构计算设备的利用率，为不同类型的异构设备提供统一的复用接口。HAMi 当前是 CNCF Sandbox 项目，已被 CNCF 纳入 CNAI 类别技术全景图。
-
-- 社区官网：https://project-hami.io
-- GitHub：https://github.com/Project-HAMi/HAMi
