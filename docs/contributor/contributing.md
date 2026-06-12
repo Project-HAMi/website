@@ -186,15 +186,15 @@ HAMi uses [Conventional Commits](https://www.conventionalcommits.org/):
 
 **Types:**
 
-| Type | Use for |
-| --- | --- |
-| `feat` | New functionality |
-| `fix` | Bug fix |
-| `docs` | Documentation changes only |
-| `chore` | Maintenance: deps, build config, CI |
+| Type       | Use for                                  |
+| ---------- | ---------------------------------------- |
+| `feat`     | New functionality                        |
+| `fix`      | Bug fix                                  |
+| `docs`     | Documentation changes only               |
+| `chore`    | Maintenance: deps, build config, CI      |
 | `refactor` | Code restructure with no behavior change |
-| `test` | Adding or updating tests |
-| `perf` | Performance improvement |
+| `test`     | Adding or updating tests                 |
+| `perf`     | Performance improvement                  |
 
 **Good examples:**
 
@@ -210,7 +210,7 @@ test: add unit tests for MLU device discovery
 
 - Subject line: 72 characters or fewer
 - Imperative mood: "add", "fix", "update" - not "added", "fixed", "updates"
-- Body: explain *what* and *why*, not *how*
+- Body: explain _what_ and _why_, not _how_
 - No period at the end of the subject line
 
 ### DCO Sign-off (Required)

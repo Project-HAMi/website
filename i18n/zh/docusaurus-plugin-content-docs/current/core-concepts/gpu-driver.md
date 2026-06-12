@@ -46,7 +46,7 @@ flowchart TB
 ### 各模块的作用
 
 | 模块 | 文件 | 说明 |
-| ------ | ------ | ------ |
+| --- | --- | --- |
 | **nvidia** | `nvidia.ko` | 核心 GPU 驱动模块，负责 GPU 硬件初始化、显存管理、命令队列调度等基础功能。所有其他 NVIDIA 模块都依赖它。 |
 | **nvidia_uvm** | `nvidia_uvm.ko` | Unified Virtual Memory（统一虚拟内存），使 CPU 和 GPU 共享同一地址空间。CUDA 程序使用 `cudaMallocManaged` 时依赖此模块，驱动自动在 CPU 和 GPU 之间迁移数据。 |
 | **nvidia_modeset** | `nvidia_modeset.ko` | 显示模式设置模块，负责管理显示输出（分辨率、刷新率等）。依赖 `nvidia_drm`（DRM 子系统接口）工作。 |

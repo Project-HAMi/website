@@ -2,7 +2,7 @@
 title: Protocol design
 ---
 
-### Device Registration
+## Device Registration
 
 <img src="/img/docs/common/developers/protocol/protocol-register.png" width="600px" alt="HAMi device registration protocol diagram showing node annotation process" />
 

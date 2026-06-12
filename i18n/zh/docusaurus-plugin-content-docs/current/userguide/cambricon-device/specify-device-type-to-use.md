@@ -1,15 +1,15 @@
 ---
 title: 分配到特定设备类型
-linktitle: 指定设备类型
+sidebar_label: 指定设备类型
 translated: true
 ---
 
 你需要在 `cambricon-device-plugin` 中添加参数 `- --enable-device-type` 以支持设备类型规范。当设置此选项时，不同类型的 MLU 将生成不同的资源名称，例如 `cambricon.com/mlu370.smlu.vcore` 和 `cambricon.com/mlu370.smlu.vmemory`。
 
 ```yaml
-      resources:
-        limits:
-          cambricon.com/vmlu: 1 # 请求 1 个 MLU
-          cambricon.com/mlu370.smlu.vmemory: "20" # 每个 MLU 包含 20% 的设备显存
-          cambricon.com/mlu370.smlu.vcore: "10" # 每个 MLU 包含 10% 的计算核心
+resources:
+  limits:
+    cambricon.com/vmlu: 1 # 请求 1 个 MLU
+    cambricon.com/mlu370.smlu.vmemory: "20" # 每个 MLU 包含 20% 的设备显存
+    cambricon.com/mlu370.smlu.vcore: "10" # 每个 MLU 包含 10% 的计算核心
 ```

@@ -2,7 +2,6 @@
 title: FAQ
 ---
 
-
 ## Supported Device Vendors and Specific Models
 
 | **GPU Vendor** | **GPU Model** | **Granularity** | **Multi-GPU Support** |
@@ -17,7 +16,7 @@ title: FAQ
 
 ## What is vGPU? Why cannot I allocate two vGPUs on the same card despite seeing 10 vGPUs?
 
-**TL;DR**
+### TL;DR
 
 vGPU increases GPU utilization by enabling multiple tasks to share one GPU through logical splitting. A `deviceSplitCount: 10` means the GPU can serve up to 10 tasks simultaneously but does not allow a single task to use multiple vGPUs from the same GPU.
 
@@ -29,21 +28,17 @@ A vGPU is a logical instance of a physical GPU created using virtualization, all
 
 **Why cannot I allocate two vGPUs on the same card?**
 
-1. **Significance of vGPU**
-   vGPU represents different task views of the same physical GPU. It is not a separate partition of physical resources. When a task requests `nvidia.com/gpu: 2`, it is interpreted as requiring two physical GPUs, not two vGPUs from the same GPU.
+1. **Significance of vGPU** vGPU represents different task views of the same physical GPU. It is not a separate partition of physical resources. When a task requests `nvidia.com/gpu: 2`, it is interpreted as requiring two physical GPUs, not two vGPUs from the same GPU.
 
-2. **Resource Allocation Mechanism**
-   vGPU is designed to allow multiple tasks to share one GPU, not to bind multiple vGPUs to a single task on the same GPU. A `deviceSplitCount: 10` configuration enables up to 10 tasks to use the same GPU concurrently but does not permit one task to use multiple vGPUs.
+2. **Resource Allocation Mechanism** vGPU is designed to allow multiple tasks to share one GPU, not to bind multiple vGPUs to a single task on the same GPU. A `deviceSplitCount: 10` configuration enables up to 10 tasks to use the same GPU concurrently but does not permit one task to use multiple vGPUs.
 
-3. **Consistency Between Container and Node Views**
-   The GPU UUID inside the container matches the physical node's UUID, reflecting the same GPU. Although there may be 10 visible vGPUs, these are logical overcommit views, not additional independent resources.
+3. **Consistency Between Container and Node Views** The GPU UUID inside the container matches the physical node's UUID, reflecting the same GPU. Although there may be 10 visible vGPUs, these are logical overcommit views, not additional independent resources.
 
-4. **Design Intent**
-   The design of vGPU aims to **allow one GPU to be shared by multiple tasks**, rather than letting one task occupy multiple vGPUs on the same GPU. The purpose of vGPU overcommitment is to improve GPU utilization, not to increase resource allocation for individual tasks.
+4. **Design Intent** The design of vGPU aims to **allow one GPU to be shared by multiple tasks**, rather than letting one task occupy multiple vGPUs on the same GPU. The purpose of vGPU overcommitment is to improve GPU utilization, not to increase resource allocation for individual tasks.
 
 ## HAMi's `nvidia.com/priority` field only supports two levels. How to implement multi-level, user-defined priority-based scheduling for a queue of jobs, especially when cluster resources are limited?
 
-**TL;DR**
+### TL;DR
 
 HAMi's built-in two-level priority is for runtime preemption on a single GPU (e.g., an urgent task pausing a less critical one on the same card). For scheduling a queue of jobs based on multiple user-defined priorities, integrate HAMi with a scheduler like **Volcano**, which supports multi-level queue priorities for job allocation and preemption.
 
@@ -56,11 +51,11 @@ Regarding the scenario where resources are insufficient, 'n' jobs are waiting, a
 However, achieving multi-level priority scheduling **is feasible**. The recommended approach is to integrate HAMi with a full-featured scheduler like **Volcano**:
 
 1. **Volcano for Multi-Level Scheduling Priority**:
-    1. Volcano allows you to define multiple queues with different priority levels.
-    2. It uses these queue priorities to determine the order in which jobs are allocated resources (including HAMi-managed vGPUs) and can manage preemption between jobs based on these wider scheduling priorities. This directly addresses the need for sorting the job queue based on multiple priority levels.
+   1. Volcano allows you to define multiple queues with different priority levels.
+   2. It uses these queue priorities to determine the order in which jobs are allocated resources (including HAMi-managed vGPUs) and can manage preemption between jobs based on these wider scheduling priorities. This directly addresses the need for sorting the job queue based on multiple priority levels.
 2. **HAMi for GPU Sharing & Its Runtime Priority**:
-    1. HAMi integrates with Volcano via the [volcano-vgpu-device-plugin](https://github.com/Project-HAMi/volcano-vgpu-device-plugin).
-    2. It continues to manage the vGPU sharing and its own two-level runtime priority for tasks contending on the *same physical GPU*, as described earlier.
+   1. HAMi integrates with Volcano via the [volcano-vgpu-device-plugin](https://github.com/Project-HAMi/volcano-vgpu-device-plugin).
+   2. It continues to manage the vGPU sharing and its own two-level runtime priority for tasks contending on the _same physical GPU_, as described earlier.
 
 While HAMi's own priority serves a different, device-specific purpose (runtime preemption on a single card), implementing multi-level job scheduling priority is achievable by using **Volcano in conjunction with HAMi**. Volcano would handle which job from the queue is prioritized for resource allocation based on multiple priority levels, and HAMi would manage the GPU sharing and its specific on-device preemption.
 
@@ -71,8 +66,7 @@ While HAMi's own priority serves a different, device-specific purpose (runtime p
 - **Volcano**: Can be integrated with Volcano by using the [`volcano-vgpu-device-plugin`](https://github.com/Project-HAMi/volcano-vgpu-device-plugin) under the HAMi project for GPU resource scheduling and management.
 - **Koordinator**: HAMi can also be integrated with Koordinator to provide end-to-end GPU sharing solutions. By deploying HAMi-core on nodes and configuring the appropriate labels and resource requests in Pods, Koordinator uses HAMi’s GPU isolation capabilities, allowing multiple Pods to share the same GPU and improve GPU resource utilization.
 
-  For detailed configuration and usage instructions, refer to the Koordinator documentation:
-  [Device Scheduling - GPU Share With HAMi](https://koordinator.sh/docs/user-manuals/device-scheduling-gpu-share-with-hami/)
+  For detailed configuration and usage instructions, refer to the Koordinator documentation: [Device Scheduling - GPU Share With HAMi](https://koordinator.sh/docs/user-manuals/device-scheduling-gpu-share-with-hami/)
 
 **Currently Not Supported**:
 
@@ -84,7 +78,7 @@ This is normal and can be ignored. If needed, disable the logs by setting the en
 
 ## Does HAMi support multi-node, multi-GPU distributed training? Does it support cross-host and cross-GPU scenarios?
 
-**TL;DR**
+### TL;DR
 
 HAMi supports multi-node, multi-GPU distributed training by scheduling multiple Pods on different nodes and leveraging distributed frameworks for cross-host and cross-GPU collaboration. A single Pod supports multiple GPUs on the same node.
 
@@ -103,7 +97,7 @@ A single Pod cannot span multiple nodes. If cross-host resource coordination is 
 
 ## Relationship and Compatibility Between HAMi Device Plugin, Volcano vGPU Device Plugin, and NVIDIA Official Device Plugin
 
-**TL;DR**
+### TL;DR
 
 Use only one GPU management plugin per node in a cluster to ensure clarity and stability in resource allocation.
 
@@ -134,7 +128,7 @@ These three Device Plugins all manage GPU resources but differ in usage scenario
 
 ## Why do Node Capacity and Allocatable show only `nvidia.com/gpu` and not `nvidia.com/gpucores` or `nvidia.com/gpumem`?
 
-**TL;DR**
+### TL;DR
 
 Device Plugins can only report a single resource type. GPU memory and compute information is stored as node annotations for use by the scheduler.
 
@@ -150,9 +144,9 @@ Device Plugins can only report a single resource type. GPU memory and compute in
 - HAMi stores detailed GPU resource information (e.g., compute power, memory, model) as **node annotations** for use by the scheduler.
 - Example annotation:
 
-   ```yaml
-   hami.io/node-nvidia-register: GPU-fc28df76-54d2-c387-e52e-5f0a9495968c,10,49140,100,NVIDIA-NVIDIA L40S,0,true:GPU-b97db201-0442-8531-56d4-367e0c7d6edd,10,49140,100,...
-   ```
+  ```yaml
+  hami.io/node-nvidia-register: GPU-fc28df76-54d2-c387-e52e-5f0a9495968c,10,49140,100,NVIDIA-NVIDIA L40S,0,true:GPU-b97db201-0442-8531-56d4-367e0c7d6edd,10,49140,100,...
+  ```
 
 ### Follow-Up
 
@@ -165,7 +159,7 @@ Device Plugins can only report a single resource type. GPU memory and compute in
 
 Certain domestic vendors (e.g., Hygon, Cambricon) do not require a runtime because their DevicePlugin handles device discovery and mounting directly. In contrast, vendors like NVIDIA and Ascend rely on runtimes for environment configuration, device node mounting, and advanced functionality support.
 
-**TL;DR**
+### TL;DR
 
 If the official Device Plugin cannot meet specific requirements (e.g., insufficient information for advanced features), or if adapting it introduces complexity, HAMi implements its own Device Plugin.
 
@@ -191,7 +185,7 @@ HAMi injects `libvgpu.so` into containers via `/etc/ld.so.preload`. The library 
 HAMi vGPU is software-only with no hardware requirements. NVIDIA MIG is hardware partitioning available only on Ampere and later GPUs (A100, H100, A30).
 
 | Property | HAMi vGPU | NVIDIA MIG |
-|---|---|---|
+| --- | --- | --- |
 | Hardware requirement | Any NVIDIA GPU, driver v440+ | Ampere or later (A100, H100, A30, H200) |
 | Isolation mechanism | User-space library interception | Hardware engine partitioning |
 | Memory enforcement | Soft (CUDA API level) | Hard (hardware-enforced) |

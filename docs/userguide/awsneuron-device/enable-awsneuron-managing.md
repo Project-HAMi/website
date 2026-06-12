@@ -40,8 +40,7 @@ HAMi divides each AWS Neuron device into 2 units for resource allocation. You ca
 
 ## Running Neuron jobs
 
-AWS Neuron devices can now be requested by a container
-by either using `aws.amazon.com/neuron` or `aws.amazon.com/neuroncore` resource type.
+AWS Neuron devices can now be requested by a container by either using `aws.amazon.com/neuron` or `aws.amazon.com/neuroncore` resource type.
 
 More examples can be found in examples folder
 
@@ -56,7 +55,7 @@ spec:
   restartPolicy: Never
   containers:
     - name: nuropod
-      command: ["sleep","infinity"]
+      command: ["sleep", "infinity"]
       image: public.ecr.aws/neuron/pytorch-inference-neuron:1.13.1-neuron-py310-sdk2.20.2-ubuntu20.04
       resources:
         limits:
@@ -79,7 +78,7 @@ spec:
   restartPolicy: Never
   containers:
     - name: nuropod
-      command: ["sleep","infinity"]
+      command: ["sleep", "infinity"]
       image: public.ecr.aws/neuron/pytorch-inference-neuron:1.13.1-neuron-py310-sdk2.20.2-ubuntu20.04
       resources:
         limits:
@@ -114,6 +113,7 @@ spec:
 The device ID format is `{node-name}-AWSNeuron-{index}`. You can find the available device IDs in the node annotations.
 
 :::
+
 ### Finding Device UUIDs
 
 You can find the UUIDs of AWS Neuron devices on a node using the following command:

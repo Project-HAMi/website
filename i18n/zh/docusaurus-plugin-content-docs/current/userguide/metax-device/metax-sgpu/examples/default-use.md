@@ -1,6 +1,6 @@
 ---
 title: 为容器分配设备核心和显存资源
-linktitle: 分配核心和显存
+sidebar_label: 分配核心和显存
 translated: true
 ---
 
@@ -16,7 +16,7 @@ spec:
     - name: ubuntu-container
       image: ubuntu:22.04
       imagePullPolicy: IfNotPresent
-      command: ["sleep","infinity"]
+      command: ["sleep", "infinity"]
       resources:
         limits:
           metax-tech.com/sgpu: 1 # 请求 1 个 GPU

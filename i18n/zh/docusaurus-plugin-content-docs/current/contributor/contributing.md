@@ -43,22 +43,13 @@ HAMi 是一个由社区驱动的项目，致力于促进一个健康、友好和
 
 ## 找到要处理的内容
 
-我们总是需要帮助，无论是修复文档、报告错误还是编写代码。
-查看你认为没有遵循最佳编码实践的地方，需要代码重构或缺少测试的地方。
-以下是你如何开始的步骤。
+我们总是需要帮助，无论是修复文档、报告错误还是编写代码。查看你认为没有遵循最佳编码实践的地方，需要代码重构或缺少测试的地方。以下是你如何开始的步骤。
 
 ### 找到一个好的入门主题
 
-在 HAMi 组织内有[多个仓库](https://github.com/Project-HAMi/)。
-每个仓库都有适合初学者的问题，提供一个好的入门问题。
-例如，[Project-HAMi/HAMi](https://github.com/Project-HAMi/HAMi) 有
-[需要帮助](https://github.com/Project-HAMi/HAMi/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22)和
-[好的入门问题](https://github.com/Project-HAMi/HAMi/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22)
-标签的问题，这些问题不需要对系统有深入的了解。
-我们可以帮助希望处理这些问题的新贡献者。
+在 HAMi 组织内有[多个仓库](https://github.com/Project-HAMi/)。每个仓库都有适合初学者的问题，提供一个好的入门问题。例如，[Project-HAMi/HAMi](https://github.com/Project-HAMi/HAMi) 有 [需要帮助](https://github.com/Project-HAMi/HAMi/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22)和 [好的入门问题](https://github.com/Project-HAMi/HAMi/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) 标签的问题，这些问题不需要对系统有深入的了解。我们可以帮助希望处理这些问题的新贡献者。
 
-另一个好的贡献方式是找到文档改进的地方，比如缺失/损坏的链接。
-参阅下面的[贡献者工作流程](#贡献者工作流程)以了解工作流程。
+另一个好的贡献方式是找到文档改进的地方，比如缺失/损坏的链接。参阅下面的[贡献者工作流程](#贡献者工作流程)以了解工作流程。
 
 #### 处理一个问题
 
@@ -66,10 +57,9 @@ HAMi 是一个由社区驱动的项目，致力于促进一个健康、友好和
 
 ### 提交一个问题
 
-虽然我们鼓励每个人贡献代码，但也欢迎有人报告问题。
-问题应在相应的 HAMi 子仓库下提交。
+虽然我们鼓励每个人贡献代码，但也欢迎有人报告问题。问题应在相应的 HAMi 子仓库下提交。
 
-*示例：* HAMi 问题应提交到 [Project-HAMi/HAMi](https://github.com/Project-HAMi/HAMi/issues)。
+_示例：_ HAMi 问题应提交到 [Project-HAMi/HAMi](https://github.com/Project-HAMi/HAMi/issues)。
 
 在提交问题时遵循提示的提交指南。
 
@@ -86,10 +76,7 @@ HAMi 是一个由社区驱动的项目，致力于促进一个健康、友好和
 
 ## 创建拉取请求
 
-拉取请求通常简称为 "PR"。
-HAMi 通常遵循标准的[github 拉取请求](https://help.github.com/articles/about-pull-requests/)流程。
-要提交建议的更改，开发代码/修复并添加新的测试用例。
-之后，在提交拉取请求之前运行这些本地验证，以预测持续集成的通过或失败。
+拉取请求通常简称为 "PR"。HAMi 通常遵循标准的[github 拉取请求](https://help.github.com/articles/about-pull-requests/)流程。要提交建议的更改，开发代码/修复并添加新的测试用例。之后，在提交拉取请求之前运行这些本地验证，以预测持续集成的通过或失败。
 
 - 运行并通过 `make verify`
 

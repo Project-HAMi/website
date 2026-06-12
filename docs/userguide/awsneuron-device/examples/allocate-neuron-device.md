@@ -13,7 +13,7 @@ spec:
   restartPolicy: Never
   containers:
     - name: npod
-      command: ["sleep","infinity"]
+      command: ["sleep", "infinity"]
       image: public.ecr.aws/neuron/pytorch-inference-neuron:1.13.1-neuron-py310-sdk2.20.2-ubuntu20.04
       resources:
         limits:

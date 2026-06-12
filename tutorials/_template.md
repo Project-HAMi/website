@@ -1,16 +1,16 @@
 ---
 title: "Lab N: Short Outcome-Oriented Title"
-linktitle: "Lab N: Short Label"
+sidebar_label: "Lab N: Short Label"
 lab:
-  level: Beginner            # Beginner | Intermediate | Advanced
+  level: Beginner # Beginner | Intermediate | Advanced
   duration: about 30 minutes
   environment: where this runs (cloud VM, laptop, continues another lab's cluster)
-  cost: free                 # omit if not applicable
+  cost: free # omit if not applicable
   authors:
     - your-github-handle
-  verified: "YYYY-MM-DD"     # date you last ran the lab end to end
+  verified: "YYYY-MM-DD" # date you last ran the lab end to end
 tags:
-  - one-or-two-topic-tags    # used for the /tutorials/tags pages
+  - one-or-two-topic-tags # used for the /tutorials/tags pages
 toc_max_heading_level: 2
 ---
 
@@ -79,8 +79,8 @@ commands that remove everything the lab created
 ## What This Lab Proved
 
 | Claim | Evidence |
-| --- | --- |
-| ... | ... |
+| ----- | -------- |
+| ...   | ...      |
 
 ## Next Steps
 

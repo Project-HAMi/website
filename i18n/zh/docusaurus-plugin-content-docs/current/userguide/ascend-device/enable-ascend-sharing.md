@@ -1,22 +1,24 @@
 ---
 title: 启用 Ascend 共享
-linktitle: Ascend 共享
+sidebar_label: Ascend 共享
 translated: true
 ---
 
 Ascend 设备插件为 HAMi 提供 NPU 切片支持，支持两种模式：
 
-### 1. 基于模板的硬切片（vNPU）
+## 1. 基于模板的硬切片（vNPU）
 
 基于虚拟化模板支持显存切片，自动使用最小可用模板。有关详细信息，请查看[设备模板](./device-template.md)。
 
-### 2. 基于运行时拦截的软切片（hami-vnpu-core）
+## 2. 基于运行时拦截的软切片（hami-vnpu-core）
 
 该模式基于 `libvnpu.so` 拦截和 `limiter` 令牌调度实现软切片机制，支持细粒度的资源共享。
 
 :::note
+
 - `hami-vnpu-core` 目前仅支持 ARM 平台。
 - `hami-vnpu-core` 目前仅支持 HAMi 调度器。
+
 :::
 
 ## 先决条件
@@ -35,10 +37,10 @@ Ascend 设备插件为 HAMi 提供 NPU 切片支持，支持两种模式：
 npu-smi set -t device-share -i <id> -d <value>
 ```
 
-| 参数 | 说明 |
-| ---- | ---- |
-| `id` | 设备 ID，通过运行 `npu-smi info -l` 命令获取的 NPU ID 即为设备 ID。 |
-| `value` | 容器启用状态：`0`（禁用，默认值）或 `1`（启用）。 |
+| 参数    | 说明                                                                |
+| ------- | ------------------------------------------------------------------- |
+| `id`    | 设备 ID，通过运行 `npu-smi info -l` 命令获取的 NPU ID 即为设备 ID。 |
+| `value` | 容器启用状态：`0`（禁用，默认值）或 `1`（启用）。                   |
 
 ## 启用 Ascend-sharing 支持
 
@@ -99,9 +101,7 @@ kubectl apply -f https://raw.githubusercontent.com/Project-HAMi/ascend-device-pl
 kubectl apply -f https://raw.githubusercontent.com/Project-HAMi/ascend-device-plugin/main/ascend-device-configmap.yaml
 ```
 
-:::note
-如果 ConfigMap 已存在，可跳过此步骤。
-:::
+:::note 如果 ConfigMap 已存在，可跳过此步骤。:::
 
 #### （可选）节点自定义配置
 
@@ -168,7 +168,7 @@ kind: Pod
 metadata:
   name: ascend-soft-slice-pod
   annotations:
-    huawei.com/vnpu-mode: 'hami-core'
+    huawei.com/vnpu-mode: "hami-core"
 spec:
   containers:
     - name: npu_pod
@@ -178,14 +178,14 @@ spec:
         limits:
           huawei.com/Ascend910B3: "1"
           huawei.com/Ascend910B3-memory: "28672"
-          huawei.com/Ascend910B3-core: "40"   # 申请 40% 的算力核心
+          huawei.com/Ascend910B3-core: "40" # 申请 40% 的算力核心
 ```
 
 ### 多卡并行推理（软切片）
 
 软切片机制支持在同一 Pod 中申请多个虚拟设备。进行多卡并行推理（如使用 vLLM）时，`--gpu-memory-utilization` 的值不得超过容器总显存限制与所选卡物理显存总量之比。
 
-**示例：使用 vLLM 实现 2 卡张量并行（TP=2）**
+### 示例：使用 vLLM 实现 2 卡张量并行（TP=2）
 
 假设每张物理卡有 64Gi 显存，计划在 2 张卡上各使用 32Gi（共 64Gi）：
 
@@ -195,7 +195,7 @@ kind: Pod
 metadata:
   name: vllm-npu-2card
   annotations:
-    huawei.com/vnpu-mode: 'hami-core'
+    huawei.com/vnpu-mode: "hami-core"
 spec:
   containers:
     - name: vllm-container
@@ -216,9 +216,7 @@ spec:
           huawei.com/Ascend910B3-core: "50"
 ```
 
-:::note
-`--gpu-memory-utilization 0.5` = 申请总显存（64Gi）/ 2 张卡物理显存总量（128Gi）。
-:::
+:::note `--gpu-memory-utilization 0.5` = 申请总显存（64Gi）/ 2 张卡物理显存总量（128Gi）。:::
 
 ## 注意事项
 
@@ -226,5 +224,4 @@ spec:
 
 2. 不支持在初始化容器中使用 Ascend-sharing。
 
-3. `huawei.com/Ascend910B-memory` 仅在 `huawei.com/Ascend910B=1` 时有效。
-   `huawei.com/Ascend310P-memory` 仅在 `huawei.com/Ascend310P=1` 时有效。
+3. `huawei.com/Ascend910B-memory` 仅在 `huawei.com/Ascend910B=1` 时有效。 `huawei.com/Ascend310P-memory` 仅在 `huawei.com/Ascend310P=1` 时有效。

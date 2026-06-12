@@ -1,6 +1,6 @@
 ---
 title: 分配设备核心给容器
-linktitle: 指定核心
+sidebar_label: 指定核心
 translated: true
 ---
 

@@ -2,8 +2,6 @@
 title: Prerequisites
 ---
 
-## Prerequisites
-
 - [Helm](https://helm.sh/zh/docs/) version v3+
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) version v1.16+
 - [CUDA](https://developer.nvidia.com/cuda-toolkit) version v10.2+
@@ -50,7 +48,6 @@ And then restart `Docker`:
 ```bash
 sudo systemctl daemon-reload && systemctl restart docker
 ```
-
 
 #### Configure `containerd`
 

@@ -23,8 +23,7 @@ authors: [elrond_wang]
 
 细节上可以分为三个阶段：
 
-- 准备阶段：图上可以看出有一些依赖条件，例如要有 Mutating Webhook、device-plugin 等等。
-  所以这个阶段主要分析下依赖条件的准备，只有在服务首次启动时需要。
+- 准备阶段：图上可以看出有一些依赖条件，例如要有 Mutating Webhook、device-plugin 等等。所以这个阶段主要分析下依赖条件的准备，只有在服务首次启动时需要。
 
   ![Pod 创建前的准备工作](https://github.com/elrondwong/elrond.wang/raw/master/img/posts/Hami-GPU-Pod-Scheduler/%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C.png)
 
@@ -64,8 +63,7 @@ Pod 创建状态显示 `UnexpectedAdmissionError`
 - `card Insufficient remaining memory`
 - `calcScore:node not fit pod`
 
-  主要原因一般是确实资源不足，或者配置错误，配置错误是指 devicememoryscaling 配置未符合预期。
-  有两个地方可以配置，优先级为节点配置大于全局配置，容易发生问题的地方在于 name 需要和 kubectl get node 显示的 nodename 一致才能生效。
+  主要原因一般是确实资源不足，或者配置错误，配置错误是指 devicememoryscaling 配置未符合预期。有两个地方可以配置，优先级为节点配置大于全局配置，容易发生问题的地方在于 name 需要和 kubectl get node 显示的 nodename 一致才能生效。
 
 - 全局配置 `kubectl get cm hami-scheduler-device`
 
@@ -94,8 +92,7 @@ Pod 创建状态显示 `UnexpectedAdmissionError`
 
 ### MutatingWebhook
 
-K8s 提供了 admissionWebhook 资源，以 k8s 资源操作为触发器，触发 hook，用途最广泛的为针对
-Pod 创建做拦截，对 Pod 做 YAML 注入，具体的例如增加 init 容器注入文件等等。
+K8s 提供了 admissionWebhook 资源，以 k8s 资源操作为触发器，触发 hook，用途最广泛的为针对 Pod 创建做拦截，对 Pod 做 YAML 注入，具体的例如增加 init 容器注入文件等等。
 
 #### Webhook 配置
 
@@ -120,51 +117,50 @@ metadata:
   resourceVersion: "2307810"
   uid: 2cdcebe4-f561-429f-9480-701e65980687
 webhooks:
-- admissionReviewVersions:
-  - v1beta1
-  clientConfig:
-    caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJkakNDQVJ5Z0F3SUJBZ0lSQUxjd2FQMjUrMlphdGhTTlFMcG1qT0V3Q2dZSUtvWkl6ajBFQXdJd0R6RU4KTUFzR0ExVUVDaE1FYm1sc01UQWdGdzB5TkRFeU1EWXdOekV4TVRWYUdBOHlNVEkwTVRFeE1qQTNNVEV4TlZvdwpEekVOTUFzR0ExVUVDaE1FYm1sc01UQlpNQk1HQnlxR1NNNDlBZ0VHQ0NxR1NNNDlBd0VIQTBJQUJDUnlXUDdYCkRmT2N4NEVTMVRYaUs0dnFFU2wrcUFHYjI2YzNrOEdMWlZTL1lHaFpLZVVxaEgydVRhTFdWTW1hZVJFbkxqM0cKSStMVFRVTTR6SVhEUld5alZ6QlZNQTRHQTFVZER3RUIvd1FFQXdJQ0JEQVRCZ05WSFNVRUREQUtCZ2dyQmdFRgpCUWNEQVRBUEJnTlZIUk1CQWY4RUJUQURBUUgvTUIwR0ExVWREZ1FXQkJTcVV4bWpGa29YUlpRK0xXVzBNM1pJCnMzck1wakFLQmdncWhrak9QUVFEQWdOSUFEQkZBaUJSY2VRL2tJVkR2VTV3Vjl0K3NRWm93TmFhTWhIMTV5K2sKT3VrR0FlRGVtQUloQUxDZzFrM0JQZUJBNG8reWY5emxvVjM2VEk2RHUzaGdMT1B3MXhaZkFvcDMKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
-    service:
-      name: hami-scheduler
-      namespace: kube-system
-      path: /webhook
-      port: 443
-  failurePolicy: Ignore
-  matchPolicy: Equivalent
-  name: vgpu.hami.io
-  namespaceSelector:
-    matchExpressions:
-    - key: hami.io/webhook
-      operator: NotIn
-      values:
-      - ignore
-  objectSelector:
-    matchExpressions:
-    - key: hami.io/webhook
-      operator: NotIn
-      values:
-      - ignore
-  reinvocationPolicy: Never
-  rules:
-  - apiGroups:
-    - ""
-    apiVersions:
-    - v1
-    operations:
-    - CREATE
-    resources:
-    - pods
-    scope: '*'
-  sideEffects: None
-  timeoutSeconds: 10
+  - admissionReviewVersions:
+      - v1beta1
+    clientConfig:
+      caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJkakNDQVJ5Z0F3SUJBZ0lSQUxjd2FQMjUrMlphdGhTTlFMcG1qT0V3Q2dZSUtvWkl6ajBFQXdJd0R6RU4KTUFzR0ExVUVDaE1FYm1sc01UQWdGdzB5TkRFeU1EWXdOekV4TVRWYUdBOHlNVEkwTVRFeE1qQTNNVEV4TlZvdwpEekVOTUFzR0ExVUVDaE1FYm1sc01UQlpNQk1HQnlxR1NNNDlBZ0VHQ0NxR1NNNDlBd0VIQTBJQUJDUnlXUDdYCkRmT2N4NEVTMVRYaUs0dnFFU2wrcUFHYjI2YzNrOEdMWlZTL1lHaFpLZVVxaEgydVRhTFdWTW1hZVJFbkxqM0cKSStMVFRVTTR6SVhEUld5alZ6QlZNQTRHQTFVZER3RUIvd1FFQXdJQ0JEQVRCZ05WSFNVRUREQUtCZ2dyQmdFRgpCUWNEQVRBUEJnTlZIUk1CQWY4RUJUQURBUUgvTUIwR0ExVWREZ1FXQkJTcVV4bWpGa29YUlpRK0xXVzBNM1pJCnMzck1wakFLQmdncWhrak9QUVFEQWdOSUFEQkZBaUJSY2VRL2tJVkR2VTV3Vjl0K3NRWm93TmFhTWhIMTV5K2sKT3VrR0FlRGVtQUloQUxDZzFrM0JQZUJBNG8reWY5emxvVjM2VEk2RHUzaGdMT1B3MXhaZkFvcDMKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+      service:
+        name: hami-scheduler
+        namespace: kube-system
+        path: /webhook
+        port: 443
+    failurePolicy: Ignore
+    matchPolicy: Equivalent
+    name: vgpu.hami.io
+    namespaceSelector:
+      matchExpressions:
+        - key: hami.io/webhook
+          operator: NotIn
+          values:
+            - ignore
+    objectSelector:
+      matchExpressions:
+        - key: hami.io/webhook
+          operator: NotIn
+          values:
+            - ignore
+    reinvocationPolicy: Never
+    rules:
+      - apiGroups:
+          - ""
+        apiVersions:
+          - v1
+        operations:
+          - CREATE
+        resources:
+          - pods
+        scope: "*"
+    sideEffects: None
+    timeoutSeconds: 10
 ```
 
-当 Pod 创建时，调用 `https://hami-scheduler.kube-system:443/webhook` 做 TLS 校验，CA 为 `caBundle` 配置。
-当命名空间有 `hami.io/webhook: ignore` 的标签时不触发。
+当 Pod 创建时，调用 `https://hami-scheduler.kube-system:443/webhook` 做 TLS 校验，CA 为 `caBundle` 配置。当命名空间有 `hami.io/webhook: ignore` 的标签时不触发。
 
 #### Webhook Server 实现
 
-需要实现一个 TLS  的 HTTP Server，且提供 `/webhook` 接口。
+需要实现一个 TLS 的 HTTP Server，且提供 `/webhook` 接口。
 
 cmd/scheduler/main.go:84
 
@@ -348,7 +344,6 @@ metadata:
     meta.helm.sh/release-namespace: kube-system
   creationTimestamp: "2024-12-10T03:50:36Z"
   labels:
-
     app.kubernetes.io/component: hami-scheduler
     app.kubernetes.io/instance: hami
     app.kubernetes.io/managed-by: Helm
@@ -366,8 +361,7 @@ metadata:
 - filter: 找到最合适的 node
 - bind: 为 Pod 创建一个 binding 资源
 
-调度时会根据拓展点顺序来调用拓展调度器的实现，这里会先调用
-`https://127.0.0.1:443/filter`，再调用 `https://127.0.0.1:443/bind`
+调度时会根据拓展点顺序来调用拓展调度器的实现，这里会先调用 `https://127.0.0.1:443/filter`，再调用 `https://127.0.0.1:443/bind`
 
 #### 拓展调度器 HTTP Server 启动
 
@@ -763,8 +757,7 @@ func (s *Scheduler) RegisterFromNodeAnnotations() {
 
 启动了一个 15s 的定时任务，获取 Node 信息维护 Node 缓存。
 
-这里的核心逻辑在于 `for devhandsk, devInstance := range device.GetDevices()` 获取所有的 device，
-主要是一些根据不同的设备注册了不同的 handler，根据注册的 device 获取显卡的资源信息 `devInstance.GetNodeDevices`。
+这里的核心逻辑在于 `for devhandsk, devInstance := range device.GetDevices()` 获取所有的 device，主要是一些根据不同的设备注册了不同的 handler，根据注册的 device 获取显卡的资源信息 `devInstance.GetNodeDevices`。
 
 这里会通过注册的 device（此环境为 nvidia），调用到不同显卡的`GetNodeDevices`实现，device 后面再做具体说明。
 
@@ -1348,9 +1341,7 @@ metadata:
   annotations:
     hami.io/node-handshake: Requesting_2024.12.24 03:31:30
     hami.io/node-handshake-dcu: Deleted_2024.12.06 07:43:49
-    hami.io/node-nvidia-register:
-      "GPU-7aebc545-cbd3-18a0-afce-76cae449702a,10,73728,300,NVIDIA-NVIDIA
-      GeForce RTX 3090,0,true:"
+    hami.io/node-nvidia-register: "GPU-7aebc545-cbd3-18a0-afce-76cae449702a,10,73728,300,NVIDIA-NVIDIA GeForce RTX 3090,0,true:"
 ```
 
 #### 启动 device-plugin 服务
@@ -1550,9 +1541,7 @@ type Interface interface {
 }
 ```
 
-同时如果需要 kubelet 能够识别 resource 中的类似 `nvidia.com/gpu: 1` 这样的拓展字段需要启动一个 GRPC
-服务挂载 `/var/lib/kubelet/device-plugins/` 且实现如下方法。这块跟调度相关性不大，暂且不展开
-[device-plugins](https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/device-plugins/)。
+同时如果需要 kubelet 能够识别 resource 中的类似 `nvidia.com/gpu: 1` 这样的拓展字段需要启动一个 GRPC 服务挂载 `/var/lib/kubelet/device-plugins/` 且实现如下方法。这块跟调度相关性不大，暂且不展开 [device-plugins](https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/device-plugins/)。
 
 `k8s.io/kubelet@v0.28.3/pkg/apis/deviceplugin/v1beta1/api.pb.go:1419`
 
@@ -1763,9 +1752,7 @@ func (plugin *NvidiaDevicePlugin) getAPIDevices() *[]*util.DeviceInfo {
 }
 ```
 
-这里通过 nvidia 驱动获取设备信息，需要注意的是这里有配置 DeviceMemoryScaling，显存超分配置，
-这里是通过命令行启动的 --config-file 参数指定的 scheduler 配置和代码中固化的
-`config/config.json` 来取值的，其中 config/config.json 优先级大于 --config-file
+这里通过 nvidia 驱动获取设备信息，需要注意的是这里有配置 DeviceMemoryScaling，显存超分配置，这里是通过命令行启动的 --config-file 参数指定的 scheduler 配置和代码中固化的 `config/config.json` 来取值的，其中 config/config.json 优先级大于 --config-file
 
 到这里，调度所需的所有东西就准备好了，Pod 可以顺利被分配到合适的节点上。
 

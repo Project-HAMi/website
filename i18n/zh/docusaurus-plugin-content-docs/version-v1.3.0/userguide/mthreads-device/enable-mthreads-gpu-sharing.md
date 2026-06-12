@@ -24,19 +24,19 @@ title: Enable Mthreads GPU sharing
 
 ## Prerequisites
 
-* [MT CloudNative Toolkits > 1.9.0](https://docs.mthreads.com/cloud-native/cloud-native-doc-online/)
-* driver version >= 1.2.0
+- [MT CloudNative Toolkits > 1.9.0](https://docs.mthreads.com/cloud-native/cloud-native-doc-online/)
+- driver version >= 1.2.0
 
 ## Enabling GPU-sharing Support
 
-* Deploy MT-CloudNative Toolkit on mthreads nodes (Please consult your device provider to acquire its package and document)
+- Deploy MT-CloudNative Toolkit on mthreads nodes (Please consult your device provider to acquire its package and document)
 
 :::note
 
 You can remove mt-mutating-webhook and mt-gpu-scheduler after installation(optional).
 
 :::
-* set the 'devices.mthreads.enabled = true' when installing hami
+- set the 'devices.mthreads.enabled = true' when installing hami
 
 ```bash
 helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag={your kubernetes version} --set device.mthreads.enabled=true -n kube-system
@@ -78,4 +78,3 @@ Each unit of sgpu-memory indicates 512M device memory
 You can find more examples in the [examples folder](https://github.com/Project-HAMi/HAMi/tree/master/examples)
 
 :::
-

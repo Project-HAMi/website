@@ -14,8 +14,7 @@ translated: true
 
 ## 如何编写提升注释
 
-提升注释应放置在提升代码之前（可以是函数、类型、变量或常量）。
-在提升注释和提升代码之间只允许有空行和注释。
+提升注释应放置在提升代码之前（可以是函数、类型、变量或常量）。在提升注释和提升代码之间只允许有空行和注释。
 
 提升注释由一行或多行注释组成，每行格式为 `+lifted:KEY[=VALUE]`。对于某些键，值是可选的。
 
@@ -27,9 +26,7 @@ translated: true
 
 - changed:
 
-  键 `changed` 是可选的。它指示代码是否已更改。
-  值是可选的（`true` 或 `false`，默认为 `true`）。
-  不添加此键或将其设置为 `false` 表示没有代码更改。
+  键 `changed` 是可选的。它指示代码是否已更改。值是可选的（`true` 或 `false`，默认为 `true`）。不添加此键或将其设置为 `false` 表示没有代码更改。
 
 ## 示例
 
@@ -50,7 +47,7 @@ func IsQuotaHugePageResourceName(name corev1.ResourceName) bool {
 
 ```markdown
 | 提升文件 | 源文件 | 常量/变量/类型/函数 | 更改 |
-| ----------- | ----------- | ------------------- | ------- |
+| --- | --- | --- | --- |
 | corehelpers.go | https://github.com/kubernetes/kubernetes/blob/release-1.23/pkg/apis/core/helper/helpers.go#L57-L61 | func IsQuotaHugePageResourceName | N |
 ```
 
@@ -77,7 +74,7 @@ func GetNewReplicaSet(deployment *appsv1.Deployment, f ReplicaSetListFunc) (*app
 
 ```markdown
 | 提升文件 | 源文件 | 常量/变量/类型/函数 | 更改 |
-| ----------- | ----------- | ------------------- | ------- |
+| --- | --- | --- | --- |
 | deployment.go | https://github.com/kubernetes/kubernetes/blob/release-1.22/pkg/controller/deployment/util/deployment_util.go#L536-L544 | func GetNewReplicaSet | Y |
 ```
 
@@ -94,7 +91,7 @@ const isNegativeErrorMsg string = apimachineryvalidation.IsNegativeErrorMsg
 
 ```markdown
 | 提升文件 | 源文件 | 常量/变量/类型/函数 | 更改 |
-| ----------- | ----------- | ------------------- | ------- |
+| --- | --- | --- | --- |
 | corevalidation.go | https://github.com/kubernetes/kubernetes/blob/release-1.22/pkg/apis/core/validation/validation.go#L59 | const isNegativeErrorMsg | N |
 ```
 
@@ -113,5 +110,6 @@ type Visitor func(name string) (shouldContinue bool)
 
 ```markdown
 | 提升文件 | 源文件 | 常量/变量/类型/函数 | 更改 |
-| ----------- | ----------- | ------------------- | ------- |
+| --- | --- | --- | --- |
 | visitpod.go | https://github.com/kubernetes/kubernetes/blob/release-1.23/pkg/api/v1/pod/util.go#L82-L83 | type Visitor | N |
+```

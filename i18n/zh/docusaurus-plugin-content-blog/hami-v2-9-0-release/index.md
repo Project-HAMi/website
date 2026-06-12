@@ -26,13 +26,13 @@ HAMi-core 通过纯软件方式在用户态拦截和管控 ACL（Ascend Computin
 
 相比传统的 SR-IOV 硬件切分方案，HAMi-core 在切分粒度和灵活性上有质的飞跃：
 
-| 维度 | 独占模式 | SR-IOV | HAMi-core（v2.9） |
-| :- | :- | :- | :- |
-| 显存切分 | 不可切分 | 按 VF 固定分配 | **MB 级别精确控制** |
-| 算力切分 | 不可切分 | 按 VF 比例分配 | **百分比级别灵活配置** |
-| 切分数量 | 1 Pod/卡 | 通常 2-4 VF/卡 | **10+ Pod/卡** |
-| 是否需要硬件支持 | 否 | 是 | **否** |
-| 是否需要修改业务代码 | 否 | 否 | **否** |
+| 维度                 | 独占模式 | SR-IOV         | HAMi-core（v2.9）      |
+| :------------------- | :------- | :------------- | :--------------------- |
+| 显存切分             | 不可切分 | 按 VF 固定分配 | **MB 级别精确控制**    |
+| 算力切分             | 不可切分 | 按 VF 比例分配 | **百分比级别灵活配置** |
+| 切分数量             | 1 Pod/卡 | 通常 2-4 VF/卡 | **10+ Pod/卡**         |
+| 是否需要硬件支持     | 否       | 是             | **否**                 |
+| 是否需要修改业务代码 | 否       | 否             | **否**                 |
 
 例如，一张 64GB 显存的昇腾 910C，可以按如下方式同时分配给多个任务：
 
@@ -105,7 +105,7 @@ Volcano vGPU Device Plugin 项目地址：[https://github.com/Project-HAMi/volca
 瀚博半导体（Vastai Technologies）是国内领先的通用 GPU 芯片设计企业。v2.9.0 新增对其设备的管理支持，提供两种分配模式：
 
 | 模式 | 说明 | 适用场景 |
-| :- | :- | :- |
+| :-- | :-- | :-- |
 | **整卡模式（Full-Card）** | 每个 Pod 独占一整张 GPU | 大模型训练、性能敏感型推理 |
 | **Die 模式** | 按芯片 Die 切分，调度器感知 AIC 拓扑结构，减少跨 Die 通信开销 | 多任务共享、资源利用率优化 |
 
@@ -206,10 +206,10 @@ helm upgrade hami hami-charts/hami -n hami-system
 完整安装文档请参考：[https://project-hami.io/zh/docs/installation/online-installation](https://project-hami.io/zh/docs/installation/online-installation)
 
 :::warning 升级注意事项
+
 - 如使用 Volcano vGPU 模式，请注意 CDI 相关配置变更
 - 如使用昇腾设备并希望启用 HAMi-core 模式，请参考最新文档中的 Ascend 配置章节
-- 建议在升级前在测试环境验证兼容性
-:::
+- 建议在升级前在测试环境验证兼容性 :::
 
 ## 社区动态
 

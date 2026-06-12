@@ -1,6 +1,6 @@
 ---
 title: 默认 vgpu 作业
-linktitle: 默认作业
+sidebar_label: 默认作业
 translated: true
 ---
 

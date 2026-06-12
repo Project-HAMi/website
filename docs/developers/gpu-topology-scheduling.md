@@ -4,8 +4,6 @@ title: GPU Topology-Aware Scheduling
 sidebar_label: GPU Topology Scheduling
 ---
 
-# GPU Topology-Aware Scheduling
-
 HAMi supports GPU topology-aware scheduling in vGPU environments. HAMi can optimize GPU card scheduling based on the topological relationships between GPUs, thereby improving GPU resource utilization and performance.
 
 Use `nvidia-smi topo -m` to view the topological relationships between GPUs on a node.
@@ -22,15 +20,15 @@ helm install hami hami-charts/hami \
 
 If HAMi is already installed, enable it via one of the following methods:
 
-**1. Device-plugin configuration**
+### 1. Device-plugin configuration
 
 Set the environment variable `ENABLE_TOPOLOGY_SCORE: 'true'` in the DaemonSet `hami-device-plugin`.
 
-**2. Global scheduler settings**
+### 2. Global scheduler settings
 
 Add `gpu-scheduler-policy=topology-aware` when starting `hami-scheduler`.
 
-**3. Pod-level annotation**
+### 3. Pod-level annotation
 
 ```yaml
 metadata:

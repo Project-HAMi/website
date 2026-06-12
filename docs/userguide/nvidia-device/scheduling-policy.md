@@ -4,17 +4,15 @@ title: Scheduling Policies
 sidebar_label: Scheduling Policies
 ---
 
-# Scheduling Policies
-
 HAMi supports multiple GPU scheduling policies to handle complex workload scenarios. A pod can select a scheduling policy using pod annotations.
 
 ## Available Policies
 
-| Policy | Scope | Effect |
-| ------ | ----- | ------ |
-| `binpack` | Node | Tries to allocate tasks to the **same GPU node** as much as possible |
-| `spread` | Node | Tries to allocate tasks to **different GPU nodes** as much as possible |
-| `numa-first` | GPU | For multi-GPU allocations, prefers GPUs on the **same NUMA node** |
+| Policy       | Scope | Effect                                                                 |
+| ------------ | ----- | ---------------------------------------------------------------------- |
+| `binpack`    | Node  | Tries to allocate tasks to the **same GPU node** as much as possible   |
+| `spread`     | Node  | Tries to allocate tasks to **different GPU nodes** as much as possible |
+| `numa-first` | GPU   | For multi-GPU allocations, prefers GPUs on the **same NUMA node**      |
 
 ## Default Policy
 

@@ -9,10 +9,7 @@ If your cluster can’t directly access the internet, you can install HAMi offli
 You need to save the following images into a tarball file and copy it into the cluster.
 
 ```yaml
-projecthami/hami:{HAMi version}
-docker.io/jettech/kube-webhook-certgen:v1.5.2
-liangjw/kube-webhook-certgen:v1.1.1
-registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:{your kubernetes version}
+projecthami/hami:{HAMi version} docker.io/jettech/kube-webhook-certgen:v1.5.2 liangjw/kube-webhook-certgen:v1.1.1 registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:{your kubernetes version}
 ```
 
 Load the images, tag them with your internal registry, and push them to your registry.
@@ -30,8 +27,7 @@ docker push {your_inner_registry}/kube-scheduler:{your kubernetes version}
 
 ## Prepare HAMi chart
 
-Download the charts folder from [github](https://github.com/Project-HAMi/HAMi/tree/master/charts),
-place it into $\{CHART_PATH\} inside cluster, then edit the following fields in $\{CHART_PATH\}/hami/values.yaml.
+Download the charts folder from [github](https://github.com/Project-HAMi/HAMi/tree/master/charts), place it into $\{CHART_PATH\} inside cluster, then edit the following fields in $\{CHART_PATH\}/hami/values.yaml.
 
 ```yaml
 scheduler:

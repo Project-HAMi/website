@@ -16,8 +16,7 @@ title: 前置条件
 
 在所有 GPU 节点上执行以下步骤。
 
-本 README 假设已预先安装 NVIDIA 驱动和 `nvidia-container-toolkit`。此外，
-还假设已将 `nvidia-container-runtime` 配置为默认底层运行时。
+本 README 假设已预先安装 NVIDIA 驱动和 `nvidia-container-toolkit`。此外，还假设已将 `nvidia-container-runtime` 配置为默认底层运行时。
 
 参阅[安装 NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)。
 

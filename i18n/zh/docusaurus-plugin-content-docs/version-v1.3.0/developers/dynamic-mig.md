@@ -1,5 +1,5 @@
 ---
-linktitle: Dynamic MIG Implementation
+sidebar_label: Dynamic MIG Implementation
 title: NVIDIA GPU MPS and MIG dynamic slice plugin
 ---
 

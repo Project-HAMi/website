@@ -1,14 +1,12 @@
 ---
 title: 全局配置
-linktitle: 配置
+sidebar_label: 配置
 translated: true
 ---
 
 ## 设备配置：ConfigMap
 
-:::note
-以下列出的所有配置都在 hami-scheduler-device ConfigMap 中管理。
-:::
+:::note 以下列出的所有配置都在 hami-scheduler-device ConfigMap 中管理。:::
 
 你可以通过以下方法之一更新这些配置：
 
@@ -20,12 +18,10 @@ translated: true
 
    更改后，重启相关的 HAMi 组件以应用更新的配置。
 
-2. 修改 Helm Chart：更新
-   [ConfigMap](https://raw.githubusercontent.com/archlitchi/HAMi/refs/heads/master/charts/hami/templates/scheduler/device-configmap.yaml)
-   中的相应值，然后重新应用 Helm Chart 以重新生成 ConfigMap。
+2. 修改 Helm Chart：更新 [ConfigMap](https://raw.githubusercontent.com/archlitchi/HAMi/refs/heads/master/charts/hami/templates/scheduler/device-configmap.yaml) 中的相应值，然后重新应用 Helm Chart 以重新生成 ConfigMap。
 
 | 参数 | 类型 | 描述 | 默认值 |
-| --- | ---- | --- | ----- |
+| --- | --- | --- | --- |
 | `nvidia.deviceMemoryScaling` | 浮点数 | NVIDIA 设备显存缩放比例，允许大于 1（启用虚拟设备显存，实验性功能）。对于一块拥有 _M_ 显存的 NVIDIA GPU，若设置为 _S_，则由该 GPU 拆分出的 vGPU 在 Kubernetes 中将获得 `S * M` 的显存。 | `1` |
 | `nvidia.deviceSplitCount` | 整数 | 单块 GPU 可分配的最大任务数。 | `10` |
 | `nvidia.migstrategy` | 字符串 | 设置为 `"none"` 表示忽略 MIG 功能，设置为 `"mixed"` 表示以独立资源方式分配 MIG 设备。 | `"none"` |
@@ -68,7 +64,7 @@ helm install hami hami-charts/hami --set devicePlugin.deviceMemoryScaling=5 -n k
 ```
 
 | 参数 | 类型 | 描述 | 默认值 |
-| --- | ---- | --- | ----- |
+| --- | --- | --- | --- |
 | `devicePlugin.service.schedulerPort` | 整数 | 调度器 Webhook 服务的 NodePort 端口。 | `31998` |
 | `scheduler.defaultSchedulerPolicy.nodeSchedulerPolicy` | 字符串 | GPU 节点调度策略：`"binpack"` 表示尽可能将任务分配到同一个 GPU 节点；`"spread"` 表示尽可能将任务分配到不同的 GPU 节点。 | `"binpack"` |
 | `scheduler.defaultSchedulerPolicy.gpuSchedulerPolicy` | 字符串 | GPU 调度策略：`"binpack"` 表示尽可能将任务分配到同一个 GPU；`"spread"` 表示尽可能将任务分配到不同的 GPU。 | `"spread"` |
@@ -76,7 +72,7 @@ helm install hami hami-charts/hami --set devicePlugin.deviceMemoryScaling=5 -n k
 ## Pod 配置：注解
 
 | 参数 | 类型 | 描述 | 示例 |
-| --- | ---- | --- | ----- |
+| --- | --- | --- | --- |
 | `nvidia.com/use-gpuuuid` | 字符串 | 如果设置了此字段，则该 Pod 分配的设备**必须**是此字符串中定义的 GPU UUID 之一。 | `"GPU-AAA,GPU-BBB"` |
 | `nvidia.com/nouse-gpuuuid` | 字符串 | 如果设置了此字段，则该 Pod 分配的设备**不能**是此字符串中定义的 GPU UUID。 | `"GPU-AAA,GPU-BBB"` |
 | `nvidia.com/nouse-gputype` | 字符串 | 如果设置了此字段，则该 Pod 分配的设备**不能**是此字符串中定义的 GPU 类型。 | `"Tesla V100-PCIE-32GB, NVIDIA A10"` |
@@ -88,6 +84,6 @@ helm install hami hami-charts/hami --set devicePlugin.deviceMemoryScaling=5 -n k
 ## 容器配置：环境变量
 
 | 参数 | 类型 | 描述 | 默认值 |
-| --- | ---- | --- | ----- |
+| --- | --- | --- | --- |
 | `GPU_CORE_UTILIZATION_POLICY` | 字符串 | 定义 GPU 算力使用策略：<ul><li>`"default"`：默认使用策略。</li><li>`"force"`：强制将算力使用率限制在 `"nvidia.com/gpucores"` 设定值以下。</li><li>`"disable"`：在任务运行期间忽略 `"nvidia.com/gpucores"` 设置的使用限制。</li></ul> | `"default"` |
 | `CUDA_DISABLE_CONTROL` | 布尔值 | 若为 `"true"`，容器内将不会启用 HAMi-core，导致无资源隔离与限制（用于调试）。 | `false` |

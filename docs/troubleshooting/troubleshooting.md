@@ -21,8 +21,7 @@ If a container exceeds its `nvidia.com/gpumem` limit, check the following causes
 - Currently, A100 MIG can be supported in only "none" and "mixed" modes.
 - Tasks with the "nodeName" field cannot be scheduled at the moment; please use "nodeSelector" instead.
 - Only computing tasks are currently supported; video codec processing is not supported.
-- Since v2.3.10, HAMi has changed the `device-plugin` environment variable name from `NodeName` to `NODE_NAME`.
-  If you are using an image version earlier than v2.3.10, the `device-plugin` may fail to start.
+- Since v2.3.10, HAMi has changed the `device-plugin` environment variable name from `NodeName` to `NODE_NAME`. If you are using an image version earlier than v2.3.10, the `device-plugin` may fail to start.
 
   To resolve this issue, you have two options:
 

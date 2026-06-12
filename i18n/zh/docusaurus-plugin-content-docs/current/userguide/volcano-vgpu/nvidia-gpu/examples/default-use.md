@@ -1,6 +1,6 @@
 ---
 title: 默认 vgpu 作业
-linktitle: 默认作业
+sidebar_label: 默认作业
 translated: true
 ---
 
@@ -15,12 +15,12 @@ spec:
   restartPolicy: OnFailure
   schedulerName: volcano
   containers:
-  - image: ubuntu:20.04
-    name: pod1-ctr
-    command: ["sleep"]
-    args: ["100000"]
-    resources:
-      limits:
-        volcano.sh/vgpu-memory: 1024
-        volcano.sh/vgpu-number: 1
+    - image: ubuntu:20.04
+      name: pod1-ctr
+      command: ["sleep"]
+      args: ["100000"]
+      resources:
+        limits:
+          volcano.sh/vgpu-memory: 1024
+          volcano.sh/vgpu-number: 1
 ```

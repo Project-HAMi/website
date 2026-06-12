@@ -4,17 +4,13 @@ title: Enable Cambricon MLU Sharing
 
 **HAMi now supports `cambricon.com/mlu` by implementing most device-sharing features similar to NVIDIA GPUs**, including:
 
-- **MLU Sharing**: Tasks can request a fraction of an MLU instead of an entire MLU card.
-  This enables multiple tasks to share the same MLU device.
+- **MLU Sharing**: Tasks can request a fraction of an MLU instead of an entire MLU card. This enables multiple tasks to share the same MLU device.
 
-- **Device Memory Control**: You can allocate MLUs with a specified memory size, with
-  guaranteed enforcement to ensure usage does not exceed the requested limit.
+- **Device Memory Control**: You can allocate MLUs with a specified memory size, with guaranteed enforcement to ensure usage does not exceed the requested limit.
 
-- **Device Core Control**: MLUs can be assigned a specific number of compute cores,
-  and enforcement ensures core usage remains within bounds.
+- **Device Core Control**: MLUs can be assigned a specific number of compute cores, and enforcement ensures core usage remains within bounds.
 
-- **MLU Type Selection**: You can use annotations to specify which MLU types a task *must use* or
-  *must avoid* by setting `cambricon.com/use-mlutype` or `cambricon.com/nouse-mlutype`.
+- **MLU Type Selection**: You can use annotations to specify which MLU types a task _must use_ or _must avoid_ by setting `cambricon.com/use-mlutype` or `cambricon.com/nouse-mlutype`.
 
 ## Prerequisites
 
@@ -25,8 +21,7 @@ title: Enable Cambricon MLU Sharing
 
 1. **Install HAMi via Helm**
 
-   Follow the instructions under the *Enabling vGPU Support in Kubernetes* section
-   in the [HAMi README](https://github.com/Project-HAMi/HAMi#enabling-vgpu-support-in-kubernetes).
+   Follow the instructions under the _Enabling vGPU Support in Kubernetes_ section in the [HAMi README](https://github.com/Project-HAMi/HAMi#enabling-vgpu-support-in-kubernetes).
 
 2. **Enable SMLU mode on each MLU device**
 
@@ -98,8 +93,6 @@ spec:
 
 2. **Resource constraints only apply to shared mode (`vmlu=1`).**
 
-   The `cambricon.com/mlu.smlu.vmemory` and `cambricon.com/mlu.smlu.vcore` resources are only effective
-   when `cambricon.com/vmlu` is set to `1`. If `vmlu > 1`, a full MLU device will be allocated
-   regardless of `vmemory` and `vcore` values.
+   The `cambricon.com/mlu.smlu.vmemory` and `cambricon.com/mlu.smlu.vcore` resources are only effective when `cambricon.com/vmlu` is set to `1`. If `vmlu > 1`, a full MLU device will be allocated regardless of `vmemory` and `vcore` values.
 
 :::

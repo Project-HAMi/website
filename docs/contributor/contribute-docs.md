@@ -123,8 +123,7 @@ sidebar_label: Short Nav Label
 **Internal links** - link to other docs using relative paths to the `.md` file:
 
 ```md
-[GitHub Workflow](github-workflow.md)
-[Installation](../get-started/deploy-with-helm.md)
+[GitHub Workflow](github-workflow.md) [Installation](../get-started/deploy-with-helm.md)
 ```
 
 Docusaurus resolves these to correct URLs automatically, including version and locale.
@@ -141,17 +140,16 @@ Docusaurus resolves these to correct URLs automatically, including version and l
 
 Store images under `/static/img/docs/` using language-aware subdirectories:
 
-| Path | Use for |
-| --- | --- |
+| Path                       | Use for                        |
+| -------------------------- | ------------------------------ |
 | `/static/img/docs/common/` | Images shared across languages |
-| `/static/img/docs/en/` | English-only images |
-| `/static/img/docs/zh/` | Chinese-only images |
+| `/static/img/docs/en/`     | English-only images            |
+| `/static/img/docs/zh/`     | Chinese-only images            |
 
 Reference images with absolute paths from the site root:
 
 ```md
-![Architecture diagram](/img/docs/common/architecture/hami-arch.png)
-![WebUI Overview](/img/docs/en/userguide/webui-overview.png)
+![Architecture diagram](/img/docs/common/architecture/hami-arch.png) ![WebUI Overview](/img/docs/en/userguide/webui-overview.png)
 ```
 
 Use descriptive alt text. Do not link to external images - host them in the repository.
@@ -161,6 +159,7 @@ Use descriptive alt text. Do not link to external images - host them in the repo
 The following rules apply to all documentation on this site.
 
 **Language and tone:**
+
 - Short, direct sentences
 - Active voice
 - Casual but professional - write like a developer explaining something to another developer
@@ -169,6 +168,7 @@ The following rules apply to all documentation on this site.
 - Exception: direct quotes or official project announcements where "we" refers to the HAMi project team
 
 **Formatting:**
+
 - Use `-` for unordered lists, never `*` or `•`
 - Use regular hyphens (`-`), never em-dashes (`—`)
 - Headings: use `##` and `###` hierarchy; do not skip levels
@@ -176,6 +176,7 @@ The following rules apply to all documentation on this site.
 - No emoji in documentation content
 
 **Avoid marketing language:**
+
 - Do not use: "innovative", "seamless", "robust", "powerful", "cutting-edge", "state-of-the-art"
 - Do not use: "streamline", "leverage", "intuitive", "comprehensive"
 - Do not use: "In conclusion,", "In summary,", "To summarize,"
@@ -184,11 +185,11 @@ The following rules apply to all documentation on this site.
 
 HAMi docs are versioned alongside each release:
 
-| Location | Version | URL |
-| --- | --- | --- |
-| `docs/` | current (unreleased) | `/docs/next/*` |
-| `versioned_docs/version-v2.8.0/` | v2.8.0 (latest stable) | `/docs/*` |
-| `versioned_docs/version-v2.7.0/` | v2.7.0 | `/docs/v2.7.0/*` |
+| Location                         | Version                | URL              |
+| -------------------------------- | ---------------------- | ---------------- |
+| `docs/`                          | current (unreleased)   | `/docs/next/*`   |
+| `versioned_docs/version-v2.8.0/` | v2.8.0 (latest stable) | `/docs/*`        |
+| `versioned_docs/version-v2.7.0/` | v2.7.0                 | `/docs/v2.7.0/*` |
 
 **Contribute to `docs/`** for changes that apply to the next release. These are the files most contributors should edit.
 
@@ -244,14 +245,10 @@ To update the changelog, edit `CHANGELOG.md` directly.
 
 ## FAQ
 
-**The build fails with a broken link error.**
-Run `npm run build` locally to see the exact file and line. Fix the link and rebuild.
+**The build fails with a broken link error.** Run `npm run build` locally to see the exact file and line. Fix the link and rebuild.
 
-**My new page does not appear in the sidebar.**
-Check that the doc ID in `sidebars.js` matches the file path exactly (relative to `docs/`, no `.md` extension).
+**My new page does not appear in the sidebar.** Check that the doc ID in `sidebars.js` matches the file path exactly (relative to `docs/`, no `.md` extension).
 
-**The dev server shows a cached version of my changes.**
-Stop the server and run `npm run clear`, then restart.
+**The dev server shows a cached version of my changes.** Stop the server and run `npm run clear`, then restart.
 
-**How do I document a new feature for an upcoming release?**
-Add the documentation to `docs/` (not `versioned_docs/`). It will be snapshotted into `versioned_docs/` when the release is cut.
+**How do I document a new feature for an upcoming release?** Add the documentation to `docs/` (not `versioned_docs/`). It will be snapshotted into `versioned_docs/` when the release is cut.

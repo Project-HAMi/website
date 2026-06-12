@@ -1,6 +1,6 @@
 ---
 title: 在 AWS 上安装与使用 HAMi
-linktitle: HAMi on AWS
+sidebar_label: HAMi on AWS
 translated: true
 ---
 
@@ -31,8 +31,7 @@ helm install --generate-name --namespace <ENTER_NAMESPACE_HERE> ./*
 
 ## 使用 AWS add-on 安装
 
-在使用 AWS add-on 安装 HAMi 前，你需要安装 cert-manager，你可以在 AWS 插件市场中找到该插件并通过控制台安装。
-你也可以参考[AWS 用户指南](https://docs.aws.amazon.com/eks/latest/userguide/lbc-manifest.html#lbc-cert)进行安装。
+在使用 AWS add-on 安装 HAMi 前，你需要安装 cert-manager，你可以在 AWS 插件市场中找到该插件并通过控制台安装。你也可以参考[AWS 用户指南](https://docs.aws.amazon.com/eks/latest/userguide/lbc-manifest.html#lbc-cert)进行安装。
 
 然后你就可以使用 AWS 插件市场中的 HAMi 插件进行安装。
 

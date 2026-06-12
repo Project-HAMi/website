@@ -3,8 +3,6 @@ title: 分配任务到特定类型
 translated: true
 ---
 
-## 分配任务到特定类型
-
 要将任务分配到特定的 GPU 类型，只需在注释字段中分配 `nvidia.com/use-gputype`。
 
 ```yaml

@@ -2,8 +2,7 @@
 title: 如何在 HAMi 上使用 Kueue
 ---
 
-本指南将帮助你使用 Kueue 来管理 HAMi vGPU 资源，包括启用 Deployment 支持、配置
-ResourceTransformation，以及创建请求 vGPU 资源的工作负载。
+本指南将帮助你使用 Kueue 来管理 HAMi vGPU 资源，包括启用 Deployment 支持、配置 ResourceTransformation，以及创建请求 vGPU 资源的工作负载。
 
 ## 前置条件
 
@@ -55,10 +54,7 @@ kubectl rollout restart deployment kueue-manager -n kueue-system
 
 ## 配置 ResourceTransformation
 
-ResourceTransformation 允许 Kueue 将一种形式的资源请求转换为另一种形式。
-对于 HAMi vGPU 资源，这使得 Kueue 可以使用聚合指标
-（如 `nvidia.com/total-gpucores` 和 `nvidia.com/total-gpumem`）来跟踪 GPU 资源，
-而不是单独的 `nvidia.com/gpu` 请求。
+ResourceTransformation 允许 Kueue 将一种形式的资源请求转换为另一种形式。对于 HAMi vGPU 资源，这使得 Kueue 可以使用聚合指标（如 `nvidia.com/total-gpucores` 和 `nvidia.com/total-gpumem`）来跟踪 GPU 资源，而不是单独的 `nvidia.com/gpu` 请求。
 
 编辑 kueue-manager 配置以添加 ResourceTransformation：
 
@@ -77,16 +73,16 @@ integrations:
     - "pod"
 resources:
   transformations:
-  - input: nvidia.com/gpucores
-    strategy: Replace
-    multiplyBy: nvidia.com/gpu
-    outputs:
-      nvidia.com/total-gpucores: "1"
-  - input: nvidia.com/gpumem
-    strategy: Replace
-    multiplyBy: nvidia.com/gpu
-    outputs:
-      nvidia.com/total-gpumem: "1"
+    - input: nvidia.com/gpucores
+      strategy: Replace
+      multiplyBy: nvidia.com/gpu
+      outputs:
+        nvidia.com/total-gpucores: "1"
+    - input: nvidia.com/gpumem
+      strategy: Replace
+      multiplyBy: nvidia.com/gpu
+      outputs:
+        nvidia.com/total-gpumem: "1"
 ```
 
 更新配置后，重启 kueue-manager：
@@ -155,8 +151,7 @@ spec:
 
 ## 创建请求 vGPU 资源的工作负载
 
-现在，你可以创建请求 vGPU 资源的 Deployment。
-Kueue 将通过 ResourceTransformation 自动转换资源请求。
+现在，你可以创建请求 vGPU 资源的 Deployment。Kueue 将通过 ResourceTransformation 自动转换资源请求。
 
 ### 基础 vGPU Deployment
 
@@ -246,12 +241,12 @@ kubectl get clusterqueue hami-queue -o yaml
 ```yaml
 status:
   flavorsReservation:
-  - name: hami-flavor
-    resources:
-    - name: nvidia.com/total-gpucores
-      total: "160"  # 当前使用量：(2 个副本 × 1 GPU × 50 核心) + (1 个副本 × 2 GPU × 30 核心) = 160
-    - name: nvidia.com/total-gpumem
-      total: "4096"  # 当前使用量：(2 个副本 × 1 GPU × 1024 MiB) + (1 个副本 × 2 GPU × 1024 MiB) = 4096
+    - name: hami-flavor
+      resources:
+        - name: nvidia.com/total-gpucores
+          total: "160" # 当前使用量：(2 个副本 × 1 GPU × 50 核心) + (1 个副本 × 2 GPU × 30 核心) = 160
+        - name: nvidia.com/total-gpumem
+          total: "4096" # 当前使用量：(2 个副本 × 1 GPU × 1024 MiB) + (1 个副本 × 2 GPU × 1024 MiB) = 4096
 ```
 
 ## Resource Transformation 细节

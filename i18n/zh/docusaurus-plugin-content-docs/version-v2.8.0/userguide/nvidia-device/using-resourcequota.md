@@ -1,6 +1,6 @@
 ---
 title: 为 NVIDIA 设备使用扩展的 resourcequota
-linktitle: ResourceQuota
+sidebar_label: ResourceQuota
 translated: true
 ---
 

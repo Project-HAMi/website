@@ -4,8 +4,6 @@ title: GPU Utilization Metrics
 sidebar_label: GPU Utilization Metrics
 ---
 
-# GPU Utilization Metrics
-
 ## Summary
 
 HAMi supports dividing a single NVIDIA GPU card into several vGPU cards to efficiently utilize GPU capacity. However, when a vGPU is assigned to a Pod, HAMi does not currently expose per-Pod GPU utilization metrics. This makes it impossible for users to observe how much GPU each Pod is actually consuming.

@@ -40,7 +40,7 @@ flowchart TB
 Looking from bottom to top:
 
 | Layer | Role | Analogy |
-|-------|------|---------|
+| --- | --- | --- |
 | Kubernetes Infrastructure Layer | Container orchestration, network communication, resource management | Operating system |
 | NVIDIA GPU Runtime Stack | Enables containers to access GPU hardware | GPU driver |
 | GPU Scheduling Layer | GPU resource partitioning, sharing, and scheduling decisions | Resource manager |
@@ -68,7 +68,7 @@ kube-system    my-hami-webui               hami-webui-x.x.x                   de
 ### Responsibilities of Each Release
 
 | Release | Namespace | Responsibility | Installation Timing |
-|---------|-----------|----------------|---------------------|
+| --- | --- | --- | --- |
 | **gpu-operator** | gpu-operator | Automated management of the NVIDIA GPU software stack, automatically deploys drivers, toolkits, and metrics collectors | After Prometheus installation |
 | **hami** | kube-system | GPU virtualization and scheduling enhancement, supports VRAM partitioning and multi-Pod GPU sharing | After GPU Operator installation |
 | **prometheus** | monitoring | Cluster monitoring, collects and stores metrics data from all components | After K8s installation, the first monitoring component installed |
@@ -101,7 +101,7 @@ After installation, a large number of Pods are running in the cluster. Running `
 These are Kubernetes control plane components, created by kubeadm during cluster initialization.
 
 | Pod | Role |
-|-----|------|
+| --- | --- |
 | **kube-apiserver** | Kubernetes API entry point; all components (kubectl, scheduler, controller-manager) communicate through it |
 | **kube-scheduler** | Determines which node a Pod runs on; HAMi Scheduler participates as an extension |
 | **kube-controller-manager** | Runs various controllers (Deployment, ReplicaSet, Node, etc.) to maintain the cluster's desired state |
@@ -118,7 +118,7 @@ These are Kubernetes control plane components, created by kubeadm during cluster
 Created by the Calico manifests (tigera-operator).
 
 | Pod | Role |
-|-----|------|
+| --- | --- |
 | **tigera-operator** | Deployment, manages Calico's lifecycle; watches the `Installation` resource and deploys or reconciles all Calico components |
 | **calico-node** | DaemonSet, one per node, responsible for Pod-to-Pod network connectivity, IP address management, routing, and network policy enforcement |
 | **calico-kube-controllers** | Deployment, runs Calico's control plane logic (policy, namespace, and endpoint synchronization, IPAM garbage collection) |
@@ -134,7 +134,7 @@ Created by the Calico manifests (tigera-operator).
 Created by the gpu-operator Helm Release. The core problem this layer solves is: **enabling containers to access GPU hardware**.
 
 | Pod | Role |
-|-----|------|
+| --- | --- |
 | **nvidia-driver-daemonset** | DaemonSet, installs the NVIDIA kernel driver on each GPU node. It manages the driver in a containerized manner, avoiding the tedious process of manually compiling and installing drivers on the host |
 | **nvidia-container-toolkit-daemonset** | DaemonSet, configures containerd on each node so it knows how to mount GPU devices and libraries into containers. Modifies containerd configuration to register the `nvidia` runtime |
 | **gpu-feature-discovery** | DaemonSet, detects the GPU model, VRAM, computing power, and other information on the local node, and writes them as Labels and Annotations to the Node object for scheduler decision-making |
@@ -157,7 +157,7 @@ Created by the gpu-operator Helm Release. The core problem this layer solves is:
 Created by the hami Helm Release. The core problem this layer solves is: **enabling GPUs to go from whole-card allocation to partitionable and shareable**.
 
 | Pod | Role |
-|-----|------|
+| --- | --- |
 | **hami-scheduler** | Deployment, the HAMi scheduler. It registers as a Kubernetes Scheduler Extender and participates in GPU scheduling decisions for Pods. Supports advanced features such as binpack/spread strategies, priority scheduling, and GPU resource quotas |
 | **hami-device-plugin** | DaemonSet (one per GPU node), replaces the native NVIDIA device-plugin. It registers custom GPU resources (VRAM, compute) with kubelet and performs VRAM partitioning and device mounting when Pods are created |
 
@@ -199,7 +199,7 @@ flowchart TB
 Created by the prometheus Helm Release.
 
 | Pod | Role |
-|-----|------|
+| --- | --- |
 | **prometheus-prometheus-kube-prometheus-prometheus-0** | Main Prometheus Server instance, responsible for collecting and storing all metrics data. Automatically discovers scrape targets through ServiceMonitor |
 | **prometheus-kube-prometheus-operator** | Prometheus Operator, manages the lifecycle of Prometheus and Alertmanager, automatically generates configuration |
 | **prometheus-kube-state-metrics** | Listens to the Kubernetes API, converts cluster state (Deployments, Pods, Nodes, etc.) into Prometheus metrics |
@@ -352,7 +352,7 @@ Throughout this process, each layer fulfills its role: Kubernetes provides the s
 ## Summary
 
 | Layer | Core Components | Core Problem Solved |
-|-------|-----------------|---------------------|
+| --- | --- | --- |
 | Kubernetes Infrastructure Layer | kube-apiserver, kube-scheduler, etcd, calico | Container orchestration and network communication |
 | NVIDIA GPU Runtime Stack | driver, toolkit, dcgm-exporter, gfd | Enabling containers to access GPUs |
 | GPU Scheduling Layer | hami-scheduler, hami-device-plugin | GPU resource partitioning and sharing |

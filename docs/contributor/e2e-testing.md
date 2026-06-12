@@ -4,8 +4,6 @@ title: End-to-End Testing
 sidebar_label: E2E Testing
 ---
 
-# End-to-End Testing
-
 ## Summary
 
 This document proposes End-to-End (E2E) testing support for HAMi, ensuring its functionality and compatibility within the Kubernetes ecosystem. It introduces mechanisms to validate the entire workflow and guarantees that the system meets production-level requirements.
@@ -61,10 +59,10 @@ Comprehensive E2E test coverage is essential to mitigate the risks of regression
 
 ## Risks and Mitigations
 
-**Resource Limitations**
+### Resource Limitations
 
 Testing clusters may encounter resource constraints such as insufficient CPU, memory, or storage. This can lead to test failures, degraded performance, or timeouts during deployments.
 
-**Environment Instability**
+### Environment Instability
 
 Instabilities such as network latency, intermittent failures, or cluster node failures can cause tests to fail or behave inconsistently. Tests should be designed to retry on transient errors and report deterministically on persistent ones.

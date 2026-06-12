@@ -1,6 +1,6 @@
 ---
 title: 分配到特定设备类型
-linktitle: 指定设备类型
+sidebar_label: 指定设备类型
 translated: true
 ---
 

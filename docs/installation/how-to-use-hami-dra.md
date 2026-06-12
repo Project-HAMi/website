@@ -1,13 +1,12 @@
 ---
-linktitle: HAMi DRA
+sidebar_label: HAMi DRA
 title: HAMi DRA for Kubernetes
 translated: true
 ---
 
 ## Introduction
 
-HAMi has provided support for K8s [DRA](https://kubernetes.io/docs/concepts/scheduling-eviction/dynamic-resource-allocation/) (Dynamic Resource Allocation).
-The [HAMi DRA webhook](https://github.com/Project-HAMi/HAMi-DRA) is a Kubernetes mutating webhook that automatically converts GPU device resource requests into DRA ResourceClaims, enabling dynamic resource allocation for GPU workloads. It provides a consistent user experience in DRA mode that matches traditional DevicePlugin usage.
+HAMi has provided support for K8s [DRA](https://kubernetes.io/docs/concepts/scheduling-eviction/dynamic-resource-allocation/) (Dynamic Resource Allocation). The [HAMi DRA webhook](https://github.com/Project-HAMi/HAMi-DRA) is a Kubernetes mutating webhook that automatically converts GPU device resource requests into DRA ResourceClaims, enabling dynamic resource allocation for GPU workloads. It provides a consistent user experience in DRA mode that matches traditional DevicePlugin usage.
 
 ## Features
 
@@ -144,15 +143,15 @@ metadata:
 spec:
   devices:
     requests:
-    - name: gpu
-      exactly:
-        deviceClassName: hami-core-gpu.project-hami.io
-        allocationMode: ExactCount
-        count: 1
-        capacity:
-          requests:
-            cores: 50
-            memory: "10Gi"
+      - name: gpu
+        exactly:
+          deviceClassName: hami-core-gpu.project-hami.io
+          allocationMode: ExactCount
+          count: 1
+          capacity:
+            requests:
+              cores: 50
+              memory: "10Gi"
 ```
 
 Then reference it in a Pod:
@@ -164,15 +163,15 @@ metadata:
   name: gpu-test-dra
 spec:
   containers:
-  - name: cuda
-    image: nvidia/cuda:13.0.1-base-ubi9
-    command: ["sleep", "3600"]
-    resources:
-      claims:
-      - name: gpu
+    - name: cuda
+      image: nvidia/cuda:13.0.1-base-ubi9
+      command: ["sleep", "3600"]
+      resources:
+        claims:
+          - name: gpu
   resourceClaims:
-  - name: gpu
-    resourceClaimName: gpu-half-claim
+    - name: gpu
+      resourceClaimName: gpu-half-claim
   restartPolicy: Never
 ```
 
@@ -187,14 +186,14 @@ metadata:
   name: gpu-test-compatible
 spec:
   containers:
-  - name: cuda
-    image: nvidia/cuda:13.0.1-base-ubi9
-    command: ["sleep", "3600"]
-    resources:
-      limits:
-        nvidia.com/gpu: 1
-        nvidia.com/gpumem: 10240
-        nvidia.com/gpucores: 50
+    - name: cuda
+      image: nvidia/cuda:13.0.1-base-ubi9
+      command: ["sleep", "3600"]
+      resources:
+        limits:
+          nvidia.com/gpu: 1
+          nvidia.com/gpumem: 10240
+          nvidia.com/gpucores: 50
   restartPolicy: Never
 ```
 

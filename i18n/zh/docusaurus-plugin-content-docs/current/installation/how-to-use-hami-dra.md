@@ -1,13 +1,12 @@
 ---
 title: Kubernetes 的 HAMi DRA
-linktitle: HAMi DRA
+sidebar_label: HAMi DRA
 translated: true
 ---
 
 ## 介绍
 
-HAMi 已经提供了对 K8s [DRA](https://kubernetes.io/docs/concepts/scheduling-eviction/dynamic-resource-allocation/)（动态资源分配）功能的支持。
-[HAMi DRA webhook](https://github.com/Project-HAMi/HAMi-DRA) 是一个 Kubernetes mutating webhook，能够自动将 GPU 设备资源请求转换为 DRA ResourceClaim，从而实现 GPU 工作负载的动态资源分配。它可以让你在 DRA 模式下获得与传统 DevicePlugin 使用方式一致的使用体验。
+HAMi 已经提供了对 K8s [DRA](https://kubernetes.io/docs/concepts/scheduling-eviction/dynamic-resource-allocation/)（动态资源分配）功能的支持。 [HAMi DRA webhook](https://github.com/Project-HAMi/HAMi-DRA) 是一个 Kubernetes mutating webhook，能够自动将 GPU 设备资源请求转换为 DRA ResourceClaim，从而实现 GPU 工作负载的动态资源分配。它可以让你在 DRA 模式下获得与传统 DevicePlugin 使用方式一致的使用体验。
 
 ## 功能特性
 
@@ -122,15 +121,15 @@ metadata:
 spec:
   devices:
     requests:
-    - name: gpu
-      exactly:
-        deviceClassName: hami-core-gpu.project-hami.io
-        allocationMode: ExactCount
-        count: 1
-        capacity:
-          requests:
-            cores: 50
-            memory: "10Gi"
+      - name: gpu
+        exactly:
+          deviceClassName: hami-core-gpu.project-hami.io
+          allocationMode: ExactCount
+          count: 1
+          capacity:
+            requests:
+              cores: 50
+              memory: "10Gi"
 ```
 
 在 Pod 中引用该 ResourceClaim：
@@ -142,15 +141,15 @@ metadata:
   name: gpu-test-dra
 spec:
   containers:
-  - name: cuda
-    image: nvidia/cuda:13.0.1-base-ubi9
-    command: ["sleep", "3600"]
-    resources:
-      claims:
-      - name: gpu
+    - name: cuda
+      image: nvidia/cuda:13.0.1-base-ubi9
+      command: ["sleep", "3600"]
+      resources:
+        claims:
+          - name: gpu
   resourceClaims:
-  - name: gpu
-    resourceClaimName: gpu-half-claim
+    - name: gpu
+      resourceClaimName: gpu-half-claim
   restartPolicy: Never
 ```
 
@@ -165,14 +164,14 @@ metadata:
   name: gpu-test-compatible
 spec:
   containers:
-  - name: cuda
-    image: nvidia/cuda:13.0.1-base-ubi9
-    command: ["sleep", "3600"]
-    resources:
-      limits:
-        nvidia.com/gpu: 1
-        nvidia.com/gpumem: 10240
-        nvidia.com/gpucores: 50
+    - name: cuda
+      image: nvidia/cuda:13.0.1-base-ubi9
+      command: ["sleep", "3600"]
+      resources:
+        limits:
+          nvidia.com/gpu: 1
+          nvidia.com/gpumem: 10240
+          nvidia.com/gpucores: 50
   restartPolicy: Never
 ```
 

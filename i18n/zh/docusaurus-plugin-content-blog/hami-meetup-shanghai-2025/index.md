@@ -3,7 +3,8 @@ title: "第一届 HAMi Meetup 上海站回顾"
 date: "2025-11-30"
 description: "11 月 30 日，HAMi Meetup 上海站成功举办。来自蔚来、沐曦、DaoCloud、星环科技等企业的技术专家分享了 HAMi 在 GPU 虚拟化、异构算力调度、国产算力适配等方面的实践经验。"
 image: ./meetup-banner.png
-tags: ["Meetup", "上海", "异构算力调度", "GPU 虚拟化", "Kubernetes", "国产算力", "AI 训练与推理优化"]
+tags:
+  ["Meetup", "上海", "异构算力调度", "GPU 虚拟化", "Kubernetes", "国产算力", "AI 训练与推理优化"]
 authors: [hami_community]
 ---
 

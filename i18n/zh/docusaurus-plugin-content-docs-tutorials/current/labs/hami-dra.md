@@ -1,6 +1,6 @@
 ---
 title: "实验 4: 使用动态资源分配进行 GPU 切片"
-linktitle: "实验 4: DRA 切片"
+sidebar_label: "实验 4: DRA 切片"
 lab:
   level: Advanced
   duration: 约 45 分钟
@@ -25,7 +25,7 @@ HAMi DRA 驱动尚处于快速发展阶段。本实验安装的是已在 Tesla T
 
 ## 为什么 DRA 很重要
 
-| | 扩展资源（实验 3） | DRA（本实验） |
+|  | 扩展资源（实验 3） | DRA（本实验） |
 | --- | --- | --- |
 | API | 资源 limits 中的 `nvidia.com/gpumem: 4000` | `ResourceClaim` 的 `capacity.requests: {memory: 4Gi, cores: 30}` |
 | 调度 | HAMi 调度器扩展 + Webhook | 原生 kube-scheduler DRA 插件 |
@@ -43,7 +43,7 @@ HAMi DRA 驱动实现了 [DRA Consumable Capacity](https://github.com/kubernetes
 ## 实验概览
 
 ```mermaid
-%% title: HAMi DRA 实验步骤 
+%% title: HAMi DRA 实验步骤
 flowchart LR
     Step1["步骤 1<br/>启用 Feature Gate"] --> Step2["步骤 2<br/>配置运行时"]
     Step2 --> Step3["步骤 3<br/>安装 DRA 驱动"]
@@ -136,20 +136,20 @@ kubectl get resourceslices -o jsonpath='{.items[0].spec.devices[0].capacity}' | 
 
 ```json
 {
-    "cores": {
-        "requestPolicy": {
-            "default": "100",
-            "validRange": { "max": "100", "min": "0", "step": "1" }
-        },
-        "value": "100"
+  "cores": {
+    "requestPolicy": {
+      "default": "100",
+      "validRange": { "max": "100", "min": "0", "step": "1" }
     },
-    "memory": {
-        "requestPolicy": {
-            "default": "15Gi",
-            "validRange": { "max": "15Gi", "min": "1Mi", "step": "1Mi" }
-        },
-        "value": "15Gi"
-    }
+    "value": "100"
+  },
+  "memory": {
+    "requestPolicy": {
+      "default": "15Gi",
+      "validRange": { "max": "15Gi", "min": "1Mi", "step": "1Mi" }
+    },
+    "value": "15Gi"
+  }
 }
 ```
 
@@ -168,13 +168,13 @@ metadata:
 spec:
   devices:
     requests:
-    - name: single-gpu
-      exactly:
-        deviceClassName: hami-core-gpu.project-hami.io
-        capacity:
-          requests:
-            cores: 30
-            memory: "4Gi"
+      - name: single-gpu
+        exactly:
+          deviceClassName: hami-core-gpu.project-hami.io
+          capacity:
+            requests:
+              cores: 30
+              memory: "4Gi"
 ```
 
 `pod-0.yaml` 通过引用 Claim 来替代请求 `nvidia.com/*` 资源：
@@ -199,15 +199,15 @@ kubectl get resourceclaim single-gpu-0 -n test-dra -o jsonpath='{.status.allocat
 
 ```json
 {
-    "consumedCapacity": {
-        "cores": "30",
-        "memory": "4Gi"
-    },
-    "device": "hami-gpu-0",
-    "driver": "hami-core-gpu.project-hami.io",
-    "pool": "hami-workshop",
-    "request": "single-gpu",
-    "shareID": "225b5df7-3753-45b1-9043-81c00616b384"
+  "consumedCapacity": {
+    "cores": "30",
+    "memory": "4Gi"
+  },
+  "device": "hami-gpu-0",
+  "driver": "hami-core-gpu.project-hami.io",
+  "pool": "hami-workshop",
+  "request": "single-gpu",
+  "shareID": "225b5df7-3753-45b1-9043-81c00616b384"
 }
 ```
 

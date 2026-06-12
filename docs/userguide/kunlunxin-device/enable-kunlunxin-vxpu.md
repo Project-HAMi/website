@@ -93,7 +93,7 @@ spec:
           securityContext:
             privileged: true
             capabilities:
-              add: [ "ALL" ]
+              add: ["ALL"]
           volumeMounts:
             - name: device-plugin
               mountPath: /var/lib/kubelet/device-plugins
@@ -122,22 +122,20 @@ spec:
         xpu: "on"
 ```
 
-:::note
-Default resource names are as follows:
+:::note Default resource names are as follows:
 
 - `kunlunxin.com/vxpu` for VXPU count
 - `kunlunxin.com/vxpu-memory` for memory allocation
 
-You can customize these names using the parameters above.
-:::
+You can customize these names using the parameters above. :::
 
 ## Device Granularity Partitioning
 
 XPU P800-OAM supports 2 levels of partitioning granularity: 1/4 card and 1/2 card, with memory allocation automatically aligned. The rules are as follows:
->
-> * Requested memory ≤ 24576M (24G) will be automatically aligned to 24576M (24G)
-> * Requested memory > 24576M (24G) and ≤ 49152M (48G) will be automatically aligned to 49152M (48G)
-> * Requested memory > 49152M (48G) will be allocated as full cards
+
+> - Requested memory ≤ 24576M (24G) will be automatically aligned to 24576M (24G)
+> - Requested memory > 24576M (24G) and ≤ 49152M (48G) will be automatically aligned to 49152M (48G)
+> - Requested memory > 49152M (48G) will be allocated as full cards
 
 ## Running XPU Tasks
 
@@ -151,7 +149,7 @@ spec:
     - name: vxpu-pod-demo
       image: pytorch:resnet50
       workingDir: /root
-      command: ["sleep","infinity"]
+      command: ["sleep", "infinity"]
       resources:
         limits:
           kunlunxin.com/vxpu: 1 # requesting a VXPU

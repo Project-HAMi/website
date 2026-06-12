@@ -2,7 +2,7 @@
 title: Monitor volcano-vgpu
 ---
 
-### Monitor
+## Monitor
 
 volcano-scheduler-metrics records every GPU usage and limitation, visit the following address to get these metrics.
 

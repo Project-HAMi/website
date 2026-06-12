@@ -2,7 +2,6 @@
 title: Enable Enflame GCU Sharing
 ---
 
-
 ## Introduction
 
 **HAMi now supports sharing on enflame.com/gcu (i.e., S60) by implementing most device-sharing features as NVIDIA GPUs**, including:
@@ -26,18 +25,14 @@ title: Enable Enflame GCU Sharing
 
 - Deploy gcushare-device-plugin on enflame nodes (Please consult your device provider to acquire its package and document)
 
-:::caution
-Install only `gcushare-device-plugin`. Do not install the `gcushare-scheduler-plugin` package.
-:::
+:::caution Install only `gcushare-device-plugin`. Do not install the `gcushare-scheduler-plugin` package. :::
 
-:::note
-The default resource names are:
+:::note The default resource names are:
 
 - `enflame.com/vgcu` for GCU count (only 1 is supported currently)
 - `enflame.com/vgcu-percentage` for the percentage of memory and cores in a GCU slice
 
-You can customize these names by modifying the `hami-scheduler-device` ConfigMap.
-:::
+You can customize these names by modifying the `hami-scheduler-device` ConfigMap. :::
 
 - Set 'devices.enflame.enabled=true' when deploy HAMi
 
@@ -58,8 +53,7 @@ HAMi divides each Enflame GCU into 100 units for resource allocation. Requesting
 
 ## Running Enflame jobs
 
-Enflame GCUs can now be requested by a container
-using the `enflame.com/vgcu` and `enflame.com/vgcu-percentage` resource type:
+Enflame GCUs can now be requested by a container using the `enflame.com/vgcu` and `enflame.com/vgcu-percentage` resource type:
 
 ```yaml
 apiVersion: v1
@@ -76,16 +70,14 @@ spec:
       command:
         - sleep
       args:
-        - '100000'
+        - "100000"
       resources:
         limits:
           enflame.com/vgcu: 1
           enflame.com/vgcu-percentage: 22
 ```
 
-:::tip
-More examples are available in the [examples/enflame folder](https://github.com/Project-HAMi/HAMi/tree/master/examples/enflame/).
-:::
+:::tip More examples are available in the [examples/enflame folder](https://github.com/Project-HAMi/HAMi/tree/master/examples/enflame/). :::
 
 ## Device UUID Selection
 
@@ -105,9 +97,7 @@ spec:
   # ... rest of pod spec
 ```
 
-:::note
-The device ID format is `{node-name}-enflame-{index}`. You can find the available device IDs in the node status.
-:::
+:::note The device ID format is `{node-name}-enflame-{index}`. You can find the available device IDs in the node status. :::
 
 ### Finding Device UUIDs
 

@@ -1,5 +1,5 @@
 ---
-linktitle: WebUI
+sidebar_label: WebUI
 title: Deploy HAMi WebUI using Helm Charts
 ---
 
@@ -41,10 +41,7 @@ To add the HAMi WebUI Helm repository and install the chart on your machine, fol
    helm install my-hami-webui hami-webui/hami-webui --set externalPrometheus.enabled=true --set externalPrometheus.address="http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090" -n kube-system
    ```
 
-   :::caution
-   Replace `externalPrometheus.address` with the in-cluster Prometheus URL that your environment uses.
-   :::
-   You can set other values from [values.yaml](https://github.com/Project-HAMi/HAMi-WebUI/blob/main/charts/hami-webui/values.yaml) during installation; see the configuration [documentation](https://github.com/Project-HAMi/HAMi-WebUI/blob/main/charts/hami-webui/README.md#values).
+   :::caution Replace `externalPrometheus.address` with the in-cluster Prometheus URL that your environment uses. ::: You can set other values from [values.yaml](https://github.com/Project-HAMi/HAMi-WebUI/blob/main/charts/hami-webui/values.yaml) during installation; see the configuration [documentation](https://github.com/Project-HAMi/HAMi-WebUI/blob/main/charts/hami-webui/README.md#values).
 
 3. Verify the installation:
 

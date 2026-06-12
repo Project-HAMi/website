@@ -1,13 +1,13 @@
-import React from 'react';
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
-import {translate} from '@docusaurus/Translate';
-import {mergeSearchStrings, useHistorySelector} from '@docusaurus/theme-common';
-import {useAlternatePageUtils} from '@docusaurus/theme-common/internal';
-import DropdownNavbarItem from '@theme/NavbarItem/DropdownNavbarItem';
-import IconLanguage from '@theme/Icon/Language';
-import styles from './styles.module.css';
+import React from "react";
+import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
+import { translate } from "@docusaurus/Translate";
+import { mergeSearchStrings, useHistorySelector } from "@docusaurus/theme-common";
+import { useAlternatePageUtils } from "@docusaurus/theme-common/internal";
+import DropdownNavbarItem from "@theme/NavbarItem/DropdownNavbarItem";
+import IconLanguage from "@theme/Icon/Language";
+import styles from "./styles.module.css";
 
-const localePreferenceKey = 'hami.locale.preference';
+const localePreferenceKey = "hami.locale.preference";
 
 function persistLocalePreference(locale) {
   try {
@@ -20,7 +20,7 @@ function persistLocalePreference(locale) {
 function useLocaleDropdownUtils() {
   const {
     siteConfig,
-    i18n: {localeConfigs},
+    i18n: { localeConfigs },
   } = useDocusaurusContext();
   const alternatePageUtils = useAlternatePageUtils();
   const search = useHistorySelector((history) => history.location.search);
@@ -53,10 +53,7 @@ function useLocaleDropdownUtils() {
 
   return {
     getURL: (locale, options) => {
-      const finalSearch = mergeSearchStrings(
-        [search, options.queryString],
-        'append',
-      );
+      const finalSearch = mergeSearchStrings([search, options.queryString], "append");
       return `${getBaseURLForLocale(locale)}${finalSearch}${hash}`;
     },
     getLabel: (locale) => getLocaleConfig(locale).label,
@@ -73,30 +70,26 @@ export default function LocaleDropdownNavbarItem({
 }) {
   const utils = useLocaleDropdownUtils();
   const {
-    i18n: {currentLocale, locales},
+    i18n: { currentLocale, locales },
   } = useDocusaurusContext();
 
   const localeItems = locales.map((locale) => ({
     label: utils.getLabel(locale),
     lang: utils.getLang(locale),
-    to: utils.getURL(locale, {queryString}),
-    target: '_self',
+    to: utils.getURL(locale, { queryString }),
+    target: "_self",
     autoAddBaseUrl: false,
     onClick: () => persistLocalePreference(locale),
     className:
-      locale === currentLocale
-        ? mobile
-          ? 'menu__link--active'
-          : 'dropdown__link--active'
-        : '',
+      locale === currentLocale ? (mobile ? "menu__link--active" : "dropdown__link--active") : "",
   }));
 
   const items = [...dropdownItemsBefore, ...localeItems, ...dropdownItemsAfter];
   const dropdownLabel = mobile
     ? translate({
-        message: 'Languages',
-        id: 'theme.navbar.mobileLanguageDropdown.label',
-        description: 'The label for the mobile language switcher dropdown',
+        message: "Languages",
+        id: "theme.navbar.mobileLanguageDropdown.label",
+        description: "The label for the mobile language switcher dropdown",
       })
     : utils.getLabel(currentLocale);
 

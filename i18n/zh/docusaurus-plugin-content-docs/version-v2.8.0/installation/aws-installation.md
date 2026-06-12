@@ -1,5 +1,5 @@
 ---
-linktitle: HAMi on AWS
+sidebar_label: HAMi on AWS
 title: 在 AWS 上安装与使用 HAMi
 translated: true
 ---

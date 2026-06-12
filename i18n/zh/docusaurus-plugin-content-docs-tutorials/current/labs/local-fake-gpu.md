@@ -1,6 +1,6 @@
 ---
 title: "实验 2: 本地 Fake GPU 安装 HAMi"
-linktitle: "实验 2: 本地 Fake GPU"
+sidebar_label: "实验 2: 本地 Fake GPU"
 lab:
   level: Beginner
   duration: 约 30 分钟
@@ -704,7 +704,7 @@ Thu May 21 08:44:31 2026
 > - **11441MiB / 11441MiB**：显存使用/总量，与节点标签 `nvidia.com/gpu.memory=11441` 一致
 > - **GPU-Util: 18%**：GPU 利用率，在注解 `run.ai/simulated-gpu-utilization: "10-30"` 指定的范围内
 > - **Processes: sleep 3600, 11441MiB**：显示当前进程占用的 GPU 显存
-
+>
 > 这就是 fake-gpu-operator 的核心能力：在没有物理 GPU 的机器上，让容器看到 "好像有一块 GPU" 的环境。`nvidia-smi` 输出的所有数据都是模拟的。
 
 ## 步骤 6: 安装 HAMi WebUI

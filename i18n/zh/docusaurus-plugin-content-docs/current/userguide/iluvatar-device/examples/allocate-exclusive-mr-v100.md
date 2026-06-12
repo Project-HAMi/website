@@ -13,25 +13,26 @@ metadata:
 spec:
   restartPolicy: Never
   containers:
-  - name: MR-V100-poddemo
-    image: registry.iluvatar.com.cn:10443/saas/mr-bi150-4.3.0-x86-ubuntu22.04-py3.10-base-base:v1.0
-    command:
-    - bash
-    args:
-    - -c
-    - |
-      set -ex
-      echo "export LD_LIBRARY_PATH=/usr/local/corex/lib64:$LD_LIBRARY_PATH">> /root/.bashrc
-      cp -f /usr/local/iluvatar/lib64/libcuda.* /usr/local/corex/lib64/
-      cp -f /usr/local/iluvatar/lib64/libixml.* /usr/local/corex/lib64/
-      source /root/.bashrc
-      sleep 360000
-    resources:
-      requests:
-        iluvatar.ai/MR-V100-vgpu: 2
-      limits:
-        iluvatar.ai/MR-V100-vgpu: 2
+    - name: MR-V100-poddemo
+      image: registry.iluvatar.com.cn:10443/saas/mr-bi150-4.3.0-x86-ubuntu22.04-py3.10-base-base:v1.0
+      command:
+        - bash
+      args:
+        - -c
+        - |
+          set -ex
+          echo "export LD_LIBRARY_PATH=/usr/local/corex/lib64:$LD_LIBRARY_PATH">> /root/.bashrc
+          cp -f /usr/local/iluvatar/lib64/libcuda.* /usr/local/corex/lib64/
+          cp -f /usr/local/iluvatar/lib64/libixml.* /usr/local/corex/lib64/
+          source /root/.bashrc
+          sleep 360000
+      resources:
+        requests:
+          iluvatar.ai/MR-V100-vgpu: 2
+        limits:
+          iluvatar.ai/MR-V100-vgpu: 2
 ```
+
 :::note
 
 当申请独占一张 GPU（`iluvatar.ai/<card-type>-vgpu=1`）时，需要同时设置 `iluvatar.ai/<card-type>.vCore` 和 `iluvatar.ai/<card-type>.vMem` 的值为 GPU 的最大资源数量。`iluvatar.ai/<card-type>-vgpu>1` 时不再支持 vGPU 功能，可不必填写核心和显存的数值

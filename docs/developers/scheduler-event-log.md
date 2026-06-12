@@ -4,8 +4,6 @@ title: Scheduler Event Log
 sidebar_label: Scheduler Event Log
 ---
 
-# Scheduler Event Log
-
 ## Current Status
 
 ### Ambiguous Event Descriptions Make Problem Diagnosis Difficult
@@ -90,10 +88,12 @@ Events:
 Two-level logging system:
 
 **v4-level (Node summary):**
+
 - Failed nodes: Aggregate rejection reasons
 - Successful nodes: Display scores
 
 **v5-level (Device details):**
+
 - Per-device failure reasons with standardized error codes
 
 Log format specification:
@@ -104,15 +104,15 @@ Log format specification:
 
 Standardized error codes:
 
-| Raw Message | Error Code |
-| ----------- | ---------- |
-| request devices nums cannot exceed... | `NodeInsufficientDevice` |
-| card type mismatch... | `CardTypeMismatch` |
+| Raw Message                             | Error Code                        |
+| --------------------------------------- | --------------------------------- |
+| request devices nums cannot exceed...   | `NodeInsufficientDevice`          |
+| card type mismatch...                   | `CardTypeMismatch`                |
 | the container wants exclusive access... | `ExclusiveDeviceAllocateConflict` |
-| card Insufficient remaining memory | `CardInsufficientMemory` |
-| card insufficient remaining core | `CardInsufficientCore` |
-| Numa not fit | `NumaNotFit` |
-| can't allocate core=0 job... | `CardComputeUnitsExhausted` |
+| card Insufficient remaining memory      | `CardInsufficientMemory`          |
+| card insufficient remaining core        | `CardInsufficientCore`            |
+| Numa not fit                            | `NumaNotFit`                      |
+| can't allocate core=0 job...            | `CardComputeUnitsExhausted`       |
 
 Example logs:
 

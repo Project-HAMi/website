@@ -57,11 +57,9 @@ Release notes auto-populate from the original master PR.
 
 ## Troubleshooting
 
-**The cherry pick does not apply cleanly.**
-The patch conflicts with changes already in the release branch. Fetch the auto-generated branch from your fork, resolve the conflicts manually, and force-push.
+**The cherry pick does not apply cleanly.** The patch conflicts with changes already in the release branch. Fetch the auto-generated branch from your fork, resolve the conflicts manually, and force-push.
 
-**CI fails on the cherry pick branch.**
-Fetch the auto-generated branch, amend the failing commit, and force-push. Alternatively, open a new PR manually - it is noisier but sometimes cleaner.
+**CI fails on the cherry pick branch.** Fetch the auto-generated branch, amend the failing commit, and force-push. Alternatively, open a new PR manually - it is noisier but sometimes cleaner.
 
 ## Unsupported releases
 

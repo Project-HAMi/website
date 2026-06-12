@@ -88,10 +88,10 @@ spec:
           imagePullPolicy: Always
           name: vastai-device-plugin-dp
           env:
-          - name: NODE_NAME
-            valueFrom:
-              fieldRef:
-                fieldPath: spec.nodeName
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
           args: ["--fail-on-init-error=false", "--pass-device-specs=true"]
           securityContext:
             privileged: true
@@ -180,11 +180,17 @@ spec:
           imagePullPolicy: Always
           name: vastai-device-plugin-dp
           env:
-          - name: NODE_NAME
-            valueFrom:
-              fieldRef:
-                fieldPath: spec.nodeName
-          args: ["--fail-on-init-error=false", "--pass-device-specs=true", "--device-strategy=die", "--rename-on-die=false"]
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          args:
+            [
+              "--fail-on-init-error=false",
+              "--pass-device-specs=true",
+              "--device-strategy=die",
+              "--rename-on-die=false",
+            ]
           securityContext:
             privileged: true
           volumeMounts:
@@ -216,12 +222,12 @@ metadata:
 spec:
   restartPolicy: Never
   containers:
-  - name: vastai-container
-    image: harbor.vastaitech.com/ai_deliver/vllm_vacc:VVI-25.12.SP2
-    command: ["sleep", "infinity"]
-    resources:
-      limits:
-        vastaitech.com/va: "1"
+    - name: vastai-container
+      image: harbor.vastaitech.com/ai_deliver/vllm_vacc:VVI-25.12.SP2
+      command: ["sleep", "infinity"]
+      resources:
+        limits:
+          vastaitech.com/va: "1"
 ```
 
 ## 注意事项
