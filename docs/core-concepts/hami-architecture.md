@@ -125,7 +125,7 @@ Created by the Calico manifests (tigera-operator).
 | **calico-typha** | Deployment, aggregates datastore watch connections so large clusters do not overload the Kubernetes API |
 | **csi-node-driver** | DaemonSet, Calico's CSI driver, mounts per-Pod volumes used by advanced policy features |
 
-**Without them**: Pods cannot communicate with each other. Kubernetes' Service mechanism completely fails, DNS resolution doesn't work, and cross-Pod distributed training cannot proceed.
+**Without them**: Pods cannot communicate with each other. Kubernetes' Service mechanism completely fails, DNS resolution does not work, and cross-Pod distributed training cannot proceed.
 
 **Significance for AI Infrastructure**: AI training often involves distributed workloads (multi-Pod collaborative training), and network performance directly affects training efficiency. Calico provides high-performance routing (BGP/VXLAN) and NetworkPolicy enforcement to keep workloads isolated from each other.
 

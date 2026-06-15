@@ -161,7 +161,7 @@ Device Plugins can only report a single resource type. GPU memory and compute in
 - volcano-vgpu-device-plugin creates **[three independent Device Plugin instances](https://github.com/Project-HAMi/volcano-vgpu-device-plugin/blob/2bf6dfe37f7b716f05d0d3210f89898087c06d99/pkg/plugin/vgpu/mig-strategy.go#L65-L85)**, each registering with kubelet for volcano.sh/vgpu-number, volcano.sh/vgpu-memory, and volcano.sh/vgpu-cores resources respectively. After kubelet receives the registration, it automatically writes the resources into Capacity and Allocatable.
 - The `volcano.sh/vgpu-memory` resource is subject to a Kubernetes extended resources quantity limit of **32,767 maximum**. For GPUs with large memory (e.g., A100 80GB), configure the `--gpu-memory-factor` parameter to avoid exceeding the limit.
 
-## Why don’t some domestic vendors require a runtime for installation?
+## Why do some domestic vendors not require a runtime for installation?
 
 Certain domestic vendors (e.g., Hygon, Cambricon) do not require a runtime because their DevicePlugin handles device discovery and mounting directly. In contrast, vendors like NVIDIA and Ascend rely on runtimes for environment configuration, device node mounting, and advanced functionality support.
 

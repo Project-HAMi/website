@@ -23,6 +23,6 @@ spec:
 
 :::note
 
-`nvidia.com/gpumem` can't be used together with `nvidia.com/gpumem-percentage`
+`nvidia.com/gpumem` cannot be used together with `nvidia.com/gpumem-percentage`
 
 :::

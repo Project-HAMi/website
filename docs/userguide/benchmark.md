@@ -22,8 +22,8 @@ Three instances from the vLLM benchmark were used to evaluate vGPU-device-plugin
 | Instance | Description |
 | -------- | :---------: |
 | Native | k8s + nvidia k8s-device-plugin |
-| Opensource_v280 | k8s + VGPU k8s-device-plugin, opensource version v280 |
-| Opensource_v290 | k8s + VGPU k8s-device-plugin, opensource version v290 |
+| Opensource_v280 | k8s + vGPU k8s-device-plugin, opensource version v280 |
+| Opensource_v290 | k8s + vGPU k8s-device-plugin, opensource version v290 |
 
 ## Test Cases
 
