@@ -86,9 +86,9 @@ Every pull request automatically runs:
 
 | Check            | What it does                                              |
 | ---------------- | --------------------------------------------------------- |
-| **Lint**         | `npm run lint` — Markdown structural checks               |
-| **Format**       | `npm run format:check` — Prettier formatting verification |
-| **Build**        | `npm run build` — Full site build with link validation    |
+| **Lint**         | `npm run lint` - Markdown structural checks               |
+| **Format**       | `npm run format:check` - Prettier formatting verification |
+| **Build**        | `npm run build` - Full site build with link validation    |
 | **Broken Links** | Internal link check against the built site                |
 
 A weekly scheduled run also validates the `master` branch health.

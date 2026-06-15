@@ -19,7 +19,7 @@ toc_max_heading_level: 2
 
 import Tabs from '@theme/Tabs'; import TabItem from '@theme/TabItem';
 
-This lab walks you through setting up a fully local Kubernetes cluster — using either **OrbStack** (macOS) or **kind** (Linux/Ubuntu) — together with [run-ai/fake-gpu-operator](https://github.com/run-ai/fake-gpu-operator), then installing HAMi online.
+This lab walks you through setting up a fully local Kubernetes cluster (using either **OrbStack** on macOS or **kind** on Linux/Ubuntu) together with [run-ai/fake-gpu-operator](https://github.com/run-ai/fake-gpu-operator), then installing HAMi online.
 
 This lab does not require a real NVIDIA GPU. It is designed for classroom preparation, understanding HAMi component architecture, verifying GPU Pod scheduling workflows, and quickly getting familiar with basic HAMi usage on a personal computer.
 
@@ -306,7 +306,7 @@ REVISION: 1
 TEST SUITE: None
 ```
 
-> `helm upgrade -i` installs if the release doesn't exist, upgrades if it does. The `oci://` prefix pulls the Helm Chart from GitHub Container Registry. `0.0.80` is a stable version released in 2026-04.
+> `helm upgrade -i` installs if the release does not exist, upgrades if it does. The `oci://` prefix pulls the Helm Chart from GitHub Container Registry. `0.0.80` is a stable version released in 2026-04.
 
 ### 2.4 Wait for Components to Run
 
@@ -562,7 +562,7 @@ DCGM_FI_DEV_GPU_UTIL{..., device="nvidia1", ..., modelName="Tesla-K80", ...} => 
 DCGM_FI_DEV_GPU_UTIL{..., device="nvidia0", ..., modelName="Tesla-K80", ...} => 0
 ```
 
-> Seeing `DCGM_FI_DEV_GPU_UTIL` data means Prometheus is collecting fake GPU metrics. A utilization of 0 is normal — there are no real GPU compute tasks running.
+> Seeing `DCGM_FI_DEV_GPU_UTIL` data means Prometheus is collecting fake GPU metrics. A utilization of 0 is normal - there are no real GPU compute tasks running.
 
 ## Step 5: Run Simulated GPU Workloads
 
@@ -702,7 +702,7 @@ Thu May 21 08:44:31 2026
 > - **GPU-Util: 18%**: Within the range specified by `run.ai/simulated-gpu-utilization: "10-30"`
 > - **Processes: sleep 3600**: The running process visible on the simulated GPU
 >
-> This output is identical on macOS and Linux — fake-gpu-operator produces the same simulation on both platforms.
+> This output is identical on macOS and Linux - fake-gpu-operator produces the same simulation on both platforms.
 
 ## Step 6: Install HAMi WebUI
 

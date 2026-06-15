@@ -23,6 +23,6 @@ resources:
 
 :::note
 
-`nvidia.com/gpumem` and `nvidia.com/gpumem-percentage` can't be assigned together
+`nvidia.com/gpumem` and `nvidia.com/gpumem-percentage` cannot be assigned together
 
 :::

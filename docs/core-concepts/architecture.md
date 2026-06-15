@@ -17,11 +17,11 @@ HAMi consists of the following components:
 
 HAMi MutatingWebhook checks if this task can be handled by HAMi, It scans the resource field of each pod submitted, If each resource the pod requires is either 'CPU', 'Memory' or a HAMi-resource, Then it will set the schedulerName field of this pod to 'HAMi-scheduler'.
 
-## HAMi scheduler {#hami-scheduler}
+## HAMi Scheduler {#hami-scheduler}
 
 The HAMi scheduler is responsible for assigning tasks to the appropriate nodes and devices. At the same time, the scheduler needs to maintain a global view of heterogeneous computing devices for monitoring.
 
-## Device-plugin {#device-plugin}
+## Device Plugin {#device-plugin}
 
 The device-plugin layer obtains the scheduling result from the annotations field of the task and maps the corresponding device to the container.
 
