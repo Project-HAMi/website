@@ -3,8 +3,6 @@ title: 分配独占设备
 translated: true
 ---
 
-## 分配独占设备
-
 要分配整个寒武纪设备，你只需分配 `hygon.com/dcunum`，无需其他字段。
 
 ```yaml

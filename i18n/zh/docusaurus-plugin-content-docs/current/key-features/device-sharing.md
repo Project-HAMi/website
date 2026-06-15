@@ -3,8 +3,7 @@ title: 设备共享
 translated: true
 ---
 
-HAMi 允许多个任务共享同一块 GPU、MLU 或 NPU 设备，
-从而最大化异构 AI 计算资源的利用率。
+HAMi 允许多个任务共享同一块 GPU、MLU 或 NPU 设备，从而最大化异构 AI 计算资源的利用率。
 
 ## 设备共享 {#device-sharing}
 

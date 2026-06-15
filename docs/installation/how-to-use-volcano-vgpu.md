@@ -1,12 +1,11 @@
 ---
 title: Volcano vGPU device plugin for Kubernetes
-linktitle: Use Volcano vGPU
+sidebar_label: Use Volcano vGPU
 ---
 
 :::note
 
-You *DON'T* need to install HAMi when using volcano-vgpu, only use
-[Volcano vGPU device-plugin](https://github.com/Project-HAMi/volcano-vgpu-device-plugin) is good enough. It can provide device-sharing mechanism for NVIDIA devices managed by Volcano.
+You _DON'T_ need to install HAMi when using volcano-vgpu, only use [Volcano vGPU device-plugin](https://github.com/Project-HAMi/volcano-vgpu-device-plugin) is good enough. It can provide device-sharing mechanism for NVIDIA devices managed by Volcano.
 
 This is based on [NVIDIA Device Plugin](https://github.com/NVIDIA/k8s-device-plugin), it uses [HAMi-core](https://github.com/Project-HAMi/HAMi-core) to support hard isolation of GPU cards.
 
@@ -51,8 +50,7 @@ data:
 
 ### Enabling GPU Support in Kubernetes
 
-Once you have enabled this option on *all* the GPU nodes you wish to use,
-you can then enable GPU support in your cluster by deploying the following DaemonSet:
+Once you have enabled this option on _all_ the GPU nodes you wish to use, you can then enable GPU support in your cluster by deploying the following DaemonSet:
 
 ```shell
 kubectl create -f https://raw.githubusercontent.com/Project-HAMi/volcano-vgpu-device-plugin/main/volcano-vgpu-device-plugin.yml
@@ -67,13 +65,14 @@ kubectl get node {node name} -oyaml
 ```
 
 ```yaml
+
 ...
 status:
   addresses:
-  - address: 172.17.0.3
-    type: InternalIP
-  - address: volcano-control-plane
-    type: Hostname
+    - address: 172.17.0.3
+      type: InternalIP
+    - address: volcano-control-plane
+      type: Hostname
   allocatable:
     cpu: "4"
     ephemeral-storage: 123722704Ki
@@ -81,7 +80,7 @@ status:
     hugepages-2Mi: "0"
     memory: 8174332Ki
     pods: "110"
-    volcano.sh/gpu-number: "10"    # vGPU resource
+    volcano.sh/gpu-number: "10" # vGPU resource
   capacity:
     cpu: "4"
     ephemeral-storage: 123722704Ki
@@ -90,7 +89,7 @@ status:
     memory: 8174332Ki
     pods: "110"
     volcano.sh/gpu-memory: "89424"
-    volcano.sh/gpu-number: "10"   # vGPU resource
+    volcano.sh/gpu-number: "10" # vGPU resource
 ```
 
 ### Running vGPU Jobs
@@ -121,9 +120,7 @@ You can validate device memory using nvidia-smi inside container:
 
 :::warning
 
-If you do not request GPUs when using the device plugin with NVIDIA images, all
-the GPUs on the machine will be exposed inside your container.
-The number of vGPUs used by a container can not exceed the number of GPUs on that node.
+If you do not request GPUs when using the device plugin with NVIDIA images, all the GPUs on the machine will be exposed inside your container. The number of vGPUs used by a container can not exceed the number of GPUs on that node.
 
 :::
 

@@ -22,19 +22,19 @@ metadata:
 spec:
   namespaceSelector: {}
   resourceGroups:
-  - coveredResources:
-    - nvidia.com/gpu
-    - nvidia.com/total-gpucores
-    - nvidia.com/total-gpumem
-    flavors:
-    - name: hami-flavor
-      resources:
-      - name: nvidia.com/gpu
-        nominalQuota: 20
-      - name: nvidia.com/total-gpucores
-        nominalQuota: 600
-      - name: nvidia.com/total-gpumem
-        nominalQuota: 20480
+    - coveredResources:
+        - nvidia.com/gpu
+        - nvidia.com/total-gpucores
+        - nvidia.com/total-gpumem
+      flavors:
+        - name: hami-flavor
+          resources:
+            - name: nvidia.com/gpu
+              nominalQuota: 20
+            - name: nvidia.com/total-gpucores
+              nominalQuota: 600
+            - name: nvidia.com/total-gpumem
+              nominalQuota: 20480
 ---
 apiVersion: v1
 kind: Namespace
@@ -67,17 +67,17 @@ spec:
         app-name: gpu-burn
     spec:
       containers:
-      - args:
-        - while :; do /app/gpu_burn 300 || true; sleep 300; done
-        command:
-        - /bin/sh
-        - -lc
-        image: oguzpastirmaci/gpu-burn:latest
-        imagePullPolicy: IfNotPresent
-        name: main
-        resources:
-          limits:
-            nvidia.com/gpu: "2"        # requesting 2 vGPU instances
-            nvidia.com/gpucores: "30"  # 30 cores per vGPU
-            nvidia.com/gpumem: "1024"  # 1024 MiB per vGPU
+        - args:
+            - while :; do /app/gpu_burn 300 || true; sleep 300; done
+          command:
+            - /bin/sh
+            - -lc
+          image: oguzpastirmaci/gpu-burn:latest
+          imagePullPolicy: IfNotPresent
+          name: main
+          resources:
+            limits:
+              nvidia.com/gpu: "2" # requesting 2 vGPU instances
+              nvidia.com/gpucores: "30" # 30 cores per vGPU
+              nvidia.com/gpumem: "1024" # 1024 MiB per vGPU
 ```

@@ -79,16 +79,16 @@ integrations:
     - "pod"
 resources:
   transformations:
-  - input: nvidia.com/gpucores
-    strategy: Replace
-    multiplyBy: nvidia.com/gpu
-    outputs:
-      nvidia.com/total-gpucores: "1"
-  - input: nvidia.com/gpumem
-    strategy: Replace
-    multiplyBy: nvidia.com/gpu
-    outputs:
-      nvidia.com/total-gpumem: "1"
+    - input: nvidia.com/gpucores
+      strategy: Replace
+      multiplyBy: nvidia.com/gpu
+      outputs:
+        nvidia.com/total-gpucores: "1"
+    - input: nvidia.com/gpumem
+      strategy: Replace
+      multiplyBy: nvidia.com/gpu
+      outputs:
+        nvidia.com/total-gpumem: "1"
 ```
 
 After updating the configuration, restart the Kueue manager:
@@ -247,12 +247,12 @@ The `status.flavorsReservation` shows the current resource consumption:
 ```yaml
 status:
   flavorsReservation:
-  - name: hami-flavor
-    resources:
-    - name: nvidia.com/total-gpucores
-      total: "160"  # Current usage: (2 replicas × 1 GPU × 50 cores) + (1 replica × 2 GPUs × 30 cores) = 160
-    - name: nvidia.com/total-gpumem
-      total: "4096"  # Current usage: (2 replicas × 1 GPU × 1024 MiB) + (1 replica × 2 GPUs × 1024 MiB) = 4096
+    - name: hami-flavor
+      resources:
+        - name: nvidia.com/total-gpucores
+          total: "160" # Current usage: (2 replicas × 1 GPU × 50 cores) + (1 replica × 2 GPUs × 30 cores) = 160
+        - name: nvidia.com/total-gpumem
+          total: "4096" # Current usage: (2 replicas × 1 GPU × 1024 MiB) + (1 replica × 2 GPUs × 1024 MiB) = 4096
 ```
 
 ## Resource Transformation Details

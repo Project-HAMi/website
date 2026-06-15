@@ -1,58 +1,52 @@
 module.exports = {
-  "docs": [
+  docs: [
     {
-      "type": "category",
-      "label": "Core Concepts",
-      "collapsed": false,
-      "link": {
-        "type": "generated-index",
-        "title": "Core Concepts",
-        "description": "Learn what HAMi is and how the core architecture works."
+      type: "category",
+      label: "Core Concepts",
+      collapsed: false,
+      link: {
+        type: "generated-index",
+        title: "Core Concepts",
+        description: "Learn what HAMi is and how the core architecture works.",
       },
-      "items": [
+      items: [
         "core-concepts/introduction",
         "core-concepts/gpu-virtualization",
         "core-concepts/architecture",
         "core-concepts/gpu-stack",
         "core-concepts/gpu-driver",
-        "core-concepts/hami-architecture"
-      ]
+        "core-concepts/hami-architecture",
+      ],
     },
     {
-      "type": "category",
-      "label": "Key Features",
-      "link": {
-        "type": "generated-index",
-        "title": "Key Features",
-        "description": "Explore the most important capabilities in HAMi."
+      type: "category",
+      label: "Key Features",
+      link: {
+        type: "generated-index",
+        title: "Key Features",
+        description: "Explore the most important capabilities in HAMi.",
       },
-      "items": [
-        "key-features/device-sharing",
-        "key-features/device-resource-isolation"
-      ]
+      items: ["key-features/device-sharing", "key-features/device-resource-isolation"],
     },
     {
-      "type": "category",
-      "label": "Get Started",
-      "link": {
-        "type": "generated-index",
-        "title": "Get Started",
-        "description": "Install and run HAMi quickly with a guided first deployment path."
+      type: "category",
+      label: "Get Started",
+      link: {
+        type: "generated-index",
+        title: "Get Started",
+        description: "Install and run HAMi quickly with a guided first deployment path.",
       },
-      "items": [
-        "get-started/deploy-with-helm",
-        "get-started/verify-hami"
-      ]
+      items: ["get-started/deploy-with-helm", "get-started/verify-hami"],
     },
     {
-      "type": "category",
-      "label": "Installation",
-      "link": {
-        "type": "generated-index",
-        "title": "Installation",
-        "description": "Installation methods, prerequisites, upgrades and integrations."
+      type: "category",
+      label: "Installation",
+      link: {
+        type: "generated-index",
+        title: "Installation",
+        description: "Installation methods, prerequisites, upgrades and integrations.",
       },
-      "items": [
+      items: [
         "installation/prerequisites",
         "installation/online-installation",
         "installation/offline-installation",
@@ -62,36 +56,37 @@ module.exports = {
         "installation/aws-installation",
         "installation/how-to-use-hami-dra",
         "installation/how-to-use-volcano-vgpu",
-        "installation/how-to-use-volcano-ascend"
-      ]
+        "installation/how-to-use-volcano-ascend",
+      ],
     },
     {
-      "type": "category",
-      "label": "User Guide",
-      "link": {
-        "type": "generated-index",
-        "title": "User Guide",
-        "description": "Configure devices, request resources, monitor workloads and troubleshoot usage."
+      type: "category",
+      label: "User Guide",
+      link: {
+        type: "generated-index",
+        title: "User Guide",
+        description:
+          "Configure devices, request resources, monitor workloads and troubleshoot usage.",
       },
-      "items": [
+      items: [
         "userguide/configure",
         "userguide/device-supported",
         "userguide/benchmark",
         "userguide/hami-webui-user-guide",
         {
-          "type": "category",
-          "label": "Monitoring",
-          "items": [
+          type: "category",
+          label: "Monitoring",
+          items: [
             "userguide/monitoring/device-allocation",
             "userguide/monitoring/real-time-usage",
             "userguide/monitoring/real-time-device-usage",
-            "userguide/monitoring/grafana-dashboard"
-          ]
+            "userguide/monitoring/grafana-dashboard",
+          ],
         },
         {
-          "type": "category",
-          "label": "Share NVIDIA GPU devices",
-          "items": [
+          type: "category",
+          label: "Share NVIDIA GPU devices",
+          items: [
             "userguide/nvidia-device/dynamic-resource-allocation",
             "userguide/nvidia-device/dynamic-mig-support",
             "userguide/nvidia-device/scheduling-policy",
@@ -101,261 +96,255 @@ module.exports = {
             "userguide/nvidia-device/specify-device-uuid-to-use",
             "userguide/nvidia-device/using-resourcequota",
             {
-              "type": "category",
-              "label": "Examples",
-              "key": "nvidia-examples",
-              "items": [
+              type: "category",
+              label: "Examples",
+              key: "nvidia-examples",
+              items: [
                 "userguide/nvidia-device/examples/use-exclusive-card",
                 "userguide/nvidia-device/examples/allocate-device-memory",
                 "userguide/nvidia-device/examples/allocate-device-memory2",
                 "userguide/nvidia-device/examples/allocate-device-core",
                 "userguide/nvidia-device/examples/specify-card-type-to-use",
                 "userguide/nvidia-device/examples/specify-certain-card",
-                "userguide/nvidia-device/examples/dynamic-mig-example"
-              ]
-            }
-          ]
+                "userguide/nvidia-device/examples/dynamic-mig-example",
+              ],
+            },
+          ],
         },
         {
-          "type": "category",
-          "label": "Share Cambricon MLU devices",
-          "items": [
+          type: "category",
+          label: "Share Cambricon MLU devices",
+          items: [
             "userguide/cambricon-device/enable-cambricon-mlu-sharing",
             "userguide/cambricon-device/specify-device-memory-usage",
             "userguide/cambricon-device/specify-device-core-usage",
             "userguide/cambricon-device/specify-device-type-to-use",
             {
-              "type": "category",
-              "label": "Examples",
-              "key": "cambricon-examples",
-              "items": [
+              type: "category",
+              label: "Examples",
+              key: "cambricon-examples",
+              items: [
                 "userguide/cambricon-device/examples/allocate-core-and-memory",
-                "userguide/cambricon-device/examples/allocate-exclusive"
-              ]
-            }
-          ]
+                "userguide/cambricon-device/examples/allocate-exclusive",
+              ],
+            },
+          ],
         },
         {
-          "type": "category",
-          "label": "Share Hygon DCU devices",
-          "items": [
+          type: "category",
+          label: "Share Hygon DCU devices",
+          items: [
             "userguide/hygon-device/enable-hygon-dcu-sharing",
             "userguide/hygon-device/specify-device-memory-usage",
             "userguide/hygon-device/specify-device-core-usage",
             "userguide/hygon-device/specify-device-uuid-to-use",
             {
-              "type": "category",
-              "label": "Examples",
-              "key": "hygon-examples",
-              "items": [
+              type: "category",
+              label: "Examples",
+              key: "hygon-examples",
+              items: [
                 "userguide/hygon-device/examples/allocate-core-and-memory",
                 "userguide/hygon-device/examples/allocate-exclusive",
-                "userguide/hygon-device/examples/specify-certain-cards"
-              ]
-            }
-          ]
+                "userguide/hygon-device/examples/specify-certain-cards",
+              ],
+            },
+          ],
         },
         {
-          "type": "category",
-          "label": "Share Mthreads GPU devices",
-          "items": [
+          type: "category",
+          label: "Share Mthreads GPU devices",
+          items: [
             "userguide/mthreads-device/enable-mthreads-gpu-sharing",
             "userguide/mthreads-device/specify-device-memory-usage",
             "userguide/mthreads-device/specify-device-core-usage",
             {
-              "type": "category",
-              "label": "Examples",
-              "key": "mthreads-examples",
-              "items": [
+              type: "category",
+              label: "Examples",
+              key: "mthreads-examples",
+              items: [
                 "userguide/mthreads-device/examples/allocate-core-and-memory",
-                "userguide/mthreads-device/examples/allocate-exclusive"
-              ]
-            }
-          ]
+                "userguide/mthreads-device/examples/allocate-exclusive",
+              ],
+            },
+          ],
         },
         {
-          "type": "category",
-          "label": "Share Iluvatar GPU devices",
-          "items": [
+          type: "category",
+          label: "Share Iluvatar GPU devices",
+          items: [
             "userguide/iluvatar-device/enable-iluvatar-gpu-sharing",
             {
-              "type": "category",
-              "label": "Examples",
-              "key": "iluvatar-examples",
-              "items": [
+              type: "category",
+              label: "Examples",
+              key: "iluvatar-examples",
+              items: [
                 "userguide/iluvatar-device/examples/allocate-bi-v150",
                 "userguide/iluvatar-device/examples/allocate-mr-v100",
                 "userguide/iluvatar-device/examples/allocate-exclusive-bi-v150",
-                "userguide/iluvatar-device/examples/allocate-exclusive-mr-v100"
-              ]
-            }
-          ]
+                "userguide/iluvatar-device/examples/allocate-exclusive-mr-v100",
+              ],
+            },
+          ],
         },
         {
-          "type": "category",
-          "label": "Share Enflame GCU devices",
-          "items": [
-            "userguide/enflame-device/enable-enflame-gcu-sharing"
-          ]
+          type: "category",
+          label: "Share Enflame GCU devices",
+          items: ["userguide/enflame-device/enable-enflame-gcu-sharing"],
         },
         {
-          "type": "category",
-          "label": "Managing AWS Neuron devices",
-          "items": [
+          type: "category",
+          label: "Managing AWS Neuron devices",
+          items: [
             "userguide/awsneuron-device/enable-awsneuron-managing",
             {
-              "type": "category",
-              "label": "Examples",
-              "key": "awsneuron-examples",
-              "items": [
+              type: "category",
+              label: "Examples",
+              key: "awsneuron-examples",
+              items: [
                 "userguide/awsneuron-device/examples/allocate-neuron-core",
-                "userguide/awsneuron-device/examples/allocate-neuron-device"
-              ]
-            }
-          ]
+                "userguide/awsneuron-device/examples/allocate-neuron-device",
+              ],
+            },
+          ],
         },
         {
-          "type": "category",
-          "label": "Managing Vastai devices",
-          "items": [
+          type: "category",
+          label: "Managing Vastai devices",
+          items: [
             "userguide/vastai/enable-vastai-sharing",
             {
-              "type": "category",
-              "label": "Examples",
-              "key": "vastai-examples",
-              "items": [
-                "userguide/vastai/examples/default-use"
-              ]
-            }
-          ]
+              type: "category",
+              label: "Examples",
+              key: "vastai-examples",
+              items: ["userguide/vastai/examples/default-use"],
+            },
+          ],
         },
         {
-          "type": "category",
-          "label": "Optimize Kunlunxin devices scheduling",
-          "items": [
+          type: "category",
+          label: "Optimize Kunlunxin devices scheduling",
+          items: [
             "userguide/kunlunxin-device/enable-kunlunxin-schedule",
             "userguide/kunlunxin-device/enable-kunlunxin-vxpu",
             {
-              "type": "category",
-              "label": "Examples",
-              "key": "kunlunxin-examples",
-              "items": [
+              type: "category",
+              label: "Examples",
+              key: "kunlunxin-examples",
+              items: [
                 "userguide/kunlunxin-device/examples/allocate-whole-xpu",
-                "userguide/kunlunxin-device/examples/allocate-vxpu"
-              ]
-            }
-          ]
+                "userguide/kunlunxin-device/examples/allocate-vxpu",
+              ],
+            },
+          ],
         },
         {
-          "type": "category",
-          "label": "Optimize Metax GPU scheduling",
-          "items": [
+          type: "category",
+          label: "Optimize Metax GPU scheduling",
+          items: [
             {
-              "type": "category",
-              "label": "Share Metax GPU devices",
-              "items": [
+              type: "category",
+              label: "Share Metax GPU devices",
+              items: [
                 "userguide/metax-device/metax-sgpu/enable-metax-gpu-sharing",
                 {
-                  "type": "category",
-                  "label": "Examples",
-                  "key": "metax-sgpu-examples",
-                  "items": [
+                  type: "category",
+                  label: "Examples",
+                  key: "metax-sgpu-examples",
+                  items: [
                     "userguide/metax-device/metax-sgpu/examples/default-use",
                     "userguide/metax-device/metax-sgpu/examples/allocate-exclusive",
-                    "userguide/metax-device/metax-sgpu/examples/allocate-qos-policy"
-                  ]
-                }
-              ]
+                    "userguide/metax-device/metax-sgpu/examples/allocate-qos-policy",
+                  ],
+                },
+              ],
             },
             {
-              "type": "category",
-              "label": "Metax GPU topology-aware scheduling",
-              "items": [
+              type: "category",
+              label: "Metax GPU topology-aware scheduling",
+              items: [
                 "userguide/metax-device/metax-gpu/enable-metax-gpu-schedule",
                 "userguide/metax-device/metax-gpu/specify-binpack-task",
                 "userguide/metax-device/metax-gpu/specify-spread-task",
                 {
-                  "type": "category",
-                  "label": "Examples",
-                  "key": "metax-gpu-examples",
-                  "items": [
+                  type: "category",
+                  label: "Examples",
+                  key: "metax-gpu-examples",
+                  items: [
                     "userguide/metax-device/metax-gpu/examples/default-use",
                     "userguide/metax-device/metax-gpu/examples/allocate-binpack",
-                    "userguide/metax-device/metax-gpu/examples/allocate-spread"
-                  ]
-                }
-              ]
-            }
-          ]
+                    "userguide/metax-device/metax-gpu/examples/allocate-spread",
+                  ],
+                },
+              ],
+            },
+          ],
         },
         {
-          "type": "category",
-          "label": "Share Ascend devices",
-          "items": [
+          type: "category",
+          label: "Share Ascend devices",
+          items: [
             "userguide/ascend-device/enable-ascend-sharing",
             "userguide/ascend-device/device-template",
             {
-              "type": "category",
-              "label": "Examples",
-              "key": "ascend-examples",
-              "items": [
+              type: "category",
+              label: "Examples",
+              key: "ascend-examples",
+              items: [
                 "userguide/ascend-device/examples/allocate-310p",
                 "userguide/ascend-device/examples/allocate-910b",
                 "userguide/ascend-device/examples/allocate-exclusive",
-                "userguide/ascend-device/examples/allocate-soft-slicing"
-              ]
-            }
-          ]
+                "userguide/ascend-device/examples/allocate-soft-slicing",
+              ],
+            },
+          ],
         },
         {
-          "type": "category",
-          "label": "Volcano vGPU",
-          "items": [
+          type: "category",
+          label: "Volcano vGPU",
+          items: [
             {
-              "type": "category",
-              "label": "NVIDIA GPU",
-              "items": [
+              type: "category",
+              label: "NVIDIA GPU",
+              items: [
                 "userguide/volcano-vgpu/nvidia-gpu/how-to-use-volcano-vgpu",
                 "userguide/volcano-vgpu/nvidia-gpu/monitor",
                 {
-                  "type": "category",
-                  "label": "Examples",
-                  "key": "volcano-vgpu-examples",
-                  "items": [
+                  type: "category",
+                  label: "Examples",
+                  key: "volcano-vgpu-examples",
+                  items: [
                     "userguide/volcano-vgpu/nvidia-gpu/examples/default-use",
-                    "userguide/volcano-vgpu/nvidia-gpu/examples/use-exclusive-gpu"
-                  ]
-                }
-              ]
-            }
-          ]
+                    "userguide/volcano-vgpu/nvidia-gpu/examples/use-exclusive-gpu",
+                  ],
+                },
+              ],
+            },
+          ],
         },
         {
-          "type": "category",
-          "label": "Using HAMi with Kueue",
-          "items": [
+          type: "category",
+          label: "Using HAMi with Kueue",
+          items: [
             "userguide/kueue/how-to-use-kueue",
             {
-              "type": "category",
-              "label": "Examples",
-              "key": "kueue-examples",
-              "items": [
-                "userguide/kueue/examples/default-use"
-              ]
-            }
-          ]
-        }
-      ]
+              type: "category",
+              label: "Examples",
+              key: "kueue-examples",
+              items: ["userguide/kueue/examples/default-use"],
+            },
+          ],
+        },
+      ],
     },
     {
-      "type": "category",
-      "label": "Developer Guide",
-      "link": {
-        "type": "generated-index",
-        "title": "Developer Guide",
-        "description": "Architecture deep dive, build workflow and scheduler internals."
+      type: "category",
+      label: "Developer Guide",
+      link: {
+        type: "generated-index",
+        title: "Developer Guide",
+        description: "Architecture deep dive, build workflow and scheduler internals.",
       },
-      "items": [
+      items: [
         "developers/build",
         "developers/protocol",
         "developers/scheduling",
@@ -369,34 +358,34 @@ module.exports = {
         "developers/hami-vnpu-core-integration",
         "developers/hami-webui-development-guide",
         "developers/mindmap",
-        "diagrams-inventory"
-      ]
+        "diagrams-inventory",
+      ],
     },
     {
-      "type": "category",
-      "label": "Contributor Guide",
-      "link": {
-        "type": "generated-index",
-        "title": "Contributor Guide",
-        "description": "Contribution workflow, governance and maintainer ladder."
+      type: "category",
+      label: "Contributor Guide",
+      link: {
+        type: "generated-index",
+        title: "Contributor Guide",
+        description: "Contribution workflow, governance and maintainer ladder.",
       },
-      "items": [
+      items: [
         "contributor/contributing",
         "contributor/contribute-docs",
         "contributor/github-workflow",
         "contributor/governance",
         "contributor/ladder",
         "contributor/roadmap",
-        "contributor/e2e-testing"
-      ]
+        "contributor/e2e-testing",
+      ],
     },
     {
-      "type": "doc",
-      "id": "troubleshooting/troubleshooting"
+      type: "doc",
+      id: "troubleshooting/troubleshooting",
     },
     {
-      "type": "doc",
-      "id": "faq/faq"
-    }
-  ]
-}
+      type: "doc",
+      id: "faq/faq",
+    },
+  ],
+};

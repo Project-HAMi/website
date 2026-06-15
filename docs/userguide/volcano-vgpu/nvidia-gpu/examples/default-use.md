@@ -13,12 +13,12 @@ spec:
   restartPolicy: OnFailure
   schedulerName: volcano
   containers:
-  - image: ubuntu:22.04
-    name: pod1-ctr
-    command: ["sleep"]
-    args: ["100000"]
-    resources:
-      limits:
-        volcano.sh/vgpu-memory: 1024
-        volcano.sh/vgpu-number: 1
+    - image: ubuntu:22.04
+      name: pod1-ctr
+      command: ["sleep"]
+      args: ["100000"]
+      resources:
+        limits:
+          volcano.sh/vgpu-memory: 1024
+          volcano.sh/vgpu-number: 1
 ```

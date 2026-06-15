@@ -1,6 +1,6 @@
 ---
 title: "实验 1: 在线安装 HAMi"
-linktitle: "实验 1: 在线安装"
+sidebar_label: "实验 1: 在线安装"
 lab:
   level: Beginner
   duration: 约 60 分钟
@@ -37,7 +37,7 @@ flowchart LR
 ```
 
 | 步骤 | 目的 | 解决什么问题 |
-| ------ | ------ | ------------- |
+| --- | --- | --- |
 | 创建 GCP VM | 准备一台带 GPU 的 Linux 服务器 | Kubernetes 需要 GPU 硬件才能调度 GPU 工作负载 |
 | 安装 Helm | Kubernetes 的包管理器 | 后续所有组件都通过 Helm 安装，类似 apt/yum |
 | 安装 Kubernetes | 容器编排平台 | HAMi 运行在 Kubernetes 之上，所有 GPU 资源由 K8s 管理 |
@@ -463,20 +463,31 @@ kubectl get node ${NODE_NAME} -o jsonpath='{.metadata.annotations.hami\.io/node-
 预期输出是每张 GPU 一个 JSON 对象：
 
 ```json
-[{"id":"GPU-859b872c-0ba2-97b0-10b4-8b7185c55039","count":10,"devmem":15360,"devcore":100,"type":"NVIDIA-Tesla T4","mode":"hami-core","health":true,"devicepairscore":{}}]
+[
+  {
+    "id": "GPU-859b872c-0ba2-97b0-10b4-8b7185c55039",
+    "count": 10,
+    "devmem": 15360,
+    "devcore": 100,
+    "type": "NVIDIA-Tesla T4",
+    "mode": "hami-core",
+    "health": true,
+    "devicepairscore": {}
+  }
+]
 ```
 
 这个 annotation 的字段含义：
 
-| 字段 | 含义 |
-| --- | --- |
-| `id` | 设备 UUID |
-| `count` | 这张卡的 vGPU 切分数量 |
-| `devmem` | 显存（MiB） |
-| `devcore` | 算力容量（%） |
-| `type` | GPU 型号 |
-| `mode` | `hami-core` 表示软件层切分；配置了 MIG 的卡显示 `mig` |
-| `health` | 设备健康状态 |
+| 字段      | 含义                                                  |
+| --------- | ----------------------------------------------------- |
+| `id`      | 设备 UUID                                             |
+| `count`   | 这张卡的 vGPU 切分数量                                |
+| `devmem`  | 显存（MiB）                                           |
+| `devcore` | 算力容量（%）                                         |
+| `type`    | GPU 型号                                              |
+| `mode`    | `hami-core` 表示软件层切分；配置了 MIG 的卡显示 `mig` |
+| `health`  | 设备健康状态                                          |
 
 其中 **count=10** 表示这张 GPU 被虚拟化为 10 个 vGPU，可以被最多 10 个 Pod 共享。节点的 allocatable 资源中 `nvidia.com/gpu` 会从 `1` 变成 `10`。HAMi v2.9.0 以 JSON 格式写入这个 annotation，旧版本使用逗号分隔的字符串格式。
 

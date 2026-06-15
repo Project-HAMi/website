@@ -40,8 +40,8 @@ helm install hami hami-charts/hami --set devices.enflame.enabled=true -n kube-sy
 
 > **说明：** 默认资源名称如下：
 >
-> * `enflame.com/vgcu` 用于 GCU 数量，这里只能为 1
-> * `enflame.com/vgcu-percentage` 用于生成共享 GCU 切片
+> - `enflame.com/vgcu` 用于 GCU 数量，这里只能为 1
+> - `enflame.com/vgcu-percentage` 用于生成共享 GCU 切片
 >
 > 你可以通过修改`hami-scheduler-device`配置，来修改这些资源名称
 

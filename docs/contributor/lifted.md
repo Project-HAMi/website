@@ -2,8 +2,7 @@
 title: How to manage lifted codes
 ---
 
-This document explains how lifted code is managed.
-A common use case for this task is developer lifting code from other repositories to `pkg/util/lifted` directory.
+This document explains how lifted code is managed. A common use case for this task is developer lifting code from other repositories to `pkg/util/lifted` directory.
 
 ## Steps of lifting code
 
@@ -14,8 +13,7 @@ A common use case for this task is developer lifting code from other repositorie
 
 ## How to write lifted comments
 
-Lifted comments shall be placed just before the lifted code (could be a func, type, var or const).
-Only empty lines and comments are allowed between lifted comments and lifted code.
+Lifted comments shall be placed just before the lifted code (could be a func, type, var or const). Only empty lines and comments are allowed between lifted comments and lifted code.
 
 Lifted comments are composed by one or multiple comment lines, each in the format of `+lifted:KEY[=VALUE]`. Value is optional for some keys.
 
@@ -27,9 +25,7 @@ Valid keys are as follow:
 
 - changed:
 
-  Key `changed` is optional. It indicates whether the code is changed.
-  Value is optional (`true` or `false`, defaults to `true`).
-  Not adding this key or setting it to `false` means no code change.
+  Key `changed` is optional. It indicates whether the code is changed. Value is optional (`true` or `false`, defaults to `true`). Not adding this key or setting it to `false` means no code change.
 
 ## Examples
 
@@ -51,7 +47,7 @@ Added in `doc.go`:
 
 ```markdown
 | lifted file | source file | const/var/type/func | changed |
-| ----------- | ----------- | ------------------- | ------- |
+| --- | --- | --- | --- |
 | corehelpers.go | https://github.com/kubernetes/kubernetes/blob/release-1.23/pkg/apis/core/helper/helpers.go#L57-L61 | func IsQuotaHugePageResourceName | N |
 ```
 
@@ -78,7 +74,7 @@ Added in `doc.go`:
 
 ```markdown
 | lifted file | source file | const/var/type/func | changed |
-| ----------- | ----------- | ------------------- | ------- |
+| --- | --- | --- | --- |
 | deployment.go | https://github.com/kubernetes/kubernetes/blob/release-1.22/pkg/controller/deployment/util/deployment_util.go#L536-L544 | func GetNewReplicaSet | Y |
 ```
 
@@ -95,7 +91,7 @@ Added in `doc.go`:
 
 ```markdown
 | lifted file | source file | const/var/type/func | changed |
-| ----------- | ----------- | ------------------- | ------- |
+| --- | --- | --- | --- |
 | corevalidation.go | https://github.com/kubernetes/kubernetes/blob/release-1.22/pkg/apis/core/validation/validation.go#L59 | const isNegativeErrorMsg | N |
 ```
 
@@ -114,6 +110,6 @@ Added in `doc.go`:
 
 ```markdown
 | lifted file | source file | const/var/type/func | changed |
-| ----------- | ----------- | ------------------- | ------- |
+| --- | --- | --- | --- |
 | visitpod.go | https://github.com/kubernetes/kubernetes/blob/release-1.23/pkg/api/v1/pod/util.go#L82-L83 | type Visitor | N |
 ```

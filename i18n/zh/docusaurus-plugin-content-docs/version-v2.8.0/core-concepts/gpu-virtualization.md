@@ -1,6 +1,6 @@
 ---
 title: GPU 虚拟化原理
-linktitle: GPU 虚拟化
+sidebar_label: GPU 虚拟化
 translated: true
 ---
 

@@ -46,10 +46,10 @@ HAMi WebUI 采用前后端分离架构，分为三层：
 
 ![HAMi WebUI 架构 - Kubernetes GPU 监控仪表盘](/img/docs/common/developers/hami-webui-architecture-diagram.svg)
 
-| 层级         | 技术栈            | 职责                                   |
-| ------------ | ----------------- | -------------------------------------- |
-| **客户端**   | Vue 3 SPA + Axios | 浏览器端仪表盘 UI                      |
-| **前端代理** | NestJS (BFF)      | 静态资源托管 + API 反向代理            |
+| 层级         | 技术栈            | 职责                                        |
+| ------------ | ----------------- | ------------------------------------------- |
+| **客户端**   | Vue 3 SPA + Axios | 浏览器端仪表盘 UI                           |
+| **前端代理** | NestJS (BFF)      | 静态资源托管 + API 反向代理                 |
 | **后端**     | Go (Kratos 框架)  | API 服务，查询 Prometheus 获取 GPU 指标数据 |
 
 前端通过统一的 `/api/vgpu/*` 端点与后端通信，由 NestJS BFF 层进行代理转发。GPU 指标数据来源于 Prometheus，由其从 HAMi 管理的节点上采集 GPU 使用遥测数据。

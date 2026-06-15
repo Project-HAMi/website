@@ -1,6 +1,6 @@
 ---
 title: Cluster device allocation endpoint
-linktitle: Cluster device allocation
+sidebar_label: Cluster device allocation
 ---
 
 You can get the overview of cluster device allocation and limit by visiting `{scheduler node ip}:31993/metrics`, or add it to a prometheus endpoint, as the command below:
@@ -12,7 +12,7 @@ curl {scheduler node ip}:31993/metrics
 It contains the following metrics:
 
 | Metrics | Description | Example |
-| -------- | ----------- | ------- |
+| --- | --- | --- |
 | GPUDeviceCoreLimit | GPUDeviceCoreLimit Device memory core limit for a certain GPU | `{deviceidx="0",deviceuuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",nodeid="aio-node67",zone="vGPU"}` 100 |
 | GPUDeviceMemoryLimit | GPUDeviceMemoryLimit Device memory limit for a certain GPU | `{deviceidx="0",deviceuuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",nodeid="aio-node67",zone="vGPU"}` 3.4359738368e+10 |
 | GPUDeviceCoreAllocated | Device core allocated for a certain GPU | `{deviceidx="0",deviceuuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",nodeid="aio-node67",zone="vGPU"}` 45 |
@@ -25,7 +25,7 @@ It contains the following metrics:
 If you are using [HAMi DRA](../../installation/how-to-use-hami-dra), the metrics will be:
 
 | Metrics | Description | Example |
-| -------- | ----------- | ------- |
+| --- | --- | --- |
 | GPUDeviceCoreLimit | GPUDeviceCoreLimit Device memory core limit for a certain GPU | `{devicebrand="Tesla",deviceidx="0",devicename="hami-gpu-1",deviceproductname="Tesla P4",deviceuuid="GPU-3ab1-179d-d6dd",nodeid="k8s-node01"}` 100 |
 | GPUDeviceMemoryLimit | GPUDeviceMemoryLimit Device memory limit for a certain GPU | `{devicebrand="Tesla",deviceidx="0",devicename="hami-gpu-1",deviceproductname="Tesla P4",deviceuuid="GPU-3ab1-179d-d6dd",nodeid="k8s-node01"}` 8192 |
 | GPUDeviceCoreAllocated | Device core allocated for a certain GPU | `{devicebrand="Tesla",deviceidx="0",devicename="hami-gpu-1",deviceproductname="Tesla P4",deviceuuid="GPU-3ab1-179d-d6dd",nodeid="k8s-node01"}` 0 |

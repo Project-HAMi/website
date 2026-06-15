@@ -7,10 +7,10 @@ To allocate a percentage of device memory, specify resources such as `cambricon.
 This field is optional. Each unit of `cambricon.com/mlu.smlu.vmemory` represents 1% of the device's total memory.
 
 ```yaml
-      resources:
-        limits:
-          cambricon.com/vmlu: 1 # requesting 1 MLU
-          cambricon.com/mlu.smlu.vmemory: "20" # Each MLU contains 20% device memory
+resources:
+  limits:
+    cambricon.com/vmlu: 1 # requesting 1 MLU
+    cambricon.com/mlu.smlu.vmemory: "20" # Each MLU contains 20% device memory
 ```
 
 :::note

@@ -4,8 +4,6 @@ title: GPU 拓扑感知调度
 sidebar_label: GPU 拓扑感知调度
 ---
 
-# GPU 拓扑感知调度
-
 HAMi 支持 vGPU 环境下的 GPU 拓扑感知调度。HAMi 可以根据 GPU 之间的拓扑关系优化 GPU 卡的调度，从而提高 GPU 资源的利用率和性能。
 
 使用 `nvidia-smi topo -m` 命令查看节点上 GPU 之间的拓扑关系。
@@ -22,15 +20,15 @@ helm install hami hami-charts/hami \
 
 如果 HAMi 已安装，可以通过以下方式启用：
 
-**1. device-plugin 配置**
+### 1. device-plugin 配置
 
 在 DaemonSet `hami-device-plugin` 中设置环境变量 `ENABLE_TOPOLOGY_SCORE: 'true'`。
 
-**2. 调度器全局设置**
+### 2. 调度器全局设置
 
 启动 `hami-scheduler` 时添加 `gpu-scheduler-policy=topology-aware`。
 
-**3. Pod 级别注解**
+### 3. Pod 级别注解
 
 ```yaml
 metadata:

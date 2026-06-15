@@ -1,6 +1,6 @@
 ---
 title: GPU Virtualization Principles
-linktitle: GPU Virtualization
+sidebar_label: GPU Virtualization
 ---
 
 In AI inference scenarios, a common dilemma is that GPUs are expensive, but mostly idle.
@@ -96,7 +96,7 @@ It inflates 1 physical GPU into N logical GPU resources (default 10), making kub
 
 ```yaml
 # Allocatable resources in kubectl get node <gpu-node> -o yaml
-nvidia.com/gpu: "10"   # Originally 1 card, inflated to 10
+nvidia.com/gpu: "10" # Originally 1 card, inflated to 10
 ```
 
 ##### ② Writing Device Specifications to Node Annotations
@@ -128,9 +128,9 @@ When users submit a Pod, they declare fine-grained resource requirements:
 ```yaml
 resources:
   limits:
-    nvidia.com/gpu: 1          # Request 1 logical GPU slot
-    nvidia.com/gpumem: 1024    # Request 1024 MiB VRAM
-    nvidia.com/gpucores: 30    # Request 30% compute (optional)
+    nvidia.com/gpu: 1 # Request 1 logical GPU slot
+    nvidia.com/gpumem: 1024 # Request 1024 MiB VRAM
+    nvidia.com/gpucores: 30 # Request 30% compute (optional)
 ```
 
 As a kube-scheduler extender, `hami-scheduler` intervenes during the standard scheduling flow's **Filter** and **Bind** phases:
@@ -164,8 +164,8 @@ After the Pod is scheduled to the target node, Kubelet calls the Device Plugin's
 2. **hostPath mount libvgpu.so**: Mounts `libvgpu.so` from the host (default path `/usr/local/vgpu/libvgpu.so`) into the container at the same path via hostPath
 3. **hostPath mount ld.so.preload**: Mounts `/usr/local/vgpu/ld.so.preload` from the host into the container at `/etc/ld.so.preload`. This file contains a single line: `/usr/local/vgpu/libvgpu.so`. The Linux dynamic linker reads `/etc/ld.so.preload` when any process starts inside the container and loads the listed libraries **first**, achieving the same effect as `LD_PRELOAD` without modifying any environment variables. It takes effect transparently for all processes in the container. If the container sets `CUDA_DISABLE_CONTROL=true`, this mount is skipped and isolation is disabled
 4. **Inject environment variables**:
-    - `CUDA_DEVICE_MEMORY_LIMIT_<index>=<number>m`: Per-device VRAM quota, where `index` is the container's device index (0, 1, 2...), with a unit suffix `m` (e.g., `1024m`), derived from the Pod's `nvidia.com/gpumem` request
-    - `CUDA_DEVICE_SM_LIMIT=<percentage>`: Compute quota ceiling (from the Pod's `nvidia.com/gpucores` request)
+   - `CUDA_DEVICE_MEMORY_LIMIT_<index>=<number>m`: Per-device VRAM quota, where `index` is the container's device index (0, 1, 2...), with a unit suffix `m` (e.g., `1024m`), derived from the Pod's `nvidia.com/gpumem` request
+   - `CUDA_DEVICE_SM_LIMIT=<percentage>`: Compute quota ceiling (from the Pod's `nvidia.com/gpucores` request)
 
 After the container starts, libvgpu.so hijacks NVIDIA dynamic library symbol resolution by **overriding the `dlsym` function**, intercepting all function calls starting with `cu` and `nvml`:
 

@@ -1,6 +1,6 @@
 ---
 title: Binpack 调度策略
-linktitle: Binpack 策略
+sidebar_label: Binpack 策略
 translated: true
 ---
 

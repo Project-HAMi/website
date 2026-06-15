@@ -144,7 +144,7 @@ What this Demo presented was not just an improvement in GPU utilization, but mor
 
 In the past, the KubeCon main stage focused primarily on Kubernetes itself and foundational platform capabilities. This time, a GPU resource management project like HAMi entering the main keynote demo signals that **how AI workloads run on Kubernetes has become a question the cloud native community must address head-on.**
 
-**Second, GPU scheduling is no longer a "niche topic."**
+### Second, GPU scheduling is no longer a "niche topic."
 
 GPU sharing, virtualization, resource isolation, and heterogeneous scheduling were previously confined to specialized circles. Now, they've evolved from "specialized domain problems" to "common infrastructure problems." In TOC discussions and community exchanges, multiple projects (including vLLM-related practices) have begun to directly depend on underlying GPU scheduling capabilities.
 

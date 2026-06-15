@@ -42,6 +42,7 @@ devices:
 ```
 
 - Tag Ascend node with the following command
+
 ```bash
 kubectl label node {ascend-node} ascend=on
 ```
@@ -105,4 +106,4 @@ spec:
 
 1. Ascend-sharing in init container is not supported.
 
-2. `huawei.com/Ascend910B-memory` only work when `huawei.com/Ascend910B=1`, `huawei.com/Ascend310P-memory` only work when `huawei.com/Ascend310P=1`,etc..
+1. `huawei.com/Ascend910B-memory` only work when `huawei.com/Ascend910B=1`, `huawei.com/Ascend310P-memory` only work when `huawei.com/Ascend310P=1`,etc..

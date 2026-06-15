@@ -1,6 +1,6 @@
 ---
 title: NVIDIA GPU MPS and MIG dynamic slice plugin
-linktitle: Dynamic MIG Implementation
+sidebar_label: Dynamic MIG Implementation
 ---
 
 ## Special Thanks
@@ -9,9 +9,7 @@ This feature will not be implemented without the help of @sailorvii.
 
 ## Introduction
 
-The NVIDIA GPU built-in sharing method includes: time-slice, MPS and MIG. The context switch for time slice sharing would waste some time, so MPS and MIG are preferred. The GPU MIG profile is variable, the user could acquire the MIG device in the profile definition, but current implementation only defines the dedicated profile before the user requirement. That limits the usage of MIG. The goal is to develop an automatic slice plugin and create the slice when the user requires it.
-For the scheduling method, node-level binpack and spread will be supported. Referring to the binpack plugin, the scheduler considers CPU, Mem, GPU memory and other user-defined resources.
-HAMi is done by using [hami-core](https://github.com/Project-HAMi/HAMi-core), which is a cuda-hacking library. But mig is also widely used across the world. A unified API for dynamic-mig and hami-core is needed.
+The NVIDIA GPU built-in sharing method includes: time-slice, MPS and MIG. The context switch for time slice sharing would waste some time, so MPS and MIG are preferred. The GPU MIG profile is variable, the user could acquire the MIG device in the profile definition, but current implementation only defines the dedicated profile before the user requirement. That limits the usage of MIG. The goal is to develop an automatic slice plugin and create the slice when the user requires it. For the scheduling method, node-level binpack and spread will be supported. Referring to the binpack plugin, the scheduler considers CPU, Mem, GPU memory and other user-defined resources. HAMi is done by using [hami-core](https://github.com/Project-HAMi/HAMi-core), which is a cuda-hacking library. But mig is also widely used across the world. A unified API for dynamic-mig and hami-core is needed.
 
 ## Targets
 
@@ -23,8 +21,7 @@ HAMi is done by using [hami-core](https://github.com/Project-HAMi/HAMi-core), wh
 
 ### Config maps
 
-- hami-scheduler-device-configMap
-This configmap defines the plugin configurations including resourceName, and MIG geometries, and node-level configurations.
+- hami-scheduler-device-configMap This configmap defines the plugin configurations including resourceName, and MIG geometries, and node-level configurations.
 
 ```yaml
 apiVersion: v1
@@ -104,8 +101,7 @@ data:
 
 ## Examples
 
-Dynamic MIG is compatible with HAMi tasks, as shown in the example below:
-Set `nvidia.com/gpu` and `nvidia.com/gpumem`.
+Dynamic MIG is compatible with HAMi tasks, as shown in the example below: Set `nvidia.com/gpu` and `nvidia.com/gpumem`.
 
 ```yaml
 apiVersion: v1
@@ -154,8 +150,8 @@ After submitting a task, the deviceshare plugin iterates over templates defined 
 If you submit the example on an empty A100-PCIE-40GB node, then it will select a GPU and choose MIG template below:
 
 ```yaml
-  2g.10gb : 3
-  1g.5gb : 1
+2g.10gb: 3
+1g.5gb: 1
 ```
 
-Then start the container with 2g.10gb instances * 2
+Then start the container with 2g.10gb instances \* 2

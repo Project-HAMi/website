@@ -1,6 +1,6 @@
 ---
 title: Volcano Ascend vNPU 使用指南
-linktitle: Volcano Ascend vNPU
+sidebar_label: Volcano Ascend vNPU
 translated: true
 ---
 
@@ -48,6 +48,7 @@ kubectl apply -f https://raw.githubusercontent.com/Project-HAMi/ascend-device-pl
 ```shell
 kubectl apply -f https://raw.githubusercontent.com/Project-HAMi/ascend-device-plugin/refs/heads/main/ascend-device-plugin.yaml
 ```
+
 更多信息参考 [ascend-device-plugin 文档](https://github.com/Project-HAMi/ascend-device-plugin)。
 
 ### 更新调度器配置
@@ -102,7 +103,9 @@ spec:
           huawei.com/Ascend310P-memory: "4096"
 
 ```
+
 支持的 Ascend 芯片及其对应的资源名称如下表所示:
+
 | ChipName | ResourceName | ResourceMemoryName |
 |-------|-------|-------|
 | 910A | huawei.com/Ascend910A | huawei.com/Ascend910A-memory |

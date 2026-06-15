@@ -42,9 +42,9 @@ helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag={your 
 
 > **说明：** 默认资源名称如下：
 >
-> * `iluvatar.ai/vgpu` 用于 GPU 数量
-> * `iluvatar.ai/vcuda-memory` 用于显存分配
-> * `iluvatar.ai/vcuda-core` 用于核心分配
+> - `iluvatar.ai/vgpu` 用于 GPU 数量
+> - `iluvatar.ai/vcuda-memory` 用于显存分配
+> - `iluvatar.ai/vcuda-core` 用于核心分配
 >
 > 你可以通过上述参数自定义这些名称。
 

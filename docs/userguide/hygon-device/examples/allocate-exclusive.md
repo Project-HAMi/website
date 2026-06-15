@@ -16,7 +16,7 @@ spec:
     - name: alexnet-tf-gpu-container
       image: image.sourcefind.cn:5000/dcu/admin/base/pytorch:2.1.0-centos7.6-dtk24.04-py310
       workingDir: /root
-      command: ["sleep","infinity"]
+      command: ["sleep", "infinity"]
       resources:
         limits:
           hygon.com/dcunum: 1 # requesting a GPU

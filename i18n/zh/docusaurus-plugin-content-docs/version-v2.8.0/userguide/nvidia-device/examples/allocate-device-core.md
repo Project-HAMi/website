@@ -1,6 +1,6 @@
 ---
 title: 为容器分配设备核心资源
-linktitle: 分配核心
+sidebar_label: 分配核心
 translated: true
 ---
 

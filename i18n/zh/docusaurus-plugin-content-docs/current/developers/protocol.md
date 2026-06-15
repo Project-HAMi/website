@@ -3,7 +3,7 @@ title: 协议设计
 translated: true
 ---
 
-### 设备注册
+## 设备注册
 
 为了进行更准确的调度，HAMi 调度器需要在设备注册时感知设备的规格，包括 UUID、显存、计算能力、型号、numa 数量等。
 
@@ -15,7 +15,7 @@ translated: true
 
 ```yaml
 hami.io/node-handshake: Requesting_2024.05.14 07:07:33
-hami.io/node-nvidia-register: 'GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec,10,32768,100,NVIDIA-Tesla V100-PCIE-32GB,0,true:GPU-0fc3eda5-e98b-a25b-5b0d-cf5c855d1448,10,32768,100,NVIDIA-Tesla V100-PCIE-32GB,0,true:'
+hami.io/node-nvidia-register: "GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec,10,32768,100,NVIDIA-Tesla V100-PCIE-32GB,0,true:GPU-0fc3eda5-e98b-a25b-5b0d-cf5c855d1448,10,32768,100,NVIDIA-Tesla V100-PCIE-32GB,0,true:"
 ```
 
 ### 调度决策
@@ -34,3 +34,4 @@ kube-scheduler 在 `bind` 过程中调用 device-plugin 挂载设备，但仅向
 hami.io/bind-time: 1716199325
 hami.io/vgpu-devices-allocated: GPU-0fc3eda5-e98b-a25b-5b0d-cf5c855d1448,NVIDIA,3000,0:;
 hami.io/vgpu-devices-to-allocate: ;
+```

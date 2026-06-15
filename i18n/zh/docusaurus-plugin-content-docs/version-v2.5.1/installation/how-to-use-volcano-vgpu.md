@@ -12,8 +12,8 @@ translated: true
 
 Volcano vgpu 仅在 volcano > 1.9 中可用
 
-
 :::
+
 ## 快速开始
 
 ### 配置调度器

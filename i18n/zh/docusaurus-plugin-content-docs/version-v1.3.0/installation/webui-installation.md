@@ -1,5 +1,5 @@
 ---
-linktitle: 安装 WebUI
+sidebar_label: 安装 WebUI
 translated: true
 title: 使用 Helm Charts 部署 HAMi WebUI
 ---

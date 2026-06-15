@@ -5,9 +5,7 @@ translated: true
 
 软切片通过运行时拦截（`libvnpu.so`）实现细粒度的 NPU 共享，无需依赖硬件虚拟化模板。使用时，需在 Pod 上添加注解 `huawei.com/vnpu-mode: 'hami-core'`。
 
-:::note
-`hami-vnpu-core` 目前仅支持 ARM 平台和 HAMi 调度器。
-:::
+:::note `hami-vnpu-core` 目前仅支持 ARM 平台和 HAMi 调度器。:::
 
 ## 单卡软切片
 
@@ -19,7 +17,7 @@ kind: Pod
 metadata:
   name: ascend-soft-slice-pod
   annotations:
-    huawei.com/vnpu-mode: 'hami-core'
+    huawei.com/vnpu-mode: "hami-core"
 spec:
   containers:
     - name: npu_pod
@@ -28,8 +26,8 @@ spec:
       resources:
         limits:
           huawei.com/Ascend910B3: "1"
-          huawei.com/Ascend910B3-memory: "28672"  # 申请 28Gi 显存
-          huawei.com/Ascend910B3-core: "40"        # 申请 40% 的算力核心
+          huawei.com/Ascend910B3-memory: "28672" # 申请 28Gi 显存
+          huawei.com/Ascend910B3-core: "40" # 申请 40% 的算力核心
 ```
 
 ## 使用 vLLM 进行多卡并行推理（TP=2）
@@ -44,7 +42,7 @@ kind: Pod
 metadata:
   name: vllm-npu-2card
   annotations:
-    huawei.com/vnpu-mode: 'hami-core'
+    huawei.com/vnpu-mode: "hami-core"
 spec:
   containers:
     - name: vllm-container
@@ -61,7 +59,7 @@ spec:
       resources:
         limits:
           huawei.com/Ascend910B3: "2"
-          huawei.com/Ascend910B3-memory: "65536"  # 2 张卡合计 64GiB
+          huawei.com/Ascend910B3-memory: "65536" # 2 张卡合计 64GiB
           huawei.com/Ascend910B3-core: "50"
 ```
 

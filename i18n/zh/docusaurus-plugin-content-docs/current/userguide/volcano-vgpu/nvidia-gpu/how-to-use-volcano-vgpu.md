@@ -1,13 +1,12 @@
 ---
 title: Volcano vgpu 设备插件用于 Kubernetes
-linktitle: 如何使用 Volcano vGPU
+sidebar_label: 如何使用 Volcano vGPU
 translated: true
 ---
 
 :::note
 
-使用 volcano-vgpu 时，**不需要** 安装 HAMi，仅使用
-[Volcano vGPU device-plugin](https://github.com/Project-HAMi/volcano-vgpu-device-plugin) 即可。它可以为由 Volcano 管理的 NVIDIA 设备提供设备共享机制。
+使用 volcano-vgpu 时，**不需要** 安装 HAMi，仅使用 [Volcano vGPU device-plugin](https://github.com/Project-HAMi/volcano-vgpu-device-plugin) 即可。它可以为由 Volcano 管理的 NVIDIA 设备提供设备共享机制。
 
 该插件基于 [NVIDIA Device Plugin](https://github.com/NVIDIA/k8s-device-plugin)，并使用 [HAMi-core](https://github.com/Project-HAMi/HAMi-core) 实现对 GPU 卡的硬隔离支持。
 
@@ -59,8 +58,7 @@ data:
 
 ### 启用 Kubernetes 的 GPU 支持
 
-在你想要使用的 **所有** GPU 节点上启用此选项后，
-可以通过部署以下 DaemonSet 来在集群中启用 GPU 支持：
+在你想要使用的 **所有** GPU 节点上启用此选项后，可以通过部署以下 DaemonSet 来在集群中启用 GPU 支持：
 
 ```bash
 kubectl create -f https://raw.githubusercontent.com/Project-HAMi/volcano-vgpu-device-plugin/main/volcano-vgpu-device-plugin.yml
@@ -79,10 +77,10 @@ kubectl get node {node name} -oyaml
 ```yaml
 status:
   addresses:
-  - address: 172.17.0.3
-    type: InternalIP
-  - address: volcano-control-plane
-    type: Hostname
+    - address: 172.17.0.3
+      type: InternalIP
+    - address: volcano-control-plane
+      type: Hostname
   allocatable:
     cpu: "4"
     ephemeral-storage: 123722704Ki
@@ -90,7 +88,7 @@ status:
     hugepages-2Mi: "0"
     memory: 8174332Ki
     pods: "110"
-    volcano.sh/gpu-number: "10"    # vGPU 资源
+    volcano.sh/gpu-number: "10" # vGPU 资源
   capacity:
     cpu: "4"
     ephemeral-storage: 123722704Ki
@@ -99,7 +97,7 @@ status:
     memory: 8174332Ki
     pods: "110"
     volcano.sh/gpu-memory: "89424"
-    volcano.sh/gpu-number: "10"   # vGPU 资源
+    volcano.sh/gpu-number: "10" # vGPU 资源
 ```
 
 ### 运行 vGPU 作业
@@ -130,16 +128,13 @@ EOF
 
 :::warning
 
-如果你在使用 device-plugin 配合 NVIDIA 镜像时未显式请求 GPU，
-那么该节点上所有 GPU 都会暴露在你的容器中。
-容器中使用的 vGPU 数量不能超过该节点上的 GPU 总数。
+如果你在使用 device-plugin 配合 NVIDIA 镜像时未显式请求 GPU，那么该节点上所有 GPU 都会暴露在你的容器中。容器中使用的 vGPU 数量不能超过该节点上的 GPU 总数。
 
 :::
 
 ### 监控
 
-`volcano-scheduler-metrics` 会记录每次 GPU 使用和限制情况，
-你可以通过访问以下地址来获取这些指标：
+`volcano-scheduler-metrics` 会记录每次 GPU 使用和限制情况，你可以通过访问以下地址来获取这些指标：
 
 ```bash
 curl {volcano scheduler cluster ip}:8080/metrics

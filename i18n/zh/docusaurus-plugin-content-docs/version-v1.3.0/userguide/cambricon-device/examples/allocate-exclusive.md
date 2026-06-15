@@ -2,8 +2,6 @@
 title: Allocate exclusive device
 ---
 
-## Allocate exclusive device
-
 To allocate a whole cambricon device, you need to only assign `cambricon.com/vmlu` without other fields.
 
 ```yaml

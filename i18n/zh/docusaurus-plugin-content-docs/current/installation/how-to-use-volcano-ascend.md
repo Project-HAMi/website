@@ -1,6 +1,6 @@
 ---
 title: Volcano Ascend vNPU 使用指南
-linktitle: Volcano Ascend vNPU
+sidebar_label: Volcano Ascend vNPU
 translated: true
 ---
 
@@ -79,7 +79,7 @@ data:
 
 :::note
 
- 你可能会注意到 `volcano-vgpu` 有自己的 `GeometriesCMName` 和 `KnownGeometriesCMNamespace`，这意味着如果要在同一个 Volcano 集群中同时使用 vNPU 和 vGPU，你需要合并两边的 configMap。
+你可能会注意到 `volcano-vgpu` 有自己的 `GeometriesCMName` 和 `KnownGeometriesCMNamespace`，这意味着如果要在同一个 Volcano 集群中同时使用 vNPU 和 vGPU，你需要合并两边的 configMap。
 
 :::
 
@@ -101,16 +101,15 @@ spec:
         limits:
           huawei.com/Ascend310P: "1"
           huawei.com/Ascend310P-memory: "4096"
-
 ```
 
 支持的 Ascend 芯片及其对应的资源名称如下表所示：
 
-| ChipName | ResourceName | ResourceMemoryName |
-|-------|-------|-------|
-| 910A | huawei.com/Ascend910A | huawei.com/Ascend910A-memory |
-| 910B2 | huawei.com/Ascend910B2 | huawei.com/Ascend910B2-memory |
-| 910B3 | huawei.com/Ascend910B3 | huawei.com/Ascend910B3-memory |
-| 910B4 | huawei.com/Ascend910B4 | huawei.com/Ascend910B4-memory |
-| 910B4-1 | huawei.com/Ascend910B4-1 | huawei.com/Ascend910B4-1-memory |
-| 310P3 | huawei.com/Ascend310P | huawei.com/Ascend310P-memory |
+| ChipName | ResourceName             | ResourceMemoryName              |
+| -------- | ------------------------ | ------------------------------- |
+| 910A     | huawei.com/Ascend910A    | huawei.com/Ascend910A-memory    |
+| 910B2    | huawei.com/Ascend910B2   | huawei.com/Ascend910B2-memory   |
+| 910B3    | huawei.com/Ascend910B3   | huawei.com/Ascend910B3-memory   |
+| 910B4    | huawei.com/Ascend910B4   | huawei.com/Ascend910B4-memory   |
+| 910B4-1  | huawei.com/Ascend910B4-1 | huawei.com/Ascend910B4-1-memory |
+| 310P3    | huawei.com/Ascend310P    | huawei.com/Ascend310P-memory    |

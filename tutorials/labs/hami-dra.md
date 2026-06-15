@@ -1,6 +1,6 @@
 ---
 title: "Lab 4: GPU Slicing with Dynamic Resource Allocation"
-linktitle: "Lab 4: DRA Slicing"
+sidebar_label: "Lab 4: DRA Slicing"
 lab:
   level: Advanced
   duration: about 45 minutes
@@ -19,14 +19,13 @@ toc_max_heading_level: 2
 
 The HAMi DRA driver is young and moving fast. This lab installs the exact DaemonSet manifests that were verified live on a Tesla T4 cluster (driver `projecthami/k8s-dra-driver:v0.1.0`). The driver repository has since added a Helm chart for the same v0.1.0 driver (in-repo at `chart/hami-dra-driver`, with a `nvidiaDriverRoot` value covering GPU Operator clusters); this lab will switch to the chart once that path has been verified. The consumable capacity feature also remains behind a Kubernetes feature gate.
 
-
 :::
 
 In [Lab 3](./gpu-partitioning.md) you sliced a GPU using HAMi's extended resources (`nvidia.com/gpumem`, `nvidia.com/gpucores`). This lab achieves the same outcome through **Dynamic Resource Allocation (DRA)**, the Kubernetes-native device API that went GA in v1.34. Instead of opaque resource names, Pods request devices through `ResourceClaims` with structured, schema-validated capacity requests.
 
 ## Why DRA Matters
 
-| | Extended resources (Lab 3) | DRA (this lab) |
+|  | Extended resources (Lab 3) | DRA (this lab) |
 | --- | --- | --- |
 | API | `nvidia.com/gpumem: 4000` in resource limits | `ResourceClaim` with `capacity.requests: {memory: 4Gi, cores: 30}` |
 | Scheduling | HAMi scheduler extender + webhook | Native kube-scheduler DRA plugin |
@@ -55,7 +54,7 @@ flowchart LR
 
 ## Step 1: Enable the DRAConsumableCapacity Feature Gate
 
-DRA itself is GA in v1.34, but *consumable capacity* (multiple Pods drawing from one device's capacity pool) requires the `DRAConsumableCapacity` feature gate on the control plane components and the kubelet. Run [`enable-dra-feature-gates.sh`](https://github.com/Project-HAMi/hami-workshop/blob/main/examples/04-hami-dra/enable-dra-feature-gates.sh) as root:
+DRA itself is GA in v1.34, but _consumable capacity_ (multiple Pods drawing from one device's capacity pool) requires the `DRAConsumableCapacity` feature gate on the control plane components and the kubelet. Run [`enable-dra-feature-gates.sh`](https://github.com/Project-HAMi/hami-workshop/blob/main/examples/04-hami-dra/enable-dra-feature-gates.sh) as root:
 
 ```bash
 for f in kube-apiserver kube-scheduler kube-controller-manager; do
@@ -137,20 +136,20 @@ kubectl get resourceslices -o jsonpath='{.items[0].spec.devices[0].capacity}' | 
 
 ```json
 {
-    "cores": {
-        "requestPolicy": {
-            "default": "100",
-            "validRange": { "max": "100", "min": "0", "step": "1" }
-        },
-        "value": "100"
+  "cores": {
+    "requestPolicy": {
+      "default": "100",
+      "validRange": { "max": "100", "min": "0", "step": "1" }
     },
-    "memory": {
-        "requestPolicy": {
-            "default": "15Gi",
-            "validRange": { "max": "15Gi", "min": "1Mi", "step": "1Mi" }
-        },
-        "value": "15Gi"
-    }
+    "value": "100"
+  },
+  "memory": {
+    "requestPolicy": {
+      "default": "15Gi",
+      "validRange": { "max": "15Gi", "min": "1Mi", "step": "1Mi" }
+    },
+    "value": "15Gi"
+  }
 }
 ```
 
@@ -169,13 +168,13 @@ metadata:
 spec:
   devices:
     requests:
-    - name: single-gpu
-      exactly:
-        deviceClassName: hami-core-gpu.project-hami.io
-        capacity:
-          requests:
-            cores: 30
-            memory: "4Gi"
+      - name: single-gpu
+        exactly:
+          deviceClassName: hami-core-gpu.project-hami.io
+          capacity:
+            requests:
+              cores: 30
+              memory: "4Gi"
 ```
 
 `pod-0.yaml` references the claim instead of requesting `nvidia.com/*` resources:
@@ -200,15 +199,15 @@ kubectl get resourceclaim single-gpu-0 -n test-dra -o jsonpath='{.status.allocat
 
 ```json
 {
-    "consumedCapacity": {
-        "cores": "30",
-        "memory": "4Gi"
-    },
-    "device": "hami-gpu-0",
-    "driver": "hami-core-gpu.project-hami.io",
-    "pool": "hami-workshop",
-    "request": "single-gpu",
-    "shareID": "225b5df7-3753-45b1-9043-81c00616b384"
+  "consumedCapacity": {
+    "cores": "30",
+    "memory": "4Gi"
+  },
+  "device": "hami-gpu-0",
+  "driver": "hami-core-gpu.project-hami.io",
+  "pool": "hami-workshop",
+  "request": "single-gpu",
+  "shareID": "225b5df7-3753-45b1-9043-81c00616b384"
 }
 ```
 

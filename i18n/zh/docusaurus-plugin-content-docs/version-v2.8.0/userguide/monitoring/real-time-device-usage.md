@@ -1,6 +1,6 @@
 ---
 title: 实时设备使用端点
-linktitle: 实时设备使用
+sidebar_label: 实时设备使用
 translated: true
 ---
 

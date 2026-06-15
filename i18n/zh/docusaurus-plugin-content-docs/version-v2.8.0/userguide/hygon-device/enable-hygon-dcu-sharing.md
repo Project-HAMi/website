@@ -1,6 +1,6 @@
 ---
 title: 启用 Hygon DCU 共享
-linktitle: DCU 共享
+sidebar_label: DCU 共享
 translated: true
 ---
 

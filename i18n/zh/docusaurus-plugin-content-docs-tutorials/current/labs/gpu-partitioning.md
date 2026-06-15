@@ -1,6 +1,6 @@
 ---
 title: "实验 3: 使用 HAMi 进行 GPU 分区"
-linktitle: "实验 3: GPU 分区"
+sidebar_label: "实验 3: GPU 分区"
 lab:
   level: Intermediate
   duration: 约 30 分钟
@@ -48,12 +48,12 @@ flowchart LR
 
 HAMi 通过自定义 GPU 资源扩展 Kubernetes。Pod 组合使用这些资源来描述其所需的 GPU 切片：
 
-| 资源 | 含义 |
-| --- | --- |
-| `nvidia.com/gpu` | 容器请求的 vGPU 数量 |
-| `nvidia.com/gpumem` | 每个 vGPU 的显存，单位 MiB |
+| 资源                           | 含义                                                  |
+| ------------------------------ | ----------------------------------------------------- |
+| `nvidia.com/gpu`               | 容器请求的 vGPU 数量                                  |
+| `nvidia.com/gpumem`            | 每个 vGPU 的显存，单位 MiB                            |
 | `nvidia.com/gpumem-percentage` | 每个 vGPU 的显存占整卡的百分比（`gpumem` 的替代方案） |
-| `nvidia.com/gpucores` | 每个 vGPU 的算力，占显卡 SM 的百分比 |
+| `nvidia.com/gpucores`          | 每个 vGPU 的算力，占显卡 SM 的百分比                  |
 
 查看节点提供的资源：
 
@@ -80,13 +80,13 @@ metadata:
 spec:
   restartPolicy: Never
   containers:
-  - name: app
-    image: nvidia/cuda:12.4.1-base-ubuntu22.04
-    command: ["sleep", "infinity"]
-    resources:
-      limits:
-        nvidia.com/gpu: 1       # 请求 1 个 vGPU
-        nvidia.com/gpumem: 4000 # 限制此 Pod 的显存为 4000 MiB
+    - name: app
+      image: nvidia/cuda:12.4.1-base-ubuntu22.04
+      command: ["sleep", "infinity"]
+      resources:
+        limits:
+          nvidia.com/gpu: 1 # 请求 1 个 vGPU
+          nvidia.com/gpumem: 4000 # 限制此 Pod 的显存为 4000 MiB
 ```
 
 `gpumem-pod-b.yaml` 除了名称不同外完全相同。部署两个 Pod：
@@ -150,26 +150,26 @@ metadata:
 spec:
   restartPolicy: Never
   containers:
-  - name: app
-    image: pytorch/pytorch:2.4.0-cuda12.1-cudnn9-runtime
-    command:
-    - python
-    - -c
-    - |
-      import torch
-      chunks = []
-      try:
-          while True:
-              # 每次迭代分配 512 MiB
-              chunks.append(torch.empty(512, 1024, 1024, dtype=torch.uint8, device="cuda"))
-              print(f"Allocated {len(chunks) * 512} MiB", flush=True)
-      except RuntimeError as e:
-          print(f"Hit the limit after {len(chunks) * 512} MiB:", flush=True)
-          print(str(e).split(".")[0], flush=True)
-    resources:
-      limits:
-        nvidia.com/gpu: 1       # 请求 1 个 vGPU
-        nvidia.com/gpumem: 4000 # 限制此 Pod 的显存为 4000 MiB
+    - name: app
+      image: pytorch/pytorch:2.4.0-cuda12.1-cudnn9-runtime
+      command:
+        - python
+        - -c
+        - |
+          import torch
+          chunks = []
+          try:
+              while True:
+                  # 每次迭代分配 512 MiB
+                  chunks.append(torch.empty(512, 1024, 1024, dtype=torch.uint8, device="cuda"))
+                  print(f"Allocated {len(chunks) * 512} MiB", flush=True)
+          except RuntimeError as e:
+              print(f"Hit the limit after {len(chunks) * 512} MiB:", flush=True)
+              print(str(e).split(".")[0], flush=True)
+      resources:
+        limits:
+          nvidia.com/gpu: 1 # 请求 1 个 vGPU
+          nvidia.com/gpumem: 4000 # 限制此 Pod 的显存为 4000 MiB
 ```
 
 ```bash
@@ -226,16 +226,16 @@ gpumem-pod-b   1/1     Running   0          5m12s
 显存是一个维度；算力是另一个维度。`gpucores-pod.yaml` 请求 30% 的显卡算力并运行一个无限矩阵乘法：
 
 ```yaml
-    env:
-    # "force" 严格将利用率限制在 gpucores 值。
-    # 默认策略允许在 GPU 空闲时突破上限。
-    - name: GPU_CORE_UTILIZATION_POLICY
-      value: "force"
-    resources:
-      limits:
-        nvidia.com/gpu: 1        # 请求 1 个 vGPU
-        nvidia.com/gpumem: 4000  # 限制此 Pod 的显存为 4000 MiB
-        nvidia.com/gpucores: 30  # 限制此 Pod 使用 30% 的 GPU 算力
+env:
+  # "force" 严格将利用率限制在 gpucores 值。
+  # 默认策略允许在 GPU 空闲时突破上限。
+  - name: GPU_CORE_UTILIZATION_POLICY
+    value: "force"
+resources:
+  limits:
+    nvidia.com/gpu: 1 # 请求 1 个 vGPU
+    nvidia.com/gpumem: 4000 # 限制此 Pod 的显存为 4000 MiB
+    nvidia.com/gpucores: 30 # 限制此 Pod 使用 30% 的 GPU 算力
 ```
 
 ```bash

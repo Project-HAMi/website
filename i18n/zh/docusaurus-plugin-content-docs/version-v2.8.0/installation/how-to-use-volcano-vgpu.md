@@ -1,6 +1,6 @@
 ---
 title: Volcano vGPU 使用指南
-linktitle: Volcano vGPU
+sidebar_label: Volcano vGPU
 translated: true
 ---
 
@@ -14,7 +14,6 @@ translated: true
 Volcano vgpu 仅在 volcano > 1.9 中可用
 
 :::
-
 
 ## 快速开始
 

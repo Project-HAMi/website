@@ -3,7 +3,16 @@ title: "Introducing HAMi WebUI: GPU Monitoring Dashboard for Kubernetes"
 slug: introducing-hami-webui
 date: "2026-04-13"
 description: "HAMi WebUI is a GPU monitoring dashboard for Kubernetes that provides unified visibility into GPU resources, nodes, accelerators, and workloads. Built as part of the HAMi (CNCF Sandbox) ecosystem, it completes the loop from GPU scheduling to visual observability."
-tags: ["WebUI", "GPU", "Kubernetes", "GPU Monitoring", "GPU Dashboard", "GPU Virtualization", "Observability"]
+tags:
+  [
+    "WebUI",
+    "GPU",
+    "Kubernetes",
+    "GPU Monitoring",
+    "GPU Dashboard",
+    "GPU Virtualization",
+    "Observability",
+  ]
 authors: [hami_community]
 image: /img/docs/en/userguide/webui-overview.png
 ---

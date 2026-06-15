@@ -35,16 +35,16 @@ kubectl describe cm  hami-device-plugin -n kube-system
 
 ```json
 {
-    "nodeconfig": [
-        {
-            "name": "MIG-NODE-A",
-            "operatingmode": "mig",
-            "filterdevices": {
-              "uuid": [],
-              "index": []
-            }
-        }
-    ]
+  "nodeconfig": [
+    {
+      "name": "MIG-NODE-A",
+      "operatingmode": "mig",
+      "filterdevices": {
+        "uuid": [],
+        "index": []
+      }
+    }
+  ]
 }
 ```
 
@@ -88,8 +88,7 @@ nvidia:
           memory: 24576
           count: 1
 
-    - models:
-        ["A100-SXM4-40GB", "A100-40GB-PCIe", "A100-PCIE-40GB", "A100-SXM4-40GB"]
+    - models: ["A100-SXM4-40GB", "A100-40GB-PCIe", "A100-PCIE-40GB", "A100-SXM4-40GB"]
       allowedGeometries:
         - name: 1g.5gb
           memory: 5120

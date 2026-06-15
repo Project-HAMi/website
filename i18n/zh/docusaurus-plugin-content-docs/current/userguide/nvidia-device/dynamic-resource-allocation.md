@@ -5,8 +5,7 @@ translated: true
 
 ## 介绍
 
-HAMi 已经在 NVIDIA 设备上支持了 K8s [DRA](https://kubernetes.io/docs/concepts/scheduling-eviction/dynamic-resource-allocation/)（动态资源分配）功能。
-通过安装 hami-k8s-dra-driver 你的集群调度器可以发现节点上的 Nvidia GPU 设备。
+HAMi 已经在 NVIDIA 设备上支持了 K8s [DRA](https://kubernetes.io/docs/concepts/scheduling-eviction/dynamic-resource-allocation/)（动态资源分配）功能。通过安装 hami-k8s-dra-driver 你的集群调度器可以发现节点上的 Nvidia GPU 设备。
 
 ## 前提条件
 

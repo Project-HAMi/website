@@ -1,14 +1,14 @@
-import React, {useEffect, useMemo, useState} from 'react';
-import clsx from 'clsx';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faGithub} from '@fortawesome/free-brands-svg-icons';
+import React, { useEffect, useMemo, useState } from "react";
+import clsx from "clsx";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
-const STAR_CACHE_KEY = 'hami_github_stars';
-const STAR_FALLBACK = '3,100';
+const STAR_CACHE_KEY = "hami_github_stars";
+const STAR_FALLBACK = "3,100";
 
 function formatNumber(value) {
   try {
-    return new Intl.NumberFormat('en-US').format(value);
+    return new Intl.NumberFormat("en-US").format(value);
   } catch {
     return String(value);
   }
@@ -19,22 +19,22 @@ function formatStars(count) {
 }
 
 function parseCompactCount(text) {
-  if (typeof text !== 'string') return null;
+  if (typeof text !== "string") return null;
   const trimmed = text.trim().toLowerCase();
   // Examples: '3.1k', '12k', '1.2m', '3100', '3,100'
   const m = trimmed.match(/^([0-9,.]+)\s*([km])?$/);
   if (!m) return null;
-  let num = parseFloat(m[1].replace(/,/g, ''));
+  let num = parseFloat(m[1].replace(/,/g, ""));
   if (Number.isNaN(num)) return null;
   const suffix = m[2];
-  if (suffix === 'k') num = Math.round(num * 1000);
-  if (suffix === 'm') num = Math.round(num * 1000000);
+  if (suffix === "k") num = Math.round(num * 1000);
+  if (suffix === "m") num = Math.round(num * 1000000);
   return Math.round(num);
 }
 
-const GhButton = ({className}) => {
+const GhButton = ({ className }) => {
   const [stars, setStars] = useState(() => {
-    if (typeof window === 'undefined') {
+    if (typeof window === "undefined") {
       return STAR_FALLBACK;
     }
     return window.localStorage.getItem(STAR_CACHE_KEY) || STAR_FALLBACK;
@@ -57,12 +57,12 @@ const GhButton = ({className}) => {
 
     async function loadStars() {
       try {
-        const response = await fetch('https://api.github.com/repos/Project-HAMi/HAMi');
+        const response = await fetch("https://api.github.com/repos/Project-HAMi/HAMi");
         if (!response.ok) {
-          throw new Error('GitHub API unavailable');
+          throw new Error("GitHub API unavailable");
         }
         const data = await response.json();
-        if (typeof data.stargazers_count === 'number') {
+        if (typeof data.stargazers_count === "number") {
           updateStars(formatStars(data.stargazers_count));
           return;
         }
@@ -72,7 +72,7 @@ const GhButton = ({className}) => {
 
       try {
         const badgeResponse = await fetch(
-          'https://img.shields.io/github/stars/Project-HAMi/HAMi?style=social',
+          "https://img.shields.io/github/stars/Project-HAMi/HAMi?style=social",
         );
         if (!badgeResponse.ok) {
           return;
@@ -82,7 +82,7 @@ const GhButton = ({className}) => {
         if (countMatch?.[1]) {
           const raw = countMatch[1].trim();
           const parsed = parseCompactCount(raw);
-          if (parsed && typeof parsed === 'number') {
+          if (parsed && typeof parsed === "number") {
             updateStars(formatStars(parsed));
           } else {
             updateStars(raw);
@@ -105,11 +105,12 @@ const GhButton = ({className}) => {
 
   return (
     <a
-      className={clsx('githubStarButton', className)}
+      className={clsx("githubStarButton", className)}
       href="https://github.com/Project-HAMi/HAMi"
       target="_blank"
       rel="noreferrer"
-      aria-label="Star HAMi on GitHub">
+      aria-label="Star HAMi on GitHub"
+    >
       <span className="githubStarButton__main">
         <FontAwesomeIcon icon={faGithub} className="githubStarButton__icon" />
         <span>Stars</span>

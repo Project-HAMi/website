@@ -25,7 +25,6 @@ go build -ldflags '-s -w -X github.com/Project-HAMi/HAMi/pkg/version.version=v0.
 go build -ldflags '-s -w -X github.com/Project-HAMi/HAMi/pkg/version.version=v0.0.1' -o bin/nvidia-device-plugin ./cmd/device-plugin/nvidia
 ```
 
-
 ## Make Image
 
 ### Prerequisites
@@ -94,6 +93,3 @@ HAMi-Core is recommended to be built in a nvidia/cuda image:
 git clone https://github.com/Project-HAMi/HAMi-core.git
 docker build . -f dockerfiles/Dockerfile.{arch}
 ```
-
-
-

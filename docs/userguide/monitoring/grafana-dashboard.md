@@ -39,11 +39,11 @@ For Prometheus Operator, create a `ServiceMonitor` targeting the `hami-device-pl
 
 Key metrics:
 
-| Metric | Description |
-| --- | --- |
-| `Device_memory_desc_of_container` | Virtual GPU memory allocated to a container |
-| `Device_utilization_desc_of_container` | GPU compute utilization per container |
-| `Device_memory_limit_of_container` | Memory limit set for the container |
+| Metric                                 | Description                                 |
+| -------------------------------------- | ------------------------------------------- |
+| `Device_memory_desc_of_container`      | Virtual GPU memory allocated to a container |
+| `Device_utilization_desc_of_container` | GPU compute utilization per container       |
+| `Device_memory_limit_of_container`     | Memory limit set for the container          |
 
 ## Prerequisites
 

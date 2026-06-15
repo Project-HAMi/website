@@ -1,6 +1,6 @@
 ---
 title: 启用昆仑芯 GPU 拓扑感知调度
-linktitle: 拓扑感知调度
+sidebar_label: 拓扑感知调度
 ---
 
 **昆仑芯 GPU 拓扑感知调度现在通过 `kunlunxin.com/xpu` 资源得到支持。**
@@ -9,10 +9,7 @@ linktitle: 拓扑感知调度
 
 ![Kunlunxin XPU 拓扑图，显示 P800 服务器上的 NUMA 节点连接](/img/docs/common/userguide/kunlunxin-device/kunlunxin-topology.jpg)
 
-当用户作业请求一定数量的 `kunlunxin.com/xpu` 资源时，
-Kubernetes 将 Pod 调度到适当的节点上，目标是减少碎片化
-并最大化性能。然后 `xpu-device` 在选定的节点上执行细粒度分配
-请求的资源，遵循以下规则：
+当用户作业请求一定数量的 `kunlunxin.com/xpu` 资源时，Kubernetes 将 Pod 调度到适当的节点上，目标是减少碎片化并最大化性能。然后 `xpu-device` 在选定的节点上执行细粒度分配请求的资源，遵循以下规则：
 
 1. 只允许 1、2、4 或 8 卡分配。
 2. 1、2 或 4 个 XPU 的分配不能跨越 NUMA 节点。
@@ -31,14 +28,12 @@ Kubernetes 将 Pod 调度到适当的节点上，目标是减少碎片化
 
 ## 启用拓扑感知调度
 
-- 在 P800 节点上部署昆仑芯设备插件。
-  （联系你的设备供应商获取相应的软件包和文档。）
+- 在 P800 节点上部署昆仑芯设备插件。（联系你的设备供应商获取相应的软件包和文档。）
 - 按照 `README.md` 中的说明部署 HAMi。
 
 ## 运行昆仑芯作业
 
-昆仑芯 P800 GPU 可以通过容器使用 `kunlunxin.com/xpu` 资源类型来请求。
-以下是 Pod 规范示例：
+昆仑芯 P800 GPU 可以通过容器使用 `kunlunxin.com/xpu` 资源类型来请求。以下是 Pod 规范示例：
 
 ```yaml
 apiVersion: v1

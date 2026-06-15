@@ -4,8 +4,6 @@ title: HAMi vNPU Core Integration
 sidebar_label: vNPU Core Integration
 ---
 
-# HAMi vNPU Core Integration
-
 HAMi-vnpu-core is an Ascend NPU in-container resource controller written in Rust. It implements user-space interception via `libvnpu.so` (interceptor) and `Limiter` (manager). Two environment variables are used to declare resource quotas: `NPU_MEM_QUOTA` for memory limits and `NPU_PRIORITY` for scheduling priority. This design integrates that capability into HAMi scheduling to support Ascend NPU memory virtualization and compute time-slice soft partitioning.
 
 ## Prerequisites
@@ -16,10 +14,10 @@ Ascend driver version 25.5 or later is required. The chip must have device-share
 npu-smi set -t device-share -i <id> -d <value>
 ```
 
-| Parameter | Description |
-| --------- | ----------- |
-| `id` | Device ID, obtained via `npu-smi info -l` |
-| `value` | Container sharing mode: `0` = disabled (default), `1` = enabled |
+| Parameter | Description                                                     |
+| --------- | --------------------------------------------------------------- |
+| `id`      | Device ID, obtained via `npu-smi info -l`                       |
+| `value`   | Container sharing mode: `0` = disabled (default), `1` = enabled |
 
 ## HAMi Scheduler Changes
 
@@ -27,11 +25,11 @@ npu-smi set -t device-share -i <id> -d <value>
 
 The existing `huawei.com/Ascend910B3-memory` resource is reused for memory allocation. A new `huawei.com/Ascend910B3-core` resource is added; pods that declare this resource use vnpu soft partitioning instead of the original hard partitioning logic.
 
-| Resource Name | Unit | Meaning | Example |
-| ------------- | ---- | ------- | ------- |
-| `huawei.com/Ascend910B3` | integer | Number of NPU cards | 1 |
-| `huawei.com/Ascend910B3-memory` | MiB | Memory quota | 28672 (28 GiB) |
-| `huawei.com/Ascend910B3-core` | integer | Percentage | 20, 40 |
+| Resource Name                   | Unit    | Meaning             | Example        |
+| ------------------------------- | ------- | ------------------- | -------------- |
+| `huawei.com/Ascend910B3`        | integer | Number of NPU cards | 1              |
+| `huawei.com/Ascend910B3-memory` | MiB     | Memory quota        | 28672 (28 GiB) |
+| `huawei.com/Ascend910B3-core`   | integer | Percentage          | 20, 40         |
 
 ### Filter Phase
 

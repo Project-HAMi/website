@@ -2,9 +2,7 @@
 title: HAMi-core 设计
 ---
 
-HAMi-core是一个为 CUDA 环境设计的 hook 库，作为容器内的 GPU 资源控制器，已被
-[HAMi](https://github.com/Project-HAMi/HAMi) 和
-[Volcano](https://github.com/volcano-sh/devices) 等项目采用。
+HAMi-core是一个为 CUDA 环境设计的 hook 库，作为容器内的 GPU 资源控制器，已被 [HAMi](https://github.com/Project-HAMi/HAMi) 和 [Volcano](https://github.com/volcano-sh/devices) 等项目采用。
 
 ![HAMi-core 架构图，显示 GPU 资源控制器设计](/img/docs/common/developers/hami-core-design/hami-arch.png)
 
@@ -24,7 +22,6 @@ HAMi-core 提供以下核心功能：
 
 ## 设计原理
 
-HAMi-core 通过劫持 CUDA 运行时库（`libcudart.so`）与 CUDA 驱动库（`libcuda.so`）之间的
-API 调用来实现其功能，如下图所示：
+HAMi-core 通过劫持 CUDA 运行时库（`libcudart.so`）与 CUDA 驱动库（`libcuda.so`）之间的 API 调用来实现其功能，如下图所示：
 
 ![HAMi-core 位置图，显示 CUDA Runtime 和 Driver 之间的 API 调用拦截](/img/docs/common/developers/hami-core-design/hami-core-position.png)

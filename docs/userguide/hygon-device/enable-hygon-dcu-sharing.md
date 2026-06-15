@@ -25,8 +25,7 @@ title: Enable Hygon DCU sharing
 
 ## Running DCU jobs
 
-Hygon DCUs can now be requested by a container
-using the `hygon.com/dcunum`, `hygon.com/dcumem` and `hygon.com/dcucores` resource type:
+Hygon DCUs can now be requested by a container using the `hygon.com/dcunum`, `hygon.com/dcumem` and `hygon.com/dcucores` resource type:
 
 ```yaml
 apiVersion: v1
@@ -40,13 +39,12 @@ spec:
     - name: alexnet-tf-gpu-container
       image: pytorch:resnet50
       workingDir: /root
-      command: ["sleep","infinity"]
+      command: ["sleep", "infinity"]
       resources:
         limits:
           hygon.com/dcunum: 1 # requesting a GPU
           hygon.com/dcumem: 2000 # each dcu require 2000 MiB device memory
           hygon.com/dcucores: 60 # each dcu use 60% of total compute cores
-
 ```
 
 ## Enable vDCU inside container

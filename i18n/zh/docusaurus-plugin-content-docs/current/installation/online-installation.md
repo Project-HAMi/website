@@ -1,5 +1,5 @@
 ---
-linktitle: 通过 Helm 在线安装
+sidebar_label: 通过 Helm 在线安装
 title: 通过 Helm 在线安装（推荐）
 translated: true
 ---
@@ -24,8 +24,7 @@ kubectl version --short
 
 ## 安装
 
-确保 `scheduler.kubeScheduler.imageTag` 与你的 Kubernetes 服务器版本匹配。
-例如，如果你的集群服务器版本是 v1.16.8，请使用以下命令进行部署：
+确保 `scheduler.kubeScheduler.imageTag` 与你的 Kubernetes 服务器版本匹配。例如，如果你的集群服务器版本是 v1.16.8，请使用以下命令进行部署：
 
 ```bash
 helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag=v1.16.8 -n kube-system

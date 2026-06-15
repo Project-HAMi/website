@@ -3,10 +3,10 @@
  * Localizes the level label through code.json, so callers only pass the
  * canonical level key (Beginner | Intermediate | Advanced).
  */
-import React from 'react';
-import clsx from 'clsx';
-import Translate from '@docusaurus/Translate';
-import styles from './LevelBadge.module.css';
+import React from "react";
+import clsx from "clsx";
+import Translate from "@docusaurus/Translate";
+import styles from "./LevelBadge.module.css";
 
 const LEVELS = {
   Beginner: {
@@ -35,14 +35,12 @@ const LEVELS = {
   },
 };
 
-export default function LevelBadge({level}) {
+export default function LevelBadge({ level }) {
   if (!level) {
     return null;
   }
   const meta = LEVELS[level];
   return (
-    <span className={clsx(styles.badge, meta && meta.className)}>
-      {meta ? meta.label : level}
-    </span>
+    <span className={clsx(styles.badge, meta && meta.className)}>{meta ? meta.label : level}</span>
   );
 }

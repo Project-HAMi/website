@@ -2,8 +2,6 @@
 title: HAMi 采用者
 ---
 
-# HAMi 采用者
-
 你和你的组织正在使用 HAMi？太棒了！请通过 GitHub 提交使用信息。
 
 ## 添加你的信息
@@ -16,10 +14,8 @@ title: HAMi 采用者
 
 1. Fork [HAMi-io/website](https://github.com/Project-HAMi/website) 仓库。
 2. 使用 `git clone https://github.com/<你的-GH-用户名>/website.git` 将其克隆到本地。
-3. (可选) 将你组织的 logo 添加到 `static/img/supporters` 目录。建议将 logo 文件命名为 `<公司名>.png`。
-   这些内容不会用于商业用途。
-4. 编辑 [adopters.mdx](https://github.com/Project-HAMi/website/blob/master/src/pages/adopters.mdx) 中的采用者列表。
-   你可以参考下面的示例表格格式。
+3. (可选) 将你组织的 logo 添加到 `static/img/supporters` 目录。建议将 logo 文件命名为 `<公司名>.png`。这些内容不会用于商业用途。
+4. 编辑 [adopters.mdx](https://github.com/Project-HAMi/website/blob/master/src/pages/adopters.mdx) 中的采用者列表。你可以参考下面的示例表格格式。
 
    | 公司名称 | 联系方式                          | 环境 | 场景描述                       |
    | -------- | --------------------------------- | ---- | ------------------------------ |

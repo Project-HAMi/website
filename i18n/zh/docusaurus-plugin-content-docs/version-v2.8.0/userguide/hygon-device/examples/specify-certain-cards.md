@@ -1,6 +1,6 @@
 ---
 title: 将任务分配给特定的 DCU
-linktitle: 指定 DCU
+sidebar_label: 指定 DCU
 translated: true
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: "Lab 2: Local Fake GPU Setup"
-linktitle: "Lab 2: Local Fake GPU"
+sidebar_label: "Lab 2: Local Fake GPU"
 lab:
   level: Beginner
   duration: about 30 minutes

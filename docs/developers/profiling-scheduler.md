@@ -4,8 +4,6 @@ title: Profiling the HAMi Scheduler
 sidebar_label: Profiling Scheduler
 ---
 
-# Profiling the HAMi Scheduler
-
 ## Prerequisites
 
 ### Enable Profiling
@@ -128,10 +126,10 @@ Total: 6.21GB
 ROUTINE ======================== github.com/Project-HAMi/HAMi/pkg/scheduler.(*Scheduler).RegisterFromNodeAnnotations in /k8s-vgpu/pkg/scheduler/scheduler.go
   210.54MB     3.33GB (flat, cum) 53.73% of Total
          .          .    158:func (s *Scheduler) RegisterFromNodeAnnotations() {
-         .    46.84MB    169:		klog.InfoS("Ticker triggered")
-  512.05kB   512.05kB    165:		select {
-    1.50MB     1.50MB    187:			nodeNames = append(nodeNames, val.Name)
-       2MB   203.15MB    218:				klog.InfoS("New timestamp for annotation", ...)
-         .     1.25GB    219:				n, err := util.GetNode(val.Name)
-         .     1.21GB    225:				if err := util.PatchNodeAnnotations(n, tmppat); err != nil {
+         .    46.84MB    169:  klog.InfoS("Ticker triggered")
+  512.05kB   512.05kB    165:    select {
+    1.50MB     1.50MB    187:      nodeNames = append(nodeNames, val.Name)
+       2MB   203.15MB    218:        klog.InfoS("New timestamp for annotation", ...)
+         .     1.25GB    219:        n, err := util.GetNode(val.Name)
+         .     1.21GB    225:        if err := util.PatchNodeAnnotations(n, tmppat); err != nil {
 ```

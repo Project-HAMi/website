@@ -9,10 +9,7 @@ title: 离线安装
 你需要将以下镜像保存为 tar 包，并拷贝到集群中：
 
 ```yaml
-projecthami/hami:{HAMi 版本}
-docker.io/jettech/kube-webhook-certgen:v1.5.2
-liangjw/kube-webhook-certgen:v1.1.1
-registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:{你的 kubernetes 版本}
+projecthami/hami:{HAMi 版本} docker.io/jettech/kube-webhook-certgen:v1.5.2 liangjw/kube-webhook-certgen:v1.1.1 registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:{你的 kubernetes 版本}
 ```
 
 加载镜像，将其打上你们内部镜像仓库的 tag，并推送到内部仓库。
@@ -30,8 +27,7 @@ docker push {your_inner_registry}/kube-scheduler:{你的 kubernetes 版本}
 
 ## 准备 HAMi Chart
 
-从 [GitHub](https://github.com/Project-HAMi/HAMi/tree/master/charts) 下载 charts 目录，
-将其放入集群中的 `${CHART_PATH}` 目录下，然后修改 `${CHART_PATH}/hami/values.yaml` 中的以下字段：
+从 [GitHub](https://github.com/Project-HAMi/HAMi/tree/master/charts) 下载 charts 目录，将其放入集群中的 `${CHART_PATH}` 目录下，然后修改 `${CHART_PATH}/hami/values.yaml` 中的以下字段：
 
 ```yaml
 scheduler:
