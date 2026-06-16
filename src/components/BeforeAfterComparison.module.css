@@ -386,7 +386,7 @@
   display: grid;
   gap: 2px;
   padding-left: 10px;
-  border-left: 3px solid var(--ifm-color-primary, #76b900);
+  border-left: 3px solid var(--ifm-color-primary, #10d05d);
 }
 
 .metricBadge span {
