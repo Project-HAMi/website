@@ -9,6 +9,7 @@ translated: true
 
 你需要将以下镜像保存到一个 tarball 文件中，并将其复制到集群中。
 镜像列表：
+
 ```text
 projecthami/hami:{HAMi 版本}
 docker.io/jettech/kube-webhook-certgen:v1.5.2
@@ -48,9 +49,10 @@ scheduler.devicePlugin.monitorimage
 helm install hami hami --set scheduler.kubeScheduler.imageTag={你的 k8s 服务器版本} -n kube-system
 ```
 
-7. 验证你的安装
+1. 验证你的安装
 
 执行以下命令
+
 ```bash
 kubectl get pods -n kube-system
 ```

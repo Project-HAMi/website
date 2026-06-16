@@ -1,10 +1,10 @@
 ---
 title: 为容器分配设备核心和显存资源
-linktitle: 分配核心和显存
+sidebar_label: 分配核心和显存
 translated: true
 ---
 
-要分配设备核心资源的一部分，你只需在容器中使用 `mthreads.com/vgpu` 请求的寒武纪 MLU 数量的同时，分配 `mthreads.com/sgpu-memory` 和 `mthreads.com/sgpu-core`。
+要分配设备核心资源的一部分，你只需在容器中使用 `mthreads.com/vgpu` 请求的摩尔线程 GPU 数量的同时，分配 `mthreads.com/sgpu-memory` 和 `mthreads.com/sgpu-core`。
 
 ```yaml
 apiVersion: v1

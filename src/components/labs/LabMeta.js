@@ -4,13 +4,13 @@
  * front matter block. Returns null on docs without that block, so it is
  * safe to mount for every doc page.
  */
-import React from 'react';
-import Translate from '@docusaurus/Translate';
-import {useDoc} from '@docusaurus/plugin-content-docs/client';
-import LevelBadge from './LevelBadge';
-import styles from './LabMeta.module.css';
+import React from "react";
+import Translate from "@docusaurus/Translate";
+import { useDoc } from "@docusaurus/plugin-content-docs/client";
+import LevelBadge from "./LevelBadge";
+import styles from "./LabMeta.module.css";
 
-function Item({label, children}) {
+function Item({ label, children }) {
   return (
     <span className={styles.item}>
       <span className={styles.itemLabel}>{label}</span> {children}
@@ -19,7 +19,7 @@ function Item({label, children}) {
 }
 
 export default function LabMeta() {
-  const {frontMatter} = useDoc();
+  const { frontMatter } = useDoc();
   const lab = frontMatter.lab;
   if (!lab) {
     return null;
@@ -33,7 +33,8 @@ export default function LabMeta() {
             <Translate id="tutorials.lab.duration" description="Lab duration label">
               Duration:
             </Translate>
-          }>
+          }
+        >
           {lab.duration}
         </Item>
       )}
@@ -43,7 +44,8 @@ export default function LabMeta() {
             <Translate id="tutorials.lab.environment" description="Lab environment label">
               Environment:
             </Translate>
-          }>
+          }
+        >
           {lab.environment}
         </Item>
       )}
@@ -53,7 +55,8 @@ export default function LabMeta() {
             <Translate id="tutorials.lab.cost" description="Lab cost label">
               Cost:
             </Translate>
-          }>
+          }
+        >
           {lab.cost}
         </Item>
       )}
@@ -63,7 +66,8 @@ export default function LabMeta() {
             <Translate id="tutorials.lab.verified" description="Lab verified date label">
               Verified:
             </Translate>
-          }>
+          }
+        >
           {lab.verified}
         </Item>
       )}
@@ -73,10 +77,11 @@ export default function LabMeta() {
             <Translate id="tutorials.lab.authors" description="Lab authors label">
               By:
             </Translate>
-          }>
+          }
+        >
           {lab.authors.map((author, i) => (
             <React.Fragment key={author}>
-              {i > 0 && ', '}
+              {i > 0 && ", "}
               <a href={`https://github.com/${author}`} target="_blank" rel="noopener noreferrer">
                 @{author}
               </a>

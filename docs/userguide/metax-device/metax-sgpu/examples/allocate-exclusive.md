@@ -15,7 +15,7 @@ spec:
     - name: ubuntu-container
       image: ubuntu:22.04
       imagePullPolicy: IfNotPresent
-      command: ["sleep","infinity"]
+      command: ["sleep", "infinity"]
       resources:
         limits:
           metax-tech.com/sgpu: 1 # requesting 1 exclusive GPU

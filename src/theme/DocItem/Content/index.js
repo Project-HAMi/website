@@ -4,13 +4,13 @@
  * renders directly below the page title for docs that carry a `lab`
  * front matter block. Docs without it are unaffected.
  */
-import React from 'react';
-import clsx from 'clsx';
-import {ThemeClassNames} from '@docusaurus/theme-common';
-import {useDoc} from '@docusaurus/plugin-content-docs/client';
-import Heading from '@theme/Heading';
-import MDXContent from '@theme/MDXContent';
-import LabMeta from '@site/src/components/labs/LabMeta';
+import React from "react";
+import clsx from "clsx";
+import { ThemeClassNames } from "@docusaurus/theme-common";
+import { useDoc } from "@docusaurus/plugin-content-docs/client";
+import Heading from "@theme/Heading";
+import MDXContent from "@theme/MDXContent";
+import LabMeta from "@site/src/components/labs/LabMeta";
 
 /**
  Title can be declared inside md content or declared through
@@ -23,19 +23,18 @@ import LabMeta from '@site/src/components/labs/LabMeta';
  - the markdown content does not already contain a top-level h1 heading
 */
 function useSyntheticTitle() {
-  const {metadata, frontMatter, contentTitle} = useDoc();
-  const shouldRender =
-    !frontMatter.hide_title && typeof contentTitle === 'undefined';
+  const { metadata, frontMatter, contentTitle } = useDoc();
+  const shouldRender = !frontMatter.hide_title && typeof contentTitle === "undefined";
   if (!shouldRender) {
     return null;
   }
   return metadata.title;
 }
 
-export default function DocItemContent({children}) {
+export default function DocItemContent({ children }) {
   const syntheticTitle = useSyntheticTitle();
   return (
-    <div className={clsx(ThemeClassNames.docs.docMarkdown, 'markdown')}>
+    <div className={clsx(ThemeClassNames.docs.docMarkdown, "markdown")}>
       {syntheticTitle && (
         <header>
           <Heading as="h1">{syntheticTitle}</Heading>

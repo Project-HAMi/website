@@ -2,8 +2,6 @@
 title: Allocate exclusive device
 ---
 
-## Allocate exclusive device
-
 To allocate a whole cambricon device, you need to only assign `iluvatar.ai/vgpu` without other fields. You can allocate multiple GPUs for a container.
 
 ```yaml

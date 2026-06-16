@@ -199,20 +199,20 @@ graph LR
 
 ## 组件速查表
 
-| 组件 | 一句话说明 |
-| --- | --- |
-| **GPU** | NVIDIA GPU 硬件，执行并行计算任务 |
-| **PCIe** | 连接 GPU 和 CPU 的总线，负责数据传输 |
-| **nvidia.ko** | NVIDIA 内核模块，管理 GPU 硬件资源，向上暴露设备节点 |
-| **nvidia-smi** | 命令行工具，查看 GPU 状态、显存、进程等信息 |
-| **NVML** | NVIDIA Management Library，GPU 管理的 C 语言 API |
-| **libnvidia-ml.so** | NVML 的共享库实现，所有管理工具都通过它与驱动通信 |
-| **CUDA** | NVIDIA 并行计算平台，GPU 应用的核心编程和运行时框架 |
-| **MIG** | Multi-Instance GPU，将一块 GPU 物理划分为多个隔离实例 |
-| **DCGM** | 数据中心 GPU 管理工具，提供监控、诊断和健康检查 |
-| **containerd** | 容器运行时，管理容器镜像和生命周期 |
-| **NVIDIA Container Toolkit** | 容器 GPU 支持，启动时自动挂载 GPU 设备和库到容器内 |
-| **Device Plugin** | K8s 设备插件，向集群上报节点 GPU 资源信息 |
-| **GPU Operator** | NVIDIA Operator，自动化部署和管理 GPU 相关的全栈组件 |
-| **HAMi** | GPU 虚拟化中间件，支持显存和算力的细粒度切分与共享 |
-| **HAMi Device Plugin** | HAMi 的设备插件，替代原生 Device Plugin，支持 GPU 切分上报 |
+| 组件                         | 一句话说明                                                 |
+| ---------------------------- | ---------------------------------------------------------- |
+| **GPU**                      | NVIDIA GPU 硬件，执行并行计算任务                          |
+| **PCIe**                     | 连接 GPU 和 CPU 的总线，负责数据传输                       |
+| **nvidia.ko**                | NVIDIA 内核模块，管理 GPU 硬件资源，向上暴露设备节点       |
+| **nvidia-smi**               | 命令行工具，查看 GPU 状态、显存、进程等信息                |
+| **NVML**                     | NVIDIA Management Library，GPU 管理的 C 语言 API           |
+| **libnvidia-ml.so**          | NVML 的共享库实现，所有管理工具都通过它与驱动通信          |
+| **CUDA**                     | NVIDIA 并行计算平台，GPU 应用的核心编程和运行时框架        |
+| **MIG**                      | Multi-Instance GPU，将一块 GPU 物理划分为多个隔离实例      |
+| **DCGM**                     | 数据中心 GPU 管理工具，提供监控、诊断和健康检查            |
+| **containerd**               | 容器运行时，管理容器镜像和生命周期                         |
+| **NVIDIA Container Toolkit** | 容器 GPU 支持，启动时自动挂载 GPU 设备和库到容器内         |
+| **Device Plugin**            | K8s 设备插件，向集群上报节点 GPU 资源信息                  |
+| **GPU Operator**             | NVIDIA Operator，自动化部署和管理 GPU 相关的全栈组件       |
+| **HAMi**                     | GPU 虚拟化中间件，支持显存和算力的细粒度切分与共享         |
+| **HAMi Device Plugin**       | HAMi 的设备插件，替代原生 Device Plugin，支持 GPU 切分上报 |

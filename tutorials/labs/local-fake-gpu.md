@@ -1,6 +1,6 @@
 ---
 title: "Lab 2: Local Fake GPU Setup"
-linktitle: "Lab 2: Local Fake GPU"
+sidebar_label: "Lab 2: Local Fake GPU"
 lab:
   level: Beginner
   duration: about 30 minutes
@@ -793,6 +793,7 @@ Capacity:
 ### What This Lab Cannot Verify
 
 :::warning Real GPU required for the following
+
 - HAMi device-plugin actually registering GPUs and writing `hami.io/node-nvidia-register`
 - `nvidia.com/gpumem` memory slicing
 - `nvidia.com/gpucores` compute ratio limits

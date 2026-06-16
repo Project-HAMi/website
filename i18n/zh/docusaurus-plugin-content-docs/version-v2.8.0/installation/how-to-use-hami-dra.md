@@ -1,6 +1,6 @@
 ---
 title: Kubernetes 的 HAMi DRA
-linktitle: HAMi DRA
+sidebar_label: HAMi DRA
 translated: true
 ---
 

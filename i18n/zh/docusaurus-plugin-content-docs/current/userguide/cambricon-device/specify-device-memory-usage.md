@@ -1,16 +1,16 @@
 ---
 title: 为容器分配设备显存
-linktitle: 指定显存
+sidebar_label: 指定显存
 translated: true
 ---
 
 通过指定资源如 `cambricon.com/mlu.smlu.vmemory` 来分配设备显存的百分比大小。可选项，每个 `cambricon.com/mlu.smlu.vmemory` 单位等于设备显存的 1%。
 
 ```yaml
-      resources:
-        limits:
-          cambricon.com/vmlu: 1 # 请求 1 个 MLU
-          cambricon.com/mlu.smlu.vmemory: "20" # 每个 GPU 包含 20% 的设备显存
+resources:
+  limits:
+    cambricon.com/vmlu: 1 # 请求 1 个 MLU
+    cambricon.com/mlu.smlu.vmemory: "20" # 每个 MLU 包含 20% 的设备显存
 ```
 
 :::note

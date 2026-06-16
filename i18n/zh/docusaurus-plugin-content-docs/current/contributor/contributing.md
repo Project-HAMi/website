@@ -13,6 +13,22 @@ translated: true
 
 HAMi 是一个由社区驱动的项目，致力于促进一个健康、友好和富有成效的环境。
 
+## 社区
+
+| 渠道 | 用途 |
+| --- | --- |
+| [GitHub Issues](https://github.com/Project-HAMi/HAMi/issues) | 缺陷报告和功能请求 |
+| [GitHub Discussions](https://github.com/Project-HAMi/HAMi/discussions) | 提问、想法、设计方案 |
+| [Discord](https://discord.gg/Amhy7XmbNq) | 实时聊天（推荐） |
+| [CNCF Slack #hami-dev](https://cloud-native.slack.com/archives/C07T10BU4R2) | 实时聊天 |
+| [MAINTAINERS](https://github.com/Project-HAMi/HAMi/blob/master/MAINTAINERS.md) | 当前维护者列表 |
+| [社区会议（英文）](https://docs.google.com/document/d/1YC6hco03_oXbF9IOUPJ29VWEddmITIKIfSmBX8JtGBw/edit#heading=h.g61sgp7w0d0c) | 双周 Zoom 会议，周三 16:30 UTC+8。[iCal 订阅](https://webcal.prod.itx.linuxfoundation.org/lfx/lfmd9wcrbnW1NXUzPl) |
+| [Zoom 会议链接](https://zoom-lfx.platform.linuxfoundation.org/meeting/95994137931?password=55b961b5-3e8e-4040-8657-0f2d26511f1d) | 加入英文双周社区会议 |
+| [社区会议（中文）](https://docs.google.com/document/d/1YC6hco03_oXbF9IOUPJ29VWEddmITIKIfSmBX8JtGBw/edit#heading=h.g61sgp7w0d0c) | 周五 16:00 UTC+8，每周 |
+| [腾讯会议链接](https://meeting.tencent.com/dm/Ntiwq1BICD1P) | 加入中文每周社区会议 |
+
+在提交 issue 或 PR 之前，请先搜索已有的 issue 和讨论，确认是否已有相关工作。
+
 ## 入门
 
 - 在 GitHub 上 fork 这个仓库。
@@ -27,22 +43,13 @@ HAMi 是一个由社区驱动的项目，致力于促进一个健康、友好和
 
 ## 找到要处理的内容
 
-我们总是需要帮助，无论是修复文档、报告错误还是编写代码。
-查看你认为没有遵循最佳编码实践的地方，需要代码重构或缺少测试的地方。
-以下是你如何开始的步骤。
+我们总是需要帮助，无论是修复文档、报告错误还是编写代码。查看你认为没有遵循最佳编码实践的地方，需要代码重构或缺少测试的地方。以下是你如何开始的步骤。
 
 ### 找到一个好的入门主题
 
-在 HAMi 组织内有[多个仓库](https://github.com/Project-HAMi/)。
-每个仓库都有适合初学者的问题，提供一个好的入门问题。
-例如，[Project-HAMi/HAMi](https://github.com/Project-HAMi/HAMi) 有
-[需要帮助](https://github.com/Project-HAMi/HAMi/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22)和
-[好的入门问题](https://github.com/Project-HAMi/HAMi/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22)
-标签的问题，这些问题不需要对系统有深入的了解。
-我们可以帮助希望处理这些问题的新贡献者。
+在 HAMi 组织内有[多个仓库](https://github.com/Project-HAMi/)。每个仓库都有适合初学者的问题，提供一个好的入门问题。例如，[Project-HAMi/HAMi](https://github.com/Project-HAMi/HAMi) 有 [需要帮助](https://github.com/Project-HAMi/HAMi/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22)和 [好的入门问题](https://github.com/Project-HAMi/HAMi/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) 标签的问题，这些问题不需要对系统有深入的了解。我们可以帮助希望处理这些问题的新贡献者。
 
-另一个好的贡献方式是找到文档改进的地方，比如缺失/损坏的链接。
-参阅下面的[贡献者工作流程](#贡献者工作流程)以了解工作流程。
+另一个好的贡献方式是找到文档改进的地方，比如缺失/损坏的链接。参阅下面的[贡献者工作流程](#贡献者工作流程)以了解工作流程。
 
 #### 处理一个问题
 
@@ -50,10 +57,9 @@ HAMi 是一个由社区驱动的项目，致力于促进一个健康、友好和
 
 ### 提交一个问题
 
-虽然我们鼓励每个人贡献代码，但也欢迎有人报告问题。
-问题应在相应的 HAMi 子仓库下提交。
+虽然我们鼓励每个人贡献代码，但也欢迎有人报告问题。问题应在相应的 HAMi 子仓库下提交。
 
-*示例：* HAMi 问题应提交到 [Project-HAMi/HAMi](https://github.com/Project-HAMi/HAMi/issues)。
+_示例：_ HAMi 问题应提交到 [Project-HAMi/HAMi](https://github.com/Project-HAMi/HAMi/issues)。
 
 在提交问题时遵循提示的提交指南。
 
@@ -70,10 +76,7 @@ HAMi 是一个由社区驱动的项目，致力于促进一个健康、友好和
 
 ## 创建拉取请求
 
-拉取请求通常简称为 "PR"。
-HAMi 通常遵循标准的[github 拉取请求](https://help.github.com/articles/about-pull-requests/)流程。
-要提交建议的更改，开发代码/修复并添加新的测试用例。
-之后，在提交拉取请求之前运行这些本地验证，以预测持续集成的通过或失败。
+拉取请求通常简称为 "PR"。HAMi 通常遵循标准的[github 拉取请求](https://help.github.com/articles/about-pull-requests/)流程。要提交建议的更改，开发代码/修复并添加新的测试用例。之后，在提交拉取请求之前运行这些本地验证，以预测持续集成的通过或失败。
 
 - 运行并通过 `make verify`
 

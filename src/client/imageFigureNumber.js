@@ -16,16 +16,16 @@ export function onRouteDidUpdate({ location, previousLocation }) {
 
 function addFigureNumbers() {
   // Find all images in markdown content
-  const articleContent = document.querySelector('article');
+  const articleContent = document.querySelector("article");
   if (!articleContent) {
     return;
   }
 
   // Find all images that are not in header or footer
-  const images = Array.from(articleContent.querySelectorAll('img')).filter(img => {
+  const images = Array.from(articleContent.querySelectorAll("img")).filter((img) => {
     // Filter out logos, avatars, icons
-    const parentClass = img.parentElement?.className || '';
-    const isLogo = parentClass.includes('logo') || img.alt.includes('logo');
+    const parentClass = img.parentElement?.className || "";
+    const isLogo = parentClass.includes("logo") || img.alt.includes("logo");
     const isIcon = img.width < 100 || img.height < 100;
     return !isLogo && !isIcon;
   });
@@ -34,15 +34,15 @@ function addFigureNumbers() {
 
   images.forEach((img) => {
     // Get alt text
-    const altText = img.getAttribute('alt') || '';
+    const altText = img.getAttribute("alt") || "";
     if (!altText.trim()) {
       return;
     }
 
     // Check if already has figcaption with figure number
-    const existingFigure = img.closest('figure');
+    const existingFigure = img.closest("figure");
     if (existingFigure) {
-      const existingFigcaption = existingFigure.querySelector('figcaption');
+      const existingFigcaption = existingFigure.querySelector("figcaption");
       if (existingFigcaption && existingFigcaption.textContent.match(/^[图Figure]\d+:/)) {
         figureCount++;
         return;
@@ -53,31 +53,31 @@ function addFigureNumbers() {
     figureCount++;
 
     // Create figure wrapper if it doesn't exist
-    let figure = img.closest('figure');
+    let figure = img.closest("figure");
     if (!figure) {
-      figure = document.createElement('figure');
+      figure = document.createElement("figure");
       img.parentNode.insertBefore(figure, img);
       figure.appendChild(img);
     }
 
     // Remove existing figcaption if any (but only if it doesn't have figure number)
-    const existingFigcaption = figure.querySelector('figcaption');
+    const existingFigcaption = figure.querySelector("figcaption");
     if (existingFigcaption && !existingFigcaption.textContent.match(/^[图Figure]\d+:/)) {
       existingFigcaption.remove();
     } else if (existingFigcaption) {
       // Update existing figcaption with figure number
-      const currentLang = document.documentElement.lang || 'en';
-      const prefix = currentLang.startsWith('zh') ? '图' : 'Figure';
+      const currentLang = document.documentElement.lang || "en";
+      const prefix = currentLang.startsWith("zh") ? "图" : "Figure";
       existingFigcaption.textContent = `${prefix}${figureCount}: ${altText}`;
       return;
     }
 
     // Create figcaption with number and alt text
-    const figcaption = document.createElement('figcaption');
-    const currentLang = document.documentElement.lang || 'en';
+    const figcaption = document.createElement("figcaption");
+    const currentLang = document.documentElement.lang || "en";
 
     // Use appropriate prefix based on language
-    const prefix = currentLang.startsWith('zh') ? '图' : 'Figure';
+    const prefix = currentLang.startsWith("zh") ? "图" : "Figure";
     figcaption.textContent = `${prefix}${figureCount}: ${altText}`;
 
     // Append figcaption to figure

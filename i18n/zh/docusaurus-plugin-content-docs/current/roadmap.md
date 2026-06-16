@@ -1,19 +1,15 @@
 ---
-title:  Karmada Roadmap
+title: Karmada Roadmap
 ---
 
-# Karmada Roadmap
-
-This document defines a high level roadmap for Karmada development and upcoming releases.
-Community and contributor involvement is vital for successfully implementing all desired items for each release.
-We hope that the items listed below will inspire further engagement from the community to keep karmada progressing and shipping exciting and valuable features.
-
+This document defines a high level roadmap for Karmada development and upcoming releases. Community and contributor involvement is vital for successfully implementing all desired items for each release. We hope that the items listed below will inspire further engagement from the community to keep karmada progressing and shipping exciting and valuable features.
 
 ## 2022 H1
+
 - Multi-cluster HA scheduling policy
-    - spread by region
-    - spread by zone
-    - spread by provider
+  - spread by region
+  - spread by zone
+  - spread by provider
 - Multi-cluster Ingress
 - Multi-cluster HPA (Horizontal Pod Autoscaling)
 - Federated resource quota
@@ -25,6 +21,7 @@ We hope that the items listed below will inspire further engagement from the com
 - Scheduling re-balancing
 
 ## 2022 H2
+
 - Karmada Dashboard - alpha release
 - Karmada scalability baseline (performance report)
 - Cluster addons

@@ -20,6 +20,7 @@ This is a GPU cluster, having two node, the following story takes this cluster a
 #### Story 1
 
 node binpack, use one node’s GPU card whenever possible, egs:
+
 - cluster resources:
   - node1: GPU having 4 GPU device
   - node2: GPU having 4 GPU device
@@ -98,7 +99,7 @@ score: ((request + used) / allocatable) * 10
 Node1 score: ((1+3)/4) * 10= 10
 ```
 
-2. Binpack scoring information for Node 2 is as follows
+1. Binpack scoring information for Node 2 is as follows
 
 ```text
 Node2 score: ((1+2)/4) * 10= 7.5
@@ -115,11 +116,13 @@ score: ((request + used) / allocatable) * 10
 ```
 
 1. Spread scoring information for Node 1 is as follows
+
 ```text
 Node1 score: ((1+3)/4) * 10= 10
 ```
 
-2. Spread scoring information for Node 2 is as follows
+1. Spread scoring information for Node 2 is as follows
+
 ```text
 Node2 score: ((1+2)/4) * 10= 7.5
 ```
@@ -133,16 +136,19 @@ So, in `Spread` policy, the selected node is `Node2`.
 #### Binpack
 
 Binpack mainly focuses on the computing power and video memory usage of each card. The more it is used, the higher the score.
+
 ```text
 score: ((request.core + used.core) / allocatable.core + (request.mem + used.mem) / allocatable.mem)) * 10
 ```
 
 1. Binpack scoring information for GPU 1 is as follows
+
 ```text
 GPU1 Score: ((20+10)/100 + (1000+2000)/8000)) * 10 = 6.75
 ```
 
-2. Binpack scoring information for GPU 2 is as follows
+1. Binpack scoring information for GPU 2 is as follows
+
 ```text
 GPU2 Score: ((20+70)/100 + (1000+6000)/8000)) * 10 = 17.75
 ```
@@ -152,16 +158,19 @@ So, in `Binpack` policy, the selected node is `GPU2`.
 #### Spread
 
 Spread mainly focuses on the computing power and video memory usage of each card. The less it is used, the higher the score.
+
 ```text
 score: ((request.core + used.core) / allocatable.core + (request.mem + used.mem) / allocatable.mem)) * 10
 ```
 
 1. Spread scoring information for GPU 1 is as follows
+
 ```text
 GPU1 Score: ((20+10)/100 + (1000+2000)/8000)) * 10 = 6.75
 ```
 
-2. Spread scoring information for GPU 2 is as follows
+1. Spread scoring information for GPU 2 is as follows
+
 ```text
 GPU2 Score: ((20+70)/100 + (1000+6000)/8000)) * 10 = 17.75
 ```

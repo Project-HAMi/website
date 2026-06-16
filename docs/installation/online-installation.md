@@ -1,5 +1,5 @@
 ---
-linktitle: Online Installation from Helm
+sidebar_label: Online Installation from Helm
 title: Online Installation from Helm (Recommended)
 ---
 
@@ -23,8 +23,7 @@ kubectl version
 
 ## Installation
 
-Ensure the `scheduler.kubeScheduler.imageTag` matches your Kubernetes server version.
-For instance, if your cluster server is v1.29.0, use the following command to deploy:
+Ensure the `scheduler.kubeScheduler.imageTag` matches your Kubernetes server version. For instance, if your cluster server is v1.29.0, use the following command to deploy:
 
 ```bash
 helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag=v1.29.0 -n kube-system

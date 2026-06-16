@@ -1,6 +1,6 @@
 ---
 title: Allocate a part of device memory by percentage to container
-linktitle: Allocate device memory by percentage
+sidebar_label: Allocate device memory by percentage
 ---
 
 To allocate a certain size of GPU device memory by percentage, you need only to assign `nvidia.com/gpumem-percentage` besides `nvidia.com/gpu`.

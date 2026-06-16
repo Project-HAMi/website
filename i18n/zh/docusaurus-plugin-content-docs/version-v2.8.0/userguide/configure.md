@@ -1,6 +1,6 @@
 ---
 title: 全局配置
-linktitle: 配置
+sidebar_label: 配置
 translated: true
 ---
 

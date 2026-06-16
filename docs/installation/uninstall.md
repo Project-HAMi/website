@@ -21,6 +21,7 @@ helm uninstall hami -n kube-system
 ```
 
 This command will remove all HAMi resources, including:
+
 - Scheduler pods
 - Device plugin DaemonSets
 - ConfigMaps and Secrets

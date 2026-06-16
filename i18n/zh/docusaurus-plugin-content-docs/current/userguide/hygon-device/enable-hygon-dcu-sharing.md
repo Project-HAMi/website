@@ -1,6 +1,6 @@
 ---
 title: 启用 Hygon DCU 共享
-linktitle: DCU 共享
+sidebar_label: DCU 共享
 translated: true
 ---
 
@@ -39,13 +39,12 @@ spec:
     - name: alexnet-tf-gpu-container
       image: pytorch:resnet50
       workingDir: /root
-      command: ["sleep","infinity"]
+      command: ["sleep", "infinity"]
       resources:
         limits:
           hygon.com/dcunum: 1 # 请求一个 DCU
           hygon.com/dcumem: 2000 # 每个 DCU 包含 2000M 设备显存
           hygon.com/dcucores: 60 # 每个 DCU 分配 60% 的设备核心
-
 ```
 
 ## 容器内开启虚拟 DCU 功能

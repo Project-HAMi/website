@@ -10,7 +10,7 @@ translated: true
 - 启动 vGPU 任务
 - 检查容器内相应的设备资源是否受限
 
-### 前提条件
+## 前提条件
 
 - [Helm](https://helm.sh/zh/docs/) 版本 v3+
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) 版本 v1.16+

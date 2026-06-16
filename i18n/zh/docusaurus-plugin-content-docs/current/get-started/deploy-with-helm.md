@@ -16,7 +16,7 @@ title: 使用 Helm 部署 HAMi
 - [CUDA](https://developer.nvidia.com/cuda-toolkit) v10.2+
 - [NVIDIA 驱动](https://www.nvidia.cn/drivers/unix/) v440+
 
-## 安装步骤  {#installation}
+## 安装步骤 {#installation}
 
 ### 1. 配置 nvidia-container-toolkit {#configure-nvidia-container-toolkit}
 
@@ -41,8 +41,7 @@ sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
 
 #### 配置 Docker {#configure-docker}
 
-当使用 Docker 运行 Kubernetes 时，编辑配置文件（通常位于 `/etc/docker/daemon.json`），将
-`nvidia-container-runtime` 设为默认底层运行时：
+当使用 Docker 运行 Kubernetes 时，编辑配置文件（通常位于 `/etc/docker/daemon.json`），将 `nvidia-container-runtime` 设为默认底层运行时：
 
 ```json
 {
@@ -64,8 +63,7 @@ sudo systemctl daemon-reload && sudo systemctl restart docker
 
 #### 配置 containerd {#configure-containerd}
 
-当使用 containerd 运行 Kubernetes 时，修改配置文件（通常位于 `/etc/containerd/config.toml`），将
-`nvidia-container-runtime` 设为默认底层运行时：
+当使用 containerd 运行 Kubernetes 时，修改配置文件（通常位于 `/etc/containerd/config.toml`），将 `nvidia-container-runtime` 设为默认底层运行时：
 
 ```toml
 version = 2

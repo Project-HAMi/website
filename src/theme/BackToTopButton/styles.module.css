@@ -17,7 +17,12 @@
   opacity: 0;
   transform: translateY(8px);
   pointer-events: none;
-  transition: opacity var(--hami-motion-fast), transform var(--hami-motion-fast), background-color var(--hami-motion-fast), border-color var(--hami-motion-fast), color var(--hami-motion-fast);
+  transition:
+    opacity var(--hami-motion-fast),
+    transform var(--hami-motion-fast),
+    background-color var(--hami-motion-fast),
+    border-color var(--hami-motion-fast),
+    color var(--hami-motion-fast);
 }
 
 .backToTopVisible {

@@ -4,13 +4,11 @@ title: Contributor Ladder
 
 This docs different ways to get involved and level up within the project. You can see different roles within the project in the contributor roles.
 
-## Contributor Ladder
-
 This contributor ladder outlines the different contributor roles within the project, along with the responsibilities and privileges that come with them.
 
 Each of the contributor roles below is organized into lists of three types of things. "Responsibilities" are things that a contributor is expected to do. "Requirements" are qualifications a person needs to meet to be in that role, and "Privileges" are things contributors on that level are entitled to.
 
-### Community Participant
+## Community Participant
 
 Description: A Community Participant engages with the project and its community, contributing their time, thoughts, etc. Community participants are usually users who have stopped being anonymous and started being active in project discussions.
 

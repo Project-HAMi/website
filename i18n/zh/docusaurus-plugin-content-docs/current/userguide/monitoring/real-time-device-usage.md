@@ -1,6 +1,6 @@
 ---
 title: 实时设备使用端点
-linktitle: 实时设备使用
+sidebar_label: 实时设备使用
 translated: true
 ---
 
@@ -12,8 +12,8 @@ curl {GPU 节点 IP}:31992/metrics
 
 它包含以下指标：
 
-| 指标  | 描述 | 示例 |
-|----------|-------------|---------|
+| 指标 | 描述 | 示例 |
+| --- | --- | --- |
 | Device_memory_desc_of_container | 容器设备显存实时使用情况 | `{context="0",ctrname="2-1-3-pod-1",data="0",deviceuuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",module="0",offset="0",podname="2-1-3-pod-1",podnamespace="default",vdeviceid="0",zone="vGPU"}` 0 |
 | Device_utilization_desc_of_container | 容器设备实时利用率 | `{ctrname="2-1-3-pod-1",deviceuuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",podname="2-1-3-pod-1",podnamespace="default",vdeviceid="0",zone="vGPU"}` 0 |
 | HostCoreUtilization | 主机上的 GPU 实时利用率 | `{deviceidx="0",deviceuuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",zone="vGPU"}` 0 |

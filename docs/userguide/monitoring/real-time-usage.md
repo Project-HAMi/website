@@ -50,6 +50,7 @@ kubectl exec -it <pod-name> -- watch -n 1 nvidia-smi
 ```
 
 This updates the GPU metrics every second, showing:
+
 - GPU utilization percentage
 - Memory usage and limits
 - Running processes
@@ -88,6 +89,7 @@ kubectl get node <node-name> -o yaml | grep -A 10 "hami.io/node"
 ```
 
 This shows detailed GPU information including:
+
 - GPU UUIDs
 - Memory capacity
 - Compute core count

@@ -1,5 +1,5 @@
 ---
-title: 分配 AWS Neuron 核心
+title: 分配 AWS Neuron 设备
 ---
 
 如需独占分配一个或多个aws neuron设备，可通过`aws.amazon.com/neuron`进行资源分配：
@@ -13,7 +13,7 @@ spec:
   restartPolicy: Never
   containers:
     - name: npod
-      command: ["sleep","infinity"]
+      command: ["sleep", "infinity"]
       image: public.ecr.aws/neuron/pytorch-inference-neuron:1.13.1-neuron-py310-sdk2.20.2-ubuntu20.04
       resources:
         limits:

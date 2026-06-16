@@ -1,8 +1,7 @@
 ---
 title: 启用燧原 GPU 共享
-linktitle: GPU 共享
+sidebar_label: GPU 共享
 ---
-
 
 ## 简介
 
@@ -14,7 +13,7 @@ linktitle: GPU 共享
 
 **设备 UUID 选择**: 你可以通过注解指定使用或排除特定的 GCU 设备
 
-**部署说明**:  部署本组件后，只需要部署厂家提供的 gcushare-device-plugin 即可使用
+**部署说明**: 部署本组件后，只需要部署厂家提供的 gcushare-device-plugin 即可使用
 
 ## 节点需求
 
@@ -41,14 +40,14 @@ helm install hami hami-charts/hami --set devices.enflame.enabled=true -n kube-sy
 
 > **说明：** 默认资源名称如下：
 >
-> * `enflame.com/vgcu` 用于 GCU 数量，这里只能为 1
-> * `enflame.com/vgcu-percentage` 用于生成共享 GCU 切片
+> - `enflame.com/vgcu` 用于 GCU 数量，这里只能为 1
+> - `enflame.com/vgcu-percentage` 用于生成共享 GCU 切片
 >
 > 你可以通过修改`hami-scheduler-device`配置，来修改这些资源名称
 
 ## 设备粒度切分
 
-HAMi 将每个燧原 GCU 划分为 100 个单元进行资源分配。当你请求一部分 GPU 时，实际上是在请求这些单元中的一定数量。
+HAMi 将每个燧原 GCU 划分为 100 个单元进行资源分配。当你请求一部分 GCU 时，实际上是在请求这些单元中的一定数量。
 
 ### 显存和核心分配
 
@@ -73,7 +72,7 @@ spec:
       command:
         - sleep
       args:
-        - '100000'
+        - "100000"
       resources:
         limits:
           enflame.com/vgcu: 1
@@ -88,7 +87,7 @@ spec:
 
 ## 设备 UUID 选择
 
-你可以通过 Pod 注解来指定要使用或排除特定的 GPU 设备：
+你可以通过 Pod 注解来指定要使用或排除特定的 GCU 设备：
 
 ```yaml
 apiVersion: v1
@@ -96,9 +95,9 @@ kind: Pod
 metadata:
   name: poddemo
   annotations:
-    # Use specific GPU devices (comma-separated list)
+    # Use specific GCU devices (comma-separated list)
     enflame.com/use-gpuuuid: "node1-enflame-0,node1-enflame-1"
-    # Or exclude specific GPU devices (comma-separated list)
+    # Or exclude specific GCU devices (comma-separated list)
     enflame.com/nouse-gpuuuid: "node1-enflame-2,node1-enflame-3"
 spec:
   # ... rest of pod spec
@@ -124,7 +123,7 @@ kubectl get node <node-name> -o yaml | grep -A 10 "hami.io/node-register-<card-t
 
 ## 注意事项
 
-1. 共享模式只对申请一张 GPU 的容器生效（enflame.com/vgcu=1）。
+1. 共享模式只对申请一张 GCU 的容器生效（enflame.com/vgcu=1）。
 
 2. 目前暂时不支持一个容器中申请多个 GCU 设备。
 

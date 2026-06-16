@@ -32,6 +32,7 @@ spec:
       limits:
         iluvatar.ai/BI-V150-vgpu: 2
 ```
+
 :::note
 
 当申请独占一张GPU时，`iluvatar.ai/<card-type>-vgpu=1`时，需要同时设置`iluvatar.ai/<card-type>.vCore`和`iluvatar.ai/<card-type>.vMem`的值为GPU的最大资源数量，`iluvatar.ai/<card-type>-vgpu>1`时不再支持vGPU功能可不必在填写核心和显存的数值

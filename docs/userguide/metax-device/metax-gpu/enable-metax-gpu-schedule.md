@@ -4,15 +4,11 @@ title: Enable Metax GPU topology-aware scheduling
 
 **HAMi now supports metax.com/gpu by implementing topo-awareness among metax GPUs.**
 
-When multiple GPUs are configured on a single server, the GPU cards are connected to the same PCIe Switch or MetaXLink.
-Depending on the connection type, a near-far relationship is formed among the GPUs.
-Together, these connections define the topology of the GPU cards on the server, as shown below:
+When multiple GPUs are configured on a single server, the GPU cards are connected to the same PCIe Switch or MetaXLink. Depending on the connection type, a near-far relationship is formed among the GPUs. Together, these connections define the topology of the GPU cards on the server, as shown below:
 
 ![Metax GPU topology diagram showing PCIe Switch and MetaXLink connections](/img/docs/common/userguide/metax-device/metax-gpu/metax-topology.jpg)
 
-When a user job requests a specific number of `metax-tech.com/gpu` resources,
-Kubernetes schedules the pod to a suitable node. On that node,
-the GPU device plugin (gpu-device) handles fine-grained allocation based on the following criteria:
+When a user job requests a specific number of `metax-tech.com/gpu` resources, Kubernetes schedules the pod to a suitable node. On that node, the GPU device plugin (gpu-device) handles fine-grained allocation based on the following criteria:
 
 1. MetaXLink takes precedence over PCIe Switch in two ways:
 
@@ -46,8 +42,7 @@ the GPU device plugin (gpu-device) handles fine-grained allocation based on the 
 
 ## Running Metax jobs
 
-Metax GPUs can now be requested by a container
-using the `metax-tech.com/gpu` resource type:
+Metax GPUs can now be requested by a container using the `metax-tech.com/gpu` resource type:
 
 ```yaml
 apiVersion: v1
@@ -61,7 +56,7 @@ spec:
     - name: ubuntu-container
       image: cr.metax-tech.com/public-ai-release/c500/colossalai:2.24.0.5-py38-ubuntu20.04-amd64
       imagePullPolicy: IfNotPresent
-      command: ["sleep","infinity"]
+      command: ["sleep", "infinity"]
       resources:
         limits:
           metax-tech.com/gpu: 1 # requesting 1 GPU

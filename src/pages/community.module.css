@@ -195,7 +195,9 @@
   border: 1px solid var(--hami-color-border);
   border-radius: 12px;
   background: var(--hami-color-surface);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .maintainerCard:hover {
@@ -203,7 +205,7 @@
   box-shadow: 0 8px 20px rgba(17, 24, 39, 0.06);
 }
 
-[data-theme='dark'] .maintainerCard:hover {
+[data-theme="dark"] .maintainerCard:hover {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.22);
 }
 
@@ -260,24 +262,24 @@
   min-width: 0;
 }
 
-[data-theme='dark'] .dashboardCard {
+[data-theme="dark"] .dashboardCard {
   border-color: rgba(74, 96, 120, 0.55);
   background: rgba(22, 30, 42, 0.88);
   box-shadow: 0 8px 20px rgba(2, 8, 20, 0.25);
 }
 
-[data-theme='dark'] .dashboardButton {
+[data-theme="dark"] .dashboardButton {
   border-color: rgba(74, 96, 120, 0.55);
   background: rgba(20, 30, 44, 0.9);
   color: rgba(220, 231, 245, 0.95);
 }
 
-[data-theme='dark'] .dashboardButton:hover {
+[data-theme="dark"] .dashboardButton:hover {
   background: #11d05d;
   color: #ffffff;
 }
 
-[data-theme='dark'] .metaBadge {
+[data-theme="dark"] .metaBadge {
   border-color: rgba(74, 96, 120, 0.55);
   background: rgba(20, 30, 44, 0.9);
   color: rgba(220, 231, 245, 0.95);

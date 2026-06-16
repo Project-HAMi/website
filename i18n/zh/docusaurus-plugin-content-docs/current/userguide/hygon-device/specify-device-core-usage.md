@@ -1,15 +1,14 @@
 ---
 title: 分配设备核心给容器
-linktitle: 指定核心
+sidebar_label: 指定核心
 translated: true
 ---
 
-通过指定资源 `hygon.com/dcucores` 来分配设备核心资源的百分比。
-可选项，每个 `hygon.com/dcucores` 单位等于设备核心的 1%。
+通过指定资源 `hygon.com/dcucores` 来分配设备核心资源的百分比。可选项，每个 `hygon.com/dcucores` 单位等于设备核心的 1%。
 
 ```yaml
-      resources:
-        limits:
-          hygon.com/dcunum: 1 # 请求 1 个 DCU
-          hygon.com/dcucores: 15 # 每个 DCU 分配 15% 的设备核心
+resources:
+  limits:
+    hygon.com/dcunum: 1 # 请求 1 个 DCU
+    hygon.com/dcucores: 15 # 每个 DCU 分配 15% 的设备核心
 ```

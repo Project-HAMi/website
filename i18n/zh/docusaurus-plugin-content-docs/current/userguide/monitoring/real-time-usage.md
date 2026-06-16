@@ -51,9 +51,9 @@ kubectl exec -it <pod-name> -- watch -n 1 nvidia-smi
 
 该命令每秒刷新一次 GPU 指标，包括：
 
-* GPU 利用率百分比
-* 显存用量与上限
-* 运行中的进程
+- GPU 利用率百分比
+- 显存用量与上限
+- 运行中的进程
 
 ## 节点级监控
 
@@ -90,18 +90,18 @@ kubectl get node <node-name> -o yaml | grep -A 10 "hami.io/node"
 
 这将显示详细 GPU 信息，包括：
 
-* GPU UUID
-* 显存容量
-* 计算核心数量
-* 设备型号
+- GPU UUID
+- 显存容量
+- 计算核心数量
+- 设备型号
 
 ## 与监控工具集成
 
 在生产环境中，建议将 HAMi 与以下工具集成：
 
-* **Prometheus**：抓取 kubelet 指标以获取 GPU 资源数据
-* **Grafana**：可视化 GPU 用量趋势
-* **Kubernetes Dashboard**：在 Web UI 中查看 GPU 资源
+- **Prometheus**：抓取 kubelet 指标以获取 GPU 资源数据
+- **Grafana**：可视化 GPU 用量趋势
+- **Kubernetes Dashboard**：在 Web UI 中查看 GPU 资源
 
 参考 Kubernetes 官方文档配置相关监控。
 

@@ -1,6 +1,6 @@
 ---
 title: 集群设备分配端点
-linktitle: 集群设备分配
+sidebar_label: 集群设备分配
 translated: true
 ---
 
@@ -12,8 +12,8 @@ curl {scheduler node ip}:31993/metrics
 
 它包含以下指标：
 
-| 指标  | 描述 | 示例 |
-|----------|-------------|---------|
+| 指标 | 描述 | 示例 |
+| --- | --- | --- |
 | GPUDeviceCoreLimit | GPU 设备核心限制 | `{deviceidx="0",deviceuuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",nodeid="aio-node67",zone="vGPU"}` 100 |
 | GPUDeviceMemoryLimit | GPU 设备显存限制 | `{deviceidx="0",deviceuuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",nodeid="aio-node67",zone="vGPU"}` 3.4359738368e+10 |
 | GPUDeviceCoreAllocated | 分配给某个 GPU 的设备核心 | `{deviceidx="0",deviceuuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",nodeid="aio-node67",zone="vGPU"}` 45 |
@@ -25,14 +25,14 @@ curl {scheduler node ip}:31993/metrics
 
 如果你在使用 [HAMi DRA](../../installation/how-to-use-hami-dra), 它将暴露如下指标 :
 
-| 指标  | 描述 | 示例 |
-|----------|-------------|---------|
-| GPUDeviceCoreLimit | GPU 设备核心限制 |`{devicebrand="Tesla",deviceidx="0",devicename="hami-gpu-1",deviceproductname="Tesla P4",deviceuuid="GPU-3ab1-179d-d6dd",nodeid="k8s-node01"}` 100 |
-| GPUDeviceMemoryLimit | GPU 设备显存限制 |`{devicebrand="Tesla",deviceidx="0",devicename="hami-gpu-1",deviceproductname="Tesla P4",deviceuuid="GPU-3ab1-179d-d6dd",nodeid="k8s-node01"}` 8192 |
+| 指标 | 描述 | 示例 |
+| --- | --- | --- |
+| GPUDeviceCoreLimit | GPU 设备核心限制 | `{devicebrand="Tesla",deviceidx="0",devicename="hami-gpu-1",deviceproductname="Tesla P4",deviceuuid="GPU-3ab1-179d-d6dd",nodeid="k8s-node01"}` 100 |
+| GPUDeviceMemoryLimit | GPU 设备显存限制 | `{devicebrand="Tesla",deviceidx="0",devicename="hami-gpu-1",deviceproductname="Tesla P4",deviceuuid="GPU-3ab1-179d-d6dd",nodeid="k8s-node01"}` 8192 |
 | GPUDeviceCoreAllocated | 分配给某个 GPU 的设备核心 | `{devicebrand="Tesla",deviceidx="0",devicename="hami-gpu-1",deviceproductname="Tesla P4",deviceuuid="GPU-3ab1-179d-d6dd",nodeid="k8s-node01"}` 0 |
-| GPUDeviceMemoryAllocated | 分配给某个 GPU 的设备显存 |`{devicebrand="Tesla",deviceidx="0",devicename="hami-gpu-1",deviceproductname="Tesla P4",deviceuuid="GPU-3ab1-179d-d6dd",nodeid="k8s-node01"}` 0 |
-| vGPUDeviceCoreAllocated | 分配给某个容器的 vGPU 核心数量 |`{devicebrand="Tesla",deviceidx="0",devicename="hami-gpu-0",deviceproductname="Tesla P4",deviceuuid="GPU-82be-83fe-3068",nodeid="k8s-node01",podname="pod-0",podnamespace="default"}` 100 |
-| vGPUDeviceMemoryAllocated | 分配给某个容器的 vGPU 显存 |`{devicebrand="Tesla",deviceidx="0",devicename="hami-gpu-0",deviceproductname="Tesla P4",deviceuuid="GPU-82be-83fe-3068",nodeid="k8s-node01",podname="pod-0",podnamespace="default"}` 4000 |
+| GPUDeviceMemoryAllocated | 分配给某个 GPU 的设备显存 | `{devicebrand="Tesla",deviceidx="0",devicename="hami-gpu-1",deviceproductname="Tesla P4",deviceuuid="GPU-3ab1-179d-d6dd",nodeid="k8s-node01"}` 0 |
+| vGPUDeviceCoreAllocated | 分配给某个容器的 vGPU 核心数量 | `{devicebrand="Tesla",deviceidx="0",devicename="hami-gpu-0",deviceproductname="Tesla P4",deviceuuid="GPU-82be-83fe-3068",nodeid="k8s-node01",podname="pod-0",podnamespace="default"}` 100 |
+| vGPUDeviceMemoryAllocated | 分配给某个容器的 vGPU 显存 | `{devicebrand="Tesla",deviceidx="0",devicename="hami-gpu-0",deviceproductname="Tesla P4",deviceuuid="GPU-82be-83fe-3068",nodeid="k8s-node01",podname="pod-0",podnamespace="default"}` 4000 |
 
 :::note
 

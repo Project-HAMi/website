@@ -2,7 +2,7 @@
 title: How to use volcano vgpu
 ---
 
-# Volcano vgpu device plugin for Kubernetes
+## Volcano vgpu device plugin for Kubernetes
 
 **Note**:
 
@@ -54,7 +54,7 @@ Once you have enabled this option on *all* the GPU nodes you wish to use,
 you can then enable GPU support in your cluster by deploying the following Daemonset:
 
 ```text
-$ kubectl create -f https://raw.githubusercontent.com/Project-HAMi/volcano-vgpu-device-plugin/main/volcano-vgpu-device-plugin.yml
+kubectl create -f https://raw.githubusercontent.com/Project-HAMi/volcano-vgpu-device-plugin/main/volcano-vgpu-device-plugin.yml
 ```
 
 ### Verify environment is ready
@@ -128,4 +128,3 @@ volcano-scheduler-metrics records every GPU usage and limitation, visit the foll
 ```bash
 curl {volcano scheduler cluster ip}:8080/metrics
 ```
-

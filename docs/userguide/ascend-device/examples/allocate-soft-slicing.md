@@ -4,9 +4,7 @@ title: Soft slicing (hami-vnpu-core)
 
 Soft slicing uses runtime interception (`libvnpu.so`) to enable fine-grained NPU sharing without requiring hardware virtualization templates. To use it, add the annotation `huawei.com/vnpu-mode: 'hami-core'` to the Pod.
 
-:::note
-`hami-vnpu-core` currently only supports ARM platforms and the HAMi scheduler.
-:::
+:::note `hami-vnpu-core` currently only supports ARM platforms and the HAMi scheduler. :::
 
 ## Single-card Soft Slicing
 
@@ -18,7 +16,7 @@ kind: Pod
 metadata:
   name: ascend-soft-slice-pod
   annotations:
-    huawei.com/vnpu-mode: 'hami-core'
+    huawei.com/vnpu-mode: "hami-core"
 spec:
   containers:
     - name: npu_pod
@@ -27,8 +25,8 @@ spec:
       resources:
         limits:
           huawei.com/Ascend910B3: "1"
-          huawei.com/Ascend910B3-memory: "28672"  # Request 28Gi memory
-          huawei.com/Ascend910B3-core: "40"        # Request 40% of compute cores
+          huawei.com/Ascend910B3-memory: "28672" # Request 28Gi memory
+          huawei.com/Ascend910B3-core: "40" # Request 40% of compute cores
 ```
 
 ## Multi-card Parallel Inference with vLLM (TP=2)
@@ -43,7 +41,7 @@ kind: Pod
 metadata:
   name: vllm-npu-2card
   annotations:
-    huawei.com/vnpu-mode: 'hami-core'
+    huawei.com/vnpu-mode: "hami-core"
 spec:
   containers:
     - name: vllm-container
@@ -60,7 +58,7 @@ spec:
       resources:
         limits:
           huawei.com/Ascend910B3: "2"
-          huawei.com/Ascend910B3-memory: "65536"  # 64GiB combined across 2 cards
+          huawei.com/Ascend910B3-memory: "65536" # 64GiB combined across 2 cards
           huawei.com/Ascend910B3-core: "50"
 ```
 

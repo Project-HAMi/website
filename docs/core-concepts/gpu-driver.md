@@ -46,7 +46,7 @@ flowchart TB
 ### Module Descriptions
 
 | Module | File | Description |
-| ------ | ------ | ------ |
+| --- | --- | --- |
 | **nvidia** | `nvidia.ko` | The core GPU driver module, responsible for GPU hardware initialization, video memory management, command queue scheduling, and other fundamental functions. All other NVIDIA modules depend on it. |
 | **nvidia_uvm** | `nvidia_uvm.ko` | Unified Virtual Memory, enabling CPU and GPU to share the same address space. CUDA programs using `cudaMallocManaged` depend on this module, which automatically migrates data between CPU and GPU. |
 | **nvidia_modeset** | `nvidia_modeset.ko` | Display mode setting module, responsible for managing display output (resolution, refresh rate, etc.). Depends on `nvidia_drm` (DRM subsystem interface) to function. |

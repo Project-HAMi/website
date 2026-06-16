@@ -93,7 +93,7 @@ spec:
           securityContext:
             privileged: true
             capabilities:
-              add: [ "ALL" ]
+              add: ["ALL"]
           volumeMounts:
             - name: device-plugin
               mountPath: /var/lib/kubelet/device-plugins
@@ -122,22 +122,20 @@ spec:
         xpu: "on"
 ```
 
-:::note
-默认资源名称如下：
+:::note默认资源名称如下：
 
 - `kunlunxin.com/vxpu` 用于 VXPU 计数
 - `kunlunxin.com/vxpu-memory` 用于显存分配
 
-你可以使用上述参数自定义这些名称。
-:::
+你可以使用上述参数自定义这些名称。:::
 
 ## 设备粒度分区
 
 XPU P800-OAM 支持 2 个级别的分区粒度：1/4 卡和 1/2 卡，显存分配会自动对齐。规则如下：
->
-> * 请求显存 ≤ 24576M (24G) 将自动对齐到 24576M (24G)
-> * 请求显存 > 24576M (24G) 且 ≤ 49152M (48G) 将自动对齐到 49152M (48G)
-> * 请求显存 > 49152M (48G) 将分配为完整卡
+
+> - 请求显存 ≤ 24576M (24G) 将自动对齐到 24576M (24G)
+> - 请求显存 > 24576M (24G) 且 ≤ 49152M (48G) 将自动对齐到 49152M (48G)
+> - 请求显存 > 49152M (48G) 将分配为完整卡
 
 ## 运行 XPU 任务
 
@@ -151,7 +149,7 @@ spec:
     - name: vxpu-pod-demo
       image: pytorch:resnet50
       workingDir: /root
-      command: ["sleep","infinity"]
+      command: ["sleep", "infinity"]
       resources:
         limits:
           kunlunxin.com/vxpu: 1 # 请求一个 VXPU

@@ -1,21 +1,21 @@
 module.exports = {
-  "tutorials": [
+  tutorials: [
     "overview",
     {
-      "type": "category",
-      "label": "Labs",
-      "collapsed": false,
-      "link": {
-        "type": "generated-index",
-        "title": "Labs",
-        "description": "Step-by-step exercises with real captured outputs."
+      type: "category",
+      label: "Labs",
+      collapsed: false,
+      link: {
+        type: "generated-index",
+        title: "Labs",
+        description: "Step-by-step exercises with real captured outputs.",
       },
-      "items": [
+      items: [
         "labs/online-install",
         "labs/local-fake-gpu",
         "labs/gpu-partitioning",
-        "labs/hami-dra"
-      ]
-    }
-  ]
+        "labs/hami-dra",
+      ],
+    },
+  ],
 };

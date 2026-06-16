@@ -4,17 +4,19 @@ title: Enable Ascend sharing
 
 The Ascend device plugin supports NPU-slicing for HAMi. It supports two modes:
 
-### 1. Template-based Hard Slicing (vNPU)
+## 1. Template-based Hard Slicing (vNPU)
 
 Memory slicing is supported based on virtualization template, the least available template is automatically used. For detailed information, check [device-template](./device-template.md).
 
-### 2. Soft Slicing with Runtime Interception (hami-vnpu-core)
+## 2. Soft Slicing with Runtime Interception (hami-vnpu-core)
 
 This mode implements a soft slicing mechanism based on `libvnpu.so` interception and `limiter` token scheduling, enabling fine-grained resource sharing.
 
 :::note
+
 - `hami-vnpu-core` currently only supports ARM platforms.
 - `hami-vnpu-core` currently only supports HAMi scheduler.
+
 :::
 
 ## Prerequisites
@@ -33,9 +35,9 @@ To enable `device-share` mode, run:
 npu-smi set -t device-share -i <id> -d <value>
 ```
 
-| Parameter | Description |
-| --------- | ----------- |
-| `id`      | Device ID. The NPU ID found by running `npu-smi info -l`. |
+| Parameter | Description                                                        |
+| --------- | ------------------------------------------------------------------ |
+| `id`      | Device ID. The NPU ID found by running `npu-smi info -l`.          |
 | `value`   | Container enable status: `0` (Disabled, default) or `1` (Enabled). |
 
 ## Enabling Ascend-sharing support
@@ -97,9 +99,7 @@ This ConfigMap is used for global configurations such as resourceName, mode, and
 kubectl apply -f https://raw.githubusercontent.com/Project-HAMi/ascend-device-plugin/main/ascend-device-configmap.yaml
 ```
 
-:::note
-You can skip this step if the ConfigMap already exists.
-:::
+:::note You can skip this step if the ConfigMap already exists. :::
 
 #### (Optional) Node Custom Configuration
 
@@ -166,7 +166,7 @@ kind: Pod
 metadata:
   name: ascend-soft-slice-pod
   annotations:
-    huawei.com/vnpu-mode: 'hami-core'
+    huawei.com/vnpu-mode: "hami-core"
 spec:
   containers:
     - name: npu_pod
@@ -176,14 +176,14 @@ spec:
         limits:
           huawei.com/Ascend910B3: "1"
           huawei.com/Ascend910B3-memory: "28672"
-          huawei.com/Ascend910B3-core: "40"   # Request 40% of compute cores
+          huawei.com/Ascend910B3-core: "40" # Request 40% of compute cores
 ```
 
 ### Multi-card Parallel Inference (Soft Slicing)
 
 The soft partitioning mechanism supports requesting multiple virtual devices within the same Pod. When performing multi-card parallel inference (e.g., using vLLM), the value of `--gpu-memory-utilization` must not exceed the ratio of the container's total memory limit to the sum of physical memory of the selected cards.
 
-**Example: 2-Card Tensor Parallelism (TP=2) with vLLM**
+### Example: 2-Card Tensor Parallelism (TP=2) with vLLM
 
 Assume each physical card has 64Gi of memory, and you plan to use 32Gi on each of the 2 cards (totaling 64Gi):
 
@@ -193,7 +193,7 @@ kind: Pod
 metadata:
   name: vllm-npu-2card
   annotations:
-    huawei.com/vnpu-mode: 'hami-core'
+    huawei.com/vnpu-mode: "hami-core"
 spec:
   containers:
     - name: vllm-container
@@ -214,9 +214,7 @@ spec:
           huawei.com/Ascend910B3-core: "50"
 ```
 
-:::note
-`--gpu-memory-utilization 0.5` = Total requested memory (64Gi) / Total physical memory (128Gi across 2 cards).
-:::
+:::note `--gpu-memory-utilization 0.5` = Total requested memory (64Gi) / Total physical memory (128Gi across 2 cards). :::
 
 ## Notes
 
@@ -224,5 +222,4 @@ spec:
 
 1. Ascend-sharing in init containers is not supported.
 
-1. `huawei.com/Ascend910B-memory` only works when `huawei.com/Ascend910B=1`.
-   `huawei.com/Ascend310P-memory` only works when `huawei.com/Ascend310P=1`.
+1. `huawei.com/Ascend910B-memory` only works when `huawei.com/Ascend910B=1`. `huawei.com/Ascend310P-memory` only works when `huawei.com/Ascend310P=1`.

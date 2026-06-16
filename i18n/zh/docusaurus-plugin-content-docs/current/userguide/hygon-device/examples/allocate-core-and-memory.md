@@ -1,6 +1,6 @@
 ---
 title: 为容器分配设备核心和显存资源
-linktitle: 分配核心和显存
+sidebar_label: 分配核心和显存
 translated: true
 ---
 
@@ -18,7 +18,7 @@ spec:
     - name: alexnet-tf-gpu-container
       image: image.sourcefind.cn:5000/dcu/admin/base/pytorch:2.1.0-centos7.6-dtk24.04-py310
       workingDir: /root
-      command: ["sleep","infinity"]
+      command: ["sleep", "infinity"]
       resources:
         limits:
           hygon.com/dcunum: 1 # 请求一个 DCU

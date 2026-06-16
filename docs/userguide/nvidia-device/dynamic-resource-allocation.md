@@ -5,8 +5,7 @@ translated: true
 
 ## Introduction
 
-HAMi has supported K8s [DRA](https://kubernetes.io/docs/concepts/scheduling-eviction/dynamic-resource-allocation/) (Dynamic Resource Allocation) on NVIDIA devices.
-By installing hami-k8s-dra-driver, your cluster scheduler can discover NVIDIA GPU devices on nodes.
+HAMi has supported K8s [DRA](https://kubernetes.io/docs/concepts/scheduling-eviction/dynamic-resource-allocation/) (Dynamic Resource Allocation) on NVIDIA devices. By installing hami-k8s-dra-driver, your cluster scheduler can discover NVIDIA GPU devices on nodes.
 
 ## Prerequisites
 

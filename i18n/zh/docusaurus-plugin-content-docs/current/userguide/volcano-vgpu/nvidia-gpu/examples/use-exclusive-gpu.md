@@ -1,6 +1,6 @@
 ---
 title: 使用独占 GPU
-linktitle: 独占 GPU
+sidebar_label: 独占 GPU
 translated: true
 ---
 
@@ -15,11 +15,11 @@ spec:
   restartPolicy: OnFailure
   schedulerName: volcano
   containers:
-  - image: ubuntu:20.04
-    name: pod1-ctr
-    command: ["sleep"]
-    args: ["100000"]
-    resources:
-      limits:
-        volcano.sh/vgpu-number: 1
+    - image: ubuntu:20.04
+      name: pod1-ctr
+      command: ["sleep"]
+      args: ["100000"]
+      resources:
+        limits:
+          volcano.sh/vgpu-number: 1
 ```

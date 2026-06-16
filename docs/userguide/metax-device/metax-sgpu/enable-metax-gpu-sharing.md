@@ -25,8 +25,7 @@ translated: true
 
 ## Running Metax jobs
 
-Metax GPUs can now be requested by a container
-using the `metax-tech.com/sgpu` resource type:
+Metax GPUs can now be requested by a container using the `metax-tech.com/sgpu` resource type:
 
 ```yaml
 apiVersion: v1
@@ -38,7 +37,7 @@ spec:
     - name: ubuntu-container
       image: ubuntu:22.04
       imagePullPolicy: IfNotPresent
-      command: ["sleep","infinity"]
+      command: ["sleep", "infinity"]
       resources:
         limits:
           metax-tech.com/sgpu: 1 # requesting 1 GPU

@@ -1,6 +1,6 @@
 ---
 title: 启用 AWS-Neuron 设备共享
-linktitle: AWS-Neuron 共享
+sidebar_label: AWS-Neuron 共享
 ---
 
 AWS Neuron 设备是 AWS 专为机器学习工作负载设计的硬件加速器，特别针对深度学习推理和训练场景进行了优化。这些设备属于 AWS Inferentia 和 Trainium 产品家族，可在 AWS 云上为 AI 应用提供高性能、高性价比且可扩展的解决方案。
@@ -16,7 +16,7 @@ HAMi 现已集成[Neuron scheduler extension](https://awsdocs-neuron.readthedocs
 - 已部署 Neuron-device-plugin
 - 使用`Inf`或`Trn`类型的 EC2 实例
 
-## 启用 GCU 共享支持
+## 启用 Neuron 共享支持
 
 - 按照 AWS 官方文档在 Neuron 节点部署 neuron-device-plugin：[Neuron 设备插件部署指南](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/containers/kubernetes-getting-started.html#neuron-device-plugin)
 
@@ -34,13 +34,12 @@ HAMi 将每个 AWS Neuron 设备划分为 2 个可分配单元，支持分配半
 
 - 每个`aws.amazon.com/neuroncore`单元对应 1/2 个物理设备
 - 无需像其他设备那样显式分配`aws.amazon.com/neuron`，仅需分配`aws.amazon.com/neuroncore`
-- 当`aws.amazon.com/neuroncore`≥2 时，等效于设置`awa.amazon.com/neuron=1/2 * neuronCoreNumber`
+- 当`aws.amazon.com/neuroncore`≥2 时，等效于设置`aws.amazon.com/neuron=1/2 * neuronCoreNumber`
 - 当任务需要多个 neuron 设备时，拓扑感知调度将自动生效
 
 ## 运行 Neuron 任务
 
-容器现在可以通过以下两种资源类型申请 AWS Neuron 设备：
-`aws.amazon.com/neuron` 或 `aws.amazon.com/neuroncore`
+容器现在可以通过以下两种资源类型申请 AWS Neuron 设备： `aws.amazon.com/neuron` 或 `aws.amazon.com/neuroncore`
 
 更多示例可参考 examples 目录
 
@@ -55,7 +54,7 @@ spec:
   restartPolicy: Never
   containers:
     - name: nuropod
-      command: ["sleep","infinity"]
+      command: ["sleep", "infinity"]
       image: public.ecr.aws/neuron/pytorch-inference-neuron:1.13.1-neuron-py310-sdk2.20.2-ubuntu20.04
       resources:
         limits:
@@ -78,7 +77,7 @@ spec:
   restartPolicy: Never
   containers:
     - name: nuropod
-      command: ["sleep","infinity"]
+      command: ["sleep", "infinity"]
       image: public.ecr.aws/neuron/pytorch-inference-neuron:1.13.1-neuron-py310-sdk2.20.2-ubuntu20.04
       resources:
         limits:

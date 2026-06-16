@@ -1,10 +1,10 @@
 ---
 title: 将任务分配给特定的 DCU
-linktitle: 指定 DCU
+sidebar_label: 指定 DCU
 translated: true
 ---
 
-要将任务分配给特定的 DCU，只需在注释字段中分配  `hygon.com/use-gpuuuid`
+要将任务分配给特定的 DCU，只需在注释字段中分配 `hygon.com/use-gpuuuid`
 
 ```yaml
 apiVersion: v1
@@ -20,5 +20,5 @@ spec:
       command: ["bash", "-c", "sleep 86400"]
       resources:
         limits:
-          hygon.com/dcunum: 1 # 请求两个 DCU 卡
+          hygon.com/dcunum: 1 # 请求一个 DCU 卡
 ```

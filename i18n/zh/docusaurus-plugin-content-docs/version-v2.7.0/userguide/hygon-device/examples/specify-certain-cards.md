@@ -3,8 +3,6 @@ title: 将任务分配给特定的 DCU
 translated: true
 ---
 
-## 将任务分配给特定的 DCU
-
 要将任务分配给特定的 DCU，只需在注释字段中分配  `hygon.com/use-gpuuuid`
 
 ```yaml

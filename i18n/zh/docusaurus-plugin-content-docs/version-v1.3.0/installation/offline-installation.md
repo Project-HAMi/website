@@ -8,6 +8,7 @@ If your cluster does not have direct access to the external network, you can use
 
 You need to save the following images into a tarball and copy it into the cluster.
 Image list:
+
 ```text
 projecthami/hami:{HAMi version}
 docker.io/jettech/kube-webhook-certgen:v1.5.2
@@ -47,9 +48,10 @@ scheduler.devicePlugin.monitorimage
 helm install hami hami --set scheduler.kubeScheduler.imageTag={your k8s server version} -n kube-system
 ```
 
-7. Verify your installation
+1. Verify your installation
 
 execute the following command
+
 ```bash
 kubectl get pods -n kube-system
 ```

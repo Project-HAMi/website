@@ -25,9 +25,7 @@ title: Enable Iluvatar GPU Sharing
 
 - Deploy gpu-manager on iluvatar nodes (please consult your device provider to acquire its package and document)
 
-:::caution
-Install only gpu-manager. Do not install the gpu-admission package.
-:::
+:::caution Install only gpu-manager. Do not install the gpu-admission package. :::
 
 - Set `devices.iluvatar.enabled=true` when installing HAMi
 
@@ -38,27 +36,27 @@ helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag={your 
 The currently supported GPU models and resource names are defined in [device-configmap.yaml](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/templates/scheduler/device-configmap.yaml):
 
 ```yaml
-    iluvatars:
-    - chipName: MR-V100
-      commonWord: MR-V100
-      resourceCountName: iluvatar.ai/MR-V100-vgpu
-      resourceMemoryName: iluvatar.ai/MR-V100.vMem
-      resourceCoreName: iluvatar.ai/MR-V100.vCore
-    - chipName: MR-V50
-      commonWord: MR-V50
-      resourceCountName: iluvatar.ai/MR-V50-vgpu
-      resourceMemoryName: iluvatar.ai/MR-V50.vMem
-      resourceCoreName: iluvatar.ai/MR-V50.vCore
-    - chipName: BI-V150
-      commonWord: BI-V150
-      resourceCountName: iluvatar.ai/BI-V150-vgpu
-      resourceMemoryName: iluvatar.ai/BI-V150.vMem
-      resourceCoreName: iluvatar.ai/BI-V150.vCore
-    - chipName: BI-V100
-      commonWord: BI-V100
-      resourceCountName: iluvatar.ai/BI-V100-vgpu
-      resourceMemoryName: iluvatar.ai/BI-V100.vMem
-      resourceCoreName: iluvatar.ai/BI-V100.vCore
+iluvatars:
+  - chipName: MR-V100
+    commonWord: MR-V100
+    resourceCountName: iluvatar.ai/MR-V100-vgpu
+    resourceMemoryName: iluvatar.ai/MR-V100.vMem
+    resourceCoreName: iluvatar.ai/MR-V100.vCore
+  - chipName: MR-V50
+    commonWord: MR-V50
+    resourceCountName: iluvatar.ai/MR-V50-vgpu
+    resourceMemoryName: iluvatar.ai/MR-V50.vMem
+    resourceCoreName: iluvatar.ai/MR-V50.vCore
+  - chipName: BI-V150
+    commonWord: BI-V150
+    resourceCountName: iluvatar.ai/BI-V150-vgpu
+    resourceMemoryName: iluvatar.ai/BI-V150.vMem
+    resourceCoreName: iluvatar.ai/BI-V150.vCore
+  - chipName: BI-V100
+    commonWord: BI-V100
+    resourceCountName: iluvatar.ai/BI-V100-vgpu
+    resourceMemoryName: iluvatar.ai/BI-V100.vMem
+    resourceCoreName: iluvatar.ai/BI-V100.vCore
 ```
 
 ## Device Granularity
@@ -67,20 +65,19 @@ HAMi divides each Iluvatar GPU into 100 units for resource allocation. Requestin
 
 ### Memory Allocation
 
-* Each unit of `iluvatar.ai/<card-type>.vMem` represents 256MB of device memory
-* If no memory request is specified, the system defaults to using 100% of the available memory
-* Memory allocation is enforced with hard limits to ensure tasks do not exceed their allocated memory
+- Each unit of `iluvatar.ai/<card-type>.vMem` represents 256MB of device memory
+- If no memory request is specified, the system defaults to using 100% of the available memory
+- Memory allocation is enforced with hard limits to ensure tasks do not exceed their allocated memory
 
 ### Core Allocation
 
-* Each unit of `iluvatar.ai/<card-type>.vCore` represents 1% of the available compute cores
-* Core allocation is enforced with hard limits to ensure tasks do not exceed their allocated cores
-* When requesting multiple GPUs, the system will automatically set the core resources based on the number of GPUs requested
+- Each unit of `iluvatar.ai/<card-type>.vCore` represents 1% of the available compute cores
+- Core allocation is enforced with hard limits to ensure tasks do not exceed their allocated cores
+- When requesting multiple GPUs, the system will automatically set the core resources based on the number of GPUs requested
 
 ## Running Iluvatar jobs
 
-Iluvatar GPUs can now be requested by a container
-using the `iluvatar.ai/BI-V150-vgpu`, `iluvatar.ai/BI-V150.vMem` and `iluvatar.ai/BI-V150.vCore` resource type:
+Iluvatar GPUs can now be requested by a container using the `iluvatar.ai/BI-V150-vgpu`, `iluvatar.ai/BI-V150.vMem` and `iluvatar.ai/BI-V150.vCore` resource type:
 
 ```yaml
 apiVersion: v1
@@ -90,28 +87,28 @@ metadata:
 spec:
   restartPolicy: Never
   containers:
-  - name: BI-V150-poddemo
-    image: registry.iluvatar.com.cn:10443/saas/mr-bi150-4.3.0-x86-ubuntu22.04-py3.10-base-base:v1.0
-    command:
-    - bash
-    args:
-    - -c
-    - |
-      set -ex
-      echo "export LD_LIBRARY_PATH=/usr/local/corex/lib64:$LD_LIBRARY_PATH">> /root/.bashrc
-      cp -f /usr/local/iluvatar/lib64/libcuda.* /usr/local/corex/lib64/
-      cp -f /usr/local/iluvatar/lib64/libixml.* /usr/local/corex/lib64/
-      source /root/.bashrc
-      sleep 360000
-    resources:
-      requests:
-        iluvatar.ai/BI-V150-vgpu: 1
-        iluvatar.ai/BI-V150.vCore: 50
-        iluvatar.ai/BI-V150.vMem: 64
-      limits:
-        iluvatar.ai/BI-V150-vgpu: 1
-        iluvatar.ai/BI-V150.vCore: 50
-        iluvatar.ai/BI-V150.vMem: 64
+    - name: BI-V150-poddemo
+      image: registry.iluvatar.com.cn:10443/saas/mr-bi150-4.3.0-x86-ubuntu22.04-py3.10-base-base:v1.0
+      command:
+        - bash
+      args:
+        - -c
+        - |
+          set -ex
+          echo "export LD_LIBRARY_PATH=/usr/local/corex/lib64:$LD_LIBRARY_PATH">> /root/.bashrc
+          cp -f /usr/local/iluvatar/lib64/libcuda.* /usr/local/corex/lib64/
+          cp -f /usr/local/iluvatar/lib64/libixml.* /usr/local/corex/lib64/
+          source /root/.bashrc
+          sleep 360000
+      resources:
+        requests:
+          iluvatar.ai/BI-V150-vgpu: 1
+          iluvatar.ai/BI-V150.vCore: 50
+          iluvatar.ai/BI-V150.vMem: 64
+        limits:
+          iluvatar.ai/BI-V150-vgpu: 1
+          iluvatar.ai/BI-V150.vCore: 50
+          iluvatar.ai/BI-V150.vMem: 64
 ```
 
 :::note

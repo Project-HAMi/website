@@ -49,11 +49,11 @@ website
 
 `versions.json`文件是一个版本列表，从最新到最早。下表解释了版本化文件如何映射到其版本和生成的 URL。
 
-| 路径 | 版本 | URL |
-| --- | --- | --- |
-| `versioned_docs/version-1.0.0/hello.md` | 1.0.0 | /docs/1.0.0/hello |
-| `versioned_docs/version-1.1.0/hello.md` | 1.1.0 (最新) | /docs/hello |
-| `docs/hello.md` | 当前 | /docs/next/hello |
+| 路径                                    | 版本         | URL               |
+| --------------------------------------- | ------------ | ----------------- |
+| `versioned_docs/version-1.0.0/hello.md` | 1.0.0        | /docs/1.0.0/hello |
+| `versioned_docs/version-1.1.0/hello.md` | 1.1.0 (最新) | /docs/hello       |
+| `docs/hello.md`                         | 当前         | /docs/next/hello  |
 
 :::提示
 
@@ -61,8 +61,7 @@ website
 
 `current`文档版本标记为`Next`，托管在`/docs/next/*`下。
 
-贡献者主要为当前版本贡献文档。
-:::
+贡献者主要为当前版本贡献文档。:::
 
 ## 撰写文档
 
@@ -93,13 +92,10 @@ title: 带有标签的文档
   - `<https://github.com>` 或
   - `[kubernetes](https://k8s.io)`都可以。
 - 链接到 Markdown 文件或生成的路径。您可以使用相对路径索引相应的文件。
-- 链接到图片或其他资源。
-  如果文章包含图片，建议将图片放在`/static/img/docs/`并使用绝对路径引用。
-  我们使用按语言区分的目录：
+- 链接到图片或其他资源。如果文章包含图片，建议将图片放在`/static/img/docs/`并使用绝对路径引用。我们使用按语言区分的目录：
   - `/static/img/docs/common/`：中英文共享图片
   - `/static/img/docs/en/`：仅英文图片
-  - `/static/img/docs/zh/`：仅中文图片
-  示例：
+  - `/static/img/docs/zh/`：仅中文图片示例：
   - `![WebUI Overview](/img/docs/en/userguide/webui-overview.png)`
   - `![WebUI 集群概览](/img/docs/zh/userguide/webui-overview.png)`
   - `![Architecture](/img/docs/common/architecture/hami-arch.png)`

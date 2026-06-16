@@ -14,7 +14,7 @@ spec:
     - name: ubuntu-container
       image: ubuntu:22.04
       imagePullPolicy: IfNotPresent
-      command: ["sleep","infinity"]
+      command: ["sleep", "infinity"]
       resources:
         limits:
           kunlunxin.com/xpu: 1 # 请求 1 个 XPU

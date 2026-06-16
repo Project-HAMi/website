@@ -1,6 +1,6 @@
 ---
-title: 将设备核心分配给容器
-linktitle: 使用独占 GPU
+title: 使用独占 GPU
+sidebar_label: 使用独占 GPU
 translated: true
 ---
 

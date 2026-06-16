@@ -1,6 +1,6 @@
 ---
 title: HAMi WebUI Developer Guide
-linktitle: HAMi WebUI
+sidebar_label: HAMi WebUI
 ---
 
 ## Project positioning

@@ -1,6 +1,6 @@
 ---
 title: "Lab 1: Online Installation of HAMi"
-linktitle: "Lab 1: Online Install"
+sidebar_label: "Lab 1: Online Install"
 lab:
   level: Beginner
   duration: about 60 minutes
@@ -37,7 +37,7 @@ flowchart LR
 ```
 
 | Step | Purpose | What Problem It Solves |
-| ------ | ------ | ------------- |
+| --- | --- | --- |
 | Create GCP VM | Provision a Linux server with a GPU | Kubernetes needs GPU hardware to schedule GPU workloads |
 | Install Helm | Kubernetes package manager | All subsequent components are installed via Helm, similar to apt/yum |
 | Install Kubernetes | Container orchestration platform | HAMi runs on top of Kubernetes; all GPU resources are managed by K8s |
@@ -371,9 +371,7 @@ nvidia-driver-daemonset-bccs7                                     1/1     Runnin
 nvidia-operator-validator-2jctf                                   1/1     Running     0          8m47s
 ```
 
-> The `node-feature-discovery` Pods are a GPU Operator dependency that detects hardware features and labels the node, so gpu-feature-discovery and the scheduler know what hardware is present.
-
-> The `nvidia-cuda-validator` status of `Completed` is normal, it is a one-time Job that exits after verifying CUDA availability.
+> The `node-feature-discovery` Pods are a GPU Operator dependency that detects hardware features and labels the node, so gpu-feature-discovery and the scheduler know what hardware is present. The `nvidia-cuda-validator` status of `Completed` is normal, it is a one-time Job that exits after verifying CUDA availability.
 
 ### Verify GPU Driver
 
@@ -465,20 +463,31 @@ kubectl get node ${NODE_NAME} -o jsonpath='{.metadata.annotations.hami\.io/node-
 Expected output is one JSON object per GPU:
 
 ```json
-[{"id":"GPU-859b872c-0ba2-97b0-10b4-8b7185c55039","count":10,"devmem":15360,"devcore":100,"type":"NVIDIA-Tesla T4","mode":"hami-core","health":true,"devicepairscore":{}}]
+[
+  {
+    "id": "GPU-859b872c-0ba2-97b0-10b4-8b7185c55039",
+    "count": 10,
+    "devmem": 15360,
+    "devcore": 100,
+    "type": "NVIDIA-Tesla T4",
+    "mode": "hami-core",
+    "health": true,
+    "devicepairscore": {}
+  }
+]
 ```
 
 The fields of this annotation are:
 
-| Field | Meaning |
-| --- | --- |
-| `id` | Device UUID |
-| `count` | Number of vGPU partitions for this card |
-| `devmem` | VRAM in MiB |
-| `devcore` | Compute capacity in % |
-| `type` | GPU model |
-| `mode` | `hami-core` for software-level partitioning; `mig` on MIG-configured cards |
-| `health` | Device health status |
+| Field     | Meaning                                                                    |
+| --------- | -------------------------------------------------------------------------- |
+| `id`      | Device UUID                                                                |
+| `count`   | Number of vGPU partitions for this card                                    |
+| `devmem`  | VRAM in MiB                                                                |
+| `devcore` | Compute capacity in %                                                      |
+| `type`    | GPU model                                                                  |
+| `mode`    | `hami-core` for software-level partitioning; `mig` on MIG-configured cards |
+| `health`  | Device health status                                                       |
 
 Here, **count = 10** means this GPU is virtualized into 10 vGPUs, which can be shared by up to 10 Pods. The node's allocatable resources now show `nvidia.com/gpu: 10` instead of `1`. HAMi v2.9.0 writes this annotation as JSON; older releases used a comma-separated string.
 
