@@ -221,6 +221,20 @@ The site uses Prism.js with additional languages:
 
 Add more in `docusaurus.config.js` under `prism.additionalLanguages`.
 
+### Mermaid Diagrams
+
+Mermaid blocks are rendered through a custom wrapper at `src/theme/Mermaid/index.js`. To give a diagram a visible caption, add a `%% title: <text>` line as the **first line inside the mermaid fence**:
+
+````
+```mermaid
+%% title: HAMi Ecosystem Integrations
+flowchart TB
+    A --> B
+```
+````
+
+The wrapper extracts that comment and renders it as a `<figcaption>` (the lightbox picks it up too). `%%` is otherwise a plain mermaid comment, so the title only appears because of this wrapper. Do **not** use mermaid's YAML frontmatter form (`---\ntitle: ...\n---`) — it is not rendered on this site.
+
 ### Custom Changelog Plugin Details
 
 The changelog plugin (`src/plugins/changelog/index.js`) is a customized Docusaurus blog plugin that:

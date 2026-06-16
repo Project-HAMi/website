@@ -16,6 +16,7 @@ module.exports = {
         "core-concepts/gpu-stack",
         "core-concepts/gpu-driver",
         "core-concepts/hami-architecture",
+        "core-concepts/ecosystem-integrations",
       ],
     },
     {
