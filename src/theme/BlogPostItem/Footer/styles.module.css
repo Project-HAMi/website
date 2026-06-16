@@ -43,7 +43,7 @@
   padding: 0.24rem 0.62rem;
   border: 1px solid var(--hami-color-border);
   border-radius: 999px;
-  background: rgba(118, 185, 0, 0.08);
+  background: rgba(16, 208, 93, 0.08);
 }
 
 .shareLabel {
@@ -63,13 +63,13 @@
   border-radius: 999px;
   border: 1px solid var(--hami-color-border);
   color: var(--ifm-color-primary);
-  background: rgba(118, 185, 0, 0.12);
+  background: rgba(16, 208, 93, 0.12);
 }
 
 .shareButton:hover {
   text-decoration: none;
   border-color: var(--ifm-color-primary);
-  background: rgba(118, 185, 0, 0.2);
+  background: rgba(16, 208, 93, 0.2);
 }
 
 .postFooter :global(.tags_jXut) {

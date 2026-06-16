@@ -243,11 +243,11 @@
 }
 
 .hamiPlatformBlock {
-  border: 1px solid #76b900;
+  border: 1px solid #10d05d;
   border-radius: 12px;
   padding: 8px 10px;
-  background: #f4fbe6;
-  box-shadow: 0 4px 12px rgba(88, 138, 0, 0.12);
+  background: rgba(16, 208, 93, 0.1);
+  box-shadow: 0 4px 12px rgba(16, 208, 93, 0.14);
   min-height: 64px;
   display: flex;
   flex-direction: column;
@@ -256,7 +256,7 @@
 
 .hamiPlatformBlock h3 {
   margin: 0;
-  color: #335900;
+  color: #087a34;
   font-size: 0.9rem;
   font-weight: 800;
   text-align: center;
@@ -481,13 +481,13 @@
 }
 
 :global(html[data-theme="dark"]) .hamiPlatformBlock {
-  border-color: rgba(140, 219, 35, 0.88);
-  background: rgba(35, 54, 12, 0.9);
+  border-color: rgba(16, 208, 93, 0.88);
+  background: rgba(9, 54, 28, 0.9);
   box-shadow: 0 8px 18px rgba(3, 10, 20, 0.26);
 }
 
 :global(html[data-theme="dark"]) .hamiPlatformBlock h3 {
-  color: #e3f9ba;
+  color: #baf9d2;
 }
 
 :global(html[data-theme="dark"]) .hamiPlatformBlock p {
@@ -613,9 +613,9 @@
   align-items: center;
   justify-content: center;
   border-radius: 12px;
-  border: 1px solid rgba(118, 185, 0, 0.2);
-  background: rgba(118, 185, 0, 0.08);
-  color: #5b8f00;
+  border: 1px solid rgba(16, 208, 93, 0.2);
+  background: rgba(16, 208, 93, 0.08);
+  color: var(--hami-color-primary);
   font-size: 1.2rem;
 }
 
@@ -644,9 +644,9 @@
 }
 
 :global(html[data-theme="dark"]) .cardIcon {
-  border-color: rgba(140, 219, 35, 0.22);
-  background: rgba(140, 219, 35, 0.1);
-  color: #cfeea1;
+  border-color: rgba(16, 208, 93, 0.28);
+  background: rgba(16, 208, 93, 0.12);
+  color: var(--hami-color-primary-hover);
 }
 
 :global(html[data-theme="dark"]) .card {
@@ -1017,16 +1017,16 @@
 
 :global(html[data-theme="light"]) .runtimeResources {
   background: #f8fafc;
-  border-color: rgba(118, 185, 0, 0.28);
+  border-color: rgba(16, 208, 93, 0.28);
 }
 
 :global(html[data-theme="light"]) .runtimeResourcesLabel {
-  color: #4d7c0f;
+  color: #087a34;
 }
 
 :global(html[data-theme="light"]) .runtimeResources code {
   background: #ffffff;
-  border-color: rgba(118, 185, 0, 0.34);
+  border-color: rgba(16, 208, 93, 0.34);
   color: #1e3a22;
 }
 
@@ -1113,17 +1113,17 @@
 
 :global(html[data-theme="dark"]) .runtimeResources {
   background: rgba(15, 23, 42, 0.78);
-  border-color: rgba(118, 185, 0, 0.32);
+  border-color: rgba(16, 208, 93, 0.32);
 }
 
 :global(html[data-theme="dark"]) .runtimeResourcesLabel {
-  color: #a3e635;
+  color: var(--hami-color-primary-hover);
 }
 
 :global(html[data-theme="dark"]) .runtimeResources code {
   background: rgba(15, 23, 42, 0.92);
-  border-color: rgba(118, 185, 0, 0.34);
-  color: #ecfccb;
+  border-color: rgba(16, 208, 93, 0.34);
+  color: #c9fadd;
 }
 
 :global(html[data-theme="dark"]) .runtimeResourcesDivider,
@@ -1285,9 +1285,9 @@
 }
 
 .compareRequest_beta {
-  border-color: rgba(118, 185, 0, 0.38);
-  border-left: 4px solid rgba(118, 185, 0, 0.85);
-  background: linear-gradient(135deg, rgba(118, 185, 0, 0.28), rgba(118, 185, 0, 0.14));
+  border-color: rgba(16, 208, 93, 0.38);
+  border-left: 4px solid rgba(16, 208, 93, 0.85);
+  background: linear-gradient(135deg, rgba(16, 208, 93, 0.28), rgba(16, 208, 93, 0.14));
 }
 
 .compareRequest_gamma {
@@ -1380,8 +1380,8 @@
 }
 
 .compareGpuCell_beta {
-  border-color: rgba(118, 185, 0, 0.34);
-  background: linear-gradient(135deg, rgba(118, 185, 0, 0.84), rgba(164, 217, 86, 0.7));
+  border-color: rgba(16, 208, 93, 0.34);
+  background: linear-gradient(135deg, rgba(16, 208, 93, 0.84), rgba(164, 217, 86, 0.7));
 }
 
 .compareGpuCell_gamma {
@@ -1410,7 +1410,7 @@
 }
 
 .comparePanel_after .compareGpuCard:first-child {
-  border-color: rgba(118, 185, 0, 0.28);
+  border-color: rgba(16, 208, 93, 0.28);
   box-shadow: 0 14px 28px rgba(39, 92, 13, 0.08);
 }
 
@@ -1431,13 +1431,13 @@
 
 :global(html[data-theme="light"]) .stackLayer {
   background: rgba(255, 255, 255, 0.92);
-  border-color: rgba(118, 185, 0, 0.34);
+  border-color: rgba(16, 208, 93, 0.34);
   box-shadow: inset 0 0 0 1px rgba(57, 198, 244, 0.1);
 }
 
 :global(html[data-theme="light"]) .stackLayerIcon {
   border-color: rgba(57, 198, 244, 0.28);
-  background: linear-gradient(145deg, rgba(57, 198, 244, 0.16), rgba(118, 185, 0, 0.12));
+  background: linear-gradient(145deg, rgba(57, 198, 244, 0.16), rgba(16, 208, 93, 0.12));
   color: #0f6e96;
 }
 
@@ -1448,7 +1448,7 @@
 
 :global(html[data-theme="light"]) .stackLayer_hami {
   background: linear-gradient(135deg, #1d507d, #15344f);
-  border-color: rgba(118, 185, 0, 0.9);
+  border-color: rgba(16, 208, 93, 0.9);
 }
 
 :global(html[data-theme="light"]) .stackLayer_hami .stackLayerTitle,
@@ -1458,7 +1458,7 @@
 
 :global(html[data-theme="light"]) .stackLayer_hami .stackLayerIcon {
   border-color: rgba(255, 255, 255, 0.28);
-  background: linear-gradient(145deg, rgba(118, 185, 0, 0.24), rgba(57, 198, 244, 0.2));
+  background: linear-gradient(145deg, rgba(16, 208, 93, 0.24), rgba(57, 198, 244, 0.2));
   color: #f3ffd8;
 }
 
@@ -1468,7 +1468,7 @@
 }
 
 :global(html[data-theme="dark"]) .stackLayer {
-  border-color: rgba(118, 185, 0, 0.28);
+  border-color: rgba(16, 208, 93, 0.28);
   background: rgba(20, 31, 44, 0.84);
 }
 
@@ -1478,8 +1478,8 @@
 }
 
 :global(html[data-theme="dark"]) .stackLayer_hami {
-  background: linear-gradient(135deg, rgba(118, 185, 0, 0.34), rgba(57, 198, 244, 0.24));
-  border-color: rgba(118, 185, 0, 0.74);
+  background: linear-gradient(135deg, rgba(16, 208, 93, 0.34), rgba(57, 198, 244, 0.24));
+  border-color: rgba(16, 208, 93, 0.74);
 }
 
 :global(html[data-theme="dark"]) .stackLayer_accelerators {
@@ -1488,9 +1488,9 @@
 }
 
 :global(html[data-theme="dark"]) .stackLayerIcon {
-  border-color: rgba(118, 185, 0, 0.5);
-  background: linear-gradient(145deg, rgba(118, 185, 0, 0.2), rgba(57, 198, 244, 0.16));
-  color: #d9ff9f;
+  border-color: rgba(16, 208, 93, 0.5);
+  background: linear-gradient(145deg, rgba(16, 208, 93, 0.2), rgba(57, 198, 244, 0.16));
+  color: var(--hami-color-primary-hover);
 }
 
 @keyframes flowBounce {
@@ -1634,12 +1634,12 @@
 .communityMetricCard {
   padding: 20px 20px 18px;
   border-radius: 14px;
-  border: 1px solid rgba(118, 185, 0, 0.42);
+  border: 1px solid rgba(16, 208, 93, 0.42);
   background: linear-gradient(180deg, #ffffff 0%, #f9fdec 100%);
   display: grid;
   gap: 16px;
   align-content: start;
-  box-shadow: 0 4px 14px rgba(88, 138, 0, 0.1);
+  box-shadow: 0 4px 14px rgba(16, 208, 93, 0.1);
   transition:
     border-color var(--hami-motion-fast),
     box-shadow var(--hami-motion-fast),
@@ -1647,8 +1647,8 @@
 }
 
 .communityMetricCard:hover {
-  border-color: rgba(118, 185, 0, 0.72);
-  box-shadow: 0 10px 24px rgba(88, 138, 0, 0.16);
+  border-color: rgba(16, 208, 93, 0.72);
+  box-shadow: 0 10px 24px rgba(16, 208, 93, 0.16);
   transform: translateY(-1px);
 }
 
@@ -1668,7 +1668,7 @@
 .communityMetricIcon {
   width: 12px;
   height: 12px;
-  color: #5b8f00;
+  color: var(--hami-color-primary);
   font-size: 0.46rem;
   display: inline-flex;
   align-items: center;
@@ -1684,9 +1684,9 @@
   width: 12px;
   height: 12px;
   border-radius: 999px;
-  border: 1px solid rgba(118, 185, 0, 0.45);
-  background: rgba(118, 185, 0, 0.1);
-  color: #5b8f00;
+  border: 1px solid rgba(16, 208, 93, 0.45);
+  background: rgba(16, 208, 93, 0.1);
+  color: var(--hami-color-primary);
   font-size: 0.4rem;
   display: inline-flex;
   align-items: center;
@@ -1702,7 +1702,7 @@
   bottom: calc(100% + 8px);
   padding: 6px 8px;
   border-radius: 6px;
-  border: 1px solid rgba(118, 185, 0, 0.38);
+  border: 1px solid rgba(16, 208, 93, 0.38);
   background: #ffffff;
   color: #2f3a0c;
   box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
@@ -1755,8 +1755,8 @@
 }
 
 .communityMetricActions :global(.button--primary) {
-  background: #76b900;
-  border-color: #76b900;
+  background: #10d05d;
+  border-color: #10d05d;
   color: #102000;
 }
 
@@ -1768,13 +1768,13 @@
 
 .communityMetricActions :global(.button--outline) {
   background: #ffffff;
-  border-color: rgba(118, 185, 0, 0.5);
+  border-color: rgba(16, 208, 93, 0.5);
   color: #2f4a08;
 }
 
 .communityMetricActions :global(.button--outline:hover) {
   background: #f7fce9;
-  border-color: #76b900;
+  border-color: #10d05d;
   color: #223707;
 }
 
@@ -1819,8 +1819,8 @@
 }
 
 :global(html[data-theme="dark"]) .communityMetricCard {
-  border-color: rgba(140, 219, 35, 0.58);
-  background: linear-gradient(180deg, rgba(20, 31, 9, 0.92) 0%, rgba(16, 25, 7, 0.95) 100%);
+  border-color: rgba(16, 208, 93, 0.58);
+  background: linear-gradient(180deg, rgba(9, 38, 23, 0.92) 0%, rgba(7, 30, 18, 0.95) 100%);
   box-shadow: 0 6px 18px rgba(2, 6, 23, 0.38);
 }
 
@@ -1833,7 +1833,7 @@
 }
 
 :global(html[data-theme="dark"]) .communityMetricCard:hover {
-  border-color: rgba(140, 219, 35, 0.82);
+  border-color: rgba(16, 208, 93, 0.82);
   box-shadow: 0 12px 28px rgba(2, 6, 23, 0.44);
 }
 
@@ -1850,39 +1850,39 @@
 }
 
 :global(html[data-theme="dark"]) .metricSourceHint {
-  border-color: rgba(140, 219, 35, 0.55);
-  background: rgba(140, 219, 35, 0.16);
+  border-color: rgba(16, 208, 93, 0.55);
+  background: rgba(16, 208, 93, 0.16);
   color: #d9f2ad;
 }
 
 :global(html[data-theme="dark"]) .metricSourceHint::after {
-  border-color: rgba(140, 219, 35, 0.45);
+  border-color: rgba(16, 208, 93, 0.45);
   background: rgba(15, 23, 42, 0.96);
   color: #e6f5cc;
   box-shadow: 0 8px 20px rgba(2, 6, 23, 0.46);
 }
 
 :global(html[data-theme="dark"]) .communityMetricActions :global(.button--primary) {
-  background: #8cdb23;
-  border-color: #8cdb23;
-  color: #0f1d00;
+  background: var(--hami-color-primary);
+  border-color: var(--hami-color-primary);
+  color: #06140c;
 }
 
 :global(html[data-theme="dark"]) .communityMetricActions :global(.button--primary:hover) {
-  background: #9ee94a;
-  border-color: #9ee94a;
-  color: #0d1800;
+  background: var(--hami-color-primary-hover);
+  border-color: var(--hami-color-primary-hover);
+  color: #06140c;
 }
 
 :global(html[data-theme="dark"]) .communityMetricActions :global(.button--outline) {
-  background: rgba(17, 29, 5, 0.7);
-  border-color: rgba(140, 219, 35, 0.62);
+  background: rgba(6, 28, 16, 0.7);
+  border-color: rgba(16, 208, 93, 0.62);
   color: #dff6b8;
 }
 
 :global(html[data-theme="dark"]) .communityMetricActions :global(.button--outline:hover) {
-  background: rgba(24, 41, 7, 0.9);
-  border-color: #8cdb23;
+  background: rgba(8, 42, 23, 0.9);
+  border-color: var(--hami-color-primary);
   color: #f4ffdf;
 }
 

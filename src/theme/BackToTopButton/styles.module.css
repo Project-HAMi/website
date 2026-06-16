@@ -33,7 +33,7 @@
 
 .backToTop:hover {
   border-color: var(--ifm-color-primary);
-  background: rgba(118, 185, 0, 0.14);
+  background: rgba(16, 208, 93, 0.14);
   color: var(--ifm-color-primary-darkest);
 }
 

@@ -1,13 +1,20 @@
 /* stylelint-disable docusaurus/copyright-header */
 
 :root {
-  --ifm-color-primary: #76b900;
-  --ifm-color-primary-dark: #69a400;
-  --ifm-color-primary-darker: #629a00;
-  --ifm-color-primary-darkest: #517f00;
-  --ifm-color-primary-light: #85c71b;
-  --ifm-color-primary-lighter: #8ed400;
-  --ifm-color-primary-lightest: #b2e85a;
+  --hami-primary: #10d05d;
+  --hami-primary-rgb: 16, 208, 93;
+  --hami-primary-hover: #35e37b;
+  --hami-primary-muted: rgba(16, 208, 93, 0.12);
+  --hami-primary-border: rgba(16, 208, 93, 0.35);
+  --hami-primary-glow: rgba(16, 208, 93, 0.28);
+
+  --ifm-color-primary: #10d05d;
+  --ifm-color-primary-dark: #0ebd54;
+  --ifm-color-primary-darker: #0cad4d;
+  --ifm-color-primary-darkest: #08883b;
+  --ifm-color-primary-light: #35e37b;
+  --ifm-color-primary-lighter: #5cf092;
+  --ifm-color-primary-lightest: #9af7be;
 
   --ifm-font-size-base: 16px;
   --ifm-code-font-size: 95%;
@@ -18,13 +25,13 @@
   --ifm-font-color-base: #15202b;
   --ifm-font-color-secondary: #4f6378;
   --ifm-heading-color: #0f1722;
-  --ifm-link-color: #4f8500;
-  --ifm-link-hover-color: #3f6c00;
+  --ifm-link-color: #0a8f3d;
+  --ifm-link-hover-color: #087a34;
   --ifm-menu-color: #42566b;
   --ifm-menu-color-active: #0f1722;
   --ifm-navbar-link-color: #203040;
   --ifm-navbar-link-hover-color: #0f1722;
-  --ifm-code-background: rgba(118, 185, 0, 0.12);
+  --ifm-code-background: var(--hami-primary-muted);
   --ifm-toc-border-color: #d5dee8;
   --ifm-color-emphasis-100: #eef3f8;
   --ifm-color-emphasis-200: #e3eaf2;
@@ -37,8 +44,8 @@
   --hami-font-body: "Source Sans 3", "Noto Sans", "Segoe UI", sans-serif;
   --hami-font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
 
-  --hami-color-primary: #76b900;
-  --hami-color-primary-hover: #8ed400;
+  --hami-color-primary: var(--hami-primary);
+  --hami-color-primary-hover: var(--hami-primary-hover);
   --hami-color-secondary: #39c6f4;
   --hami-color-tertiary: #7c8cff;
   --hami-color-bg: #f5f8fb;
@@ -89,7 +96,7 @@
   --hami-motion-fast: 160ms ease;
   --hami-motion-base: 260ms ease;
 
-  --hero-border-color: rgba(118, 185, 0, 0.18);
+  --hero-border-color: rgba(var(--hami-primary-rgb), 0.18);
 
   /* Diagram panel tokens (light mode defaults) */
   --hami-diagram-bg: linear-gradient(180deg, rgba(247, 252, 255, 0.94), rgba(239, 248, 253, 0.98));
@@ -116,7 +123,7 @@
   --hami-diagram-connector-dot-color: #4a89b8;
   --hami-diagram-label-color: #4a89b8;
   --hami-diagram-node-bg: rgba(255, 255, 255, 0.72);
-  --hami-diagram-node-border: rgba(118, 185, 0, 0.22);
+  --hami-diagram-node-border: rgba(16, 208, 93, 0.22);
   --hami-diagram-panel-before-bg: linear-gradient(
     180deg,
     rgba(239, 244, 249, 0.96),
@@ -128,7 +135,7 @@
     rgba(239, 249, 241, 0.96),
     rgba(245, 251, 247, 0.98)
   );
-  --hami-diagram-panel-after-border: rgba(118, 185, 0, 0.36);
+  --hami-diagram-panel-after-border: rgba(16, 208, 93, 0.36);
   --hami-diagram-badge-bg: rgba(255, 255, 255, 0.92);
   --hami-diagram-badge-border: rgba(0, 140, 200, 0.32);
   --hami-diagram-badge-color: rgba(0, 96, 150, 0.96);
@@ -141,13 +148,13 @@
 }
 
 :root[data-theme="dark"] {
-  --ifm-color-primary: #76b900;
-  --ifm-color-primary-dark: #69a400;
-  --ifm-color-primary-darker: #629a00;
-  --ifm-color-primary-darkest: #517f00;
-  --ifm-color-primary-light: #85c71b;
-  --ifm-color-primary-lighter: #8ed400;
-  --ifm-color-primary-lightest: #b2e85a;
+  --ifm-color-primary: #10d05d;
+  --ifm-color-primary-dark: #0ebd54;
+  --ifm-color-primary-darker: #0cad4d;
+  --ifm-color-primary-darkest: #08883b;
+  --ifm-color-primary-light: #35e37b;
+  --ifm-color-primary-lighter: #5cf092;
+  --ifm-color-primary-lightest: #9af7be;
   --ifm-background-color: #0b0f14;
   --ifm-background-surface-color: #171e27;
   --ifm-navbar-background-color: rgba(11, 15, 20, 0.92);
@@ -155,13 +162,13 @@
   --ifm-font-color-base: #f5f7fa;
   --ifm-font-color-secondary: #a9b4c2;
   --ifm-heading-color: #f5f7fa;
-  --ifm-link-color: #8ed400;
-  --ifm-link-hover-color: #b7f05a;
+  --ifm-link-color: #35e37b;
+  --ifm-link-hover-color: #78f0a8;
   --ifm-menu-color: #a9b4c2;
   --ifm-menu-color-active: #f5f7fa;
   --ifm-navbar-link-color: #c5ced8;
   --ifm-navbar-link-hover-color: #ffffff;
-  --ifm-code-background: rgba(118, 185, 0, 0.1);
+  --ifm-code-background: rgba(var(--hami-primary-rgb), 0.1);
   --ifm-toc-border-color: #2a3442;
   --ifm-color-emphasis-100: #171e27;
   --ifm-color-emphasis-200: #1f2833;
@@ -183,7 +190,7 @@
   --hami-color-code-border: #2b3645;
   --hami-shadow-sm: 0 8px 20px rgba(0, 0, 0, 0.26);
   --hami-shadow-md: 0 20px 44px rgba(0, 0, 0, 0.34);
-  --hero-border-color: rgba(118, 185, 0, 0.16);
+  --hero-border-color: rgba(var(--hami-primary-rgb), 0.16);
   --hami-glass-nav-bg: rgba(11, 15, 20, 0.72);
   --hami-glass-nav-border: rgba(42, 52, 66, 0.72);
   --hami-glass-nav-shadow: 0 14px 30px rgba(0, 0, 0, 0.22);
@@ -216,8 +223,8 @@
   --hami-diagram-connector: rgba(57, 198, 244, 0.28);
   --hami-diagram-connector-dot-color: #8fd9f5;
   --hami-diagram-label-color: #8fd9f5;
-  --hami-diagram-node-bg: rgba(118, 185, 0, 0.14);
-  --hami-diagram-node-border: rgba(118, 185, 0, 0.42);
+  --hami-diagram-node-bg: rgba(16, 208, 93, 0.14);
+  --hami-diagram-node-border: rgba(16, 208, 93, 0.42);
   --hami-diagram-panel-before-bg: linear-gradient(
     180deg,
     rgba(38, 49, 63, 0.9),
@@ -229,7 +236,7 @@
     rgba(25, 44, 34, 0.92),
     rgba(18, 33, 26, 0.9)
   );
-  --hami-diagram-panel-after-border: rgba(118, 185, 0, 0.28);
+  --hami-diagram-panel-after-border: rgba(16, 208, 93, 0.28);
   --hami-diagram-badge-bg: rgba(8, 20, 33, 0.72);
   --hami-diagram-badge-border: rgba(57, 198, 244, 0.24);
   --hami-diagram-badge-color: rgba(145, 215, 244, 0.94);
@@ -253,8 +260,7 @@ body {
 body,
 .main-wrapper {
   background:
-    radial-gradient(circle at top left, rgba(57, 198, 244, 0.08), transparent 28%),
-    radial-gradient(circle at top right, rgba(118, 185, 0, 0.08), transparent 22%),
+    radial-gradient(circle at 20% 20%, rgba(var(--hami-primary-rgb), 0.08), transparent 35%),
     var(--hami-color-bg);
 }
 
@@ -271,9 +277,8 @@ body,
 html[data-theme="dark"] body,
 html[data-theme="dark"] .main-wrapper {
   background:
-    radial-gradient(circle at top left, rgba(57, 198, 244, 0.08), transparent 28%),
-    radial-gradient(circle at top right, rgba(118, 185, 0, 0.1), transparent 22%),
-    var(--hami-color-bg);
+    radial-gradient(circle at 20% 20%, rgba(var(--hami-primary-rgb), 0.16), transparent 35%),
+    linear-gradient(180deg, #071018 0%, #050a0f 100%);
 }
 
 h1,
@@ -316,14 +321,14 @@ pre {
 
 .hami-shell-bg {
   background-image:
-    radial-gradient(circle at 0% 0%, rgba(118, 185, 0, 0.18), transparent 34%),
+    radial-gradient(circle at 0% 0%, rgba(16, 208, 93, 0.18), transparent 34%),
     radial-gradient(circle at 100% 100%, rgba(57, 198, 244, 0.14), transparent 40%),
     linear-gradient(180deg, rgba(11, 15, 20, 0.9), rgba(18, 24, 32, 0.98));
 }
 
 .hami-topology-bg {
   background-image:
-    linear-gradient(115deg, rgba(118, 185, 0, 0.14), transparent 46%),
+    linear-gradient(115deg, rgba(16, 208, 93, 0.14), transparent 46%),
     linear-gradient(295deg, rgba(57, 198, 244, 0.16), transparent 52%),
     linear-gradient(180deg, rgba(23, 30, 39, 0.92), rgba(12, 18, 26, 0.98));
 }
@@ -494,8 +499,8 @@ a.button.button--primary {
   border-color: var(--hami-color-primary);
   color: #0b0f14;
   box-shadow:
-    0 0 0 1px rgba(118, 185, 0, 0.24),
-    0 10px 24px rgba(118, 185, 0, 0.18);
+    0 0 0 1px rgba(var(--hami-primary-rgb), 0.24),
+    0 10px 24px rgba(var(--hami-primary-rgb), 0.18);
 }
 
 .button--primary:hover,
@@ -541,7 +546,7 @@ a.button.button--outline:visited {
 }
 
 .docusaurus-highlight-code-line {
-  background-color: rgba(118, 185, 0, 0.12);
+  background-color: var(--hami-primary-muted);
   display: block;
   margin: 0 calc(-1 * var(--ifm-pre-padding));
   padding: 0 var(--ifm-pre-padding);
@@ -647,7 +652,7 @@ html[data-theme="dark"] .cncf-logo {
 
 .navbar-sidebar__item {
   background:
-    linear-gradient(180deg, rgba(118, 185, 0, 0.04), rgba(57, 198, 244, 0.03)),
+    linear-gradient(180deg, rgba(16, 208, 93, 0.04), rgba(57, 198, 244, 0.03)),
     var(--hami-glass-sidebar-bg);
   -webkit-backdrop-filter: var(--hami-glass-nav-backdrop);
   backdrop-filter: var(--hami-glass-nav-backdrop);
@@ -659,7 +664,7 @@ html[data-theme="dark"] .cncf-logo {
 
 .navbar-sidebar__brand {
   background:
-    linear-gradient(90deg, rgba(118, 185, 0, 0.05), rgba(57, 198, 244, 0.04)),
+    linear-gradient(90deg, rgba(16, 208, 93, 0.05), rgba(57, 198, 244, 0.04)),
     var(--hami-glass-sidebar-brand-bg);
   -webkit-backdrop-filter: var(--hami-glass-nav-backdrop);
   backdrop-filter: var(--hami-glass-nav-backdrop);
@@ -1080,7 +1085,7 @@ html[data-theme="dark"] .casestudies-wrapper .casestudy-card-link:hover {
   border: 1px solid var(--hami-color-border);
   border-radius: 16px;
   background:
-    radial-gradient(circle at 0% 0%, rgba(118, 185, 0, 0.1), transparent 38%),
+    radial-gradient(circle at 0% 0%, rgba(16, 208, 93, 0.1), transparent 38%),
     var(--hami-color-surface);
   box-shadow: var(--hami-shadow-sm);
   transition:
@@ -1138,7 +1143,7 @@ html[data-theme="dark"] .casestudies-wrapper .casestudy-card-link:hover {
 
 .hamiBlogListCard .tag_zVej {
   border-color: var(--hami-color-border);
-  background: rgba(118, 185, 0, 0.12);
+  background: rgba(16, 208, 93, 0.12);
 }
 
 .hamiBlogListCard .tag_zVej:hover {
@@ -1157,16 +1162,16 @@ html[data-theme="dark"] .casestudies-wrapper .casestudy-card-link:hover {
   min-height: 34px;
   padding: 0 0.85rem;
   border-radius: 999px;
-  border: 1px solid rgba(118, 185, 0, 0.45);
-  background: rgba(118, 185, 0, 0.14);
+  border: 1px solid rgba(16, 208, 93, 0.45);
+  background: rgba(16, 208, 93, 0.14);
   color: var(--ifm-color-primary);
   font-weight: 700;
 }
 
 .hamiBlogListCard footer .text--right a:hover {
   text-decoration: none;
-  background: rgba(118, 185, 0, 0.22);
-  border-color: rgba(118, 185, 0, 0.72);
+  background: rgba(16, 208, 93, 0.22);
+  border-color: rgba(16, 208, 93, 0.72);
 }
 
 .hamiBlogPostArticle {
