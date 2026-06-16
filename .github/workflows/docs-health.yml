@@ -11,76 +11,34 @@ permissions:
   contents: read
 
 jobs:
-  lint:
-    name: Lint Markdown
+  check:
+    name: Lint, Format, Build & Links
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-      - run: npm ci
-      - run: npm run lint
 
-  format:
-    name: Format Check
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
-      - run: npm ci
-      - run: npm run format:check
 
-  build:
-    name: Build Site
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-      - run: npm ci
-      - run: npm run build
+      - name: Install Dependencies
+        run: npm ci
 
-  broken-links:
-    name: Broken Link Check
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-      - run: npm ci
-      - run: npm run build
-      - name: Check broken links
+      - name: Lint Markdown
+        run: npm run lint
+
+      - name: Format Check
+        run: npm run format:check
+
+      - name: Build Site
+        run: npm run build
+
+      - name: Broken Internal Link Check
         run: |
           npx --yes linkinator ./build --recurse --skip "^https?://" --verbosity error 2>&1 | tee linkinator-output.txt
-          # Fail if linkinator reports broken links (internal only)
           if grep -q "BROKEN" linkinator-output.txt; then
             echo "::error::Broken internal links found"
             exit 1
           fi
-
-  summary:
-    name: Health Summary
-    runs-on: ubuntu-latest
-    needs: [lint, format, build, broken-links]
-    if: always()
-    steps:
-      - name: Report
-        run: |
-          echo "## Docs Health Check Results" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Check | Status |" >> $GITHUB_STEP_SUMMARY
-          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
-          echo "| Lint | ${{ needs.lint.result == 'success' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Format | ${{ needs.format.result == 'success' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Build | ${{ needs.build.result == 'success' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Links | ${{ needs.broken-links.result == 'success' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
