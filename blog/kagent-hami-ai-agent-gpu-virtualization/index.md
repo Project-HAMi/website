@@ -116,7 +116,7 @@ Then install the main chart, wired to the Nebius Token Factory endpoint.
 Without HAMi, Kubernetes sees no GPU at all:
 
 ```json
-{ "cpu": "8", "memory": "32865164Ki", "pods": "110" }
+{"cpu": "8", "memory": "32865164Ki", "pods": "110"}
 ```
 
 No `nvidia.com/gpu`.

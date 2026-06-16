@@ -117,7 +117,7 @@ helm install kagent-crds \
 如果没有 HAMi，Kubernetes 根本看不到 GPU：
 
 ```json
-{ "cpu": "8", "memory": "32865164Ki", "pods": "110" }
+{"cpu": "8", "memory": "32865164Ki", "pods": "110"}
 ```
 
 没有 nvidia.com/gpu。
@@ -301,4 +301,5 @@ AI Agent 可以直接在 Kubernetes 集群内部观察、理解并管理 GPU 虚
 
 这套组合实现了完整的端到端闭环：Agent 能够读取 HAMi 的注解信息、调度 GPU Pod、检测资源超额申请（overcommit），并查询 Prometheus 指标，所有操作都完全在 Kubernetes 集群内部完成。
 
-完整的部署清单（manifests）和安装脚本请见： [github.com/mesutoezdil/kagentWithHami](https://github.com/mesutoezdil/kagentWithHami)
+完整的部署清单（manifests）和安装脚本请见：
+[github.com/mesutoezdil/kagentWithHami](https://github.com/mesutoezdil/kagentWithHami)
