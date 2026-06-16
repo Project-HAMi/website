@@ -1,6 +1,6 @@
 ---
 title: "Lab 5: Advanced Fake-GPU Scheduling with HAMi and nvml‑mock"
-sidebar_label: "Lab 3: HAMi + nvml‑mock"
+sidebar_label: "Lab 5 : HAMi + nvml‑mock"
 lab:
   level: Intermediate
   duration: about 40 minutes
