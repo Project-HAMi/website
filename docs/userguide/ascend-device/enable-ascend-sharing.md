@@ -99,7 +99,11 @@ This ConfigMap is used for global configurations such as resourceName, mode, and
 kubectl apply -f https://raw.githubusercontent.com/Project-HAMi/ascend-device-plugin/main/ascend-device-configmap.yaml
 ```
 
-:::note You can skip this step if the ConfigMap already exists. :::
+:::note
+
+You can skip this step if the ConfigMap already exists.
+
+:::
 
 #### (Optional) Node Custom Configuration
 
@@ -214,7 +218,11 @@ spec:
           huawei.com/Ascend910B3-core: "50"
 ```
 
-:::note `--gpu-memory-utilization 0.5` = Total requested memory (64Gi) / Total physical memory (128Gi across 2 cards). :::
+:::note
+
+`--gpu-memory-utilization 0.5` = Total requested memory (64Gi) / Total physical memory (128Gi across 2 cards).
+
+:::
 
 ## Notes
 

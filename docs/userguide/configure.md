@@ -5,7 +5,11 @@ sidebar_label: Configuration
 
 ## Device Configs: ConfigMap
 
-:::note All the configurations listed below are managed within the hami-scheduler-device ConfigMap. :::
+:::note
+
+All the configurations listed below are managed within the hami-scheduler-device ConfigMap.
+
+:::
 
 You can update these configurations using one of the following methods:
 

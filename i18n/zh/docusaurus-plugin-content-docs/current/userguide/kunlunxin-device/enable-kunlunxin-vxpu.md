@@ -122,12 +122,16 @@ spec:
         xpu: "on"
 ```
 
-:::note默认资源名称如下：
+:::note
+
+默认资源名称如下：
 
 - `kunlunxin.com/vxpu` 用于 VXPU 计数
 - `kunlunxin.com/vxpu-memory` 用于显存分配
 
-你可以使用上述参数自定义这些名称。:::
+你可以使用上述参数自定义这些名称。
+
+:::
 
 ## 设备粒度分区
 

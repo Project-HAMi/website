@@ -81,7 +81,11 @@ kubectl wait --for=condition=Succeeded pod/cuda-test --timeout=60s
 kubectl logs cuda-test
 ```
 
-:::note You must see the standard `nvidia-smi` output. Do not proceed if this fails. :::
+:::note
+
+You must see the standard `nvidia-smi` output. Do not proceed if this fails.
+
+:::
 
 ## Step 2: Verify HAMi Installation
 

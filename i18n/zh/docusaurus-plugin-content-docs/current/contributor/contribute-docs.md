@@ -55,13 +55,15 @@ website
 | `versioned_docs/version-1.1.0/hello.md` | 1.1.0 (最新) | /docs/hello       |
 | `docs/hello.md`                         | 当前         | /docs/next/hello  |
 
-:::提示
+:::tip
 
 `docs`目录中的文件属于`current`文档版本。
 
 `current`文档版本标记为`Next`，托管在`/docs/next/*`下。
 
-贡献者主要为当前版本贡献文档。:::
+贡献者主要为当前版本贡献文档。
+
+:::
 
 ## 撰写文档
 

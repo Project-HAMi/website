@@ -122,12 +122,16 @@ spec:
         xpu: "on"
 ```
 
-:::note Default resource names are as follows:
+:::note
+
+Default resource names are as follows:
 
 - `kunlunxin.com/vxpu` for VXPU count
 - `kunlunxin.com/vxpu-memory` for memory allocation
 
-You can customize these names using the parameters above. :::
+You can customize these names using the parameters above.
+
+:::
 
 ## Device Granularity Partitioning
 

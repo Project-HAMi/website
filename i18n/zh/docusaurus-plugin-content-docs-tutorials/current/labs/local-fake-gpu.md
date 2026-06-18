@@ -71,8 +71,10 @@ flowchart LR
 - 能访问 GitHub、GHCR 和 HAMi Helm 仓库
 - 本机至少 4 CPU、8 GB 内存可用
 
-:::tip 为什么用 OrbStack？
+:::tip[为什么用 OrbStack？]
+
 OrbStack 自带 Kubernetes（基于 k3s），无需额外安装 kind 或 Docker Desktop。资源占用更少，启动更快，macOS 上做本地实验首选。
+
 :::
 
 检查 Helm（后面安装 fake-gpu-operator 和 HAMi 都需要）：
@@ -98,8 +100,10 @@ brew install helm
 - 能访问 GitHub、GHCR 和 HAMi Helm 仓库
 - 本机至少 4 CPU、8 GB 内存可用
 
-:::tip 为什么用 kind？
+:::tip[为什么用 kind？]
+
 kind（Kubernetes IN Docker）在 Docker 容器内运行完整的 Kubernetes 集群。它适用于任何安装了 Docker 的 Linux 发行版，无需特殊系统集成，是 Linux 上本地 Kubernetes 开发的标准工具。
+
 :::
 
 如需安装前置依赖，请执行以下命令：
@@ -234,8 +238,10 @@ echo "NODE_NAME=${NODE_NAME}"
 
 ---
 
-:::info 步骤 2–7 在两个平台上完全相同
+:::info[步骤 2–7 在两个平台上完全相同]
+
 从这里开始，所有命令在 macOS 和 Linux 上完全一致。你唯一会注意到的区别是示例输出中的节点名称。
+
 :::
 
 ## 步骤 2: 安装 fake-gpu-operator

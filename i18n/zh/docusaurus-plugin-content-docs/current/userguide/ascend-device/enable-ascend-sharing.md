@@ -101,7 +101,11 @@ kubectl apply -f https://raw.githubusercontent.com/Project-HAMi/ascend-device-pl
 kubectl apply -f https://raw.githubusercontent.com/Project-HAMi/ascend-device-plugin/main/ascend-device-configmap.yaml
 ```
 
-:::note 如果 ConfigMap 已存在，可跳过此步骤。:::
+:::note
+
+如果 ConfigMap 已存在，可跳过此步骤。
+
+:::
 
 #### （可选）节点自定义配置
 
@@ -216,7 +220,11 @@ spec:
           huawei.com/Ascend910B3-core: "50"
 ```
 
-:::note `--gpu-memory-utilization 0.5` = 申请总显存（64Gi）/ 2 张卡物理显存总量（128Gi）。:::
+:::note
+
+`--gpu-memory-utilization 0.5` = 申请总显存（64Gi）/ 2 张卡物理显存总量（128Gi）。
+
+:::
 
 ## 注意事项
 

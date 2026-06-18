@@ -205,11 +205,13 @@ helm upgrade hami hami-charts/hami -n hami-system
 
 完整安装文档请参考：[https://project-hami.io/zh/docs/installation/online-installation](https://project-hami.io/zh/docs/installation/online-installation)
 
-:::warning 升级注意事项
+:::warning[升级注意事项]
 
 - 如使用 Volcano vGPU 模式，请注意 CDI 相关配置变更
 - 如使用昇腾设备并希望启用 HAMi-core 模式，请参考最新文档中的 Ascend 配置章节
-- 建议在升级前在测试环境验证兼容性 :::
+- 建议在升级前在测试环境验证兼容性
+
+:::
 
 ## 社区动态
 

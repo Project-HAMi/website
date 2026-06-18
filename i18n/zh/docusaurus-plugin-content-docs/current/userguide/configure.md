@@ -6,7 +6,11 @@ translated: true
 
 ## 设备配置：ConfigMap
 
-:::note 以下列出的所有配置都在 hami-scheduler-device ConfigMap 中管理。:::
+:::note
+
+以下列出的所有配置都在 hami-scheduler-device ConfigMap 中管理。
+
+:::
 
 你可以通过以下方法之一更新这些配置：
 

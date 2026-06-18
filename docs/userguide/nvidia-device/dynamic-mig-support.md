@@ -122,9 +122,13 @@ nvidia:
           count: 1
 ```
 
-:::note Helm installations and updates will follow the configuration specified in this file, overriding the default Helm settings.
+:::note
 
-HAMi uses the first MIG template that matches the job, in the order defined in this configMap. :::
+Helm installations and updates will follow the configuration specified in this file, overriding the default Helm settings.
+
+HAMi uses the first MIG template that matches the job, in the order defined in this configMap.
+
+:::
 
 ## Running MIG jobs
 

@@ -25,7 +25,11 @@ title: Enable Iluvatar GPU Sharing
 
 - Deploy gpu-manager on iluvatar nodes (please consult your device provider to acquire its package and document)
 
-:::caution Install only gpu-manager. Do not install the gpu-admission package. :::
+:::caution
+
+Install only gpu-manager. Do not install the gpu-admission package.
+
+:::
 
 - Set `devices.iluvatar.enabled=true` when installing HAMi
 

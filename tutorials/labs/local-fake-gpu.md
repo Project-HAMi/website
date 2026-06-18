@@ -71,8 +71,10 @@ flowchart LR
 - Access to GitHub, GHCR, and the HAMi Helm repository
 - At least 4 CPU and 8 GB of memory available
 
-:::tip Why OrbStack?
+:::tip[Why OrbStack?]
+
 OrbStack comes with built-in Kubernetes (based on k3s), so there's no need to install kind or Docker Desktop separately. It uses fewer resources, starts faster, and is the preferred choice for local labs on macOS.
+
 :::
 
 Check Helm (needed later for installing fake-gpu-operator and HAMi):
@@ -98,8 +100,10 @@ brew install helm
 - Access to GitHub, GHCR, and the HAMi Helm repository
 - At least 4 CPU and 8 GB of memory available
 
-:::tip Why kind?
+:::tip[Why kind?]
+
 kind (Kubernetes IN Docker) runs a full Kubernetes cluster inside Docker containers. It works on any Linux distribution that has Docker, requires no special OS integration, and is the standard tool for local Kubernetes development on Linux.
+
 :::
 
 If you need to install any prerequisites, run the following block:
@@ -234,8 +238,10 @@ echo "NODE_NAME=${NODE_NAME}"
 
 ---
 
-:::info Steps 2–7 are identical on both platforms
+:::info[Steps 2–7 are identical on both platforms]
+
 From here on, all commands work the same on macOS and Linux. The only difference you will notice is your node name in example outputs.
+
 :::
 
 ## Step 2: Install fake-gpu-operator
@@ -456,8 +462,10 @@ hami         kube-system  1         deployed hami-2.9.0               2.9.0
 
 HAMi WebUI needs to read GPU metrics from Prometheus. This step deploys a complete monitoring stack using [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack).
 
-:::tip Why install Prometheus?
+:::tip[Why install Prometheus?]
+
 HAMi WebUI's cluster overview, GPU utilization, memory usage, and other chart data all come from Prometheus. Without Prometheus, the WebUI can only display blank pages.
+
 :::
 
 ### 4.1 Add the Helm Repository
@@ -792,7 +800,7 @@ Capacity:
 
 ### What This Lab Cannot Verify
 
-:::warning Real GPU required for the following
+:::warning[Real GPU required for the following]
 
 - HAMi device-plugin actually registering GPUs and writing `hami.io/node-nvidia-register`
 - `nvidia.com/gpumem` memory slicing
@@ -800,6 +808,7 @@ Capacity:
 - CUDA programs actually running
 - Memory overcommit, memory analysis, memory override
 - Real DCGM GPU metrics
+
 :::
 
 To continue with these capabilities, use a real GPU environment as described in [Lab 1: Online HAMi Installation](./online-install.md).
