@@ -627,6 +627,29 @@ html[data-theme="dark"] .cncf-logo {
   }
 }
 
+/* Announcement bar close button: the bar has a fixed dark background
+   (#1a1a2e) in both themes, but Docusaurus's default .close button
+   color is black — invisible on dark mode. Force a readable color that
+   matches the bar's text, with a hover dim for affordance. */
+.theme-announcement-bar .close {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.theme-announcement-bar .close:hover {
+  color: #ffffff;
+}
+
+/* Docs/tutorials TOC: Docusaurus's default sticky top only accounts for the
+   navbar height, so the TOC overlaps the announcement bar when one is shown.
+   We can't use the --docusaurus-announcement-bar-height CSS variable here,
+   because it stays at 30px even after the user dismisses the bar. Instead,
+   key off the data attribute Docusaurus sets on <html> (before hydration,
+   from localStorage) to distinguish shown vs dismissed. */
+html:not([data-announcement-bar-initially-dismissed="true"]) .tableOfContents_bqdL {
+  top: calc(var(--ifm-navbar-height) + var(--hami-announcement-offset, 30px) + 1rem);
+  max-height: calc(100vh - var(--ifm-navbar-height) - var(--hami-announcement-offset, 30px) - 2rem);
+}
+
 .navbar-sidebar {
   background: transparent;
   display: flex;
@@ -1307,6 +1330,16 @@ html[data-theme="dark"] .casestudies-wrapper .casestudy-card-link:hover {
   max-height: calc(100vh - var(--ifm-navbar-height) - 1.5rem);
   overflow: auto;
   padding-right: 0.35rem;
+}
+
+/* When the announcement bar is shown (not dismissed), push the blog TOC
+   down so it clears the bar. Key off the html data attribute (see the
+   docs TOC rule above for why the CSS variable can't be used). */
+html:not([data-announcement-bar-initially-dismissed="true"]) .blog-post-page .tableOfContents_bqdL {
+  top: calc(var(--ifm-navbar-height) + var(--hami-announcement-offset, 30px) + 1rem);
+  max-height: calc(
+    100vh - var(--ifm-navbar-height) - var(--hami-announcement-offset, 30px) - 1.5rem
+  );
 }
 
 @media (max-width: 996px) {
