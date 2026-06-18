@@ -1291,7 +1291,11 @@ html[data-theme="dark"] .casestudies-wrapper .casestudy-card-link:hover {
 }
 
 /* Active item left-border accent on the TOC rail */
-.blog-post-page .tableOfContents_bqdL .table-of-contents__left-border li > .table-of-contents__link--active {
+.blog-post-page
+  .tableOfContents_bqdL
+  .table-of-contents__left-border
+  li
+  > .table-of-contents__link--active {
   border-left: 2px solid var(--hami-color-primary);
   margin-left: -0.75rem;
   padding-left: calc(0.75rem - 1px);
