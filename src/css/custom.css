@@ -627,6 +627,29 @@ html[data-theme="dark"] .cncf-logo {
   }
 }
 
+/* Announcement bar close button: the bar has a fixed dark background
+   (#1a1a2e) in both themes, but Docusaurus's default .close button
+   color is black — invisible on dark mode. Force a readable color that
+   matches the bar's text, with a hover dim for affordance. */
+.theme-announcement-bar .close {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.theme-announcement-bar .close:hover {
+  color: #ffffff;
+}
+
+/* Docs/tutorials TOC: Docusaurus's default sticky top only accounts for the
+   navbar height, so the TOC overlaps the announcement bar when one is shown.
+   We can't use the --docusaurus-announcement-bar-height CSS variable here,
+   because it stays at 30px even after the user dismisses the bar. Instead,
+   key off the data attribute Docusaurus sets on <html> (before hydration,
+   from localStorage) to distinguish shown vs dismissed. */
+html:not([data-announcement-bar-initially-dismissed="true"]) .tableOfContents_bqdL {
+  top: calc(var(--ifm-navbar-height) + var(--hami-announcement-offset, 30px) + 1rem);
+  max-height: calc(100vh - var(--ifm-navbar-height) - var(--hami-announcement-offset, 30px) - 2rem);
+}
+
 .navbar-sidebar {
   background: transparent;
   display: flex;
@@ -1071,11 +1094,13 @@ html[data-theme="dark"] .casestudies-wrapper .casestudy-card-link:hover {
 
 .blog-post-page .container.margin-vert--lg > .row > main.col.col--7 {
   flex: 1 1 auto;
-  max-width: 860px;
+  max-width: 760px;
   min-width: 0;
 }
 
 .blog-post-page .container.margin-vert--lg > .row > div.col--2 {
+  flex: 0 0 280px;
+  max-width: 280px;
   align-self: stretch;
 }
 
@@ -1258,6 +1283,45 @@ html[data-theme="dark"] .casestudies-wrapper .casestudy-card-link:hover {
 
 .blog-post-page .tableOfContents_bqdL .table-of-contents__left-border {
   border-left-color: var(--hami-color-border);
+  padding-left: 0.75rem;
+}
+
+.blog-post-page .table-of-contents li {
+  margin: 0.18rem 0;
+}
+
+.blog-post-page .table-of-contents__link {
+  display: block;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--hami-color-muted);
+  transition: color 160ms ease;
+}
+
+.blog-post-page .table-of-contents__link:hover {
+  color: var(--hami-color-primary);
+}
+
+/* Nested (h3) entries indent under their parent */
+.blog-post-page .table-of-contents li ul {
+  padding-left: 0.75rem;
+  margin: 0.1rem 0;
+}
+
+.blog-post-page .table-of-contents__link--active {
+  font-weight: 700;
+  color: var(--hami-color-primary);
+}
+
+/* Active item left-border accent on the TOC rail */
+.blog-post-page
+  .tableOfContents_bqdL
+  .table-of-contents__left-border
+  li
+  > .table-of-contents__link--active {
+  border-left: 2px solid var(--hami-color-primary);
+  margin-left: -0.75rem;
+  padding-left: calc(0.75rem - 1px);
 }
 
 .blog-post-page .tableOfContents_bqdL {
@@ -1268,8 +1332,14 @@ html[data-theme="dark"] .casestudies-wrapper .casestudy-card-link:hover {
   padding-right: 0.35rem;
 }
 
-.blog-post-page .table-of-contents__link--active {
-  font-weight: 700;
+/* When the announcement bar is shown (not dismissed), push the blog TOC
+   down so it clears the bar. Key off the html data attribute (see the
+   docs TOC rule above for why the CSS variable can't be used). */
+html:not([data-announcement-bar-initially-dismissed="true"]) .blog-post-page .tableOfContents_bqdL {
+  top: calc(var(--ifm-navbar-height) + var(--hami-announcement-offset, 30px) + 1rem);
+  max-height: calc(
+    100vh - var(--ifm-navbar-height) - var(--hami-announcement-offset, 30px) - 1.5rem
+  );
 }
 
 @media (max-width: 996px) {
@@ -1282,7 +1352,8 @@ html[data-theme="dark"] .casestudies-wrapper .casestudy-card-link:hover {
   .blog-list-page .container.margin-vert--lg > .row > aside.col.col--3,
   .blog-list-page .container.margin-vert--lg > .row > main.col.col--7,
   .blog-post-page .container.margin-vert--lg > .row > aside.col.col--3,
-  .blog-post-page .container.margin-vert--lg > .row > main.col.col--7 {
+  .blog-post-page .container.margin-vert--lg > .row > main.col.col--7,
+  .blog-post-page .container.margin-vert--lg > .row > div.col--2 {
     flex: 0 0 100%;
     max-width: 100%;
   }

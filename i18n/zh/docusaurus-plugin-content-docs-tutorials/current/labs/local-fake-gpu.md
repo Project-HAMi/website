@@ -16,8 +16,7 @@ tags:
 toc_max_heading_level: 2
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+import Tabs from '@theme/Tabs'; import TabItem from '@theme/TabItem';
 
 本实验将引导你搭建一个纯本地 Kubernetes 集群——使用 **OrbStack**（macOS）或 **kind**（Linux/Ubuntu）——配合 [run-ai/fake-gpu-operator](https://github.com/run-ai/fake-gpu-operator)，然后在线安装 HAMi。
 
@@ -33,7 +32,9 @@ import TabItem from '@theme/TabItem';
 - 可以观察 fake GPU 资源从节点发现、Pod 申请、调度到运行的完整链路
 
 :::note
+
 fake GPU 不能代表真实 GPU 的显存隔离、算力隔离、CUDA 运行时和驱动能力。本实验用于理解 HAMi 组成和基础调度链路；涉及真实显存切分、`nvidia.com/gpumem`、`nvidia.com/gpucores`、CUDA 程序运行和性能隔离时，仍需要真实 NVIDIA GPU 环境。
+
 :::
 
 ## 安装全景图
@@ -52,7 +53,7 @@ flowchart LR
 ```
 
 | 步骤 | 目的 | 解决什么问题 |
-| ---- | ------- | -------------- |
+| --- | --- | --- |
 | 搭建并确认环境 | 创建/验证集群，检查 kubectl 和 Helm | 确保 Kubernetes 集群可用 |
 | 安装 fake-gpu-operator | 模拟 NVIDIA GPU 资源 | 让无 GPU 节点也能上报 `nvidia.com/gpu` |
 | 安装 HAMi | 部署 HAMi 控制面 | 观察 HAMi scheduler、webhook 等组件 |
@@ -71,8 +72,10 @@ flowchart LR
 - 能访问 GitHub、GHCR 和 HAMi Helm 仓库
 - 本机至少 4 CPU、8 GB 内存可用
 
-:::tip 为什么用 OrbStack？
+:::tip[为什么用 OrbStack？]
+
 OrbStack 自带 Kubernetes（基于 k3s），无需额外安装 kind 或 Docker Desktop。资源占用更少，启动更快，macOS 上做本地实验首选。
+
 :::
 
 检查 Helm（后面安装 fake-gpu-operator 和 HAMi 都需要）：
@@ -98,8 +101,10 @@ brew install helm
 - 能访问 GitHub、GHCR 和 HAMi Helm 仓库
 - 本机至少 4 CPU、8 GB 内存可用
 
-:::tip 为什么用 kind？
+:::tip[为什么用 kind？]
+
 kind（Kubernetes IN Docker）在 Docker 容器内运行完整的 Kubernetes 集群。它适用于任何安装了 Docker 的 Linux 发行版，无需特殊系统集成，是 Linux 上本地 Kubernetes 开发的标准工具。
+
 :::
 
 如需安装前置依赖，请执行以下命令：
@@ -146,7 +151,9 @@ Server Version: v1.33.9+orb1
 ```
 
 :::note
+
 `Server Version` 中的 `+orb1` 后缀标识这是 OrbStack 内置的 Kubernetes 发行版。
+
 :::
 
 查看集群节点：
@@ -185,7 +192,9 @@ Set kubectl context to "kind-hami-lab"
 ```
 
 :::note
+
 `--name hami-lab` 标志指定了集群名称。生成的节点将命名为 `hami-lab-control-plane`。kind 会自动将 kubectl 上下文设置为新集群。
+
 :::
 
 验证集群是否就绪：
@@ -227,15 +236,17 @@ NODE_NAME=$(kubectl get nodes -o jsonpath='{.items[0].metadata.name}')
 echo "NODE_NAME=${NODE_NAME}"
 ```
 
-| 平台 | 示例值 |
-| -------- | ------------- |
-| macOS  | `orbstack` |
-| Linux  | `hami-lab-control-plane` |
+| 平台  | 示例值                   |
+| ----- | ------------------------ |
+| macOS | `orbstack`               |
+| Linux | `hami-lab-control-plane` |
 
 ---
 
-:::info 步骤 2–7 在两个平台上完全相同
+:::info[步骤 2–7 在两个平台上完全相同]
+
 从这里开始，所有命令在 macOS 和 Linux 上完全一致。你唯一会注意到的区别是示例输出中的节点名称。
+
 :::
 
 ## 步骤 2: 安装 fake-gpu-operator
@@ -581,22 +592,22 @@ metadata:
 spec:
   restartPolicy: Never
   containers:
-  - name: app
-    image: ubuntu:22.04
-    command: [ "bash", "-lc", "sleep 3600" ]
-    resources:
-      requests:
-        cpu: "100m"
-        memory: "128Mi"
-      limits:
-        cpu: "500m"
-        memory: "512Mi"
-        nvidia.com/gpu: 1
-    env:
-    - name: NODE_NAME
-      valueFrom:
-        fieldRef:
-          fieldPath: spec.nodeName
+    - name: app
+      image: ubuntu:22.04
+      command: ["bash", "-lc", "sleep 3600"]
+      resources:
+        requests:
+          cpu: "100m"
+          memory: "128Mi"
+        limits:
+          cpu: "500m"
+          memory: "512Mi"
+          nvidia.com/gpu: 1
+      env:
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
 ```
 
 > YAML 要点：

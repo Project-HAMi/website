@@ -11,7 +11,3 @@ src/scripts/changelog.json
 i18n/zh/changelog-plugin
 i18n/zh/docusaurus-plugin-content-blog-changelog
 i18n/zh/docusaurus-plugin-content-docs/version-*
-
-# MDX files with JSX imports - Prettier breaks Docusaurus directive/JSX interleaving
-tutorials/labs/local-fake-gpu.md
-i18n/zh/docusaurus-plugin-content-docs-tutorials/current/labs/local-fake-gpu.md
