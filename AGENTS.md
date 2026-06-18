@@ -68,10 +68,23 @@ npm run write-translations
 
 Extracts translatable strings for i18n.
 
+### Lint, Format & Link Checks
+
+```bash
+npm run lint          # markdownlint on docs/tutorials/blog/i18n
+npm run format:check  # prettier --check . (CI runs this)
+npm run format        # prettier --write .
+npm run check-links   # build + html-link-checker on ./build
+npm run check:all     # lint && format:check && build
+npm run build:fast    # build English locale only (skips zh, for quick iteration)
+```
+
+CI (`.github/workflows/docs-health.yml`) runs `lint`, `format:check`, and `build` on every PR.
+
 ### Deploy to GitHub Pages
 
 ```bash
-GIT_USER=<Your GitHub username> USE_SSH=true yarn deploy
+GIT_USER=<Your GitHub username> USE_SSH=true npm run deploy
 ```
 
 Builds and deploys the website to the `gh-pages` branch for GitHub Pages hosting.
@@ -103,7 +116,7 @@ See `docs/contributor/contributing.md` (§ DCO Sign-off) and `docs/contributor/g
 ### Docusaurus Configuration
 
 - **Config file:** `docusaurus.config.js`
-- **Node version:** 20 (required - see `netlify.toml` and `.github/workflows/pr-test.yml`)
+- **Node version:** 20 (required - see `netlify.toml` and `.github/workflows/docs-health.yml`)
 - **Default locale:** English (`en`)
 - **Supported locales:** English, Chinese (`zh`)
 
@@ -134,6 +147,12 @@ See `docs/contributor/contributing.md` (§ DCO Sign-off) and `docs/contributor/g
 
 - Standard Docusaurus blog with YYYY-MM-DD-title directory structure
 
+**Tutorials (`tutorials/`):**
+
+- Hands-on lab guides, separate docs plugin (id: `tutorials`, routeBasePath: `tutorials`)
+- Sidebar: `sidebars-tutorials.js` (separate from the main `sidebars.js`)
+- ZH mirror: `i18n/zh/docusaurus-plugin-content-docs-tutorials/current/`
+
 **Changelog:**
 
 - Source file: `CHANGELOG.md` in root
@@ -160,11 +179,16 @@ See `docs/contributor/contributing.md` (§ DCO Sign-off) and `docs/contributor/g
 - `gitHubButton.js` - GitHub integration button
 - `supportersList.js` - Supporters/community display
 - `whatIs.js` - "What is HAMi" content component
+- `adoptersList.js` - Adopters list (data from `src/data/adopters.json`)
+- `caseStudiesList.js` - Case studies listing
+- `contributorsList.js` - Contributors display
+- `BeforeAfterComparison.js` - Before/after image comparison widget
 
 **Custom Pages:**
 
 - `src/pages/index.js` - Homepage
-- `src/pages/adopters.mdx` - Adopters page
+- `src/pages/community.js` - Community page
+- `src/pages/case-studies.js` - Case studies page
 
 ### Custom Styling
 
@@ -173,12 +197,12 @@ See `docs/contributor/contributing.md` (§ DCO Sign-off) and `docs/contributor/g
 
 ### Search Configuration
 
-**Algolia:**
+**Local search** via [`@easyops-cn/docusaurus-search-local`](https://github.com/easyops-cn/docusaurus-search-local) (no external Algolia dependency):
 
-- App ID: IWSUKSVX6L
-- Index: project-hami
-- Contextual search enabled for version/language awareness
-- Configured in `docusaurus.config.js`
+- Search contexts: `docs`, `zh/docs`, `tutorials`, `zh/tutorials`
+- `useAllContextsWithNoSearchContext: true` — queries with no context search all
+- `searchResultLimits: 8`, `searchResultContextMaxLength: 50` (performance caps)
+- Configured in `docusaurus.config.js` under `themes`
 
 ### Static Assets
 
@@ -310,12 +334,11 @@ The changelog plugin (`src/plugins/changelog/index.js`) is a customized Docusaur
 
 ### CI/CD
 
-**Pull Request Tests** (`.github/workflows/pr-test.yml`):
+**Docs Health Check** (`.github/workflows/docs-health.yml`):
 
-- Triggers on PR to `master` branch
-- Runs `npm install` and `npm run build`
-- Uploads build artifact for preview
-- Uses Node.js 18
+- Triggers on PR to `master` branch (+ weekly schedule)
+- Runs `npm run lint`, `npm run format:check`, `npm run build`, and a broken-internal-link check (`linkinator`)
+- Uses Node.js 20
 
 ### Hosting
 
