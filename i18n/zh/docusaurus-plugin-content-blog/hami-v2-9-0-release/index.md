@@ -40,20 +40,23 @@ HAMi-core 通过纯软件方式在用户态拦截和管控 ACL（Ascend Computin
 # 任务 1：大模型推理，32GB 显存 + 50% 算力
 resources:
   limits:
-    hami.io/vnpu-core: "50"
-    hami.io/vnpu-core-memory: "32768"
+    huawei.com/Ascend910C: "1"
+    huawei.com/Ascend910C-core: "50"
+    huawei.com/Ascend910C-memory: "32768"
 
 # 任务 2：模型微调，16GB 显存 + 30% 算力
 resources:
   limits:
-    hami.io/vnpu-core: "30"
-    hami.io/vnpu-core-memory: "16384"
+    huawei.com/Ascend910C: "1"
+    huawei.com/Ascend910C-core: "30"
+    huawei.com/Ascend910C-memory: "16384"
 
 # 任务 3：轻量推理，8GB 显存 + 20% 算力
 resources:
   limits:
-    hami.io/vnpu-core: "20"
-    hami.io/vnpu-core-memory: "8192"
+    huawei.com/Ascend910C: "1"
+    huawei.com/Ascend910C-core: "20"
+    huawei.com/Ascend910C-memory: "8192"
 ```
 
 核心能力包括：
