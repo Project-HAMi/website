@@ -25,8 +25,8 @@ cd website
 
 ```text
 website
-├── sidebars.json        # 当前文档版本的侧边栏
-├── docs                 # 当前文档版本的文档目录
+├── sidebars.json        # 开发版（下一个版本）的侧边栏
+├── docs                 # 开发版（下一个版本）的文档目录
 │   ├── foo
 │   │   └── bar.md       # https://mysite.com/docs/next/foo/bar
 │   └── hello.md         # https://mysite.com/docs/next/hello
@@ -49,19 +49,19 @@ website
 
 `versions.json`文件是一个版本列表，从最新到最早。下表解释了版本化文件如何映射到其版本和生成的 URL。
 
-| 路径                                    | 版本         | URL               |
-| --------------------------------------- | ------------ | ----------------- |
-| `versioned_docs/version-1.0.0/hello.md` | 1.0.0        | /docs/1.0.0/hello |
-| `versioned_docs/version-1.1.0/hello.md` | 1.1.0 (最新) | /docs/hello       |
-| `docs/hello.md`                         | 当前         | /docs/next/hello  |
+| 路径                                    | 版本                    | URL               |
+| --------------------------------------- | ----------------------- | ----------------- |
+| `versioned_docs/version-1.0.0/hello.md` | 1.0.0                   | /docs/1.0.0/hello |
+| `versioned_docs/version-1.1.0/hello.md` | 1.1.0（最新稳定）       | /docs/hello       |
+| `docs/hello.md`                         | 开发版/下一个（未发布） | /docs/next/hello  |
 
 :::tip
 
-`docs`目录中的文件属于`current`文档版本。
+`docs/` 目录是**未发布的开发版**（托管在 `/docs/next/*`），**不是**「当前/最新稳定版本」。最新稳定版本是 `versions.json` 的第一项（如 v2.9.0），托管在 `/docs`。
 
-`current`文档版本标记为`Next`，托管在`/docs/next/*`下。
+`current` 是 Docusaurus 对这个开发版目录的内部约定名（`CURRENT_VERSION_NAME`），标签显示为「Next / 下一个」，容易和「当前稳定版」混淆——它们是两个不同的东西。
 
-贡献者主要为当前版本贡献文档。
+贡献者主要编辑 `docs/`，为下一个版本贡献文档。
 
 :::
 

@@ -185,11 +185,13 @@ The following rules apply to all documentation on this site.
 
 HAMi docs are versioned alongside each release:
 
-| Location                         | Version                | URL              |
-| -------------------------------- | ---------------------- | ---------------- |
-| `docs/`                          | current (unreleased)   | `/docs/next/*`   |
-| `versioned_docs/version-v2.8.0/` | v2.8.0 (latest stable) | `/docs/*`        |
-| `versioned_docs/version-v2.7.0/` | v2.7.0                 | `/docs/v2.7.0/*` |
+| Location                         | Version                 | URL              |
+| -------------------------------- | ----------------------- | ---------------- |
+| `docs/`                          | dev / next (unreleased) | `/docs/next/*`   |
+| `versioned_docs/version-v2.9.0/` | v2.9.0 (latest stable)  | `/docs/*`        |
+| `versioned_docs/version-v2.8.0/` | v2.8.0                  | `/docs/v2.8.0/*` |
+
+> The `docs/` directory is the **unreleased dev version** (served at `/docs/next`), **not** the "current/latest stable release". The latest stable release is the first entry in `versions.json` (currently v2.9.0), served at `/docs`. Editing `docs/` only affects the next release.
 
 **Contribute to `docs/`** for changes that apply to the next release. These are the files most contributors should edit.
 
