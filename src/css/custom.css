@@ -1071,11 +1071,13 @@ html[data-theme="dark"] .casestudies-wrapper .casestudy-card-link:hover {
 
 .blog-post-page .container.margin-vert--lg > .row > main.col.col--7 {
   flex: 1 1 auto;
-  max-width: 860px;
+  max-width: 760px;
   min-width: 0;
 }
 
 .blog-post-page .container.margin-vert--lg > .row > div.col--2 {
+  flex: 0 0 280px;
+  max-width: 280px;
   align-self: stretch;
 }
 
@@ -1258,6 +1260,41 @@ html[data-theme="dark"] .casestudies-wrapper .casestudy-card-link:hover {
 
 .blog-post-page .tableOfContents_bqdL .table-of-contents__left-border {
   border-left-color: var(--hami-color-border);
+  padding-left: 0.75rem;
+}
+
+.blog-post-page .table-of-contents li {
+  margin: 0.18rem 0;
+}
+
+.blog-post-page .table-of-contents__link {
+  display: block;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--hami-color-muted);
+  transition: color 160ms ease;
+}
+
+.blog-post-page .table-of-contents__link:hover {
+  color: var(--hami-color-primary);
+}
+
+/* Nested (h3) entries indent under their parent */
+.blog-post-page .table-of-contents li ul {
+  padding-left: 0.75rem;
+  margin: 0.1rem 0;
+}
+
+.blog-post-page .table-of-contents__link--active {
+  font-weight: 700;
+  color: var(--hami-color-primary);
+}
+
+/* Active item left-border accent on the TOC rail */
+.blog-post-page .tableOfContents_bqdL .table-of-contents__left-border li > .table-of-contents__link--active {
+  border-left: 2px solid var(--hami-color-primary);
+  margin-left: -0.75rem;
+  padding-left: calc(0.75rem - 1px);
 }
 
 .blog-post-page .tableOfContents_bqdL {
@@ -1266,10 +1303,6 @@ html[data-theme="dark"] .casestudies-wrapper .casestudy-card-link:hover {
   max-height: calc(100vh - var(--ifm-navbar-height) - 1.5rem);
   overflow: auto;
   padding-right: 0.35rem;
-}
-
-.blog-post-page .table-of-contents__link--active {
-  font-weight: 700;
 }
 
 @media (max-width: 996px) {
@@ -1282,7 +1315,8 @@ html[data-theme="dark"] .casestudies-wrapper .casestudy-card-link:hover {
   .blog-list-page .container.margin-vert--lg > .row > aside.col.col--3,
   .blog-list-page .container.margin-vert--lg > .row > main.col.col--7,
   .blog-post-page .container.margin-vert--lg > .row > aside.col.col--3,
-  .blog-post-page .container.margin-vert--lg > .row > main.col.col--7 {
+  .blog-post-page .container.margin-vert--lg > .row > main.col.col--7,
+  .blog-post-page .container.margin-vert--lg > .row > div.col--2 {
     flex: 0 0 100%;
     max-width: 100%;
   }
