@@ -76,6 +76,28 @@ GIT_USER=<Your GitHub username> USE_SSH=true yarn deploy
 
 Builds and deploys the website to the `gh-pages` branch for GitHub Pages hosting.
 
+## Commit Convention
+
+This project enforces **DCO (Developer Certificate of Origin)** — every commit MUST include a `Signed-off-by:` line, or CI will block the PR. It also follows [Conventional Commits](https://www.conventionalcommits.org/).
+
+**Always commit with `-s`** (lowercase) to add the DCO sign-off:
+
+```bash
+git commit -s -m "fix(versions): version v2.9.0 and restore standard model"
+```
+
+Do NOT confuse `-s` (lowercase = DCO `Signed-off-by`) with `-S` (uppercase = GPG cryptographic signature). This repo's `commit.gpgsign` is already `true`, so GPG signing happens automatically; you only need to add `-s` explicitly.
+
+**Conventional Commit prefixes used in this repo:** `fix:`, `feat:`, `style:`, `docs:`, `chore:`, `refactor:`, with an optional scope like `fix(versions):` or `style(blog):`.
+
+**Forgot to sign off?** Before pushing, fix all unpushed commits in one go:
+
+```bash
+git rebase --exec "git commit --amend --no-edit -s" <branch-base>
+```
+
+See `docs/contributor/contributing.md` (§ DCO Sign-off) and `docs/contributor/github-workflow.md` for the full policy.
+
 ## Architecture
 
 ### Docusaurus Configuration
