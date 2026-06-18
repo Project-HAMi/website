@@ -46,6 +46,7 @@ To add the HAMi WebUI Helm repository and install the chart on your machine, fol
    Replace `externalPrometheus.address` with the in-cluster Prometheus URL that your environment uses.
 
    :::
+
    You can set other values from [values.yaml](https://github.com/Project-HAMi/HAMi-WebUI/blob/main/charts/hami-webui/values.yaml) during installation; see the configuration [documentation](https://github.com/Project-HAMi/HAMi-WebUI/blob/main/charts/hami-webui/README.md#values).
 
 3. Verify the installation:
