@@ -632,7 +632,9 @@ kubectl get pod gpu-multi \
   -o jsonpath='{.metadata.annotations.hami\.io/vgpu-devices-allocated}'
 ```
 
-You will see two semicolon-separated device entries, one per allocated vGPU slot. :::
+You will see two semicolon-separated device entries, one per allocated vGPU slot.
+
+:::
 
 ---
 
@@ -652,7 +654,9 @@ You will see two semicolon-separated device entries, one per allocated vGPU slot
 - Actual CUDA program execution
 - Runtime enforcement of `gpumem` and `gpucores` limits
 - Real DCGM GPU metrics (temperature, utilisation)
-- Memory overcommit and memory override features :::
+- Memory overcommit and memory override features
+
+:::
 
 ---
 
