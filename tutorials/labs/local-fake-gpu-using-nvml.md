@@ -30,7 +30,11 @@ After completing this lab, you will have a local Kubernetes cluster with:
 - **HAMi** device-plugin and scheduler running from the current `main` branch image
 - Pods verified for: single GPU, GPU sharing, memory/core limits, percentage-based memory, and multi-GPU allocation
 
-:::note No real CUDA runtime exists in this environment. Pods use `busybox` with `CUDA_DISABLE_CONTROL=true` to prevent HAMi's control library from attempting real device access. Runtime enforcement of memory and core limits still requires physical GPUs. :::
+:::note
+
+No real CUDA runtime exists in this environment. Pods use `busybox` with `CUDA_DISABLE_CONTROL=true` to prevent HAMi's control library from attempting real device access. Runtime enforcement of memory and core limits still requires physical GPUs.
+
+:::
 
 ## Installation Overview
 
@@ -127,7 +131,11 @@ go version                       # 1.21+
 </TabItem>
 </Tabs>
 
-:::tip Windows users: Use [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install) with Ubuntu and follow the Linux tab above. :::
+:::tip
+
+Windows users Use [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install) with Ubuntu and follow the Linux tab above.
+
+:::
 
 ---
 
@@ -164,7 +172,11 @@ cd k8s-test-infra
 docker build -t nvml-mock:local -f deployments/nvml-mock/Dockerfile .
 ```
 
-:::note The first build downloads base layers and may take 5–10 minutes. Subsequent builds use Docker layer cache. :::
+:::note
+
+The first build downloads base layers and may take 5–10 minutes. Subsequent builds use Docker layer cache.
+
+:::
 
 ### 2.2 Load into kind
 
@@ -218,7 +230,11 @@ git submodule update --init --recursive
 docker build -t hami:local -f docker/Dockerfile .
 ```
 
-:::note HAMi uses a three-stage Dockerfile: a Go build stage, a CUDA library build stage, and a final runtime stage. The first build takes several minutes as it pulls the CUDA base images; subsequent runs use the layer cache. :::
+:::note
+
+HAMi uses a three-stage Dockerfile: a Go build stage, a CUDA library build stage, and a final runtime stage. The first build takes several minutes as it pulls the CUDA base images; subsequent runs use the layer cache.
+
+:::
 
 ### 3.3 Load into kind
 
@@ -249,7 +265,11 @@ helm install hami ./charts/hami \
 
 ### 4.2 Label the Node
 
-:::warning Required before the device-plugin can start. The HAMi device-plugin DaemonSet has `NODE SELECTOR: gpu=on`. Without this label, `DESIRED` stays at `0`, no Pod is scheduled, and no GPUs are registered. :::
+:::warning
+
+Required before the device-plugin can start The HAMi device-plugin DaemonSet has `NODE SELECTOR: gpu=on`. Without this label, `DESIRED` stays at `0`, no Pod is scheduled, and no GPUs are registered.
+
+:::
 
 ```bash
 kubectl label node ${NODE_NAME} gpu=on
@@ -305,7 +325,11 @@ hami-device-plugin-lbctx          1/2     CrashLoopBackOff   6          9m24s
 hami-scheduler-7858c744cc-7pb79   2/2     Running            0          13m
 ```
 
-:::note The `vgpu-monitor` sidecar crashes because it requires real GPU monitoring infrastructure. The `device-plugin` container is running correctly — `1/2` is expected here and does not affect GPU scheduling. :::
+:::note
+
+The `vgpu-monitor` sidecar crashes because it requires real GPU monitoring infrastructure. The `device-plugin` container is running correctly — `1/2` is expected here and does not affect GPU scheduling.
+
+:::
 
 ---
 
@@ -409,7 +433,11 @@ EOF
 done
 ```
 
-:::warning Use `<<EOF`, not `<<'EOF'` inside the loop. Single-quoting the delimiter suppresses shell expansion. `$i` would not be substituted and all three Pods would get the same name. :::
+:::warning
+
+Use `<<EOF`, not `<<'EOF'` inside the loop Single-quoting the delimiter suppresses shell expansion. `$i` would not be substituted and all three Pods would get the same name.
+
+:::
 
 Verify all Pods are running:
 
@@ -454,7 +482,11 @@ spec:
 EOF
 ```
 
-:::info `nvidia.com/gpumem` takes an **absolute value in MiB** — `"10"` means 10 MiB. `nvidia.com/gpucores: "30"` requests 30 compute cores on the selected GPU. :::
+:::info
+
+Resource Limits Format `nvidia.com/gpumem` takes an **absolute value in MiB** — `"10"` means 10 MiB. `nvidia.com/gpucores: "30"` requests 30 compute cores on the selected GPU.
+
+:::
 
 Verify the allocation:
 
@@ -476,7 +508,11 @@ The annotation records `10` MiB and `30` cores — exactly the values requested.
 
 Instead of a fixed MiB value, `nvidia.com/gpumem-percentage` lets you request a fraction of the GPU's total memory. On an A100 (40960 MiB), requesting 30% allocates approximately 12288 MiB.
 
-:::tip Why Percentage-Based Allocation? This is useful when you want workloads to scale proportionally across different GPU models without hardcoding absolute sizes. :::
+:::tip
+
+Why Percentage-Based Allocation? This is useful when you want workloads to scale proportionally across different GPU models without hardcoding absolute sizes.
+
+:::
 
 Create the Pod:
 
@@ -653,7 +689,11 @@ Delete the kind cluster:
 kind delete cluster --name nvml-mock-test
 ```
 
-:::tip Skip the cluster deletion step if you want to keep the environment for further experimentation. :::
+:::tip
+
+Skip the cluster deletion step if you want to keep the environment for further experimentation.
+
+:::
 
 ---
 
