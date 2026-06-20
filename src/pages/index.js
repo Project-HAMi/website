@@ -285,7 +285,7 @@ const vendorEcosystem = [
     key: "vaststream",
     name: "Vaststream",
     logo: "img/ecosystem/vaststream.jpg",
-    href: "https://www.vastaitech.com",
+    href: "https://www.birentech.com",
   },
 ];
 
