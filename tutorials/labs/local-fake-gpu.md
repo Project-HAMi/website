@@ -16,8 +16,7 @@ tags:
 toc_max_heading_level: 2
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+import Tabs from '@theme/Tabs'; import TabItem from '@theme/TabItem';
 
 This lab walks you through setting up a fully local Kubernetes cluster — using either **OrbStack** (macOS) or **kind** (Linux/Ubuntu) — together with [run-ai/fake-gpu-operator](https://github.com/run-ai/fake-gpu-operator), then installing HAMi online.
 
@@ -33,7 +32,9 @@ After completing this lab, you will have a local Kubernetes cluster with:
 - You can observe the complete chain from fake GPU resource discovery, Pod request, scheduling, to running
 
 :::note
+
 fake GPU does not represent real GPU memory isolation, compute isolation, CUDA runtime, or driver capabilities. This lab is for understanding HAMi components and basic scheduling workflows. Real memory slicing (`nvidia.com/gpumem`), compute limits (`nvidia.com/gpucores`), CUDA program execution, and performance isolation still require a real NVIDIA GPU environment.
+
 :::
 
 ## Installation Overview
@@ -52,7 +53,7 @@ flowchart LR
 ```
 
 | Step | Purpose | What It Solves |
-| ---- | ------- | -------------- |
+| --- | --- | --- |
 | Set Up & Verify Environment | Create/verify cluster, check kubectl and Helm | Ensure Kubernetes cluster is available |
 | Install fake-gpu-operator | Simulate NVIDIA GPU resources | Allow nodes without GPUs to report `nvidia.com/gpu` |
 | Install HAMi | Deploy HAMi control plane | Observe HAMi scheduler, webhook, and other components |
@@ -71,8 +72,10 @@ flowchart LR
 - Access to GitHub, GHCR, and the HAMi Helm repository
 - At least 4 CPU and 8 GB of memory available
 
-:::tip Why OrbStack?
+:::tip[Why OrbStack?]
+
 OrbStack comes with built-in Kubernetes (based on k3s), so there's no need to install kind or Docker Desktop separately. It uses fewer resources, starts faster, and is the preferred choice for local labs on macOS.
+
 :::
 
 Check Helm (needed later for installing fake-gpu-operator and HAMi):
@@ -90,7 +93,7 @@ brew install helm
 </TabItem>
 <TabItem value="linux" label="Linux (Ubuntu + kind)">
 
-- Ubuntu 20.04 LTS or later, x86\_64 or ARM64
+- Ubuntu 20.04 LTS or later, x86_64 or ARM64
 - [Docker Engine](https://docs.docker.com/engine/install/ubuntu/) installed and running
 - [`kind`](https://kind.sigs.k8s.io/docs/user/quick-start/#installation) v0.20.0 or later
 - [`kubectl`](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) installed
@@ -98,8 +101,10 @@ brew install helm
 - Access to GitHub, GHCR, and the HAMi Helm repository
 - At least 4 CPU and 8 GB of memory available
 
-:::tip Why kind?
+:::tip[Why kind?]
+
 kind (Kubernetes IN Docker) runs a full Kubernetes cluster inside Docker containers. It works on any Linux distribution that has Docker, requires no special OS integration, and is the standard tool for local Kubernetes development on Linux.
+
 :::
 
 If you need to install any prerequisites, run the following block:
@@ -146,7 +151,9 @@ Server Version: v1.33.9+orb1
 ```
 
 :::note
+
 The `+orb1` suffix in `Server Version` identifies OrbStack's built-in Kubernetes distribution.
+
 :::
 
 View cluster nodes:
@@ -185,7 +192,9 @@ Set kubectl context to "kind-hami-lab"
 ```
 
 :::note
+
 The `--name hami-lab` flag names the cluster. The resulting node will be called `hami-lab-control-plane`. kind automatically sets your kubectl context to the new cluster.
+
 :::
 
 Verify the cluster is ready:
@@ -227,15 +236,17 @@ NODE_NAME=$(kubectl get nodes -o jsonpath='{.items[0].metadata.name}')
 echo "NODE_NAME=${NODE_NAME}"
 ```
 
-| Platform | Example value |
-| -------- | ------------- |
-| macOS  | `orbstack` |
-| Linux  | `hami-lab-control-plane` |
+| Platform | Example value            |
+| -------- | ------------------------ |
+| macOS    | `orbstack`               |
+| Linux    | `hami-lab-control-plane` |
 
 ---
 
-:::info Steps 2–7 are identical on both platforms
+:::info[Steps 2–7 are identical on both platforms]
+
 From here on, all commands work the same on macOS and Linux. The only difference you will notice is your node name in example outputs.
+
 :::
 
 ## Step 2: Install fake-gpu-operator
@@ -456,8 +467,10 @@ hami         kube-system  1         deployed hami-2.9.0               2.9.0
 
 HAMi WebUI needs to read GPU metrics from Prometheus. This step deploys a complete monitoring stack using [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack).
 
-:::tip Why install Prometheus?
+:::tip[Why install Prometheus?]
+
 HAMi WebUI's cluster overview, GPU utilization, memory usage, and other chart data all come from Prometheus. Without Prometheus, the WebUI can only display blank pages.
+
 :::
 
 ### 4.1 Add the Helm Repository
@@ -572,22 +585,22 @@ metadata:
 spec:
   restartPolicy: Never
   containers:
-  - name: app
-    image: ubuntu:22.04
-    command: [ "bash", "-lc", "sleep 3600" ]
-    resources:
-      requests:
-        cpu: "100m"
-        memory: "128Mi"
-      limits:
-        cpu: "500m"
-        memory: "512Mi"
-        nvidia.com/gpu: 1
-    env:
-    - name: NODE_NAME
-      valueFrom:
-        fieldRef:
-          fieldPath: spec.nodeName
+    - name: app
+      image: ubuntu:22.04
+      command: ["bash", "-lc", "sleep 3600"]
+      resources:
+        requests:
+          cpu: "100m"
+          memory: "128Mi"
+        limits:
+          cpu: "500m"
+          memory: "512Mi"
+          nvidia.com/gpu: 1
+      env:
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
 ```
 
 > YAML key points:
@@ -792,7 +805,7 @@ Capacity:
 
 ### What This Lab Cannot Verify
 
-:::warning Real GPU required for the following
+:::warning[Real GPU required for the following]
 
 - HAMi device-plugin actually registering GPUs and writing `hami.io/node-nvidia-register`
 - `nvidia.com/gpumem` memory slicing
@@ -800,6 +813,7 @@ Capacity:
 - CUDA programs actually running
 - Memory overcommit, memory analysis, memory override
 - Real DCGM GPU metrics
+
 :::
 
 To continue with these capabilities, use a real GPU environment as described in [Lab 1: Online HAMi Installation](./online-install.md).
@@ -858,7 +872,9 @@ Deleted nodes: ["hami-lab-control-plane"]
 </Tabs>
 
 :::tip
+
 If you want to keep the environment for further experimentation, skip the cleanup steps.
+
 :::
 
 ## Next Steps
