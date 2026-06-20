@@ -13,7 +13,7 @@ translated: true
 
 ### 发布时间表
 
-HAMi 使用语义版本控制模式。HAMi v2.4.0 于 2024 年 9 月发布。该项目遵循给定的版本号 MAJOR.MINOR.PATCH。
+HAMi 使用语义版本控制模式。该项目遵循给定的版本号 MAJOR.MINOR.PATCH。
 
 ### MAJOR 版本
 
