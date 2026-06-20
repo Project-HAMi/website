@@ -38,7 +38,7 @@ docs/
 
 ### Prerequisites
 
-- Node.js v20+ (configured in `.nvmrc`)
+- Node.js v20+
 - npm v10+
 
 ### Installation
