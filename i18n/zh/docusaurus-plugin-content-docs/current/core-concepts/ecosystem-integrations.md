@@ -87,6 +87,7 @@ HAMi-core 补上的就是这一块。**调度交给 KAI Scheduler，隔离交给
 
 - 上游指南：[KAI Scheduler 中的 HAMi 资源隔离](https://github.com/kai-scheduler/KAI-Scheduler/blob/main/docs/gpu-sharing/hami/README.md)
 - 隔离组件：[kai-resource-isolator](https://github.com/Project-HAMi/KAI-resource-isolator)
+- 手把手配置：[如何在 KAI Scheduler 中使用 HAMi](../userguide/kai-scheduler/how-to-use-kai-scheduler.md)
 
 ## 怎么选
 

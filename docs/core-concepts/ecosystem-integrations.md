@@ -81,12 +81,13 @@ Out of the box, `kube-scheduler` delegates GPU filtering and scoring to `hami-sc
 
 [KAI Scheduler](https://github.com/kai-scheduler/KAI-Scheduler) is NVIDIA's open-source, Kubernetes-native scheduler for AI workloads. It grew out of Run:ai, ships under Apache 2.0, and is a CNCF Sandbox project. It brings **PodGroup gang scheduling**, **hierarchical fair queues**, **fractional GPU sharing**, **topology-aware placement**, and **elastic workloads**. These are the things AI training needs that the default scheduler doesn't offer.
 
-Here's the catch, though. KAI's fractional GPU sharing is *cooperative*: the scheduler keeps the sum of requests within a card, but it doesn't physically stop a Pod from using more memory than it asked for. A container that requests 2 GiB can still see the whole GPU through `nvidia-smi`. In a multi-tenant production cluster, that's the gap that bites you.
+Here's the catch, though. KAI's fractional GPU sharing is _cooperative_: the scheduler keeps the sum of requests within a card, but it doesn't physically stop a Pod from using more memory than it asked for. A container that requests 2 GiB can still see the whole GPU through `nvidia-smi`. In a multi-tenant production cluster, that's the gap that bites you.
 
 HAMi-core fills it. **KAI Scheduler does the scheduling, HAMi-core does the isolation.** The integration uses HAMi-core directly rather than the full HAMi platform, so KAI keeps its own scheduler. Turn on the `hamicore` plugin in KAI Scheduler to inject `CUDA_DEVICE_MEMORY_LIMIT`, then deploy [`kai-resource-isolator`](https://github.com/Project-HAMi/KAI-resource-isolator). It's a HAMi project component that ships HAMi-core to each node through a DaemonSet and uses a MutatingWebhook to inject the library and `ld.so.preload`. At runtime `libvgpu.so` enforces the memory cap, so `nvidia-smi` shows only the slice you allocated.
 
 - Upstream guide: [HAMi resource isolation in KAI Scheduler](https://github.com/kai-scheduler/KAI-Scheduler/blob/main/docs/gpu-sharing/hami/README.md)
 - Isolator component: [kai-resource-isolator](https://github.com/Project-HAMi/KAI-resource-isolator)
+- Step-by-step setup: [How to use KAI Scheduler with HAMi](../userguide/kai-scheduler/how-to-use-kai-scheduler.md)
 
 ## Choosing an integration
 
