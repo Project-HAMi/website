@@ -133,7 +133,7 @@ resources:
 #   vastaitech.com/nouse-va: "1"
 ```
 
-Vastai 设备支持的加入，使 HAMi 已覆盖 **NVIDIA、华为昇腾、寒武纪、海光 DCU、壁仞、燧原、沐曦、昆仑芯、AMD、Iluvatar、Enflame、AWS Neuron、瀚博半导体** 等十余种异构算力设备，是目前 Kubernetes 生态中覆盖最广泛的异构设备虚拟化与调度项目之一。
+Vastai 设备支持的加入，使 HAMi 已覆盖 **NVIDIA、华为昇腾、寒武纪、海光 DCU、壁仞、燧原、沐曦、昆仑芯、AMD、Iluvatar、AWS Neuron、瀚博半导体** 等十余种异构算力设备，是目前 Kubernetes 生态中覆盖最广泛的异构设备虚拟化与调度项目之一。
 
 ## 可观测性与安全增强
 
