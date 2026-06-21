@@ -237,7 +237,7 @@ const vendorEcosystem = [
     logo: "img/ecosystem/nvidia.svg",
     href: "https://www.nvidia.com",
   },
-  { key: "aws", name: "AWS", logo: "img/ecosystem/aws.svg", href: "https://www.aws.com" },
+  { key: "aws", name: "AWS", logo: "img/ecosystem/aws.svg", href: "https://aws.amazon.com" },
   {
     key: "ascend",
     name: "Huawei Ascend",
