@@ -108,7 +108,7 @@ const heroDeviceEcosystem = [
   },
   {
     key: "vaststream",
-    label: { en: "Vaststream", zh: "瀚博半导体" },
+    label: { en: "Vastai", zh: "瀚博半导体" },
     logo: "img/ecosystem/vaststream.jpg",
   },
 ];
@@ -283,7 +283,7 @@ const vendorEcosystem = [
   },
   {
     key: "vaststream",
-    name: "Vaststream",
+    name: "Vastai",
     logo: "img/ecosystem/vaststream.jpg",
     href: "https://www.birentech.com",
   },
