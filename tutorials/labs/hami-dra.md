@@ -38,7 +38,7 @@ The HAMi DRA driver implements the [DRA Consumable Capacity](https://github.com/
 ## Prerequisites
 
 - A cluster from [Lab 1](./online-install.md) on Kubernetes **v1.34 or newer**, with HAMi and GPU Operator installed
-- The manifests from [`examples/04-hami-dra/`](https://github.com/Project-HAMi/hami-workshop/tree/main/examples/04-hami-dra)
+- The manifests from [`tutorials/labs/examples/04-hami-dra/`](https://github.com/Project-HAMi/website/tree/master/tutorials/labs/examples/04-hami-dra)
 
 ## Lab Overview
 
@@ -54,7 +54,7 @@ flowchart LR
 
 ## Step 1: Enable the DRAConsumableCapacity Feature Gate
 
-DRA itself is GA in v1.34, but _consumable capacity_ (multiple Pods drawing from one device's capacity pool) requires the `DRAConsumableCapacity` feature gate on the control plane components and the kubelet. Run [`enable-dra-feature-gates.sh`](https://github.com/Project-HAMi/hami-workshop/blob/main/examples/04-hami-dra/enable-dra-feature-gates.sh) as root:
+DRA itself is GA in v1.34, but _consumable capacity_ (multiple Pods drawing from one device's capacity pool) requires the `DRAConsumableCapacity` feature gate on the control plane components and the kubelet. Run [`enable-dra-feature-gates.sh`](https://github.com/Project-HAMi/website/blob/master/tutorials/labs/examples/04-hami-dra/enable-dra-feature-gates.sh) as root:
 
 ```bash
 for f in kube-apiserver kube-scheduler kube-controller-manager; do

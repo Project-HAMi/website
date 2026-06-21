@@ -42,7 +42,7 @@ flowchart LR
 ## 前提条件
 
 - 已完成 [实验 1: 在线安装](./online-install.md) 的集群：HAMi 已安装，GPU 节点已标记 `gpu=on`
-- 来自 [`examples/03-gpu-partitioning/`](https://github.com/Project-HAMi/hami-workshop/tree/main/examples/03-gpu-partitioning) 的清单文件
+- 来自 [`tutorials/labs/examples/03-gpu-partitioning/`](https://github.com/Project-HAMi/website/tree/master/tutorials/labs/examples/03-gpu-partitioning) 的清单文件
 
 ## 步骤 1: 了解 HAMi 资源类型
 

@@ -42,7 +42,7 @@ flowchart LR
 ## Prerequisites
 
 - A cluster from [Lab 1: Online Installation](./online-install.md): HAMi installed, GPU node labeled `gpu=on`
-- The manifests from [`examples/03-gpu-partitioning/`](https://github.com/Project-HAMi/hami-workshop/tree/main/examples/03-gpu-partitioning)
+- The manifests from [`tutorials/labs/examples/03-gpu-partitioning/`](https://github.com/Project-HAMi/website/tree/master/tutorials/labs/examples/03-gpu-partitioning)
 
 ## Step 1: Understand HAMi Resource Types
 

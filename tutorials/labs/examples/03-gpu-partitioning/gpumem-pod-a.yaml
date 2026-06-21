@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: gpumem-pod-a
+spec:
+  restartPolicy: Never
+  containers:
+    - name: app
+      image: nvidia/cuda:12.4.1-base-ubuntu22.04
+      command: ["sleep", "infinity"]
+      resources:
+        limits:
+          nvidia.com/gpu: 1 # request 1 vGPU
+          nvidia.com/gpumem: 4000 # limit this Pod to 4000 MiB of VRAM
