@@ -108,7 +108,7 @@ const heroDeviceEcosystem = [
   },
   {
     key: "vaststream",
-    label: { en: "Vaststream", zh: "壁仞" },
+    label: { en: "Vaststream", zh: "瀚博半导体" },
     logo: "img/ecosystem/vaststream.jpg",
   },
 ];
