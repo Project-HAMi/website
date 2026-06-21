@@ -32,7 +32,7 @@ const maintainers = [
   {
     name: "Leibo Wang",
     github: "https://github.com/william-wang",
-    employer: "Nvidia",
+    employer: "NVIDIA",
     employerZh: "英伟达",
     employerUrl: "https://www.nvidia.com",
   },
