@@ -130,7 +130,7 @@ resources:
 #   vastaitech.com/nouse-va: "1"
 ```
 
-With Vastai device support, HAMi now covers over a dozen heterogeneous compute devices including **NVIDIA, Huawei Ascend, Cambricon, Hygon DCU, Biren, Enflame, MetaX, Kunlunxin, AMD, Iluvatar, Enflame, AWS Neuron, and Vastai Technologies**, making it one of the widest-supported heterogeneous device virtualization and scheduling projects in the Kubernetes ecosystem.
+With Vastai device support, HAMi now covers over a dozen heterogeneous compute devices including **NVIDIA, Huawei Ascend, Cambricon, Hygon DCU, Biren, Enflame, MetaX, Kunlunxin, Iluvatar, AWS Neuron, and Vastai Technologies**, making it one of the widest-supported heterogeneous device virtualization and scheduling projects in the Kubernetes ecosystem.
 
 ## Observability and Security Enhancements
 
