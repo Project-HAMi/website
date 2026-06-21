@@ -60,7 +60,7 @@ Before opening an issue or PR, search existing issues and discussions for relate
 
 **For HAMi core (Go):**
 
-- Go 1.21+
+- Go 1.26+
 - `kubectl` and access to a Kubernetes cluster with a supported GPU or accelerator
 
 **For documentation (website):**
