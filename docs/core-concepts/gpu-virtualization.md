@@ -49,7 +49,7 @@ DRA is Kubernetes' next-generation solution for this, promoted to GA in v1.34. I
 
 The scheduler can directly read device attributes from `ResourceSlice` for scheduling decisions. DRA also natively supports multiple Pods sharing the same device and cross-container device topology alignment.
 
-HAMi currently remains based on Device Plugin, but the official team has launched the [HAMi-DRA](https://github.com/Project-HAMi/HAMi-DRA) subproject (v0.1.0, requires Kubernetes 1.34+), which converts HAMi's GPU resource requests into DRA `ResourceClaim` via MutatingWebhook, serving as a transitional solution for migrating to DRA.
+HAMi currently remains based on Device Plugin, but the official team has launched the [HAMi-DRA](https://github.com/Project-HAMi/HAMi-DRA) subproject (v0.2.0, requires Kubernetes 1.34+), which converts HAMi's GPU resource requests into DRA `ResourceClaim` via MutatingWebhook, serving as a transitional solution for migrating to DRA.
 
 ## HAMi Virtual GPU Scheduling Principles
 
