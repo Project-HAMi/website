@@ -31,7 +31,7 @@ sidebar_label: Roadmap
   - [ ] numa affinity
 - [ ] Integrated gpu-operator
 - [ ] Rich observability support
-- [ ] DRA support
+- [x] DRA support
 - [ ] Support Intel GPU device
 - [ ] Support AMD GPU device
 - [x] Support Enflame GCU device
