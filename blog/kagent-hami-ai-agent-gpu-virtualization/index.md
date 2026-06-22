@@ -250,7 +250,7 @@ The kagent CLI shows:
 
 All state stored in PostgreSQL.
 
-**A2A Agent Card**
+### A2A Agent Card
 
 Every Agent exposes:
 

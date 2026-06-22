@@ -15,6 +15,7 @@ module.exports = {
         "labs/local-fake-gpu",
         "labs/gpu-partitioning",
         "labs/hami-dra",
+        "labs/local-fake-gpu-using-nvml",
       ],
     },
   ],
