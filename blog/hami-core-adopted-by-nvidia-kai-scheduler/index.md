@@ -55,6 +55,7 @@ Only by combining the two do you get true production-grade GPU sharing. HAMi sup
 The whole integration is loosely coupled: KAI Scheduler and HAMi each keep their own responsibilities and deploy independently.
 
 ```mermaid
+%% title: HAMi + KAI Scheduler Integration Flow
 graph LR
     subgraph User submits
         POD["Pod (gpu-memory: 4096)"]
@@ -94,6 +95,7 @@ The workflow has four phases:
 4. **Runtime isolation**: once the container starts, `libvgpu.so` intercepts every CUDA memory allocation call and enforces the memory cap according to the environment variable.
 
 ```mermaid
+%% title: GPU Memory Isolation: Before vs After HAMi
 graph TD
     subgraph Before
         A1[Pod requests 2GB] --> A2["nvidia-smi shows<br/>full GPU memory 16GB"]
@@ -200,6 +202,7 @@ HAMi's core capability, CUDA interception and GPU memory hard isolation, has bee
 Before this, HAMi had already integrated with several Kubernetes schedulers. This integration extends coverage to the official NVIDIA scheduler:
 
 ```mermaid
+%% title: HAMi-core Scheduler Ecosystem
 graph TD
     HAMI["HAMi-core<br/>CUDA interception library"]
 
