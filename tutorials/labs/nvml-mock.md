@@ -1,6 +1,6 @@
 ---
-title: "Lab 5: Advanced Fake-GPU Scheduling with HAMi and nvml-mock"
-sidebar_label: "Lab 5: HAMi + nvml-mock"
+title: "Lab 5: Fake-GPU Scheduling with nvml-mock"
+sidebar_label: "Lab 5: nvml-mock"
 lab:
   level: Intermediate
   duration: about 40 minutes
@@ -41,7 +41,7 @@ No real CUDA runtime exists in this environment. Pods use `busybox` with `CUDA_D
 The entire installation process consists of 10 steps:
 
 ```mermaid
-%% title: Advanced Fake-GPU Scheduling Installation Overview
+%% title: Fake-GPU Scheduling Installation Overview
 flowchart LR
     Step1["Step 1\nCreate kind Cluster"] --> Step2["Step 2\nBuild & Deploy nvml-mock"]
     Step2 --> Step3["Step 3\nBuild HAMi from main"]
