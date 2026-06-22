@@ -229,11 +229,9 @@ module.exports = {
               type: "category",
               label: "Examples",
               key: "biren-examples",
-              items: [
-                "userguide/biren-device/examples/default-use"
-              ]
-            }
-          ]
+              items: ["userguide/biren-device/examples/default-use"],
+            },
+          ],
         },
         {
           type: "category",

@@ -28,24 +28,22 @@ kind: Namespace
 metadata:
   name: biren-gpu
 ---
-
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: device-plugin-sa
   namespace: biren-gpu
 ---
-
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: birentech-device-plugin
 rules:
-- apiGroups: [""]
-  resources:
-  - nodes
-  - pods
-  verbs: ["get", "list", "watch", "update", "patch"]
+  - apiGroups: [""]
+    resources:
+      - nodes
+      - pods
+    verbs: ["get", "list", "watch", "update", "patch"]
 
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -57,9 +55,9 @@ roleRef:
   kind: ClusterRole
   name: birentech-device-plugin
 subjects:
-- kind: ServiceAccount
-  name: device-plugin-sa
-  namespace: biren-gpu
+  - kind: ServiceAccount
+    name: device-plugin-sa
+    namespace: biren-gpu
 
 ---
 apiVersion: apps/v1
@@ -81,45 +79,45 @@ spec:
         app.kubernetes.io/name: gpu-exporter
     spec:
       nodeSelector:
-        birentech.com: gpu
+        biren: "on"
       tolerations:
-      - key: CriticalAddonsOnly
-        operator: Exists
-      - key: birentech.com/gpu
-        operator: Exists
-        effect: NoSchedule
+        - key: CriticalAddonsOnly
+          operator: Exists
+        - key: birentech.com/gpu
+          operator: Exists
+          effect: NoSchedule
       priorityClassName: "system-node-critical"
       containers:
-      - name: k8s-device-plugin
-        image: projecthami/biren-device-plugin:latest
-        imagePullPolicy: Always
-        env:
-          - name: LD_LIBRARY_PATH
-            value: /usr/lib
-          - name: NODE_NAME
-            valueFrom:
-              fieldRef:
-                fieldPath: spec.nodeName
-        command: ["/root/k8s-device-plugin"]
-        args: ["--pulse", "300", "--container-runtime", "runc"]
-        securityContext:
-          privileged: true
-        volumeMounts:
-          - name: dp
-            mountPath: /var/lib/kubelet/device-plugins
-          - name: sys
-            mountPath: /sys
-          - name: brml
-            mountPath: /usr/lib
-          - name: brml-lib
-            mountPath: /usr/local/birensupa/driver/biren-smi/lib
-            readOnly: true
-          - name: brsmi
-            mountPath: /opt/birentech/bin
-          - mountPath: /dev
-            name: device
-          - name: cdi-config
-            mountPath: /etc/cdi
+        - name: k8s-device-plugin
+          image: projecthami/biren-device-plugin:latest
+          imagePullPolicy: Always
+          env:
+            - name: LD_LIBRARY_PATH
+              value: /usr/lib
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          command: ["/root/k8s-device-plugin"]
+          args: ["--pulse", "300", "--container-runtime", "runc"]
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: dp
+              mountPath: /var/lib/kubelet/device-plugins
+            - name: sys
+              mountPath: /sys
+            - name: brml
+              mountPath: /usr/lib
+            - name: brml-lib
+              mountPath: /usr/local/birensupa/driver/biren-smi/lib
+              readOnly: true
+            - name: brsmi
+              mountPath: /opt/birentech/bin
+            - mountPath: /dev
+              name: device
+            - name: cdi-config
+              mountPath: /etc/cdi
       serviceAccountName: device-plugin-sa
       volumes:
         - name: dp
@@ -163,5 +161,6 @@ spec:
 ```
 
 ## Notes
+
 1. When requesting Biren resources, you cannot specify the memory size.
 2. SVI partitioning can only split a single card into either two or four partitions.
