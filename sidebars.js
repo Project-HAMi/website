@@ -16,6 +16,7 @@ module.exports = {
         "core-concepts/gpu-stack",
         "core-concepts/gpu-driver",
         "core-concepts/hami-architecture",
+        "core-concepts/ecosystem-integrations",
       ],
     },
     {
@@ -300,37 +301,48 @@ module.exports = {
         },
         {
           type: "category",
-          label: "Volcano vGPU",
+          label: "Scheduler Integrations",
           items: [
             {
               type: "category",
-              label: "NVIDIA GPU",
+              label: "Volcano vGPU",
               items: [
-                "userguide/volcano-vgpu/nvidia-gpu/how-to-use-volcano-vgpu",
-                "userguide/volcano-vgpu/nvidia-gpu/monitor",
                 {
                   type: "category",
-                  label: "Examples",
-                  key: "volcano-vgpu-examples",
+                  label: "NVIDIA GPU",
                   items: [
-                    "userguide/volcano-vgpu/nvidia-gpu/examples/default-use",
-                    "userguide/volcano-vgpu/nvidia-gpu/examples/use-exclusive-gpu",
+                    "userguide/volcano-vgpu/nvidia-gpu/how-to-use-volcano-vgpu",
+                    "userguide/volcano-vgpu/nvidia-gpu/monitor",
+                    {
+                      type: "category",
+                      label: "Examples",
+                      key: "volcano-vgpu-examples",
+                      items: [
+                        "userguide/volcano-vgpu/nvidia-gpu/examples/default-use",
+                        "userguide/volcano-vgpu/nvidia-gpu/examples/use-exclusive-gpu",
+                      ],
+                    },
                   ],
                 },
               ],
             },
-          ],
-        },
-        {
-          type: "category",
-          label: "Using HAMi with Kueue",
-          items: [
-            "userguide/kueue/how-to-use-kueue",
             {
               type: "category",
-              label: "Examples",
-              key: "kueue-examples",
-              items: ["userguide/kueue/examples/default-use"],
+              label: "Using HAMi with Kueue",
+              items: [
+                "userguide/kueue/how-to-use-kueue",
+                {
+                  type: "category",
+                  label: "Examples",
+                  key: "kueue-examples",
+                  items: ["userguide/kueue/examples/default-use"],
+                },
+              ],
+            },
+            {
+              type: "category",
+              label: "Using HAMi with KAI Scheduler",
+              items: ["userguide/kai-scheduler/how-to-use-kai-scheduler"],
             },
           ],
         },
