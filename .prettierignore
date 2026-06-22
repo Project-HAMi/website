@@ -1,0 +1,13 @@
+node_modules
+build
+.docusaurus
+output
+versioned_docs
+versioned_sidebars
+package-lock.json
+CHANGELOG.md
+changelog
+src/scripts/changelog.json
+i18n/zh/changelog-plugin
+i18n/zh/docusaurus-plugin-content-blog-changelog
+i18n/zh/docusaurus-plugin-content-docs/version-*

@@ -3,8 +3,6 @@ title: 分配 metax 设备
 translated: true
 ---
 
-## 分配 metax 设备
-
 要分配 metax 设备，你只需分配 `metax-tech.com/gpu`，无需其他字段。
 
 ```yaml

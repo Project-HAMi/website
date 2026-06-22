@@ -51,6 +51,7 @@ spec:
 ## Enable vDCU inside container
 
 You need to enable vDCU inside container in order to use it.
+
 ```bash
 source /opt/hygondriver/env.sh
 ```
@@ -65,9 +66,9 @@ If you have an output like this, then you have successfully enabled vDCU inside 
 
 ```console
 Device 0:
-	Actual Device: 0
-	Compute units: 60
-	Global memory: 2097152000 bytes
+ Actual Device: 0
+ Compute units: 60
+ Global memory: 2097152000 bytes
 ```
 
 Launch your DCU tasks like you usually do

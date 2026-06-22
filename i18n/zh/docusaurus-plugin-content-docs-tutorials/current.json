@@ -1,0 +1,14 @@
+{
+  "sidebar.tutorials.category.Labs": {
+    "message": "实验",
+    "description": "The label for category Labs in sidebar tutorials"
+  },
+  "sidebar.tutorials.category.Labs.link.generated-index.title": {
+    "message": "实验",
+    "description": "The generated-index page title for category 'Labs' in sidebar 'tutorials'"
+  },
+  "sidebar.tutorials.category.Labs.link.generated-index.description": {
+    "message": "带真实捕获输出的分步练习。",
+    "description": "The generated-index page description for category 'Labs' in sidebar 'tutorials'"
+  }
+}

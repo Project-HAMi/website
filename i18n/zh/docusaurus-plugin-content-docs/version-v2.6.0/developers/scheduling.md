@@ -22,6 +22,7 @@ translated: true
 #### 故事 1
 
 节点 binpack，尽可能使用一个节点的 GPU 卡，例如：
+
 - 集群资源：
   - 节点1：GPU 拥有 4 个 GPU 设备
   - 节点2：GPU 拥有 4 个 GPU 设备
@@ -100,7 +101,7 @@ score: ((request + used) / allocatable) * 10
 Node1 score: ((1+3)/4) * 10= 10
 ```
 
-2. 节点2的 Binpack 评分信息如下
+1. 节点2的 Binpack 评分信息如下
 
 ```text
 Node2 score: ((1+2)/4) * 10= 7.5
@@ -117,11 +118,13 @@ score: ((request + used) / allocatable) * 10
 ```
 
 1. 节点1的 Spread 评分信息如下
+
 ```text
 Node1 score: ((1+3)/4) * 10= 10
 ```
 
-2. 节点2的 Spread 评分信息如下
+1. 节点2的 Spread 评分信息如下
+
 ```text
 Node2 score: ((1+2)/4) * 10= 7.5
 ```
@@ -135,16 +138,19 @@ Node2 score: ((1+2)/4) * 10= 7.5
 #### Binpack
 
 Binpack 主要关注每张卡的计算能力和显存使用情况。使用越多，得分越高。
+
 ```text
 score: ((request.core + used.core) / allocatable.core + (request.mem + used.mem) / allocatable.mem)) * 10
 ```
 
 1. GPU1 的 Binpack 评分信息如下
+
 ```text
 GPU1 Score: ((20+10)/100 + (1000+2000)/8000)) * 10 = 6.75
 ```
 
-2. GPU2 的 Binpack 评分信息如下
+1. GPU2 的 Binpack 评分信息如下
+
 ```text
 GPU2 Score: ((20+70)/100 + (1000+6000)/8000)) * 10 = 17.75
 ```
@@ -154,16 +160,19 @@ GPU2 Score: ((20+70)/100 + (1000+6000)/8000)) * 10 = 17.75
 #### Spread
 
 Spread 主要关注每张卡的计算能力和显存使用情况。使用越少，得分越少，但调度优先级越高。
+
 ```text
 score: ((request.core + used.core) / allocatable.core + (request.mem + used.mem) / allocatable.mem)) * 10
 ```
 
 1. GPU1 的 Spread 评分信息如下
+
 ```text
 GPU1 Score: ((20+10)/100 + (1000+2000)/8000)) * 10 = 6.75
 ```
 
-2. GPU2 的 Spread 评分信息如下
+1. GPU2 的 Spread 评分信息如下
+
 ```text
 GPU2 Score: ((20+70)/100 + (1000+6000)/8000)) * 10 = 17.75
 ```
@@ -175,6 +184,7 @@ GPU2 Score: ((20+70)/100 + (1000+6000)/8000)) * 10 = 17.75
 ##### NVIDIA 拓扑感知（仅 NVIDIA GPU 支持）
 
 NVIDIA 拓扑感知主要关注每张卡之间的拓扑关系（使用`nvidia-smi topo-m` 命令查询），hami-device-plugin 会根据拓扑关系计算出卡与卡之间的得分，GPU 之间带宽越大，得分越高。如下所示：
+
 ```json
 [
   {
@@ -211,25 +221,32 @@ NVIDIA 拓扑感知主要关注每张卡之间的拓扑关系（使用`nvidia-sm
   }
 ]
 ```
+
 ###### 单卡
 
 当一个Pod只需要一张卡时，优先考虑与其他卡通信最差的卡，得分越低，调度优先级越高，如下
+
 1. gpu0 与其他卡的得分之和如下
+
 ```text
    gpu0 score: 100+100+200 = 400
 ```
-2. gpu1 与其他卡得分之和如下
+1. gpu1 与其他卡得分之和如下
+
 ```text
 gpu1 score: 100+200+100 = 400
 ```
-3. gpu2 与其他卡得分之和如下
+1. gpu2 与其他卡得分之和如下
+
 ```text
 gpu2 score: 100+200+200 = 500
 ```
-4. gpu3 与其他卡得分之和如下
+1. gpu3 与其他卡得分之和如下
+
 ```text
 gpu3 score: 200+100+200 = 500
 ```
+
 因此在`Pod仅申请一张卡时`，我们会随机选择`gpu0` 或者`gpu1`
 
 ###### 多卡
@@ -237,16 +254,22 @@ gpu3 score: 200+100+200 = 500
 当Pod申请了多张卡（大于一张卡）时，会优先考虑得分最高的组合，得分越高，调度优先级越高。
 
 举例：Pod申请了3张卡时，以`gpu0，gpu1，gpu2`为例，得分计算方式为`totalScore = score（gpu0，gpu1）+ score（gpu0，gpu2）+ score（gpu1，gpu2）`
+
 1. gpu0，gpu1，gpu2 得分如下
+
 ```text
    (gpu0, gpu1, gpu2) totalScore: 100+100+200 = 400
 ```
-2. gpu0，gpu1，gpu3 得分如下
+1. gpu0，gpu1，gpu3 得分如下
+
 ```text
 （gpu0，gpu1，gpu3）totalScore：100+200+100 = 400
 ```
+
 1. gpu1，gpu2，gpu3 得分如下
+
 ```text
 （gpu1，gpu2，gpu3）totalScore：200+100+200 = 500
 ```
+
 因此在`Pod 申请3张卡时`，我们会选择分配`gpu1，gpu2，gpu3`

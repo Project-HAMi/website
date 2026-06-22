@@ -1,0 +1,7 @@
+---
+title: HAMi mind map
+---
+
+## Mind map
+
+![HAMi VGPU mind map showing project structure and components](/img/docs/en/mindmap/hami-vgpu-mind-map-en.png)

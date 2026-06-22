@@ -1,7 +1,7 @@
 const { themes } = require("prism-react-renderer");
 const lightTheme = themes.github;
 const darkTheme = themes.dracula;
-const defaultLocale = 'en';
+const defaultLocale = "en";
 
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
@@ -26,6 +26,7 @@ module.exports = {
     defaultOgImage: "/img/hami-graph-color.png",
   },
   markdown: {
+    mermaid: true,
     hooks: {
       onBrokenMarkdownLinks: "throw",
     },
@@ -34,8 +35,8 @@ module.exports = {
   projectName: "website",
   favicon: "img/logo.svg",
   clientModules: [
-    require.resolve('./src/client/imageFigureNumber.js'),
-    require.resolve('./src/client/webmcp.js'),
+    require.resolve("./src/client/imageFigureNumber.js"),
+    require.resolve("./src/client/webmcp.js"),
   ],
   i18n: {
     defaultLocale: defaultLocale,
@@ -178,7 +179,7 @@ module.exports = {
   ],
   plugins: [
     [
-      './src/plugins/docs/index.js',
+      "./src/plugins/docs/index.js",
       {
         sidebarPath: require.resolve("./sidebars.js"),
         editUrl: function ({ locale, docPath }) {
@@ -187,12 +188,6 @@ module.exports = {
         showLastUpdateAuthor: false,
         showLastUpdateTime: true,
         includeCurrentVersion: true,
-        lastVersion: 'current',
-        versions: {
-          current: {
-            label: 'latest',
-          },
-        },
         // Performance optimization: Disable number prefix parser
         numberPrefixParser: false,
         // Performance optimization: Disable breadcrumbs for performance
@@ -200,34 +195,49 @@ module.exports = {
       },
     ],
     [
-      './src/plugins/changelog/index.js',
+      "./src/plugins/docs/index.js",
       {
-        blogTitle: 'HAMi Changelog',
-        blogDescription:
-          'Keep yourself up-to-date about new features in every release',
-        blogSidebarCount: 'ALL',
-        blogSidebarTitle: 'Changelog',
-        routeBasePath: '/changelog',
+        id: "tutorials",
+        path: "tutorials",
+        routeBasePath: "tutorials",
+        sidebarPath: require.resolve("./sidebars-tutorials.js"),
+        editUrl: function ({ locale, docPath }) {
+          return `https://github.com/Project-HAMi/website/edit/master/tutorials/${docPath}`;
+        },
+        showLastUpdateTime: true,
+        numberPrefixParser: false,
+        breadcrumbs: false,
+      },
+    ],
+    [
+      "./src/plugins/changelog/index.js",
+      {
+        blogTitle: "HAMi Changelog",
+        blogDescription: "Keep yourself up-to-date about new features in every release",
+        blogSidebarCount: "ALL",
+        blogSidebarTitle: "Changelog",
+        routeBasePath: "/changelog",
         showReadingTime: false,
         postsPerPage: 20,
         archiveBasePath: null,
-        authorsMapPath: 'authors.json',
-        onInlineAuthors: 'warn',
+        authorsMapPath: "authors.json",
+        onInlineAuthors: "warn",
       },
     ],
   ],
   themes: [
+    "@docusaurus/theme-mermaid",
     [
       require.resolve("@easyops-cn/docusaurus-search-local"),
       {
         indexDocs: true,
         indexBlog: false,
         indexPages: false,
-        docsRouteBasePath: ["/docs", "/zh/docs"],
+        docsRouteBasePath: ["/docs", "/zh/docs", "/tutorials", "/zh/tutorials"],
         language: ["en", "zh"],
         hashed: "filename",
         docsPluginIdForPreferredVersion: "default",
-        searchContextByPaths: ["docs", "zh/docs"],
+        searchContextByPaths: ["docs", "zh/docs", "tutorials", "zh/tutorials"],
         useAllContextsWithNoSearchContext: true,
         explicitSearchResultPath: true,
         // Performance optimization: Limit search result snippets
@@ -263,6 +273,12 @@ module.exports = {
           position: "left",
         },
         {
+          to: "/tutorials",
+          activeBasePath: "tutorials",
+          label: "Tutorials",
+          position: "left",
+        },
+        {
           to: "/case-studies",
           activeBasePath: "case-studies",
           label: "Case Studies",
@@ -282,7 +298,7 @@ module.exports = {
         },
         {
           label: "Releases",
-          to: '/changelog',
+          to: "/changelog",
           position: "left",
         },
         {

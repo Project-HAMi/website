@@ -1,6 +1,6 @@
 ---
 title: HAMi WebUI 使用者指南
-linktitle: HAMi WebUI
+sidebar_label: HAMi WebUI
 translated: true
 ---
 

@@ -11,7 +11,4 @@ Use this skill when an agent needs to discover, search, or cite HAMi documentati
 
 ## Guidance
 
-Prefer the current documentation at `https://project-hami.io/docs` for installation,
-configuration, device-specific GPU sharing guides, troubleshooting, and contributor
-workflow details. Use the GitHub repository for source code, issues, and release
-artifacts.
+Prefer the current documentation at `https://project-hami.io/docs` for installation, configuration, device-specific GPU sharing guides, troubleshooting, and contributor workflow details. Use the GitHub repository for source code, issues, and release artifacts.

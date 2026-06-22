@@ -27,7 +27,7 @@ HAMi-core intercepts and manages ACL (Ascend Computing Language) calls purely th
 Compared to traditional SR-IOV hardware partitioning, HAMi-core represents a qualitative leap in partitioning granularity and flexibility:
 
 | Dimension | Exclusive Mode | SR-IOV | HAMi-core (v2.9) |
-| :- | :- | :- | :- |
+| :-- | :-- | :-- | :-- |
 | Memory partitioning | Not partitionable | Fixed per VF | **MB-level precise control** |
 | Compute partitioning | Not partitionable | Proportional per VF | **Percentage-level flexible config** |
 | Partition count | 1 Pod/card | Typically 2-4 VF/card | **10+ Pod/card** |
@@ -105,7 +105,7 @@ Volcano vGPU Device Plugin repository: [https://github.com/Project-HAMi/volcano-
 Vastai Technologies is a leading domestic general-purpose GPU chip design company. v2.9.0 adds management support for their devices, offering two allocation modes:
 
 | Mode | Description | Use Cases |
-| :- | :- | :- |
+| :-- | :-- | :-- |
 | **Full-Card Mode** | Each Pod exclusively occupies an entire GPU | LLM training, performance-sensitive inference |
 | **Die Mode** | Partitioned by chip Die, scheduler aware of AIC topology to reduce cross-Die communication overhead | Multi-task sharing, resource utilization optimization |
 
@@ -205,10 +205,12 @@ helm upgrade hami hami-charts/hami -n hami-system
 
 For complete installation documentation, refer to: [https://project-hami.io/docs/installation/online-installation](https://project-hami.io/docs/installation/online-installation)
 
-:::warning Upgrade notes
+:::warning[Upgrade notes]
+
 - If using Volcano vGPU mode, please note CDI-related configuration changes
 - If using Ascend devices and wish to enable HAMi-core mode, refer to the Ascend configuration section in the latest documentation
 - It is recommended to verify compatibility in a test environment before upgrading
+
 :::
 
 ## Community Updates

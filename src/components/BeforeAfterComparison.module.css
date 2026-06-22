@@ -163,7 +163,7 @@
 }
 
 .flowLink i::after {
-  content: '';
+  content: "";
   position: absolute;
   right: -1px;
   top: 50%;
@@ -260,12 +260,11 @@
 }
 
 .wastedBlock {
-  background:
-    repeating-linear-gradient(
-      135deg,
-      rgba(208, 216, 224, 0.78) 0 7px,
-      rgba(195, 205, 214, 0.9) 7px 14px
-    );
+  background: repeating-linear-gradient(
+    135deg,
+    rgba(208, 216, 224, 0.78) 0 7px,
+    rgba(195, 205, 214, 0.9) 7px 14px
+  );
 }
 
 .workloadABlock {
@@ -338,17 +337,22 @@
   border: 1px solid rgba(56, 121, 173, 0.26);
 }
 
-.legendSwatchA { background: rgba(217, 119, 6, 0.75); }
-.legendSwatchB { background: rgba(85, 154, 208, 0.82); }
-.legendSwatchWaste {
-  background:
-    repeating-linear-gradient(
-      135deg,
-      rgba(208, 216, 224, 0.82) 0 3px,
-      rgba(195, 205, 214, 0.92) 3px 6px
-    );
+.legendSwatchA {
+  background: rgba(217, 119, 6, 0.75);
 }
-.legendSwatchAvail { background: rgba(214, 239, 202, 0.92); }
+.legendSwatchB {
+  background: rgba(85, 154, 208, 0.82);
+}
+.legendSwatchWaste {
+  background: repeating-linear-gradient(
+    135deg,
+    rgba(208, 216, 224, 0.82) 0 3px,
+    rgba(195, 205, 214, 0.92) 3px 6px
+  );
+}
+.legendSwatchAvail {
+  background: rgba(214, 239, 202, 0.92);
+}
 
 .summary {
   display: grid;
@@ -382,7 +386,7 @@
   display: grid;
   gap: 2px;
   padding-left: 10px;
-  border-left: 3px solid var(--ifm-color-primary, #76b900);
+  border-left: 3px solid var(--ifm-color-primary, #10d05d);
 }
 
 .metricBadge span {
@@ -400,27 +404,25 @@
   line-height: 1.1;
 }
 
-
-
-:global(html[data-theme='light']) .requestRowItem,
-:global(html[data-theme='light']) .metricBadge {
+:global(html[data-theme="light"]) .requestRowItem,
+:global(html[data-theme="light"]) .metricBadge {
   border-color: rgba(53, 109, 157, 0.22);
   background: rgba(255, 255, 255, 0.74);
 }
 
-:global(html[data-theme='light']) .requestText strong,
-:global(html[data-theme='light']) .allocHead h4,
-:global(html[data-theme='light']) .flowLink span,
-:global(html[data-theme='light']) .gpuLabel,
-:global(html[data-theme='light']) .summaryLead,
-:global(html[data-theme='light']) .summaryLine,
-:global(html[data-theme='light']) .metricBadge strong {
+:global(html[data-theme="light"]) .requestText strong,
+:global(html[data-theme="light"]) .allocHead h4,
+:global(html[data-theme="light"]) .flowLink span,
+:global(html[data-theme="light"]) .gpuLabel,
+:global(html[data-theme="light"]) .summaryLead,
+:global(html[data-theme="light"]) .summaryLine,
+:global(html[data-theme="light"]) .metricBadge strong {
   color: #173b5a;
 }
 
-:global(html[data-theme='light']) .requestText span,
-:global(html[data-theme='light']) .allocFoot span,
-:global(html[data-theme='light']) .legendItem {
+:global(html[data-theme="light"]) .requestText span,
+:global(html[data-theme="light"]) .allocFoot span,
+:global(html[data-theme="light"]) .legendItem {
   color: #5a7590;
 }
 

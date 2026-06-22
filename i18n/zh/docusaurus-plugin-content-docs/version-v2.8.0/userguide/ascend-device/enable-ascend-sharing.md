@@ -1,6 +1,6 @@
 ---
 title: 启用 Ascend 共享
-linktitle: Ascend 共享
+sidebar_label: Ascend 共享
 translated: true
 ---
 

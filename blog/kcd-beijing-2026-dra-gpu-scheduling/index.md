@@ -97,12 +97,12 @@ A key slide in the PPT, often overlooked:
 spec:
   devices:
     requests:
-    - exactly:
-        allocationMode: ExactCount
-        capacity:
-          requests:
-            memory: 4194304k
-            count: 1
+      - exactly:
+          allocationMode: ExactCount
+          capacity:
+            requests:
+              memory: 4194304k
+              count: 1
 ```
 
 You also need to write a CEL selector:

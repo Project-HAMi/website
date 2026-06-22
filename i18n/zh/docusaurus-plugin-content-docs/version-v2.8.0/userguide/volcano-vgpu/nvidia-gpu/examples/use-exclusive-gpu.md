@@ -1,6 +1,6 @@
 ---
 title: 使用独占 GPU
-linktitle: 独占 GPU
+sidebar_label: 独占 GPU
 translated: true
 ---
 

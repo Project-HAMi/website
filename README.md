@@ -5,6 +5,7 @@
 Official documentation and website for [HAMi (Heterogeneous AI Computing Virtualization Middleware)](https://project-hami.io/) - an open-source GPU virtualization solution for heterogeneous AI computing.
 
 This repository contains:
+
 - **Complete HAMi documentation** covering installation, usage, and development
 - **Official HAMi website** built with [Docusaurus 3](https://docusaurus.io/)
 - **Device-specific guides** for NVIDIA, Ascend, Cambricon, Enflame, Hygon, and more
@@ -91,12 +92,14 @@ Visit `http://localhost:3000` to preview.
 ## Performance Optimizations
 
 This site uses several build optimizations for fast builds despite containing:
+
 - 250+ English documentation pages
 - 1700+ translated (English/Chinese) pages
 - 7 historical versions (v1.3.0 to v2.8.0)
 - Full-text search indexing
 
 See [BUILD_OPTIMIZATION.md](./BUILD_OPTIMIZATION.md) for details on optimizations including:
+
 - Docusaurus Faster (Rspack)
 - SWC JavaScript compiler
 - Multi-threaded static generation
@@ -140,20 +143,21 @@ This adds the DCO signature: `Signed-off-by: Your Name <your.email@example.com>`
 
 ## Build Scripts
 
-| Command | Description |
-|---------|-------------|
-| `npm start` | Start development server with hot-reload |
-| `npm start:network` | Start dev server accessible on local network |
-| `npm run build` | Build full production site (all languages) |
-| `npm run build:fast` | Build English only (faster for testing) |
-| `npm run serve` | Serve production build locally |
-| `npm run fetch-changelog` | Fetch changelog from GitHub releases |
-| `npm run write-translations` | Update translation files |
-| `npm run clear` | Clear Docusaurus cache |
+| Command                      | Description                                  |
+| ---------------------------- | -------------------------------------------- |
+| `npm start`                  | Start development server with hot-reload     |
+| `npm start:network`          | Start dev server accessible on local network |
+| `npm run build`              | Build full production site (all languages)   |
+| `npm run build:fast`         | Build English only (faster for testing)      |
+| `npm run serve`              | Serve production build locally               |
+| `npm run fetch-changelog`    | Fetch changelog from GitHub releases         |
+| `npm run write-translations` | Update translation files                     |
+| `npm run clear`              | Clear Docusaurus cache                       |
 
 ## Multi-Language Support
 
 The site supports English and Chinese (Simplified). Content is organized as:
+
 - **English**: `docs/` and `i18n/en/`
 - **Chinese**: `i18n/zh/`
 

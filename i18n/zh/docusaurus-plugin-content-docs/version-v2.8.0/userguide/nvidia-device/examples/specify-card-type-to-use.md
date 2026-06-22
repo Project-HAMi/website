@@ -1,6 +1,6 @@
 ---
 title: 分配任务到特定类型
-linktitle: 指定卡类型
+sidebar_label: 指定卡类型
 translated: true
 ---
 

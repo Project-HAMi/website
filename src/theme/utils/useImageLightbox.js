@@ -1,13 +1,15 @@
-import {useEffect} from 'react';
-import ExecutionEnvironment from '@docusaurus/ExecutionEnvironment';
+import { useEffect } from "react";
+import ExecutionEnvironment from "@docusaurus/ExecutionEnvironment";
 
 const MARKDOWN_IMAGE_SCOPE =
-  '.theme-doc-markdown, .theme-blog-markdown, article.markdown, .markdown';
+  ".theme-doc-markdown, .theme-blog-markdown, article.markdown, .markdown";
 
 const BLOCKED_SCOPE =
-  '.no-lightbox, .avatar, .table-of-contents, .pagination-nav, .navbar, .footer';
+  ".no-lightbox, .avatar, .table-of-contents, .pagination-nav, .navbar, .footer";
 
-function isImageHref(href = '') {
+const MERMAID_CONTAINER = ".docusaurus-mermaid-container";
+
+function isImageHref(href = "") {
   return /\.(png|jpe?g|webp|gif|avif|svg)(\?|#|$)/i.test(href);
 }
 
@@ -28,66 +30,97 @@ function shouldOpenLightbox(image) {
 }
 
 function ensureLightbox() {
-  let root = document.querySelector('.hami-lightbox');
+  let root = document.querySelector(".hami-lightbox");
   if (root) {
     return root;
   }
 
-  root = document.createElement('div');
-  root.className = 'hami-lightbox';
-  root.setAttribute('role', 'dialog');
-  root.setAttribute('aria-modal', 'true');
-  root.setAttribute('aria-label', 'Image preview');
+  root = document.createElement("div");
+  root.className = "hami-lightbox";
+  root.setAttribute("role", "dialog");
+  root.setAttribute("aria-modal", "true");
+  root.setAttribute("aria-label", "Image preview");
   root.hidden = true;
 
-  const closeButton = document.createElement('button');
-  closeButton.type = 'button';
-  closeButton.className = 'hami-lightbox__close';
-  closeButton.setAttribute('aria-label', 'Close image preview');
-  closeButton.textContent = '×';
+  const closeButton = document.createElement("button");
+  closeButton.type = "button";
+  closeButton.className = "hami-lightbox__close";
+  closeButton.setAttribute("aria-label", "Close image preview");
+  closeButton.textContent = "×";
 
-  const lightboxImage = document.createElement('img');
-  lightboxImage.className = 'hami-lightbox__image';
-  lightboxImage.alt = '';
+  const lightboxImage = document.createElement("img");
+  lightboxImage.className = "hami-lightbox__image";
+  lightboxImage.alt = "";
 
-  const caption = document.createElement('p');
-  caption.className = 'hami-lightbox__caption';
+  const svgHost = document.createElement("div");
+  svgHost.className = "hami-lightbox__svg";
+  svgHost.hidden = true;
+
+  const caption = document.createElement("p");
+  caption.className = "hami-lightbox__caption";
 
   root.appendChild(closeButton);
   root.appendChild(lightboxImage);
+  root.appendChild(svgHost);
   root.appendChild(caption);
   document.body.appendChild(root);
 
   const close = () => {
     root.hidden = true;
-    document.body.classList.remove('hami-lightbox-open');
-    lightboxImage.removeAttribute('src');
-    lightboxImage.alt = '';
-    caption.textContent = '';
+    document.body.classList.remove("hami-lightbox-open");
+    lightboxImage.removeAttribute("src");
+    lightboxImage.alt = "";
+    lightboxImage.hidden = false;
+    svgHost.hidden = true;
+    svgHost.replaceChildren();
+    caption.textContent = "";
   };
 
-  root.addEventListener('click', (event) => {
+  root.addEventListener("click", (event) => {
     if (event.target === root) {
       close();
     }
   });
 
-  lightboxImage.addEventListener('click', close);
+  lightboxImage.addEventListener("click", close);
+  svgHost.addEventListener("click", close);
 
-  closeButton.addEventListener('click', close);
+  closeButton.addEventListener("click", close);
 
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && !root.hidden) {
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !root.hidden) {
       close();
     }
   });
 
-  root.__hamiLightboxOpen = ({src, alt}) => {
+  root.__hamiLightboxOpen = ({ src, alt }) => {
     lightboxImage.src = src;
-    lightboxImage.alt = alt || '';
-    caption.textContent = alt || '';
+    lightboxImage.alt = alt || "";
+    lightboxImage.hidden = false;
+    svgHost.hidden = true;
+    svgHost.replaceChildren();
+    caption.textContent = alt || "";
     root.hidden = false;
-    document.body.classList.add('hami-lightbox-open');
+    document.body.classList.add("hami-lightbox-open");
+  };
+
+  root.__hamiLightboxOpenSvg = (svg, captionText) => {
+    const clone = svg.cloneNode(true);
+    // Mermaid caps the inline SVG at its rendered size; lift the cap and let
+    // it scale to fit the lightbox box in both dimensions (the viewBox keeps
+    // the aspect ratio), so the whole diagram is visible without scrolling.
+    clone.style.maxWidth = "none";
+    clone.style.width = "100%";
+    clone.style.height = "100%";
+    clone.removeAttribute("height");
+    clone.removeAttribute("width");
+    svgHost.replaceChildren(clone);
+    svgHost.hidden = false;
+    lightboxImage.hidden = true;
+    lightboxImage.removeAttribute("src");
+    caption.textContent = captionText || "";
+    root.hidden = false;
+    document.body.classList.add("hami-lightbox-open");
   };
 
   return root;
@@ -99,16 +132,33 @@ function handleImageClick(event) {
     return;
   }
 
-  const image = target instanceof HTMLImageElement ? target : target.closest('img');
+  // Mermaid diagrams: clicking anywhere in the rendered container zooms it.
+  const mermaidContainer = target.closest(MERMAID_CONTAINER);
+  if (
+    mermaidContainer &&
+    mermaidContainer.closest(MARKDOWN_IMAGE_SCOPE) &&
+    !mermaidContainer.closest(BLOCKED_SCOPE)
+  ) {
+    const svg = mermaidContainer.querySelector("svg");
+    if (svg) {
+      const figure = mermaidContainer.closest("figure.mermaid-figure");
+      const captionText = figure?.querySelector("figcaption")?.textContent || "";
+      const lightbox = ensureLightbox();
+      lightbox.__hamiLightboxOpenSvg(svg, captionText);
+      return;
+    }
+  }
+
+  const image = target instanceof HTMLImageElement ? target : target.closest("img");
   if (!shouldOpenLightbox(image)) {
     return;
   }
 
-  const parentLink = image.closest('a');
+  const parentLink = image.closest("a");
   if (parentLink) {
-    const href = parentLink.getAttribute('href') || '';
+    const href = parentLink.getAttribute("href") || "";
     const sameAsImage =
-      href === image.currentSrc || href === image.src || href === image.getAttribute('src');
+      href === image.currentSrc || href === image.src || href === image.getAttribute("src");
     if (!sameAsImage && !isImageHref(href)) {
       return;
     }
@@ -118,7 +168,7 @@ function handleImageClick(event) {
   const lightbox = ensureLightbox();
   lightbox.__hamiLightboxOpen({
     src: image.currentSrc || image.src,
-    alt: image.alt || '',
+    alt: image.alt || "",
   });
 }
 
@@ -129,10 +179,10 @@ export default function useImageLightbox() {
     }
 
     window.__hamiLightboxInitialized = true;
-    document.addEventListener('click', handleImageClick);
+    document.addEventListener("click", handleImageClick);
 
     return () => {
-      document.removeEventListener('click', handleImageClick);
+      document.removeEventListener("click", handleImageClick);
       window.__hamiLightboxInitialized = false;
     };
   }, []);

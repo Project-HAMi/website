@@ -11,9 +11,7 @@ const { execSync } = require("child_process");
 const foundContributors = new Map();
 const version = process.argv[2];
 if (!version) {
-  console.error(
-    "Please provide the version number: npm run fetch-changelog 2.5.1"
-  );
+  console.error("Please provide the version number: npm run fetch-changelog 2.5.1");
   process.exit(1);
 }
 const versionWithPrefix = `v${version}`;
@@ -32,7 +30,7 @@ function formatGitHubMarkdown(text) {
     (match, username) => {
       foundContributors.set(username, { name: username, username: username });
       return `[@${username}](https://github.com/${username})`;
-    }
+    },
   );
   formatted = formatted.replace(
     /by\s+\[\([@a-zA-Z0-9-_]+\]\(https:\/\/github\.com\/[a-zA-Z0-9-_]+\)\)\]/g,
@@ -45,22 +43,16 @@ function formatGitHubMarkdown(text) {
         });
       }
       return match.replace("[", "").replace("]", "");
-    }
+    },
   );
-  formatted = formatted.replace(
-    /by\s+\[\(@([a-zA-Z0-9-_]+)\)\]/g,
-    (match, username) => {
-      foundContributors.set(username, { name: username, username: username });
-      return `by ([@${username}](https://github.com/${username}))`;
-    }
-  );
-  formatted = formatted.replace(
-    /(?<!\[)@([a-zA-Z0-9-_]+)(?!\])/g,
-    (match, username) => {
-      foundContributors.set(username, { name: username, username: username });
-      return `[@${username}](https://github.com/${username})`;
-    }
-  );
+  formatted = formatted.replace(/by\s+\[\(@([a-zA-Z0-9-_]+)\)\]/g, (match, username) => {
+    foundContributors.set(username, { name: username, username: username });
+    return `by ([@${username}](https://github.com/${username}))`;
+  });
+  formatted = formatted.replace(/(?<!\[)@([a-zA-Z0-9-_]+)(?!\])/g, (match, username) => {
+    foundContributors.set(username, { name: username, username: username });
+    return `[@${username}](https://github.com/${username})`;
+  });
   formatted = formatted.replace(/(?<!\[)#(\d+)(?!\])/g, (match, number) => {
     return `[#${number}](https://github.com/Project-HAMi/HAMi/pull/${number})`;
   });
@@ -78,10 +70,9 @@ function formatGitHubMarkdown(text) {
         return `by ([@${username}](https://github.com/${username}))`;
       }
       return match;
-    }
+    },
   );
-  const standardPattern =
-    /\(\[@([a-zA-Z0-9-_]+)\]\(https:\/\/github\.com\/[a-zA-Z0-9-_]+\)\)/g;
+  const standardPattern = /\(\[@([a-zA-Z0-9-_]+)\]\(https:\/\/github\.com\/[a-zA-Z0-9-_]+\)\)/g;
   let standardMatch;
   while ((standardMatch = standardPattern.exec(formatted)) !== null) {
     const username = standardMatch[1];
@@ -148,9 +139,7 @@ function fetchReleaseInfo() {
             }
             resolve(releaseInfo);
           } catch (error) {
-            console.error(
-              `Failed to parse API response, trying to fetch from web page...`
-            );
+            console.error(`Failed to parse API response, trying to fetch from web page...`);
             fetchFromWebPage().then(resolve).catch(reject);
           }
         });
@@ -193,7 +182,7 @@ function fetchFromWebPage() {
           .replace(/&amp;/g, "&");
       } else {
         body = `#### :rocket: Major features\n\n- Please manually fill in the major features\n\n#### :bug: Major bug fixes\n\n- Please manually fill in the major fixes\n\n#### :memo: What's Changed\n\n##### ⬆️ Dependencies\n\n- Please manually fill in the dependency updates\n\n##### 🔨 Other Changes\n\n- Please manually fill in the other changes\n\n#### Committers: Contributors\n\n- Please manually fill in the contributor information\n\n**Full Changelog**: https://github.com/Project-HAMi/HAMi/compare/v${getPreviousVersion(
-          version
+          version,
         )}...${versionWithPrefix}`;
       }
       resolve({
@@ -201,19 +190,12 @@ function fetchFromWebPage() {
         body: body,
       });
     } catch (error) {
-      reject(
-        new Error(`Failed to fetch release information: ${error.message}`)
-      );
+      reject(new Error(`Failed to fetch release information: ${error.message}`));
     }
   });
 }
 async function updateAuthorsJson(contributors) {
-  const authorsPath = path.join(
-    process.cwd(),
-    "changelog",
-    "source",
-    "authors.json"
-  );
+  const authorsPath = path.join(process.cwd(), "changelog", "source", "authors.json");
   try {
     const authorsContent = fs.readFileSync(authorsPath, "utf8");
     const authors = JSON.parse(authorsContent);
@@ -239,9 +221,7 @@ async function updateAuthorsJson(contributors) {
 }
 function createVersionChangelog(releaseInfo, contributors) {
   const releaseDate = formatDate(releaseInfo.published_at || new Date());
-  const contributorUsernames = contributors
-    .map((c) => `'${c.username}'`)
-    .join("\n  - ");
+  const contributorUsernames = contributors.map((c) => `'${c.username}'`).join("\n  - ");
   const body = releaseInfo.body || "";
   let majorFeatures =
     extractSection(body, "#### :rocket: Major features", "####") ||
@@ -254,9 +234,7 @@ function createVersionChangelog(releaseInfo, contributors) {
     extractSection(body, "## :memo: What's Changed", "##") ||
     extractSection(body, "## What's Changed", "##");
   if (!changes && body.includes("## What's Changed")) {
-    const fullChangesMatch = body.match(
-      /## What's Changed([\s\S]*?)(?:\*\*Full Changelog\*\*|$)/
-    );
+    const fullChangesMatch = body.match(/## What's Changed([\s\S]*?)(?:\*\*Full Changelog\*\*|$)/);
     if (fullChangesMatch && fullChangesMatch[1]) {
       changes = fullChangesMatch[1].trim();
       changes = formatGitHubMarkdown(changes);
@@ -264,9 +242,7 @@ function createVersionChangelog(releaseInfo, contributors) {
     if (changes && changes.includes("fix") && !majorBugFixes) {
       const fixLines = changes
         .split("\n")
-        .filter(
-          (line) => line.toLowerCase().includes("fix") && line.includes("* ")
-        )
+        .filter((line) => line.toLowerCase().includes("fix") && line.includes("* "))
         .map((line) => line.replace(/^\* /, "- "));
       if (fixLines.length > 0) {
         majorBugFixes = fixLines.join("\n");
@@ -286,12 +262,7 @@ function createVersionChangelog(releaseInfo, contributors) {
   if (contributors.length > 0) {
     contributorsSection = `## Committers: Contributors
 ${contributors
-  .map(
-    (c) =>
-      `- ${c.name || c.username} ([@${c.username}](https://github.com/${
-        c.username
-      }))`
-  )
+  .map((c) => `- ${c.name || c.username} ([@${c.username}](https://github.com/${c.username}))`)
   .join("\n")}`;
   } else {
     contributorsSection = `## Committers
@@ -314,15 +285,10 @@ ${majorBugFixes || "- No major bug fixes in this release."}
 ${changes || ""}
 ${contributorsSection}
 **Full Changelog**: https://github.com/Project-HAMi/HAMi/compare/v${getPreviousVersion(
-    version
+    version,
   )}...${versionWithPrefix}
 `;
-  const changelogPath = path.join(
-    process.cwd(),
-    "changelog",
-    "source",
-    `${versionWithPrefix}.md`
-  );
+  const changelogPath = path.join(process.cwd(), "changelog", "source", `${versionWithPrefix}.md`);
   fs.writeFileSync(changelogPath, changelogContent, "utf8");
   console.log(`Created ${versionWithPrefix}.md file`);
   updateMainChangelog(releaseInfo, contributors);
@@ -335,7 +301,7 @@ function updateMainChangelog(releaseInfo, contributors) {
     if (changelogContent.includes(`## ${versionWithPrefix} (`)) {
       const versionPattern = new RegExp(
         `## ${versionWithPrefix} \\([^)]+\\)[\\s\\S]*?(?=## |# |$)`,
-        "g"
+        "g",
       );
       changelogContent = changelogContent.replace(versionPattern, "");
       changelogContent = changelogContent.replace(/\n{3,}/g, "\n\n");
@@ -357,9 +323,7 @@ function updateMainChangelog(releaseInfo, contributors) {
     extractSection(body, "## :memo: What's Changed", "##") ||
     extractSection(body, "## What's Changed", "##");
   if (!changes && body.includes("## What's Changed")) {
-    const fullChangesMatch = body.match(
-      /## What's Changed([\s\S]*?)(?:\*\*Full Changelog\*\*|$)/
-    );
+    const fullChangesMatch = body.match(/## What's Changed([\s\S]*?)(?:\*\*Full Changelog\*\*|$)/);
     if (fullChangesMatch && fullChangesMatch[1]) {
       changes = fullChangesMatch[1].trim();
       changes = formatGitHubMarkdown(changes);
@@ -367,9 +331,7 @@ function updateMainChangelog(releaseInfo, contributors) {
     if (changes && changes.includes("fix") && !majorBugFixes) {
       const fixLines = changes
         .split("\n")
-        .filter(
-          (line) => line.toLowerCase().includes("fix") && line.includes("* ")
-        )
+        .filter((line) => line.toLowerCase().includes("fix") && line.includes("* "))
         .map((line) => line.replace(/^\* /, "- "));
       if (fixLines.length > 0) {
         majorBugFixes = fixLines.join("\n");
@@ -389,12 +351,7 @@ function updateMainChangelog(releaseInfo, contributors) {
   if (contributors.length > 0) {
     contributorsSection = `#### Committers: Contributors
 ${contributors
-  .map(
-    (c) =>
-      `- ${c.name || c.username} ([@${c.username}](https://github.com/${
-        c.username
-      }))`
-  )
+  .map((c) => `- ${c.name || c.username} ([@${c.username}](https://github.com/${c.username}))`)
   .join("\n")}`;
   } else {
     contributorsSection = `#### Committers
@@ -409,18 +366,18 @@ ${majorBugFixes || "- No major bug fixes in this release."}
 ${changes || ""}
 ${contributorsSection}
 **Full Changelog**: https://github.com/Project-HAMi/HAMi/compare/v${getPreviousVersion(
-    version
+    version,
   )}...${versionWithPrefix}`;
   let updatedContent = "";
   if (changelogContent.includes("# Docusaurus Changelog")) {
     updatedContent = changelogContent.replace(
       "# Docusaurus Changelog\n\n",
-      `# Docusaurus Changelog\n\n${newVersionContent}\n\n`
+      `# Docusaurus Changelog\n\n${newVersionContent}\n\n`,
     );
   } else if (changelogContent.includes("# Changelog")) {
     updatedContent = changelogContent.replace(
       "# Changelog\n\n",
-      `# Changelog\n\n${newVersionContent}\n\n`
+      `# Changelog\n\n${newVersionContent}\n\n`,
     );
   } else {
     updatedContent = `# Changelog\n\n${newVersionContent}\n\n${changelogContent}`;
@@ -442,16 +399,9 @@ function extractSection(text, startMarker, endMarker) {
   }
   let endIndex = text.indexOf(endMarker, startIndex + startMarker.length);
   if (endIndex === -1) {
-    const possibleEndMarkers = [
-      "**Full Changelog**",
-      "## Committers:",
-      "### Committers:",
-    ];
+    const possibleEndMarkers = ["**Full Changelog**", "## Committers:", "### Committers:"];
     for (const possibleEndMarker of possibleEndMarkers) {
-      const idx = text.indexOf(
-        possibleEndMarker,
-        startIndex + startMarker.length
-      );
+      const idx = text.indexOf(possibleEndMarker, startIndex + startMarker.length);
       if (idx !== -1) {
         endIndex = idx;
         break;
@@ -489,19 +439,14 @@ async function main() {
     clearFoundContributors();
     const releaseInfo = await fetchReleaseInfo();
     if (!releaseInfo || !releaseInfo.body) {
-      console.error(
-        "No release information found, please manually edit the generated file"
-      );
+      console.error("No release information found, please manually edit the generated file");
       process.exit(1);
     }
     console.log("Processing release information...");
     releaseInfo.body = formatGitHubMarkdown(releaseInfo.body);
     let majorFeatures =
-      extractSection(
-        releaseInfo.body,
-        "#### :rocket: Major features",
-        "####"
-      ) || extractSection(releaseInfo.body, "## :rocket: Major features", "##");
+      extractSection(releaseInfo.body, "#### :rocket: Major features", "####") ||
+      extractSection(releaseInfo.body, "## :rocket: Major features", "##");
     if (majorFeatures) formatGitHubMarkdown(majorFeatures);
     let majorBugFixes =
       extractSection(releaseInfo.body, "#### :bug: Major bug fixes", "####") ||
@@ -515,8 +460,7 @@ async function main() {
     const contributors = getFoundContributors();
     console.log(`Found ${contributors.length} contributors`);
     if (contributors.length === 0 && releaseInfo.body) {
-      const prPattern =
-        /\[#(\d+)\]\(https:\/\/github\.com\/Project-HAMi\/HAMi\/pull\/\d+\)/g;
+      const prPattern = /\[#(\d+)\]\(https:\/\/github\.com\/Project-HAMi\/HAMi\/pull\/\d+\)/g;
       const prNumbers = [];
       let prMatch;
       while ((prMatch = prPattern.exec(releaseInfo.body)) !== null) {
@@ -524,18 +468,16 @@ async function main() {
       }
       if (prNumbers.length > 0) {
         console.warn(
-          `Detected ${prNumbers.length} PR references, but unable to directly extract contributors.`
+          `Detected ${prNumbers.length} PR references, but unable to directly extract contributors.`,
         );
         console.warn(
-          `Please check the release note format, ensure it includes contributor information, or use a GitHub Token for more detailed information.`
+          `Please check the release note format, ensure it includes contributor information, or use a GitHub Token for more detailed information.`,
         );
       }
     }
     await updateAuthorsJson(contributors);
     createVersionChangelog(releaseInfo, contributors);
-    console.log(
-      `✅ Successfully updated ${versionWithPrefix} version changelog file`
-    );
+    console.log(`✅ Successfully updated ${versionWithPrefix} version changelog file`);
   } catch (error) {
     console.error("Failed to update changelog:", error);
     process.exit(1);
