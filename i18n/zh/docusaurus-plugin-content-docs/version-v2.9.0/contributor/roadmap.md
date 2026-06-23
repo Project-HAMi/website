@@ -2,7 +2,7 @@
 id: roadmap
 title: 硬件支持路线图
 translated: true
-sidebar_label: Roadmap
+sidebar_label: 路线图
 ---
 
 ## 设备支持矩阵

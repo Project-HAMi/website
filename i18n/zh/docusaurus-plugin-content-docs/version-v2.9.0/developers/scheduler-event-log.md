@@ -1,8 +1,8 @@
 ---
 id: scheduler-event-log
-title: Scheduler Event Log
+title: 调度器事件日志
 translated: true
-sidebar_label: Scheduler Event Log
+sidebar_label: 调度器事件日志
 ---
 
 ## 当前状态

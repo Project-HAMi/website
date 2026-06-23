@@ -2,7 +2,7 @@
 id: scheduling-policy
 title: 调度策略
 translated: true
-sidebar_label: Scheduling Policies
+sidebar_label: 调度策略
 ---
 
 HAMi 支持多种 GPU 调度策略，以应对复杂的工作负载场景。Pod 可以通过 pod 注解（annotation）来选择调度策略。

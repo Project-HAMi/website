@@ -1,7 +1,7 @@
 ---
 id: e2e-testing
 title: 端到端测试
-sidebar_label: E2E Testing
+sidebar_label: 端到端测试
 translated: true
 ---
 

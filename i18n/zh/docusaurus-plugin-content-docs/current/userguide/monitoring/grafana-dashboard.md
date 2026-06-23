@@ -1,6 +1,6 @@
 ---
-title: Grafana Dashboard
-sidebar_label: Grafana Dashboard
+title: Grafana 仪表盘
+sidebar_label: Grafana 仪表盘
 ---
 
 HAMi 提供预构建的 Grafana Dashboard，用于可视化 HAMi 设备插件导出的 GPU 分配、显存使用和每 Pod 利用率指标。

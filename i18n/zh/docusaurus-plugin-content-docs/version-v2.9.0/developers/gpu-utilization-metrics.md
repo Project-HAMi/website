@@ -1,7 +1,7 @@
 ---
 id: gpu-utilization-metrics
 title: GPU 利用率指标
-sidebar_label: GPU Utilization Metrics
+sidebar_label: GPU 利用率指标
 translated: true
 ---
 
