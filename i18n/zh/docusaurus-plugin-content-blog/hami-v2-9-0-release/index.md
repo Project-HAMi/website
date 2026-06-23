@@ -268,4 +268,4 @@ HAMi v2.9.0 是一次面向异构设备虚拟化深度、Kubernetes 原生标准
 - Volcano vGPU Device Plugin：[https://github.com/Project-HAMi/volcano-vgpu-device-plugin](https://github.com/Project-HAMi/volcano-vgpu-device-plugin)
 - 项目文档：[https://project-hami.io](https://project-hami.io)
 - 社区 Discord（推荐）：[https://discord.gg/Amhy7XmbNq](https://discord.gg/Amhy7XmbNq)
-- 社区 CNCF Slack：[https://cloud-native.slack.com/archives/C08844T5WBQ](https://cloud-native.slack.com/archives/C08844T5WBQ)
+- 社区 CNCF Slack：[https://cloud-native.slack.com/archives/C07T10BU4R2](https://cloud-native.slack.com/archives/C07T10BU4R2)
