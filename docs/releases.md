@@ -12,7 +12,7 @@ This section provides guidelines on release timelines and release branch mainten
 
 ### Release Timelines
 
-HAMi uses the Semantic Versioning schema. HAMi v2.4.0 was released in September 2024. This project follows a given version number MAJOR.MINOR.PATCH.
+HAMi uses the Semantic Versioning schema. This project follows a given version number MAJOR.MINOR.PATCH.
 
 ### MAJOR release
 
