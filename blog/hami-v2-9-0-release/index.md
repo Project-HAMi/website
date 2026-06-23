@@ -268,4 +268,4 @@ We sincerely welcome more developers, users, and ecosystem partners to join the 
 - Volcano vGPU Device Plugin: [https://github.com/Project-HAMi/volcano-vgpu-device-plugin](https://github.com/Project-HAMi/volcano-vgpu-device-plugin)
 - Documentation: [https://project-hami.io](https://project-hami.io)
 - Community Discord (recommended): [https://discord.gg/Amhy7XmbNq](https://discord.gg/Amhy7XmbNq)
-- Community CNCF Slack: [https://cloud-native.slack.com/archives/C08844T5WBQ](https://cloud-native.slack.com/archives/C08844T5WBQ)
+- Community CNCF Slack: [https://cloud-native.slack.com/archives/C07T10BU4R2](https://cloud-native.slack.com/archives/C07T10BU4R2)
