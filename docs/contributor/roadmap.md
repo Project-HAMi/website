@@ -24,7 +24,7 @@ sidebar_label: Roadmap
 ## Planned Features
 
 - [ ] Support video codec processing
-- [ ] Support Multi-Instance GPUs (MIG)
+- [x] Support Multi-Instance GPUs (MIG)
 - [ ] Support flexible scheduling policies
   - [x] binpack
   - [x] spread
