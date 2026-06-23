@@ -40,20 +40,23 @@ For example, a 64GB Ascend 910C card can be allocated to multiple tasks as follo
 # Task 1: LLM inference, 32GB memory + 50% compute
 resources:
   limits:
-    hami.io/vnpu-core: "50"
-    hami.io/vnpu-core-memory: "32768"
+    huawei.com/Ascend910C: "1"
+    huawei.com/Ascend910C-core: "50"
+    huawei.com/Ascend910C-memory: "32768"
 
 # Task 2: Model fine-tuning, 16GB memory + 30% compute
 resources:
   limits:
-    hami.io/vnpu-core: "30"
-    hami.io/vnpu-core-memory: "16384"
+    huawei.com/Ascend910C: "1"
+    huawei.com/Ascend910C-core: "30"
+    huawei.com/Ascend910C-memory: "16384"
 
 # Task 3: Lightweight inference, 8GB memory + 20% compute
 resources:
   limits:
-    hami.io/vnpu-core: "20"
-    hami.io/vnpu-core-memory: "8192"
+    huawei.com/Ascend910C: "1"
+    huawei.com/Ascend910C-core: "20"
+    huawei.com/Ascend910C-memory: "8192"
 ```
 
 Core capabilities include:
