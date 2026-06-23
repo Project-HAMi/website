@@ -5,7 +5,7 @@ translated: true
 
 ## Allocate exclusive device
 
-To allocate a whole Metax GPU device, you need to only assign `metax-tech.com/sgpu` without other fields.
+To allocate a whole MetaX GPU device, you need to only assign `metax-tech.com/sgpu` without other fields.
 
 ```yaml
 apiVersion: v1

@@ -1,5 +1,5 @@
 ---
-title: 启用 Metax GPU 共享
+title: 启用 MetaX GPU 共享
 translated: true
 ---
 
@@ -15,13 +15,13 @@ translated: true
 
 ### 需求
 
-- Metax Driver >= 2.32.0
-- Metax GPU Operator >= 0.10.2
+- MetaX Driver >= 2.32.0
+- MetaX GPU Operator >= 0.10.2
 - Kubernetes >= 1.23
 
 ### 开启复用沐曦设备
 
-- 部署 Metax GPU Operator (联系你的设备提供方获取)
+- 部署 MetaX GPU Operator (联系你的设备提供方获取)
 - 根据 README.md 部署 HAMi
 
 ### 运行沐曦任务

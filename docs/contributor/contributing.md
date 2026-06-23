@@ -341,7 +341,7 @@ HAMi supports multiple GPU and accelerator vendors. If you are adding support fo
 - Follow the documentation pattern under `docs/userguide/<vendor>-device/`.
 - Include working YAML examples under `docs/userguide/<vendor>-device/examples/`.
 
-Supported vendors: NVIDIA, Cambricon (MLU), Hygon (DCU), Mthreads, Iluvatar, Enflame (GCU), AWS Neuron, Kunlunxin (XPU), Metax, Ascend.
+Supported vendors: NVIDIA, Cambricon (MLU), Hygon (DCU), Mthreads, Iluvatar, Enflame (GCU), AWS Neuron, Kunlunxin (XPU), MetaX, Ascend.
 
 ## Translations
 

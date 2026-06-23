@@ -13,7 +13,7 @@ HAMi支持的设备视图如下表所示：
 | Ascend      | Huawei     | 910B, 910B3, 310P | Yes        | Yes            | No              |
 | GPU         | iluvatar   | 全部         | Yes              | Yes            | No              |
 | GPU         | Mthreads   | MTT S4000   | Yes              | Yes            | No              |
-| GPU         | Metax      | MXC500      | Yes              | Yes            | No              |
+| GPU         | MetaX      | MXC500      | Yes              | Yes            | No              |
 | GCU         | Enflame    | S60         | Yes              | Yes            | No              |
 | XPU         | Kunlunxin  | P800        | Yes              | Yes            | No              |
 | DPU         | Teco       | 检查中       | 进行中           | 进行中        | No              |

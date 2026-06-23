@@ -135,7 +135,7 @@
         },
         {
           "type": "category",
-          "label": "Metax GPU",
+          "label": "MetaX GPU",
           "items": [
             "userguide/metax-device/enable-metax-gpu-schedule",
             "userguide/metax-device/enable-metax-gpu-sharing",

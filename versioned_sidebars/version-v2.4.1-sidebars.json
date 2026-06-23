@@ -134,7 +134,7 @@
         },
         {
           "type": "category",
-          "label": "Optimize Metax GPU scheduling",
+          "label": "Optimize MetaX GPU scheduling",
           "items": [
             "userguide/metax-device/enable-metax-gpu-schedule",
             "userguide/metax-device/specify-binpack-task",
