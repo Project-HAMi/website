@@ -865,9 +865,61 @@ html[data-theme="light"] .token.important {
   color: #ff7f96 !important;
 }
 
+/*
+ * Admonitions: per-type tinted surface + colored left accent bar.
+ * Anchored on `.theme-admonition-{type}` (emitted by Docusaurus on every
+ * admonition) so the styling never collides with other `.alert` usages
+ * (e.g. the announcement bar). note keeps a refined neutral surface; the
+ * other types derive their tint/border/heading from HAMi semantic tokens.
+ */
 .theme-admonition {
   background: rgba(255, 255, 255, 0.94);
   border-color: var(--hami-color-border-strong);
+  border-left: 4px solid var(--hami-color-border-strong);
+}
+
+.theme-admonition-note .admonitionHeading_Gvgb {
+  color: var(--hami-color-muted);
+}
+
+.theme-admonition-tip {
+  background: rgb(61 220 151 / 0.12);
+  border-color: rgb(61 220 151 / 0.35);
+  border-left: 4px solid var(--hami-color-success);
+}
+
+.theme-admonition-tip .admonitionHeading_Gvgb {
+  color: #1f9e62;
+}
+
+.theme-admonition-info {
+  background: rgb(57 198 244 / 0.1);
+  border-color: rgb(57 198 244 / 0.35);
+  border-left: 4px solid var(--hami-color-secondary);
+}
+
+.theme-admonition-info .admonitionHeading_Gvgb {
+  color: #1c8fb8;
+}
+
+.theme-admonition-warning {
+  background: rgb(245 185 66 / 0.14);
+  border-color: rgb(245 185 66 / 0.4);
+  border-left: 4px solid var(--hami-color-warning);
+}
+
+.theme-admonition-warning .admonitionHeading_Gvgb {
+  color: #9c6a08;
+}
+
+.theme-admonition-caution {
+  background: rgb(255 92 122 / 0.12);
+  border-color: rgb(255 92 122 / 0.35);
+  border-left: 4px solid var(--hami-color-danger);
+}
+
+.theme-admonition-caution .admonitionHeading_Gvgb {
+  color: #c5364f;
 }
 
 html[data-theme="dark"] .theme-doc-markdown {
@@ -877,6 +929,46 @@ html[data-theme="dark"] .theme-doc-markdown {
 
 html[data-theme="dark"] .theme-admonition {
   background: rgba(23, 30, 39, 0.88);
+}
+
+html[data-theme="dark"] .theme-admonition-note .admonitionHeading_Gvgb {
+  color: #a9b4c2;
+}
+
+html[data-theme="dark"] .theme-admonition-tip {
+  background: rgb(61 220 151 / 0.14);
+  border-color: rgb(61 220 151 / 0.32);
+}
+
+html[data-theme="dark"] .theme-admonition-tip .admonitionHeading_Gvgb {
+  color: #4ee39a;
+}
+
+html[data-theme="dark"] .theme-admonition-info {
+  background: rgb(57 198 244 / 0.14);
+  border-color: rgb(57 198 244 / 0.32);
+}
+
+html[data-theme="dark"] .theme-admonition-info .admonitionHeading_Gvgb {
+  color: #5fd3f7;
+}
+
+html[data-theme="dark"] .theme-admonition-warning {
+  background: rgb(245 185 66 / 0.16);
+  border-color: rgb(245 185 66 / 0.36);
+}
+
+html[data-theme="dark"] .theme-admonition-warning .admonitionHeading_Gvgb {
+  color: #f5c870;
+}
+
+html[data-theme="dark"] .theme-admonition-caution {
+  background: rgb(255 92 122 / 0.16);
+  border-color: rgb(255 92 122 / 0.36);
+}
+
+html[data-theme="dark"] .theme-admonition-caution .admonitionHeading_Gvgb {
+  color: #ff8298;
 }
 
 .markdown > h2 {
