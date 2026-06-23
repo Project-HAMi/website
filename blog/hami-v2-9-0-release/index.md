@@ -203,7 +203,7 @@ Upgrade to v2.9.0 via Helm:
 ```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/
 helm repo update
-helm upgrade hami hami-charts/hami -n hami-system
+helm upgrade hami hami-charts/hami -n kube-system
 ```
 
 For complete installation documentation, refer to: [https://project-hami.io/docs/installation/online-installation](https://project-hami.io/docs/installation/online-installation)
