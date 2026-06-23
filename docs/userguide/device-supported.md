@@ -4,6 +4,7 @@ title: Device supported by HAMi
 
 The table below lists the devices supported by HAMi:
 
+<!-- prettier-ignore -->
 | Type | Manufacturer  | Models                  | MemoryIsolation | CoreIsolation | MultiCard Support |
 | ---- | ------------- | ----------------------- | --------------- | ------------- | ----------------- |
 | GPU  | NVIDIA        | All                     | Yes             | Yes           | Yes               |
