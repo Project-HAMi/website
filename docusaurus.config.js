@@ -384,9 +384,9 @@ module.exports = {
           showReadingTime: true,
           editUrl: "https://github.com/Project-HAMi/website/tree/master/",
           feedOptions: {
-            type: ['rss', 'atom'],
-            title: 'HAMi Blog',
-            description: 'Latest news and updates from the HAMi project',
+            type: ["rss", "atom"],
+            title: "HAMi Blog",
+            description: "Latest news and updates from the HAMi project",
             copyright: `Copyright ${new Date().getFullYear()} HAMi Authors`,
           },
         },
