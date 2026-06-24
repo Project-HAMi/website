@@ -1,5 +1,5 @@
 ---
-title: 为容器分配 Ascend-910B 切片
+title: 为容器分配 Huawei Ascend-910B 切片
 translated: true
 ---
 

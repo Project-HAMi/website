@@ -5,11 +5,11 @@ sidebar_label: vNPU 核心集成
 translated: true
 ---
 
-HAMi-vnpu-core 是一个使用 Rust 编写的 Ascend NPU 容器内资源控制器。它通过 `libvnpu.so`（拦截器）和 `Limiter`（管理器）实现用户态拦截。该设计使用两个环境变量来声明资源配额：`NPU_MEM_QUOTA` 用于内存限制，`NPU_PRIORITY` 用于调度优先级。本设计将该能力集成到 HAMi 调度中，以支持 Ascend NPU 的内存虚拟化和算力时间片软切分。
+HAMi-vnpu-core 是一个使用 Rust 编写的 Huawei Ascend NPU 容器内资源控制器。它通过 `libvnpu.so`（拦截器）和 `Limiter`（管理器）实现用户态拦截。该设计使用两个环境变量来声明资源配额：`NPU_MEM_QUOTA` 用于内存限制，`NPU_PRIORITY` 用于调度优先级。本设计将该能力集成到 HAMi 调度中，以支持 Huawei Ascend NPU 的内存虚拟化和算力时间片软切分。
 
 ## 前提条件
 
-需要 Ascend 驱动版本 25.5 或更高版本。芯片必须启用 device-share 模式：
+需要 Huawei Ascend 驱动版本 25.5 或更高版本。芯片必须启用 device-share 模式：
 
 ```bash
 npu-smi set -t device-share -i <id> -d <value>
@@ -111,7 +111,7 @@ impl SchedulerClient {
 }
 ```
 
-## Ascend Device Plugin 变更
+## Huawei Ascend Device Plugin 变更
 
 ### 宿主机路径布局
 

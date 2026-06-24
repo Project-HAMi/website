@@ -201,7 +201,7 @@ HAMi uses [Conventional Commits](https://www.conventionalcommits.org/):
 ```plaintext
 feat(scheduler): add memory oversell ratio config option
 fix(deviceplugin): handle graceful shutdown on SIGTERM
-docs: correct vGPU memory limit example in Ascend guide
+docs: correct vGPU memory limit example in Huawei Ascend guide
 chore: bump Go to 1.22
 test: add unit tests for MLU device discovery
 ```
@@ -341,7 +341,7 @@ HAMi supports multiple GPU and accelerator vendors. If you are adding support fo
 - Follow the documentation pattern under `docs/userguide/<vendor>-device/`.
 - Include working YAML examples under `docs/userguide/<vendor>-device/examples/`.
 
-Supported vendors: NVIDIA, Cambricon (MLU), Hygon (DCU), Mthreads, Iluvatar, Enflame (GCU), AWS Neuron, Kunlunxin (XPU), MetaX, Ascend.
+Supported vendors: NVIDIA, Cambricon (MLU), Hygon (DCU), Mthreads, Iluvatar, Enflame (GCU), AWS Neuron, Kunlunxin (XPU), MetaX, Huawei Ascend.
 
 ## Translations
 

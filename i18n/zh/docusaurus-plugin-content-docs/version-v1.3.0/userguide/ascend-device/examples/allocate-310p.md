@@ -2,7 +2,7 @@
 title: Allocate 310p slice
 ---
 
-## Allocate a Ascend-310p slice to container
+## Allocate a Huawei Ascend-310p slice to container
 
 To allocate a certain size of GPU device memory, you need only to assign `huawei.com/ascend310P-memory` besides `huawei.com/ascend310P`.
 

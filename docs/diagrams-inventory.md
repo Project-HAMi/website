@@ -149,7 +149,7 @@ This page catalogs every diagram across the repository: `docs/`, `blog/`, `i18n/
 
 **Notes:**
 
-- Both mindmaps carry the title "HAMi VGPU mind map". The "VGPU" scope is narrower than HAMi's current support surface, which now covers Cambricon MLU, Hygon DCU, Kunlunxin XPU, MetaX GPU, Iluvatar Corex, and Ascend NPU in addition to NVIDIA VGPU.
+- Both mindmaps carry the title "HAMi VGPU mind map". The "VGPU" scope is narrower than HAMi's current support surface, which now covers Cambricon MLU, Hygon DCU, Kunlunxin XPU, MetaX GPU, Iluvatar Corex, and Huawei Ascend NPU in addition to NVIDIA VGPU.
 - Neither mindmap has an editable source file. Updating them requires a full redraw.
 - Full content accuracy cannot be assessed from this inventory without visual inspection of the PNG files. A maintainer familiar with current HAMi architecture must review before any decision to update or remove.
 - Tracked for redesign in issue [#414](https://github.com/Project-HAMi/website/issues/414).

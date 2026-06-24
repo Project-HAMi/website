@@ -2,7 +2,7 @@
 title: Allocate exclusive device
 ---
 
-To allocate a whole Ascend device, set the corresponding resourceName (e.g. `huawei.com/Ascend910B` or `huawei.com/Ascend310P`) without specifying a memory resource.
+To allocate a whole Huawei Ascend device, set the corresponding resourceName (e.g. `huawei.com/Ascend910B` or `huawei.com/Ascend310P`) without specifying a memory resource.
 
 ```yaml
 apiVersion: v1
@@ -17,5 +17,5 @@ spec:
       command: ["bash", "-c", "sleep 86400"]
       resources:
         limits:
-          huawei.com/Ascend910B: 2 # requesting 2 whole Ascend 910B devices
+          huawei.com/Ascend910B: 2 # requesting 2 whole Huawei Ascend 910B devices
 ```

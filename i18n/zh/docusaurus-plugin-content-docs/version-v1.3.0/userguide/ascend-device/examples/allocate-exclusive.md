@@ -2,7 +2,7 @@
 title: Allocate exclusive device
 ---
 
-To allocate a whole Ascend device, you need to only assign `huawei.com/ascend910` or `huawei.com/310p` without other fields.
+To allocate a whole Huawei Ascend device, you need to only assign `huawei.com/ascend910` or `huawei.com/310p` without other fields.
 
 ```yaml
 apiVersion: v1
@@ -16,5 +16,5 @@ spec:
       command: ["bash", "-c", "sleep 86400"]
       resources:
         limits:
-          huawei.com/Ascend910B: 2 # requesting 2 whole Ascend 910b devices
+          huawei.com/Ascend910B: 2 # requesting 2 whole Huawei Ascend 910b devices
 ```

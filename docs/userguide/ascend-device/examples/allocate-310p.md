@@ -29,7 +29,7 @@ Compute resource of Ascend310P is also limited with `huawei.com/Ascend310P-memor
 
 ## Select Device by UUID
 
-You can specify which Ascend devices a pod uses or excludes by using annotations:
+You can specify which Huawei Ascend devices a pod uses or excludes by using annotations:
 
 ```yaml
 apiVersion: v1
@@ -37,9 +37,9 @@ kind: Pod
 metadata:
   name: ascend-pod
   annotations:
-    # Use specific Ascend devices (comma-separated list)
+    # Use specific Huawei Ascend devices (comma-separated list)
     hami.io/use-Ascend310P-uuid: "device-uuid-1,device-uuid-2"
-    # Or exclude specific Ascend devices (comma-separated list)
+    # Or exclude specific Huawei Ascend devices (comma-separated list)
     hami.io/no-use-Ascend310P-uuid: "device-uuid-3,device-uuid-4"
 spec:
   # ... rest of pod spec

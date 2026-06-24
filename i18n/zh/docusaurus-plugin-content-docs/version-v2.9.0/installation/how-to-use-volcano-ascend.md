@@ -1,18 +1,18 @@
 ---
-title: Volcano Ascend vNPU 使用指南
-sidebar_label: Volcano Ascend vNPU
+title: Volcano Huawei Ascend vNPU 使用指南
+sidebar_label: Volcano Huawei Ascend vNPU
 translated: true
 ---
 
 ## 介绍
 
-Volcano 通过 `ascend-device-plugin` 支持 Ascend 310 和 Ascend 910 的 vNPU 功能。同时支持管理异构 Ascend 集群（包含多种 Ascend 类型的集群，例如 910A、910B2、910B3、310p）。
+Volcano 通过 `ascend-device-plugin` 支持 Huawei Ascend 310 和 Huawei Ascend 910 的 vNPU 功能。同时支持管理异构 Huawei Ascend 集群（包含多种 Huawei Ascend 类型的集群，例如 910A、910B2、910B3、310p）。
 
 **使用场景**：
 
-- Ascend 910 系列的 NPU 和 vNPU 集群
-- Ascend 310 系列的 NPU 和 vNPU 集群
-- 异构 Ascend 集群
+- Huawei Ascend 910 系列的 NPU 和 vNPU 集群
+- Huawei Ascend 310 系列的 NPU 和 vNPU 集群
+- 异构 Huawei Ascend 集群
 
 此功能仅在 Volcano 1.14 及以上版本中可用。
 
@@ -20,7 +20,7 @@ Volcano 通过 `ascend-device-plugin` 支持 Ascend 310 和 Ascend 910 的 vNPU 
 
 ### 环境要求
 
-[ascend-docker-runtime](https://gitcode.com/Ascend/mind-cluster/tree/master/component/ascend-docker-runtime)
+[ascend-docker-runtime](https://gitcode.com/Huawei Ascend/mind-cluster/tree/master/component/ascend-docker-runtime)
 
 ### 安装 Volcano
 
@@ -31,7 +31,7 @@ helm install volcano volcano-sh/volcano -n volcano-system --create-namespace
 
 更多安装方式参考[这里](https://github.com/volcano-sh/volcano?tab=readme-ov-file#quick-start-guide)。
 
-### 给 Ascend 设备打上 ascend=on 标签
+### 给 Huawei Ascend 设备打上 ascend=on 标签
 
 ```shell
 kubectl label node {ascend-node} ascend=on
@@ -103,7 +103,7 @@ spec:
           huawei.com/Ascend310P-memory: "4096"
 ```
 
-支持的 Ascend 芯片及其对应的资源名称如下表所示：
+支持的 Huawei Ascend 芯片及其对应的资源名称如下表所示：
 
 | ChipName | ResourceName             | ResourceMemoryName              |
 | -------- | ------------------------ | ------------------------------- |
