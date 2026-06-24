@@ -1,5 +1,6 @@
 ---
 title: "Lab 2: Local Fake GPU Setup"
+description: "Learn the HAMi control plane on a laptop, no GPU required."
 sidebar_label: "Lab 2: Local Fake GPU"
 lab:
   level: Beginner

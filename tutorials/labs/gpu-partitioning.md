@@ -1,5 +1,6 @@
 ---
 title: "Lab 3: GPU Partitioning with HAMi"
+description: "Run multiple Pods on one GPU with enforced VRAM and compute limits."
 sidebar_label: "Lab 3: GPU Partitioning"
 lab:
   level: Intermediate

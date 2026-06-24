@@ -1,0 +1,31 @@
+device:
+  nvidia:
+    driver:
+      # ACK GPU node pools already install the NVIDIA driver.
+      enabled: false
+
+global:
+  managedNodeSelectorEnable: true
+  managedNodeSelector:
+    gpu: "on"
+
+devicePlugin:
+  enabled: true
+  deviceSplitCount: 10
+  disablecorelimit: "false"
+  image:
+    registry: docker.m.daocloud.io
+    repository: projecthami/hami
+  monitor:
+    image:
+      registry: docker.m.daocloud.io
+      repository: projecthami/hami
+
+scheduler:
+  # The Lab uses a single scheduler replica. Disabling leader election avoids
+  # the extender waiting forever for leadership in some ACK setups.
+  leaderElect: false
+  extender:
+    image:
+      registry: docker.m.daocloud.io
+      repository: projecthami/hami

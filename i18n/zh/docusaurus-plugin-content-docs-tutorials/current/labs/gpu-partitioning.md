@@ -1,5 +1,6 @@
 ---
 title: "实验 3: 使用 HAMi 进行 GPU 分区"
+description: "多个 Pod 共享一张 GPU，显存和算力限制可验证。"
 sidebar_label: "实验 3: GPU 分区"
 lab:
   level: Intermediate
