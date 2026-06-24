@@ -32,7 +32,7 @@ toc_max_heading_level: 2
 ## 实验概览
 
 ```mermaid
-%% title: HAMi + vLLM 实验流程图 
+%% title: HAMi + vLLM 实验流程图
 flowchart LR
     Step1["步骤 1<br/>检查 GPU 集群"] --> Step2["步骤 2<br/>安装 HAMi"]
     Step2 --> Step3["步骤 3<br/>确认 HAMi 资源"]

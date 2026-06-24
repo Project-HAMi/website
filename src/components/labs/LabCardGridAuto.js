@@ -71,9 +71,7 @@ export default function LabCardGridAuto() {
             <span className={styles.cardTitle}>{card.title}</span>
             <LevelBadge level={card.level} />
           </div>
-          {card.description && (
-            <p className={styles.cardDescription}>{card.description}</p>
-          )}
+          {card.description && <p className={styles.cardDescription}>{card.description}</p>}
           {card.duration && (
             <div className={styles.cardFooter}>
               <Translate>{card.duration}</Translate>
