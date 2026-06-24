@@ -20,8 +20,9 @@ To add your organization follow these steps:
    ```json
    {
      "name": "My Company",
-     "url": "https://mycompany.com",
-     "logo": "/img/adopters/mycompany.png"
+     "nameZh": "我的公司",
+     "logo": "/img/adopters/mycompany.png",
+     "website": "https://mycompany.com"
    }
    ```
 
