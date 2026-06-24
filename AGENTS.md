@@ -129,7 +129,7 @@ See `docs/contributor/contributing.md` (§ DCO Sign-off) and `docs/contributor/g
   - Core Concepts
   - Key Features
   - Get Started
-  - Installation (including device-specific guides for NVIDIA, Cambricon, Hygon, Mthreads, Iluvatar, Enflame, AWS Neuron, Kunlunxin, Metax, Ascend)
+  - Installation (including device-specific guides for NVIDIA, Cambricon, Hygon, Mthreads, Iluvatar, Enflame, AWS Neuron, Kunlunxin, MetaX, Ascend)
   - User Guide (with monitoring and device-specific subsections)
   - Developer Guide
   - Contributor Guide
@@ -375,7 +375,7 @@ Each device vendor has a dedicated section under `userguide/<Vendor>-device/`:
 - **Enflame (GCU)** - Chinese AI accelerator
 - **AWS Neuron** - AWS Inferentia/Trainium
 - **Kunlunxin (XPU)** - Chinese AI chip
-- **Metax** - Chinese GPU with topology-aware scheduling
+- **MetaX** - Chinese GPU with topology-aware scheduling
 - **Ascend** - Huawei NPU
 
 ### Translation Sync

@@ -13,7 +13,7 @@ HAMi 支持的设备如下表所示：
 | NPU      | 华为昇腾（Huawei Ascend） | 910B、910B3、910C、310P | 是       | 是       | 否       |
 | GPU      | 天数智芯（Iluvatar）      | 全部              | 是       | 是       | 否       |
 | GPU      | 摩尔线程（Mthreads）      | MTT S4000         | 是       | 是       | 否       |
-| GPU      | 沐曦（Metax）             | MXC500            | 是       | 是       | 否       |
+| GPU      | 沐曦（MetaX）             | MXC500            | 是       | 是       | 否       |
 | GCU      | 燧原科技（Enflame）       | S60               | 是       | 是       | 否       |
 | XPU      | 昆仑芯（Kunlunxin）       | P800              | 是       | 是       | 否       |
 | GPU      | 瀚博（Vastai）            | VA16              | 是       | 是       | 否       |
