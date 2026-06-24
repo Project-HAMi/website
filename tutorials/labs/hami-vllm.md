@@ -1,6 +1,6 @@
 ---
-title: "Lab 5: Deploy vLLM Inference Service with HAMi"
-linktitle: "Lab 5: HAMi + vLLM"
+title: "Lab 6: Deploy vLLM Inference Service with HAMi"
+sidebar_label: "Lab 6: vLLM Inference"
 lab:
   level: Intermediate
   duration: about 45 minutes

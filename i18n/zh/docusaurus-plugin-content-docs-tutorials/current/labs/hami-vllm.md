@@ -1,6 +1,6 @@
 ---
-title: "实验 5: 使用 HAMi 部署 vLLM 推理服务"
-linktitle: "实验 5: HAMi + vLLM"
+title: "实验 6: 使用 HAMi 部署 vLLM 推理服务"
+sidebar_label: "实验 6: vLLM 推理"
 lab:
   level: Intermediate
   duration: 约 45 分钟
