@@ -1,5 +1,6 @@
 ---
 title: "实验 5: 使用 nvml-mock 进行 Fake-GPU 调度"
+description: "用 nvml-mock 模拟 8 张 A100 GPU 验证 HAMi 调度能力，无需真实 GPU。"
 sidebar_label: "实验 5: nvml-mock"
 lab:
   level: Intermediate

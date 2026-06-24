@@ -11,11 +11,36 @@ module.exports = {
         description: "Step-by-step exercises with real captured outputs.",
       },
       items: [
-        "labs/online-install",
-        "labs/local-fake-gpu",
-        "labs/gpu-partitioning",
-        "labs/hami-dra",
-        "labs/nvml-mock",
+        {
+          type: "doc",
+          id: "labs/online-install",
+          customProps: { level: "Beginner", duration: "about 60 minutes" },
+        },
+        {
+          type: "doc",
+          id: "labs/local-fake-gpu",
+          customProps: { level: "Beginner", duration: "about 30 minutes" },
+        },
+        {
+          type: "doc",
+          id: "labs/gpu-partitioning",
+          customProps: { level: "Intermediate", duration: "about 30 minutes" },
+        },
+        {
+          type: "doc",
+          id: "labs/hami-dra",
+          customProps: { level: "Advanced", duration: "about 45 minutes" },
+        },
+        {
+          type: "doc",
+          id: "labs/nvml-mock",
+          customProps: { level: "Intermediate", duration: "about 40 minutes" },
+        },
+        {
+          type: "doc",
+          id: "labs/hami-vllm",
+          customProps: { level: "Intermediate", duration: "about 45 minutes" },
+        },
       ],
     },
   ],

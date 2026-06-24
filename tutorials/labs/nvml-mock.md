@@ -1,5 +1,6 @@
 ---
 title: "Lab 5: Fake-GPU Scheduling with nvml-mock"
+description: "Simulate 8 A100 GPUs with HAMi scheduling features, no real GPU needed."
 sidebar_label: "Lab 5: nvml-mock"
 lab:
   level: Intermediate

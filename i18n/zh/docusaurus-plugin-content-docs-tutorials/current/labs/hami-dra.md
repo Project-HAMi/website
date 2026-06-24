@@ -1,5 +1,6 @@
 ---
 title: "实验 4: 使用动态资源分配进行 GPU 切片"
+description: "通过 Kubernetes 原生 Dynamic Resource Allocation 实现同样效果（实验性）。"
 sidebar_label: "实验 4: DRA 切片"
 lab:
   level: Advanced

@@ -1,5 +1,6 @@
 ---
 title: "Lab 4: GPU Slicing with Dynamic Resource Allocation"
+description: "The same outcome through Kubernetes-native Dynamic Resource Allocation (experimental)."
 sidebar_label: "Lab 4: DRA Slicing"
 lab:
   level: Advanced
