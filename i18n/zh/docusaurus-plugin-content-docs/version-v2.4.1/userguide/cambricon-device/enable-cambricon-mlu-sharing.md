@@ -27,7 +27,7 @@ title: Enable cambricon MLU sharing
 ```text
         args:
             - --mode=dynamic-smlu # device plugin mode: default, sriov, env-share, topology-aware, dynamic-mim, smlu or dynamic-smlu
-	...
+ ...
 ```
 
 - Deploy modified cambricon-device-plugin
@@ -35,6 +35,7 @@ title: Enable cambricon MLU sharing
 - Install the chart using helm, See 'enabling vGPU support in kubernetes' section [here](https://github.com/Project-HAMi/HAMi#enabling-vgpu-support-in-kubernetes)
 
 - Tag MLU node with the following command
+
 ```bash
 kubectl label node {mlu-node} mlu=on
 ```

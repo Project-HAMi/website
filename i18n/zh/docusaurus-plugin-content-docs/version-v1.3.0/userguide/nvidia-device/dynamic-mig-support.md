@@ -27,6 +27,7 @@ title: Enable dynamic-mig feature
 - Install the chart using helm, See 'enabling vGPU support in kubernetes' section [here](https://github.com/Project-HAMi/HAMi#enabling-vgpu-support-in-kubernetes)
 
 - Configure `mode` in device-plugin configMap to `mig` for MIG nodes
+
 ```bash
 kubectl describe cm  hami-device-plugin -n kube-system
 ```
@@ -51,11 +52,12 @@ kubectl describe cm  hami-device-plugin -n kube-system
   - hami-device-plugin on 'MIG-NODE-A'
 
 ## Custom mig configuration (Optional)
+
 HAMi currently has a [built-in mig configuration](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/templates/scheduler/device-configmap.yaml) for MIG.
 
 You can customize the mig configuration by following the steps below:
 
-  ### Change the content of 'device-configmap.yaml' in charts/hami/templates/scheduler, the as follows
+### Change the content of 'device-configmap.yaml' in charts/hami/templates/scheduler, the as follows
 
   ```yaml
     nvidia:

@@ -18,7 +18,13 @@
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
-    "fetch-changelog": "node src/scripts/fetch-changelog.js"
+    "fetch-changelog": "node src/scripts/fetch-changelog.js",
+    "lint:md": "markdownlint 'docs/**/*.md' 'tutorials/**/*.md' 'blog/**/*.md' 'i18n/zh/docusaurus-plugin-content-docs-tutorials/current/**/*.md' 'i18n/zh/docusaurus-plugin-content-docs/current/**/*.md' 'i18n/zh/docusaurus-plugin-content-blog/**/*.md' --ignore CHANGELOG.md --ignore changelog --ignore versioned_docs --ignore node_modules",
+    "lint": "npm run lint:md",
+    "format:check": "prettier --check .",
+    "format": "prettier --write .",
+    "check-links": "npm run build && npx html-link-checker --root ./build --quiet || true",
+    "check:all": "npm run lint && npm run format:check && npm run build"
   },
   "dependencies": {
     "@docusaurus/core": "^3.10.0",
@@ -56,6 +62,8 @@
     "@docusaurus/faster": "^3.10.0",
     "@swc/core": "^1.15.18",
     "gh-pages": "^6.1.1",
+    "markdownlint-cli": "^0.48.0",
+    "prettier": "^3.8.4",
     "swc-loader": "^0.2.7"
   }
 }

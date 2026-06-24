@@ -243,11 +243,11 @@
 }
 
 .hamiPlatformBlock {
-  border: 1px solid #76b900;
+  border: 1px solid #10d05d;
   border-radius: 12px;
   padding: 8px 10px;
-  background: #f4fbe6;
-  box-shadow: 0 4px 12px rgba(88, 138, 0, 0.12);
+  background: rgba(16, 208, 93, 0.1);
+  box-shadow: 0 4px 12px rgba(16, 208, 93, 0.14);
   min-height: 64px;
   display: flex;
   flex-direction: column;
@@ -256,7 +256,7 @@
 
 .hamiPlatformBlock h3 {
   margin: 0;
-  color: #335900;
+  color: #087a34;
   font-size: 0.9rem;
   font-weight: 800;
   text-align: center;
@@ -276,11 +276,19 @@
   object-fit: contain;
 }
 
-.hamiLogoLight { display: block; }
-.hamiLogoDark  { display: none;  }
+.hamiLogoLight {
+  display: block;
+}
+.hamiLogoDark {
+  display: none;
+}
 
-:global(html[data-theme='dark']) .hamiLogoLight { display: none;  }
-:global(html[data-theme='dark']) .hamiLogoDark  { display: block; }
+:global(html[data-theme="dark"]) .hamiLogoLight {
+  display: none;
+}
+:global(html[data-theme="dark"]) .hamiLogoDark {
+  display: block;
+}
 
 .hamiPlatformBlock p {
   margin: 5px 0 0;
@@ -332,7 +340,7 @@
 }
 
 .gpuSliceIcon::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 2px;
   border-radius: 1px;
@@ -442,103 +450,101 @@
   max-width: 100%;
 }
 
-:global(html[data-theme='dark']) .heroVisual {
+:global(html[data-theme="dark"]) .heroVisual {
   border-color: rgba(74, 96, 120, 0.55);
   background: rgba(14, 21, 31, 0.9);
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.3);
 }
 
-:global(html[data-theme='dark']) .ecoLayer {
+:global(html[data-theme="dark"]) .ecoLayer {
   border-color: rgba(72, 102, 136, 0.62);
   background: rgba(20, 30, 44, 0.88);
 }
 
-:global(html[data-theme='dark']) .ecoLayerWorkloads,
-:global(html[data-theme='dark']) .ecoLayerScheduler,
-:global(html[data-theme='dark']) .ecoLayerDevices {
+:global(html[data-theme="dark"]) .ecoLayerWorkloads,
+:global(html[data-theme="dark"]) .ecoLayerScheduler,
+:global(html[data-theme="dark"]) .ecoLayerDevices {
   background: rgba(20, 30, 44, 0.88);
 }
 
-:global(html[data-theme='dark']) .ecoLayer h3 {
+:global(html[data-theme="dark"]) .ecoLayer h3 {
   color: #9cc5f0;
 }
 
-:global(html[data-theme='dark']) .ecoLogoChip {
+:global(html[data-theme="dark"]) .ecoLogoChip {
   border-color: rgba(205, 220, 238, 0.95);
   background: #ffffff;
 }
 
-:global(html[data-theme='dark']) .ecoLogoChip span {
+:global(html[data-theme="dark"]) .ecoLogoChip span {
   color: #315f92;
 }
 
-:global(html[data-theme='dark']) .hamiPlatformBlock {
-  border-color: rgba(140, 219, 35, 0.88);
-  background: rgba(35, 54, 12, 0.9);
+:global(html[data-theme="dark"]) .hamiPlatformBlock {
+  border-color: rgba(16, 208, 93, 0.88);
+  background: rgba(9, 54, 28, 0.9);
   box-shadow: 0 8px 18px rgba(3, 10, 20, 0.26);
 }
 
-:global(html[data-theme='dark']) .hamiPlatformBlock h3 {
-  color: #e3f9ba;
+:global(html[data-theme="dark"]) .hamiPlatformBlock h3 {
+  color: #baf9d2;
 }
 
-:global(html[data-theme='dark']) .hamiPlatformBlock p {
+:global(html[data-theme="dark"]) .hamiPlatformBlock p {
   color: #f8fafc;
 }
 
-:global(html[data-theme='dark']) .gpuSliceChip {
+:global(html[data-theme="dark"]) .gpuSliceChip {
   border-color: rgba(78, 114, 151, 0.68);
   background: rgba(17, 29, 43, 0.88);
   color: #b8d2ee;
 }
 
-:global(html[data-theme='dark']) .gpuSliceArrow {
+:global(html[data-theme="dark"]) .gpuSliceArrow {
   color: #8eb6df;
 }
 
-:global(html[data-theme='dark']) .gpuSliceIcon {
+:global(html[data-theme="dark"]) .gpuSliceIcon {
   border-color: #7aa5d2;
 }
 
-:global(html[data-theme='dark']) .gpuSliceIcon::after {
+:global(html[data-theme="dark"]) .gpuSliceIcon::after {
   background: rgba(122, 165, 210, 0.28);
 }
 
-:global(html[data-theme='dark']) .ecoOpenChip {
+:global(html[data-theme="dark"]) .ecoOpenChip {
   border-color: rgba(100, 138, 176, 0.68);
   background: rgba(18, 32, 48, 0.88);
   color: #9bc0e7;
 }
 
-:global(html[data-theme='dark']) .observabilityPanel {
+:global(html[data-theme="dark"]) .observabilityPanel {
   border-color: rgba(72, 102, 136, 0.62);
   background: rgba(20, 30, 44, 0.88);
 }
 
-:global(html[data-theme='dark']) .observabilityPanel h4 {
+:global(html[data-theme="dark"]) .observabilityPanel h4 {
   color: #9cc5f0;
 }
 
-:global(html[data-theme='dark']) .observabilityMetric {
+:global(html[data-theme="dark"]) .observabilityMetric {
   border-color: rgba(72, 102, 136, 0.6);
   background: rgba(13, 21, 33, 0.86);
 }
 
-:global(html[data-theme='dark']) .observabilityIcon {
+:global(html[data-theme="dark"]) .observabilityIcon {
   border-color: rgba(91, 138, 184, 0.68);
   background: rgba(23, 40, 60, 0.92);
   color: #9cc5f0;
 }
 
-:global(html[data-theme='dark']) .observabilityMetric strong {
+:global(html[data-theme="dark"]) .observabilityMetric strong {
   color: #d6e8fb;
 }
 
-:global(html[data-theme='dark']) .observabilityMetric p {
+:global(html[data-theme="dark"]) .observabilityMetric p {
   color: #a9c8e9;
 }
-
-
 
 @media (min-width: 1400px) {
   .heroContent {
@@ -607,9 +613,9 @@
   align-items: center;
   justify-content: center;
   border-radius: 12px;
-  border: 1px solid rgba(118, 185, 0, 0.2);
-  background: rgba(118, 185, 0, 0.08);
-  color: #5b8f00;
+  border: 1px solid rgba(16, 208, 93, 0.2);
+  background: rgba(16, 208, 93, 0.08);
+  color: var(--hami-color-primary);
   font-size: 1.2rem;
 }
 
@@ -637,23 +643,23 @@
   letter-spacing: -0.01em;
 }
 
-:global(html[data-theme='dark']) .cardIcon {
-  border-color: rgba(140, 219, 35, 0.22);
-  background: rgba(140, 219, 35, 0.1);
-  color: #cfeea1;
+:global(html[data-theme="dark"]) .cardIcon {
+  border-color: rgba(16, 208, 93, 0.28);
+  background: rgba(16, 208, 93, 0.12);
+  color: var(--hami-color-primary-hover);
 }
 
-:global(html[data-theme='dark']) .card {
+:global(html[data-theme="dark"]) .card {
   border-color: rgba(74, 96, 120, 0.55);
   background: rgba(22, 30, 42, 0.88);
   box-shadow: 0 8px 20px rgba(2, 8, 20, 0.25);
 }
 
-:global(html[data-theme='dark']) .card h3 {
+:global(html[data-theme="dark"]) .card h3 {
   color: #e5edf8;
 }
 
-:global(html[data-theme='dark']) .card p {
+:global(html[data-theme="dark"]) .card p {
   color: rgba(200, 214, 232, 0.88);
 }
 
@@ -733,7 +739,7 @@
 
 .runtimeConnectorLine::after,
 .runtimeArrowLine::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 50%;
   bottom: -1px;
@@ -812,7 +818,7 @@
 }
 
 .runtimeLane::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0 auto 0 0;
   width: 4px;
@@ -821,12 +827,12 @@
   opacity: 1;
 }
 
-.runtimeLane[data-runtime-part='data'] {
+.runtimeLane[data-runtime-part="data"] {
   border-color: rgba(187, 247, 208, 0.8);
   background: rgba(240, 253, 244, 0.62);
 }
 
-.runtimeLane[data-runtime-part='data']::before {
+.runtimeLane[data-runtime-part="data"]::before {
   background: #22c55e;
 }
 
@@ -882,7 +888,7 @@
   border-color: rgba(125, 211, 252, 0.26);
 }
 
-.runtimeLane[data-runtime-part='data'] .runtimeStepCard_primary {
+.runtimeLane[data-runtime-part="data"] .runtimeStepCard_primary {
   border-color: rgba(187, 247, 208, 0.8);
 }
 
@@ -940,188 +946,188 @@
   color: var(--hami-diagram-muted);
 }
 
-:global(html[data-theme='light']) .runtimeDiagramFrame {
+:global(html[data-theme="light"]) .runtimeDiagramFrame {
   background: #ffffff;
   border-color: rgba(148, 163, 184, 0.22);
   box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
   color: #0f172a;
 }
 
-:global(html[data-theme='light']) .runtimeStageCard {
+:global(html[data-theme="light"]) .runtimeStageCard {
   background: #f8fafc;
   border-color: rgba(148, 163, 184, 0.24);
   color: #0f172a;
 }
 
-:global(html[data-theme='light']) .runtimeLane {
+:global(html[data-theme="light"]) .runtimeLane {
   background: #f8fafc;
   border-color: rgba(148, 163, 184, 0.2);
 }
 
-:global(html[data-theme='light']) .runtimeLane[data-runtime-part='data'] {
+:global(html[data-theme="light"]) .runtimeLane[data-runtime-part="data"] {
   background: #f8fafc;
   border-color: rgba(148, 163, 184, 0.2);
 }
 
-:global(html[data-theme='light']) .runtimeLaneHeader {
+:global(html[data-theme="light"]) .runtimeLaneHeader {
   border-bottom-color: rgba(148, 163, 184, 0.16);
 }
 
-:global(html[data-theme='light']) .runtimeStepCard {
+:global(html[data-theme="light"]) .runtimeStepCard {
   background: #ffffff;
   border-color: rgba(148, 163, 184, 0.2);
 }
 
-:global(html[data-theme='light']) .runtimeDiagramTitle {
+:global(html[data-theme="light"]) .runtimeDiagramTitle {
   color: #0f172a;
 }
 
-:global(html[data-theme='light']) .runtimeSectionLabel {
+:global(html[data-theme="light"]) .runtimeSectionLabel {
   color: #2563eb;
 }
 
-:global(html[data-theme='light']) .runtimeLaneHeader h3 {
+:global(html[data-theme="light"]) .runtimeLaneHeader h3 {
   color: #0f172a;
 }
 
-:global(html[data-theme='light']) .runtimeLaneKicker {
+:global(html[data-theme="light"]) .runtimeLaneKicker {
   background: #ffffff;
   border-color: rgba(148, 163, 184, 0.22);
   color: #64748b;
 }
 
-:global(html[data-theme='light']) .runtimeStepLabel {
+:global(html[data-theme="light"]) .runtimeStepLabel {
   color: #1e293b;
 }
 
-:global(html[data-theme='light']) .runtimeStepNote {
+:global(html[data-theme="light"]) .runtimeStepNote {
   color: #64748b;
 }
 
-:global(html[data-theme='light']) .runtimeConnectorLine,
-:global(html[data-theme='light']) .runtimeArrowLine {
+:global(html[data-theme="light"]) .runtimeConnectorLine,
+:global(html[data-theme="light"]) .runtimeArrowLine {
   background: rgba(148, 163, 184, 0.72);
 }
 
-:global(html[data-theme='light']) .runtimeConnectorLine::after,
-:global(html[data-theme='light']) .runtimeArrowLine::after {
+:global(html[data-theme="light"]) .runtimeConnectorLine::after,
+:global(html[data-theme="light"]) .runtimeArrowLine::after {
   border-right-color: rgba(148, 163, 184, 0.78);
   border-bottom-color: rgba(148, 163, 184, 0.78);
 }
 
-:global(html[data-theme='light']) .runtimeResources {
+:global(html[data-theme="light"]) .runtimeResources {
   background: #f8fafc;
-  border-color: rgba(118, 185, 0, 0.28);
+  border-color: rgba(16, 208, 93, 0.28);
 }
 
-:global(html[data-theme='light']) .runtimeResourcesLabel {
-  color: #4d7c0f;
+:global(html[data-theme="light"]) .runtimeResourcesLabel {
+  color: #087a34;
 }
 
-:global(html[data-theme='light']) .runtimeResources code {
+:global(html[data-theme="light"]) .runtimeResources code {
   background: #ffffff;
-  border-color: rgba(118, 185, 0, 0.34);
+  border-color: rgba(16, 208, 93, 0.34);
   color: #1e3a22;
 }
 
-:global(html[data-theme='light']) .runtimeResourcesDivider,
-:global(html[data-theme='light']) .runtimeResourcesSlash {
+:global(html[data-theme="light"]) .runtimeResourcesDivider,
+:global(html[data-theme="light"]) .runtimeResourcesSlash {
   color: #64748b;
 }
 
-:global(html[data-theme='dark']) .runtimeDiagramFrame {
+:global(html[data-theme="dark"]) .runtimeDiagramFrame {
   background: rgba(15, 23, 42, 0.82);
   border-color: rgba(71, 85, 105, 0.4);
   box-shadow: 0 12px 28px rgba(2, 8, 23, 0.28);
 }
 
-:global(html[data-theme='dark']) .runtimeDiagramTitle {
+:global(html[data-theme="dark"]) .runtimeDiagramTitle {
   color: #e2e8f0;
 }
 
-:global(html[data-theme='dark']) .runtimeSectionLabel {
+:global(html[data-theme="dark"]) .runtimeSectionLabel {
   color: #7dd3fc;
 }
 
-:global(html[data-theme='dark']) .runtimeStageCard {
+:global(html[data-theme="dark"]) .runtimeStageCard {
   background: rgba(15, 23, 42, 0.72);
   border-color: rgba(71, 85, 105, 0.42);
   color: #e2e8f0;
 }
 
-:global(html[data-theme='dark']) .runtimeLane {
+:global(html[data-theme="dark"]) .runtimeLane {
   background: rgba(15, 23, 42, 0.68);
   border-color: rgba(59, 130, 246, 0.26);
 }
 
-:global(html[data-theme='dark']) .runtimeLane[data-runtime-part='data'] {
+:global(html[data-theme="dark"]) .runtimeLane[data-runtime-part="data"] {
   background: rgba(15, 23, 42, 0.68);
   border-color: rgba(34, 197, 94, 0.24);
 }
 
-:global(html[data-theme='dark']) .runtimeLaneHeader {
+:global(html[data-theme="dark"]) .runtimeLaneHeader {
   border-bottom-color: rgba(71, 85, 105, 0.36);
 }
 
-:global(html[data-theme='dark']) .runtimeLaneHeader h3 {
+:global(html[data-theme="dark"]) .runtimeLaneHeader h3 {
   color: #e2e8f0;
 }
 
-:global(html[data-theme='dark']) .runtimeLaneKicker {
+:global(html[data-theme="dark"]) .runtimeLaneKicker {
   background: rgba(15, 23, 42, 0.86);
   border-color: rgba(71, 85, 105, 0.46);
   color: #94a3b8;
 }
 
-:global(html[data-theme='dark']) .runtimeStepCard {
+:global(html[data-theme="dark"]) .runtimeStepCard {
   background: rgba(15, 23, 42, 0.8);
   border-color: rgba(71, 85, 105, 0.4);
 }
 
-:global(html[data-theme='dark']) .runtimeStepCard_primary {
+:global(html[data-theme="dark"]) .runtimeStepCard_primary {
   border-color: rgba(59, 130, 246, 0.3);
 }
 
-:global(html[data-theme='dark']) .runtimeLane[data-runtime-part='data'] .runtimeStepCard_primary {
+:global(html[data-theme="dark"]) .runtimeLane[data-runtime-part="data"] .runtimeStepCard_primary {
   border-color: rgba(34, 197, 94, 0.28);
 }
 
-:global(html[data-theme='dark']) .runtimeStepLabel {
+:global(html[data-theme="dark"]) .runtimeStepLabel {
   color: #e2e8f0;
 }
 
-:global(html[data-theme='dark']) .runtimeStepNote {
+:global(html[data-theme="dark"]) .runtimeStepNote {
   color: #94a3b8;
 }
 
-:global(html[data-theme='dark']) .runtimeConnectorLine,
-:global(html[data-theme='dark']) .runtimeArrowLine {
+:global(html[data-theme="dark"]) .runtimeConnectorLine,
+:global(html[data-theme="dark"]) .runtimeArrowLine {
   background: rgba(148, 163, 184, 0.74);
 }
 
-:global(html[data-theme='dark']) .runtimeConnectorLine::after,
-:global(html[data-theme='dark']) .runtimeArrowLine::after {
+:global(html[data-theme="dark"]) .runtimeConnectorLine::after,
+:global(html[data-theme="dark"]) .runtimeArrowLine::after {
   border-right-color: rgba(148, 163, 184, 0.8);
   border-bottom-color: rgba(148, 163, 184, 0.8);
 }
 
-:global(html[data-theme='dark']) .runtimeResources {
+:global(html[data-theme="dark"]) .runtimeResources {
   background: rgba(15, 23, 42, 0.78);
-  border-color: rgba(118, 185, 0, 0.32);
+  border-color: rgba(16, 208, 93, 0.32);
 }
 
-:global(html[data-theme='dark']) .runtimeResourcesLabel {
-  color: #a3e635;
+:global(html[data-theme="dark"]) .runtimeResourcesLabel {
+  color: var(--hami-color-primary-hover);
 }
 
-:global(html[data-theme='dark']) .runtimeResources code {
+:global(html[data-theme="dark"]) .runtimeResources code {
   background: rgba(15, 23, 42, 0.92);
-  border-color: rgba(118, 185, 0, 0.34);
-  color: #ecfccb;
+  border-color: rgba(16, 208, 93, 0.34);
+  color: #c9fadd;
 }
 
-:global(html[data-theme='dark']) .runtimeResourcesDivider,
-:global(html[data-theme='dark']) .runtimeResourcesSlash {
+:global(html[data-theme="dark"]) .runtimeResourcesDivider,
+:global(html[data-theme="dark"]) .runtimeResourcesSlash {
   color: #94a3b8;
 }
 
@@ -1279,9 +1285,9 @@
 }
 
 .compareRequest_beta {
-  border-color: rgba(118, 185, 0, 0.38);
-  border-left: 4px solid rgba(118, 185, 0, 0.85);
-  background: linear-gradient(135deg, rgba(118, 185, 0, 0.28), rgba(118, 185, 0, 0.14));
+  border-color: rgba(16, 208, 93, 0.38);
+  border-left: 4px solid rgba(16, 208, 93, 0.85);
+  background: linear-gradient(135deg, rgba(16, 208, 93, 0.28), rgba(16, 208, 93, 0.14));
 }
 
 .compareRequest_gamma {
@@ -1374,8 +1380,8 @@
 }
 
 .compareGpuCell_beta {
-  border-color: rgba(118, 185, 0, 0.34);
-  background: linear-gradient(135deg, rgba(118, 185, 0, 0.84), rgba(164, 217, 86, 0.7));
+  border-color: rgba(16, 208, 93, 0.34);
+  background: linear-gradient(135deg, rgba(16, 208, 93, 0.84), rgba(164, 217, 86, 0.7));
 }
 
 .compareGpuCell_gamma {
@@ -1404,7 +1410,7 @@
 }
 
 .comparePanel_after .compareGpuCard:first-child {
-  border-color: rgba(118, 185, 0, 0.28);
+  border-color: rgba(16, 208, 93, 0.28);
   box-shadow: 0 14px 28px rgba(39, 92, 13, 0.08);
 }
 
@@ -1423,97 +1429,125 @@
   color: var(--hami-diagram-muted);
 }
 
-
-:global(html[data-theme='light']) .stackLayer {
+:global(html[data-theme="light"]) .stackLayer {
   background: rgba(255, 255, 255, 0.92);
-  border-color: rgba(118, 185, 0, 0.34);
+  border-color: rgba(16, 208, 93, 0.34);
   box-shadow: inset 0 0 0 1px rgba(57, 198, 244, 0.1);
 }
 
-:global(html[data-theme='light']) .stackLayerIcon {
+:global(html[data-theme="light"]) .stackLayerIcon {
   border-color: rgba(57, 198, 244, 0.28);
-  background: linear-gradient(145deg, rgba(57, 198, 244, 0.16), rgba(118, 185, 0, 0.12));
+  background: linear-gradient(145deg, rgba(57, 198, 244, 0.16), rgba(16, 208, 93, 0.12));
   color: #0f6e96;
 }
 
-:global(html[data-theme='light']) .stackLayer_workloads {
+:global(html[data-theme="light"]) .stackLayer_workloads {
   background: linear-gradient(180deg, rgba(204, 239, 253, 0.88), rgba(235, 247, 252, 0.94));
   border-color: rgba(57, 198, 244, 0.52);
 }
 
-:global(html[data-theme='light']) .stackLayer_hami {
+:global(html[data-theme="light"]) .stackLayer_hami {
   background: linear-gradient(135deg, #1d507d, #15344f);
-  border-color: rgba(118, 185, 0, 0.9);
+  border-color: rgba(16, 208, 93, 0.9);
 }
 
-:global(html[data-theme='light']) .stackLayer_hami .stackLayerTitle,
-:global(html[data-theme='light']) .stackLayer_hami .stackLayerItems {
+:global(html[data-theme="light"]) .stackLayer_hami .stackLayerTitle,
+:global(html[data-theme="light"]) .stackLayer_hami .stackLayerItems {
   color: #ffffff;
 }
 
-:global(html[data-theme='light']) .stackLayer_hami .stackLayerIcon {
+:global(html[data-theme="light"]) .stackLayer_hami .stackLayerIcon {
   border-color: rgba(255, 255, 255, 0.28);
-  background: linear-gradient(145deg, rgba(118, 185, 0, 0.24), rgba(57, 198, 244, 0.2));
+  background: linear-gradient(145deg, rgba(16, 208, 93, 0.24), rgba(57, 198, 244, 0.2));
   color: #f3ffd8;
 }
 
-:global(html[data-theme='light']) .stackLayer_accelerators {
+:global(html[data-theme="light"]) .stackLayer_accelerators {
   background: linear-gradient(180deg, rgba(229, 236, 242, 0.92), rgba(241, 246, 250, 0.94));
   border-color: rgba(148, 167, 186, 0.62);
 }
 
-:global(html[data-theme='dark']) .stackLayer {
-  border-color: rgba(118, 185, 0, 0.28);
+:global(html[data-theme="dark"]) .stackLayer {
+  border-color: rgba(16, 208, 93, 0.28);
   background: rgba(20, 31, 44, 0.84);
 }
 
-:global(html[data-theme='dark']) .stackLayer_workloads {
+:global(html[data-theme="dark"]) .stackLayer_workloads {
   background: linear-gradient(180deg, rgba(38, 72, 97, 0.64), rgba(21, 39, 57, 0.84));
   border-color: rgba(57, 198, 244, 0.45);
 }
 
-:global(html[data-theme='dark']) .stackLayer_hami {
-  background: linear-gradient(135deg, rgba(118, 185, 0, 0.34), rgba(57, 198, 244, 0.24));
-  border-color: rgba(118, 185, 0, 0.74);
+:global(html[data-theme="dark"]) .stackLayer_hami {
+  background: linear-gradient(135deg, rgba(16, 208, 93, 0.34), rgba(57, 198, 244, 0.24));
+  border-color: rgba(16, 208, 93, 0.74);
 }
 
-:global(html[data-theme='dark']) .stackLayer_accelerators {
+:global(html[data-theme="dark"]) .stackLayer_accelerators {
   background: linear-gradient(180deg, rgba(59, 73, 90, 0.6), rgba(26, 37, 49, 0.84));
   border-color: rgba(148, 167, 186, 0.62);
 }
 
-:global(html[data-theme='dark']) .stackLayerIcon {
-  border-color: rgba(118, 185, 0, 0.5);
-  background: linear-gradient(145deg, rgba(118, 185, 0, 0.2), rgba(57, 198, 244, 0.16));
-  color: #d9ff9f;
+:global(html[data-theme="dark"]) .stackLayerIcon {
+  border-color: rgba(16, 208, 93, 0.5);
+  background: linear-gradient(145deg, rgba(16, 208, 93, 0.2), rgba(57, 198, 244, 0.16));
+  color: var(--hami-color-primary-hover);
 }
 
-
 @keyframes flowBounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(2px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(2px);
+  }
 }
 
 @keyframes flowPulse {
-  0%, 100% { opacity: 0.45; transform: translateX(0); }
-  50% { opacity: 1; transform: translateX(1px); }
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: translateX(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(1px);
+  }
 }
 
 @keyframes compareUtilFade {
-  0% { opacity: 0; transform: translateY(4px); }
-  100% { opacity: 1; transform: translateY(0); }
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ── scroll-reveal animations ── */
 
 @keyframes revealUp {
-  from { opacity: 0; transform: translateY(32px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes revealScale {
-  from { opacity: 0; transform: scale(0.96) translateY(18px); }
-  to   { opacity: 1; transform: scale(1) translateY(0); }
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 .reveal {
@@ -1529,9 +1563,15 @@
   animation: revealScale 0.7s cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
 
-.revealDelay1 { animation-delay: 0.1s; }
-.revealDelay2 { animation-delay: 0.2s; }
-.revealDelay3 { animation-delay: 0.3s; }
+.revealDelay1 {
+  animation-delay: 0.1s;
+}
+.revealDelay2 {
+  animation-delay: 0.2s;
+}
+.revealDelay3 {
+  animation-delay: 0.3s;
+}
 
 @media (prefers-reduced-motion: reduce) {
   .reveal,
@@ -1594,12 +1634,12 @@
 .communityMetricCard {
   padding: 20px 20px 18px;
   border-radius: 14px;
-  border: 1px solid rgba(118, 185, 0, 0.42);
+  border: 1px solid rgba(16, 208, 93, 0.42);
   background: linear-gradient(180deg, #ffffff 0%, #f9fdec 100%);
   display: grid;
   gap: 16px;
   align-content: start;
-  box-shadow: 0 4px 14px rgba(88, 138, 0, 0.1);
+  box-shadow: 0 4px 14px rgba(16, 208, 93, 0.1);
   transition:
     border-color var(--hami-motion-fast),
     box-shadow var(--hami-motion-fast),
@@ -1607,8 +1647,8 @@
 }
 
 .communityMetricCard:hover {
-  border-color: rgba(118, 185, 0, 0.72);
-  box-shadow: 0 10px 24px rgba(88, 138, 0, 0.16);
+  border-color: rgba(16, 208, 93, 0.72);
+  box-shadow: 0 10px 24px rgba(16, 208, 93, 0.16);
   transform: translateY(-1px);
 }
 
@@ -1628,7 +1668,7 @@
 .communityMetricIcon {
   width: 12px;
   height: 12px;
-  color: #5b8f00;
+  color: var(--hami-color-primary);
   font-size: 0.46rem;
   display: inline-flex;
   align-items: center;
@@ -1644,9 +1684,9 @@
   width: 12px;
   height: 12px;
   border-radius: 999px;
-  border: 1px solid rgba(118, 185, 0, 0.45);
-  background: rgba(118, 185, 0, 0.1);
-  color: #5b8f00;
+  border: 1px solid rgba(16, 208, 93, 0.45);
+  background: rgba(16, 208, 93, 0.1);
+  color: var(--hami-color-primary);
   font-size: 0.4rem;
   display: inline-flex;
   align-items: center;
@@ -1662,7 +1702,7 @@
   bottom: calc(100% + 8px);
   padding: 6px 8px;
   border-radius: 6px;
-  border: 1px solid rgba(118, 185, 0, 0.38);
+  border: 1px solid rgba(16, 208, 93, 0.38);
   background: #ffffff;
   color: #2f3a0c;
   box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
@@ -1715,8 +1755,8 @@
 }
 
 .communityMetricActions :global(.button--primary) {
-  background: #76b900;
-  border-color: #76b900;
+  background: #10d05d;
+  border-color: #10d05d;
   color: #102000;
 }
 
@@ -1728,13 +1768,13 @@
 
 .communityMetricActions :global(.button--outline) {
   background: #ffffff;
-  border-color: rgba(118, 185, 0, 0.5);
+  border-color: rgba(16, 208, 93, 0.5);
   color: #2f4a08;
 }
 
 .communityMetricActions :global(.button--outline:hover) {
   background: #f7fce9;
-  border-color: #76b900;
+  border-color: #10d05d;
   color: #223707;
 }
 
@@ -1772,77 +1812,77 @@
   align-items: center;
 }
 
-:global(html[data-theme='dark']) .cncfFeature {
+:global(html[data-theme="dark"]) .cncfFeature {
   background:
     radial-gradient(circle at 0% 0%, rgba(17, 208, 93, 0.2), transparent 36%),
     linear-gradient(135deg, rgba(16, 24, 39, 0.98), rgba(11, 18, 32, 0.96));
 }
 
-:global(html[data-theme='dark']) .communityMetricCard {
-  border-color: rgba(140, 219, 35, 0.58);
-  background: linear-gradient(180deg, rgba(20, 31, 9, 0.92) 0%, rgba(16, 25, 7, 0.95) 100%);
+:global(html[data-theme="dark"]) .communityMetricCard {
+  border-color: rgba(16, 208, 93, 0.58);
+  background: linear-gradient(180deg, rgba(9, 38, 23, 0.92) 0%, rgba(7, 30, 18, 0.95) 100%);
   box-shadow: 0 6px 18px rgba(2, 6, 23, 0.38);
 }
 
-:global(html[data-theme='dark']) .communityMetricsTitle {
+:global(html[data-theme="dark"]) .communityMetricsTitle {
   color: #d9f2ad;
 }
 
-:global(html[data-theme='dark']) .communityMetricsDesc {
+:global(html[data-theme="dark"]) .communityMetricsDesc {
   color: #b7c89b;
 }
 
-:global(html[data-theme='dark']) .communityMetricCard:hover {
-  border-color: rgba(140, 219, 35, 0.82);
+:global(html[data-theme="dark"]) .communityMetricCard:hover {
+  border-color: rgba(16, 208, 93, 0.82);
   box-shadow: 0 12px 28px rgba(2, 6, 23, 0.44);
 }
 
-:global(html[data-theme='dark']) .communityMetricCard strong {
+:global(html[data-theme="dark"]) .communityMetricCard strong {
   color: #d9f2ad;
 }
 
-:global(html[data-theme='dark']) .communityMetricCard span {
+:global(html[data-theme="dark"]) .communityMetricCard span {
   color: #f4ffdf;
 }
 
-:global(html[data-theme='dark']) .communityMetricIcon {
+:global(html[data-theme="dark"]) .communityMetricIcon {
   color: #d9f2ad;
 }
 
-:global(html[data-theme='dark']) .metricSourceHint {
-  border-color: rgba(140, 219, 35, 0.55);
-  background: rgba(140, 219, 35, 0.16);
+:global(html[data-theme="dark"]) .metricSourceHint {
+  border-color: rgba(16, 208, 93, 0.55);
+  background: rgba(16, 208, 93, 0.16);
   color: #d9f2ad;
 }
 
-:global(html[data-theme='dark']) .metricSourceHint::after {
-  border-color: rgba(140, 219, 35, 0.45);
+:global(html[data-theme="dark"]) .metricSourceHint::after {
+  border-color: rgba(16, 208, 93, 0.45);
   background: rgba(15, 23, 42, 0.96);
   color: #e6f5cc;
   box-shadow: 0 8px 20px rgba(2, 6, 23, 0.46);
 }
 
-:global(html[data-theme='dark']) .communityMetricActions :global(.button--primary) {
-  background: #8cdb23;
-  border-color: #8cdb23;
-  color: #0f1d00;
+:global(html[data-theme="dark"]) .communityMetricActions :global(.button--primary) {
+  background: var(--hami-color-primary);
+  border-color: var(--hami-color-primary);
+  color: #06140c;
 }
 
-:global(html[data-theme='dark']) .communityMetricActions :global(.button--primary:hover) {
-  background: #9ee94a;
-  border-color: #9ee94a;
-  color: #0d1800;
+:global(html[data-theme="dark"]) .communityMetricActions :global(.button--primary:hover) {
+  background: var(--hami-color-primary-hover);
+  border-color: var(--hami-color-primary-hover);
+  color: #06140c;
 }
 
-:global(html[data-theme='dark']) .communityMetricActions :global(.button--outline) {
-  background: rgba(17, 29, 5, 0.7);
-  border-color: rgba(140, 219, 35, 0.62);
+:global(html[data-theme="dark"]) .communityMetricActions :global(.button--outline) {
+  background: rgba(6, 28, 16, 0.7);
+  border-color: rgba(16, 208, 93, 0.62);
   color: #dff6b8;
 }
 
-:global(html[data-theme='dark']) .communityMetricActions :global(.button--outline:hover) {
-  background: rgba(24, 41, 7, 0.9);
-  border-color: #8cdb23;
+:global(html[data-theme="dark"]) .communityMetricActions :global(.button--outline:hover) {
+  background: rgba(8, 42, 23, 0.9);
+  border-color: var(--hami-color-primary);
   color: #f4ffdf;
 }
 
@@ -2532,8 +2572,12 @@
     border-radius: 10px;
   }
 
-  .runtimeStepLabel { font-size: 0.68rem; }
-  .runtimeStepNote { font-size: 0.58rem; }
+  .runtimeStepLabel {
+    font-size: 0.68rem;
+  }
+  .runtimeStepNote {
+    font-size: 0.58rem;
+  }
 
   .runtimeResources {
     padding: 12px 10px;

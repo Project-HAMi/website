@@ -1,7 +1,7 @@
 const { themes } = require("prism-react-renderer");
 const lightTheme = themes.github;
 const darkTheme = themes.dracula;
-const defaultLocale = 'en';
+const defaultLocale = "en";
 
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
@@ -35,8 +35,8 @@ module.exports = {
   projectName: "website",
   favicon: "img/logo.svg",
   clientModules: [
-    require.resolve('./src/client/imageFigureNumber.js'),
-    require.resolve('./src/client/webmcp.js'),
+    require.resolve("./src/client/imageFigureNumber.js"),
+    require.resolve("./src/client/webmcp.js"),
   ],
   i18n: {
     defaultLocale: defaultLocale,
@@ -179,7 +179,7 @@ module.exports = {
   ],
   plugins: [
     [
-      './src/plugins/docs/index.js',
+      "./src/plugins/docs/index.js",
       {
         sidebarPath: require.resolve("./sidebars.js"),
         editUrl: function ({ locale, docPath }) {
@@ -188,12 +188,6 @@ module.exports = {
         showLastUpdateAuthor: false,
         showLastUpdateTime: true,
         includeCurrentVersion: true,
-        lastVersion: 'current',
-        versions: {
-          current: {
-            label: 'latest',
-          },
-        },
         // Performance optimization: Disable number prefix parser
         numberPrefixParser: false,
         // Performance optimization: Disable breadcrumbs for performance
@@ -201,11 +195,11 @@ module.exports = {
       },
     ],
     [
-      './src/plugins/docs/index.js',
+      "./src/plugins/docs/index.js",
       {
-        id: 'tutorials',
-        path: 'tutorials',
-        routeBasePath: 'tutorials',
+        id: "tutorials",
+        path: "tutorials",
+        routeBasePath: "tutorials",
         sidebarPath: require.resolve("./sidebars-tutorials.js"),
         editUrl: function ({ locale, docPath }) {
           return `https://github.com/Project-HAMi/website/edit/master/tutorials/${docPath}`;
@@ -216,19 +210,18 @@ module.exports = {
       },
     ],
     [
-      './src/plugins/changelog/index.js',
+      "./src/plugins/changelog/index.js",
       {
-        blogTitle: 'HAMi Changelog',
-        blogDescription:
-          'Keep yourself up-to-date about new features in every release',
-        blogSidebarCount: 'ALL',
-        blogSidebarTitle: 'Changelog',
-        routeBasePath: '/changelog',
+        blogTitle: "HAMi Changelog",
+        blogDescription: "Keep yourself up-to-date about new features in every release",
+        blogSidebarCount: "ALL",
+        blogSidebarTitle: "Changelog",
+        routeBasePath: "/changelog",
         showReadingTime: false,
         postsPerPage: 20,
         archiveBasePath: null,
-        authorsMapPath: 'authors.json',
-        onInlineAuthors: 'warn',
+        authorsMapPath: "authors.json",
+        onInlineAuthors: "warn",
       },
     ],
   ],
@@ -254,12 +247,6 @@ module.exports = {
     ],
   ],
   themeConfig: {
-    announcementBar: {
-      content: "kubecon_india_2026",
-      backgroundColor: "#1a1a2e",
-      textColor: "#ffffff",
-      isCloseable: true,
-    },
     image: "img/hami-graph-color.png",
     colorMode: {
       defaultMode: "dark",
@@ -311,7 +298,7 @@ module.exports = {
         },
         {
           label: "Releases",
-          to: '/changelog',
+          to: "/changelog",
           position: "left",
         },
         {
@@ -396,6 +383,12 @@ module.exports = {
         blog: {
           showReadingTime: true,
           editUrl: "https://github.com/Project-HAMi/website/tree/master/",
+          feedOptions: {
+            type: ["rss", "atom"],
+            title: "HAMi Blog",
+            description: "Latest news and updates from the HAMi project",
+            copyright: `Copyright ${new Date().getFullYear()} HAMi Authors`,
+          },
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),

@@ -3,7 +3,7 @@ title: 如何使用 Volcano vGPU
 translated: true
 ---
 
-# Kubernetes 的 Volcano vGPU 设备插件
+## Kubernetes 的 Volcano vGPU 设备插件
 
 :::note
 
@@ -15,6 +15,7 @@ translated: true
 Volcano vgpu 仅在 volcano > 1.9 中可用
 
 :::
+
 ## 快速开始
 
 ### 配置调度器

@@ -1,0 +1,38 @@
+{
+  "markdownlint.config": {
+    "default": true,
+    "MD041": false
+  },
+  "markdownlint.ignore": [
+    "**/node_modules/**",
+    "**/build/**",
+    "**/.docusaurus/**",
+    "**/CHANGELOG.md",
+    "**/versioned_docs/**",
+    "OWNERS"
+  ],
+  "cSpell.ignorePaths": ["node_modules", "build", ".docusaurus", "package-lock.json"],
+  "cSpell.words": [
+    "archlitchi",
+    "asciinema",
+    "cambricon",
+    "clsx",
+    "docusaurus",
+    "enflame",
+    "hami",
+    "iluvatar",
+    "kunlunxin",
+    "metax",
+    "mthreads",
+    "nvidia",
+    "orbstack",
+    "swizzle",
+    "vastai",
+    "vgpu",
+    "vllm",
+    "vnpu"
+  ],
+  "json.schemas": [],
+  "frontMatter.content.pageFolders": [],
+  "frontMatter.taxonomy.contentTypes": []
+}

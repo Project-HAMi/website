@@ -1,17 +1,16 @@
-import React from 'react';
-import clsx from 'clsx';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faPenToSquare} from '@fortawesome/free-solid-svg-icons';
-import {faLinkedinIn, faXTwitter} from '@fortawesome/free-brands-svg-icons';
-import {useBlogPost} from '@docusaurus/plugin-content-blog/client';
-import TagsListInline from '@theme/TagsListInline';
-import ReadMoreLink from '@theme/BlogPostItem/Footer/ReadMoreLink';
-import {getBlogLinkTitle} from '@theme/utils/linkTitle';
-import styles from './styles.module.css';
+import React from "react";
+import clsx from "clsx";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import { faLinkedinIn, faXTwitter } from "@fortawesome/free-brands-svg-icons";
+import { useBlogPost } from "@docusaurus/plugin-content-blog/client";
+import TagsListInline from "@theme/TagsListInline";
+import ReadMoreLink from "@theme/BlogPostItem/Footer/ReadMoreLink";
+import styles from "./styles.module.css";
 
-function ShareButtons({permalink, title}) {
+function ShareButtons({ permalink, title }) {
   const url = encodeURIComponent(permalink);
-  const text = encodeURIComponent(title || '');
+  const text = encodeURIComponent(title || "");
 
   return (
     <div className={styles.shareBlock}>
@@ -21,7 +20,8 @@ function ShareButtons({permalink, title}) {
         href={`https://twitter.com/intent/tweet?url=${url}&text=${text}`}
         target="_blank"
         rel="noreferrer"
-        aria-label="Share on X">
+        aria-label="Share on X"
+      >
         <FontAwesomeIcon icon={faXTwitter} />
       </a>
       <a
@@ -29,7 +29,8 @@ function ShareButtons({permalink, title}) {
         href={`https://www.linkedin.com/sharing/share-offsite/?url=${url}`}
         target="_blank"
         rel="noreferrer"
-        aria-label="Share on LinkedIn">
+        aria-label="Share on LinkedIn"
+      >
         <FontAwesomeIcon icon={faLinkedinIn} />
       </a>
     </div>
@@ -37,14 +38,9 @@ function ShareButtons({permalink, title}) {
 }
 
 export default function BlogPostItemFooter() {
-  const {metadata, frontMatter, isBlogPostPage} = useBlogPost();
-  const {
-    tags,
-    title,
-    editUrl,
-    hasTruncateMarker,
-  } = metadata;
-  const listTitle = getBlogLinkTitle(metadata, frontMatter) || title;
+  const { metadata, frontMatter, isBlogPostPage } = useBlogPost();
+  const { tags, title, editUrl, hasTruncateMarker } = metadata;
+  const listTitle = frontMatter?.sidebar_label || metadata?.frontMatter?.sidebar_label || title;
 
   const truncatedPost = !isBlogPostPage && hasTruncateMarker;
   const tagsExists = tags.length > 0;
@@ -56,7 +52,7 @@ export default function BlogPostItemFooter() {
 
   if (isBlogPostPage) {
     return (
-      <footer className={clsx('docusaurus-mt-lg', styles.postFooter)}>
+      <footer className={clsx("docusaurus-mt-lg", styles.postFooter)}>
         {tagsExists && (
           <div className={styles.tagsRow}>
             <TagsListInline tags={tags} />
@@ -78,15 +74,16 @@ export default function BlogPostItemFooter() {
   return (
     <footer className="row docusaurus-mt-lg">
       {tagsExists && (
-        <div className={clsx('col', {'col--9': truncatedPost})}>
+        <div className={clsx("col", { "col--9": truncatedPost })}>
           <TagsListInline tags={tags} />
         </div>
       )}
       {truncatedPost && (
         <div
-          className={clsx('col text--right', {
-            'col--3': tagsExists,
-          })}>
+          className={clsx("col text--right", {
+            "col--3": tagsExists,
+          })}
+        >
           <ReadMoreLink blogPostTitle={listTitle} to={metadata.permalink} />
         </div>
       )}

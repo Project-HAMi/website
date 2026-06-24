@@ -68,20 +68,55 @@ npm run write-translations
 
 Extracts translatable strings for i18n.
 
+### Lint, Format & Link Checks
+
+```bash
+npm run lint          # markdownlint on docs/tutorials/blog/i18n
+npm run format:check  # prettier --check . (CI runs this)
+npm run format        # prettier --write .
+npm run check-links   # build + html-link-checker on ./build
+npm run check:all     # lint && format:check && build
+npm run build:fast    # build English locale only (skips zh, for quick iteration)
+```
+
+CI (`.github/workflows/docs-health.yml`) runs `lint`, `format:check`, and `build` on every PR.
+
 ### Deploy to GitHub Pages
 
 ```bash
-GIT_USER=<Your GitHub username> USE_SSH=true yarn deploy
+GIT_USER=<Your GitHub username> USE_SSH=true npm run deploy
 ```
 
 Builds and deploys the website to the `gh-pages` branch for GitHub Pages hosting.
+
+## Commit Convention
+
+This project enforces **DCO (Developer Certificate of Origin)** — every commit MUST include a `Signed-off-by:` line, or CI will block the PR. It also follows [Conventional Commits](https://www.conventionalcommits.org/).
+
+**Always commit with `-s`** (lowercase) to add the DCO sign-off:
+
+```bash
+git commit -s -m "fix(versions): version v2.9.0 and restore standard model"
+```
+
+Do NOT confuse `-s` (lowercase = DCO `Signed-off-by`) with `-S` (uppercase = GPG cryptographic signature). This repo's `commit.gpgsign` is already `true`, so GPG signing happens automatically; you only need to add `-s` explicitly.
+
+**Conventional Commit prefixes used in this repo:** `fix:`, `feat:`, `style:`, `docs:`, `chore:`, `refactor:`, with an optional scope like `fix(versions):` or `style(blog):`.
+
+**Forgot to sign off?** Before pushing, fix all unpushed commits in one go:
+
+```bash
+git rebase --exec "git commit --amend --no-edit -s" <branch-base>
+```
+
+See `docs/contributor/contributing.md` (§ DCO Sign-off) and `docs/contributor/github-workflow.md` for the full policy.
 
 ## Architecture
 
 ### Docusaurus Configuration
 
 - **Config file:** `docusaurus.config.js`
-- **Node version:** 20 (required - see `netlify.toml` and `.github/workflows/pr-test.yml`)
+- **Node version:** 20 (required - see `netlify.toml` and `.github/workflows/docs-health.yml`)
 - **Default locale:** English (`en`)
 - **Supported locales:** English, Chinese (`zh`)
 
@@ -103,14 +138,20 @@ Builds and deploys the website to the `gh-pages` branch for GitHub Pages hosting
 
 **Multi-version documentation:**
 
-- Current version in `docs/`
-- Historical versions in `versioned_docs/version-vX.Y.Z/`
-- Version list in `versions.json`
-- When adding new versions, use `npm run docusaurus docs:version <version>`
+- Dev/next (unreleased) version in `docs/` (ZH mirror: `i18n/zh/docusaurus-plugin-content-docs/current/` — note: the `current` dir name is a Docusaurus convention for the _unreleased_ version, NOT the "current/stable" release; see Version Management below)
+- Historical versions in `versioned_docs/version-vX.Y.Z/` (immutable snapshots)
+- Version list in `versions.json` (first entry = default version served at `/docs`)
+- To release a new version, see **Version Management** below (do NOT hand-copy)
 
 **Blog (`blog/`):**
 
 - Standard Docusaurus blog with YYYY-MM-DD-title directory structure
+
+**Tutorials (`tutorials/`):**
+
+- Hands-on lab guides, separate docs plugin (id: `tutorials`, routeBasePath: `tutorials`)
+- Sidebar: `sidebars-tutorials.js` (separate from the main `sidebars.js`)
+- ZH mirror: `i18n/zh/docusaurus-plugin-content-docs-tutorials/current/`
 
 **Changelog:**
 
@@ -138,11 +179,16 @@ Builds and deploys the website to the `gh-pages` branch for GitHub Pages hosting
 - `gitHubButton.js` - GitHub integration button
 - `supportersList.js` - Supporters/community display
 - `whatIs.js` - "What is HAMi" content component
+- `adoptersList.js` - Adopters list (data from `src/data/adopters.json`)
+- `caseStudiesList.js` - Case studies listing
+- `contributorsList.js` - Contributors display
+- `BeforeAfterComparison.js` - Before/after image comparison widget
 
 **Custom Pages:**
 
 - `src/pages/index.js` - Homepage
-- `src/pages/adopters.mdx` - Adopters page
+- `src/pages/community.js` - Community page
+- `src/pages/case-studies.js` - Case studies page
 
 ### Custom Styling
 
@@ -151,12 +197,12 @@ Builds and deploys the website to the `gh-pages` branch for GitHub Pages hosting
 
 ### Search Configuration
 
-**Algolia:**
+**Local search** via [`@easyops-cn/docusaurus-search-local`](https://github.com/easyops-cn/docusaurus-search-local) (no external Algolia dependency):
 
-- App ID: IWSUKSVX6L
-- Index: project-hami
-- Contextual search enabled for version/language awareness
-- Configured in `docusaurus.config.js`
+- Search contexts: `docs`, `zh/docs`, `tutorials`, `zh/tutorials`
+- `useAllContextsWithNoSearchContext: true` — queries with no context search all
+- `searchResultLimits: 8`, `searchResultContextMaxLength: 50` (performance caps)
+- Configured in `docusaurus.config.js` under `themes`
 
 ### Static Assets
 
@@ -194,11 +240,64 @@ The documentation follows a consistent pattern for each hardware device type (NV
 
 ### Version Management
 
-When releasing a new HAMi version:
+HAMi is released in the [HAMi code repo](https://github.com/Project-HAMi/HAMi), but **docs versioning must be triggered manually in this (website) repo**. Docusaurus does NOT auto-version on release — forgetting this step was the root cause of the v2.9.0 dropdown bug (the version was shipped but never snapshotted, so it was missing from the site).
 
-1. Run `npm run fetch-changelog <version>` to update changelog
-2. Use `npm run docusaurus docs:version <version>` to version current docs
-3. Update `versions.json` if needed
+**⚠️ Terminology gotcha:** The word `current` is overloaded here. `current/` (a directory name, hardcoded by Docusaurus as `CURRENT_VERSION_NAME`) = the **unreleased dev version** at `/docs/next`. "Latest stable release" (e.g. v2.9.0, the first entry in `versions.json`, served at `/docs`) is a _different thing_. They are NOT the same — confusing them was the root cause of the v2.9.0 version bug.
+
+**How versioning works (read this once):**
+
+- `docs/` (EN) and `i18n/zh/docusaurus-plugin-content-docs/current/` (ZH) are the **only** working directories. They hold the _next_ (unreleased) version, served at `/docs/next`. Edit these for all day-to-day work.
+- `versioned_docs/version-vX.Y.Z/` and `i18n/zh/.../version-vX.Y.Z/` are **immutable frozen snapshots** generated by the versioning command. Never hand-copy files into them.
+- The first entry in `versions.json` is the default version served at `/docs` (the **latest stable release**, e.g. v2.9.0 — _not_ the `current/` directory, which is the unreleased dev version).
+
+**When releasing a new HAMi version** (e.g. v2.10.0), in this repo:
+
+1. `npm run docusaurus docs:version v2.10.0`
+   - Snapshots `docs/` → `versioned_docs/version-v2.10.0/` (EN) **and** `i18n/zh/.../current/` → `i18n/zh/.../version-v2.10.0/` (ZH) automatically. One command covers both locales — do NOT copy manually.
+   - Prepends `v2.10.0` to `versions.json` (becomes the new default at `/docs`).
+   - **Version string MUST include the `v` prefix** (`v2.10.0`, not `2.10.0`).
+   - `docs/` stays in place and continues accumulating the _next_ version's changes.
+2. **Fix the ZH version label.** The command copies `current.json` into `version-vX.Y.Z.json`, which leaves the dev label `"下一个"` in place. Edit `i18n/zh/docusaurus-plugin-content-docs/version-vX.Y.Z.json` and set `version.label.message` to the version string (e.g. `"v2.10.0"`), matching the convention of older version JSON files. Leave `current.json` as `"下一个"`.
+3. `npm run fetch-changelog <version>` to regenerate the changelog blog post from `CHANGELOG.md`.
+4. `npm run build` and verify the version dropdown shows: `Next` / `vX.Y.Z` (active) / older versions — in BOTH `en` and `zh`.
+
+**Fixing the latest stable version** (e.g. v2.9.0 has errors / untranslated content / wording issues):
+
+The released version and the dev (`docs/`) version share the same files, so a fix usually needs to land in **both** — otherwise it either never reaches the live site (only fixed in `docs/`, which is the _next_ version) or regresses in the next release (only fixed in `version-vX.Y.Z/`, but `docs/` still has the old bug and gets snapshotted again at the next `docs:version`).
+
+The clean workflow is **edit `docs/` first, then sync to the released version**:
+
+1. **Make all fixes in `docs/` (EN) + `i18n/zh/.../current/` (ZH)** — your single source of truth. Commit (or open the PR) here.
+2. **Sync the changed files into the released version.** Use git to get the exact list of files you touched, then copy each one across — this avoids both missing files and dragging in unrelated drift:
+
+   ```bash
+   # From the repo root, after committing your docs/ changes:
+   VERSION=v2.9.0
+
+   # English: sync each changed file from docs/ → versioned_docs/version-$VERSION/
+   git diff --name-only HEAD~1 -- docs/ | while read f; do
+     cp "$f" "versioned_docs/version-$VERSION/${f#docs/}"
+   done
+
+   # Chinese: sync each changed file from current/ → version-$VERSION/
+   git diff --name-only HEAD~1 -- i18n/zh/docusaurus-plugin-content-docs/current/ | while read f; do
+     cp "$f" "i18n/zh/docusaurus-plugin-content-docs/version-$VERSION/${f#*i18n/zh/docusaurus-plugin-content-docs/current/}"
+   done
+   ```
+
+   Adjust `HEAD~1` / the version to match your situation. If you're syncing across multiple commits, use a commit range like `HEAD~5` or a branch base.
+
+3. `npm run build` and verify the fix appears in **both** the released version (`/docs`) and the next version (`/docs/next`), in both `en` and `zh`.
+
+**When to sync vs. not:**
+
+- **Sync both** (the common case): the fix applies equally to the released and dev versions — e.g. typo, broken link, wrong command, missing translation, wording clarity. This is what the steps above are for.
+- **Released version only**: the dev version's copy of that passage has already been rewritten/removed, so the fix doesn't apply there anymore. Rare — check by diffing the two files first.
+- **Dev (`docs/`) only**: genuinely new content or improvements that belong to the _next_ release, not the latest stable one. Don't backport to a released version.
+
+> Note: `docs/` (EN) and `versioned_docs/version-vX.Y.Z/` start out byte-identical right after a `docs:version`. The ZH `current/` and `version-vX.Y.Z/` may already have minor drift (e.g. CJK spacing normalization). The per-file sync above preserves any unrelated differences and only copies the files you actually changed.
+
+**Do NOT** set `lastVersion: "current"` in `docusaurus.config.js`. That makes the in-development `docs/` the default version and breaks the current/next distinction (this was the v2.9.0 bug). The standard model — latest `versions.json` entry at `/docs`, dev at `/docs/next` — is correct.
 
 ### Editing Changelog
 
@@ -221,6 +320,20 @@ The site uses Prism.js with additional languages:
 
 Add more in `docusaurus.config.js` under `prism.additionalLanguages`.
 
+### Mermaid Diagrams
+
+Mermaid blocks are rendered through a custom wrapper at `src/theme/Mermaid/index.js`. To give a diagram a visible caption, add a `%% title: <text>` line as the **first line inside the mermaid fence**:
+
+````
+```mermaid
+%% title: HAMi Ecosystem Integrations
+flowchart TB
+    A --> B
+```
+````
+
+The wrapper extracts that comment and renders it as a `<figcaption>` (the lightbox picks it up too). `%%` is otherwise a plain mermaid comment, so the title only appears because of this wrapper. Do **not** use mermaid's YAML frontmatter form (`---\ntitle: ...\n---`) — it is not rendered on this site.
+
 ### Custom Changelog Plugin Details
 
 The changelog plugin (`src/plugins/changelog/index.js`) is a customized Docusaurus blog plugin that:
@@ -235,12 +348,11 @@ The changelog plugin (`src/plugins/changelog/index.js`) is a customized Docusaur
 
 ### CI/CD
 
-**Pull Request Tests** (`.github/workflows/pr-test.yml`):
+**Docs Health Check** (`.github/workflows/docs-health.yml`):
 
-- Triggers on PR to `master` branch
-- Runs `npm install` and `npm run build`
-- Uploads build artifact for preview
-- Uses Node.js 18
+- Triggers on PR to `master` branch (+ weekly schedule)
+- Runs `npm run lint`, `npm run format:check`, `npm run build`, and a broken-internal-link check (`linkinator`)
+- Uses Node.js 20
 
 ### Hosting
 

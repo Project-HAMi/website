@@ -26,13 +26,13 @@ HAMi-core 通过纯软件方式在用户态拦截和管控 ACL（Ascend Computin
 
 相比传统的 SR-IOV 硬件切分方案，HAMi-core 在切分粒度和灵活性上有质的飞跃：
 
-| 维度 | 独占模式 | SR-IOV | HAMi-core（v2.9） |
-| :- | :- | :- | :- |
-| 显存切分 | 不可切分 | 按 VF 固定分配 | **MB 级别精确控制** |
-| 算力切分 | 不可切分 | 按 VF 比例分配 | **百分比级别灵活配置** |
-| 切分数量 | 1 Pod/卡 | 通常 2-4 VF/卡 | **10+ Pod/卡** |
-| 是否需要硬件支持 | 否 | 是 | **否** |
-| 是否需要修改业务代码 | 否 | 否 | **否** |
+| 维度                 | 独占模式 | SR-IOV         | HAMi-core（v2.9）      |
+| :------------------- | :------- | :------------- | :--------------------- |
+| 显存切分             | 不可切分 | 按 VF 固定分配 | **MB 级别精确控制**    |
+| 算力切分             | 不可切分 | 按 VF 比例分配 | **百分比级别灵活配置** |
+| 切分数量             | 1 Pod/卡 | 通常 2-4 VF/卡 | **10+ Pod/卡**         |
+| 是否需要硬件支持     | 否       | 是             | **否**                 |
+| 是否需要修改业务代码 | 否       | 否             | **否**                 |
 
 例如，一张 64GB 显存的昇腾 910C，可以按如下方式同时分配给多个任务：
 
@@ -40,20 +40,23 @@ HAMi-core 通过纯软件方式在用户态拦截和管控 ACL（Ascend Computin
 # 任务 1：大模型推理，32GB 显存 + 50% 算力
 resources:
   limits:
-    hami.io/vnpu-core: "50"
-    hami.io/vnpu-core-memory: "32768"
+    huawei.com/Ascend910C: "1"
+    huawei.com/Ascend910C-core: "50"
+    huawei.com/Ascend910C-memory: "32768"
 
 # 任务 2：模型微调，16GB 显存 + 30% 算力
 resources:
   limits:
-    hami.io/vnpu-core: "30"
-    hami.io/vnpu-core-memory: "16384"
+    huawei.com/Ascend910C: "1"
+    huawei.com/Ascend910C-core: "30"
+    huawei.com/Ascend910C-memory: "16384"
 
 # 任务 3：轻量推理，8GB 显存 + 20% 算力
 resources:
   limits:
-    hami.io/vnpu-core: "20"
-    hami.io/vnpu-core-memory: "8192"
+    huawei.com/Ascend910C: "1"
+    huawei.com/Ascend910C-core: "20"
+    huawei.com/Ascend910C-memory: "8192"
 ```
 
 核心能力包括：
@@ -105,7 +108,7 @@ Volcano vGPU Device Plugin 项目地址：[https://github.com/Project-HAMi/volca
 瀚博半导体（Vastai Technologies）是国内领先的通用 GPU 芯片设计企业。v2.9.0 新增对其设备的管理支持，提供两种分配模式：
 
 | 模式 | 说明 | 适用场景 |
-| :- | :- | :- |
+| :-- | :-- | :-- |
 | **整卡模式（Full-Card）** | 每个 Pod 独占一整张 GPU | 大模型训练、性能敏感型推理 |
 | **Die 模式** | 按芯片 Die 切分，调度器感知 AIC 拓扑结构，减少跨 Die 通信开销 | 多任务共享、资源利用率优化 |
 
@@ -130,7 +133,7 @@ resources:
 #   vastaitech.com/nouse-va: "1"
 ```
 
-Vastai 设备支持的加入，使 HAMi 已覆盖 **NVIDIA、华为昇腾、寒武纪、海光 DCU、壁仞、燧原、沐曦、昆仑芯、AMD、Iluvatar、Enflame、AWS Neuron、瀚博半导体** 等十余种异构算力设备，是目前 Kubernetes 生态中覆盖最广泛的异构设备虚拟化与调度项目之一。
+Vastai 设备支持的加入，使 HAMi 已覆盖 **NVIDIA、华为昇腾、寒武纪、海光 DCU、壁仞、燧原、沐曦、昆仑芯、AMD、Iluvatar、AWS Neuron、瀚博半导体** 等十余种异构算力设备，是目前 Kubernetes 生态中覆盖最广泛的异构设备虚拟化与调度项目之一。
 
 ## 可观测性与安全增强
 
@@ -205,10 +208,12 @@ helm upgrade hami hami-charts/hami -n hami-system
 
 完整安装文档请参考：[https://project-hami.io/zh/docs/installation/online-installation](https://project-hami.io/zh/docs/installation/online-installation)
 
-:::warning 升级注意事项
+:::warning[升级注意事项]
+
 - 如使用 Volcano vGPU 模式，请注意 CDI 相关配置变更
 - 如使用昇腾设备并希望启用 HAMi-core 模式，请参考最新文档中的 Ascend 配置章节
 - 建议在升级前在测试环境验证兼容性
+
 :::
 
 ## 社区动态
@@ -263,4 +268,4 @@ HAMi v2.9.0 是一次面向异构设备虚拟化深度、Kubernetes 原生标准
 - Volcano vGPU Device Plugin：[https://github.com/Project-HAMi/volcano-vgpu-device-plugin](https://github.com/Project-HAMi/volcano-vgpu-device-plugin)
 - 项目文档：[https://project-hami.io](https://project-hami.io)
 - 社区 Discord（推荐）：[https://discord.gg/Amhy7XmbNq](https://discord.gg/Amhy7XmbNq)
-- 社区 CNCF Slack：[https://cloud-native.slack.com/archives/C08844T5WBQ](https://cloud-native.slack.com/archives/C08844T5WBQ)
+- 社区 CNCF Slack：[https://cloud-native.slack.com/archives/C07T10BU4R2](https://cloud-native.slack.com/archives/C07T10BU4R2)

@@ -1,6 +1,6 @@
 ---
 title: 启用沐曦 GPU 共享
-linktitle: GPU 共享
+sidebar_label: GPU 共享
 translated: true
 ---
 
@@ -12,7 +12,7 @@ translated: true
 
 - **可限制计算单元数量**: 你现在可以指定任务使用的算力比例（例如 60 即代表使用 60% 算力）来分配 GPU，本组件会确保任务使用的算力不会超过分配数值
 
-### 需求
+## 需求
 
 - Metax Driver >= 2.32.0
 - Metax GPU Operator >= 0.10.2

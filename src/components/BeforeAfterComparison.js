@@ -1,65 +1,65 @@
-import React from 'react';
-import clsx from 'clsx';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser } from '@fortawesome/free-solid-svg-icons';
-import useBaseUrl from '@docusaurus/useBaseUrl';
-import styles from './BeforeAfterComparison.module.css';
+import React from "react";
+import clsx from "clsx";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
+import useBaseUrl from "@docusaurus/useBaseUrl";
+import styles from "./BeforeAfterComparison.module.css";
 
 const copy = {
-  title: { en: 'Before and After Using HAMi', zh: '使用 HAMi 前后对比' },
+  title: { en: "Before and After Using HAMi", zh: "使用 HAMi 前后对比" },
   subtitle: {
-    en: 'Same workloads, different GPU efficiency.',
-    zh: '相同工作负载，不同 GPU 利用效率。',
+    en: "Same workloads, different GPU efficiency.",
+    zh: "相同工作负载，不同 GPU 利用效率。",
   },
-  stepRequests: { en: 'Requests', zh: '请求' },
-  stepWithout: { en: 'Without HAMi', zh: '未使用 HAMi' },
-  stepWith: { en: 'With HAMi', zh: '使用 HAMi' },
-  userA: { en: 'User A', zh: '用户 A' },
-  userB: { en: 'User B', zh: '用户 B' },
-  reqGpu: { en: '2 GPUs', zh: '2 张 GPU' },
-  req10g: { en: '10G per GPU', zh: '每卡 10G' },
-  req20g: { en: '20G per GPU', zh: '每卡 20G' },
-  node: { en: 'Node: 4 x V100 (32G)', zh: '节点：4 x V100 (32G)' },
-  wasted: { en: 'Fragmented / Wasted', zh: '碎片化 / 浪费' },
-  exclusive: { en: 'Whole GPU occupied', zh: '整卡占用' },
-  shared: { en: 'Shared with isolation', zh: '隔离共享' },
-  available: { en: 'Available', zh: '可用' },
+  stepRequests: { en: "Requests", zh: "请求" },
+  stepWithout: { en: "Without HAMi", zh: "未使用 HAMi" },
+  stepWith: { en: "With HAMi", zh: "使用 HAMi" },
+  userA: { en: "User A", zh: "用户 A" },
+  userB: { en: "User B", zh: "用户 B" },
+  reqGpu: { en: "2 GPUs", zh: "2 张 GPU" },
+  req10g: { en: "10G per GPU", zh: "每卡 10G" },
+  req20g: { en: "20G per GPU", zh: "每卡 20G" },
+  node: { en: "Node: 4 x V100 (32G)", zh: "节点：4 x V100 (32G)" },
+  wasted: { en: "Fragmented / Wasted", zh: "碎片化 / 浪费" },
+  exclusive: { en: "Whole GPU occupied", zh: "整卡占用" },
+  shared: { en: "Shared with isolation", zh: "隔离共享" },
+  available: { en: "Available", zh: "可用" },
   summaryLead: {
-    en: 'HAMi packs fragmented AI workloads onto fewer GPUs while preserving isolation.',
-    zh: 'HAMi 在保障隔离的前提下，将碎片化 AI 负载打包到更少 GPU。',
+    en: "HAMi packs fragmented AI workloads onto fewer GPUs while preserving isolation.",
+    zh: "HAMi 在保障隔离的前提下，将碎片化 AI 负载打包到更少 GPU。",
   },
-  summary1: { en: 'GPUs used: 4 → 2', zh: '占用 GPU：4 → 2' },
-  summary2: { en: 'Utilization: 50% → 100%', zh: '利用率：50% → 100%' },
-  summary3: { en: 'Workloads per GPU: 1 → 2+', zh: '单卡负载数：1 → 2+' },
-  metricGpu: { en: 'GPUs Used', zh: '占用 GPU' },
-  metricUtil: { en: 'Utilization', zh: '利用率' },
-  metricMulti: { en: 'Workloads / GPU', zh: '单卡负载数' },
-  metricGpuValue: '4 → 2',
-  metricUtilValue: '50% → 100%',
-  metricMultiValue: '1 → 2+',
-  legendA: { en: 'Workload A', zh: '负载 A' },
-  legendB: { en: 'Workload B', zh: '负载 B' },
-  legendWaste: { en: 'Wasted', zh: '浪费容量' },
-  legendAvail: { en: 'Available', zh: '可用容量' },
+  summary1: { en: "GPUs used: 4 → 2", zh: "占用 GPU：4 → 2" },
+  summary2: { en: "Utilization: 50% → 100%", zh: "利用率：50% → 100%" },
+  summary3: { en: "Workloads per GPU: 1 → 2+", zh: "单卡负载数：1 → 2+" },
+  metricGpu: { en: "GPUs Used", zh: "占用 GPU" },
+  metricUtil: { en: "Utilization", zh: "利用率" },
+  metricMulti: { en: "Workloads / GPU", zh: "单卡负载数" },
+  metricGpuValue: "4 → 2",
+  metricUtilValue: "50% → 100%",
+  metricMultiValue: "1 → 2+",
+  legendA: { en: "Workload A", zh: "负载 A" },
+  legendB: { en: "Workload B", zh: "负载 B" },
+  legendWaste: { en: "Wasted", zh: "浪费容量" },
+  legendAvail: { en: "Available", zh: "可用容量" },
 };
 
 const requestRows = [
-  { key: 'a', tone: 'a', user: copy.userA, mem: copy.req10g, level: 31, gpuCount: 2 },
-  { key: 'b', tone: 'b', user: copy.userB, mem: copy.req20g, level: 62, gpuCount: 2 },
+  { key: "a", tone: "a", user: copy.userA, mem: copy.req10g, level: 31, gpuCount: 2 },
+  { key: "b", tone: "b", user: copy.userB, mem: copy.req20g, level: 62, gpuCount: 2 },
 ];
 
 const withoutRack = [
-  { key: 'gpu0', a: 31, b: 0, available: 0 },
-  { key: 'gpu1', a: 31, b: 0, available: 0 },
-  { key: 'gpu2', a: 0, b: 62, available: 0 },
-  { key: 'gpu3', a: 0, b: 62, available: 0 },
+  { key: "gpu0", a: 31, b: 0, available: 0 },
+  { key: "gpu1", a: 31, b: 0, available: 0 },
+  { key: "gpu2", a: 0, b: 62, available: 0 },
+  { key: "gpu3", a: 0, b: 62, available: 0 },
 ];
 
 const withRack = [
-  { key: 'gpu0', a: 31, b: 62, available: 7 },
-  { key: 'gpu1', a: 31, b: 62, available: 7 },
-  { key: 'gpu2', a: 0, b: 0, available: 100 },
-  { key: 'gpu3', a: 0, b: 0, available: 100 },
+  { key: "gpu0", a: 31, b: 62, available: 7 },
+  { key: "gpu1", a: 31, b: 62, available: 7 },
+  { key: "gpu2", a: 0, b: 0, available: 100 },
+  { key: "gpu3", a: 0, b: 0, available: 100 },
 ];
 
 function t(isZh, value) {
@@ -80,7 +80,10 @@ function RequestRow({ isZh, row }) {
       <div className={styles.requestStrips} aria-hidden="true">
         {Array.from({ length: row.gpuCount }).map((_, i) => (
           <div key={i} className={styles.requestStrip}>
-            <span className={clsx(styles.requestStripFill, styles[`requestStripFill_${row.tone}`])} style={{ height: `${row.level}%` }} />
+            <span
+              className={clsx(styles.requestStripFill, styles[`requestStripFill_${row.tone}`])}
+              style={{ height: `${row.level}%` }}
+            />
           </div>
         ))}
       </div>
@@ -89,7 +92,7 @@ function RequestRow({ isZh, row }) {
 }
 
 function GpuCell({ isZh, item, mode }) {
-  const isWith = mode === 'with';
+  const isWith = mode === "with";
   const used = item.a + item.b;
   const wasted = Math.max(0, 100 - used);
   const isFullyAvailable = isWith && item.available === 100;
@@ -97,10 +100,14 @@ function GpuCell({ isZh, item, mode }) {
   return (
     <article className={clsx(styles.gpuCell, isFullyAvailable && styles.gpuCellAvailableOnly)}>
       <div className={styles.gpuMeter}>
-        {isWith && item.available > 0 && <span className={styles.availableBlock} style={{ height: `${item.available}%` }} />}
+        {isWith && item.available > 0 && (
+          <span className={styles.availableBlock} style={{ height: `${item.available}%` }} />
+        )}
         {item.b > 0 && <span className={styles.workloadBBlock} style={{ height: `${item.b}%` }} />}
         {item.a > 0 && <span className={styles.workloadABlock} style={{ height: `${item.a}%` }} />}
-        {!isWith && wasted > 0 && <span className={styles.wastedBlock} style={{ height: `${wasted}%` }} />}
+        {!isWith && wasted > 0 && (
+          <span className={styles.wastedBlock} style={{ height: `${wasted}%` }} />
+        )}
         {isFullyAvailable && <em className={styles.availableText}>{t(isZh, copy.available)}</em>}
       </div>
       <span className={styles.gpuLabel}>{item.key.toUpperCase()}</span>
@@ -109,21 +116,17 @@ function GpuCell({ isZh, item, mode }) {
 }
 
 function AllocationPanel({ isZh, mode }) {
-  const isWith = mode === 'with';
+  const isWith = mode === "with";
   const rack = isWith ? withRack : withoutRack;
-  const logoUrl = useBaseUrl('img/logo.svg');
+  const logoUrl = useBaseUrl("img/logo.svg");
 
   return (
-    <section className={clsx(styles.allocPanel, isWith ? styles.allocPanelWith : styles.allocPanelWithout)}>
+    <section
+      className={clsx(styles.allocPanel, isWith ? styles.allocPanelWith : styles.allocPanelWithout)}
+    >
       <header className={styles.allocHead}>
         <div className={styles.allocHeadTitle}>
-          {isWith && (
-            <img
-              src={logoUrl}
-              alt="HAMi"
-              className={styles.allocHeadLogo}
-            />
-          )}
+          {isWith && <img src={logoUrl} alt="HAMi" className={styles.allocHeadLogo} />}
           <h4>{isWith ? t(isZh, copy.stepWith) : t(isZh, copy.stepWithout)}</h4>
         </div>
         <span>{t(isZh, copy.node)}</span>
@@ -163,9 +166,11 @@ export default function BeforeAfterComparison({ isZh, showHeader = true }) {
       <div className={styles.layout}>
         <figure className={styles.diagramCard}>
           <img
-            src={useBaseUrl(isZh ? 'img/gpu-sharing-diagram-zh.svg' : 'img/gpu-sharing-diagram.svg')}
+            src={useBaseUrl(
+              isZh ? "img/gpu-sharing-diagram-zh.svg" : "img/gpu-sharing-diagram.svg",
+            )}
             alt={t(isZh, copy.title)}
-            style={{ width: '100%', background: '#fff', borderRadius: '8px' }}
+            style={{ width: "100%", background: "#fff", borderRadius: "8px" }}
           />
         </figure>
 

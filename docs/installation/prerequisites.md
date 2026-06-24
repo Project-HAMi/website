@@ -5,11 +5,9 @@ title: Prerequisites
 Before installing HAMi, make sure the following tools and dependencies are properly installed in your environment:
 
 - NVIDIA drivers >= 440
-- nvidia-docker version > 2.0
 - default runtime configured as nvidia for containerd/docker/cri-o container runtime
-- Kubernetes version >= 1.18
+- Kubernetes version >= 1.23
 - glibc >= 2.17 & glibc < 2.30
-- kernel version >= 3.10
 - helm > 3.0
 
 ## Preparing your GPU Nodes

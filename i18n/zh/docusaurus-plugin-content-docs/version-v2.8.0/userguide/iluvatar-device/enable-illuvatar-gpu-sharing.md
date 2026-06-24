@@ -1,6 +1,6 @@
 ---
 title: 启用天数智芯 GPU 共享
-linktitle: GPU 共享
+sidebar_label: GPU 共享
 translated: true
 ---
 

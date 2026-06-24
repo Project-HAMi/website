@@ -44,7 +44,8 @@ Writing code is not the only way to contribute.
 | [Discord](https://discord.gg/Amhy7XmbNq) | Real-time chat (recommended) |
 | [CNCF Slack #hami-dev](https://cloud-native.slack.com/archives/C07T10BU4R2) | Real-time chat |
 | [MAINTAINERS](https://github.com/Project-HAMi/HAMi/blob/master/MAINTAINERS.md) | Current maintainer list |
-| [Community Meetings](https://docs.google.com/document/d/1YC6hco03_oXbF9IOUPJ29VWEddmITIKIfSmBX8JtGBw/edit#heading=h.g61sgp7w0d0c) | Bi-weekly community meetings |
+| [Community Meetings](https://docs.google.com/document/d/1YC6hco03_oXbF9IOUPJ29VWEddmITIKIfSmBX8JtGBw/edit#heading=h.g61sgp7w0d0c) | Bi-weekly on Zoom, Wednesday 16:30 UTC+8. [iCal subscription](https://webcal.prod.itx.linuxfoundation.org/lfx/lfmd9wcrbnW1NXUzPl) |
+| [Zoom Meeting Link](https://zoom-lfx.platform.linuxfoundation.org/meeting/95994137931?password=55b961b5-3e8e-4040-8657-0f2d26511f1d) | Join the bi-weekly community meeting |
 
 Before opening an issue or PR, search existing issues and discussions for related work.
 
@@ -59,7 +60,7 @@ Before opening an issue or PR, search existing issues and discussions for relate
 
 **For HAMi core (Go):**
 
-- Go 1.21+
+- Go 1.26+
 - `kubectl` and access to a Kubernetes cluster with a supported GPU or accelerator
 
 **For documentation (website):**
@@ -185,15 +186,15 @@ HAMi uses [Conventional Commits](https://www.conventionalcommits.org/):
 
 **Types:**
 
-| Type | Use for |
-| --- | --- |
-| `feat` | New functionality |
-| `fix` | Bug fix |
-| `docs` | Documentation changes only |
-| `chore` | Maintenance: deps, build config, CI |
+| Type       | Use for                                  |
+| ---------- | ---------------------------------------- |
+| `feat`     | New functionality                        |
+| `fix`      | Bug fix                                  |
+| `docs`     | Documentation changes only               |
+| `chore`    | Maintenance: deps, build config, CI      |
 | `refactor` | Code restructure with no behavior change |
-| `test` | Adding or updating tests |
-| `perf` | Performance improvement |
+| `test`     | Adding or updating tests                 |
+| `perf`     | Performance improvement                  |
 
 **Good examples:**
 
@@ -209,7 +210,7 @@ test: add unit tests for MLU device discovery
 
 - Subject line: 72 characters or fewer
 - Imperative mood: "add", "fix", "update" - not "added", "fixed", "updates"
-- Body: explain *what* and *why*, not *how*
+- Body: explain _what_ and _why_, not _how_
 - No period at the end of the subject line
 
 ### DCO Sign-off (Required)

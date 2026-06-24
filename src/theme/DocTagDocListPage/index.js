@@ -1,32 +1,31 @@
-import React from 'react';
-import clsx from 'clsx';
-import Link from '@docusaurus/Link';
+import React from "react";
+import clsx from "clsx";
+import Link from "@docusaurus/Link";
 import {
   PageMetadata,
   HtmlClassNameProvider,
   ThemeClassNames,
   usePluralForm,
-} from '@docusaurus/theme-common';
-import Translate, {translate} from '@docusaurus/Translate';
-import {useDocById} from '@docusaurus/plugin-content-docs/client';
-import SearchMetadata from '@theme/SearchMetadata';
-import Unlisted from '@theme/ContentVisibility/Unlisted';
-import Heading from '@theme/Heading';
-import {getDocLinkTitle} from '@theme/utils/linkTitle';
+} from "@docusaurus/theme-common";
+import Translate, { translate } from "@docusaurus/Translate";
+import { useDocById } from "@docusaurus/plugin-content-docs/client";
+import SearchMetadata from "@theme/SearchMetadata";
+import Unlisted from "@theme/ContentVisibility/Unlisted";
+import Heading from "@theme/Heading";
 
 function useNDocsTaggedPlural() {
-  const {selectMessage} = usePluralForm();
+  const { selectMessage } = usePluralForm();
   return (count) =>
     selectMessage(
       count,
       translate(
         {
-          id: 'theme.docs.tagDocListPageTitle.nDocsTagged',
+          id: "theme.docs.tagDocListPageTitle.nDocsTagged",
           description:
             'Pluralized label for "{count} docs tagged". Use as much plural forms (separated by "|") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)',
-          message: 'One doc tagged|{count} docs tagged',
+          message: "One doc tagged|{count} docs tagged",
         },
-        {count},
+        { count },
       ),
     );
 }
@@ -35,17 +34,17 @@ function usePageTitle(props) {
   const nDocsTaggedPlural = useNDocsTaggedPlural();
   return translate(
     {
-      id: 'theme.docs.tagDocListPageTitle',
-      description: 'The title of the page for a docs tag',
+      id: "theme.docs.tagDocListPageTitle",
+      description: "The title of the page for a docs tag",
       message: '{nDocsTagged} with "{tagName}"',
     },
-    {nDocsTagged: nDocsTaggedPlural(props.tag.count), tagName: props.tag.label},
+    { nDocsTagged: nDocsTaggedPlural(props.tag.count), tagName: props.tag.label },
   );
 }
 
-function DocItem({doc}) {
+function DocItem({ doc }) {
   const fullDoc = useDocById(doc.id);
-  const title = getDocLinkTitle(fullDoc) || doc.title;
+  const title = fullDoc?.frontMatter?.sidebar_label || fullDoc?.title || doc.title;
 
   return (
     <article className="margin-vert--lg">
@@ -57,7 +56,7 @@ function DocItem({doc}) {
   );
 }
 
-function DocTagDocListPageMetadata({title, tag}) {
+function DocTagDocListPageMetadata({ title, tag }) {
   return (
     <>
       <PageMetadata title={title} description={tag.description} />
@@ -66,10 +65,9 @@ function DocTagDocListPageMetadata({title, tag}) {
   );
 }
 
-function DocTagDocListPageContent({tag, title}) {
+function DocTagDocListPageContent({ tag, title }) {
   return (
-    <HtmlClassNameProvider
-      className={clsx(ThemeClassNames.page.docsTagDocListPage)}>
+    <HtmlClassNameProvider className={clsx(ThemeClassNames.page.docsTagDocListPage)}>
       <div className="container margin-vert--lg">
         <div className="row">
           <main className="col col--8 col--offset-2">
@@ -80,7 +78,8 @@ function DocTagDocListPageContent({tag, title}) {
               <Link href={tag.allTagsPath}>
                 <Translate
                   id="theme.tags.tagsPageLink"
-                  description="The label of the link targeting the tag list page">
+                  description="The label of the link targeting the tag list page"
+                >
                   View all tags
                 </Translate>
               </Link>

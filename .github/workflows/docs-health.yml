@@ -1,0 +1,44 @@
+name: Docs Health Check
+
+on:
+  pull_request:
+    branches: [master]
+  schedule:
+    - cron: "3 6 * * 1" # Weekly Monday 06:03 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Lint, Format, Build & Links
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Lint Markdown
+        run: npm run lint
+
+      - name: Format Check
+        run: npm run format:check
+
+      - name: Build Site
+        run: npm run build
+
+      - name: Broken Internal Link Check
+        run: |
+          npx --yes linkinator ./build --recurse --skip "^https?://" --verbosity error 2>&1 | tee linkinator-output.txt
+          if grep -q "BROKEN" linkinator-output.txt; then
+            echo "::error::Broken internal links found"
+            exit 1
+          fi

@@ -17,7 +17,7 @@ Verify that your target HAMi version is compatible with your current Kubernetes 
 helm list -n kube-system | grep hami
 
 # Kubernetes version
-kubectl version --short
+kubectl version
 
 # NVIDIA driver version (on GPU nodes)
 nvidia-smi | grep "Driver Version"
@@ -223,9 +223,11 @@ If you see segmentation faults:
 
 1. **Root Cause:** Running workloads during upgrade (as warned above)
 2. **Immediate Action:** Restart affected pods:
+
    ```bash
    kubectl delete pods <affected-pod-name> -n <namespace>
    ```
+
 3. **Prevention:** Always clear workloads before upgrading
 
 ### Helm Chart Configuration Changed
@@ -273,11 +275,11 @@ kubectl apply -f hami-state-backup.yaml
 
 ## Version Compatibility Matrix
 
-| HAMi Version | Min Kubernetes | Max Kubernetes | NVIDIA Driver | Notes |
-|---|---|---|---|---|
-| v2.8.x | 1.23 | 1.28 | ≥450.x | Latest stable |
-| v2.7.x | 1.21 | 1.27 | ≥450.x | |
-| v2.6.x | 1.20 | 1.26 | ≥450.x | |
+| HAMi Version | Min Kubernetes | Max Kubernetes | NVIDIA Driver | Notes         |
+| ------------ | -------------- | -------------- | ------------- | ------------- |
+| v2.8.x       | 1.23           | 1.28           | ≥450.x        | Latest stable |
+| v2.7.x       | 1.21           | 1.27           | ≥450.x        |               |
+| v2.6.x       | 1.20           | 1.26           | ≥450.x        |               |
 
 For earlier versions, refer to the [releases page](https://github.com/Project-HAMi/HAMi/releases).
 

@@ -1,21 +1,24 @@
 ---
-title: "实验 2: mac 本地 Fake GPU 安装 HAMi"
-linktitle: "实验 2: 本地 Fake GPU"
+title: "实验 2: 本地 Fake GPU 安装 HAMi"
+sidebar_label: "实验 2: 本地 Fake GPU"
 lab:
   level: Beginner
   duration: 约 30 分钟
-  environment: macOS 笔记本，无需 GPU
+  environment: macOS (OrbStack) · Linux (Ubuntu + kind) · 无需 GPU
   cost: 免费
   authors:
     - rootsongjc
+    - maishivamhoo123
   verified: "2026-05-21"
 tags:
-  - simulation
-  - local-setup
+  - 模拟
+  - 本地安装
 toc_max_heading_level: 2
 ---
 
-本实验将在 macOS 上使用 OrbStack 自带 Kubernetes 和 [run-ai/fake-gpu-operator](https://github.com/run-ai/fake-gpu-operator) 搭建一个纯本地 Kubernetes 集群，然后在线安装 HAMi。
+import Tabs from '@theme/Tabs'; import TabItem from '@theme/TabItem';
+
+本实验将引导你搭建一个纯本地 Kubernetes 集群——使用 **OrbStack**（macOS）或 **kind**（Linux/Ubuntu）——配合 [run-ai/fake-gpu-operator](https://github.com/run-ai/fake-gpu-operator)，然后在线安装 HAMi。
 
 这个实验不需要真实 NVIDIA GPU，适合用于课堂预习、讲解 HAMi 组件组成、验证 GPU Pod 调度流程，以及在个人电脑上快速熟悉 HAMi 的基础使用方式。
 
@@ -28,7 +31,11 @@ toc_max_heading_level: 2
 - 普通 Pod 可以通过 `nvidia.com/gpu` 申请模拟 GPU
 - 可以观察 fake GPU 资源从节点发现、Pod 申请、调度到运行的完整链路
 
-> 注意：fake GPU 不能代表真实 GPU 的显存隔离、算力隔离、CUDA 运行时和驱动能力。本实验用于理解 HAMi 组成和基础调度链路；涉及真实显存切分、`nvidia.com/gpumem`、`nvidia.com/gpucores`、CUDA 程序运行和性能隔离时，仍需要真实 NVIDIA GPU 环境。
+:::note
+
+fake GPU 不能代表真实 GPU 的显存隔离、算力隔离、CUDA 运行时和驱动能力。本实验用于理解 HAMi 组成和基础调度链路；涉及真实显存切分、`nvidia.com/gpumem`、`nvidia.com/gpucores`、CUDA 程序运行和性能隔离时，仍需要真实 NVIDIA GPU 环境。
+
+:::
 
 ## 安装全景图
 
@@ -37,17 +44,17 @@ toc_max_heading_level: 2
 ```mermaid
 %% title: 本地 Fake GPU 安装全景图
 flowchart LR
-    Step1["步骤1<br/>确认本地环境"] --> Step2["步骤2<br/>安装 fake-gpu-operator"]
-    Step2 --> Step3["步骤3<br/>安装 HAMi"]
-    Step3 --> Step4["步骤4<br/>安装 Prometheus"]
-    Step4 --> Step5["步骤5<br/>运行模拟 GPU 工作负载"]
-    Step5 --> Step6["步骤6<br/>安装 HAMi WebUI"]
-    Step6 --> Step7["步骤7<br/>观察 HAMi 和 fake GPU"]
+    Step1["步骤1\n搭建并确认环境"] --> Step2["步骤2\n安装 fake-gpu-operator"]
+    Step2 --> Step3["步骤3\n安装 HAMi"]
+    Step3 --> Step4["步骤4\n安装 Prometheus"]
+    Step4 --> Step5["步骤5\n运行模拟 GPU 工作负载"]
+    Step5 --> Step6["步骤6\n安装 HAMi WebUI"]
+    Step6 --> Step7["步骤7\n观察 HAMi 和 fake GPU"]
 ```
 
 | 步骤 | 目的 | 解决什么问题 |
-| ------ | ------ | ------------- |
-| 确认本地环境 | 检查 OrbStack、kubectl、Helm | 确保 Kubernetes 集群可用 |
+| --- | --- | --- |
+| 搭建并确认环境 | 创建/验证集群，检查 kubectl 和 Helm | 确保 Kubernetes 集群可用 |
 | 安装 fake-gpu-operator | 模拟 NVIDIA GPU 资源 | 让无 GPU 节点也能上报 `nvidia.com/gpu` |
 | 安装 HAMi | 部署 HAMi 控制面 | 观察 HAMi scheduler、webhook 等组件 |
 | 安装 Prometheus | 部署监控栈 | 采集 GPU 指标，给 HAMi WebUI 提供数据源 |
@@ -57,18 +64,79 @@ flowchart LR
 
 ## 前提条件
 
+<Tabs groupId="os">
+<TabItem value="macos" label="macOS (OrbStack)" default>
+
 - macOS，Intel 或 Apple Silicon 均可
 - 已安装 [OrbStack](https://orbstack.dev/) 并启用内置 Kubernetes
 - 能访问 GitHub、GHCR 和 HAMi Helm 仓库
-- 本机至少 4 CPU、8 GB 内存可用于实验
+- 本机至少 4 CPU、8 GB 内存可用
 
-> **为什么用 OrbStack？** OrbStack 自带 Kubernetes（基于 k3s），无需额外安装 kind 或 Docker Desktop。资源占用更少，启动更快，macOS 上做本地实验首选。
+:::tip[为什么用 OrbStack？]
 
-## 步骤 1: 确认本地环境
+OrbStack 自带 Kubernetes（基于 k3s），无需额外安装 kind 或 Docker Desktop。资源占用更少，启动更快，macOS 上做本地实验首选。
 
-先检查 Kubernetes 集群是否正常运行。
+:::
 
-检查集群版本：
+检查 Helm（后面安装 fake-gpu-operator 和 HAMi 都需要）：
+
+```bash
+helm version
+```
+
+如果 Helm 未安装：
+
+```bash
+brew install helm
+```
+
+</TabItem>
+<TabItem value="linux" label="Linux (Ubuntu + kind)">
+
+- Ubuntu 20.04 LTS 或更高版本，x86_64 或 ARM64
+- 已安装 [Docker Engine](https://docs.docker.com/engine/install/ubuntu/) 且正在运行
+- 已安装 [`kind`](https://kind.sigs.k8s.io/docs/user/quick-start/#installation) v0.20.0 或更高版本
+- 已安装 [`kubectl`](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)
+- 已安装 [Helm](https://helm.sh/docs/intro/install/) 3.x 或更高版本
+- 能访问 GitHub、GHCR 和 HAMi Helm 仓库
+- 本机至少 4 CPU、8 GB 内存可用
+
+:::tip[为什么用 kind？]
+
+kind（Kubernetes IN Docker）在 Docker 容器内运行完整的 Kubernetes 集群。它适用于任何安装了 Docker 的 Linux 发行版，无需特殊系统集成，是 Linux 上本地 Kubernetes 开发的标准工具。
+
+:::
+
+如需安装前置依赖，请执行以下命令：
+
+```bash
+# Docker Engine
+curl -fsSL https://get.docker.com | sudo sh
+sudo usermod -aG docker $USER
+newgrp docker
+
+# kind
+KIND_VERSION=v0.23.0
+curl -Lo ./kind "https://kind.sigs.k8s.io/dl/${KIND_VERSION}/kind-linux-amd64"
+chmod +x ./kind && sudo mv ./kind /usr/local/bin/kind
+
+# kubectl
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl && rm kubectl
+
+# Helm
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+```
+
+</TabItem>
+</Tabs>
+
+## 步骤 1: 搭建并确认本地环境
+
+<Tabs groupId="os">
+<TabItem value="macos" label="macOS" default>
+
+OrbStack 的 Kubernetes 在你通过 OrbStack UI 启用后会自动运行。验证集群是否就绪：
 
 ```bash
 kubectl version
@@ -82,7 +150,11 @@ Kustomize Version: v5.6.0
 Server Version: v1.33.9+orb1
 ```
 
-> `Server Version` 中带有 `orb1` 后缀，说明这是 OrbStack 内置的 Kubernetes。Client 和 Server 版本一致即可。
+:::note
+
+`Server Version` 中的 `+orb1` 后缀标识这是 OrbStack 内置的 Kubernetes 发行版。
+
+:::
 
 查看集群节点：
 
@@ -93,25 +165,89 @@ kubectl get nodes -o wide
 输出示例：
 
 ```plaintext
-NAME       STATUS   ROLES                  AGE    VERSION        INTERNAL-IP     EXTERNAL-IP   OS-IMAGE   KERNEL-VERSION                             CONTAINER-RUNTIME
-orbstack   Ready    control-plane,master   148d   v1.33.9+orb1   192.168.139.2   <none>        OrbStack   7.0.5-orbstack-00330-ge3df4e19b0a0-dirty   docker://29.4.0
+NAME       STATUS   ROLES                  AGE    VERSION        INTERNAL-IP     EXTERNAL-IP   OS-IMAGE   KERNEL-VERSION                            CONTAINER-RUNTIME
+orbstack   Ready    control-plane,master   148d   v1.33.9+orb1   192.168.139.2   <none>        OrbStack   7.0.5-orbstack-00330-ge3df4e19b0a0-dirty  docker://29.4.0
 ```
 
-> 节点名称 `orbstack`，角色 `control-plane,master`，这是单节点集群，同时充当控制面和工作节点。`STATUS` 为 `Ready` 说明集群正常。
+</TabItem>
+<TabItem value="linux" label="Linux">
 
-检查 Helm（后面安装 fake-gpu-operator 和 HAMi 都需要）：
+创建本地 Kubernetes 集群：
 
 ```bash
-helm version
+kind create cluster --name hami-lab
 ```
 
 输出示例：
 
 ```plaintext
-version.BuildInfo{Version:"v4.2.0", ...}
+Creating cluster "hami-lab" ...
+ ✓ Ensuring node image (kindest/node:v1.32.2) 🖼
+ ✓ Preparing nodes 📦
+ ✓ Writing configuration 📜
+ ✓ Starting control-plane 🕹️
+ ✓ Installing CNI 🔌
+ ✓ Installing StorageClass 💾
+Set kubectl context to "kind-hami-lab"
 ```
 
-> Helm 3.x 即可。如果 Helm 未安装，执行 `brew install helm`。
+:::note
+
+`--name hami-lab` 标志指定了集群名称。生成的节点将命名为 `hami-lab-control-plane`。kind 会自动将 kubectl 上下文设置为新集群。
+
+:::
+
+验证集群是否就绪：
+
+```bash
+kubectl version
+```
+
+输出示例：
+
+```plaintext
+Client Version: v1.32.2
+Kustomize Version: v5.5.0
+Server Version: v1.32.2
+```
+
+查看集群节点：
+
+```bash
+kubectl get nodes -o wide
+```
+
+输出示例：
+
+```plaintext
+NAME                     STATUS   ROLES           AGE   VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE                        KERNEL-VERSION      CONTAINER-RUNTIME
+hami-lab-control-plane   Ready    control-plane   2m    v1.32.2   172.18.0.2    <none>        Debian GNU/Linux 12 (bookworm)  6.5.0-41-generic    containerd://1.7.18
+```
+
+</TabItem>
+</Tabs>
+
+### 设置 NODE_NAME 变量
+
+本实验后续部分使用 `NODE_NAME` shell 变量来避免硬编码节点名称。在这里设置一次，后续所有命令都会自动使用：
+
+```bash
+NODE_NAME=$(kubectl get nodes -o jsonpath='{.items[0].metadata.name}')
+echo "NODE_NAME=${NODE_NAME}"
+```
+
+| 平台  | 示例值                   |
+| ----- | ------------------------ |
+| macOS | `orbstack`               |
+| Linux | `hami-lab-control-plane` |
+
+---
+
+:::info[步骤 2–7 在两个平台上完全相同]
+
+从这里开始，所有命令在 macOS 和 Linux 上完全一致。你唯一会注意到的区别是示例输出中的节点名称。
+
+:::
 
 ## 步骤 2: 安装 fake-gpu-operator
 
@@ -129,22 +265,21 @@ namespace/gpu-operator created
 namespace/gpu-operator labeled
 ```
 
-> `gpu-operator` 命名空间专门放 fake-gpu-operator 相关组件。`privileged` 标签允许 Pod 以特权模式运行，fake-gpu-operator 的 device-plugin 需要访问宿主机设备文件。
+> `gpu-operator` 命名空间专门放 fake-gpu-operator 相关组件。`privileged` 标签允许 Pod 以特权模式运行；fake-gpu-operator 的 device-plugin 需要访问宿主机设备文件。
 
 ### 2.2 给节点打标签
 
 fake-gpu-operator 通过节点标签来决定在哪些节点上模拟 GPU：
 
 ```bash
-NODE_NAME=$(kubectl get nodes -o jsonpath='{.items[0].metadata.name}')
 kubectl label node ${NODE_NAME} run.ai/simulated-gpu-node-pool=default
 ```
 
 ```plaintext
-node/orbstack labeled
+node/<NODE_NAME> labeled
 ```
 
-> 标签 `run.ai/simulated-gpu-node-pool=default` 告诉 fake-gpu-operator："在这个节点上模拟 GPU"。这是 fake-gpu-operator 的节点选择器机制。
+> 标签 `run.ai/simulated-gpu-node-pool=default` 告诉 fake-gpu-operator："在这个节点上模拟 GPU"。
 
 ### 2.3 安装 fake-gpu-operator
 
@@ -170,7 +305,7 @@ REVISION: 1
 TEST SUITE: None
 ```
 
-> `helm upgrade -i` = 如果 release 不存在则安装，存在则升级。`oci://` 前缀表示从 GitHub Container Registry 拉取 Helm Chart。`0.0.80` 是 2026-04 发布的稳定版本。
+> `helm upgrade -i`：如果 release 不存在则安装，存在则升级。`oci://` 前缀表示从 GitHub Container Registry 拉取 Helm Chart。`0.0.80` 是 2026-04 发布的稳定版本。
 
 ### 2.4 等待组件运行
 
@@ -331,7 +466,7 @@ helm list -A
 
 ```plaintext
 NAME         NAMESPACE    REVISION UPDATED                              STATUS   CHART                    APP VERSION
-gpu-operator gpu-operator 1        2026-05-21 16:12:01.872099 +0800 CST deployed fake-gpu-operator-0.0.80 0.0.80     
+gpu-operator gpu-operator 1        2026-05-21 16:12:01.872099 +0800 CST deployed fake-gpu-operator-0.0.80 0.0.80
 hami         kube-system  1        2026-05-21 16:15:24.295479 +0800 CST deployed hami-2.9.0               2.9.0
 ```
 
@@ -457,22 +592,22 @@ metadata:
 spec:
   restartPolicy: Never
   containers:
-  - name: app
-    image: ubuntu:22.04
-    command: [ "bash", "-lc", "sleep 3600" ]
-    resources:
-      requests:
-        cpu: "100m"
-        memory: "128Mi"
-      limits:
-        cpu: "500m"
-        memory: "512Mi"
-        nvidia.com/gpu: 1
-    env:
-    - name: NODE_NAME
-      valueFrom:
-        fieldRef:
-          fieldPath: spec.nodeName
+    - name: app
+      image: ubuntu:22.04
+      command: ["bash", "-lc", "sleep 3600"]
+      resources:
+        requests:
+          cpu: "100m"
+          memory: "128Mi"
+        limits:
+          cpu: "500m"
+          memory: "512Mi"
+          nvidia.com/gpu: 1
+      env:
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
 ```
 
 > YAML 要点：
@@ -503,7 +638,7 @@ NAME           READY   STATUS    RESTARTS   AGE   IP               NODE       NO
 fake-gpu-pod   1/1     Running   0          7m    192.168.194.22   orbstack   <none>           <none>
 ```
 
-> `STATUS` 为 `Running`，`NODE` 为 `orbstack`，说明 Pod 成功调度到本地节点。如果第一次拉取 `ubuntu:22.04` 镜像，可能需要几十秒。
+> `STATUS` 为 `Running`，`NODE` 为你的节点名称，说明 Pod 成功调度到本地节点。如果第一次拉取 `ubuntu:22.04` 镜像，可能需要几十秒。
 
 ### 5.3 查看 Pod 的 GPU 资源申请
 
@@ -580,7 +715,7 @@ Thu May 21 08:44:31 2026
 > - **11441MiB / 11441MiB**：显存使用/总量，与节点标签 `nvidia.com/gpu.memory=11441` 一致
 > - **GPU-Util: 18%**：GPU 利用率，在注解 `run.ai/simulated-gpu-utilization: "10-30"` 指定的范围内
 > - **Processes: sleep 3600, 11441MiB**：显示当前进程占用的 GPU 显存
-
+>
 > 这就是 fake-gpu-operator 的核心能力：在没有物理 GPU 的机器上，让容器看到 "好像有一块 GPU" 的环境。`nvidia-smi` 输出的所有数据都是模拟的。
 
 ## 步骤 6: 安装 HAMi WebUI
@@ -603,7 +738,7 @@ kubectl label node ${NODE_NAME} gpu=on
 ```
 
 ```plaintext
-node/orbstack labeled
+node/<NODE_NAME> labeled
 ```
 
 ### 6.3 添加模拟 GPU 注册信息
@@ -789,6 +924,12 @@ kubectl annotate node ${NODE_NAME} hami.io/node-nvidia-register- hami.io/node-ha
 ```
 
 > 如果想保留环境继续实验，可以跳过清理。
+
+如果是 Linux 环境，可以删除 kind 集群：
+
+```bash
+kind delete cluster --name hami-lab
+```
 
 ## 下一步
 

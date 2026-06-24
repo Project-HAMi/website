@@ -1,6 +1,6 @@
 ---
 title: "Lab 3: GPU Partitioning with HAMi"
-linktitle: "Lab 3: GPU Partitioning"
+sidebar_label: "Lab 3: GPU Partitioning"
 lab:
   level: Intermediate
   duration: about 30 minutes
@@ -42,7 +42,7 @@ flowchart LR
 ## Prerequisites
 
 - A cluster from [Lab 1: Online Installation](./online-install.md): HAMi installed, GPU node labeled `gpu=on`
-- The manifests from [`examples/03-gpu-partitioning/`](https://github.com/Project-HAMi/hami-workshop/tree/main/examples/03-gpu-partitioning)
+- The manifests from [`tutorials/labs/examples/03-gpu-partitioning/`](https://github.com/Project-HAMi/website/tree/master/tutorials/labs/examples/03-gpu-partitioning)
 
 ## Step 1: Understand HAMi Resource Types
 
@@ -80,13 +80,13 @@ metadata:
 spec:
   restartPolicy: Never
   containers:
-  - name: app
-    image: nvidia/cuda:12.4.1-base-ubuntu22.04
-    command: ["sleep", "infinity"]
-    resources:
-      limits:
-        nvidia.com/gpu: 1       # request 1 vGPU
-        nvidia.com/gpumem: 4000 # limit this Pod to 4000 MiB of VRAM
+    - name: app
+      image: nvidia/cuda:12.4.1-base-ubuntu22.04
+      command: ["sleep", "infinity"]
+      resources:
+        limits:
+          nvidia.com/gpu: 1 # request 1 vGPU
+          nvidia.com/gpumem: 4000 # limit this Pod to 4000 MiB of VRAM
 ```
 
 `gpumem-pod-b.yaml` is identical except for the name. Apply both:
@@ -150,26 +150,26 @@ metadata:
 spec:
   restartPolicy: Never
   containers:
-  - name: app
-    image: pytorch/pytorch:2.4.0-cuda12.1-cudnn9-runtime
-    command:
-    - python
-    - -c
-    - |
-      import torch
-      chunks = []
-      try:
-          while True:
-              # allocate 512 MiB per iteration
-              chunks.append(torch.empty(512, 1024, 1024, dtype=torch.uint8, device="cuda"))
-              print(f"Allocated {len(chunks) * 512} MiB", flush=True)
-      except RuntimeError as e:
-          print(f"Hit the limit after {len(chunks) * 512} MiB:", flush=True)
-          print(str(e).split(".")[0], flush=True)
-    resources:
-      limits:
-        nvidia.com/gpu: 1       # request 1 vGPU
-        nvidia.com/gpumem: 4000 # limit this Pod to 4000 MiB of VRAM
+    - name: app
+      image: pytorch/pytorch:2.4.0-cuda12.1-cudnn9-runtime
+      command:
+        - python
+        - -c
+        - |
+          import torch
+          chunks = []
+          try:
+              while True:
+                  # allocate 512 MiB per iteration
+                  chunks.append(torch.empty(512, 1024, 1024, dtype=torch.uint8, device="cuda"))
+                  print(f"Allocated {len(chunks) * 512} MiB", flush=True)
+          except RuntimeError as e:
+              print(f"Hit the limit after {len(chunks) * 512} MiB:", flush=True)
+              print(str(e).split(".")[0], flush=True)
+      resources:
+        limits:
+          nvidia.com/gpu: 1 # request 1 vGPU
+          nvidia.com/gpumem: 4000 # limit this Pod to 4000 MiB of VRAM
 ```
 
 ```bash
@@ -226,16 +226,16 @@ gpumem-pod-b   1/1     Running   0          5m12s
 VRAM is one dimension; compute is the other. `gpucores-pod.yaml` requests 30% of the card's compute and runs an infinite matrix multiplication:
 
 ```yaml
-    env:
-    # "force" caps utilization strictly at gpucores.
-    # The default policy allows bursting above the cap while the GPU is idle.
-    - name: GPU_CORE_UTILIZATION_POLICY
-      value: "force"
-    resources:
-      limits:
-        nvidia.com/gpu: 1        # request 1 vGPU
-        nvidia.com/gpumem: 4000  # limit this Pod to 4000 MiB of VRAM
-        nvidia.com/gpucores: 30  # limit this Pod to 30% of GPU compute
+env:
+  # "force" caps utilization strictly at gpucores.
+  # The default policy allows bursting above the cap while the GPU is idle.
+  - name: GPU_CORE_UTILIZATION_POLICY
+    value: "force"
+resources:
+  limits:
+    nvidia.com/gpu: 1 # request 1 vGPU
+    nvidia.com/gpumem: 4000 # limit this Pod to 4000 MiB of VRAM
+    nvidia.com/gpucores: 30 # limit this Pod to 30% of GPU compute
 ```
 
 ```bash

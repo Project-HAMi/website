@@ -20,24 +20,30 @@ No extra operations needed with this type.
 If you don't want to use the `HostNetwork`, you can ask `hack/remote-up-karmada.sh` to expose `karmada-apiserver`
 by a service with `LoadBalancer` type that *requires your cluster have deployed the `Load Balancer`*.
 All you need to do is set an environment:
+
 ```bash
 export LOAD_BALANCER=true
 ```
 
 ## Install
+
 From the `root` directory the `karmada` repo, install Karmada by command:
+
 ```bash
 hack/remote-up-karmada.sh <kubeconfig> <context_name>
 ```
+
 - `kubeconfig` is your cluster's kubeconfig that you want to install to
 - `context_name` is the name of context in 'kubeconfig'
 
 For example:
+
 ```bash
 hack/remote-up-karmada.sh $HOME/.kube/config mycluster
 ```
 
 If everything goes well, at the end of the script output, you will see similar messages as follows:
+
 ```text
 ------------------------------------------------------------------------------------------------------
 █████   ████   █████████   ███████████   ██████   ██████   █████████   ██████████     █████████

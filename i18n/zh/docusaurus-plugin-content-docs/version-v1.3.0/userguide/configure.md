@@ -2,7 +2,7 @@
 title: Configuration
 ---
 
-# Global Config
+## Global Config
 
 ## Device Configs: ConfigMap
 
@@ -15,9 +15,11 @@ All the configurations listed below are managed within the hami-scheduler-device
 You can update these configurations using one of the following methods:
 
 1. Directly edit the ConfigMap: If HAMi has already been successfully installed, you can manually update the hami-scheduler-device ConfigMap using the kubectl edit command to manually update the hami-scheduler-device ConfigMap.
+
     ```bash
     kubectl edit configmap hami-scheduler-device -n <namespace>
     ```
+
     After making changes, restart the related HAMi components to apply the updated configurations.
 2. Modify Helm Chart: Update the corresponding values in the [ConfigMap](https://raw.githubusercontent.com/Project-HAMi/HAMi/refs/heads/master/charts/hami/templates/scheduler/device-configmap.yaml), then reapply the Helm Chart to regenerate the ConfigMap.
 
@@ -85,7 +87,6 @@ helm install hami hami-charts/hami --set devicePlugin.deviceMemoryScaling=5 ...
   String type, "hami-core" or "mig"
   Which type of vgpu instance this pod wish to use
 
-
 ## Container configs: env
 
 - `GPU_CORE_UTILIZATION_POLICY:`
@@ -98,5 +99,3 @@ helm install hami hami-charts/hami --set devicePlugin.deviceMemoryScaling=5 ...
   Bool type, "true","false"
   default: false
   "true" means the HAMi-core will not be used inside container, as a result, there will be no resource isolation and limitation in that container, only for debug.
-
-

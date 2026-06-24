@@ -1,6 +1,6 @@
 ---
 title: 集群设备分配端点
-linktitle: 集群设备分配
+sidebar_label: 集群设备分配
 translated: true
 ---
 

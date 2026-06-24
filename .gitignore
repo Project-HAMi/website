@@ -1,5 +1,6 @@
 node_modules
-.vscode
+.vscode/*
+!.vscode/settings.json
 .docusaurus
 .hugo_build.lock
 .idea

@@ -1,6 +1,6 @@
 ---
 title: 启用沐曦 GPU 拓扑感知调度
-linktitle: 拓扑感知调度
+sidebar_label: 拓扑感知调度
 translated: true
 ---
 

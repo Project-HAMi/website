@@ -10,7 +10,9 @@ HAMi is coming to [KubeCon + CloudNativeCon India 2026](https://events.linuxfoun
 
 <!-- truncate -->
 
-## Keynote: From Platforms to AI Factories
+## HAMi @ KubeCon India 2026 Event Overview
+
+### 1. Keynote: From Platforms to AI Factories
 
 - **Speaker**: [Saiyam Pathak](https://kccncind2026.sched.com/speaker/saiyam_pathak)
 - **Time**: June 18, 11:03–11:13 IST · Jasmine 2 (Level 3)
@@ -18,14 +20,14 @@ HAMi is coming to [KubeCon + CloudNativeCon India 2026](https://events.linuxfoun
 
 This keynote addresses the GPU sharing problem in Kubernetes. **HAMi virtualizes one physical GPU into multiple slices**, each with its own memory budget. The live demo features a MacBook connected to an NVIDIA DGX Spark, a single Blackwell GPU running two open-source LLMs simultaneously.
 
-## HAMi Booth
+### 2. HAMi Booth
 
 - **Booth T-10** · Project Pavilion · Jasmine Hall 1 (Level 3)
 - **Time**: June 18, 3:30–7:30 PM IST
 
 Stop by to see GPU sharing demos, learn about fractional GPU allocation, DRA integration, and pick up HAMi stickers.
 
-## Meet the Team
+### 3. Meet the Team
 
 The booth is staffed by HAMi community contributors and CNCF Ambassadors:
 
@@ -39,4 +41,4 @@ The booth is staffed by HAMi community contributors and CNCF Ambassadors:
 - Star us on [GitHub](https://github.com/Project-HAMi/HAMi)
 - Join [Discord](https://discord.gg/Amhy7XmbNq) or [CNCF Slack (#hami-dev)](https://cloud-native.slack.com/archives/C07T10BU4R2/)
 
-See you in Mumbai! 🇮🇳
+See you in Mumbai! 🇮🇳 At HAMi Booth: T-10

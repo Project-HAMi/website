@@ -3,12 +3,12 @@
  * Each item: { href, title, description, level, duration }.
  * The level badge label localizes itself through LevelBadge.
  */
-import React from 'react';
-import Link from '@docusaurus/Link';
-import LevelBadge from './LevelBadge';
-import styles from './LabCardGrid.module.css';
+import React from "react";
+import Link from "@docusaurus/Link";
+import LevelBadge from "./LevelBadge";
+import styles from "./LabCardGrid.module.css";
 
-export default function LabCardGrid({items}) {
+export default function LabCardGrid({ items }) {
   return (
     <div className={styles.grid}>
       {items.map((item) => (

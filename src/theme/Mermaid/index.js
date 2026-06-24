@@ -5,13 +5,13 @@
  * extract it here and render it as a proper figure caption. The caption is
  * also picked up by the lightbox when the diagram is zoomed.
  */
-import React from 'react';
-import OriginalMermaid from '@theme-original/Mermaid';
+import React from "react";
+import OriginalMermaid from "@theme-original/Mermaid";
 
 const TITLE_PATTERN = /^\s*%%\s*title:\s*(.+)$/m;
 
 export default function Mermaid(props) {
-  const match = typeof props.value === 'string' ? props.value.match(TITLE_PATTERN) : null;
+  const match = typeof props.value === "string" ? props.value.match(TITLE_PATTERN) : null;
   const title = match ? match[1].trim() : null;
 
   if (!title) {
