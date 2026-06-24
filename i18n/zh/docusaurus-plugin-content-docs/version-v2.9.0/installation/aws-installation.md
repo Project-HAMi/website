@@ -1,6 +1,6 @@
 ---
 title: 在 AWS 上安装与使用 HAMi
-sidebar_label: HAMi on AWS
+sidebar_label: AWS 上的 HAMi
 translated: true
 ---
 
