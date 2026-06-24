@@ -49,7 +49,7 @@ The scheduler and device plugin communicate through Kubernetes node annotations.
 ## Ecosystem Integrations
 
 | Project | What the integration enables |
-|---------|------------------------------|
+| --- | --- |
 | [vLLM](https://github.com/vllm-project/vllm) | Run inference servers with GPU memory caps, enabling multiple models to share one GPU |
 | [Volcano](https://volcano.sh/) | Gang scheduling and queue-based batch scheduling for GPU workloads |
 | [Prometheus](https://prometheus.io/) | HAMi exposes per-container GPU metrics including memory usage and utilization |
