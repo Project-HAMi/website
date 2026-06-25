@@ -19,7 +19,7 @@ This feature is only available in volcano >= 1.14.
 
 ### Prerequisites
 
-[ascend-docker-runtime](https://gitcode.com/Huawei Ascend/mind-cluster/tree/master/component/ascend-docker-runtime)
+[ascend-docker-runtime](https://gitcode.com/Ascend/mind-cluster/tree/master/component/ascend-docker-runtime)
 
 ### Install Volcano
 

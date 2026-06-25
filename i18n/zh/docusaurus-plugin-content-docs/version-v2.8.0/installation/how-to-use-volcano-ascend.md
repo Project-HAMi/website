@@ -20,7 +20,7 @@ Volcano 通过 `ascend-device-plugin` 支持 Huawei Ascend 310 和 Huawei Ascend
 
 ### 环境要求
 
-[ascend-docker-runtime](https://gitcode.com/Huawei Ascend/mind-cluster/tree/master/component/ascend-docker-runtime)
+[ascend-docker-runtime](https://gitcode.com/Ascend/mind-cluster/tree/master/component/ascend-docker-runtime)
 
 ### 安装Volcano
 
