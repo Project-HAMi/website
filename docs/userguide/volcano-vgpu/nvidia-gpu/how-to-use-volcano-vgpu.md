@@ -5,7 +5,7 @@ sidebar_label: Use Volcano vGPU
 
 :::note
 
-You _DON'T_ need to install HAMi when using volcano-vgpu, only use [Volcano vGPU device-plugin](https://github.com/Project-HAMi/volcano-vgpu-device-plugin) is good enough. It can provide device-sharing mechanism for NVIDIA devices managed by Volcano.
+You do not need to install HAMi when using volcano-vgpu. [Volcano vGPU device-plugin](https://github.com/Project-HAMi/volcano-vgpu-device-plugin) is sufficient. It can provide device-sharing mechanism for NVIDIA devices managed by Volcano.
 
 This is based on [NVIDIA Device Plugin](https://github.com/NVIDIA/k8s-device-plugin), it uses [HAMi-core](https://github.com/Project-HAMi/HAMi-core) to support hard isolation of GPU cards.
 
@@ -120,7 +120,7 @@ You can validate device memory using nvidia-smi inside container:
 
 :::warning
 
-If you don't request GPUs when using the device plugin with NVIDIA images, all the GPUs on the machine will be exposed inside your container. The number of vGPUs used by a container can not exceed the number of GPUs on that node.
+If you do not request GPUs when using the device plugin with NVIDIA images, all the GPUs on the machine will be exposed inside your container. The number of vGPUs used by a container can not exceed the number of GPUs on that node.
 
 :::
 
