@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: oom-test-pod
+spec:
+  restartPolicy: Never
+  containers:
+    - name: app
+      image: pytorch/pytorch:2.4.0-cuda12.1-cudnn9-runtime
+      command:
+        - python
+        - -c
+        - |
+          import torch
+          chunks = []
+          try:
+              while True:
+                  # allocate 512 MiB per iteration
+                  chunks.append(torch.empty(512, 1024, 1024, dtype=torch.uint8, device="cuda"))
+                  print(f"Allocated {len(chunks) * 512} MiB", flush=True)
+          except RuntimeError as e:
+              print(f"Hit the limit after {len(chunks) * 512} MiB:", flush=True)
+              print(str(e).split(".")[0], flush=True)
+      resources:
+        limits:
+          nvidia.com/gpu: 1 # request 1 vGPU
+          nvidia.com/gpumem: 4000 # limit this Pod to 4000 MiB of VRAM

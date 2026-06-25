@@ -50,7 +50,7 @@ const caseStudiesData = [
         zh: "通过更可预测的调度能力，加速 AI 功能上线。",
       },
     ],
-    url: "https://www.cncf.io/case-studies/ke-holdings/",
+    url: "https://www.cncf.io/case-studies/ke-holdings-inc/",
   },
   {
     name: "DaoCloud",

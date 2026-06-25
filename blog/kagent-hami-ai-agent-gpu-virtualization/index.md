@@ -250,7 +250,7 @@ The kagent CLI shows:
 
 All state stored in PostgreSQL.
 
-**A2A Agent Card**
+### A2A Agent Card
 
 Every Agent exposes:
 
@@ -278,7 +278,7 @@ Your network policies live in Git.
 
 Your RBAC rules live in Git.
 
-Why shouldn't your AI Agent's system prompts?
+Why should your AI Agent's system prompts be any different?
 
 kagent makes that possible.
 

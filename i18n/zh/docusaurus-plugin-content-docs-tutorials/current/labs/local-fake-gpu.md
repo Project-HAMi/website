@@ -1,5 +1,6 @@
 ---
 title: "实验 2: 本地 Fake GPU 安装 HAMi"
+description: "在笔记本上学习 HAMi 控制面，无需 GPU。"
 sidebar_label: "实验 2: 本地 Fake GPU"
 lab:
   level: Beginner

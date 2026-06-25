@@ -24,14 +24,14 @@ sidebar_label: Roadmap
 ## Planned Features
 
 - [ ] Support video codec processing
-- [ ] Support Multi-Instance GPUs (MIG)
+- [x] Support Multi-Instance GPUs (MIG)
 - [ ] Support flexible scheduling policies
   - [x] binpack
   - [x] spread
   - [ ] numa affinity
 - [ ] Integrated gpu-operator
 - [ ] Rich observability support
-- [ ] DRA support
+- [x] DRA support
 - [ ] Support Intel GPU device
 - [ ] Support AMD GPU device
 - [x] Support Enflame GCU device

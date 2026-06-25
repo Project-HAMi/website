@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: gpucores-pod
+spec:
+  restartPolicy: Never
+  containers:
+    - name: app
+      image: pytorch/pytorch:2.4.0-cuda12.1-cudnn9-runtime
+      env:
+        # "force" caps utilization strictly at gpucores.
+        # The default policy allows bursting above the cap while the GPU is idle.
+        - name: GPU_CORE_UTILIZATION_POLICY
+          value: "force"
+      command:
+        - python
+        - -c
+        - |
+          import torch
+          a = torch.randn(4096, 4096, device="cuda")
+          b = torch.randn(4096, 4096, device="cuda")
+          print("Starting matrix multiplication loop", flush=True)
+          while True:
+              a = a @ b / 4096
+      resources:
+        limits:
+          nvidia.com/gpu: 1 # request 1 vGPU
+          nvidia.com/gpumem: 4000 # limit this Pod to 4000 MiB of VRAM
+          nvidia.com/gpucores: 30 # limit this Pod to 30% of GPU compute

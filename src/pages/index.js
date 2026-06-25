@@ -108,7 +108,7 @@ const heroDeviceEcosystem = [
   },
   {
     key: "vaststream",
-    label: { en: "Vaststream", zh: "壁仞" },
+    label: { en: "Vastai", zh: "瀚博半导体" },
     logo: "img/ecosystem/vaststream.jpg",
   },
 ];
@@ -237,7 +237,7 @@ const vendorEcosystem = [
     logo: "img/ecosystem/nvidia.svg",
     href: "https://www.nvidia.com",
   },
-  { key: "aws", name: "AWS", logo: "img/ecosystem/aws.svg", href: "https://www.aws.com" },
+  { key: "aws", name: "AWS", logo: "img/ecosystem/aws.svg", href: "https://aws.amazon.com" },
   {
     key: "ascend",
     name: "Huawei Ascend",
@@ -283,9 +283,9 @@ const vendorEcosystem = [
   },
   {
     key: "vaststream",
-    name: "Vaststream",
+    name: "Vastai",
     logo: "img/ecosystem/vaststream.jpg",
-    href: "https://www.vastaitech.com",
+    href: "https://www.birentech.com",
   },
 ];
 

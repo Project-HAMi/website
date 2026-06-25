@@ -17,7 +17,7 @@ Verify that your target HAMi version is compatible with your current Kubernetes 
 helm list -n kube-system | grep hami
 
 # Kubernetes version
-kubectl version --short
+kubectl version
 
 # NVIDIA driver version (on GPU nodes)
 nvidia-smi | grep "Driver Version"

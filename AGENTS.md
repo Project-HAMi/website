@@ -129,7 +129,7 @@ See `docs/contributor/contributing.md` (§ DCO Sign-off) and `docs/contributor/g
   - Core Concepts
   - Key Features
   - Get Started
-  - Installation (including device-specific guides for NVIDIA, Cambricon, Hygon, Mthreads, Iluvatar, Enflame, AWS Neuron, Kunlunxin, Metax, Ascend)
+  - Installation (including device-specific guides for NVIDIA, Cambricon, Hygon, Mthreads, Iluvatar, Enflame, AWS Neuron, Kunlunxin, MetaX, Ascend)
   - User Guide (with monitoring and device-specific subsections)
   - Developer Guide
   - Contributor Guide
@@ -320,6 +320,20 @@ The site uses Prism.js with additional languages:
 
 Add more in `docusaurus.config.js` under `prism.additionalLanguages`.
 
+### Mermaid Diagrams
+
+Mermaid blocks are rendered through a custom wrapper at `src/theme/Mermaid/index.js`. To give a diagram a visible caption, add a `%% title: <text>` line as the **first line inside the mermaid fence**:
+
+````
+```mermaid
+%% title: HAMi Ecosystem Integrations
+flowchart TB
+    A --> B
+```
+````
+
+The wrapper extracts that comment and renders it as a `<figcaption>` (the lightbox picks it up too). `%%` is otherwise a plain mermaid comment, so the title only appears because of this wrapper. Do **not** use mermaid's YAML frontmatter form (`---\ntitle: ...\n---`) — it is not rendered on this site.
+
 ### Custom Changelog Plugin Details
 
 The changelog plugin (`src/plugins/changelog/index.js`) is a customized Docusaurus blog plugin that:
@@ -361,7 +375,7 @@ Each device vendor has a dedicated section under `userguide/<Vendor>-device/`:
 - **Enflame (GCU)** - Chinese AI accelerator
 - **AWS Neuron** - AWS Inferentia/Trainium
 - **Kunlunxin (XPU)** - Chinese AI chip
-- **Metax** - Chinese GPU with topology-aware scheduling
+- **MetaX** - Chinese GPU with topology-aware scheduling
 - **Ascend** - Huawei NPU
 
 ### Translation Sync

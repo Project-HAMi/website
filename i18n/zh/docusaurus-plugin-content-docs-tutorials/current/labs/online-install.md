@@ -1,5 +1,6 @@
 ---
 title: "实验 1: 在线安装 HAMi"
+description: "在云虚拟机上从零搭建 GPU Kubernetes 集群并安装 HAMi。"
 sidebar_label: "实验 1: 在线安装"
 lab:
   level: Beginner

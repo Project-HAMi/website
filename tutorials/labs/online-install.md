@@ -1,5 +1,6 @@
 ---
 title: "Lab 1: Online Installation of HAMi"
+description: "Build a GPU Kubernetes cluster from scratch on a cloud VM and install HAMi."
 sidebar_label: "Lab 1: Online Install"
 lab:
   level: Beginner

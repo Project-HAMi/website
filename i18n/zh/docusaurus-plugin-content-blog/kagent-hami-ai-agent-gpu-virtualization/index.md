@@ -251,7 +251,7 @@ kagent CLI 可以查看：
 
 所有状态都存储在 PostgreSQL 中。
 
-**A2A Agent Card**
+### A2A Agent Card
 
 每个 Agent 都会暴露：
 

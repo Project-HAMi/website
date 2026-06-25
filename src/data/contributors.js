@@ -134,6 +134,11 @@ const contributorsData = [
     alt: "ZStack",
     href: "https://www.zstack.io",
   },
+  {
+    logo: "/img/contributors/midokura.svg",
+    alt: "Midokura",
+    href: "https://www.midokura.com",
+  },
 ];
 
 export default contributorsData;

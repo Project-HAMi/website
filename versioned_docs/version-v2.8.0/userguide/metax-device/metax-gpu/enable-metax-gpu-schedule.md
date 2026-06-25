@@ -1,5 +1,5 @@
 ---
-title: Enable Metax GPU topology-aware scheduling
+title: Enable MetaX GPU topology-aware scheduling
 ---
 
 **HAMi now supports metax.com/gpu by implementing topo-awareness among metax GPUs.**
@@ -8,7 +8,7 @@ When multiple GPUs are configured on a single server, the GPU cards are connecte
 Depending on the connection type, a near-far relationship is formed among the GPUs.
 Together, these connections define the topology of the GPU cards on the server, as shown below:
 
-![Metax GPU topology diagram showing PCIe Switch and MetaXLink connections](/img/docs/common/userguide/metax-device/metax-gpu/metax-topology.jpg)
+![MetaX GPU topology diagram showing PCIe Switch and MetaXLink connections](/img/docs/common/userguide/metax-device/metax-gpu/metax-topology.jpg)
 
 When a user job requests a specific number of `metax-tech.com/gpu` resources,
 Kubernetes schedules the pod to a suitable node. On that node,
@@ -19,13 +19,13 @@ the GPU device plugin (gpu-device) handles fine-grained allocation based on the 
    - A connection is considered a MetaXLink connection when there is a MetaXLink connection and a PCIe Switch connection between the two cards.
    - When both the MetaXLink and the PCIe Switch can meet the job request, equipped with MetaXLink interconnected resources.
 
-2. When using `node-scheduler-policy=spread`, allocate Metax resources to be under the same MetaXLink or PCIe Switch as much as possible, as shown below:
+2. When using `node-scheduler-policy=spread`, allocate MetaX resources to be under the same MetaXLink or PCIe Switch as much as possible, as shown below:
 
-   ![Metax spread scheduling policy diagram showing resource allocation](/img/docs/common/userguide/metax-device/metax-gpu/metax-spread.jpg)
+   ![MetaX spread scheduling policy diagram showing resource allocation](/img/docs/common/userguide/metax-device/metax-gpu/metax-spread.jpg)
 
 3. When using `node-scheduler-policy=binpack`, assign GPU resources to minimize the damage to MetaXLink topology, as shown below:
 
-   ![Metax binpack scheduling policy diagram showing topology-aware allocation](/img/docs/common/userguide/metax-device/metax-gpu/metax-binpack.jpg)
+   ![MetaX binpack scheduling policy diagram showing topology-aware allocation](/img/docs/common/userguide/metax-device/metax-gpu/metax-binpack.jpg)
 
 ## Important Notes
 
@@ -35,18 +35,18 @@ the GPU device plugin (gpu-device) handles fine-grained allocation based on the 
 
 ## Prerequisites
 
-- Metax GPU extensions >= 0.8.0
+- MetaX GPU extensions >= 0.8.0
 - Kubernetes >= 1.23
 
 ## Enabling topo-awareness scheduling
 
-- Deploy Metax GPU Extensions on metax nodes (Please consult your device provider to acquire its package and document)
+- Deploy MetaX GPU Extensions on metax nodes (Please consult your device provider to acquire its package and document)
 
 - Deploy HAMi according to README.md
 
-## Running Metax jobs
+## Running MetaX jobs
 
-Metax GPUs can now be requested by a container
+MetaX GPUs can now be requested by a container
 using the `metax-tech.com/gpu` resource type:
 
 ```yaml

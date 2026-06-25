@@ -40,20 +40,23 @@ HAMi-core 通过纯软件方式在用户态拦截和管控 ACL（Ascend Computin
 # 任务 1：大模型推理，32GB 显存 + 50% 算力
 resources:
   limits:
-    hami.io/vnpu-core: "50"
-    hami.io/vnpu-core-memory: "32768"
+    huawei.com/Ascend910C: "1"
+    huawei.com/Ascend910C-core: "50"
+    huawei.com/Ascend910C-memory: "32768"
 
 # 任务 2：模型微调，16GB 显存 + 30% 算力
 resources:
   limits:
-    hami.io/vnpu-core: "30"
-    hami.io/vnpu-core-memory: "16384"
+    huawei.com/Ascend910C: "1"
+    huawei.com/Ascend910C-core: "30"
+    huawei.com/Ascend910C-memory: "16384"
 
 # 任务 3：轻量推理，8GB 显存 + 20% 算力
 resources:
   limits:
-    hami.io/vnpu-core: "20"
-    hami.io/vnpu-core-memory: "8192"
+    huawei.com/Ascend910C: "1"
+    huawei.com/Ascend910C-core: "20"
+    huawei.com/Ascend910C-memory: "8192"
 ```
 
 核心能力包括：
@@ -130,7 +133,7 @@ resources:
 #   vastaitech.com/nouse-va: "1"
 ```
 
-Vastai 设备支持的加入，使 HAMi 已覆盖 **NVIDIA、华为昇腾、寒武纪、海光 DCU、壁仞、燧原、沐曦、昆仑芯、AMD、Iluvatar、Enflame、AWS Neuron、瀚博半导体** 等十余种异构算力设备，是目前 Kubernetes 生态中覆盖最广泛的异构设备虚拟化与调度项目之一。
+Vastai 设备支持的加入，使 HAMi 已覆盖 **NVIDIA、华为昇腾、寒武纪、海光 DCU、壁仞、燧原、沐曦、昆仑芯、AMD、Iluvatar、AWS Neuron、瀚博半导体** 等十余种异构算力设备，是目前 Kubernetes 生态中覆盖最广泛的异构设备虚拟化与调度项目之一。
 
 ## 可观测性与安全增强
 
@@ -265,4 +268,4 @@ HAMi v2.9.0 是一次面向异构设备虚拟化深度、Kubernetes 原生标准
 - Volcano vGPU Device Plugin：[https://github.com/Project-HAMi/volcano-vgpu-device-plugin](https://github.com/Project-HAMi/volcano-vgpu-device-plugin)
 - 项目文档：[https://project-hami.io](https://project-hami.io)
 - 社区 Discord（推荐）：[https://discord.gg/Amhy7XmbNq](https://discord.gg/Amhy7XmbNq)
-- 社区 CNCF Slack：[https://cloud-native.slack.com/archives/C08844T5WBQ](https://cloud-native.slack.com/archives/C08844T5WBQ)
+- 社区 CNCF Slack：[https://cloud-native.slack.com/archives/C07T10BU4R2](https://cloud-native.slack.com/archives/C07T10BU4R2)

@@ -48,7 +48,7 @@ integrations:
 
 :::note
 
-Starting from Kueue v0.15, you don't need to explicitly enable the `"pod"` integration to use `"deployment"` integration. For Kueue v0.14 and earlier versions, you need to explicitly enable the `"pod"` integration.
+Starting from Kueue v0.15, you do not need to explicitly enable the `"pod"` integration to use `"deployment"` integration. For Kueue v0.14 and earlier versions, you need to explicitly enable the `"pod"` integration.
 
 :::
 

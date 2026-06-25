@@ -12,7 +12,7 @@ This section provides guidelines on release timelines and release branch mainten
 
 ### Release Timelines
 
-HAMi uses the Semantic Versioning schema. HAMi v2.4.0 was released in September 2024. This project follows a given version number MAJOR.MINOR.PATCH.
+HAMi uses the Semantic Versioning schema. This project follows a given version number MAJOR.MINOR.PATCH.
 
 ### MAJOR release
 
@@ -34,7 +34,7 @@ Patch releases are for backwards-compatible bug fixes and very minor enhancement
 
 HAMi uses GitHub tags to manage versions. New releases and release candidates are published using the wildcard tag `v<major>.<minor>.<patch>`.
 
-Whenever a PR is merged into the master branch, CI will pull the latest code, generate an image and upload it to the mirror repository. The latest image of HAMi components can usually be downloaded online using the latest tag. Whenever a release is released, the image will also be released, and the tag is the same as the tag of the release above.
+Whenever a PR is merged into the master branch, CI will pull the latest code, generate an image and publish it to the container registry. The latest image of HAMi components can usually be downloaded online using the latest tag. Whenever a release is published, the image will also be published, and the tag is the same as the tag of the release above.
 
 ### Issues
 

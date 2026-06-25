@@ -43,9 +43,9 @@
     "message": "共享 Mthreads GPU 设备",
     "description": "The label for category 'Share Mthreads GPU devices' in sidebar 'docs'"
   },
-  "sidebar.docs.category.Optimize Metax GPU scheduling": {
-    "message": "优化 Metax GPU 调度",
-    "description": "The label for category 'Optimize Metax GPU scheduling' in sidebar 'docs'"
+  "sidebar.docs.category.Optimize MetaX GPU scheduling": {
+    "message": "优化 MetaX GPU 调度",
+    "description": "The label for category 'Optimize MetaX GPU scheduling' in sidebar 'docs'"
   },
   "sidebar.docs.category.Share Ascend devices": {
     "message": "共享 Ascend 设备",

@@ -71,9 +71,9 @@
     "message": "Examples",
     "description": "The label for category 'Examples' in sidebar 'docs'"
   },
-  "sidebar.docs.category.Optimize Metax GPU scheduling": {
-    "message": "Optimize Metax GPU scheduling",
-    "description": "The label for category 'Optimize Metax GPU scheduling' in sidebar 'docs'"
+  "sidebar.docs.category.Optimize MetaX GPU scheduling": {
+    "message": "Optimize MetaX GPU scheduling",
+    "description": "The label for category 'Optimize MetaX GPU scheduling' in sidebar 'docs'"
   },
   "sidebar.docs.category.metax-examples": {
     "message": "Examples",

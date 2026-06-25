@@ -1,5 +1,5 @@
 ---
-title: Enable Metax GPU sharing
+title: Enable MetaX GPU sharing
 translated: true
 ---
 
@@ -13,19 +13,19 @@ translated: true
 
 ## Prerequisites
 
-- Metax Driver >= 2.32.0
-- Metax GPU Operator >= 0.10.2
+- MetaX Driver >= 2.32.0
+- MetaX GPU Operator >= 0.10.2
 - Kubernetes >= 1.23
 
 ## Enabling GPU-sharing support
 
-- Deploy Metax GPU Operator on metax nodes (Please consult your device provider to obtain the installation package and documentation)
+- Deploy MetaX GPU Operator on metax nodes (Please consult your device provider to obtain the installation package and documentation)
 
 - Deploy HAMi using the [online installation guide](../../../installation/online-installation.md)
 
-## Running Metax jobs
+## Running MetaX jobs
 
-Metax GPUs can now be requested by a container
+MetaX GPUs can now be requested by a container
 using the `metax-tech.com/sgpu` resource type:
 
 ```yaml
