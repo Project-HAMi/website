@@ -56,35 +56,24 @@ The whole integration is loosely coupled: KAI Scheduler and HAMi each keep their
 
 ```mermaid
 %% title: HAMi + KAI Scheduler Integration Flow
-graph LR
-    subgraph User submits
-        POD["Pod (gpu-memory: 4096)"]
-    end
-
-    subgraph KAI Scheduler
-        SCHED["KAI Scheduler<br/>1. Schedule Pod to GPU node"]
-        INJECT["KAI Admission<br/>2. Inject CUDA_DEVICE_MEMORY_LIMIT<br/>env var"]
-    end
-
-    subgraph kai-resource-isolator
-        WEBHOOK["MutatingWebhook<br/>3. Inject hostPath volume mount<br/>/usr/local/vgpu"]
-        DAEMON["DaemonSet<br/>Deploy HAMi-core library<br/>to each GPU node"]
-    end
-
-    subgraph Container runtime
-        CONTAINER["Container<br/>4. libvgpu.so intercepts<br/>CUDA memory allocation"]
-        ENFORCE["Memory isolation active<br/>nvidia-smi shows only<br/>allocated memory"]
-    end
+graph TD
+    POD["Pod request<br/>gpu-memory: 4096"]
+    SCHED["1. KAI Scheduler<br/>Schedules Pod to a GPU node"]
+    INJECT["2. KAI Admission<br/>Injects CUDA_DEVICE_MEMORY_LIMIT"]
+    WEBHOOK["3. MutatingWebhook<br/>Mounts /usr/local/vgpu"]
+    DAEMON["DaemonSet<br/>Deploys HAMi-core library"]
+    CONTAINER["4. Container runtime<br/>libvgpu.so intercepts CUDA allocation"]
+    ENFORCE["Memory isolation active<br/>nvidia-smi shows allocated memory only"]
 
     POD --> SCHED --> INJECT --> WEBHOOK --> CONTAINER --> ENFORCE
-    DAEMON -.-> CONTAINER
+    DAEMON -. provides library .-> WEBHOOK
 
-    style SCHED fill:#76b900,color:#fff
-    style INJECT fill:#76b900,color:#fff
-    style WEBHOOK fill:#4285f4,color:#fff
-    style DAEMON fill:#4285f4,color:#fff
-    style CONTAINER fill:#f4b400,color:#333
-    style ENFORCE fill:#0f9d58,color:#fff
+    style SCHED fill:#d9f99d,stroke:#4f7d00,stroke-width:2px,color:#1f2937
+    style INJECT fill:#d9f99d,stroke:#4f7d00,stroke-width:2px,color:#1f2937
+    style WEBHOOK fill:#dbeafe,stroke:#1a5fb4,stroke-width:2px,color:#1f2937
+    style DAEMON fill:#dbeafe,stroke:#1a5fb4,stroke-width:2px,color:#1f2937
+    style CONTAINER fill:#fef3c7,stroke:#b45309,stroke-width:2px,color:#1f2937
+    style ENFORCE fill:#dcfce7,stroke:#0b6b3c,stroke-width:2px,color:#1f2937
 ```
 
 The workflow has four phases:
@@ -97,17 +86,15 @@ The workflow has four phases:
 ```mermaid
 %% title: GPU Memory Isolation: Before vs After HAMi
 graph TD
-    subgraph Before
-        A1[Pod requests 2GB] --> A2["nvidia-smi shows<br/>full GPU memory 16GB"]
-        A2 --> A3["Can oversubscribe<br/>⚠️ no isolation"]
-    end
-    subgraph After
-        B1[Pod requests 2GB] --> B2["nvidia-smi shows<br/>only the allocated 2GB"]
-        B2 --> B3["Cannot oversubscribe<br/>✅ hard isolation"]
-    end
+    A1["Before: Pod requests 2GB"] --> A2["nvidia-smi shows<br/>full GPU memory 16GB"]
+    A2 --> A3["Can oversubscribe<br/>⚠️ no isolation"]
 
-    style A3 fill:#db4437,color:#fff
-    style B3 fill:#0f9d58,color:#fff
+    B1["After: Pod requests 2GB"] --> B2["nvidia-smi shows<br/>only the allocated 2GB"]
+    B2 --> B3["Cannot oversubscribe<br/>✅ hard isolation"]
+
+    A3 ~~~ B1
+    style A3 fill:#fee2e2,stroke:#b3261e,stroke-width:2px,color:#1f2937
+    style B3 fill:#dcfce7,stroke:#0b6b3c,stroke-width:2px,color:#1f2937
 ```
 
 ### Deploy
@@ -205,15 +192,12 @@ Before this, HAMi had already integrated with several Kubernetes schedulers. Thi
 %% title: HAMi-core Scheduler Ecosystem
 graph TD
     HAMI["HAMi-core<br/>CUDA interception library"]
+    SCHEDULERS["Scheduler integrations<br/>KAI Scheduler (NVIDIA)<br/>Kubernetes default scheduler<br/>Volcano<br/>Kueue<br/>Koordinator"]
 
-    HAMI --> K8S["Kubernetes<br/>default scheduler"]
-    HAMI --> VOLCANO[Volcano]
-    HAMI --> KAI["KAI Scheduler<br/>(NVIDIA)"]
-    HAMI --> Kueue
-    HAMI --> Koordinator
+    HAMI --> SCHEDULERS
 
-    style HAMI fill:#4285f4,color:#fff
-    style KAI fill:#76b900,color:#fff
+    style HAMI fill:#dbeafe,stroke:#1a5fb4,stroke-width:2px,color:#1f2937
+    style SCHEDULERS fill:#d9f99d,stroke:#4f7d00,stroke-width:2px,color:#1f2937
 ```
 
 ### It creates real value for users
