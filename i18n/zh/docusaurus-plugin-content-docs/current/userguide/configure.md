@@ -30,7 +30,7 @@ translated: true
 | `nvidia.deviceSplitCount` | 整数 | 单块 GPU 可分配的最大任务数。 | `10` |
 | `nvidia.migstrategy` | 字符串 | 设置为 `"none"` 表示忽略 MIG 功能，设置为 `"mixed"` 表示以独立资源方式分配 MIG 设备。 | `"none"` |
 | `nvidia.disablecorelimit` | 字符串 | 设置为 `"true"` 表示禁用算力限制，设置为 `"false"` 表示启用算力限制。 | `"false"` |
-| `nvidia.defaultMem` | 整数 | 当前任务默认使用的设备显存（MB）。若为 `0`，则表示使用设备 100% 显存。 | `0` |
+| `nvidia.defaultMemory` | 整数 | 当前任务默认使用的设备显存（MB）。若为 `0`，则表示使用设备 100% 显存。 | `0` |
 | `nvidia.defaultCores` | 整数 | 当前任务默认预留的 GPU 算力百分比。`0` 表示只要显存够就可用任何 GPU；`100` 表示独占整块 GPU。 | `0` |
 | `nvidia.defaultGPUNum` | 整数 | 默认分配的 GPU 数量。若设为 `0`，则会被过滤。如果 Pod 的资源未显式设置 `nvidia.com/gpu`，则 Webhook 会检查是否设置了 `nvidia.com/gpumem`、`resource-mem-percentage` 或 `nvidia.com/gpucores`，若设置了其中任一项，则自动添加默认值的 `nvidia.com/gpu`。 | `1` |
 | `nvidia.memoryFactor` | 整数 | 在资源申请时 `nvidia.com/gpumem` 的真实值会放大相应的倍数。如果部署了 `mock-device-plugin`，在 `node.status.capacity` 的真实值也会放大对应的倍数。 | `1` |

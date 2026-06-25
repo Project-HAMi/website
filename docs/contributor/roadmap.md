@@ -13,7 +13,7 @@ sidebar_label: Roadmap
 | GCU         | Enflame       | S60               |       Yes        |      Yes       |     No     |
 | DCU         | Hygon         | Z100, Z100L       |       Yes        |      Yes       |     No     |
 | NPU         | Ascend        | 310P, 910B, 910B3 |       Yes        |      Yes       |     No     |
-| GPU         | iluvatar      | All               |       Yes        |      Yes       |     No     |
+| GPU         | Iluvatar      | All               |       Yes        |      Yes       |     No     |
 | DPU         | Teco          | Checking          |   In progress    |  In progress   |     No     |
 | GPU         | Moore Threads | MTT S4000         |       Yes        |      Yes       |     No     |
 | GPU         | Birentech     | Model 110         |   In progress    |  In progress   |     No     |
@@ -24,14 +24,14 @@ sidebar_label: Roadmap
 ## Planned Features
 
 - [ ] Support video codec processing
-- [ ] Support Multi-Instance GPUs (MIG)
+- [x] Support Multi-Instance GPUs (MIG)
 - [ ] Support flexible scheduling policies
   - [x] binpack
   - [x] spread
   - [ ] numa affinity
 - [ ] Integrated gpu-operator
 - [ ] Rich observability support
-- [ ] DRA support
+- [x] DRA support
 - [ ] Support Intel GPU device
 - [ ] Support AMD GPU device
 - [x] Support Enflame GCU device

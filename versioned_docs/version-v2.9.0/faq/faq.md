@@ -12,7 +12,7 @@ title: FAQ
 | Cambricon | 370, 590 | Core 1%, Memory 256M | Supported, but splitting is not supported when `mlu > 1`. The entire card is exclusively allocated. |
 | Iluvatar | All | Core 1%, Memory 256M | Supported, but splitting is not supported when `gpu > 1`. The entire card is exclusively allocated. |
 | Mthreads | MTT S4000 | Core 1 core group, Memory 512M | Supported, but splitting is not supported when `gpu > 1`. The entire card is exclusively allocated. |
-| Metax | MXC500 | Does not support splitting, only whole card allocation is possible. | Supported, but all allocations are for whole cards. |
+| MetaX | MXC500 | Does not support splitting, only whole card allocation is possible. | Supported, but all allocations are for whole cards. |
 
 ## What is vGPU? Why cannot I allocate two vGPUs on the same card despite seeing 10 vGPUs?
 

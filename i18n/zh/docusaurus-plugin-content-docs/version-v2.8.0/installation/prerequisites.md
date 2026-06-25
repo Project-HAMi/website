@@ -9,7 +9,6 @@ translated: true
 - nvidia-docker 版本 > 2.0
 - 默认运行时配置为 NVIDIA 运行时
 - Kubernetes 版本 >= 1.18
-- glibc >= 2.17 & glibc < 2.30
 - kernel 版本 >= 3.10
 - helm 版本 > 3.0
 

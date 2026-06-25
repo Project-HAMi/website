@@ -704,6 +704,18 @@
     "message": "时长：",
     "description": "Lab duration label"
   },
+  "about 30 minutes": {
+    "message": "约 30 分钟"
+  },
+  "about 40 minutes": {
+    "message": "约 40 分钟"
+  },
+  "about 45 minutes": {
+    "message": "约 45 分钟"
+  },
+  "about 60 minutes": {
+    "message": "约 60 分钟"
+  },
   "tutorials.lab.environment": {
     "message": "环境：",
     "description": "Lab environment label"

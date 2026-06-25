@@ -1,5 +1,5 @@
 /**
- * Difficulty badge shared by LabMeta and LabCardGrid.
+ * Difficulty badge shared by LabMeta and LabCardGridAuto.
  * Localizes the level label through code.json, so callers only pass the
  * canonical level key (Beginner | Intermediate | Advanced).
  */

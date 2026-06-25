@@ -40,20 +40,23 @@ For example, a 64GB Ascend 910C card can be allocated to multiple tasks as follo
 # Task 1: LLM inference, 32GB memory + 50% compute
 resources:
   limits:
-    hami.io/vnpu-core: "50"
-    hami.io/vnpu-core-memory: "32768"
+    huawei.com/Ascend910C: "1"
+    huawei.com/Ascend910C-core: "50"
+    huawei.com/Ascend910C-memory: "32768"
 
 # Task 2: Model fine-tuning, 16GB memory + 30% compute
 resources:
   limits:
-    hami.io/vnpu-core: "30"
-    hami.io/vnpu-core-memory: "16384"
+    huawei.com/Ascend910C: "1"
+    huawei.com/Ascend910C-core: "30"
+    huawei.com/Ascend910C-memory: "16384"
 
 # Task 3: Lightweight inference, 8GB memory + 20% compute
 resources:
   limits:
-    hami.io/vnpu-core: "20"
-    hami.io/vnpu-core-memory: "8192"
+    huawei.com/Ascend910C: "1"
+    huawei.com/Ascend910C-core: "20"
+    huawei.com/Ascend910C-memory: "8192"
 ```
 
 Core capabilities include:
@@ -130,7 +133,7 @@ resources:
 #   vastaitech.com/nouse-va: "1"
 ```
 
-With Vastai device support, HAMi now covers over a dozen heterogeneous compute devices including **NVIDIA, Huawei Ascend, Cambricon, Hygon DCU, Biren, Enflame, MetaX, Kunlunxin, AMD, Iluvatar, Enflame, AWS Neuron, and Vastai Technologies**, making it one of the widest-supported heterogeneous device virtualization and scheduling projects in the Kubernetes ecosystem.
+With Vastai device support, HAMi now covers over a dozen heterogeneous compute devices including **NVIDIA, Huawei Ascend, Cambricon, Hygon DCU, Biren, Enflame, MetaX, Kunlunxin, Iluvatar, AWS Neuron, and Vastai Technologies**, making it one of the widest-supported heterogeneous device virtualization and scheduling projects in the Kubernetes ecosystem.
 
 ## Observability and Security Enhancements
 
@@ -200,7 +203,7 @@ Upgrade to v2.9.0 via Helm:
 ```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/
 helm repo update
-helm upgrade hami hami-charts/hami -n hami-system
+helm upgrade hami hami-charts/hami -n kube-system
 ```
 
 For complete installation documentation, refer to: [https://project-hami.io/docs/installation/online-installation](https://project-hami.io/docs/installation/online-installation)
@@ -265,4 +268,4 @@ We sincerely welcome more developers, users, and ecosystem partners to join the 
 - Volcano vGPU Device Plugin: [https://github.com/Project-HAMi/volcano-vgpu-device-plugin](https://github.com/Project-HAMi/volcano-vgpu-device-plugin)
 - Documentation: [https://project-hami.io](https://project-hami.io)
 - Community Discord (recommended): [https://discord.gg/Amhy7XmbNq](https://discord.gg/Amhy7XmbNq)
-- Community CNCF Slack: [https://cloud-native.slack.com/archives/C08844T5WBQ](https://cloud-native.slack.com/archives/C08844T5WBQ)
+- Community CNCF Slack: [https://cloud-native.slack.com/archives/C07T10BU4R2](https://cloud-native.slack.com/archives/C07T10BU4R2)

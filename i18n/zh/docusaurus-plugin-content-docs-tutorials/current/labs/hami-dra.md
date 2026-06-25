@@ -1,5 +1,6 @@
 ---
 title: "实验 4: 使用动态资源分配进行 GPU 切片"
+description: "通过 Kubernetes 原生 Dynamic Resource Allocation 实现同样效果（实验性）。"
 sidebar_label: "实验 4: DRA 切片"
 lab:
   level: Advanced
@@ -38,7 +39,7 @@ HAMi DRA 驱动实现了 [DRA Consumable Capacity](https://github.com/kubernetes
 ## 前提条件
 
 - 已完成 [实验 1](./online-install.md) 的集群，Kubernetes **v1.34 或更高版本**，已安装 HAMi 和 GPU Operator
-- 来自 [`examples/04-hami-dra/`](https://github.com/Project-HAMi/hami-workshop/tree/main/examples/04-hami-dra) 的清单文件
+- 来自 [`tutorials/labs/examples/04-hami-dra/`](https://github.com/Project-HAMi/website/tree/master/tutorials/labs/examples/04-hami-dra) 的清单文件
 
 ## 实验概览
 
@@ -54,7 +55,7 @@ flowchart LR
 
 ## 步骤 1: 启用 DRAConsumableCapacity Feature Gate
 
-DRA 本身在 v1.34 中已 GA，但*可消耗容量*（多个 Pod 从同一设备的容量池中抽取）需要在控制面组件和 kubelet 上启用 `DRAConsumableCapacity` Feature Gate。以 root 身份运行 [`enable-dra-feature-gates.sh`](https://github.com/Project-HAMi/hami-workshop/blob/main/examples/04-hami-dra/enable-dra-feature-gates.sh)：
+DRA 本身在 v1.34 中已 GA，但*可消耗容量*（多个 Pod 从同一设备的容量池中抽取）需要在控制面组件和 kubelet 上启用 `DRAConsumableCapacity` Feature Gate。以 root 身份运行 [`enable-dra-feature-gates.sh`](https://github.com/Project-HAMi/website/blob/master/tutorials/labs/examples/04-hami-dra/enable-dra-feature-gates.sh)：
 
 ```bash
 for f in kube-apiserver kube-scheduler kube-controller-manager; do

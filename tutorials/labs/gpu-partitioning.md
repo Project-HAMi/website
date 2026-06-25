@@ -1,5 +1,6 @@
 ---
 title: "Lab 3: GPU Partitioning with HAMi"
+description: "Run multiple Pods on one GPU with enforced VRAM and compute limits."
 sidebar_label: "Lab 3: GPU Partitioning"
 lab:
   level: Intermediate
@@ -42,7 +43,7 @@ flowchart LR
 ## Prerequisites
 
 - A cluster from [Lab 1: Online Installation](./online-install.md): HAMi installed, GPU node labeled `gpu=on`
-- The manifests from [`examples/03-gpu-partitioning/`](https://github.com/Project-HAMi/hami-workshop/tree/main/examples/03-gpu-partitioning)
+- The manifests from [`tutorials/labs/examples/03-gpu-partitioning/`](https://github.com/Project-HAMi/website/tree/master/tutorials/labs/examples/03-gpu-partitioning)
 
 ## Step 1: Understand HAMi Resource Types
 

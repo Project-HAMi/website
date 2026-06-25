@@ -248,11 +248,11 @@
         },
         {
           "type": "category",
-          "label": "Optimize Metax GPU scheduling",
+          "label": "Optimize MetaX GPU scheduling",
           "items": [
             {
               "type": "category",
-              "label": "Share Metax GPU devices",
+              "label": "Share MetaX GPU devices",
               "items": [
                 "userguide/metax-device/metax-sgpu/enable-metax-gpu-sharing",
                 {
@@ -269,7 +269,7 @@
             },
             {
               "type": "category",
-              "label": "Metax GPU topology-aware scheduling",
+              "label": "MetaX GPU topology-aware scheduling",
               "items": [
                 "userguide/metax-device/metax-gpu/enable-metax-gpu-schedule",
                 "userguide/metax-device/metax-gpu/specify-binpack-task",
