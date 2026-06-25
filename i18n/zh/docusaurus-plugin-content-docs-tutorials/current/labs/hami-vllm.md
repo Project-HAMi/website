@@ -1,5 +1,5 @@
 ---
-title: "实验 6: 使用 HAMi 部署 vLLM 推理服务"
+title: "实验 6: 在 HAMi GPU 分片上运行 vLLM 推理"
 description: "在已有 GPU 集群上安装 HAMi，并用 GPU 切分能力调度 vLLM 推理服务。"
 sidebar_label: "实验 6: vLLM 推理"
 lab:

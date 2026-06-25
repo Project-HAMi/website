@@ -1,5 +1,5 @@
 ---
-title: "Lab 6: Deploy vLLM Inference Service with HAMi"
+title: "Lab 6: Run vLLM on HAMi GPU Shares"
 description: "Install HAMi on a GPU cluster and schedule vLLM inference services with GPU partitioning."
 sidebar_label: "Lab 6: vLLM Inference"
 lab:
