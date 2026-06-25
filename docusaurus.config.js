@@ -3,6 +3,27 @@ const lightTheme = themes.github;
 const darkTheme = themes.dracula;
 const defaultLocale = "en";
 
+async function localizedBlogPlugin(context, opts) {
+  const p = await require('@docusaurus/plugin-content-blog').default(context, opts);
+  const orig = p.postBuild?.bind(p);
+  p.postBuild = async function (params) {
+    await orig?.(params);
+    if (params.i18n.currentLocale !== 'zh') return;
+    const fs = require('fs');
+    const { join } = require('path');
+    const dir = join(params.outDir, 'blog');
+    for (const f of ['rss.xml', 'atom.xml']) {
+      const fp = join(dir, f);
+      if (!fs.existsSync(fp)) continue;
+      fs.writeFileSync(fp, fs.readFileSync(fp, 'utf8')
+        .replace('HAMi Blog', 'HAMi 博客')
+        .replace('Latest news and updates from the HAMi project', 'HAMi 项目的最新资讯'));
+    }
+  };
+  return p;
+}
+localizedBlogPlugin.validateOptions = require('@docusaurus/plugin-content-blog').validateOptions;
+
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
   title: "HAMi",
@@ -178,6 +199,19 @@ module.exports = {
     },
   ],
   plugins: [
+    [
+      localizedBlogPlugin,
+      {
+        showReadingTime: true,
+        editUrl: 'https://github.com/Project-HAMi/website/tree/master/',
+        feedOptions: {
+          type: ['rss', 'atom'],
+          title: 'HAMi Blog',
+          description: 'Latest news and updates from the HAMi project',
+          copyright: `Copyright ${new Date().getFullYear()} HAMi Authors`,
+        },
+      },
+    ],
     [
       "./src/plugins/docs/index.js",
       {
@@ -386,10 +420,7 @@ module.exports = {
           trackingID: "G-MK932R9NMD",
           anonymizeIP: false,
         },
-        blog: {
-          showReadingTime: true,
-          editUrl: "https://github.com/Project-HAMi/website/tree/master/",
-        },
+        blog: false,
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
         },
