@@ -86,10 +86,10 @@ graph TD
 %% title: GPU 显存隔离：HAMi 接入前后对比
 graph TD
     A1["之前：Pod 请求 2GB"] --> A2["nvidia-smi 显示<br/>完整 GPU 显存 16GB"]
-    A2 --> A3["可超额使用<br/>⚠️ 无隔离"]
+    A2 --> A3["可超额使用<br/>无隔离"]
 
     B1["之后：Pod 请求 2GB"] --> B2["nvidia-smi 显示<br/>仅分配的 2GB"]
-    B2 --> B3["无法超额<br/>✅ 硬隔离"]
+    B2 --> B3["无法超额<br/>硬隔离"]
 
     A3 ~~~ B1
     style A3 fill:#fee2e2,stroke:#b3261e,stroke-width:2px,color:#1f2937
@@ -191,12 +191,15 @@ HAMi 的核心能力——CUDA 拦截和 GPU 显存硬隔离——被 NVIDIA 官
 %% title: HAMi-core 调度器生态
 graph TD
     HAMI["HAMi-core<br/>CUDA 拦截库"]
-    SCHEDULERS["调度器集成<br/>KAI Scheduler (NVIDIA)<br/>Kubernetes 默认调度器<br/>Volcano<br/>Kueue<br/>Koordinator"]
 
-    HAMI --> SCHEDULERS
+    HAMI --> K8S["Kubernetes 默认调度器"]
+    HAMI --> VOLCANO[Volcano]
+    HAMI --> KAI["KAI Scheduler<br/>(NVIDIA)"]
+    HAMI --> Kueue
+    HAMI --> Koordinator
 
     style HAMI fill:#dbeafe,stroke:#1a5fb4,stroke-width:2px,color:#1f2937
-    style SCHEDULERS fill:#d9f99d,stroke:#4f7d00,stroke-width:2px,color:#1f2937
+    style KAI fill:#d9f99d,stroke:#4f7d00,stroke-width:2px,color:#1f2937
 ```
 
 ### 为用户创造实际价值

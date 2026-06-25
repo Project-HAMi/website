@@ -87,10 +87,10 @@ The workflow has four phases:
 %% title: GPU Memory Isolation: Before vs After HAMi
 graph TD
     A1["Before: Pod requests 2GB"] --> A2["nvidia-smi shows<br/>full GPU memory 16GB"]
-    A2 --> A3["Can oversubscribe<br/>⚠️ no isolation"]
+    A2 --> A3["Can oversubscribe<br/>no isolation"]
 
     B1["After: Pod requests 2GB"] --> B2["nvidia-smi shows<br/>only the allocated 2GB"]
-    B2 --> B3["Cannot oversubscribe<br/>✅ hard isolation"]
+    B2 --> B3["Cannot oversubscribe<br/>hard isolation"]
 
     A3 ~~~ B1
     style A3 fill:#fee2e2,stroke:#b3261e,stroke-width:2px,color:#1f2937
@@ -192,12 +192,15 @@ Before this, HAMi had already integrated with several Kubernetes schedulers. Thi
 %% title: HAMi-core Scheduler Ecosystem
 graph TD
     HAMI["HAMi-core<br/>CUDA interception library"]
-    SCHEDULERS["Scheduler integrations<br/>KAI Scheduler (NVIDIA)<br/>Kubernetes default scheduler<br/>Volcano<br/>Kueue<br/>Koordinator"]
 
-    HAMI --> SCHEDULERS
+    HAMI --> K8S["Kubernetes default scheduler"]
+    HAMI --> VOLCANO[Volcano]
+    HAMI --> KAI["KAI Scheduler<br/>(NVIDIA)"]
+    HAMI --> Kueue
+    HAMI --> Koordinator
 
     style HAMI fill:#dbeafe,stroke:#1a5fb4,stroke-width:2px,color:#1f2937
-    style SCHEDULERS fill:#d9f99d,stroke:#4f7d00,stroke-width:2px,color:#1f2937
+    style KAI fill:#d9f99d,stroke:#4f7d00,stroke-width:2px,color:#1f2937
 ```
 
 ### It creates real value for users
