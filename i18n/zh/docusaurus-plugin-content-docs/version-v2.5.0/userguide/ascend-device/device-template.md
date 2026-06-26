@@ -1,5 +1,5 @@
 ---
-title: Ascend 设备模板
+title: Huawei Ascend 设备模板
 translated: true
 ---
 

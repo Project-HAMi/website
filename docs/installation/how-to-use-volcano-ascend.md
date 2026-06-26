@@ -1,17 +1,17 @@
 ---
-sidebar_label: Volcano Ascend vNPU
-title: User Guide for Ascend Devices in Volcano
+sidebar_label: Volcano Huawei Ascend vNPU
+title: User Guide for Huawei Ascend Devices in Volcano
 ---
 
 ## Introduction
 
-Volcano supports vNPU feature for both Ascend 310 and Ascend 910 using the `ascend-device-plugin`. It also supports managing heterogeneous Ascend cluster (Cluster with multiple Ascend types, i.e., 910A, 910B2, 910B3, 310P)
+Volcano supports vNPU feature for both Huawei Ascend 310 and Huawei Ascend 910 using the `ascend-device-plugin`. It also supports managing heterogeneous Huawei Ascend cluster (Cluster with multiple Huawei Ascend types, i.e., 910A, 910B2, 910B3, 310P)
 
 **Use case**:
 
-- NPU and vNPU cluster for Ascend 910 series
-- NPU and vNPU cluster for Ascend 310 series
-- Heterogeneous Ascend cluster
+- NPU and vNPU cluster for Huawei Ascend 910 series
+- NPU and vNPU cluster for Huawei Ascend 310 series
+- Heterogeneous Huawei Ascend cluster
 
 This feature is only available in volcano >= 1.14.
 
@@ -104,7 +104,7 @@ spec:
           huawei.com/Ascend310P-memory: "4096"
 ```
 
-The supported Ascend chips and their `ResourceNames` are shown in the following table:
+The supported Huawei Ascend chips and their `ResourceNames` are shown in the following table:
 
 | ChipName | ResourceName             | ResourceMemoryName              |
 | -------- | ------------------------ | ------------------------------- |

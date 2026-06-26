@@ -28,7 +28,7 @@ HAMi 社区 Maintainer 李孟轩介绍了项目在异构算力调度领域的技
 **新特性与规划：**
 
 - CDI 支持、Mock Device Plugin 等特性改进
-- Ascend Device Plugin 与 Volcano 调度器的深度适配
+- Huawei Ascend Device Plugin 与 Volcano 调度器的深度适配
 - 计划推出轻量化方案 HAMi-DRA，基于 Kubernetes DRA 架构简化调度链路
 - 建立设备能力矩阵，评估不同设备在显存隔离、算力控制等方面的支持情况
 
@@ -77,7 +77,7 @@ HAMi 社区 Maintainer 李孟轩介绍了项目在异构算力调度领域的技
 
 **关键改进：**
 
-- Ascend Device Plugin 的设备初始化、筛选与分配机制
+- Huawei Ascend Device Plugin 的设备初始化、筛选与分配机制
 - Mock Device Plugin 方案补齐显存等资源维度
 - 提升异构设备在多调度器环境下的可观测性
 

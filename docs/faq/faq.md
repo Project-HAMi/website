@@ -7,7 +7,7 @@ title: FAQ
 | **GPU Vendor** | **GPU Model** | **Granularity** | **Multi-GPU Support** |
 | --- | --- | --- | --- |
 | NVIDIA | Almost all mainstream consumer and data center GPUs | Core 1%, Memory 1M | Supported. Multi-GPU can still be split and shared using virtualization. |
-| Ascend | 910A, 910B2, 910B3, 310P | Minimum granularity depends on the card type template. Refer to the [official templates](https://www.hiascend.com/document/detail/zh/mindx-dl/50rc1/AVI/cpaug/cpaug_0005.html). | Supported, but splitting is not supported when `npu > 1`. The entire card is exclusively allocated. |
+| Huawei Ascend | 910A, 910B2, 910B3, 310P | Minimum granularity depends on the card type template. Refer to the [official templates](https://www.hiascend.com/document/detail/zh/mindx-dl/50rc1/AVI/cpaug/cpaug_0005.html). | Supported, but splitting is not supported when `npu > 1`. The entire card is exclusively allocated. |
 | Hygon | Z100, Z100L, K100-AI | Core 1%, Memory 1M | Supported, but splitting is not supported when `dcu > 1`. The entire card is exclusively allocated. |
 | Cambricon | 370, 590 | Core 1%, Memory 256M | Supported, but splitting is not supported when `mlu > 1`. The entire card is exclusively allocated. |
 | Iluvatar | All | Core 1%, Memory 256M | Supported, but splitting is not supported when `gpu > 1`. The entire card is exclusively allocated. |
@@ -157,7 +157,7 @@ Device Plugins can only report a single resource type. GPU memory and compute in
 
 ## Why don’t some domestic vendors require a runtime for installation?
 
-Certain domestic vendors (e.g., Hygon, Cambricon) do not require a runtime because their DevicePlugin handles device discovery and mounting directly. In contrast, vendors like NVIDIA and Ascend rely on runtimes for environment configuration, device node mounting, and advanced functionality support.
+Certain domestic vendors (e.g., Hygon, Cambricon) do not require a runtime because their DevicePlugin handles device discovery and mounting directly. In contrast, vendors like NVIDIA and Huawei Ascend rely on runtimes for environment configuration, device node mounting, and advanced functionality support.
 
 ### TL;DR
 
@@ -173,7 +173,7 @@ HAMi's scheduler requires sufficient information from the Node to decode the cor
 
 If the official Device Plugin cannot provide the required information, HAMi develops its own. For example:
 
-- Ascend’s official Device Plugin requires a separate plugin for each card type. HAMi abstracts these card templates into a unified plugin for easier integration with the scheduler.
+- Huawei Ascend’s official Device Plugin requires a separate plugin for each card type. HAMi abstracts these card templates into a unified plugin for easier integration with the scheduler.
 - NVIDIA requires custom implementations to support advanced features like compute and memory limits, overcommitment, and NUMA awareness, necessitating HAMi’s custom Device Plugin.
 
 ## How does HAMi enforce GPU memory and compute limits?

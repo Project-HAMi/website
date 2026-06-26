@@ -27,7 +27,7 @@ flowchart TB
         CORE["HAMi-core<br/>runtime GPU isolation"]
     end
 
-    HW["Heterogeneous Accelerators<br/>NVIDIA · Ascend · Cambricon · Hygon · Mthreads · Iluvatar · …"]
+    HW["Heterogeneous Accelerators<br/>NVIDIA · Huawei Ascend · Cambricon · Hygon · Mthreads · Iluvatar · …"]
 
     WL --> Schedulers
     KS -->|"GPU filter / score"| HSCHED

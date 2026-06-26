@@ -1,10 +1,10 @@
 ---
-title: 启用 Ascend 共享
-sidebar_label: Ascend 共享
+title: 启用 Huawei Ascend 共享
+sidebar_label: Huawei Ascend 共享
 translated: true
 ---
 
-Ascend 设备插件为 HAMi 提供 NPU 切片支持，支持两种模式：
+Huawei Ascend 设备插件为 HAMi 提供 NPU 切片支持，支持两种模式：
 
 ## 1. 基于模板的硬切片（vNPU）
 
@@ -23,13 +23,13 @@ Ascend 设备插件为 HAMi 提供 NPU 切片支持，支持两种模式：
 
 ## 先决条件
 
-- Ascend 设备类型：910B, 910A, 310P
-- [Ascend docker 运行时](https://gitcode.com/Ascend/mind-cluster/tree/master/component/ascend-docker-runtime)
+- Huawei Ascend 设备类型：910B, 910A, 310P
+- [Huawei Ascend docker 运行时](https://gitcode.com/Huawei Ascend/mind-cluster/tree/master/component/ascend-docker-runtime)
 
 **软切片（hami-vnpu-core）的额外要求：**
 
-- **Ascend 驱动版本**：≥ 25.5
-- **芯片模式**：需在 Ascend 芯片上启用 `device-share` 模式以支持虚拟化
+- **Huawei Ascend 驱动版本**：≥ 25.5
+- **芯片模式**：需在 Huawei Ascend 芯片上启用 `device-share` 模式以支持虚拟化
 
 启用 `device-share` 模式，运行以下命令：
 
@@ -42,7 +42,7 @@ npu-smi set -t device-share -i <id> -d <value>
 | `id`    | 设备 ID，通过运行 `npu-smi info -l` 命令获取的 NPU ID 即为设备 ID。 |
 | `value` | 容器启用状态：`0`（禁用，默认值）或 `1`（启用）。                   |
 
-## 启用 Ascend-sharing 支持
+## 启用 Huawei Ascend-sharing 支持
 
 由于与 HAMi 的依赖关系，你需要在 HAMi 安装期间设置以下参数：
 
@@ -71,7 +71,7 @@ devices:
       - huawei.com/Ascend310P-memory
 ```
 
-如果你希望 HAMi 自动将 `runtimeClassName` 配置添加到请求 Ascend 资源的 Pod（默认禁用），请在 HAMi 的 `values.yaml` 中将 `devices.ascend.runtimeClassName` 设置为非空字符串，并确保其与 `RuntimeClass` 资源的名称匹配：
+如果你希望 HAMi 自动将 `runtimeClassName` 配置添加到请求 Huawei Ascend 资源的 Pod（默认禁用），请在 HAMi 的 `values.yaml` 中将 `devices.ascend.runtimeClassName` 设置为非空字符串，并确保其与 `RuntimeClass` 资源的名称匹配：
 
 ```yaml
 devices:
@@ -121,11 +121,11 @@ kubectl apply -f https://raw.githubusercontent.com/Project-HAMi/ascend-device-pl
 kubectl apply -f https://raw.githubusercontent.com/Project-HAMi/ascend-device-plugin/main/ascend-device-plugin.yaml
 ```
 
-## 运行 Ascend 作业
+## 运行 Huawei Ascend 作业
 
 若要独占使用整张卡或申请多张卡，只需设置对应的 resourceName 即可。若多个任务需要共享同一 NPU，则需将资源请求设置为 `1` 并配置对应的 `ResourceMemoryName`。
 
-### Ascend 910B（硬切片）
+### Huawei Ascend 910B（硬切片）
 
 ```yaml
 apiVersion: v1
@@ -144,7 +144,7 @@ spec:
           huawei.com/Ascend910B-memory: "4096"
 ```
 
-### Ascend 310P（硬切片）
+### Huawei Ascend 310P（硬切片）
 
 ```yaml
 apiVersion: v1
@@ -228,8 +228,8 @@ spec:
 
 ## 注意事项
 
-1. 硬切片模式下，Ascend 910B 仅支持两种分片策略：1/4 和 1/2。Ascend 310P 支持三种分片策略：1/7、2/7、4/7。显存请求将自动与最接近的分片策略对齐。
+1. 硬切片模式下，Huawei Ascend 910B 仅支持两种分片策略：1/4 和 1/2。Huawei Ascend 310P 支持三种分片策略：1/7、2/7、4/7。显存请求将自动与最接近的分片策略对齐。
 
-2. 不支持在初始化容器中使用 Ascend-sharing。
+2. 不支持在初始化容器中使用 Huawei Ascend-sharing。
 
 3. `huawei.com/Ascend910B-memory` 仅在 `huawei.com/Ascend910B=1` 时有效。 `huawei.com/Ascend310P-memory` 仅在 `huawei.com/Ascend310P=1` 时有效。

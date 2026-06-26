@@ -1,8 +1,8 @@
 ---
-title: Enable Ascend sharing
+title: Enable Huawei Ascend sharing
 ---
 
-The Ascend device plugin supports NPU-slicing for HAMi. It supports two modes:
+The Huawei Ascend device plugin supports NPU-slicing for HAMi. It supports two modes:
 
 ## 1. Template-based Hard Slicing (vNPU)
 
@@ -21,13 +21,13 @@ This mode implements a soft slicing mechanism based on `libvnpu.so` interception
 
 ## Prerequisites
 
-- Ascend device type: 910B, 910A, 310P
-- [Ascend docker runtime](https://gitcode.com/Ascend/mind-cluster/tree/master/component/ascend-docker-runtime)
+- Huawei Ascend device type: 910B, 910A, 310P
+- [Huawei Ascend docker runtime](https://gitcode.com/Huawei Ascend/mind-cluster/tree/master/component/ascend-docker-runtime)
 
 **Additional requirements for Soft Slicing (hami-vnpu-core):**
 
-- **Ascend Driver Version**: ≥ 25.5
-- **Chip Mode**: enable `device-share` mode on Ascend chips for virtualization
+- **Huawei Ascend Driver Version**: ≥ 25.5
+- **Chip Mode**: enable `device-share` mode on Huawei Ascend chips for virtualization
 
 To enable `device-share` mode, run:
 
@@ -40,7 +40,7 @@ npu-smi set -t device-share -i <id> -d <value>
 | `id`      | Device ID. The NPU ID found by running `npu-smi info -l`.          |
 | `value`   | Container enable status: `0` (Disabled, default) or `1` (Enabled). |
 
-## Enabling Ascend-sharing support
+## Enabling Huawei Ascend-sharing support
 
 Due to dependencies with HAMi, you need to set the following arguments when installing HAMi:
 
@@ -69,7 +69,7 @@ devices:
       - huawei.com/Ascend310P-memory
 ```
 
-If you require HAMi to automatically add the `runtimeClassName` configuration to Pods requesting Ascend resources (this is disabled by default), set `devices.ascend.runtimeClassName` to a non-empty string in HAMi's `values.yaml`, ensuring it matches the name of the `RuntimeClass` resource:
+If you require HAMi to automatically add the `runtimeClassName` configuration to Pods requesting Huawei Ascend resources (this is disabled by default), set `devices.ascend.runtimeClassName` to a non-empty string in HAMi's `values.yaml`, ensuring it matches the name of the `RuntimeClass` resource:
 
 ```yaml
 devices:
@@ -119,11 +119,11 @@ kubectl apply -f https://raw.githubusercontent.com/Project-HAMi/ascend-device-pl
 kubectl apply -f https://raw.githubusercontent.com/Project-HAMi/ascend-device-plugin/main/ascend-device-plugin.yaml
 ```
 
-## Running Ascend Jobs
+## Running Huawei Ascend Jobs
 
 To exclusively use an entire card or request multiple cards, you only need to set the corresponding resourceName. If multiple tasks need to share the same NPU, set the resource request to `1` and configure the appropriate `ResourceMemoryName`.
 
-### Ascend 910B (Hard Slicing)
+### Huawei Ascend 910B (Hard Slicing)
 
 ```yaml
 apiVersion: v1
@@ -142,7 +142,7 @@ spec:
           huawei.com/Ascend910B-memory: "4096"
 ```
 
-### Ascend 310P (Hard Slicing)
+### Huawei Ascend 310P (Hard Slicing)
 
 ```yaml
 apiVersion: v1
@@ -226,8 +226,8 @@ spec:
 
 ## Notes
 
-1. For hard slicing, Ascend 910B supports only two sharding policies: 1/4 and 1/2. Ascend 310P supports three sharding policies: 1/7, 2/7, 4/7. The memory request will automatically align with the closest sharding policy.
+1. For hard slicing, Huawei Ascend 910B supports only two sharding policies: 1/4 and 1/2. Huawei Ascend 310P supports three sharding policies: 1/7, 2/7, 4/7. The memory request will automatically align with the closest sharding policy.
 
-1. Ascend-sharing in init containers is not supported.
+1. Huawei Ascend-sharing in init containers is not supported.
 
 1. `huawei.com/Ascend910B-memory` only works when `huawei.com/Ascend910B=1`. `huawei.com/Ascend310P-memory` only works when `huawei.com/Ascend310P=1`.

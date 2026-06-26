@@ -10,7 +10,7 @@ HAMi支持的设备视图如下表所示：
 | GPU         | NVIDIA     | 全部        | Yes              | Yes            | Yes                |
 | MLU         | Cambricon  | 370, 590    | Yes              | Yes            | No                |
 | DCU         | Hygon      | Z100, Z100L | Yes              | Yes            | No                |
-| Ascend      | Huawei     | 910B, 910B3, 310P  | Yes              | Yes            | No                |
+| Huawei Ascend      | Huawei     | 910B, 910B3, 310P  | Yes              | Yes            | No                |
 | GPU         | iluvatar   | 全部        | Yes              | Yes            | No                |
 | GPU         | Mthreads   | MTT S4000   | Yes              | Yes            | No                |
 | GPU         | MetaX      | MXC500      | Yes              | Yes            | No                |

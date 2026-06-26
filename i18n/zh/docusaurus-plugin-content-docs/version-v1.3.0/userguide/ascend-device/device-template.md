@@ -1,5 +1,5 @@
 ---
-title: Ascend device template
+title: Huawei Ascend device template
 ---
 
 
