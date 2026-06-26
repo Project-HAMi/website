@@ -3,10 +3,10 @@ title: Real-time device usage endpoint
 sidebar_label: Real-time device usage
 ---
 
-You can get the real-time device memory and core utilization by visiting `{GPU node ip}:31992/metrics`, or add it to a prometheus endpoint, as the command below:
+You can get the real-time device memory and core utilization by visiting `<GPU-node-ip>:31992/metrics`, or add it to a prometheus endpoint, as the command below:
 
 ```bash
-curl {GPU node ip}:31992/metrics
+curl <GPU-node-ip>:31992/metrics
 ```
 
 It contains the following metrics:
