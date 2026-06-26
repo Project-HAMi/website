@@ -93,7 +93,7 @@ sudo systemctl daemon-reload && sudo systemctl restart containerd
 Label your GPU nodes for HAMi scheduling with `gpu=on`. Nodes without this label cannot be managed by the scheduler.
 
 ```bash
-kubectl label nodes {nodeid} gpu=on
+kubectl label nodes <node-name> gpu=on
 ```
 
 ### 3. Deploy HAMi using Helm {#deploy-hami-using-helm}
