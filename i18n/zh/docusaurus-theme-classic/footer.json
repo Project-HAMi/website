@@ -39,6 +39,10 @@
     "message": "GitHub",
     "description": "The label of footer link with label=GitHub linking to https://github.com/Project-HAMi/HAMi"
   },
+  "link.item.label.LinkedIn": {
+    "message": "LinkedIn",
+    "description": "The label of footer link with label=LinkedIn linking to https://www.linkedin.com/company/project-hami-io/"
+  },
   "link.item.label.Blog": {
     "message": "博客",
     "description": "The label of footer link with label=Blog linking to /blog"

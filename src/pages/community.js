@@ -3,7 +3,7 @@ import Layout from "@theme/Layout";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import useBaseUrl from "@docusaurus/useBaseUrl";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBilibili, faDiscord, faGithub, faSlack } from "@fortawesome/free-brands-svg-icons";
+import { faBilibili, faDiscord, faGithub, faLinkedin, faSlack } from "@fortawesome/free-brands-svg-icons";
 import {
   faBookOpen,
   faCalendarDays,
@@ -95,6 +95,11 @@ export default function CommunityPage() {
           label: { en: "Bilibili", zh: "Bilibili" },
           href: "https://space.bilibili.com/1105878584",
           icon: faBilibili,
+        },
+        {
+          label: { en: "LinkedIn", zh: "LinkedIn" },
+          href: "https://www.linkedin.com/company/project-hami-io/",
+          icon: faLinkedin,
         },
       ],
     },

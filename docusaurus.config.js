@@ -351,6 +351,10 @@ module.exports = {
               href: "https://github.com/Project-HAMi/HAMi",
             },
             {
+              label: "LinkedIn",
+              href: "https://www.linkedin.com/company/project-hami-io/",
+            },
+            {
               label: "Releases",
               to: "/changelog",
             },
