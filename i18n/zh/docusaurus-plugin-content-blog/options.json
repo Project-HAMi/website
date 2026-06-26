@@ -1,10 +1,10 @@
 {
   "title": {
-    "message": "博客",
+    "message": "HAMi 博客",
     "description": "The title for the blog used in SEO"
   },
   "description": {
-    "message": "博客",
+    "message": "HAMi 项目的最新资讯",
     "description": "The description for the blog used in SEO"
   },
   "sidebar.title": {
