@@ -65,7 +65,7 @@ graph TD
     ENFORCE["显存隔离生效<br/>nvidia-smi 仅显示分配显存"]
 
     POD --> SCHED --> INJECT --> WEBHOOK --> CONTAINER --> ENFORCE
-    DAEMON -. 加载 libvgpu.so .-> CONTAINER
+    DAEMON -. "加载 libvgpu.so" .-> CONTAINER
 
     style SCHED fill:#d9f99d,stroke:#4f7d00,stroke-width:2px,color:#1f2937
     style INJECT fill:#d9f99d,stroke:#4f7d00,stroke-width:2px,color:#1f2937
