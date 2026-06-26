@@ -3,7 +3,7 @@ title: 5-Minute Quick Start
 sidebar_label: Quick Start
 ---
 
-This guide gets HAMi running on an existing Kubernetes cluster with at least one NVIDIA GPU node in under 5 minutes. It uses a single Helm command for installation and one test pod to confirm GPU sharing works.
+This guide gets HAMi running on an existing Kubernetes cluster with at least one NVIDIA GPU node in under 5 minutes. It uses a minimal Helm-based install path and one test pod to confirm GPU sharing works.
 
 For production setups, offline installs, or non-NVIDIA devices, see the [Installation](../installation/online-installation) section.
 
@@ -14,7 +14,9 @@ For production setups, offline installs, or non-NVIDIA devices, see the [Install
 - Helm v3+
 - `kubectl` configured to reach the cluster
 
-:::note The node runtime must already be configured before installing HAMi. If it is not, follow the [Prerequisites](../installation/prerequisites) guide first, then return here. :::
+:::note
+The node runtime must already be configured before installing HAMi. If it is not, follow the [Prerequisites](../installation/prerequisites) guide first, then return here.
+:::
 
 ## Step 1 - Install HAMi
 

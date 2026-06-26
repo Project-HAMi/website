@@ -108,6 +108,7 @@ Add the Helm repository:
 
 ```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/
+helm repo update
 ```
 
 During installation, set the Kubernetes scheduler image to match your cluster version. For example, if your cluster version is 1.29.0:
@@ -140,6 +141,12 @@ spec:
         limits:
           nvidia.com/gpu: 1 # Request 1 vGPU
           nvidia.com/gpumem: 10240 # Each vGPU provides 10240 MiB device memory (optional)
+```
+
+Wait for the pod to be ready:
+
+```bash
+kubectl wait --for=condition=Ready pod/gpu-pod --timeout=120s
 ```
 
 ### 2. Verify container resource limits {#verify-in-container-resource-control}
@@ -176,3 +183,15 @@ Wed Apr 10 09:28:58 2024
 +-----------------------------------------------------------------------------------------+
 [HAMI-core Msg(28:140561996502848:multiprocess_memory_limit.c:434)]: Calling exit handler 28
 ```
+
+## Cleanup {#cleanup}
+
+```bash
+kubectl delete pod gpu-pod
+```
+
+## Next steps {#next-steps}
+
+- [Validate HAMi](./verify-hami) - deeper validation including native GPU stack checks
+- [Configure HAMi](../userguide/configure) - resource limits, scheduling policies, and more
+- [Device Sharing](../key-features/device-sharing) - how GPU sharing works under the hood
