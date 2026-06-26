@@ -66,7 +66,7 @@ graph TD
     ENFORCE["Memory isolation active<br/>nvidia-smi shows allocated memory only"]
 
     POD --> SCHED --> INJECT --> WEBHOOK --> CONTAINER --> ENFORCE
-    DAEMON -. loads libvgpu.so .-> CONTAINER
+    DAEMON -. "loads libvgpu.so" .-> CONTAINER
 
     style SCHED fill:#d9f99d,stroke:#4f7d00,stroke-width:2px,color:#1f2937
     style INJECT fill:#d9f99d,stroke:#4f7d00,stroke-width:2px,color:#1f2937
