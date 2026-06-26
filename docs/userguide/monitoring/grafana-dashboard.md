@@ -39,10 +39,10 @@ For Prometheus Operator, create a `ServiceMonitor` targeting the `hami-device-pl
 
 Key metrics:
 
-| Metric                            | Description                                |
-| --------------------------------- | ------------------------------------------ |
-| `hami_host_gpu_utilization_ratio` | GPU real-time utilization on host (0–100)  |
-| `hami_host_gpu_memory_used_bytes` | GPU real-time device memory usage on host  |
+| Metric                            | Description                               |
+| --------------------------------- | ----------------------------------------- |
+| `hami_host_gpu_utilization_ratio` | GPU real-time utilization on host (0–100) |
+| `hami_host_gpu_memory_used_bytes` | GPU real-time device memory usage on host |
 
 ## Prerequisites
 
