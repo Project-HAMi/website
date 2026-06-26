@@ -159,7 +159,7 @@ spec:
 Execute the following query command:
 
 ```bash
-kubectl exec -it gpu-pod nvidia-smi
+kubectl exec -it gpu-pod -- nvidia-smi
 ```
 
 The result should be:
