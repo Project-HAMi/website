@@ -65,5 +65,5 @@ sudo systemctl daemon-reload && sudo systemctl restart containerd
 为了让 HAMi 调度器能够识别 GPU 节点，请为 GPU 节点添加标签 `gpu=on`。如果没有该标签，调度器将无法管理这些节点。
 
 ```bash
-kubectl label nodes {nodeid} gpu=on
+kubectl label nodes <node-name> gpu=on
 ```

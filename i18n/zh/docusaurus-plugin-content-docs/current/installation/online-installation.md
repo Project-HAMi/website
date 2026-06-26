@@ -12,6 +12,7 @@ translated: true
 
 ```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/
+helm repo update
 ```
 
 ## 获取你的 Kubernetes 版本
@@ -19,15 +20,15 @@ helm repo add hami-charts https://project-hami.github.io/HAMi/
 安装时需要 Kubernetes 版本。你可以使用以下命令获取此信息：
 
 ```bash
-kubectl version --short
+kubectl version
 ```
 
 ## 安装
 
-确保 `scheduler.kubeScheduler.imageTag` 与你的 Kubernetes 服务器版本匹配。例如，如果你的集群服务器版本是 v1.16.8，请使用以下命令进行部署：
+确保 `scheduler.kubeScheduler.imageTag` 与你的 Kubernetes 服务器版本匹配。例如，如果你的集群服务器版本是 v1.29.0，请使用以下命令进行部署：
 
 ```bash
-helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag=v1.16.8 -n kube-system
+helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag=v1.29.0 -n kube-system
 ```
 
 你可以通过编辑[配置](../userguide/configure.md)来自定义安装。
