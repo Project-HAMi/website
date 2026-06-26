@@ -3,7 +3,13 @@ import Layout from "@theme/Layout";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import useBaseUrl from "@docusaurus/useBaseUrl";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBilibili, faDiscord, faGithub, faLinkedin, faSlack } from "@fortawesome/free-brands-svg-icons";
+import {
+  faBilibili,
+  faDiscord,
+  faGithub,
+  faLinkedin,
+  faSlack,
+} from "@fortawesome/free-brands-svg-icons";
 import {
   faBookOpen,
   faCalendarDays,

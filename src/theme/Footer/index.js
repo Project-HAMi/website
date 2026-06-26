@@ -1,6 +1,12 @@
 import React, { memo, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDiscord, faGithub, faLinkedin, faSlack, faWeixin } from "@fortawesome/free-brands-svg-icons";
+import {
+  faDiscord,
+  faGithub,
+  faLinkedin,
+  faSlack,
+  faWeixin,
+} from "@fortawesome/free-brands-svg-icons";
 import { faBullhorn, faDownload, faRocket, faUsers } from "@fortawesome/free-solid-svg-icons";
 import { useColorMode, useThemeConfig } from "@docusaurus/theme-common";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
