@@ -14,9 +14,7 @@ For production setups, offline installs, or non-NVIDIA devices, see the [Install
 - Helm v3+
 - `kubectl` configured to reach the cluster
 
-:::note
-The node runtime must already be configured before installing HAMi. If it is not, follow the [Prerequisites](../installation/prerequisites) guide first, then return here.
-:::
+:::note The node runtime must already be configured before installing HAMi. If it is not, follow the [Prerequisites](../installation/prerequisites) guide first, then return here. :::
 
 ## Step 1 - Install HAMi
 
