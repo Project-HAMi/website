@@ -24,6 +24,7 @@ import {
 import styles from "./styles.module.css";
 import ContributorsList from "../components/contributorsList";
 import AdoptersList from "../components/adoptersList";
+import EcosystemList from "../components/ecosystemList";
 import BeforeAfterComparison from "../components/BeforeAfterComparison";
 import heroStats from "../data/home/heroStats";
 import valueCards from "../data/home/valueCards";
@@ -68,6 +69,11 @@ const heroSchedulerEcosystem = [
     key: "koordinator",
     label: { en: "Koordinator", zh: "Koordinator" },
     logo: "img/ecosystem/koordinator.svg",
+  },
+  {
+    key: "kai-scheduler",
+    label: { en: "KAI Scheduler", zh: "KAI Scheduler" },
+    logo: "img/ecosystem/kai-scheduler.png",
   },
 ];
 const heroGpuSlices = ["GPU", "1/2", "1/4", "1/N"];
@@ -874,6 +880,22 @@ export default function Home() {
             >
               {isZh ? "查看完整设备支持列表 →" : "View full supported devices list →"}
             </Link>
+          </div>
+        </section>
+
+        <section ref={addRevealRef} className={clsx(styles.section, styles.reveal)}>
+          <div className="container">
+            <h2 className={styles.sectionTitle}>
+              {isZh ? "与 HAMi 协同" : "Works with HAMi"}
+            </h2>
+            <p className={styles.sectionLead}>
+              {isZh
+                ? "HAMi 与以下开源调度器、队列及云平台协同工作，既可作为设备层嵌入，也可在调度层集成。"
+                : "HAMi integrates with these open-source schedulers, queuing layers, and cloud platforms, either as an embeddable device layer or at the scheduling layer."}
+            </p>
+            <div className={styles.supportersWrap}>
+              <EcosystemList />
+            </div>
           </div>
         </section>
 

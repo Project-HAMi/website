@@ -1,0 +1,38 @@
+[
+  {
+    "name": "KAI Scheduler",
+    "nameZh": "KAI Scheduler",
+    "logo": "/img/ecosystem/kai-scheduler.png",
+    "website": "https://github.com/NVIDIA/kai-scheduler"
+  },
+  {
+    "name": "Volcano",
+    "nameZh": "Volcano",
+    "logo": "/img/ecosystem/volcano.png",
+    "website": "https://volcano.sh"
+  },
+  {
+    "name": "Kueue",
+    "nameZh": "Kueue",
+    "logo": "/img/ecosystem/kueue.svg",
+    "website": "https://kueue.sigs.k8s.io"
+  },
+  {
+    "name": "Koordinator",
+    "nameZh": "Koordinator",
+    "logo": "/img/ecosystem/koordinator.svg",
+    "website": "https://koordinator.sh"
+  },
+  {
+    "name": "Olares",
+    "nameZh": "Olares",
+    "logo": "/img/ecosystem/olares.png",
+    "website": "https://www.olares.com"
+  },
+  {
+    "name": "CozyStack",
+    "nameZh": "CozyStack",
+    "logo": "/img/ecosystem/cozystack.svg",
+    "website": "https://cozystack.io"
+  }
+]
