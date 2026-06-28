@@ -53,6 +53,12 @@ const heroWorkloadEcosystem = [
     label: { en: "Xinference", zh: "Xinference" },
     logo: "img/ecosystem/xinference.svg",
   },
+  {
+    key: "qwen",
+    label: { en: "Qwen", zh: "通义千问" },
+    logo: "img/ecosystem/qwen.svg",
+  },
+  { key: "ray", label: { en: "Ray", zh: "Ray" }, logo: "img/ecosystem/ray.svg" },
   { key: "llm", label: { en: "LLM", zh: "LLM" } },
   { key: "ml", label: { en: "ML", zh: "ML" } },
   { key: "hpc", label: { en: "HPC", zh: "HPC" } },
