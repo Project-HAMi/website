@@ -891,9 +891,7 @@ export default function Home() {
 
         <section ref={addRevealRef} className={clsx(styles.section, styles.reveal)}>
           <div className="container">
-            <h2 className={styles.sectionTitle}>
-              {isZh ? "与 HAMi 协同" : "Works with HAMi"}
-            </h2>
+            <h2 className={styles.sectionTitle}>{isZh ? "与 HAMi 协同" : "Works with HAMi"}</h2>
             <p className={styles.sectionLead}>
               {isZh
                 ? "HAMi 与以下开源调度器、队列及云平台协同工作，既可作为设备层嵌入，也可在调度层集成。"
