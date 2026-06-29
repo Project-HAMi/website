@@ -74,6 +74,14 @@ function ensureLightbox() {
     svgHost.hidden = true;
     svgHost.replaceChildren();
     caption.textContent = "";
+    root.dataset.hasCaption = "false";
+  };
+
+  const setCaption = (captionText = "") => {
+    const normalizedCaption = captionText.trim();
+    caption.textContent = normalizedCaption;
+    caption.hidden = !normalizedCaption;
+    root.dataset.hasCaption = normalizedCaption ? "true" : "false";
   };
 
   root.addEventListener("click", (event) => {
@@ -93,13 +101,13 @@ function ensureLightbox() {
     }
   });
 
-  root.__hamiLightboxOpen = ({ src, alt }) => {
+  root.__hamiLightboxOpen = ({ src, alt, caption: captionText }) => {
     lightboxImage.src = src;
     lightboxImage.alt = alt || "";
     lightboxImage.hidden = false;
     svgHost.hidden = true;
     svgHost.replaceChildren();
-    caption.textContent = alt || "";
+    setCaption(captionText || alt || "");
     root.hidden = false;
     document.body.classList.add("hami-lightbox-open");
   };
@@ -118,12 +126,24 @@ function ensureLightbox() {
     svgHost.hidden = false;
     lightboxImage.hidden = true;
     lightboxImage.removeAttribute("src");
-    caption.textContent = captionText || "";
+    setCaption(captionText || "");
     root.hidden = false;
     document.body.classList.add("hami-lightbox-open");
   };
 
   return root;
+}
+
+function getImageCaption(image) {
+  const figureCaption = image.closest("figure")?.querySelector("figcaption")?.textContent;
+
+  return (
+    figureCaption ||
+    image.getAttribute("aria-label") ||
+    image.getAttribute("title") ||
+    image.getAttribute("alt") ||
+    ""
+  );
 }
 
 function handleImageClick(event) {
@@ -166,9 +186,11 @@ function handleImageClick(event) {
   }
 
   const lightbox = ensureLightbox();
+  const caption = getImageCaption(image);
   lightbox.__hamiLightboxOpen({
     src: image.currentSrc || image.src,
-    alt: image.alt || "",
+    alt: image.alt || caption,
+    caption,
   });
 }
 
