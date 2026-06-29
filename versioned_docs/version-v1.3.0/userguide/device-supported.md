@@ -4,7 +4,7 @@ title: Device supported by HAMi
 
 The view of device supported by HAMi is shown in this table below:
 
-| Production  | manufactor | Type        |MemoryIsolation | CoreIsolation | MultiCard support |
+| Production | Manufacturer | Type        |MemoryIsolation | CoreIsolation | MultiCard support |
 |-------------|------------|-------------|-----------|---------------|-------------------|
 | GPU         | NVIDIA     | All         | Yes              | Yes            | Yes                |
 | MLU         | Cambricon  | 370, 590    | Yes              | Yes            | No                |
