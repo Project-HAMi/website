@@ -375,7 +375,7 @@ body.hami-lightbox-open {
   z-index: 10000;
   background: rgba(6, 10, 16, 0.88);
   display: grid;
-  grid-template-rows: 1fr auto;
+  grid-template-rows: minmax(0, 1fr) auto;
   align-items: center;
   justify-items: center;
   padding: clamp(18px, 3vw, 40px);
@@ -389,7 +389,7 @@ body.hami-lightbox-open {
 
 .hami-lightbox__image {
   max-width: min(96vw, 1600px);
-  max-height: min(86vh, 1100px);
+  max-height: min(82vh, 1100px);
   width: auto;
   height: auto;
   background: #ffffff;
@@ -403,7 +403,7 @@ body.hami-lightbox-open {
      fit both dimensions (viewBox + preserveAspectRatio), so the whole
      diagram is always visible without internal scrolling. */
   width: min(96vw, 1600px);
-  height: min(86vh, 1100px);
+  height: min(82vh, 1100px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -445,6 +445,24 @@ html[data-theme="dark"] .hami-lightbox__svg {
   color: rgba(233, 240, 248, 0.95);
   font-size: 0.94rem;
   line-height: 1.45;
+}
+
+.hami-lightbox__caption[hidden] {
+  display: none;
+}
+
+.hami-lightbox__image[hidden],
+.hami-lightbox__svg[hidden] {
+  display: none;
+}
+
+.hami-lightbox[data-has-caption="false"] {
+  grid-template-rows: minmax(0, 1fr);
+}
+
+.hami-lightbox[data-has-caption="false"] .hami-lightbox__image,
+.hami-lightbox[data-has-caption="false"] .hami-lightbox__svg {
+  max-height: min(90vh, 1100px);
 }
 
 .hami-lightbox__close {
