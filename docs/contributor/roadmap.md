@@ -11,7 +11,7 @@ sidebar_label: Roadmap
 | GPU         | NVIDIA        | All               |       Yes        |      Yes       |    Yes     |
 | MLU         | Cambricon     | 370, 590          |       Yes        |      Yes       |     No     |
 | GCU         | Enflame       | S60               |       Yes        |      Yes       |     No     |
-| DCU         | Hygon         | Z100, Z100L       |       Yes        |      Yes       |     No     |
+| DCU         | Hygon         | All               |       Yes        |      Yes       |     No     |
 | NPU         | Huawei Ascend | 310P, 910B, 910B3 |       Yes        |      Yes       |     No     |
 | GPU         | Iluvatar      | All               |       Yes        |      Yes       |     No     |
 | DPU         | Teco          | Checking          |   In progress    |  In progress   |     No     |

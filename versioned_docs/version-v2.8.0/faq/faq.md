@@ -5,11 +5,11 @@ title: FAQ
 
 ## Supported Device Vendors and Specific Models
 
-| **GPU Vendor** | **GPU Model** | **Granularity** | **Multi-GPU Support** |
-| --- | --- | --- | --- |
+| **GPU Vendor** | **GPU Model**                                       | **Granularity** | **Multi-GPU Support** |
+| --- |-----------------------------------------------------| --- | --- |
 | NVIDIA | Almost all mainstream consumer and data center GPUs | Core 1%, Memory 1M | Supported. Multi-GPU can still be split and shared using virtualization. |
 | Ascend | 910A, 910B2, 910B3, 310P | Minimum granularity depends on the card type template. Refer to the [official templates](https://www.hiascend.com/document/detail/zh/mindx-dl/50rc1/AVI/cpaug/cpaug_0005.html). | Supported, but splitting is not supported when `npu > 1`. The entire card is exclusively allocated. |
-| Hygon | Z100, Z100L, K100-AI | Core 1%, Memory 1M | Supported, but splitting is not supported when `dcu > 1`. The entire card is exclusively allocated. |
+| Hygon | All | Core 1%, Memory 1M | Supported, but splitting is not supported when `dcu > 1`. The entire card is exclusively allocated. |
 | Cambricon | 370, 590 | Core 1%, Memory 256M | Supported, but splitting is not supported when `mlu > 1`. The entire card is exclusively allocated. |
 | Iluvatar | All | Core 1%, Memory 256M | Supported, but splitting is not supported when `gpu > 1`. The entire card is exclusively allocated. |
 | Mthreads | MTT S4000 | Core 1 core group, Memory 512M | Supported, but splitting is not supported when `gpu > 1`. The entire card is exclusively allocated. |

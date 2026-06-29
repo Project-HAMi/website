@@ -4,12 +4,12 @@ title: Device supported by HAMi
 
 The view of device supported by HAMi is shown in this table below:
 
-| Production  | manufactor | Type        |MemoryIsolation | CoreIsolation | MultiCard support |
-|-------------|------------|-------------|-----------|---------------|-------------------|
-| GPU         | NVIDIA     | All         | Yes              | Yes            | Yes                |
-| MLU         | Cambricon  | 370, 590    | Yes              | Yes            | No                |
-| DCU         | Hygon      | Z100, Z100L | Yes              | Yes            | No                |
-| Ascend      | Huawei     | 910B, 910B3, 310P  | Yes              | Yes            | No                |
-| GPU         | iluvatar   | All         | Yes              | Yes            | No                |
-| GPU         | Mthreads   | MTT S4000   | Yes              | Yes            | No                |
-| DPU         | Teco       | Checking    | In progress     | In progress   | No                |
+| Production  | Manufacturer | Type              |MemoryIsolation | CoreIsolation | MultiCard support |
+|-------------|------------|-------------------|-----------|---------------|-------------------|
+| GPU         | NVIDIA     | All               | Yes              | Yes            | Yes                |
+| MLU         | Cambricon  | 370, 590          | Yes              | Yes            | No                |
+| DCU         | Hygon      | All               | Yes              | Yes            | No                |
+| Ascend      | Huawei     | 910B, 910B3, 310P | Yes              | Yes            | No                |
+| GPU         | iluvatar   | All               | Yes              | Yes            | No                |
+| GPU         | Mthreads   | MTT S4000         | Yes              | Yes            | No                |
+| DPU         | Teco       | Checking          | In progress     | In progress   | No                |
