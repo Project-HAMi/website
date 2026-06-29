@@ -223,6 +223,19 @@ module.exports = {
         },
         {
           type: "category",
+          label: "Managing Biren devices",
+          items: [
+            "userguide/biren-device/enable-biren-sharing",
+            {
+              type: "category",
+              label: "Examples",
+              key: "biren-examples",
+              items: ["userguide/biren-device/examples/default-use"],
+            },
+          ],
+        },
+        {
+          type: "category",
           label: "Optimize Kunlunxin devices scheduling",
           items: [
             "userguide/kunlunxin-device/enable-kunlunxin-schedule",
