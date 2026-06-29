@@ -23,9 +23,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import styles from "./styles.module.css";
 import ContributorsList from "../components/contributorsList";
-import AdoptersList from "../components/adoptersList";
-import EcosystemList from "../components/ecosystemList";
+import LogoWall from "../components/logoWall";
 import BeforeAfterComparison from "../components/BeforeAfterComparison";
+import adoptersData from "../data/adopters.json";
+import ecosystemData from "../data/ecosystem.json";
 import heroStats from "../data/home/heroStats";
 import valueCards from "../data/home/valueCards";
 
@@ -898,7 +899,7 @@ export default function Home() {
                 : "HAMi integrates with these open-source schedulers, queuing layers, and cloud platforms, either as an embeddable device layer or at the scheduling layer."}
             </p>
             <div className={styles.supportersWrap}>
-              <EcosystemList />
+              <LogoWall items={ecosystemData} imgPrefix="/img/ecosystem" />
             </div>
           </div>
         </section>
@@ -912,7 +913,7 @@ export default function Home() {
                 : "The organizations below are evaluating or using HAMi in production environments."}
             </p>
             <div className={styles.supportersWrap}>
-              <AdoptersList />
+              <LogoWall items={adoptersData} imgPrefix="/img/adopters" />
             </div>
             <article className={styles.adoptersCta}>
               <h3 className={styles.adoptersCtaTitle}>
