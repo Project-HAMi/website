@@ -20,7 +20,7 @@ HAMi 在 KubeCon India 的亮相正是对这一趋势的直接回应：通过现
 
 ## Keynote Demo：Kubernetes 上的多租户 AI 推理
 
-![Saiyam Pathak 在 KubeCon India Keynote 中展示 HAMi GPU 共享演示](./keynote-demo.jpg)
+![Saiyam Pathak 在 KubeCon India Keynote 中展示 HAMi GPU 共享演示](/img/kubecon-india-2026-recap/keynote-demo.jpg)
 
 在 [Saiyam Pathak 的 Keynote](https://kccncind2026.sched.com/event/2NgRQ/keynote-from-platforms-to-ai-factories-has-kubernetes-solved-it-saiyam-pathak-principal-developer-advocate-vcluster) 中，HAMi 支撑了一场展示 GPU 共享能力的现场演示。
 
@@ -32,7 +32,7 @@ HAMi 在 KubeCon India 的亮相正是对这一趋势的直接回应：通过现
 - 用于细粒度 GPU 分配的 HAMi
 - 多个 AI 推理工作负载同时运行在共享 GPU 上
 
-![演示架构：两个基于 vCluster 的团队通过 HAMi 共享一张 DGX Spark GPU](./demo-architecture.png)
+![演示架构：两个基于 vCluster 的团队通过 HAMi 共享一张 DGX Spark GPU](/img/kubecon-india-2026-recap/demo-architecture-zh.png)
 
 为了让概念更直观，演示使用了带有孟买本地特色的应用场景，包括本地火车、dabbawala 送餐员和 kaali peeli 出租车。移动应用采集的图片会被路由到 Kubernetes，并交由运行在共享 GPU 基础设施上的 AI 模型完成推理。
 
@@ -119,7 +119,7 @@ HAMi 在 KubeCon India 的亮相正是对这一趋势的直接回应：通过现
 
 ## 展台背后的社区
 
-![HAMi 社区贡献者在 KubeCon India Project Pavilion 展台](./hami-booth.jpg)
+![HAMi 社区贡献者在 KubeCon India Project Pavilion 展台](/img/kubecon-india-2026-recap/hami-booth.jpg)
 
 开源项目的成功离不开社区。
 

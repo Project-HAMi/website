@@ -20,7 +20,7 @@ HAMi's presence at KubeCon India built directly on that message by demonstrating
 
 ## Keynote Demo: Multi-Tenant AI Inference on Kubernetes
 
-![Saiyam Pathak presenting the HAMi GPU sharing demo during the KubeCon India keynote](./keynote-demo.jpg)
+![Saiyam Pathak presenting the HAMi GPU sharing demo during the KubeCon India keynote](/img/kubecon-india-2026-recap/keynote-demo.jpg)
 
 During [Saiyam Pathak's keynote](https://kccncind2026.sched.com/event/2NgRQ/keynote-from-platforms-to-ai-factories-has-kubernetes-solved-it-saiyam-pathak-principal-developer-advocate-vcluster), HAMi powered a live demonstration showing GPU sharing in action.
 
@@ -32,7 +32,7 @@ The architecture combined:
 - HAMi for fractional GPU allocation
 - Multiple AI inference workloads running simultaneously on a shared GPU
 
-![Demo architecture showing two vCluster-backed teams sharing one DGX Spark GPU through HAMi](./demo-architecture.png)
+![Demo architecture showing two vCluster-backed teams sharing one DGX Spark GPU through HAMi](/img/kubecon-india-2026-recap/demo-architecture.png)
 
 To make the concepts relatable, the demo used a Mumbai-themed application featuring local trains, dabbawalas, and kaali peeli taxis. Images captured on a mobile application were routed through Kubernetes to AI models running on the shared GPU infrastructure.
 
@@ -119,7 +119,7 @@ These discussions reflected a broader trend across enterprise Kubernetes platfor
 
 ## Community Behind the Booth
 
-![HAMi community contributors at the KubeCon India Project Pavilion booth](./hami-booth.jpg)
+![HAMi community contributors at the KubeCon India Project Pavilion booth](/img/kubecon-india-2026-recap/hami-booth.jpg)
 
 Open source projects succeed because of their communities.
 
