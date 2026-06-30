@@ -135,6 +135,13 @@
     "website": "https://www.cyintell.com/"
   },
   {
+    "name": "CETC Cloud",
+    "nameZh": "电科云",
+    "logo": "/img/adopters/cetc.png",
+    "logoZh": "/img/adopters/cetc-zh.png",
+    "website": ""
+  },
+  {
     "name": "Chaintech",
     "nameZh": "承启科技",
     "logo": "/img/adopters/chaintech.svg",
