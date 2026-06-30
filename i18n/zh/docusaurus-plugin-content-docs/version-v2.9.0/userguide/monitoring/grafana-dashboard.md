@@ -38,11 +38,10 @@ scrape_configs:
 
 关键指标：
 
-| 指标                                   | 说明                      |
-| -------------------------------------- | ------------------------- |
-| `Device_memory_desc_of_container`      | 分配给容器的虚拟 GPU 显存 |
-| `Device_utilization_desc_of_container` | 每容器的 GPU 算力利用率   |
-| `Device_memory_limit_of_container`     | 为容器设置的显存限制      |
+| 指标                              | 说明                              |
+| --------------------------------- | --------------------------------- |
+| `hami_host_gpu_utilization_ratio` | 主机上的 GPU 实时利用率（0–100）  |
+| `hami_host_gpu_memory_used_bytes` | 主机上的 GPU 实时设备显存使用情况 |
 
 ## 前置条件
 
