@@ -19,7 +19,7 @@ HAMi now supports sharing `vastaitech.com/va` (Vastaitech) devices and provides 
 #### Label the Node
 
 ```bash
-kubectl label node {vastai-node} vastai=on
+kubectl label node <vastai-node> vastai=on
 ```
 
 #### Deploy the `vastai-device-plugin`

@@ -23,8 +23,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import styles from "./styles.module.css";
 import ContributorsList from "../components/contributorsList";
-import AdoptersList from "../components/adoptersList";
+import LogoWall from "../components/logoWall";
 import BeforeAfterComparison from "../components/BeforeAfterComparison";
+import adoptersData from "../data/adopters.json";
+import ecosystemData from "../data/ecosystem.json";
 import heroStats from "../data/home/heroStats";
 import valueCards from "../data/home/valueCards";
 
@@ -52,6 +54,12 @@ const heroWorkloadEcosystem = [
     label: { en: "Xinference", zh: "Xinference" },
     logo: "img/ecosystem/xinference.svg",
   },
+  {
+    key: "qwen",
+    label: { en: "Qwen", zh: "通义千问" },
+    logo: "img/ecosystem/qwen.svg",
+  },
+  { key: "ray", label: { en: "Ray", zh: "Ray" }, logo: "img/ecosystem/ray.svg" },
   { key: "llm", label: { en: "LLM", zh: "LLM" } },
   { key: "ml", label: { en: "ML", zh: "ML" } },
   { key: "hpc", label: { en: "HPC", zh: "HPC" } },
@@ -68,6 +76,11 @@ const heroSchedulerEcosystem = [
     key: "koordinator",
     label: { en: "Koordinator", zh: "Koordinator" },
     logo: "img/ecosystem/koordinator.svg",
+  },
+  {
+    key: "kai-scheduler",
+    label: { en: "KAI Scheduler", zh: "KAI Scheduler" },
+    logo: "img/ecosystem/kai-scheduler.png",
   },
 ];
 const heroGpuSlices = ["GPU", "1/2", "1/4", "1/N"];
@@ -879,6 +892,20 @@ export default function Home() {
 
         <section ref={addRevealRef} className={clsx(styles.section, styles.reveal)}>
           <div className="container">
+            <h2 className={styles.sectionTitle}>{isZh ? "与 HAMi 协同" : "Works with HAMi"}</h2>
+            <p className={styles.sectionLead}>
+              {isZh
+                ? "HAMi 与以下开源调度器、队列及云平台协同工作，既可作为设备层嵌入，也可在调度层集成。"
+                : "HAMi integrates with these open-source schedulers, queuing layers, and cloud platforms, either as an embeddable device layer or at the scheduling layer."}
+            </p>
+            <div className={styles.supportersWrap}>
+              <LogoWall items={ecosystemData} imgPrefix="/img/ecosystem" />
+            </div>
+          </div>
+        </section>
+
+        <section ref={addRevealRef} className={clsx(styles.section, styles.reveal)}>
+          <div className="container">
             <h2 className={styles.sectionTitle}>{isZh ? "采用者" : "Adopters"}</h2>
             <p className={styles.sectionLead}>
               {isZh
@@ -886,7 +913,7 @@ export default function Home() {
                 : "The organizations below are evaluating or using HAMi in production environments."}
             </p>
             <div className={styles.supportersWrap}>
-              <AdoptersList />
+              <LogoWall items={adoptersData} imgPrefix="/img/adopters" />
             </div>
             <article className={styles.adoptersCta}>
               <h3 className={styles.adoptersCtaTitle}>

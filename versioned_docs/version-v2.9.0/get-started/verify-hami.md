@@ -103,6 +103,7 @@ kubectl label nodes $(hostname) gpu=on --overwrite
 
 ```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/
+helm repo update
 helm install hami hami-charts/hami -n kube-system
 ```
 

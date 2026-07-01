@@ -12,7 +12,7 @@ title: 使用 Helm 部署 HAMi
 ## 先决条件 {#prerequisites}
 
 - [Helm](https://helm.sh/zh/docs/) v3+
-- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) v1.16+
+- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) v1.23+
 - [CUDA](https://developer.nvidia.com/cuda-toolkit) v10.2+
 - [NVIDIA 驱动](https://www.nvidia.cn/drivers/unix/) v440+
 
@@ -93,7 +93,7 @@ sudo systemctl daemon-reload && sudo systemctl restart containerd
 通过添加 "gpu=on" 标签将 GPU 节点标记为可调度 HAMi 任务。未标记的节点将无法被调度器管理。
 
 ```bash
-kubectl label nodes {节点ID} gpu=on
+kubectl label nodes <node-name> gpu=on
 ```
 
 ### 3. 使用 Helm 部署 HAMi {#deploy-hami-using-helm}
@@ -147,7 +147,7 @@ spec:
 执行查询命令：
 
 ```bash
-kubectl exec -it gpu-pod nvidia-smi
+kubectl exec -it gpu-pod -- nvidia-smi
 ```
 
 预期输出：

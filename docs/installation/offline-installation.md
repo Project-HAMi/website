@@ -18,8 +18,8 @@ Load the images, tag them with your internal registry, and push them to your reg
 docker load -i {HAMi_image}.tar
 docker tag projecthami/hami:{HAMi version} {your_inner_registry}/hami:{HAMi version}
 docker push {your_inner_registry}/hami:{HAMi version}
-docker tag ghcr.io/kubernetes/ingress-nginx/kube-webhook-certgen:v1.5.2 {your inner_registry}/kube-webhook-certgen:v1.5.2
-docker push {your inner_registry}/kube-webhook-certgen:v1.5.2
+docker tag ghcr.io/kubernetes/ingress-nginx/kube-webhook-certgen:v1.5.2 {your_inner_registry}/kube-webhook-certgen:v1.5.2
+docker push {your_inner_registry}/kube-webhook-certgen:v1.5.2
 docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:{your kubernetes version} {your_inner_registry}/kube-scheduler:{your kubernetes version}
 docker push {your_inner_registry}/kube-scheduler:{your kubernetes version}
 ```

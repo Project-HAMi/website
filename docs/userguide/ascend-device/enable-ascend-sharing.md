@@ -22,7 +22,7 @@ This mode implements a soft slicing mechanism based on `libvnpu.so` interception
 ## Prerequisites
 
 - Huawei Ascend device type: 910B, 910A, 310P
-- [Huawei Ascend docker runtime](https://gitcode.com/Huawei Ascend/mind-cluster/tree/master/component/ascend-docker-runtime)
+- [Ascend docker runtime](https://gitcode.com/Ascend/mind-cluster/tree/master/component/ascend-docker-runtime)
 
 **Additional requirements for Soft Slicing (hami-vnpu-core):**
 
@@ -82,7 +82,7 @@ devices:
 ### 1. Label the Node
 
 ```bash
-kubectl label node {ascend-node} ascend=on
+kubectl label node <ascend-node> ascend=on
 ```
 
 ### 2. Deploy RuntimeClass

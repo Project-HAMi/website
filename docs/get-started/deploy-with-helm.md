@@ -11,8 +11,8 @@ This guide covers:
 
 ## Prerequisites {#prerequisites}
 
-- [Helm](https://helm.sh/zh/docs/) v3+
-- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) v1.16+
+- [Helm](https://helm.sh/docs/) v3+
+- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) v1.23+
 - [CUDA](https://developer.nvidia.com/cuda-toolkit) v10.2+
 - [NVIDIA Driver](https://www.nvidia.cn/drivers/unix/) v440+
 
@@ -93,7 +93,7 @@ sudo systemctl daemon-reload && sudo systemctl restart containerd
 Label your GPU nodes for HAMi scheduling with `gpu=on`. Nodes without this label cannot be managed by the scheduler.
 
 ```bash
-kubectl label nodes {nodeid} gpu=on
+kubectl label nodes <node-name> gpu=on
 ```
 
 ### 3. Deploy HAMi using Helm {#deploy-hami-using-helm}
@@ -147,7 +147,7 @@ spec:
 Run the following command:
 
 ```bash
-kubectl exec -it gpu-pod nvidia-smi
+kubectl exec -it gpu-pod -- nvidia-smi
 ```
 
 Expected output:

@@ -1,9 +1,8 @@
 import React from "react";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import useBaseUrl from "@docusaurus/useBaseUrl";
-import adoptersData from "../data/adopters.json";
 
-const AdoptersList = () => {
+const LogoWall = ({ items, imgPrefix }) => {
   const { i18n } = useDocusaurusContext();
   const isZh = i18n.currentLocale === "zh";
   const baseUrl = useBaseUrl("/");
@@ -12,11 +11,11 @@ const AdoptersList = () => {
 
   return (
     <ul className="support-wrapper">
-      {adoptersData.map(({ logo, logoZh, name, nameZh, website }, index) => {
+      {items.map(({ logo, logoZh, name, nameZh, website }, index) => {
         const href = website?.trim() || null;
         const rawLogo = isZh && logoZh ? logoZh : logo;
         const hasLogo = rawLogo && rawLogo.trim() !== "";
-        const logoPath = hasLogo && rawLogo.startsWith("/") ? rawLogo : `/img/adopters/${rawLogo}`;
+        const logoPath = hasLogo && rawLogo.startsWith("/") ? rawLogo : `${imgPrefix}/${rawLogo}`;
         const displayName = isZh && nameZh ? nameZh : name;
 
         return (
@@ -54,4 +53,4 @@ const AdoptersList = () => {
   );
 };
 
-export default AdoptersList;
+export default LogoWall;

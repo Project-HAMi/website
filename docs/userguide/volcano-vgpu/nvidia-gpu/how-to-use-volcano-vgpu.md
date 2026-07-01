@@ -61,7 +61,7 @@ kubectl create -f https://raw.githubusercontent.com/Project-HAMi/volcano-vgpu-de
 Check the node status, it is ok if `volcano.sh/vgpu-number` is included in the allocatable resources.
 
 ```shell
-kubectl get node {node name} -oyaml
+kubectl get node <node-name> -oyaml
 ```
 
 ```yaml
@@ -129,5 +129,5 @@ If you do not request GPUs when using the device plugin with NVIDIA images, all 
 volcano-scheduler-metrics records all GPU usage and limits. Visit the following address to get the metrics.
 
 ```shell
-curl {volcano scheduler cluster ip}:8080/metrics
+curl <scheduler-ip>:8080/metrics
 ```

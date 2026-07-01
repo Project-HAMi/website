@@ -4,7 +4,7 @@ title: Prerequisites
 
 Before installing HAMi, make sure the following tools and dependencies are properly installed in your environment:
 
-- [Helm](https://helm.sh/zh/docs/) v3+
+- [Helm](https://helm.sh/docs/) v3+
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) v1.16+
 - [CUDA](https://developer.nvidia.com/cuda-toolkit) v10.2+
 - [NVIDIA Driver](https://www.nvidia.cn/drivers/unix/) v440+

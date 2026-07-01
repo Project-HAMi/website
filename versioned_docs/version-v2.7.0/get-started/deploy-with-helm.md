@@ -11,7 +11,7 @@ This guide will cover:
 
 ## Prerequisites {#prerequisites}
 
-- [Helm](https://helm.sh/zh/docs/) version v3+
+- [Helm](https://helm.sh/docs/) version v3+
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) version v1.16+
 - [CUDA](https://developer.nvidia.com/cuda-toolkit) version v10.2+
 - [NVIDIA Driver](https://www.nvidia.cn/drivers/unix/) v440+
@@ -117,6 +117,7 @@ Then, add the HAMi repo in helm
 
 ```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/
+helm repo update
 ```
 
 During installation, set the Kubernetes scheduler image version to match your
@@ -159,7 +160,7 @@ spec:
 Execute the following query command:
 
 ```bash
-kubectl exec -it gpu-pod nvidia-smi
+kubectl exec -it gpu-pod -- nvidia-smi
 ```
 
 The result should be:
