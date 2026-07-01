@@ -19,6 +19,7 @@ You can use the following commands to add the HAMi chart repository and update d
 
 ```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/
+helm repo update
 helm dependency build
 ```
 

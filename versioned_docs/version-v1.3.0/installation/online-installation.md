@@ -10,6 +10,7 @@ You can add HAMi chart repository using the following command:
 
 ```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/
+helm repo update
 ```
 
 ## Get your kubernetes version

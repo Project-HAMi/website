@@ -108,6 +108,7 @@ Add the Helm repository:
 
 ```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/
+helm repo update
 ```
 
 During installation, set the Kubernetes scheduler image to match your cluster version. For example, if your cluster version is 1.29.0:
