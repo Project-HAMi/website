@@ -15,7 +15,7 @@ If a container exceeds its `nvidia.com/gpumem` limit, check the following causes
   containerd config dump | grep default_runtime_name
   ```
 
-  The output must show `nvidia`. If not, follow the [Prerequisites](./installation/online-installation) guide.
+  The output must show `nvidia`. If not, follow the [Prerequisites](../installation/online-installation) guide.
 
 - If you don’t explicitly request vGPUs when using the device plugin with NVIDIA images, all GPUs on the host may be exposed to your container.
 - Currently, A100 MIG can be supported in only "none" and "mixed" modes.
