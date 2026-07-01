@@ -33,7 +33,7 @@ Additional installation methods can be found in [the Volcano Quick Start Guide](
 ### Label the Node with ascend=on
 
 ```shell
-kubectl label node {ascend-node} ascend=on
+kubectl label node <ascend-node> ascend=on
 ```
 
 ### Deploy `hami-scheduler-device` config map
