@@ -8,7 +8,7 @@ The table below lists the devices supported by HAMi:
 | ---- | ------------- | ----------------- | --------------- | ------------- | ----------------- |
 | GPU  | NVIDIA        | All               | Yes             | Yes           | Yes               |
 | MLU  | Cambricon     | 370, 590          | Yes             | Yes           | No                |
-| DCU  | Hygon         | Z100, Z100L       | Yes             | Yes           | No                |
+| DCU  | Hygon         | All               | Yes             | Yes           | No                |
 | NPU  | Huawei Ascend | 910B, 910B3, 910C, 310P | Yes             | Yes           | No                |
 | GPU  | Iluvatar      | All               | Yes             | Yes           | No                |
 | GPU  | Mthreads      | MTT S4000         | Yes             | Yes           | No                |

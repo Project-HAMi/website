@@ -12,7 +12,7 @@ sidebar_label: 路线图
 | GPU      | NVIDIA        | 全系列            |    是    |    是    |    是    |
 | MLU      | Cambricon     | 370、590          |    是    |    是    |    否    |
 | GCU      | Enflame       | S60               |    是    |    是    |    否    |
-| DCU      | Hygon         | Z100、Z100L       |    是    |    是    |    否    |
+| DCU      | Hygon         | 全系列            |    是    |    是    |    否    |
 | NPU      | Huawei Ascend        | 310P、910B、910B3 |    是    |    是    |    否    |
 | GPU      | Iluvatar      | 全系列            |    是    |    是    |    否    |
 | DPU      | Teco          | 检查中            |  进行中  |  进行中  |    否    |
