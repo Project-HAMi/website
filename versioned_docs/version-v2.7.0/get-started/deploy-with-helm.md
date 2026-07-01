@@ -11,7 +11,7 @@ This guide will cover:
 
 ## Prerequisites {#prerequisites}
 
-- [Helm](https://helm.sh/zh/docs/) version v3+
+- [Helm](https://helm.sh/docs/) version v3+
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) version v1.16+
 - [CUDA](https://developer.nvidia.com/cuda-toolkit) version v10.2+
 - [NVIDIA Driver](https://www.nvidia.cn/drivers/unix/) v440+
