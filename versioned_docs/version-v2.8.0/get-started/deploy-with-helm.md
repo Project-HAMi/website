@@ -147,7 +147,7 @@ spec:
 Run the following command:
 
 ```bash
-kubectl exec -it gpu-pod nvidia-smi
+kubectl exec -it gpu-pod -- nvidia-smi
 ```
 
 Expected output:
