@@ -178,6 +178,6 @@ See [OWNERS](./OWNERS) for current maintainers.
 
 ## License
 
-The documentation and website are part of the HAMi project. See the main repository for license information.
+This documentation is licensed under [CC BY 4.0](./LICENSE). The HAMi project code itself is licensed separately, see the [main repository](https://github.com/Project-HAMi/HAMi) for details.
 
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FProject-HAMi%2Fwebsite.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FProject-HAMi%2Fwebsite?ref=badge_large)
