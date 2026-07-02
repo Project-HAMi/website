@@ -46,7 +46,7 @@ kubectl get all -n kube-system -l app=hami -o yaml > hami-state-backup.yaml
 
 ```bash
 # Find pods using GPU
-kubectl get pods --all-namespaces -o json | jq -r '.items[] | select(.spec.containers[]?.resources.limits | select(. != null) | select(has("nvidia.com/gpu") or has("enflame.com/vgcu"))) | "\(.metadata.namespace) \(.metadata.name)"'
+kubectl get pods --all-namespaces -o json | jq -r '.items[] | select(.spec.containers[]?.resources.limits | select(. != null) | select(has("nvidia.com/gpu"))) | "\(.metadata.namespace) \(.metadata.name)"'
 
 # Delete or reschedule these pods
 kubectl delete pods <pod-name> -n <namespace> --grace-period=30
