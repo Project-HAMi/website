@@ -1,6 +1,6 @@
 ---
 title: "HAMi-core Adopted by NVIDIA KAI Scheduler: GPU Sharing Enters the Hard-Isolation Era"
-date: 2026-06-20
+date: "2026-06-20"
 description: "Two core PRs have merged into NVIDIA KAI Scheduler, making HAMi's GPU memory hard isolation a built-in feature. Cloud-native GPU scheduling moves from cooperative sharing to true hard isolation."
 authors: [hami_community]
 tags:
