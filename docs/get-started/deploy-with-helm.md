@@ -184,13 +184,13 @@ Wed Apr 10 09:28:58 2024
 [HAMI-core Msg(28:140561996502848:multiprocess_memory_limit.c:434)]: Calling exit handler 28
 ```
 
-## Cleanup {#cleanup}
+## Cleanup
 
 ```bash
 kubectl delete pod gpu-pod
 ```
 
-## Next steps {#next-steps}
+## Next steps
 
 - [Validate HAMi](./verify-hami) - deeper validation including native GPU stack checks
 - [Configure HAMi](../userguide/configure) - resource limits, scheduling policies, and more
