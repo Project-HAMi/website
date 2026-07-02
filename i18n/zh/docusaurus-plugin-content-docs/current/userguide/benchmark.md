@@ -20,8 +20,8 @@ sidebar_label: 性能测试
 | 测试名称        |                  测试用例                   |
 | --------------- | :-----------------------------------------: |
 | Native          |     k8s + nvidia 官方 k8s-device-plugin     |
-| Opensource_v280 | k8s + VGPU k8s-device-plugin，开源版本 v280 |
-| Opensource_v290 | k8s + VGPU k8s-device-plugin，开源版本 v290 |
+| Opensource_v280 | k8s + vGPU k8s-device-plugin，开源版本 v280 |
+| Opensource_v290 | k8s + vGPU k8s-device-plugin，开源版本 v290 |
 
 ## 测试内容
 
