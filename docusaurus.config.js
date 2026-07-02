@@ -404,9 +404,9 @@ module.exports = {
         <strong>© HAMi Authors ${new Date().getFullYear()} | Documentation Distributed under <a href="https://creativecommons.org/licenses/by/4.0">CC-BY-4.0</a> </strong> <strong>| Powered by <a href="https://www.netlify.com">Netlify</a></strong>
         <br />
         <br />
-        The Linux Foundation has registered trademarks and uses trademarks. For a list of trademarks of The Linux Foundation, please see our <a href="https://www.linuxfoundation.org/trademark-usage/">Trademark Usage</a> page.
+        Copyright © HAMi a Series of LF Projects, LLC
         <br />
-        <a href="https://www.linuxfoundation.org/privacy/">Privacy Policy</a> and <a href="https://www.linuxfoundation.org/terms/">Terms of Use</a>.
+        For website terms of use, trademark policy and other project policies please see <a href="https://lfprojects.org/policies/">lfprojects.org/policies/</a>.
       `,
     },
     prism: {
