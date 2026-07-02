@@ -4,26 +4,20 @@ title: Enable Enflame GCU Sharing
 
 ## Introduction
 
-**HAMi now supports sharing on enflame.com/gcu (i.e., S60) by implementing most device-sharing features as NVIDIA GPUs**, including:
+HAMi now supports Enflame **DRS** hard partition scheduling, aligned with Enflame native scheduler behavior.
 
-**GCU sharing**: Each task can allocate a portion of GCU instead of a whole GCU card, thus GCU can be shared among multiple tasks.
-
-**Device Memory and Core Control**: GCUs can be allocated with a certain percentage of device memory and core, with hard limits enforced to prevent exceeding the allocation.
-
-**Device UUID Selection**: You can specify which GCU devices to use or exclude using annotations.
-
-**No task YAML changes required**: All GCU jobs are automatically supported after installation.
+DRS is a hard-slice mode similar to NVIDIA MIG and Ascend VNPU templates.
 
 ## Prerequisites
 
-- Enflame gcushare-device-plugin >= 2.1.6 (please consult your device provider, gcushare has two components: gcushare-scheduler-plugin and gcushare-device-plugin; only gcushare-device-plugin is needed here)
-- driver version >= 1.2.3.14
+- Enflame gcushare-device-plugin >= 2.2.14 (please consult your device provider; only `gcushare-device-plugin` is needed — do not install `gcushare-scheduler-plugin`)
+- driver version >= 1.8.7
 - kubernetes >= 1.24
-- enflame-container-toolkit >=2.0.50
+- enflame-container-toolkit >= 2.0.50
 
-## Enabling GCU-sharing Support
+## Enable Enflame DRS Scheduling
 
-- Deploy gcushare-device-plugin on enflame nodes (Please consult your device provider to acquire its package and document)
+- Deploy `gcushare-device-plugin` on Enflame nodes (please consult your device provider to acquire its package and documentation)
 
 :::caution
 
@@ -31,43 +25,38 @@ Install only `gcushare-device-plugin`. Do not install the `gcushare-scheduler-pl
 
 :::
 
-:::note
-
-The default resource names are:
-
-- `enflame.com/vgcu` for GCU count (only 1 is supported currently)
-- `enflame.com/vgcu-percentage` for the percentage of memory and cores in a GCU slice
-
-You can customize these names by modifying the `hami-scheduler-device` ConfigMap.
-
-:::
-
-- Set 'devices.enflame.enabled=true' when deploy HAMi
+- Set `devices.enflame.enabled=true` when deploying HAMi
 
 ```bash
 helm install hami hami-charts/hami --set devices.enflame.enabled=true -n kube-system
 ```
 
-## Device Granularity
+:::note
 
-HAMi divides each Enflame GCU into 100 units for resource allocation. Requesting a portion of a GCU corresponds to requesting a specific number of these units.
+The default resource names are:
 
-### GCU Slice Allocation
+- `enflame.com/drs-gcu` for direct DRS slice requests
+- `enflame.com/gcu-memory` for memory requests (in MiB)
+- `enflame.com/gcu-core` for core requests (as a percentage)
 
-- Each unit of `enflame.com/vgcu-percentage` represents 1% device memory and 1% core
-- If no memory request is specified, the system defaults to using 100% of the available memory
-- Memory allocation is enforced with hard limits to ensure tasks do not exceed their allocated memory
-- Core allocation is enforced with hard limits to ensure tasks do not exceed their allocated cores
+You can customize these names by modifying the `hami-scheduler-device` ConfigMap.
 
-## Running Enflame jobs
+:::
 
-Enflame GCUs can now be requested by a container using the `enflame.com/vgcu` and `enflame.com/vgcu-percentage` resource type:
+## Running DRS Workloads
+
+HAMi supports two request styles:
+
+1. Direct DRS slice request (`enflame.com/drs-gcu`)
+2. Unified memory/core request (`enflame.com/gcu-memory` + `enflame.com/gcu-core`); HAMi converts it to a DRS profile internally.
+
+### Direct DRS slice request
 
 ```yaml
 apiVersion: v1
 kind: Pod
 metadata:
-  name: gcushare-pod-2
+  name: gcushare-pod-drs
   namespace: kube-system
 spec:
   terminationGracePeriodSeconds: 0
@@ -75,14 +64,38 @@ spec:
     - name: pod-gcu-example1
       image: ubuntu:22.04
       imagePullPolicy: IfNotPresent
-      command:
-        - sleep
-      args:
-        - "100000"
+      command: ["sleep"]
+      args: ["100000"]
       resources:
         limits:
-          enflame.com/vgcu: 1
-          enflame.com/vgcu-percentage: 22
+          enflame.com/drs-gcu: 3
+        requests:
+          enflame.com/drs-gcu: 3
+```
+
+### Request by memory/core (recommended unified API)
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: gcushare-pod-by-spec
+  namespace: kube-system
+spec:
+  terminationGracePeriodSeconds: 0
+  containers:
+    - name: pod-gcu-example1
+      image: ubuntu:22.04
+      imagePullPolicy: IfNotPresent
+      command: ["sleep"]
+      args: ["100000"]
+      resources:
+        limits:
+          enflame.com/gcu-memory: 20480 # MiB
+          enflame.com/gcu-core: 40 # percent
+        requests:
+          enflame.com/gcu-memory: 20480
+          enflame.com/gcu-core: 40
 ```
 
 :::tip
@@ -91,50 +104,14 @@ More examples are available in the [examples/enflame folder](https://github.com/
 
 :::
 
-## Device UUID Selection
+## Scheduling Annotations
 
-You can specify which GCU devices to use or exclude using annotations:
+During scheduling, HAMi writes DRS-compatible annotations such as:
 
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: poddemo
-  annotations:
-    # Use specific GCU devices (comma-separated list)
-    enflame.com/use-gpuuuid: "node1-enflame-0,node1-enflame-1"
-    # Or exclude specific GCU devices (comma-separated list)
-    enflame.com/nouse-gpuuuid: "node1-enflame-2,node1-enflame-3"
-spec:
-  # ... rest of pod spec
-```
+- `assigned-containers`
+- `enflame.com/gcu-assigned`
+- `enflame.com/gcu-assigned-index`
+- `enflame.com/gcu-assigned-minor`
+- `enflame.com/gcu-request-size`
 
-:::note
-
-The device ID format is `{node-name}-enflame-{index}`. You can find the available device IDs in the node status.
-
-:::
-
-### Finding Device UUIDs
-
-You can find the UUIDs of Enflame GCUs on a node using the following command:
-
-```bash
-kubectl get pod <pod-name> -o yaml | grep -A 10 "hami.io/<card-type>-devices-allocated"
-```
-
-Or by examining the node annotations:
-
-```bash
-kubectl get node <node-name> -o yaml | grep -A 10 "hami.io/node-register-<card-type>"
-```
-
-Look for annotations containing device information in the node status.
-
-## Notes
-
-1. GCUshare takes effect only for containers that apply for one GCU (i.e., enflame.com/vgcu=1 ).
-
-2. Multiple GCU allocation in one container is not supported yet
-
-3. `efsmi` inside container shows the total device memory, which is NOT a bug, device memory will be properly limited when running tasks.
+These annotations are consumed by the Enflame device plugin during the Allocate phase.
