@@ -81,13 +81,9 @@ npm run build:fast    # build English locale only (skips zh, for quick iteration
 
 CI (`.github/workflows/docs-health.yml`) runs `lint`, `format:check`, and `build` on every PR.
 
-### Deploy to GitHub Pages
+### Deployment
 
-```bash
-GIT_USER=<Your GitHub username> USE_SSH=true npm run deploy
-```
-
-Builds and deploys the website to the `gh-pages` branch for GitHub Pages hosting.
+The site deploys automatically to Netlify on every merge to `master` (see `netlify.toml`). No manual deploy step is needed.
 
 ## Commit Convention
 
