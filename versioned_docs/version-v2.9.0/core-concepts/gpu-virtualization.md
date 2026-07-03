@@ -9,7 +9,7 @@ A typical inference service often only uses 20%~40% of the GPU's compute and a s
 
 This led to various GPU sharing solutions. NVIDIA's official Time-Slicing allows multiple Pods to be scheduled concurrently, but provides no VRAM isolation - a Pod OOM can crash all tasks on the card. MIG hardware partitioning offers true isolation, but only datacenter-grade cards like A100 and H100 support it.
 
-HAMi takes a different approach: **no driver changes, no application changes** - it achieves GPU virtualization at the software layer through CUDA API interception. Multiple Pods share the same physical GPU, and each Pod can only "see" the VRAM it requested. Over-allocation directly returns OOM. HAMi is a CNCF Sandbox project, formerly known as `k8s-vGPU-scheduler`.
+HAMi takes a different approach: **no driver changes, no application changes** - it achieves GPU virtualization at the software layer through CUDA API interception. Multiple Pods share the same physical GPU, and each Pod can only "see" the VRAM it requested. Over-allocation directly returns OOM. HAMi is a CNCF Incubating project, formerly known as `k8s-vGPU-scheduler`.
 
 This article starts with the fundamentals of Kubernetes GPU scheduling, explains the limitations of the default model, and then dives into HAMi's architecture and implementation to show how it works around these constraints.
 
