@@ -144,7 +144,7 @@ Under `packages/web/projects/vgpu/api/`:
 Prefer extracting reusable fetch/filter/pagination logic into hooks:
 
 - Common hooks: `packages/web/src/hooks`
-- VGPU business hooks: `packages/web/projects/vgpu/hooks`
+- vGPU business hooks: `packages/web/projects/vgpu/hooks`
 
 ## What this guide helps with
 
