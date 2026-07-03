@@ -8,7 +8,7 @@ title: HAMi 虚拟化原理
 
 于是出现了各种 GPU 共享方案。NVIDIA 官方的时间切片（Time-Slicing）可以让多个 Pod 同时被调度，但没有显存隔离，一个 Pod OOM 会拖垮整张卡上的所有任务。MIG 硬件分区有真正的隔离，但只有 A100、H100 这类数据中心级卡才支持。
 
-HAMi 走了另一条路：**不改驱动、不改应用**，通过 CUDA API 劫持在软件层实现 GPU 虚拟化，多个 Pod 共享同一张物理 GPU，每个 Pod 只能"看到"自己申请的那部分显存，超额分配直接返回 OOM。这是一个 CNCF Sandbox 项目，前身为 `k8s-vGPU-scheduler`。
+HAMi 走了另一条路：**不改驱动、不改应用**，通过 CUDA API 劫持在软件层实现 GPU 虚拟化，多个 Pod 共享同一张物理 GPU，每个 Pod 只能"看到"自己申请的那部分显存，超额分配直接返回 OOM。这是一个 CNCF 孵化项目，前身为 `k8s-vGPU-scheduler`。
 
 本文先从 Kubernetes GPU 调度的原理讲起，理解默认模型的局限性，再深入 HAMi 的架构和实现，看它是如何绕过这些限制的。
 

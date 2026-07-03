@@ -3,7 +3,7 @@ title: Contributing to HAMi
 sidebar_label: Contributing
 ---
 
-HAMi is a CNCF Sandbox project that brings GPU and AI accelerator virtualization to Kubernetes. The scheduler, device plugins, documentation, and tooling are all built and maintained by community contributors.
+HAMi is a CNCF Incubating project that brings GPU and AI accelerator virtualization to Kubernetes. The scheduler, device plugins, documentation, and tooling are all built and maintained by community contributors.
 
 This guide is the starting point for any contribution, whether you are fixing a typo or implementing a new hardware backend.
 
