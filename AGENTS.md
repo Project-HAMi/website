@@ -74,7 +74,7 @@ Extracts translatable strings for i18n.
 npm run lint          # markdownlint on docs/tutorials/blog/i18n
 npm run format:check  # prettier --check . (CI runs this)
 npm run format        # prettier --write .
-npm run check-links   # build + html-link-checker on ./build
+npm run check-links   # build + linkinator on ./build
 npm run check:all     # lint && format:check && build
 npm run build:fast    # build English locale only (skips zh, for quick iteration)
 ```
