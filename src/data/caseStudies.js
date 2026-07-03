@@ -1,5 +1,35 @@
 const caseStudiesData = [
   {
+    name: "China Merchants Bank",
+    nameZh: "招商银行",
+    logo: "/img/adopters/china-merchants-bank.png",
+    website: "https://www.cmbchina.com",
+    publishedAt: "2026-07-02",
+    metric: {
+      en: "100% hardware pool utilization with topology-aware scheduling",
+      zh: "拓扑感知调度下硬件资源池利用率达 100%",
+    },
+    summary: {
+      en: "Building a unified heterogeneous AI compute scheduling platform on Kubernetes with HAMi for topology-aware scheduling and fine-grained accelerator sharing.",
+      zh: "基于 Kubernetes 与 HAMi 构建统一的异构 AI 算力调度平台，实现拓扑感知调度与加速器细粒度共享。",
+    },
+    highlights: [
+      {
+        en: "Hardware pool utilization reached 100% via supernode module-aware paired allocation.",
+        zh: "通过超节点模块感知的成对分配，硬件资源池利用率达 100%。",
+      },
+      {
+        en: "Cross-machine scheduling for distributed training dropped by 30%.",
+        zh: "分布式训练的跨机调度下降 30%。",
+      },
+      {
+        en: "Fine-grained partitioning down to 1 GB memory / 1% compute per card.",
+        zh: "细粒度切分最小至单卡 1 GB 显存 / 1% 算力。",
+      },
+    ],
+    url: "https://www.cncf.io/case-studies/china-merchants-bank/",
+  },
+  {
     name: "NIO",
     nameZh: "蔚来汽车",
     logo: "/img/adopters/nio.svg",
