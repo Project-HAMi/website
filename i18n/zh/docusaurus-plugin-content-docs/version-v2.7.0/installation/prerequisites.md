@@ -64,3 +64,4 @@ sudo systemctl daemon-reload && systemctl restart containerd
 
 ```bash
 kubectl label nodes {nodeid} gpu=on
+```

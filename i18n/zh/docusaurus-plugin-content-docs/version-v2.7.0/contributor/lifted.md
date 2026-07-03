@@ -5,6 +5,10 @@ translated: true
 
 本文档解释了如何管理提升的代码。此任务的一个常见用户案例是开发人员从其他代码库中提升代码到 `pkg/util/lifted` 目录。
 
+- [提升代码的步骤](#提升代码的步骤)
+- [如何编写提升注释](#如何编写提升注释)
+- [示例](#示例)
+
 ## 提升代码的步骤
 
 - 从另一个代码库中复制代码并将其保存到 `pkg/util/lifted` 下的一个 go 文件中。
@@ -115,3 +119,4 @@ type Visitor func(name string) (shouldContinue bool)
 | 提升文件 | 源文件 | 常量/变量/类型/函数 | 更改 |
 | ----------- | ----------- | ------------------- | ------- |
 | visitpod.go | https://github.com/kubernetes/kubernetes/blob/release-1.23/pkg/api/v1/pod/util.go#L82-L83 | type Visitor | N |
+```
