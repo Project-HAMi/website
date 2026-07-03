@@ -1,5 +1,5 @@
 ---
-title: HAMi 路线图
+title: HAMi 思维导图
 translated: true
 ---
 
