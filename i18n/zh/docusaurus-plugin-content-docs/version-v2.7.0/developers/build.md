@@ -93,3 +93,4 @@ The push refers to repository [docker.io/projecthami/hami]
 ```bash
 git clone https://github.com/Project-HAMi/HAMi-core.git
 docker build . -f dockerfiles/Dockerfile.{arch}
+```

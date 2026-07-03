@@ -19,3 +19,4 @@ metadata:
 metadata:
   annotations:
     nvidia.com/nouse-gputype: "1080,2080" # 为此作业指定黑名单卡类型，使用逗号分隔，不会在指定的卡上启动作业
+```
