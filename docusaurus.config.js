@@ -56,7 +56,7 @@ module.exports = {
       onBrokenMarkdownLinks: "throw",
     },
   },
-  organizationName: "hami-io",
+  organizationName: "Project-HAMi",
   projectName: "website",
   favicon: "img/logo.svg",
   clientModules: [
