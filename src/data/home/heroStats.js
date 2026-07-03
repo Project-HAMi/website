@@ -2,7 +2,7 @@ const heroStats = [
   {
     key: "cncf",
     label: { en: "CNCF", zh: "CNCF" },
-    value: { en: "Sandbox", zh: "Sandbox 项目" },
+    value: { en: "Incubating", zh: "孵化项目" },
   },
   {
     key: "release",
