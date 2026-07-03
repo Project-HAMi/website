@@ -1,258 +1,190 @@
 ---
-description: An overview of the GitHub workflow used by the HAMi project. It includes some tips and suggestions on things such as keeping your local environment in sync with upstream and commit hygiene.
 title: GitHub 工作流
+sidebar_label: GitHub 工作流
 translated: true
 ---
 
-> 本文档摘自 [Kubernetes github-workflow](https://github.com/kubernetes/community/blob/master/contributors/guide/github-workflow.md)。
+本指南涵盖为 HAMi 贡献代码的完整 Git 和 GitHub 工作流程，适用于 [HAMi 核心仓库](https://github.com/Project-HAMi/HAMi)和[文档网站](https://github.com/Project-HAMi/website)。
 
-![Git 工作流程](/img/docs/common/contributor/github-workflow/git-workflow.png)
+![Git 工作流](/img/docs/common/contributor/github-workflow/git-workflow.png)
 
-## 在云端创建 Fork
+## Fork 和克隆
 
-1. 访问 [https://github.com/Project-HAMi/HAMi](https://github.com/Project-HAMi/HAMi)
-2. 点击 `Fork` 按钮（右上角）以建立基于云的 fork。
+在 GitHub 上 fork 目标仓库，然后把你的 fork 克隆到本地：
 
-## 克隆 fork 到本地存储
+```bash
+export user="your-github-username"
 
-根据 Go 的 [工作区说明][go-workspace]，使用以下克隆步骤将 HAMi 的代码放置在你的 `GOPATH` 中。
-
-[go-workspace]: https://golang.org/doc/code.html#Workspaces
-
-定义一个本地工作目录：
-
-```sh
-# 如果你的 GOPATH 有多个路径，选择一个并在此处使用它而不是 $GOPATH。
-# 你必须严格遵循此模式，
-# 既不能是 `$GOPATH/src/github.com/${your github profile name/`
-# 也不能是其他任何模式。
-export working_dir="$(go env GOPATH)/src/github.com/Project-HAMi"
-```
-
-将 `user` 设置为与你的 GitHub 个人资料名称匹配：
-
-```sh
-export user={your github profile name}
-```
-
-上图中提到了 `$working_dir` 和 `$user`。
-
-创建你的克隆：
-
-```sh
-mkdir -p $working_dir
-cd $working_dir
+# HAMi 核心代码
 git clone https://github.com/$user/HAMi.git
-# 或者：git clone git@github.com:$user/HAMi.git
-
-cd $working_dir/HAMi
-git remote add upstream https://github.com/Project-HAMi/HAMi
-# 或者：git remote add upstream git@github.com:Project-HAMi/HAMi.git
-
-# 永远不要推送到 upstream master
+cd HAMi
+git remote add upstream https://github.com/Project-HAMi/HAMi.git
 git remote set-url --push upstream no_push
 
-# 确认你的远程仓库设置合理：
+# 文档网站
+git clone https://github.com/$user/website.git
+cd website
+git remote add upstream https://github.com/Project-HAMi/website.git
+git remote set-url --push upstream no_push
+```
+
+检查你的远程仓库设置：
+
+```bash
 git remote -v
 ```
 
-## 分支
+预期输出：
 
-更新你的本地 master：
+```text
+origin    https://github.com/<your-username>/HAMi.git (fetch)
+origin    https://github.com/<your-username>/HAMi.git (push)
+upstream  https://github.com/Project-HAMi/HAMi.git (fetch)
+upstream  no_push (push)
+```
 
-```sh
-# 取决于你正在使用的哪个仓库，
-# 默认分支可能被称为 'main' 而不是 'master'。
+`no_push` 这个设置可以防止误推送到 upstream 仓库。
 
-cd $working_dir/HAMi
+## 保持 master 同步
+
+在开始任何新工作之前，让本地 master 与 upstream 保持同步：
+
+```bash
 git fetch upstream
 git checkout master
 git rebase upstream/master
 ```
 
-从中创建分支：
+用 `rebase`，不要用 `merge`。合并提交会让历史变得杂乱，也更难 cherry-pick 修复。
 
-```sh
-git checkout -b myfeature
+## 创建分支
+
+从 master 上分出一个简短、能反映内容的分支名：
+
+```bash
+git checkout -b fix/gpu-memory-calculation
+git checkout -b feat/kunlunxin-multi-card
+git checkout -b docs/update-ascend-guide
 ```
 
-然后在 `myfeature` 分支上编辑代码。
+完全在这个分支上工作，不要直接提交到 master。
 
 ## 保持你的分支同步
 
-```sh
-# 取决于你正在使用的哪个仓库，
-# 默认分支可能被称为 'main' 而不是 'master'。
+如果你工作期间 upstream master 有了新的提交：
 
-# 在你的 myfeature 分支上
+```bash
 git fetch upstream
 git rebase upstream/master
 ```
 
-不要使用 `git pull` 代替上述的 `fetch` / `rebase`。`git pull` 会进行合并，这会留下合并提交。这会使提交历史变得混乱，并违反提交应该是单独可理解和有用的原则（见下文）。你也可以考虑通过 `git config branch.autoSetupRebase always` 更改 `.git/config` 文件以更改 `git pull` 的行为，或使用其他非合并选项如 `git pull --rebase`。
+解决冲突后继续：
+
+```bash
+git rebase --continue
+```
 
 ## 提交
 
-提交你的更改。
+HAMi 使用 [Conventional Commits](https://www.conventionalcommits.org/) 规范，且每个提交都需要 DCO 签名。
 
-```sh
-git commit --signoff
+```bash
+git commit -s -m "fix: correct memory calculation for MLU devices"
 ```
 
-可能你会返回并进行更多的编辑/构建/测试，然后在几个周期中 `commit --amend`。
+`-s` 参数会添加必需的 `Signed-off-by` 行，没有它 CI 会拦截 PR。
+
+关于提交类型规范和消息格式规则，参见[贡献指南](contributing.md)。
 
 ## 推送
 
-准备好进行审查时（或只是为了建立工作内容的异地备份），将你的分支推送到 `github.com` 上的 fork：
+把分支推送到你的 fork：
 
-```sh
-git push -f ${your_remote_name} myfeature
+```bash
+git push origin fix/gpu-memory-calculation
 ```
+
+如果之前推送过之后又做了 rebase，用 `--force-with-lease` 而不是 `--force`：
+
+```bash
+git push origin fix/gpu-memory-calculation --force-with-lease
+```
+
+`--force-with-lease` 会在别人在你上次 fetch 之后也推送过同一分支时拒绝推送，避免误覆盖别人的改动。
 
 ## 创建拉取请求
 
-1. 访问你的 fork `https://github.com/$user/HAMi`
-2. 点击 `myfeature` 分支旁边的 `Compare & Pull Request` 按钮。
+1. 打开你的 fork：`https://github.com/<your-username>/HAMi`
+2. 点击你分支旁边的 **Compare & Pull Request**。
+3. 把 base 仓库设为 `Project-HAMi/HAMi`，base 分支设为 `master`。
+4. 填写 PR 描述：这个改动做了什么、为什么需要它、是如何测试的。
+5. 关联相关 issue：`Fixes #123` 或 `Relates to #456`。
 
-_如果你有上游写入权限_，请避免使用 GitHub UI 创建 PR，因为 GitHub 会在主仓库中创建 PR 分支，而不是在你的 fork 中。
+保持 PR 只做一件事。关于 PR 范围的建议，参见[贡献指南](contributing.md)。
 
-### 获取代码审查
+## 压缩提交
 
-一旦你的拉取请求被打开，它将被分配给一个或多个审查者。那些审查者将进行彻底的代码审查，寻找正确性、错误、改进机会、文档和注释，以及风格。
+PR 合并前先整理提交历史。把修修补补的提交、审查反馈产生的提交、错别字修正合并进它们所属的逻辑提交中。每个保留下来的提交都应代表一个有意义的工作单元。
 
-在你的 fork 上的同一分支中提交对审查意见的更改。
+交互式压缩提交：
 
-非常小的 PR 很容易审查。非常大的 PR 则很难审查。
+```bash
+# 3 替换成你要 rebase 的提交数量
+git rebase -i HEAD~3
+```
 
-### 压缩提交
+编辑器会打开一个提交列表：
 
-在审查之后，通过压缩你的提交来准备你的 PR 以进行合并。
+```text
+pick abc1234 fix: correct memory calculation for MLU devices
+pick def5678 address review feedback
+pick ghi9012 fix typo
+```
 
-在审查后留在你的分支上的所有提交都应该代表有意义的里程碑或工作单元。使用提交来增加开发和审查过程的清晰度。
+把要合并到上一个提交里的那些改成 `squash`（或 `s`）：
 
-在合并 PR 之前，压缩以下类型的提交：
+```text
+pick abc1234 fix: correct memory calculation for MLU devices
+squash def5678 address review feedback
+squash ghi9012 fix typo
+```
 
-- 修复/审查反馈
-- 拼写错误
-- 合并和变基
-- 工作进行中
+保存关闭编辑器，Git 会打开另一个编辑器让你合并提交信息，写一条干净的消息并保存。
 
-如果可以，尽量让 PR 中的每个提交都能独立编译并通过测试，但这不是必需的。特别是，`merge` 提交必须被移除，因为它们不会通过测试。
+强制推送结果：
 
-要压缩你的提交，执行[交互式变基](https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History)：
+```bash
+git push origin fix/gpu-memory-calculation --force-with-lease
+```
 
-1. 检查你的 git 分支：
+## 处理审查反馈
 
-   ```bash
-   git status
-   ```
+在处理反馈时，把新提交推送到同一个分支，不要关闭 PR 再重新打开。
 
-   输出类似于：
+```bash
+# 修改代码，然后：
+git add <files>
+git commit -s -m "fix: address review feedback on memory limit check"
+git push origin fix/gpu-memory-calculation
+```
 
-   ```text
-   On branch your-contribution
-   Your branch is up to date with 'origin/your-contribution'.
-   ```
-
-2. 使用特定的提交哈希开始交互式变基，或从最后一次提交向后计数使用 `HEAD~<n>`，其中 `<n>` 表示要包含在变基中的提交数量。
-
-   ```bash
-   git rebase -i HEAD~3
-   ```
-
-   输出类似于：
-
-   ```text
-   pick 2ebe926 原始提交
-   pick 31f33e9 处理反馈
-   pick b0315fe 第二个工作单元
-
-   # Rebase 7c34fc9..b0315ff onto 7c34fc9 (3 commands)
-   #
-   # Commands:
-   # p, pick <commit> = 使用提交
-   # r, reword <commit> = 使用提交，但编辑提交消息
-   # e, edit <commit> = 使用提交，但停止以进行修改
-   # s, squash <commit> = 使用提交，但合并到前一个提交
-   # f, fixup <commit> = 类似于 "squash"，但丢弃此提交的日志消息
-   ...
-
-   ```
-
-3. 使用命令行文本编辑器将 `pick` 改为 `squash`，然后保存更改并继续变基：
-
-   ```text
-   pick 2ebe926 原始提交
-   squash 31f33e9 处理反馈
-   pick b0315fe 第二个工作单元
-   ...
-   ```
-
-   输出（保存更改后）类似于：
-
-   ```text
-   [detached HEAD 61fdded] 第二个工作单元
-   Date: Thu Mar 5 19:01:32 2020 +0100
-   2 files changed, 15 insertions(+), 1 deletion(-)
-   ...
-
-   成功变基并更新 refs/heads/master。
-   ```
-
-4. 强制推送你的更改到你的远程分支：
-
-   ```bash
-   git push --force
-   ```
-
-对于大规模自动修正（例如自动文档格式化），使用一个或多个提交进行工具更改，并使用最终提交大规模应用修正。这使得审查更容易。
-
-## 合并提交
-
-一旦你收到审查和批准，并且你的提交已被压缩，你的 PR 就可以合并了。
-
-在审查者和批准者都批准 PR 后，合并会自动进行。如果你没有压缩你的提交，他们可能会要求你在批准 PR 之前这样做。
+在 PR 合并前，把这些提交压缩进相关的提交中。
 
 ## 撤销提交
 
-如果你希望撤销提交，请使用以下说明。
+要撤销一个已合并的提交，从 master 创建一个新分支，用 `git revert`：
 
-_如果你有上游写入权限_，请避免使用 GitHub UI 中的 `Revert` 按钮创建 PR，因为 GitHub 会在主仓库中创建 PR 分支，而不是在你的 fork 中。
+```bash
+git fetch upstream
+git checkout master
+git rebase upstream/master
+git checkout -b revert/fix-gpu-memory-calculation
 
-- 创建一个分支并与上游同步。
+# 撤销单个提交
+git revert <SHA>
 
-  ```sh
-  # 取决于你正在使用的哪个仓库，
-  # 默认分支可能被称为 'main' 而不是 'master'。
+# 撤销合并提交
+git revert -m 1 <SHA>
+```
 
-  # 创建一个分支
-  git checkout -b myrevert
-
-  # 与上游同步分支
-  git fetch upstream
-  git rebase upstream/master
-  ```
-
-- 如果你希望撤销的提交是：
-
-  - **合并提交：**
-
-    ```sh
-    # SHA 是你希望撤销的合并提交的哈希
-    git revert -m 1 SHA
-    ```
-
-  - **单个提交：**
-
-    ```sh
-    # SHA 是你希望撤销的单个提交的哈希
-    git revert SHA
-    ```
-
-- 这将创建一个新的提交以撤销更改。将此新提交推送到你的远程。
-
-  ```sh
-  git push ${your_remote_name} myrevert
-  ```
-
-- [创建一个拉取请求](#创建拉取请求) 使用此分支。
+推送分支，像平常一样开一个 PR。不要使用 GitHub UI 上的 **Revert** 按钮，它会在 upstream 仓库里创建分支，而不是在你的 fork 里。
