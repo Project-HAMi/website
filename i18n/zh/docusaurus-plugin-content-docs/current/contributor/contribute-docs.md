@@ -3,178 +3,254 @@ title: 如何贡献文档
 translated: true
 ---
 
-从 1.3 版本开始，社区文档将在 HAMi 网站上提供。本文件解释了如何向`Project-HAMi/website`仓库贡献文档。
+本指南涵盖为 HAMi 文档网站做贡献所需的一切，从搭建本地环境到撰写、预览、提交改动。
+
+文档网站使用 [Docusaurus 3](https://docusaurus.io/) 构建，支持英文（主要语言）和简体中文。英文是所有内容的源语言。
 
 ## 前提条件
 
-- 文档和代码一样，也按版本分类和存储。1.3 是我们归档的第一个版本。
-- 文档需要翻译成多种语言，以便来自不同地区的读者阅读。社区现在支持中文和英文。英文是文档的官方语言。
-- 我们的文档使用 Markdown。如果你不熟悉 Markdown，参阅 [https://guides.github.com/features/mastering-markdown/](https://guides.github.com/features/mastering-markdown/) 或 [https://www.markdownguide.org/](https://www.markdownguide.org/) 以获取更详细的信息。
-- 我们通过[Docusaurus 2](https://docusaurus.io/)获得了一些附加功能，这是一个现代静态网站生成器。
+- Node.js v20（必需，其他版本不受支持）
+- npm
+- 带 GitHub 账号的 Git
+
+检查你的 Node 版本：
+
+```bash
+node -v   # 应输出 v20.x.x
+```
 
 ## 设置
 
-你可以通过克隆我们的网站仓库来设置本地环境。
+在 GitHub 上 fork [Project-HAMi/website](https://github.com/Project-HAMi/website) 仓库，然后克隆你的 fork：
 
-```shell
-git clone https://github.com/Project-HAMi/website.git
+```bash
+git clone https://github.com/<your-username>/website.git
 cd website
+git remote add upstream https://github.com/Project-HAMi/website.git
+npm install
 ```
 
-我们的网站组织如下：
+## 本地开发
+
+```bash
+npm run start          # 开发服务器，http://localhost:3000，支持热更新
+npm run start:network  # 同上，但可在本地网络中访问
+npm run build:fast     # 仅英文的生产构建，约 45 秒（用于验证）
+npm run build          # 包含中文和所有版本的完整构建，约 80 秒（与 CI 一致）
+npm run clear           # 清除 Docusaurus 缓存（遇到过期构建错误时使用）
+```
+
+写文档时用 `npm run start`。提交 PR 前用 `npm run build:fast` 验证。CI 会在每个提交到 `master` 的 PR 上运行完整的 `npm run build`。
+
+## 仓库结构
 
 ```text
-website
-├── sidebars.json        # 开发版（下一个版本）的侧边栏
-├── docs                 # 开发版（下一个版本）的文档目录
-│   ├── foo
-│   │   └── bar.md       # https://mysite.com/docs/next/foo/bar
-│   └── hello.md         # https://mysite.com/docs/next/hello
-├── versions.json        # 指示可用版本的文件
-├── versioned_docs
-│   ├── version-1.1.0
-│   │   ├── foo
-│   │   │   └── bar.md   # https://mysite.com/docs/foo/bar
-│   │   └── hello.md
-│   └── version-1.0.0
-│       ├── foo
-│       │   └── bar.md   # https://mysite.com/docs/1.0.0/foo/bar
-│       └── hello.md
-├── versioned_sidebars
-│   ├── version-1.1.0-sidebars.json
-│   └── version-1.0.0-sidebars.json
-├── docusaurus.config.js
-└── package.json
+website/
+├── docs/                          # 英文源文档（权威版本）
+├── i18n/zh/
+│   └── docusaurus-plugin-content-docs/
+│       └── current/               # 中文翻译
+├── versioned_docs/version-vX.Y.Z/ # 归档的文档快照
+├── blog/                          # 博客文章
+├── sidebars.js                    # 导航结构
+├── docusaurus.config.js           # 站点配置
+└── versions.json                  # 可用的版本快照列表
 ```
 
-`versions.json`文件是一个版本列表，从最新到最早。下表解释了版本化文件如何映射到其版本和生成的 URL。
+贡献者主要在 `docs/`（英文源文档）和 `i18n/zh/`（中文翻译）中工作。
 
-| 路径                                    | 版本                    | URL               |
-| --------------------------------------- | ----------------------- | ----------------- |
-| `versioned_docs/version-1.0.0/hello.md` | 1.0.0                   | /docs/1.0.0/hello |
-| `versioned_docs/version-1.1.0/hello.md` | 1.1.0（最新稳定）       | /docs/hello       |
-| `docs/hello.md`                         | 开发版/下一个（未发布） | /docs/next/hello  |
+## 新增文档
 
-:::tip
+### 1. 创建文件
 
-`docs/` 目录是**未发布的开发版**（托管在 `/docs/next/*`），**不是**「当前/最新稳定版本」。最新稳定版本是 `versions.json` 的第一项（如 v2.9.0），托管在 `/docs`。
+将文件放在 `docs/` 下合适的子目录中：
 
-`current` 是 Docusaurus 对这个开发版目录的内部约定名（`CURRENT_VERSION_NAME`），标签显示为「Next / 下一个」，容易和「当前稳定版」混淆——它们是两个不同的东西。
-
-贡献者主要编辑 `docs/`，为下一个版本贡献文档。
-
-:::
-
-## 撰写文档
-
-### 在顶部开始一个标题
-
-在 Markdown 文件的顶部指定有关文章的元数据是很重要的，这个部分称为**Front Matter**。
-
-现在，让我们看一个快速示例，它应该解释**Front Matter**中最相关的条目：
-
-```markdown
----
-title: 带有标签的文档
----
-
-## 二级标题
+```text
+docs/userguide/nvidia-device/new-feature.md
+docs/get-started/new-guide.md
+docs/contributor/new-policy.md
 ```
 
-在两行---之间的顶部部分是 Front Matter 部分。在这里，我们定义了一些条目，告诉 Docusaurus 如何处理文章：
+### 2. 添加 frontmatter
 
-- 标题相当于 HTML 文档中的`<h1>`或 Markdown 文章中的`# <title>`。
-- 每个文档都有一个唯一的 ID。默认情况下，文档 ID 是与根文档目录相关的文档名称（不带扩展名）。
-
-### 链接到其他文档
-
-你可以通过添加以下任何链接轻松路由到其他地方：
-
-- 指向外部站点的绝对 URL，如`https://github.com`或`https://k8s.io` - 你可以使用任何 Markdown 标记来实现这一点，因此
-  - `<https://github.com>` 或
-  - `[kubernetes](https://k8s.io)`都可以。
-- 链接到 Markdown 文件或生成的路径。您可以使用相对路径索引相应的文件。
-- 链接到图片或其他资源。如果文章包含图片，建议将图片放在`/static/img/docs/`并使用绝对路径引用。我们使用按语言区分的目录：
-  - `/static/img/docs/common/`：中英文共享图片
-  - `/static/img/docs/en/`：仅英文图片
-  - `/static/img/docs/zh/`：仅中文图片示例：
-  - `![WebUI Overview](/img/docs/en/userguide/webui-overview.png)`
-  - `![WebUI 集群概览](/img/docs/zh/userguide/webui-overview.png)`
-  - `![Architecture](/img/docs/common/architecture/hami-arch.png)`
-
-### 目录组织
-
-Docusaurus 2 使用侧边栏来管理文档。
-
-创建侧边栏有助于：
-
-- 组织多个相关文档
-- 在每个文档上显示侧边栏
-- 提供分页导航，带有下一页/上一页按钮
-
-对于我们的文档，你可以从[https://github.com/Project-HAMi/website/blob/main/sidebars.js](https://github.com/Project-HAMi/website/blob/main/sidebars.js)了解我们的文档是如何组织的。
-
-```js
-module.exports = {
-    docs: [
-        {
-            type: "category",
-            label: "核心概念",
-            collapsed: false,
-            items: [
-                "core-concepts/introduction",
-                "core-concepts/concepts",
-                "core-concepts/architecture",
-            ],
-        },
-        {
-            type: "doc",
-            id: "key-features/features",
-        },
-        {
-            type: "category",
-            label: "入门",
-            items: [
-                "get-started/deploy-with-helm"
-            ],
-        },
-....
-```
-
-目录中文档的顺序严格按照项目的顺序。
+每个文档都必须以 frontmatter 开头：
 
 ```yaml
-type: "category",
-label: "核心概念",
-collapsed: false,
-items: [
-  "core-concepts/introduction",
-  "core-concepts/concepts",
-  "core-concepts/architecture",
-],
+---
+title: 完整页面标题
+sidebar_label: 侧边栏短标题
+---
 ```
 
-如果你添加了文档，你必须将其添加到`sidebars.js`中以使其正确显示。如果你不确定你的文档位于何处，可以在 PR 中询问社区成员。
+- `title` 用作页面的 `<h1>` 标题，也用于元数据
+- `sidebar_label` 是侧边栏显示的简短版本，如果和 `title` 相同可以省略
 
-### 关于中文文档
+### 3. 在 sidebars.js 中注册
 
-关于文档的中文版有两种情况：
+每个新文档都必须添加到 `sidebars.js` 中才会出现在导航里。找到合适的分类，添加文档 ID（相对于 `docs/` 的路径，不带 `.md`）：
 
-- 你想将我们现有的英文文档翻译成中文。在这种情况下，你需要修改相应文件的内容，路径为[https://github.com/Project-HAMi/website/tree/main/i18n/zh/docusaurus-plugin-content-docs/current](https://github.com/Project-HAMi/website/tree/main/i18n/zh/docusaurus-plugin-content-docs/current)。该目录的组织与外层完全相同。`current.json`保存了文档目录的翻译。如果你想翻译目录名称，可以编辑它。
-- 你想贡献没有英文版的中文文档。欢迎任何类型的文章。在这种情况下，你可以先将文章和标题添加到主目录。文章内容可以先标记为 TBD。然后将相应的中文内容添加到中文目录中。
+```js
+{
+  type: "category",
+  label: "Get Started",
+  items: [
+    "get-started/deploy-with-helm",
+    "get-started/verify-hami",
+    "get-started/your-new-doc"   // 在这里添加
+  ]
+}
+```
 
-## 调试文档
+如果不确定属于哪个分类，在 PR 中说明，维护者会帮忙。
 
-现在你已经完成了文档。在你向`Project-HAMi/website`发起 PR 后，如果通过 CI，你可以在网站上预览你的文档。
+### 4. 添加中文翻译（可选）
 
-点击红色标记的**Details**，你将进入网站的预览视图。
+在 `i18n/zh/docusaurus-plugin-content-docs/current/` 下镜像相同的文件路径，目录结构与 `docs/` 完全一致。frontmatter 保持不变，只翻译正文内容。
 
-点击**Next**，你可以看到相应的更改。如果你有与中文版相关的更改，点击旁边的语言下拉框切换到中文。
+如果翻译还没准备好，用占位符也可以：
 
-如果预览页面不是你期望的，再次检查你的文档。
+```md
+---
+title: 完整页面标题
+sidebar_label: 侧边栏短标题
+---
+
+（翻译进行中）
+```
+
+## 链接
+
+**内部链接**：用相对路径链接到其他文档的 `.md` 文件：
+
+```md
+[GitHub Workflow](github-workflow.md) [Installation](../get-started/deploy-with-helm.md)
+```
+
+Docusaurus 会自动把这些解析为正确的 URL，包括版本和语言。
+
+**外部链接**：使用完整 URL：
+
+```md
+[Kubernetes](https://kubernetes.io)
+```
+
+**失效链接**：完整构建（`npm run build`）会报告失效的内部链接，提交 PR 前先修复。
+
+## 图片
+
+图片放在 `/static/img/docs/` 下，按语言区分子目录：
+
+| 路径                       | 用途             |
+| -------------------------- | ---------------- |
+| `/static/img/docs/common/` | 中英文共享的图片 |
+| `/static/img/docs/en/`     | 仅英文的图片     |
+| `/static/img/docs/zh/`     | 仅中文的图片     |
+
+用相对于站点根目录的绝对路径引用图片：
+
+```md
+![Architecture diagram](/img/docs/common/architecture/hami-arch.png) ![WebUI Overview](/img/docs/en/userguide/webui-overview.png)
+```
+
+使用有意义的 alt 文本，不要链接外部图片，图片要托管在本仓库中。
+
+## 写作风格
+
+以下规则适用于本站的所有文档。
+
+**语言和语气：**
+
+- 句子简短、直接
+- 使用主动语态
+- 随意但专业，就像一个开发者向另一个开发者解释东西
+- 不用填充词："simply"、"just"、"Note that"、"It's worth noting"、"Please note"
+- 不用第一人称：避免 "I"、"we"、"our"、"let's"
+- 例外：直接引用或 HAMi 项目团队的官方公告中，"we" 可以指代项目团队本身
+
+**格式：**
+
+- 无序列表用 `-`，不要用 `*` 或 `•`
+- 用普通连字符（`-`），不要用 em-dash（`—`）
+- 标题层级用 `##` 和 `###`，不要跳级
+- 代码块要注明语言（` ```bash`、` ```yaml`、` ```go`）
+- 文档正文中不使用表情符号
+
+**避免营销式语言：**
+
+- 不用："innovative"、"seamless"、"robust"、"powerful"、"cutting-edge"、"state-of-the-art"
+- 不用："streamline"、"leverage"、"intuitive"、"comprehensive"
+- 不用："In conclusion,"、"In summary,"、"To summarize,"
+
+## 版本管理
+
+HAMi 文档随每次发布进行版本管理：
+
+| 位置                             | 版本                   | URL              |
+| -------------------------------- | ---------------------- | ---------------- |
+| `docs/`                          | 开发版/next（未发布）  | `/docs/next/*`   |
+| `versioned_docs/version-v2.9.0/` | v2.9.0（最新稳定版本） | `/docs/*`        |
+| `versioned_docs/version-v2.8.0/` | v2.8.0                 | `/docs/v2.8.0/*` |
+
+> `docs/` 目录是**未发布的开发版**（托管在 `/docs/next`），**不是**"当前/最新稳定版本"。最新稳定版本是 `versions.json` 的第一项（目前是 v2.9.0），托管在 `/docs`。编辑 `docs/` 只影响下一个版本。
+
+**为 `docs/` 贡献**适用于影响下一个版本的改动，大多数贡献者应该编辑这里。
+
+对已发布版本文档的修复由维护者通过 cherry-pick 处理。如果你在某个版本化文档中发现错误，开一个 issue 或直接修复 `docs/` 中的对应内容，维护者会视需要回填到旧版本。
+
+## 中文翻译流程
+
+分两种情况：
+
+**翻译已有的英文文档：**
+
+1. 在 `i18n/zh/docusaurus-plugin-content-docs/current/` 下找到对应的文件路径。
+2. 目录结构与 `docs/` 完全一致。
+3. 翻译内容，frontmatter 字段保持和英文源一致。
+4. 要翻译侧边栏分类标签，编辑 `i18n/zh/docusaurus-plugin-content-docs/current.json`。
+
+**添加没有英文版本的中文文档：**
+
+不建议这样做。英文是源语言，如果你想用中文贡献内容，先写英文版本（哪怕是草稿），再补充中文翻译。
+
+## 预览改动
+
+开发服务器默认只显示英文：
+
+```bash
+npm run start
+```
+
+要在本地预览中文翻译：
+
+```bash
+npm run start -- --locale zh
+```
+
+要同时预览两种语言，运行完整构建并启动本地服务：
+
+```bash
+npm run build
+npm run serve
+```
+
+## CI 和 PR 预览
+
+当你向 `master` 提交 PR 时，CI 会运行 `npm run build`（完整构建）。如果构建失败，PR 无法合并。
+
+PR 还会自动收到一个预览部署链接。点击它，在请求审查前先看看改动在真实站点上的渲染效果，用它来检查链接、图片和格式是否正确。
+
+## 更新日志
+
+更新日志由仓库根目录的 `CHANGELOG.md` 通过一个自定义 Docusaurus 插件自动生成，不要直接编辑 `changelog/source/` 下的文件，它们每次构建都会被覆盖。
+
+要更新日志，直接编辑 `CHANGELOG.md`。
 
 ## 常见问题
 
-### 版本控制
+**构建报了一个失效链接错误。** 在本地运行 `npm run build` 查看具体的文件和行号，修复链接后重新构建。
 
-对于每个版本的新补充文档，我们将在每个版本的发布日期同步到最新版本，旧版本的文档将不再修改。对于文档中发现的勘误，我们将在每次发布时修复。
+**我的新页面没有出现在侧边栏里。** 检查 `sidebars.js` 中的文档 ID 是否和文件路径完全一致（相对于 `docs/`，不带 `.md` 扩展名）。
+
+**开发服务器显示的是缓存的旧版本。** 停止服务器，运行 `npm run clear`，然后重新启动。
+
+**如何为即将发布的功能撰写文档？** 把文档加到 `docs/`（不是 `versioned_docs/`），发布新版本时会自动生成快照到 `versioned_docs/` 中。
