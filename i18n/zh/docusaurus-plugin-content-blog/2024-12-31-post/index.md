@@ -25,7 +25,7 @@ authors: [elrond_wang]
 
 - 准备阶段：图上可以看出有一些依赖条件，例如要有 Mutating Webhook、device-plugin 等等。所以这个阶段主要分析下依赖条件的准备，只有在服务首次启动时需要。
 
-  ![Pod 创建前的准备工作](https://github.com/elrondwong/elrond.wang/raw/master/img/posts/Hami-GPU-Pod-Scheduler/%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C.png)
+  ![Pod 创建前的准备工作](/img/blog/hami-pod-scheduler-preparation.png)
 
 - Pod 调度阶段：准备过程完成之后 Pod 进入处理流程，完成调度
 - Pod 启动阶段：Pod 如何与 Node 上的 GPU 进行交互等

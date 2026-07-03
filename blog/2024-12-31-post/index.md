@@ -27,7 +27,7 @@ The process can be broken down into three phases:
 
 - **Preparation Phase**: The diagram shows the prerequisites: a Mutating Webhook, device-plugin, and scheduler. This phase primarily analyzes the preparation of dependencies, which are only needed during the initial service startup.
 
-  ![Preparation before Pod creation](https://github.com/elrondwong/elrond.wang/raw/master/img/posts/Hami-GPU-Pod-Scheduler/%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C.png)
+  ![Preparation before Pod creation](/img/blog/hami-pod-scheduler-preparation.png)
 
 - **Pod Scheduling Phase**: After preparation, the Pod enters the scheduling process.
 - **Pod Startup Phase**: How the Pod interacts with the GPU on the Node.
