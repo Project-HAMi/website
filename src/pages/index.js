@@ -702,33 +702,33 @@ export default function Home() {
               </div>
               <div className={styles.cncfFeatureBody}>
                 <span className={styles.cncfEyebrow}>
-                  {isZh ? "CNCF Sandbox 项目" : "CNCF Sandbox Project"}
+                  {isZh ? "CNCF 孵化项目" : "CNCF Incubating Project"}
                 </span>
                 <h2 className={styles.cncfFeatureTitle}>
-                  {isZh ? "HAMi 是 CNCF Sandbox 项目" : "HAMi is a CNCF Sandbox project"}
+                  {isZh ? "HAMi 是 CNCF 孵化项目" : "HAMi is a CNCF Incubating project"}
                 </h2>
                 <p className={styles.cncfFeatureText}>
                   {isZh ? (
                     <>
                       HAMi 是云原生计算基金会（CNCF）的{" "}
                       <a
-                        href="https://landscape.cncf.io/?item=orchestration-management--scheduling-orchestration--hami"
+                        href="https://landscape.cncf.io/?group=projects-and-products&project=incubating&item=orchestration-management--scheduling-orchestration--hami"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        Sandbox 项目
+                        孵化项目
                       </a>
-                      ， 并被收录于 CNCF 技术全景图和 CNAI 技术全景图。
+                      ，并被收录于 CNCF 技术全景图和 CNAI 技术全景图。
                     </>
                   ) : (
                     <>
-                      HAMi is a{" "}
+                      HAMi is an{" "}
                       <a
-                        href="https://landscape.cncf.io/?item=orchestration-management--scheduling-orchestration--hami"
+                        href="https://landscape.cncf.io/?group=projects-and-products&project=incubating&item=orchestration-management--scheduling-orchestration--hami"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        Sandbox project
+                        Incubating project
                       </a>{" "}
                       of the Cloud Native Computing Foundation (CNCF), listed in both the CNCF
                       Landscape and the CNAI Landscape.

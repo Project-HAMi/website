@@ -167,12 +167,12 @@ function Footer() {
       <div className={styles.cncfBar}>
         <a
           className={styles.cncfLink}
-          href="https://www.cncf.io/sandbox-projects/"
+          href="https://landscape.cncf.io/?group=projects-and-products&project=incubating&item=orchestration-management--scheduling-orchestration--hami"
           target="_blank"
           rel="noreferrer"
         >
           <img className={styles.cncfLogo} src={cncfLogo} alt="CNCF" />
-          <span>{isZh ? "HAMi 是 CNCF Sandbox 项目" : "HAMi is a CNCF Sandbox project"}</span>
+          <span>{isZh ? "HAMi 是 CNCF 孵化项目" : "HAMi is a CNCF Incubating project"}</span>
         </a>
       </div>
       {i18n.currentLocale === "zh" && (
