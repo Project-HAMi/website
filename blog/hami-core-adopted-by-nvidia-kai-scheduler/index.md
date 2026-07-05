@@ -156,7 +156,7 @@ The `gpu-memory` annotation accepts an **integer number of MiB** (no unit suffix
 
 :::tip
 
-This post covers the highlights. For the complete setup guide — prerequisites, installation, scheduling an isolated Pod, verifying isolation with `nvidia-smi`, and opt-out — see the [How to use KAI Scheduler with HAMi](/docs/next/userguide/kai-scheduler/how-to-use-kai-scheduler) docs.
+This post covers the highlights. For the complete setup guide (prerequisites, installation, scheduling an isolated Pod, verifying isolation with `nvidia-smi`, and opt-out), see the [How to use KAI Scheduler with HAMi](/docs/next/userguide/kai-scheduler/how-to-use-kai-scheduler) docs.
 
 :::
 
