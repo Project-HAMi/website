@@ -165,7 +165,7 @@ To contribute translations, update the corresponding files in `i18n/zh/`.
 
 ## Technology Stack
 
-- **Framework**: Docusaurus 3.10.0
+- **Framework**: Docusaurus 3.10.1
 - **Build Tool**: Rspack (via @docusaurus/faster)
 - **Compiler**: SWC
 - **Runtime**: Node.js v20+
