@@ -17,11 +17,11 @@ Three instances from the vLLM benchmark were used to evaluate vGPU-device-plugin
 
 ## Test Instances
 
-| Instance        |                      Description                      |
-| --------------- | :---------------------------------------------------: |
-| Native          |            k8s + nvidia k8s-device-plugin             |
-| Opensource_v280 | k8s + vGPU k8s-device-plugin, opensource version v280 |
-| Opensource_v290 | k8s + vGPU k8s-device-plugin, opensource version v290 |
+| Instance        |                         Description                          |
+| --------------- | :----------------------------------------------------------: |
+| Native          |            Kubernetes + NVIDIA k8s-device-plugin             |
+| Opensource_v280 | Kubernetes + vGPU k8s-device-plugin, opensource version v280 |
+| Opensource_v290 | Kubernetes + vGPU k8s-device-plugin, opensource version v290 |
 
 ## Test Cases
 
@@ -44,23 +44,23 @@ Three instances from the vLLM benchmark were used to evaluate vGPU-device-plugin
 
 1. Build the benchmark images:
 
-```bash
-cd benchmarks/ai-benchmark
-sh build.sh
-```
+   ```bash
+   cd benchmarks/ai-benchmark
+   sh build.sh
+   ```
 
 1. Run the benchmark job:
 
-```bash
-kubectl apply -f benchmarks/deployments/job-on-nvidia-device-plugin.yml
-kubectl apply -f benchmarks/deployments/job-on-hami.yml
-```
+   ```bash
+   kubectl apply -f benchmarks/deployments/job-on-nvidia-device-plugin.yml
+   kubectl apply -f benchmarks/deployments/job-on-hami.yml
+   ```
 
 1. View the results:
 
-```bash
-kubectl cp <pod-name>:/results ./results
-python3 benchmarks/ai-benchmark/gen_report.py \
-    --dataset native ./results/bench_native.jsonl \
-    --dataset hami ./results/bench_hami.jsonl
-```
+   ```bash
+   kubectl cp <pod-name>:/results ./results
+   python3 benchmarks/ai-benchmark/gen_report.py \
+       --dataset native ./results/bench_native.jsonl \
+       --dataset hami ./results/bench_hami.jsonl
+   ```
