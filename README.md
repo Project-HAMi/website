@@ -107,11 +107,7 @@ See [BUILD_OPTIMIZATION.md](./BUILD_OPTIMIZATION.md) for details on optimization
 
 ## Deployment
 
-For GitHub Pages (requires appropriate permissions):
-
-```bash
-GIT_USER=<your_github_username> USE_SSH=true npm run deploy
-```
+The site deploys automatically to Netlify on every merge to `master` (see `netlify.toml`). No manual deploy step is needed.
 
 For other hosting services, deploy the `build/` directory as a static site.
 
@@ -170,7 +166,7 @@ To contribute translations, update the corresponding files in `i18n/zh/`.
 - **Compiler**: SWC
 - **Runtime**: Node.js v20+
 - **Package Manager**: npm
-- **Hosting**: GitHub Pages / Netlify
+- **Hosting**: Netlify
 
 ## Maintainers
 
