@@ -118,18 +118,8 @@ Then, add the HAMi repo in helm
 ```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/
 helm repo update
+helm install hami hami-charts/hami -n kube-system
 ```
-
-During installation, set the Kubernetes scheduler image version to match your
-Kubernetes server version. For instance, if your cluster server version is
-1.16.8, use the following command for deployment:
-
-```bash
-helm install hami hami-charts/hami \
-  --set scheduler.kubeScheduler.imageTag=v1.16.8 \
-  -n kube-system
-```
-
 If everything goes well, you will see both vgpu-device-plugin and vgpu-scheduler pods are in the Running state
 
 ### Demo {#demo}

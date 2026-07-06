@@ -109,14 +109,7 @@ Add the Helm repository:
 ```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/
 helm repo update
-```
-
-During installation, set the Kubernetes scheduler image to match your cluster version. For example, if your cluster version is 1.29.0:
-
-```bash
-helm install hami hami-charts/hami \
-  --set scheduler.kubeScheduler.imageTag=v1.29.0 \
-  -n kube-system
+helm install hami hami-charts/hami -n kube-system
 ```
 
 If successful, both `hami-device-plugin` and `hami-scheduler` pods should be in the `Running` state.
