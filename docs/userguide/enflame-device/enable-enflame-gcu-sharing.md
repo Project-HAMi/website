@@ -10,7 +10,7 @@ DRS is a hard-slice mode similar to NVIDIA MIG and Ascend VNPU templates.
 
 ## Prerequisites
 
-- Enflame gcushare-device-plugin >= 2.2.14 (please consult your device provider; only `gcushare-device-plugin` is needed — do not install `gcushare-scheduler-plugin`)
+- Enflame gcushare-device-plugin >= 2.2.14 (please consult your device provider; only `gcushare-device-plugin` is needed, do not install `gcushare-scheduler-plugin`)
 - driver version >= 1.8.7
 - kubernetes >= 1.24
 - enflame-container-toolkit >= 2.0.50
