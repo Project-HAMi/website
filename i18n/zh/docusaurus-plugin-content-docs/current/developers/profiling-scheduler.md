@@ -65,3 +65,41 @@ go tool pprof https+insecure://<POD_IP>/debug/pprof/heap
 ```bash
 go tool pprof https+insecure://<POD_IP>/debug/pprof/allocs
 ```
+
+分配性能分析的示例输出：
+
+```
+root@hami-scheduler-ffd687cb7-7gqm2:/# /usr/local/go/bin/go tool pprof --seconds 120 https+insecure://10.42.0.24/debug/pprof/allocs
+Fetching profile over HTTP from https+insecure://10.42.0.24/debug/pprof/allocs?seconds=120
+Saved profile in /root/pprof/pprof.scheduler.alloc_objects.alloc_space.inuse_objects.inuse_space.041.pb.gz
+File: scheduler
+Type: alloc_space
+Time: 2025-04-01 07:03:05 UTC
+Entering interactive mode (type "help" for commands, "o" for options)
+(pprof) top
+Showing nodes accounting for 4383.93MB, 69.18% of 6336.84MB total
+Dropped 376 nodes (cum <= 31.68MB)
+Showing top 10 nodes out of 164
+      flat  flat%   sum%        cum   cum%
+ 1114.44MB 17.59% 17.59%  1114.94MB 17.59%  io.ReadAll
+  980.52MB 15.47% 33.06%   980.52MB 15.47%  sync.(*Pool).pinSlow
+  606.88MB  9.58% 42.64%   606.88MB  9.58%  golang.org/x/net/http2.init.func5
+  357.15MB  5.64% 48.27%   357.15MB  5.64%  k8s.io/apimachinery/pkg/runtime.(*RawExtension).UnmarshalJSON
+  293.20MB  4.63% 52.90%   293.20MB  4.63%  reflect.mapassign_faststr0
+  265.58MB  4.19% 57.09%   265.58MB  4.19%  reflect.unsafe_NewArray
+  234.07MB  3.69% 60.78%   461.59MB  7.28%  sigs.k8s.io/json/internal/golang/encoding/json.(*decodeState).literalStore
+  210.54MB  3.32% 64.11%  3409.63MB 53.81%  github.com/Project-HAMi/HAMi/pkg/scheduler.(*Scheduler).RegisterFromNodeAnnotations
+  162.02MB  2.56% 66.66%   331.76MB  5.24%  github.com/Project-HAMi/HAMi/pkg/scheduler.(*Scheduler).getNodesUsage
+  159.52MB  2.52% 69.18%   225.53MB  3.56%  encoding/json.Unmarshal
+(pprof) list RegisterFromNodeAnnotations
+Total: 6.21GB
+ROUTINE ======================== github.com/Project-HAMi/HAMi/pkg/scheduler.(*Scheduler).RegisterFromNodeAnnotations in /k8s-vgpu/pkg/scheduler/scheduler.go
+  210.54MB     3.33GB (flat, cum) 53.73% of Total
+         .          .    158:func (s *Scheduler) RegisterFromNodeAnnotations() {
+         .    46.84MB    169:  klog.InfoS("Ticker triggered")
+  512.05kB   512.05kB    165:    select {
+    1.50MB     1.50MB    187:      nodeNames = append(nodeNames, val.Name)
+       2MB   203.15MB    218:        klog.InfoS("New timestamp for annotation", ...)
+         .     1.25GB    219:        n, err := util.GetNode(val.Name)
+         .     1.21GB    225:        if err := util.PatchNodeAnnotations(n, tmppat); err != nil {
+```
