@@ -112,14 +112,8 @@ kubectl version
 
 ```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/
-```
-
-安装时需设置 Kubernetes 调度器镜像版本与集群版本匹配。例如集群版本为 1.16.8 时，使用以下命令部署：
-
-```bash
-helm install hami hami-charts/hami \
-  --set scheduler.kubeScheduler.imageTag=v1.16.8 \
-  -n kube-system
+helm repo update
+helm install hami hami-charts/hami -n kube-system
 ```
 
 若一切正常，可见 vgpu-device-plugin 和 vgpu-scheduler 的 Pod 均处于 Running 状态。
