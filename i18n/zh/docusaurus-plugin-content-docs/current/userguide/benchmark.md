@@ -17,11 +17,11 @@ sidebar_label: 性能测试
 
 ## 测试实例
 
-| 测试名称        |                  测试用例                   |
-| --------------- | :-----------------------------------------: |
-| Native          |     k8s + nvidia 官方 k8s-device-plugin     |
-| Opensource_v280 | k8s + vGPU k8s-device-plugin，开源版本 v280 |
-| Opensource_v290 | k8s + vGPU k8s-device-plugin，开源版本 v290 |
+| 测试名称        |                      测试用例                      |
+| --------------- | :------------------------------------------------: |
+| Native          |     Kubernetes + NVIDIA 官方 k8s-device-plugin     |
+| Opensource_v280 | Kubernetes + vGPU k8s-device-plugin，开源版本 v280 |
+| Opensource_v290 | Kubernetes + vGPU k8s-device-plugin，开源版本 v290 |
 
 ## 测试内容
 
@@ -42,25 +42,25 @@ sidebar_label: 性能测试
 
 1. 安装 k8s-vGPU-scheduler，并配置相应的参数。
 
-2. 构建 benchmark 镜像：
+1. 构建 benchmark 镜像：
 
-```bash
-cd benchmarks/ai-benchmark
-sh build.sh
-```
+   ```bash
+   cd benchmarks/ai-benchmark
+   sh build.sh
+   ```
 
 1. 运行 benchmark 任务：
 
-```bash
-kubectl apply -f benchmarks/deployments/job-on-nvidia-device-plugin.yml
-kubectl apply -f benchmarks/deployments/job-on-hami.yml
-```
+   ```bash
+   kubectl apply -f benchmarks/deployments/job-on-nvidia-device-plugin.yml
+   kubectl apply -f benchmarks/deployments/job-on-hami.yml
+   ```
 
 1. 查看结果：
 
-```bash
-kubectl cp <pod-name>:/results ./results
-python3 benchmarks/ai-benchmark/gen_report.py \
-    --dataset native ./results/bench_native.jsonl \
-    --dataset hami ./results/bench_hami.jsonl
-```
+   ```bash
+   kubectl cp <pod-name>:/results ./results
+   python3 benchmarks/ai-benchmark/gen_report.py \
+       --dataset native ./results/bench_native.jsonl \
+       --dataset hami ./results/bench_hami.jsonl
+   ```
