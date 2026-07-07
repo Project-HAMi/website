@@ -23,7 +23,7 @@
     "lint": "npm run lint:md",
     "format:check": "prettier --check .",
     "format": "prettier --write .",
-    "check-links": "npm run build && npx linkinator ./build --recurse || true",
+    "check-links": "npm run build && node scripts/check-generated-links.mjs",
     "check:all": "npm run lint && npm run format:check && npm run build"
   },
   "dependencies": {

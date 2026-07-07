@@ -3,7 +3,16 @@ title: "HAMi Meetup Shanghai 2025 Recap"
 date: "2025-11-30"
 description: "HAMi Meetup Shanghai was held on November 30, 2025. This article is available in Chinese only."
 authors: [hami_community]
-tags: ["Meetup"]
+tags:
+  [
+    "Meetup",
+    "Shanghai",
+    "Heterogeneous Compute Scheduling",
+    "GPU Virtualization",
+    "Kubernetes",
+    "Domestic Compute",
+    "AI Training and Inference Optimization",
+  ]
 unlisted: true
 ---
 

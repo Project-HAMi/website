@@ -1,0 +1,105 @@
+"AI":
+  label: "AI"
+  permalink: "/ai"
+"AI Agent":
+  label: "AI Agent"
+  permalink: "/ai-agent"
+"AI 基础设施":
+  label: "AI 基础设施"
+  permalink: "/ai-infrastructure"
+"AI 训练与推理优化":
+  label: "AI 训练与推理优化"
+  permalink: "/ai-training-and-inference-optimization"
+"CNCF":
+  label: "CNCF"
+  permalink: "/cncf"
+"DRA":
+  label: "DRA"
+  permalink: "/dra"
+"GPU":
+  label: "GPU"
+  permalink: "/gpu"
+"GPU 仪表盘":
+  label: "GPU 仪表盘"
+  permalink: "/gpu-dashboard"
+"GPU 共享":
+  label: "GPU 共享"
+  permalink: "/gpu-sharing"
+"GPU 监控":
+  label: "GPU 监控"
+  permalink: "/gpu-monitoring"
+"GPU 虚拟化":
+  label: "GPU 虚拟化"
+  permalink: "/gpu-virtualization"
+"HAMi":
+  label: "HAMi"
+  permalink: "/ha-mi"
+"Incubating":
+  label: "Incubating"
+  permalink: "/incubating"
+"India":
+  label: "India"
+  permalink: "/india"
+"KAI Scheduler":
+  label: "KAI Scheduler"
+  permalink: "/kai-scheduler"
+"KCD":
+  label: "KCD"
+  permalink: "/kcd"
+"KubeCon":
+  label: "KubeCon"
+  permalink: "/kube-con"
+"Kubernetes":
+  label: "Kubernetes"
+  permalink: "/kubernetes"
+"Meetup":
+  label: "Meetup"
+  permalink: "/meetup"
+"NVIDIA":
+  label: "NVIDIA"
+  permalink: "/nvidia"
+"Release":
+  label: "Release"
+  permalink: "/release"
+"Source Code":
+  label: "源码走读"
+  permalink: "/source-code"
+"WebUI":
+  label: "WebUI"
+  permalink: "/web-ui"
+"kagent":
+  label: "kagent"
+  permalink: "/kagent"
+"vGPU":
+  label: "vGPU"
+  permalink: "/v-gpu"
+"上海":
+  label: "上海"
+  permalink: "/shanghai"
+"云原生":
+  label: "云原生"
+  permalink: "/cloud-native"
+"介绍":
+  label: "介绍"
+  permalink: "/introduction"
+"可观测性":
+  label: "可观测性"
+  permalink: "/observability"
+"国产算力":
+  label: "国产算力"
+  permalink: "/domestic-compute"
+"异构算力":
+  label: "异构算力"
+  permalink: "/heterogeneous-compute"
+"异构算力调度":
+  label: "异构算力调度"
+  permalink: "/heterogeneous-compute-scheduling"
+"深圳":
+  label: "深圳"
+  permalink: "/shenzhen"
+"硬隔离":
+  label: "硬隔离"
+  permalink: "/hard-isolation"
+"调度":
+  label: "调度"
+  permalink: "/scheduling"

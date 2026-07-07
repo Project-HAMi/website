@@ -36,9 +36,4 @@ jobs:
         run: npm run build
 
       - name: Broken Internal Link Check
-        run: |
-          npx --yes linkinator ./build --recurse --skip "^https?://" --verbosity error 2>&1 | tee linkinator-output.txt
-          if grep -q "BROKEN" linkinator-output.txt; then
-            echo "::error::Broken internal links found"
-            exit 1
-          fi
+        run: npm run check-links

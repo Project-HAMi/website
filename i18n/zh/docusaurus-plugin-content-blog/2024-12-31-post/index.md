@@ -1,8 +1,9 @@
 ---
 layout: post
 title: HAMi 项目 GPU Pod 调度流程源码走读
+slug: hami-gpu-scheduling-source-code
 catalog: true
-tag: [Kubernetes, GPU, AI]
+tags: [Kubernetes, GPU, AI, Source Code, 调度]
 authors: [elrond_wang]
 ---
 

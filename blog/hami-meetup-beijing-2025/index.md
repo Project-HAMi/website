@@ -3,7 +3,7 @@ title: "HAMi Meetup Beijing 2025 Recap"
 date: "2025-12-27"
 description: "HAMi Meetup Beijing was held on December 27, 2025. This article is available in Chinese only."
 authors: [hami_community]
-tags: ["Meetup"]
+tags: ["HAMi", "Meetup", "Heterogeneous Compute", "GPU Virtualization", "Cloud Native"]
 unlisted: true
 ---
 

@@ -1,6 +1,8 @@
 ---
 title: 介绍 HAMi
 authors: [hami_community]
+slug: introducing-hami
+tags: [介绍, GPU 共享, Kubernetes]
 ---
 
 ## 什么是 HAMi？

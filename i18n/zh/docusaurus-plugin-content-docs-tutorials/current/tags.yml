@@ -1,0 +1,45 @@
+"DRA":
+  label: "DRA"
+  permalink: "/dra"
+"GPU 分区":
+  label: "GPU 分区"
+  permalink: "/gpu-partitioning"
+"alibaba-cloud":
+  label: "alibaba-cloud"
+  permalink: "/alibaba-cloud"
+"hami":
+  label: "hami"
+  permalink: "/hami"
+"inference":
+  label: "inference"
+  permalink: "/inference"
+"nvidia":
+  label: "nvidia"
+  permalink: "/nvidia"
+"nvml-mock":
+  label: "nvml-mock"
+  permalink: "/nvml-mock"
+"vllm":
+  label: "vllm"
+  permalink: "/vllm"
+"安装":
+  label: "安装"
+  permalink: "/installation"
+"实验性":
+  label: "实验性"
+  permalink: "/experimental"
+"本地安装":
+  label: "本地安装"
+  permalink: "/local-setup"
+"模拟":
+  label: "模拟"
+  permalink: "/simulation"
+"调度":
+  label: "调度"
+  permalink: "/scheduling"
+"资源共享":
+  label: "资源共享"
+  permalink: "/resource-sharing"
+"隔离":
+  label: "隔离"
+  permalink: "/isolation"
