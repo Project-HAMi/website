@@ -17,4 +17,4 @@ Background knowledge that the labs build on.
 
 ## Labs
 
-<LabCardGridAuto /> Each lab lists its own prerequisites. Labs 3 and 4 continue from the cluster Lab 1 builds, so a single session covers all three; Lab 2 runs on any laptop with no GPU required.
+<LabCardGridAuto /> Each lab lists its own prerequisites. Labs 3 and 4 continue from the cluster Lab 1 builds, so a single session covers all three; Lab 2 runs on any laptop with no GPU required. Lab 7 brings up its own single-node k3s cluster on a rented GPU VM, without the GPU Operator.
