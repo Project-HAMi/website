@@ -44,7 +44,7 @@ HAMi 在 KubeCon India 的亮相正是对这一趋势的直接回应：通过现
 
 在 Project Pavilion，参观者体验了两场动手演示，展示 Kubernetes 上真实的 AI 推理场景。
 
-如果你希望复现其中一部分 vLLM 工作流，可以参考 [HAMi vLLM 实验](https://project-hami.io/tutorials/labs/hami-vllm)。
+如果你希望复现其中一部分 vLLM 工作流，可以参考 [HAMi vLLM 实验](/tutorials/labs/hami-vllm)。
 
 ### Demo 1：基于 vLLM 与 SGLang 的生产级 AI 推理
 

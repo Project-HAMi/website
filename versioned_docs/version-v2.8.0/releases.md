@@ -60,7 +60,7 @@ Release branches and PRs are managed as follows:
 * For critical fixes that need to be included in a patch release, PRs should always be first merged to master
   and then cherry-picked to the release branch. PRs need to be guaranteed to have a release note written and
   these descriptions will be reflected in the next patch release.
-  The cherry-pick process of PRs is executed through the script. See [cherry-pick usage](https://project-hami.io/docs/contributor/cherry-picks).
+  The cherry-pick process of PRs is executed through the script. See [cherry-pick usage](/docs/contributor/cherry-picks).
 * For complex changes, specially critical bugfixes, separate PRs may be required for master and release branches.
 * The milestone mark (for example v1.4) will be added to PRs which means changes in PRs are one of the contents of the corresponding release.
 * During PR review, the Assignee selection is used to indicate the reviewer.

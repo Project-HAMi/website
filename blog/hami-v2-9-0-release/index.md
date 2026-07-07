@@ -206,7 +206,7 @@ helm repo update
 helm upgrade hami hami-charts/hami -n kube-system
 ```
 
-For complete installation documentation, refer to: [https://project-hami.io/docs/installation/online-installation](https://project-hami.io/docs/installation/online-installation)
+For complete installation documentation, refer to: [/docs/installation/online-installation](/docs/installation/online-installation)
 
 :::warning[Upgrade notes]
 
@@ -239,7 +239,7 @@ Since the v2.8.0 release, the HAMi website and documentation have undergone the 
 
 Thanks to [@mesutoezdil](https://github.com/mesutoezdil) for contributions to optimizing HAMi official documentation.
 
-Website: [https://project-hami.io](https://project-hami.io)
+Website: [/](/)
 
 Website repository: [https://github.com/Project-HAMi/website](https://github.com/Project-HAMi/website)
 
@@ -266,6 +266,6 @@ We sincerely welcome more developers, users, and ecosystem partners to join the 
 - GitHub Release: [https://github.com/Project-HAMi/HAMi/releases/tag/v2.9.0](https://github.com/Project-HAMi/HAMi/releases/tag/v2.9.0)
 - HAMi-DRA: [https://github.com/Project-HAMi/HAMi-DRA](https://github.com/Project-HAMi/HAMi-DRA)
 - Volcano vGPU Device Plugin: [https://github.com/Project-HAMi/volcano-vgpu-device-plugin](https://github.com/Project-HAMi/volcano-vgpu-device-plugin)
-- Documentation: [https://project-hami.io](https://project-hami.io)
+- Documentation: [/docs/](/docs/)
 - Community Discord (recommended): [https://discord.gg/Amhy7XmbNq](https://discord.gg/Amhy7XmbNq)
 - Community CNCF Slack: [https://cloud-native.slack.com/archives/C07T10BU4R2](https://cloud-native.slack.com/archives/C07T10BU4R2)

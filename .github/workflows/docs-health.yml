@@ -33,7 +33,9 @@ jobs:
         run: npm run format:check
 
       - name: Build Site
+        env:
+          DOCUSAURUS_SITE_URL: http://127.0.0.1:3000
         run: npm run build
 
       - name: Broken Internal Link Check
-        run: npm run check-links
+        run: bash scripts/check-links.sh

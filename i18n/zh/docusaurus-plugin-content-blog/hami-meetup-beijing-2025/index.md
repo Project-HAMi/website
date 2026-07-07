@@ -4,7 +4,7 @@ date: "2025-12-27"
 description: "12 月 27 日，HAMi Meetup 北京站近百位技术伙伴齐聚，分享异构算力虚拟化、调度策略与生产实践。"
 authors: [hami_community]
 tags: ["HAMi", "Meetup", "异构算力", "GPU 虚拟化", "云原生"]
-image: "hami-meetup-beijing-banner.webp"
+image: "./hami-meetup-beijing-banner.webp"
 ---
 
 ![HAMi Meetup 北京站](hami-meetup-beijing-banner.webp)

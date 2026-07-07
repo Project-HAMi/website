@@ -48,7 +48,7 @@ A simple way to understand HAMi's position:
 - **KAI Scheduler** decides "who uses which GPU, and when" (the scheduling layer).
 - **HAMi** ensures "once allocated, that is all you get, and you cannot take more" (the isolation layer).
 
-Only by combining the two do you get true production-grade GPU sharing. HAMi supports NVIDIA GPUs, Huawei Ascend NPUs, Cambricon MLUs, Hygon DCUs, Kunlun XPUs, and many other heterogeneous accelerators, making it the open source solution with the broadest coverage in cloud-native GPU virtualization. For the full list of supported accelerators, see the [HAMi documentation](https://project-hami.io/docs/userguide/device-supported).
+Only by combining the two do you get true production-grade GPU sharing. HAMi supports NVIDIA GPUs, Huawei Ascend NPUs, Cambricon MLUs, Hygon DCUs, Kunlun XPUs, and many other heterogeneous accelerators, making it the open source solution with the broadest coverage in cloud-native GPU virtualization. For the full list of supported accelerators, see the [HAMi documentation](/docs/userguide/device-supported).
 
 ## Integration architecture: how HAMi and KAI Scheduler work together
 
