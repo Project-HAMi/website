@@ -1,0 +1,35 @@
+# Two Pods, each asking for one physical GPU and an 8000 MiB memory slice. On a
+# 96 GB RTX PRO 6000 (or a 48 GB A6000) both fit with plenty of headroom, so both
+# land on the one GPU. On a 24 GB card use ~4000 MiB instead.
+#
+# The image is the CUDA devel image because the memory probe compiles a tiny CUDA
+# allocator with nvcc inside the Pod. It is large to pull; that is expected.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hami-share-a
+spec:
+  restartPolicy: Never
+  containers:
+    - name: cuda
+      image: nvidia/cuda:12.4.1-devel-ubuntu22.04
+      command: ["bash", "-c", "nvidia-smi; sleep infinity"]
+      resources:
+        limits:
+          nvidia.com/gpu: 1
+          nvidia.com/gpumem: 8000
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hami-share-b
+spec:
+  restartPolicy: Never
+  containers:
+    - name: cuda
+      image: nvidia/cuda:12.4.1-devel-ubuntu22.04
+      command: ["bash", "-c", "nvidia-smi; sleep infinity"]
+      resources:
+        limits:
+          nvidia.com/gpu: 1
+          nvidia.com/gpumem: 8000

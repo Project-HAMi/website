@@ -41,6 +41,11 @@ module.exports = {
           id: "labs/hami-vllm",
           customProps: { level: "Intermediate", duration: "about 45 minutes" },
         },
+        {
+          type: "doc",
+          id: "labs/hami-isolation-k3s",
+          customProps: { level: "Intermediate", duration: "about 45 minutes" },
+        },
       ],
     },
   ],

@@ -1,0 +1,28 @@
+# A third Pod whose memory slice fits the card when it is empty, but NOT alongside
+# the two 8000 MiB slices that hami-share-a / hami-share-b already hold. It stays
+# Pending with CardInsufficientMemory - proving the device plugin and scheduler
+# account the card's memory as one shared, finite budget.
+#
+# Apply this ONLY after hami-share-a and hami-share-b are Running.
+#
+# Sizing (IMPORTANT - adjust for your card): set gpumem ABOVE (card_total - 2*slice)
+# so it cannot fit beside the two slices, and BELOW card_total so it WOULD fit on an
+# empty card. 90000 MiB works for a 96 GB RTX PRO 6000 (97887 MiB) with two 8000 MiB
+# slices held (~82000 free). For a 48 GB card use ~45000; for a 24 GB card with two
+# 4000 MiB slices, use ~20000.
+# Read the card size first:
+#   kubectl exec hami-share-a -- nvidia-smi --query-gpu=memory.total --format=csv
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hami-oversubscribe
+spec:
+  restartPolicy: Never
+  containers:
+    - name: cuda
+      image: nvidia/cuda:12.4.1-devel-ubuntu22.04
+      command: ["bash", "-c", "nvidia-smi; sleep infinity"]
+      resources:
+        limits:
+          nvidia.com/gpu: 1
+          nvidia.com/gpumem: 90000
