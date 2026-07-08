@@ -52,4 +52,4 @@ kubectl get pods -n kube-system
 [使用独占 GPU](/zh/docs/userguide/nvidia-device/examples/use-exclusive-card)
 [为容器分配特定设备显存](/zh/docs/userguide/nvidia-device/examples/allocate-device-memory)
 [为容器分配设备核心资源](/zh/docs/userguide/nvidia-device/examples/allocate-device-core)
-[将任务分配给 mig 实例](/zh/docs/userguide/nvidia-device/examples/dynamic-mig-example)
+[将任务分配给 MIG 实例](/zh/docs/userguide/nvidia-device/examples/dynamic-mig-example)
