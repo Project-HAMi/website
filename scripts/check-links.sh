@@ -63,14 +63,17 @@ curl -fsS "${root_url}/" >/dev/null 2>&1 || {
 }
 
 tmp_linkinator="${tmpdir}/linkinator.log"
+mapfile -t skip_args < "${tmpdir}/skip-args.txt"
 
 set +e
-xargs -d '\n' npx --yes linkinator "${root_url}" \
+# Call linkinator directly so its real exit code and stderr survive failures.
+npx --yes linkinator "${root_url}" \
   --recurse \
   --concurrency 10 \
   --retry-errors \
   --retry-errors-count 2 \
-  --verbosity error < "${tmpdir}/skip-args.txt" > "${tmp_linkinator}" 2>&1
+  --verbosity error \
+  "${skip_args[@]}" > "${tmp_linkinator}" 2>&1
 linkinator_exit=$?
 set -e
 
