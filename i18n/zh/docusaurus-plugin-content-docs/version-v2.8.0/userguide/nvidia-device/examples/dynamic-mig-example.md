@@ -1,5 +1,5 @@
 ---
-title: 将任务分配给 mig 实例
+title: 将任务分配给 MIG 实例
 translated: true
 ---
 

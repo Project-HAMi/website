@@ -173,7 +173,7 @@ nodeGPUMigInstance{deviceidx="1",deviceuuid="GPU-30f90f49-43ab-0a78-bf5c-93ed41e
 
 1. 你无需在 MIG 节点上执行任何操作，所有操作均由 hami-device-plugin 中的 mig-parted 管理。
 
-2. Ampere 架构之前的 Nvidia 设备无法使用 MIG 模式
+2. Ampere 架构之前的 NVIDIA 设备无法使用 MIG 模式
 
 3. 你不会在节点上看到任何 MIG 资源（即 `nvidia.com/mig-1g.10gb`），HAMi 对 MIG 和 hami-core 节点使用统一的资源名称。
 

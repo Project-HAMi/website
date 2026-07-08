@@ -1,5 +1,5 @@
 ---
-title: Assign task to mig instance
+title: Assign task to MIG instance
 ---
 
 ## This example will allocate 2g.10gb *2 for A100-40GB-PCIE device  or 1g.10gb* 2 for A100-80GB-SXM device
