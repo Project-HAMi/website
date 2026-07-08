@@ -18,11 +18,11 @@ toc_max_heading_level: 2
 
 This lab builds a single-node k3s cluster on a rented GPU VM, installs HAMi **without** the NVIDIA GPU Operator, and proves that HAMi's memory isolation is real: two Pods share one physical card, `nvidia-smi` inside each Pod reports only its slice, a CUDA allocation past the slice is refused by HAMi-core while the card still has tens of GB free, and a third Pod that would oversubscribe the card stays `Pending`.
 
-Every command and output in this lab was captured from a live run on a GCP `g4-standard-48` Spot VM with one 96 GB NVIDIA RTX PRO 6000 Blackwell (single-node k3s v1.36.2+k3s1, HAMi v2.9.0, NVIDIA driver 610.43.02, Ubuntu 22.04). Any non-MIG card works the same; only the slice sizes change (they scale with VRAM). The RTX PRO 6000 Blackwell does support MIG, but it ships with MIG disabled — HAMi's software sharing is what this lab exercises.
+Every command and output in this lab was captured from a live run on a GCP `g4-standard-48` Spot VM with one 96 GB NVIDIA RTX PRO 6000 Blackwell (single-node k3s v1.36.2+k3s1, HAMi v2.9.0, NVIDIA driver 610.43.02, Ubuntu 22.04). Any non-MIG card works the same; only the slice sizes change (they scale with VRAM). The RTX PRO 6000 Blackwell does support MIG, but it ships with MIG disabled - HAMi's software sharing is what this lab exercises.
 
 ## How This Differs from Lab 3
 
-[Lab 3](./gpu-partitioning.md) proves the same isolation property on a cluster where the **GPU Operator** provides the driver and container toolkit, and HAMi's device plugin is layered on top. This lab takes the other supported path: **no GPU Operator at all**. HAMi brings its own device plugin, the NVIDIA Container Toolkit is installed directly on the host, and `nvidia` is made the **default** containerd runtime so HAMi-core is injected into every GPU Pod. This is the leaner setup you would use on edge nodes, bare-metal boxes, or cheap rented GPU VMs — and it surfaces the mechanism (Step 7) that the Operator path hides.
+[Lab 3](./gpu-partitioning.md) proves the same isolation property on a cluster where the **GPU Operator** provides the driver and container toolkit, and HAMi's device plugin is layered on top. This lab takes the other supported path: **no GPU Operator at all**. HAMi brings its own device plugin, the NVIDIA Container Toolkit is installed directly on the host, and `nvidia` is made the **default** containerd runtime so HAMi-core is injected into every GPU Pod. This is the leaner setup you would use on edge nodes, bare-metal boxes, or cheap rented GPU VMs - and it surfaces the mechanism (Step 7) that the Operator path hides.
 
 ## What You'll Learn
 
@@ -51,18 +51,18 @@ flowchart LR
 - A fresh cloud VM (Ubuntu 22.04 or later) with **one NVIDIA GPU** and root access. Any card without MIG enabled is the intended target: RTX PRO 6000, RTX A6000, L4, L40/L40S, RTX 4090/3090. Fractioning cards that MIG cannot (or does not) partition is exactly HAMi's use case.
 - The NVIDIA driver working on the host (`nvidia-smi` succeeds). Most GPU VM images ship it.
 - You control the container runtime: a locked-down marketplace container you cannot reconfigure will not work, because HAMi-core is injected through the NVIDIA container runtime.
-- Run everything **on the VM over SSH** — helm and kubectl talk to k3s over localhost, so no flaky remote link.
+- Run everything **on the VM over SSH** - helm and kubectl talk to k3s over localhost, so no flaky remote link.
 - Manifests from [`tutorials/labs/examples/07-hami-isolation-k3s/`](https://github.com/Project-HAMi/website/tree/master/tutorials/labs/examples/07-hami-isolation-k3s)
 
 :::note[Cost]
 
-A working session is well under an hour of GPU time. Non-MIG cards commonly rent for under $1/hour on-demand. GPUs are scarce — the exact card you want is often out of stock; take whichever non-MIG card is available and adjust the slice sizes (a one-line change in the manifests).
+A working session is well under an hour of GPU time. Non-MIG cards commonly rent for under $1/hour on-demand. GPUs are scarce - the exact card you want is often out of stock; take whichever non-MIG card is available and adjust the slice sizes (a one-line change in the manifests).
 
 :::
 
 :::warning[Do not install the GPU Operator]
 
-HAMi ships its own device plugin and [must not coexist with NVIDIA's official device plugin](https://project-hami.io/docs/installation/prerequisites). GPU Operator + HAMi integration is not officially documented ([HAMi #1708](https://github.com/Project-HAMi/HAMi/issues/1708)). If your cluster already runs the Operator, use Lab 3's path instead — or a fresh VM for this one.
+HAMi ships its own device plugin and [must not coexist with NVIDIA's official device plugin](https://project-hami.io/docs/installation/prerequisites). GPU Operator + HAMi integration is not officially documented ([HAMi #1708](https://github.com/Project-HAMi/HAMi/issues/1708)). If your cluster already runs the Operator, use Lab 3's path instead - or a fresh VM for this one.
 
 :::
 
@@ -78,7 +78,7 @@ nvidia-smi -L
 GPU 0: NVIDIA RTX PRO 6000 Blackwell Server Edition (UUID: GPU-3c4a3856-fbb4-1425-9679-aed25f4d2977)
 ```
 
-> One card, visible to the host. If `nvidia-smi` fails, install the driver per the [NVIDIA driver installation guide](https://docs.nvidia.com/datacenter/tesla/driver-installation-guide/) and re-run. On a fresh Ubuntu VM that means the NVIDIA CUDA apt repo and `apt-get install nvidia-open` — Blackwell-generation cards require the **open** kernel modules (driver ≥ 570); with the proprietary module `nvidia-smi` reports `No devices found`.
+> One card, visible to the host. If `nvidia-smi` fails, install the driver per the [NVIDIA driver installation guide](https://docs.nvidia.com/datacenter/tesla/driver-installation-guide/) and re-run. On a fresh Ubuntu VM that means the NVIDIA CUDA apt repo and `apt-get install nvidia-open` - Blackwell-generation cards require the **open** kernel modules (driver ≥ 570); with the proprietary module `nvidia-smi` reports `No devices found`.
 
 ## Step 2: Install the Container Toolkit, Then k3s
 
@@ -121,11 +121,11 @@ nvidia   nvidia    55s
 node/hami-lab-rtx6000 labeled
 ```
 
-> k3s writes an `nvidia` RuntimeClass into its containerd config when the toolkit is present at install time. If it is missing, restart k3s (`systemctl restart k3s`) — see [k3s NVIDIA runtime support](https://docs.k3s.io/advanced#nvidia-container-runtime-support). HAMi's device plugin schedules onto nodes labelled `gpu=on`.
+> k3s writes an `nvidia` RuntimeClass into its containerd config when the toolkit is present at install time. If it is missing, restart k3s (`systemctl restart k3s`) - see [k3s NVIDIA runtime support](https://docs.k3s.io/advanced#nvidia-container-runtime-support). HAMi's device plugin schedules onto nodes labelled `gpu=on`.
 
 ## Step 3: Make nvidia the Default Containerd Runtime
 
-HAMi Pods do not set `runtimeClassName`, so HAMi-core is only injected if the **default** runtime is `nvidia`. Use k3s's own `default-runtime` option — the clean way that works regardless of the containerd config schema. Do **not** hand-edit `config.toml`: the v2 and v3 schemas differ and redeclaring an existing table breaks k3s.
+HAMi Pods do not set `runtimeClassName`, so HAMi-core is only injected if the **default** runtime is `nvidia`. Use k3s's own `default-runtime` option - the clean way that works regardless of the containerd config schema. Do **not** hand-edit `config.toml`: the v2 and v3 schemas differ and redeclaring an existing table breaks k3s.
 
 ```bash
 echo 'default-runtime: nvidia' >> /etc/rancher/k3s/config.yaml
@@ -146,7 +146,7 @@ default_runtime_name = "nvidia"
 
 ## Step 4: Install HAMi
 
-The HAMi scheduler runs a kube-scheduler sidecar whose image tag must match the cluster's Kubernetes **server** version — a mismatch is the most common HAMi install failure. Detect it first:
+The HAMi scheduler runs a kube-scheduler sidecar whose image tag must match the cluster's Kubernetes **server** version - a mismatch is the most common HAMi install failure. Detect it first:
 
 ```bash
 kubectl version | grep Server
@@ -174,7 +174,7 @@ hami-device-plugin-62ck6                  2/2     Running   0          38s
 hami-scheduler-5f5b5589c9-zhgsc           2/2     Running   0          38s
 ```
 
-> Unlike Lab 2 (which disables it), the HAMi **device plugin runs here** — it is the only device plugin on the cluster and it owns the GPU.
+> Unlike Lab 2 (which disables it), the HAMi **device plugin runs here** - it is the only device plugin on the cluster and it owns the GPU.
 
 Verify HAMi registered the card:
 
@@ -190,12 +190,12 @@ kubectl get node hami-lab-rtx6000 -o jsonpath='{.metadata.annotations.hami\.io/n
 
 > Two things worth internalizing:
 >
-> - `nvidia.com/gpu` allocatable is `10` — one physical GPU × `deviceSplitCount` (default 10), the number of Pods that may share the card.
+> - `nvidia.com/gpu` allocatable is `10` - one physical GPU × `deviceSplitCount` (default 10), the number of Pods that may share the card.
 > - The shareable memory (`devmem: 97887` MiB) lives in the `hami.io/node-nvidia-register` annotation, **not** in node allocatable. There is no `nvidia.com/gpumem` in `kubectl describe node`; the HAMi scheduler and webhook account `gpumem`/`gpucores` from this annotation, and HAMi-core enforces them per Pod.
 
 ## Step 5: Two Pods Share One Physical GPU
 
-`share-two-pods.yaml` runs two Pods, each requesting one GPU and an 8000 MiB slice — something stock Kubernetes cannot do (it hands a Pod the whole card):
+`share-two-pods.yaml` runs two Pods, each requesting one GPU and an 8000 MiB slice - something stock Kubernetes cannot do (it hands a Pod the whole card):
 
 ```yaml
 apiVersion: v1
@@ -266,7 +266,7 @@ Tue Jul  7 10:25:15 2026
 +-----------------------------------------+------------------------+----------------------+
 ```
 
-> The Memory column reads **8000MiB**, not the card's real 97887MiB. HAMi-core rewrites the card size the container sees. Note `MIG M.: Disabled` — the sharing here is HAMi's software slice, not a hardware partition.
+> The Memory column reads **8000MiB**, not the card's real 97887MiB. HAMi-core rewrites the card size the container sees. Note `MIG M.: Disabled` - the sharing here is HAMi's software slice, not a hardware partition.
 
 Second, does the cap actually hold? Compile and run a tiny allocator that `cudaMalloc`s 256 MiB at a time until refused:
 
@@ -298,9 +298,9 @@ cudaMalloc refused after 7424 MiB allocated: out of memory
 [HAMI-core ERROR (pid:54 thread=133390658244608 allocator.c:52)]: Device 0 OOM 8629780480 / 8388608000
 ```
 
-> This is the proof, and it is a contradiction: the Pod hit "out of memory" at ~7.4 GB while the physical card still had ~82 GB free. The refusal came from **HAMI-core** (see the error line: it tried to use 8629780480 bytes against the 8388608000-byte limit — 8388608000 B is exactly 8000 MiB), not from the hardware. Only a software cap intercepting CUDA calls can do that. State it as "allocations beyond the slice are refused" — the exact boundary depends on allocator and CUDA context overhead, so do not assert an exact byte count. Repeat for `hami-share-b` if you like; it behaves identically.
+> This is the proof, and it is a contradiction: the Pod hit "out of memory" at ~7.4 GB while the physical card still had ~82 GB free. The refusal came from **HAMI-core** (see the error line: it tried to use 8629780480 bytes against the 8388608000-byte limit - 8388608000 B is exactly 8000 MiB), not from the hardware. Only a software cap intercepting CUDA calls can do that. State it as "allocations beyond the slice are refused" - the exact boundary depends on allocator and CUDA context overhead, so do not assert an exact byte count. Repeat for `hami-share-b` if you like; it behaves identically.
 
-Now prove the card's memory is one shared, finite budget. `oversubscribe-pending.yaml` requests a 90000 MiB slice — it would fit an empty 96 GB card, but not beside the two 8000 MiB slices already held (97887 − 16000 ≈ 82000 MiB free):
+Now prove the card's memory is one shared, finite budget. `oversubscribe-pending.yaml` requests a 90000 MiB slice - it would fit an empty 96 GB card, but not beside the two 8000 MiB slices already held (97887 − 16000 ≈ 82000 MiB free):
 
 ```bash
 kubectl apply -f oversubscribe-pending.yaml
@@ -319,7 +319,7 @@ Events:
   Warning  FilteringFailed   16s (x2 over 16s)  hami-scheduler  1 nodes CardInsufficientMemory(hami-lab-rtx6000)
 ```
 
-> `Pending` with `CardInsufficientMemory` — contrast Step 5, where the same scheduler logged `FilteringSucceed`. Two things must be right or this "fails" by scheduling instead of staying Pending: the request must be sized for **your** card (above the free space beside the slices, below the whole card — see the manifest comment), and the two share Pods must still be `Running` (they hold the slices; the manifests use `sleep infinity` so they do not quietly complete mid-lab).
+> `Pending` with `CardInsufficientMemory` - contrast Step 5, where the same scheduler logged `FilteringSucceed`. Two things must be right or this "fails" by scheduling instead of staying Pending: the request must be sized for **your** card (above the free space beside the slices, below the whole card - see the manifest comment), and the two share Pods must still be `Running` (they hold the slices; the manifests use `sleep infinity` so they do not quietly complete mid-lab).
 
 ## Step 7: Surface the Mechanism
 
@@ -340,11 +340,11 @@ total 684
 -rwxr-xr-x 1 root root  684264 Jul  7 10:23 libvgpu.so
 ```
 
-> The whole mechanism in a few lines: `libvgpu.so` (HAMi-core) is mounted into the Pod and registered in `/etc/ld.so.preload`, so it is loaded into **every** process in the container, and HAMi-core reads its cap from `CUDA_DEVICE_MEMORY_LIMIT_0`. Every CUDA driver call the application makes passes through this library, which is where the Step 6 refusal came from. (`CUDA_DEVICE_SM_LIMIT=0` means no compute throttle was requested — the Pods set no `gpucores`; the shared-cache file is how HAMi-core instances account usage across processes.) This is the same `CUDA_DEVICE_MEMORY_LIMIT` mechanism NVIDIA's KAI Scheduler [adopted in June 2026](https://github.com/NVIDIA/KAI-Scheduler/pull/60) for its fractional-GPU memory isolation. The exact variable names and paths are HAMi-version dependent — record what you actually see.
+> The whole mechanism in a few lines: `libvgpu.so` (HAMi-core) is mounted into the Pod and registered in `/etc/ld.so.preload`, so it is loaded into **every** process in the container, and HAMi-core reads its cap from `CUDA_DEVICE_MEMORY_LIMIT_0`. Every CUDA driver call the application makes passes through this library, which is where the Step 6 refusal came from. (`CUDA_DEVICE_SM_LIMIT=0` means no compute throttle was requested - the Pods set no `gpucores`; the shared-cache file is how HAMi-core instances account usage across processes.) This is the same `CUDA_DEVICE_MEMORY_LIMIT` mechanism NVIDIA's KAI Scheduler [adopted in June 2026](https://github.com/NVIDIA/KAI-Scheduler/pull/60) for its fractional-GPU memory isolation. The exact variable names and paths are HAMi-version dependent - record what you actually see.
 
 :::note[What this is, and is not]
 
-This is **software isolation**: user-space CUDA interception. It is not the hardware fault isolation of MIG — a misbehaving kernel is constrained by interception, not by a hardware partition. Treat it as a scheduling-and-accounting guarantee with runtime enforcement, not a security boundary. This lab also does not measure compute-throttling accuracy or noisy-neighbour interference under sustained load; see Lab 3's Step 5 for `gpucores` behavior.
+This is **software isolation**: user-space CUDA interception. It is not the hardware fault isolation of MIG - a misbehaving kernel is constrained by interception, not by a hardware partition. Treat it as a scheduling-and-accounting guarantee with runtime enforcement, not a security boundary. This lab also does not measure compute-throttling accuracy or noisy-neighbour interference under sustained load; see Lab 3's Step 5 for `gpucores` behavior.
 
 :::
 
@@ -355,7 +355,7 @@ kubectl delete pod hami-share-a hami-share-b hami-oversubscribe
 helm -n kube-system uninstall hami
 ```
 
-If you rented the VM for this lab, capture your outputs and tear the instance down — the meter is running.
+If you rented the VM for this lab, capture your outputs and tear the instance down - the meter is running.
 
 ```bash
 /usr/local/bin/k3s-uninstall.sh   # optional: remove k3s entirely
@@ -374,7 +374,7 @@ If you rented the VM for this lab, capture your outputs and tear the instance do
 
 ## Next Steps
 
-- Run [Lab 2: Local Fake GPU](./local-fake-gpu.md) to study the scheduling half of this story for free, with no GPU — the sim proves the placement decision, this lab proves enforcement.
+- Run [Lab 2: Local Fake GPU](./local-fake-gpu.md) to study the scheduling half of this story for free, with no GPU - the sim proves the placement decision, this lab proves enforcement.
 - Compare with [Lab 3: GPU Partitioning](./gpu-partitioning.md), which reaches the same isolation proof via the GPU Operator path and adds `gpucores` compute throttling.
 - Read [HAMi Cluster Architecture](/docs/core-concepts/hami-architecture) to map the webhook → scheduler → device plugin → HAMi-core chain you just exercised end to end.
 
