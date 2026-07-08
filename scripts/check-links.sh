@@ -49,7 +49,7 @@ PY
 npx --yes sirv-cli build -D -H "${host}" -p "${port}" > "${tmpdir}/sirv.log" 2>&1 &
 server_pid=$!
 
-for _ in $(seq 1 30); do
+for _ in $(seq 1 60); do
   if curl -fsS "${root_url}/" >/dev/null 2>&1; then
     break
   fi
@@ -57,13 +57,27 @@ for _ in $(seq 1 30); do
 done
 
 curl -fsS "${root_url}/" >/dev/null 2>&1 || {
+  echo "Local server did not start within 60s. sirv log:"
   cat "${tmpdir}/sirv.log"
   exit 1
 }
 
+tmp_linkinator="${tmpdir}/linkinator.log"
+
+set +e
 xargs -d '\n' npx --yes linkinator "${root_url}" \
   --recurse \
   --concurrency 10 \
   --retry-errors \
   --retry-errors-count 2 \
-  --verbosity error < "${tmpdir}/skip-args.txt"
+  --verbosity error < "${tmpdir}/skip-args.txt" > "${tmp_linkinator}" 2>&1
+linkinator_exit=$?
+set -e
+
+if [[ "${linkinator_exit}" -ne 0 ]]; then
+  echo "Linkinator failed with exit code ${linkinator_exit}. Output:"
+  cat "${tmp_linkinator}"
+  echo "End of linkinator output. sirv log:"
+  cat "${tmpdir}/sirv.log"
+  exit "${linkinator_exit}"
+fi
