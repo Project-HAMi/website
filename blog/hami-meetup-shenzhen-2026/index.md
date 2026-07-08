@@ -3,7 +3,17 @@ title: "HAMi Meetup Shenzhen 2026 Recap"
 date: "2026-04-25"
 description: "HAMi Meetup Shenzhen was held on April 25, 2026. This article is available in Chinese only."
 authors: [hami_community]
-tags: ["Meetup"]
+tags:
+  [
+    "HAMi",
+    "Meetup",
+    "Shenzhen",
+    "GPU Virtualization",
+    "Heterogeneous Compute Scheduling",
+    "DRA",
+    "Cloud Native",
+    "AI Infrastructure",
+  ]
 unlisted: true
 ---
 

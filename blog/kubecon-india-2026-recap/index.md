@@ -44,7 +44,7 @@ The demo illustrated how HAMi and vCluster together support practical multi-tena
 
 Throughout the Project Pavilion, visitors experienced two hands-on demonstrations highlighting real-world AI inference on Kubernetes.
 
-For readers who want to reproduce parts of the vLLM workflow, see the [HAMi vLLM lab](https://project-hami.io/tutorials/labs/hami-vllm).
+For readers who want to reproduce parts of the vLLM workflow, see the [HAMi vLLM lab](/tutorials/labs/hami-vllm).
 
 ### Demo 1: Production AI Inference with vLLM and SGLang
 

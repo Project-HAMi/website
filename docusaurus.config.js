@@ -2,6 +2,7 @@ const { themes } = require("prism-react-renderer");
 const lightTheme = themes.github;
 const darkTheme = themes.dracula;
 const defaultLocale = "en";
+const siteUrl = (process.env.DOCUSAURUS_SITE_URL || "https://project-hami.io").replace(/\/$/, "");
 
 async function localizedBlogPlugin(context, opts) {
   const p = await require("@docusaurus/plugin-content-blog").default(context, opts);
@@ -32,7 +33,7 @@ localizedBlogPlugin.validateOptions = require("@docusaurus/plugin-content-blog")
 module.exports = {
   title: "HAMi",
   tagline: "Heterogeneous AI Computing Virtualization Middleware",
-  url: "https://project-hami.io",
+  url: siteUrl,
   baseUrl: "/",
   onBrokenLinks: "throw",
   trailingSlash: false,
@@ -135,7 +136,7 @@ module.exports = {
       tagName: "link",
       attributes: {
         rel: "canonical",
-        href: "https://project-hami.io/",
+        href: `${siteUrl}/`,
       },
     },
     {

@@ -16,7 +16,7 @@ tags: ["CNCF", "Incubating"]
 
 HAMi 是面向 Kubernetes 的异构算力虚拟化与调度中间件，通过容器级硬隔离精细切分 GPU 显存与算力，让多个工作负载安全共享同一张加速器。项目由 [张潇](https://github.com/wawa0210)、[李孟轩](https://github.com/archlitchi) 等维护者发起，在 CNCF 治理下由全球开发者共建。
 
-今天，HAMi 已被数百家组织采用，覆盖 NVIDIA、昇腾、寒武纪、海光、摩尔线程、燧原、昆仑芯、MetaX、AWS Neuron、Vastai 等十余种加速器（见[支持设备列表](https://project-hami.io/docs/userguide/device-supported)），并以 [CNCF 案例研究](/zh/case-studies)的形式记录了招商银行、SNOW Corp.、蔚来、贝壳、DaoCloud、顺丰科技、PREP EDU 等的落地实践，横跨金融、汽车、出行、物流、教育与云服务。HAMi-core 已与 Kubernetes 默认调度器、[Volcano](https://github.com/volcano-sh/volcano/blob/master/docs/user-guide/how_to_use_gpu_sharing.md)、[Kueue](https://github.com/kubernetes-sigs/kueue)、[Koordinator](https://koordinator.sh/docs/user-manuals/device-scheduling-gpu-share-with-hami) 以及 [KAI Scheduler](/zh/blog/hami-core-adopted-by-nvidia-kai-scheduler) 完成集成。
+今天，HAMi 已被数百家组织采用，覆盖 NVIDIA、昇腾、寒武纪、海光、摩尔线程、燧原、昆仑芯、MetaX、AWS Neuron、Vastai 等十余种加速器（见[支持设备列表](/docs/userguide/device-supported)），并以 [CNCF 案例研究](/zh/case-studies)的形式记录了招商银行、SNOW Corp.、蔚来、贝壳、DaoCloud、顺丰科技、PREP EDU 等的落地实践，横跨金融、汽车、出行、物流、教育与云服务。HAMi-core 已与 Kubernetes 默认调度器、[Volcano](https://github.com/volcano-sh/volcano/blob/master/docs/user-guide/how_to_use_gpu_sharing.md)、[Kueue](https://github.com/kubernetes-sigs/kueue)、[Koordinator](https://koordinator.sh/docs/user-manuals/device-scheduling-gpu-share-with-hami) 以及 [KAI Scheduler](/zh/blog/hami-core-adopted-by-nvidia-kai-scheduler) 完成集成。
 
 这一里程碑离不开全球贡献者与社区的共建：HAMi 至今已汇聚来自几十个国家的近 500 名贡献者。[密瓜智能（Dynamia）](https://www.dynamia.ai)、[DaoCloud](https://www.daocloud.io)、[第四范式](https://www.4paradigm.com)、[NVIDIA](https://www.nvidia.com)、[华为云](https://www.huawei.com)，以及众多个人开发者、用户企业与生态伙伴，都作出了不可替代的贡献。
 
