@@ -11,12 +11,12 @@ translated: true
 
 NVIDIA GPU 内置的共享方法包括：时间片、MPS 和 MIG。时间片共享的上下文切换会浪费一些时间，所以我们选择了 MPS 和 MIG。GPU MIG 配置是可变的，用户可以在配置定义中获取 MIG 设备，但当前实现仅在用户需求之前定义了专用配置。这限制了 MIG 的使用。我们希望开发一个自动切片插件，并在用户需要时创建切片。
 对于调度方法，将支持节点级别的 binpack 和 spread。参考 binpack 插件，我们考虑了 CPU、内存、GPU 显存和其他用户定义的资源。
-HAMi 是通过使用 [hami-core](https://github.com/Project-HAMi/HAMi-core) 完成的，这是一个 cuda-hacking 库。但 mig 在全球范围内也被广泛使用。需要一个用于动态-mig 和 hami-core 的统一 API。
+HAMi 是通过使用 [hami-core](https://github.com/Project-HAMi/HAMi-core) 完成的，这是一个 cuda-hacking 库。但 MIG 在全球范围内也被广泛使用。需要一个用于动态-mig 和 hami-core 的统一 API。
 
 ## 目标
 
 - CPU、内存和 GPU 组合调度
-- GPU 动态切片：Hami-core 和 MIG
+- GPU 动态切片：HAMi-core 和 MIG
 - 支持通过 GPU 显存、CPU 和显存的节点级别 binpack 和 spread
 - 不同虚拟化技术的统一 vGPU 池
 - 任务可以选择使用 MIG、使用 HAMi-core 或同时使用两者。
@@ -104,7 +104,7 @@ data:
 
 ## 示例
 
-动态 mig 与 hami 任务兼容，如下例所示：
+动态 MIG 与 HAMi 任务兼容，如下例所示：
 只需设置 `nvidia.com/gpu` 和 `nvidia.com/gpumem`。
 
 ```yaml

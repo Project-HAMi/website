@@ -20,8 +20,8 @@ sidebar_label: 性能测试
 | 测试名称        |                  测试用例                   |
 | --------------- | :-----------------------------------------: |
 | Native          |     Kubernetes + NVIDIA 官方 k8s-device-plugin     |
-| Opensource_v280 | Kubernetes + VGPU k8s-device-plugin，开源版本 v280 |
-| Opensource_v290 | Kubernetes + VGPU k8s-device-plugin，开源版本 v290 |
+| Opensource_v280 | Kubernetes + vGPU k8s-device-plugin，开源版本 v280 |
+| Opensource_v290 | Kubernetes + vGPU k8s-device-plugin，开源版本 v290 |
 
 ## 测试内容
 

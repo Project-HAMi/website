@@ -4,7 +4,7 @@ title: Deploy HAMi using Helm
 
 This guide will cover:
 
-- Configure nvidia container runtime in each GPU nodes
+- Configure NVIDIA container runtime in each GPU nodes
 - Install HAMi using helm
 - Launch a vGPU task
 - Check if the corresponding device resources are limited inside container

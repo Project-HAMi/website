@@ -52,11 +52,11 @@ kubectl describe cm  hami-device-plugin -n kube-system
   - hami-scheduler
   - 'MIG-NODE-A' 上的 hami-device-plugin
 
-## 自定义 mig 配置（可选）
+## 自定义 MIG 配置（可选）
 
-HAMi 目前有一个 [内置的 mig 配置](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/templates/scheduler/device-configmap.yaml) 用于 MIG。
+HAMi 目前有一个 [内置的 MIG 配置](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/templates/scheduler/device-configmap.yaml) 用于 MIG。
 
-你可以按照以下步骤自定义 mig 配置：
+你可以按照以下步骤自定义 MIG 配置：
 
 ### 更改 charts/hami/templates/scheduler 中 'device-configmap.yaml' 的内容，如下所示
 
@@ -158,7 +158,7 @@ spec:
           nvidia.com/gpumem: 8000
 ```
 
-在上面的示例中，任务分配了两个 mig 实例，每个实例至少具有 8G 设备显存。
+在上面的示例中，任务分配了两个 MIG 实例，每个实例至少具有 8G 设备显存。
 
 ## 监控 MIG 实例
 
@@ -177,6 +177,6 @@ nodeGPUMigInstance{deviceidx="1",deviceuuid="GPU-30f90f49-43ab-0a78-bf5c-93ed41e
 
 1. 你无需在 MIG 节点上执行任何操作，所有操作均由 hami-device-plugin 中的 mig-parted 管理。
 
-2. Ampere 架构之前的 Nvidia 设备无法使用 'mig' 模式
+2. Ampere 架构之前的 NVIDIA 设备无法使用 'mig' 模式
 
-3. 你不会在节点上看到任何 mig 资源（即 `nvidia.com/mig-1g.10gb`），hami 对 'mig' 和 'hami-core' 节点使用统一的资源名称。
+3. 你不会在节点上看到任何 MIG 资源（即 `nvidia.com/mig-1g.10gb`），HAMi 对 'mig' 和 'hami-core' 节点使用统一的资源名称。

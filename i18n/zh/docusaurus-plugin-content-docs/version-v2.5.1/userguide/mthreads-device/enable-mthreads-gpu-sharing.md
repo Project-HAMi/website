@@ -38,7 +38,7 @@ translated: true
 
 :::
 
-- 在安装 hami 时设置 'devices.mthreads.enabled = true'
+- 在安装 HAMi 时设置 'devices.mthreads.enabled = true'
 
 ```bash
 helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag={your kubernetes version} --set device.mthreads.enabled=true -n kube-system

@@ -1,5 +1,5 @@
 ---
-title: Volcano vgpu 设备插件用于 Kubernetes
+title: Volcano vGPU 设备插件用于 Kubernetes
 sidebar_label: 如何使用 Volcano vGPU
 translated: true
 ---

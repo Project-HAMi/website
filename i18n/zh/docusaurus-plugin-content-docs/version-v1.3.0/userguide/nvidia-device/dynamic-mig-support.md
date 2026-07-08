@@ -51,11 +51,11 @@ kubectl describe cm  hami-device-plugin -n kube-system
   - hami-scheduler
   - hami-device-plugin on 'MIG-NODE-A'
 
-## Custom mig configuration (Optional)
+## Custom MIG configuration (Optional)
 
-HAMi currently has a [built-in mig configuration](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/templates/scheduler/device-configmap.yaml) for MIG.
+HAMi currently has a [built-in MIG configuration](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/templates/scheduler/device-configmap.yaml) for MIG.
 
-You can customize the mig configuration by following the steps below:
+You can customize the MIG configuration by following the steps below:
 
 ### Change the content of 'device-configmap.yaml' in charts/hami/templates/scheduler, the as follows
 
@@ -167,7 +167,7 @@ spec:
           nvidia.com/gpumem: 8000
 ```
 
-In this example above, the task allocates two mig instances, each with at least 8G device memory.
+In this example above, the task allocates two MIG instances, each with at least 8G device memory.
 
 ## Monitor MIG Instance
 
@@ -186,6 +186,6 @@ nodeGPUMigInstance{deviceidx="1",deviceuuid="GPU-30f90f49-43ab-0a78-bf5c-93ed41e
 
 1. You don't need to do anything on MIG node, all are managed by mig-parted in hami-device-plugin.
 
-2. Nvidia devices before Ampere architect can't use 'mig' mode
+2. NVIDIA devices before Ampere architect can't use 'mig' mode
 
-3. You won't see any mig resources(ie, `nvidia.com/mig-1g.10gb`) on node, hami uses a unified resource name for both 'mig' and 'hami-core' node
+3. You won't see any MIG resources(ie, `nvidia.com/mig-1g.10gb`) on node, HAMi uses a unified resource name for both 'mig' and 'hami-core' node

@@ -5,7 +5,7 @@ translated: true
 
 本指南将涵盖：
 
-- 在每个 GPU 节点中配置 nvidia 容器运行时
+- 在每个 GPU 节点中配置 NVIDIA 容器运行时
 - 使用 helm 安装 HAMi
 - 启动 vGPU 任务
 - 检查容器内相应的设备资源是否受限

@@ -1,5 +1,5 @@
 ---
-title: Default vgpu job
+title: Default vGPU job
 ---
 
 ## Job description

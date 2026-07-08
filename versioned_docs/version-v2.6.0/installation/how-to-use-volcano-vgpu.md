@@ -1,5 +1,5 @@
 ---
-title: Use volcano vgpu
+title: Use volcano vGPU
 ---
 
 # Volcano vGPU device plugin for Kubernetes

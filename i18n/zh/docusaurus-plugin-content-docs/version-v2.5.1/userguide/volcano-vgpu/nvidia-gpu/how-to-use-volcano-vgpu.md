@@ -8,11 +8,11 @@ translated: true
 :::note
 
 使用 volcano-vgpu 时，你*不需要*安装 HAMi，只需使用
-[Volcano vgpu 设备插件](https://github.com/Project-HAMi/volcano-vgpu-device-plugin) 就足够了。它可以为由 volcano 管理的 NVIDIA 设备提供设备共享机制。
+[Volcano vGPU 设备插件](https://github.com/Project-HAMi/volcano-vgpu-device-plugin) 就足够了。它可以为由 volcano 管理的 NVIDIA 设备提供设备共享机制。
 
-这基于 [Nvidia 设备插件](https://github.com/NVIDIA/k8s-device-plugin)，使用 [HAMi-core](https://github.com/Project-HAMi/HAMi-core) 支持 GPU 卡的硬隔离。
+这基于 [NVIDIA 设备插件](https://github.com/NVIDIA/k8s-device-plugin)，使用 [HAMi-core](https://github.com/Project-HAMi/HAMi-core) 支持 GPU 卡的硬隔离。
 
-Volcano vgpu 仅在 volcano > 1.9 中可用
+Volcano vGPU 仅在 volcano > 1.9 中可用
 
 :::
 
@@ -91,9 +91,9 @@ status:
     volcano.sh/gpu-number: "10"   # vGPU 资源
 ```
 
-### 运行 VGPU 作业
+### 运行 vGPU 作业
 
-可以通过在 resource.limit 中设置 "volcano.sh/vgpu-number"、"volcano.sh/vgpu-cores" 和 "volcano.sh/vgpu-memory" 来请求 VGPU。
+可以通过在 resource.limit 中设置 "volcano.sh/vgpu-number"、"volcano.sh/vgpu-cores" 和 "volcano.sh/vgpu-memory" 来请求 vGPU。
 
 ```shell script
 $ cat <<EOF | kubectl apply -f -
