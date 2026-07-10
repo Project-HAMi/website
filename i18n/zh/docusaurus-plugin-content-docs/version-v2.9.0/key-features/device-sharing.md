@@ -16,7 +16,7 @@ HAMi 的设备共享能力包括：
 - **无侵入式控制：** 无需修改现有程序即可实现资源分配管理。
 - **动态 MIG 支持：** 支持通过 MIG 切片动态调整 MIG，实现动态 MIG 切片能力。
 
-![HAMi 设备共享示例，展示多个任务共享单个 GPU](/img/docs/common/key-features/example.png)
+![HAMi 设备共享示例，展示多个任务共享单个 GPU](/img/docs/zh/key-features/example.svg)
 
 ## 优势 {#benefits}
 

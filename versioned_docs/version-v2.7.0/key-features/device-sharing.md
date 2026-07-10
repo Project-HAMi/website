@@ -16,7 +16,7 @@ HAMi's device sharing enables:
 - **Non-intrusive control:** Requires zero changes to existing programs while managing resource allocation.
 - **Dynamic MIG support:** Supports on-the-fly MIG adjustments using mig-parted for dynamic-mig.
 
-![HAMi device sharing example showing multiple tasks sharing a single GPU](/img/docs/common/key-features/example.png)
+![HAMi device sharing example showing multiple tasks sharing a single GPU](/img/docs/en/key-features/example.svg)
 
 ## Benefits {#benefits}
 
