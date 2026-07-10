@@ -1,6 +1,6 @@
 ---
 title: "HAMi-core 被 NVIDIA KAI Scheduler 采用：GPU 共享正式迈入硬隔离时代"
-date: 2026-06-20
+date: "2026-06-20"
 description: "两项核心 PR 已合并进入 NVIDIA KAI Scheduler 主干，HAMi 的 GPU 显存硬隔离能力将成为 KAI Scheduler 下个版本的内置特性。云原生 GPU 资源调度正式从「软共享」迈入「硬隔离」时代。"
 authors: [hami_community]
 tags: ["HAMi", "NVIDIA", "KAI Scheduler", "GPU 共享", "硬隔离", "Kubernetes", "云原生"]

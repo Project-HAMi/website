@@ -1,5 +1,6 @@
 ---
 title: 介绍 HAMi
+date: "2024-12-18"
 authors: [hami_community]
 slug: introducing-hami
 tags: [介绍, GPU 共享, Kubernetes]
