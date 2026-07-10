@@ -1,4 +1,5 @@
 import React from "react";
+import useBaseUrl from "@docusaurus/useBaseUrl";
 import styles from "../pages/styles.module.css";
 
 function Feature({ imgUrl, title, description }) {
