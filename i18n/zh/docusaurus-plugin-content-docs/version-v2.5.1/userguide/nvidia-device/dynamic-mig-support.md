@@ -132,7 +132,7 @@ HAMi 目前有一个 [内置的 MIG 配置](https://github.com/Project-HAMi/HAMi
           - name: 7g.79gb
             memory: 80896
             count: 1
-  ```
+```
 
 :::note
 
