@@ -125,21 +125,6 @@ module.exports = {
         "window.dataLayer=window.dataLayer||[];if(typeof window.gtag!=='function'){window.gtag=function(){window.dataLayer.push(arguments);};}",
     },
     {
-      tagName: "meta",
-      attributes: {
-        name: "description",
-        content:
-          "HAMi is an open-source Kubernetes-native virtualization middleware for heterogeneous AI accelerators.",
-      },
-    },
-    {
-      tagName: "link",
-      attributes: {
-        rel: "canonical",
-        href: `${siteUrl}/`,
-      },
-    },
-    {
       tagName: "link",
       attributes: {
         rel: "apple-touch-icon",
