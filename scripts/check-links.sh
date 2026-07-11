@@ -175,18 +175,31 @@ curl -fsS "${root_url}/" >/dev/null 2>&1 || {
 
 mapfile -t skip_args < "${tmpdir}/skip-args.txt"
 
-set +e
+run_linkinator() {
+  node "${linkinator_cli}" "${root_url}" \
+    --recurse \
+    --concurrency 10 \
+    --retry-errors \
+    --retry-errors-count 2 \
+    --verbosity none \
+    --format json \
+    "${skip_args[@]}" > "${tmpdir}/linkinator.json" 2> "${tmpdir}/linkinator.stderr"
+}
+
 # The human-readable formatter can fail without surfacing the offender URL under Node 20.
 # Use the direct CLI + JSON path and print our own summary instead.
-node "${linkinator_cli}" "${root_url}" \
-  --recurse \
-  --concurrency 10 \
-  --retry-errors \
-  --retry-errors-count 2 \
-  --verbosity none \
-  --format json \
-  "${skip_args[@]}" > "${tmpdir}/linkinator.json" 2> "${tmpdir}/linkinator.stderr"
-linkinator_exit=$?
+set +e
+for attempt in 1 2 3; do
+  run_linkinator
+  linkinator_exit=$?
+  # linkinator can crash before writing any JSON (e.g. an unsettled top-level await
+  # in its own CLI). That crash is unrelated to real links, so retry a few times
+  # instead of failing the whole check on tool flakiness.
+  if [[ "${linkinator_exit}" -eq 0 ]] || [[ -s "${tmpdir}/linkinator.json" ]]; then
+    break
+  fi
+  echo "Linkinator produced no output on attempt ${attempt}, retrying..."
+done
 set -e
 
 if [[ "${linkinator_exit}" -ne 0 ]]; then
