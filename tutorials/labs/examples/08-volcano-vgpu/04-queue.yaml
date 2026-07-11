@@ -1,0 +1,13 @@
+apiVersion: scheduling.volcano.sh/v1beta1
+kind: Queue
+metadata:
+  name: gpu-small-queue
+spec:
+  weight: 1
+  reclaimable: false
+  capability:
+    cpu: "2"
+    memory: "4Gi"
+    volcano.sh/vgpu-number: "2"
+    volcano.sh/vgpu-memory: "4000"
+    volcano.sh/vgpu-cores: "60"
