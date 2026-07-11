@@ -101,7 +101,7 @@ Volcano Scheduler decides whether and where the workload can run. The device plu
 
 :::warning Device-plugin exclusivity
 
-Do not continue if another component already owns the same GPU node—for example the NVIDIA device plugin, the standard HAMi device plugin, or a second Volcano vGPU device plugin. Multiple plugins can register conflicting resources and make the results impossible to interpret.
+Do not continue if another component already owns the same GPU node, for example the NVIDIA device plugin, the standard HAMi device plugin, or a second Volcano vGPU device plugin. Multiple plugins can register conflicting resources and make the results impossible to interpret.
 
 :::
 
