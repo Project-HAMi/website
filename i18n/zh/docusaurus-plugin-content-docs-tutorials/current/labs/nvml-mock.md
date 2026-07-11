@@ -44,15 +44,15 @@ import Tabs from '@theme/Tabs'; import TabItem from '@theme/TabItem';
 ```mermaid
 %% title: Fake-GPU 调度安装全景图
 flowchart LR
-    Step1["步骤 1\n创建 kind 集群"] --> Step2["步骤 2\n构建并部署 nvml-mock"]
-    Step2 --> Step3["步骤 3\n基于 main 构建 HAMi"]
-    Step3 --> Step4["步骤 4\n部署 HAMi"]
-    Step4 --> Step5["步骤 5\n验证 GPU 资源"]
-    Step5 --> Step6["步骤 6\n基础 GPU 调度"]
-    Step6 --> Step7["步骤 7\nGPU 共享"]
-    Step7 --> Step8["步骤 8\n显存与算力限制"]
-    Step8 --> Step9["步骤 9\n百分比显存"]
-    Step9 --> Step10["步骤 10\n多 GPU 分配"]
+    Step1["步骤 1<br/>创建 kind 集群"] --> Step2["步骤 2<br/>构建并部署 nvml-mock"]
+    Step2 --> Step3["步骤 3<br/>基于 main 构建 HAMi"]
+    Step3 --> Step4["步骤 4<br/>部署 HAMi"]
+    Step4 --> Step5["步骤 5<br/>验证 GPU 资源"]
+    Step5 --> Step6["步骤 6<br/>基础 GPU 调度"]
+    Step6 --> Step7["步骤 7<br/>GPU 共享"]
+    Step7 --> Step8["步骤 8<br/>显存与算力限制"]
+    Step8 --> Step9["步骤 9<br/>百分比显存"]
+    Step9 --> Step10["步骤 10<br/>多 GPU 分配"]
 ```
 
 | 步骤                 | 目的                             | 解决什么问题            |
