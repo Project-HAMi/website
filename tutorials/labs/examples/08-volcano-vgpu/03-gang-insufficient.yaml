@@ -1,0 +1,26 @@
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+  name: vcjob-vgpu-gang-insufficient
+  namespace: volcano-demo
+spec:
+  schedulerName: volcano
+  queue: default
+  minAvailable: 2
+  maxRetry: 1
+  tasks:
+    - name: vgpu-worker
+      replicas: 2
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: cuda
+              image: nvidia/cuda:11.0.3-base-ubuntu18.04
+              imagePullPolicy: IfNotPresent
+              command: ["bash", "-lc", "nvidia-smi; sleep 3600"]
+              resources:
+                limits:
+                  volcano.sh/vgpu-number: 1
+                  volcano.sh/vgpu-memory: 6000
+                  volcano.sh/vgpu-cores: 30

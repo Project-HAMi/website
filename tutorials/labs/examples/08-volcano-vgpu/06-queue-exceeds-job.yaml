@@ -1,0 +1,24 @@
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+  name: vcjob-vgpu-queue-exceeds
+  namespace: volcano-demo
+spec:
+  schedulerName: volcano
+  queue: gpu-small-queue
+  minAvailable: 2
+  tasks:
+    - name: vgpu-worker
+      replicas: 2
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: cuda
+              image: nvidia/cuda:11.0.3-base-ubuntu18.04
+              command: ["bash", "-lc", "nvidia-smi; sleep 60"]
+              resources:
+                limits:
+                  volcano.sh/vgpu-number: 1
+                  volcano.sh/vgpu-memory: 3000
+                  volcano.sh/vgpu-cores: 30

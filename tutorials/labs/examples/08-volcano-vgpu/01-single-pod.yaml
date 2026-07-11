@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: volcano-vgpu-single
+  namespace: volcano-demo
+spec:
+  schedulerName: volcano
+  restartPolicy: Never
+  containers:
+    - name: cuda
+      image: nvidia/cuda:11.0.3-base-ubuntu18.04
+      imagePullPolicy: IfNotPresent
+      command:
+        - bash
+        - -lc
+        - |
+          echo "===== GPU ENV ====="
+          env | grep -E 'CUDA_DEVICE|NVIDIA_VISIBLE_DEVICES|VGPU|VOLCANO' || true
+          echo "===== NVIDIA SMI ====="
+          nvidia-smi
+          sleep 3600
+      resources:
+        limits:
+          volcano.sh/vgpu-number: 1
+          volcano.sh/vgpu-memory: 2000
+          volcano.sh/vgpu-cores: 30

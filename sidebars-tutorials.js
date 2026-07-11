@@ -46,6 +46,11 @@ module.exports = {
           id: "labs/hami-isolation-k3s",
           customProps: { level: "Intermediate", duration: "about 45 minutes" },
         },
+        {
+          type: "doc",
+          id: "labs/volcano-vgpu-gang-queue",
+          customProps: { level: "Advanced", duration: "about 60 minutes" },
+        },
       ],
     },
   ],
