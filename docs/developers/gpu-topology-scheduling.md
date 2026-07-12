@@ -26,7 +26,7 @@ Set the environment variable `ENABLE_TOPOLOGY_SCORE: 'true'` in the DaemonSet `h
 
 ### 2. Global scheduler settings
 
-Add `gpu-scheduler-policy=topology-aware` when starting `hami-scheduler`.
+Add `--gpu-scheduler-policy=topology-aware` when starting `hami-scheduler`.
 
 ### 3. Pod-level annotation
 
