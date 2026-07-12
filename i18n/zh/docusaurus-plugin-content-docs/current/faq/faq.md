@@ -211,7 +211,7 @@ HAMi 作为 [scheduler extender](https://github.com/kubernetes/design-proposals-
 
 ## HAMi 是否兼容 NVIDIA GPU Operator 和 DCGM 指标？
 
-HAMi 的设备插件和 GPU Operator 的设备插件都向 kubelet 上报 `nvidia.com/gpu`——在同一节点上同时运行会导致冲突。需禁用 GPU Operator 的设备插件：
+HAMi 的设备插件和 GPU Operator 的设备插件都向 kubelet 上报 `nvidia.com/gpu`，在同一节点上同时运行会导致冲突。需禁用 GPU Operator 的设备插件：
 
 ```yaml
 devicePlugin:
