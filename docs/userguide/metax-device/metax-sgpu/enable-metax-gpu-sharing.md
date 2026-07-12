@@ -3,7 +3,7 @@ title: Enable MetaX GPU sharing
 translated: true
 ---
 
-**HAMi now supports metax.com/gpu by implementing most device-sharing features as NVIDIA GPUs**, device-sharing features include the following:
+**HAMi now supports metax-tech.com/gpu by implementing most device-sharing features as NVIDIA GPUs**, device-sharing features include the following:
 
 - **GPU Sharing**: Tasks can request a fraction of a GPU rather than the entire GPU card, allowing multiple tasks to share the same GPU.
 

@@ -88,7 +88,7 @@ status:
     hugepages-2Mi: "0"
     memory: 8174332Ki
     pods: "110"
-    volcano.sh/gpu-number: "10" # vGPU 资源
+    volcano.sh/vgpu-number: "10" # vGPU 资源
   capacity:
     cpu: "4"
     ephemeral-storage: 123722704Ki
@@ -96,8 +96,8 @@ status:
     hugepages-2Mi: "0"
     memory: 8174332Ki
     pods: "110"
-    volcano.sh/gpu-memory: "89424"
-    volcano.sh/gpu-number: "10" # vGPU 资源
+    volcano.sh/vgpu-memory: "89424"
+    volcano.sh/vgpu-number: "10" # vGPU 资源
 ```
 
 ### 运行 vGPU 作业

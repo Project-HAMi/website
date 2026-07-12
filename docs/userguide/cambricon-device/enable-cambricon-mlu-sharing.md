@@ -89,7 +89,7 @@ spec:
 
 1. **Init containers are not supported for MLU sharing.**
 
-   Pods with the `cambricon.com/mlumem` resource specified in an init container will not be scheduled.
+   Pods with the `cambricon.com/mlu.smlu.vmemory` resource specified in an init container will not be scheduled.
 
 2. **Resource constraints only apply to shared mode (`vmlu=1`).**
 
