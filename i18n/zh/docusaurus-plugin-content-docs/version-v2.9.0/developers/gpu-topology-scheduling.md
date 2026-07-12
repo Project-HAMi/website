@@ -38,7 +38,7 @@ metadata:
 
 提交 Pod 后，检查 `hami-scheduler` 的日志（日志级别需大于 5）：
 
-```
+```plaintext
 I0703 08:34:27.032644  1 device.go:708] "device allocate success" pod="default/testpod" best device combination={"NVIDIA":[{"Idx":7,"UUID":"GPU-dsaf","Type":"NVIDIA","Usedmem":1024,"Usedcores":0},{"Idx":5,"UUID":"GPU-gads","Type":"NVIDIA","Usedmem":1024,"Usedcores":0}]}
 ```
 
