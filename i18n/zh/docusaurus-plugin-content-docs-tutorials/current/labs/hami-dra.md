@@ -22,7 +22,7 @@ HAMi DRA 驱动尚处于快速发展阶段。本实验安装的是已在 Tesla T
 
 :::
 
-在 [实验 3](./gpu-partitioning.md) 中，你使用 HAMi 的扩展资源（`nvidia.com/gpumem`、`nvidia.com/gpucores`）对 GPU 进行了切片。本实验通过**动态资源分配（Dynamic Resource Allocation，DRA）**实现相同的效果——这是在 v1.34 中正式发布（GA）的 Kubernetes 原生设备 API。Pod 不再使用不透明的资源名称，而是通过 `ResourceClaim` 以结构化的、经过 Schema 验证的容量请求来申请设备。
+在 [实验 3](./gpu-partitioning.md) 中，你使用 HAMi 的扩展资源（`nvidia.com/gpumem`、`nvidia.com/gpucores`）对 GPU 进行了切片。本实验通过**动态资源分配（Dynamic Resource Allocation，DRA）**实现相同的效果，这是在 v1.34 中正式发布（GA）的 Kubernetes 原生设备 API。Pod 不再使用不透明的资源名称，而是通过 `ResourceClaim` 以结构化的、经过 Schema 验证的容量请求来申请设备。
 
 ## 为什么 DRA 很重要
 
@@ -285,5 +285,5 @@ kubectl delete deviceclass hami-core-gpu.project-hami.io
 
 - 在同一集群上运行[实验 3](./gpu-partitioning.md)，并排比较两种分配路径：扩展资源目前可在任何 Kubernetes 版本上使用，而 DRA 则提供了类型化设备选择、Schema 验证的容量请求以及原生调度器记账。
 - 尝试修改 Claim：在 `setup.yaml` 中更改 `cores` 和 `memory`，请求超过设备剩余容量的值，观察 Claim 保持 `pending` 而非过度分配。
-- 在多 GPU 节点上，尝试 `double-gpu-0` Claim：它在单个 Claim 中请求两个具有不同容量的设备——这是扩展资源无法表达的。
+- 在多 GPU 节点上，尝试 `double-gpu-0` Claim：它在单个 Claim 中请求两个具有不同容量的设备，这是扩展资源无法表达的。
 - 驱动仓库现已提供 Helm Chart（`chart/hami-dra-driver`）；关注 [HAMi DRA 驱动发布](https://github.com/Project-HAMi/k8s-dra-driver/releases)了解本实验何时切换到 Chart，以及 [HAMi v2.10 路线图](https://github.com/Project-HAMi/HAMi/issues/1889)了解 DRA 支持的下一步计划。
