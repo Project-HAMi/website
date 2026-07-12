@@ -78,7 +78,7 @@ npm run build:fast
 npm run check:all
 ```
 
-This runs lint → format check → build in sequence.
+This runs lint, format check, build, and link check in sequence.
 
 ## CI
 
