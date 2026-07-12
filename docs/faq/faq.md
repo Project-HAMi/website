@@ -178,7 +178,7 @@ If the official Device Plugin cannot provide the required information, HAMi deve
 
 ## How does HAMi enforce GPU memory and compute limits?
 
-HAMi injects `libvgpu.so` into containers via `/etc/ld.so.preload`. The library intercepts CUDA memory allocation calls and returns OOM when the `nvidia.com/gpumem` limit is exceeded; compute limits use a token-bucket throttle on kernel launch calls. Applications that bypass the CUDA library (Docker-in-Docker, direct driver API) are not covered. For the full interception flow, see [GPU Virtualization](./core-concepts/gpu-virtualization).
+HAMi injects `libvgpu.so` into containers via `/etc/ld.so.preload`. The library intercepts CUDA memory allocation calls and returns OOM when the `nvidia.com/gpumem` limit is exceeded; compute limits use a token-bucket throttle on kernel launch calls. Applications that bypass the CUDA library (Docker-in-Docker, direct driver API) are not covered. For the full interception flow, see [GPU Virtualization](../core-concepts/gpu-virtualization).
 
 ## How does HAMi vGPU differ from NVIDIA MIG? When should I use each?
 
@@ -194,19 +194,19 @@ HAMi vGPU is software-only with no hardware requirements. NVIDIA MIG is hardware
 | Dynamic reconfiguration | Yes, no node drain needed | Requires MIG profile reconfiguration |
 | Multi-tenant noise isolation | Best-effort | Strong |
 
-Use HAMi vGPU when the GPU does not support MIG, workloads need flexible memory sizes, or dynamic repacking without node drains is needed. Use MIG when hard hardware isolation is a compliance or SLA requirement. HAMi also supports dynamic MIG via `mig-parted`; see [Dynamic MIG Support](./userguide/nvidia-device/dynamic-mig-support).
+Use HAMi vGPU when the GPU does not support MIG, workloads need flexible memory sizes, or dynamic repacking without node drains is needed. Use MIG when hard hardware isolation is a compliance or SLA requirement. HAMi also supports dynamic MIG via `mig-parted`; see [Dynamic MIG Support](../userguide/nvidia-device/dynamic-mig-support).
 
 ## Why does nvidia-smi inside my container show less memory than on the host?
 
-`libvgpu.so` intercepts `nvmlDeviceGetMemoryInfo` and related calls, returning the `nvidia.com/gpumem` limit instead of physical VRAM. This is intentional: workloads that size their allocations based on reported memory (such as vLLM) will use only their budget. The host’s `nvidia-smi` always shows physical memory. See [GPU Virtualization](./core-concepts/gpu-virtualization).
+`libvgpu.so` intercepts `nvmlDeviceGetMemoryInfo` and related calls, returning the `nvidia.com/gpumem` limit instead of physical VRAM. This is intentional: workloads that size their allocations based on reported memory (such as vLLM) will use only their budget. The host’s `nvidia-smi` always shows physical memory. See [GPU Virtualization](../core-concepts/gpu-virtualization).
 
 ## Why is my nvidia.com/gpumem limit not enforced? {#why-is-my-nvidiagpumem-limit-not-enforced}
 
-The four most common causes: `CUDA_DISABLE_CONTROL=true` is set, the workload runs inside Docker-in-Docker, the application calls the GPU driver directly (bypassing `libvgpu.so`), or `nvidia-container-runtime` is not the default runtime on the node. See [Troubleshooting](./troubleshooting) for resolution steps.
+The four most common causes: `CUDA_DISABLE_CONTROL=true` is set, the workload runs inside Docker-in-Docker, the application calls the GPU driver directly (bypassing `libvgpu.so`), or `nvidia-container-runtime` is not the default runtime on the node. See [Troubleshooting](../troubleshooting/troubleshooting.md) for resolution steps.
 
 ## Does HAMi replace kube-scheduler or run alongside it?
 
-HAMi runs alongside kube-scheduler as a [scheduler extender](https://github.com/kubernetes/design-proposals-archive/blob/main/scheduling/scheduler_extender.md) - it does not replace it. The MutatingWebhook sets `schedulerName: hami-scheduler` only on pods requesting HAMi resources; all other pods follow the default scheduler path unchanged. See [Architecture](./core-concepts/architecture).
+HAMi runs alongside kube-scheduler as a [scheduler extender](https://github.com/kubernetes/design-proposals-archive/blob/main/scheduling/scheduler_extender.md) - it does not replace it. The MutatingWebhook sets `schedulerName: hami-scheduler` only on pods requesting HAMi resources; all other pods follow the default scheduler path unchanged. See [Architecture](../core-concepts/architecture).
 
 ## Does HAMi work with vLLM, and what are the known limitations for multi-GPU tensor parallelism?
 
@@ -221,8 +221,8 @@ devicePlugin:
   enabled: false
 ```
 
-DCGM Exporter is not affected and continues to report physical-level counters normally. HAMi’s per-container virtual metrics are separate; see [GPU Utilization Metrics](./developers/gpu-utilization-metrics).
+DCGM Exporter is not affected and continues to report physical-level counters normally. HAMi’s per-container virtual metrics are separate; see [GPU Utilization Metrics](../developers/gpu-utilization-metrics).
 
 ## How do I set up Prometheus and Grafana monitoring for HAMi vGPU metrics?
 
-The `hami-device-plugin` pod on each node exposes per-container vGPU metrics on port `31992` (configurable via `devicePlugin.monitorPort`). See [Grafana Dashboard](./userguide/monitoring/grafana-dashboard) for the full setup including Prometheus scrape config and dashboard import.
+The `hami-device-plugin` pod on each node exposes per-container vGPU metrics on port `31992` (configurable via `devicePlugin.monitorPort`). See [Grafana Dashboard](../userguide/monitoring/grafana-dashboard) for the full setup including Prometheus scrape config and dashboard import.
