@@ -92,7 +92,7 @@ kubectl get all -n kube-system -o wide | grep -i hami
 如果 HAMi Pod 一直处于“Terminating”状态，可以强制删除：
 
 ```bash
-kubectl delete pods -n kube-system -l app=hami --grace-period=0 --force
+kubectl delete pods -n kube-system -l app.kubernetes.io/instance=hami --grace-period=0 --force
 ```
 
 然后重新执行卸载命令。

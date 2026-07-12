@@ -30,7 +30,7 @@ title: 启用天数智芯 GPU 共享
 - 安装 HAMi 时设置 `devices.iluvatar.enabled=true`
 
 ```bash
-helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag={your kubernetes version} --set devices.iluvatar.enabled=true -n kube-system
+helm install hami hami-charts/hami --set scheduler.kubeScheduler.image.tag={your kubernetes version} --set devices.iluvatar.enabled=true -n kube-system
 ```
 
 **说明：** 当前支持的 GPU 型号及资源名称定义如下（位于 [https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/templates/scheduler/device-configmap.yaml](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/templates/scheduler/device-configmap.yaml)）：

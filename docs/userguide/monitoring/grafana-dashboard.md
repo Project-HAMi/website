@@ -25,7 +25,7 @@ The dashboard includes panels for:
 
 ## Prometheus Scrape Config
 
-The `hami-device-plugin` pod on each node exposes metrics on port `31992` (configurable via `devicePlugin.monitorPort`). Add a scrape job:
+The `hami-device-plugin` pod on each node exposes metrics on port `31992` (configurable via `devicePlugin.service.httpPort`). Add a scrape job:
 
 ```yaml
 scrape_configs:

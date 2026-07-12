@@ -24,7 +24,7 @@ Dashboard 包含以下面板：
 
 ## Prometheus 采集配置
 
-每个节点上的 `hami-device-plugin` Pod 在端口 `31992`（可通过 `devicePlugin.monitorPort` 配置）上暴露指标。添加采集任务：
+每个节点上的 `hami-device-plugin` Pod 在端口 `31992`（可通过 `devicePlugin.service.httpPort` 配置）上暴露指标。添加采集任务：
 
 ```yaml
 scrape_configs:

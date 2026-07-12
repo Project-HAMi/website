@@ -25,10 +25,10 @@ kubectl version
 
 ## 安装
 
-确保 `scheduler.kubeScheduler.imageTag` 与你的 Kubernetes 服务器版本匹配。例如，如果你的集群服务器版本是 v1.29.0，请使用以下命令进行部署：
+确保 `scheduler.kubeScheduler.image.tag` 与你的 Kubernetes 服务器版本匹配。例如，如果你的集群服务器版本是 v1.29.0，请使用以下命令进行部署：
 
 ```bash
-helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag=v1.29.0 -n kube-system
+helm install hami hami-charts/hami --set scheduler.kubeScheduler.image.tag=v1.29.0 -n kube-system
 ```
 
 你可以通过编辑[配置](../userguide/configure.md)来自定义安装。

@@ -151,7 +151,7 @@ kubectl exec -it gpu-pod -- nvidia-smi
 2. 容器运行时：确保在 K8s 之外 `sudo ctr run` 或 `docker run` 可以正常工作。
 3. 残留插件：移除冲突的插件：`kubectl delete daemonset nvidia-device-plugin-daemonset -n kube-system --ignore-not-found`。
 4. 节点资源：验证 K8s 是否识别到 GPU：`kubectl get nodes -o jsonpath='{.items[*].status.allocatable}' | grep -i nvidia`。
-5. 调度器层：检查 HAMi 日志：`kubectl logs -n kube-system -l app=hami-scheduler`。
+5. 调度器层：检查 HAMi 日志：`kubectl logs -n kube-system -l app.kubernetes.io/component=hami-scheduler`。
 
 ## 清理
 

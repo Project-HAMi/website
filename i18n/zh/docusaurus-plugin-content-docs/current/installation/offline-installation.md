@@ -46,7 +46,7 @@ scheduler:
 在 `${CHART_PATH}` 目录下执行以下命令：
 
 ```bash
-helm install hami hami --set scheduler.kubeScheduler.imageTag={你的 k8s 服务器版本} -n kube-system
+helm install hami hami --set scheduler.kubeScheduler.image.tag={你的 k8s 服务器版本} -n kube-system
 ```
 
 ## 验证安装

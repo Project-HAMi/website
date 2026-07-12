@@ -35,7 +35,7 @@ helm get values hami -n kube-system > hami-backup-values.yaml
 kubectl get configmap hami-scheduler-device -n kube-system -o yaml > hami-configmap-backup.yaml
 
 # 备份当前状态
-kubectl get all -n kube-system -l app=hami -o yaml > hami-state-backup.yaml
+kubectl get all -n kube-system -l app.kubernetes.io/instance=hami -o yaml > hami-state-backup.yaml
 ```
 
 ### 3. 清理运行中的工作负载
@@ -65,11 +65,11 @@ kubectl patch deployment <deployment-name> -n <namespace> -p '{"spec":{"template
 
 ```bash
 # 查看 Pod 状态
-kubectl get pods -n kube-system -l app=hami
+kubectl get pods -n kube-system -l app.kubernetes.io/instance=hami
 
 # 查看错误日志
-kubectl logs -n kube-system -l app=hami-scheduler --tail=50
-kubectl logs -n kube-system -l app=hami-device-plugin --tail=50
+kubectl logs -n kube-system -l app.kubernetes.io/component=hami-scheduler --tail=50
+kubectl logs -n kube-system -l app.kubernetes.io/component=hami-device-plugin --tail=50
 ```
 
 ## 升级流程
@@ -123,7 +123,7 @@ helm install hami hami-charts/hami -n kube-system
 ### 1. 检查 Pod 状态
 
 ```bash
-kubectl get pods -n kube-system -l app=hami
+kubectl get pods -n kube-system -l app.kubernetes.io/instance=hami
 ```
 
 所有 Pod 应处于 `Running` 状态。
@@ -132,10 +132,10 @@ kubectl get pods -n kube-system -l app=hami
 
 ```bash
 # 检查 scheduler 日志错误
-kubectl logs -n kube-system -l app=hami-scheduler | grep -i "error\|warning" | head -20
+kubectl logs -n kube-system -l app.kubernetes.io/component=hami-scheduler | grep -i "error\|warning" | head -20
 
 # 检查 device plugin 日志
-kubectl logs -n kube-system -l app=hami-device-plugin | grep -i "error" | head -20
+kubectl logs -n kube-system -l app.kubernetes.io/component=hami-device-plugin | grep -i "error" | head -20
 ```
 
 ### 3. 测试 GPU 分配
@@ -188,7 +188,7 @@ kubectl get nodes -o yaml | grep -A 10 "hami.io"
 kubectl describe pod <pod-name>
 
 # 查看 scheduler 日志
-kubectl logs -n kube-system -l app=hami-scheduler | grep -i "pending\|error"
+kubectl logs -n kube-system -l app.kubernetes.io/component=hami-scheduler | grep -i "pending\|error"
 
 # 检查 GPU 资源
 kubectl describe nodes | grep -i "gpu"
@@ -214,7 +214,7 @@ nvidia-smi
 exit
 
 # 重启对应节点的 device plugin
-kubectl delete pods -n kube-system -l app=hami-device-plugin --field-selector spec.nodeName=<node-name>
+kubectl delete pods -n kube-system -l app.kubernetes.io/component=hami-device-plugin --field-selector spec.nodeName=<node-name>
 ```
 
 ### 升级过程中出现 Segmentation Fault

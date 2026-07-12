@@ -77,7 +77,7 @@ watch -n 1 nvidia-smi
 
 ```bash
 kubectl get pods -n kube-system | grep hami
-kubectl logs -n kube-system -l app=hami-scheduler -f
+kubectl logs -n kube-system -l app.kubernetes.io/component=hami-scheduler -f
 ```
 
 ## 资源注解追踪
