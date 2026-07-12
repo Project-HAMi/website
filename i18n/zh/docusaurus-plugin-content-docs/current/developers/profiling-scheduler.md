@@ -68,7 +68,7 @@ go tool pprof https+insecure://<POD_IP>/debug/pprof/allocs
 
 分配性能分析的示例输出：
 
-```
+```bash
 root@hami-scheduler-ffd687cb7-7gqm2:/# /usr/local/go/bin/go tool pprof --seconds 120 https+insecure://10.42.0.24/debug/pprof/allocs
 Fetching profile over HTTP from https+insecure://10.42.0.24/debug/pprof/allocs?seconds=120
 Saved profile in /root/pprof/pprof.scheduler.alloc_objects.alloc_space.inuse_objects.inuse_space.041.pb.gz
