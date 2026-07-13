@@ -100,9 +100,9 @@ metadata:
   name: poddemo
   annotations:
     # 指定使用的 Neuron 设备 (逗号分隔列表)
-    aws.amazon.com/use-gpuuuid: "node1-AWSNeuron-0,node1-AWSNeuron-1"
+    aws.amazon.com/use-neuron-uuid: "node1-AWSNeuron-0,node1-AWSNeuron-1"
     # 或排除特定 Neuron 设备 (逗号分隔列表)
-    aws.amazon.com/nouse-gpuuuid: "node1-AWSNeuron-2,node1-AWSNeuron-3"
+    aws.amazon.com/nouse-neuron-uuid: "node1-AWSNeuron-2,node1-AWSNeuron-3"
 spec:
   # ... 其他 pod 配置
 ```
