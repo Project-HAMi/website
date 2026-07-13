@@ -24,9 +24,7 @@ import FooterLayout from "@theme/Footer/Layout";
 import useBaseUrl from "@docusaurus/useBaseUrl";
 import styles from "./styles.module.css";
 
-function WechatGroupModal({ isOpen, onClose }) {
-  const wechatQr = useBaseUrl("img/community/wechat-assistant-qr.jpg");
-
+function WechatModal({ isOpen, onClose, qrSrc, titleId, title, alt, description }) {
   useEffect(() => {
     if (!isOpen) {
       return undefined;
@@ -59,7 +57,7 @@ function WechatGroupModal({ isOpen, onClose }) {
         className={styles.modal}
         role="dialog"
         aria-modal="true"
-        aria-labelledby="wechat-group-modal-title"
+        aria-labelledby={titleId}
         onClick={(event) => event.stopPropagation()}
       >
         <button
@@ -70,67 +68,11 @@ function WechatGroupModal({ isOpen, onClose }) {
         >
           ×
         </button>
-        <h3 id="wechat-group-modal-title" className={styles.modalTitle}>
-          添加微信小助手，加入 HAMi 微信群
+        <h3 id={titleId} className={styles.modalTitle}>
+          {title}
         </h3>
-        <img className={styles.qrImage} src={wechatQr} alt="HAMi 微信小助手二维码" />
-        <p className={styles.modalDescription}>扫码添加小助手后，会邀请你进入 HAMi 微信群。</p>
-      </div>
-    </div>
-  );
-}
-
-function WechatOfficialModal({ isOpen, onClose }) {
-  const wechatQr = useBaseUrl("img/community/wechat-official-account-qr.jpg");
-
-  useEffect(() => {
-    if (!isOpen) {
-      return undefined;
-    }
-
-    const originalOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
-    const onKeyDown = (event) => {
-      if (event.key === "Escape") {
-        onClose();
-      }
-    };
-
-    document.addEventListener("keydown", onKeyDown);
-
-    return () => {
-      document.body.style.overflow = originalOverflow;
-      document.removeEventListener("keydown", onKeyDown);
-    };
-  }, [isOpen, onClose]);
-
-  if (!isOpen) {
-    return null;
-  }
-
-  return (
-    <div className={styles.modalBackdrop} onClick={onClose} role="presentation">
-      <div
-        className={styles.modal}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="wechat-official-modal-title"
-        onClick={(event) => event.stopPropagation()}
-      >
-        <button
-          type="button"
-          className={styles.closeButton}
-          aria-label="关闭弹窗"
-          onClick={onClose}
-        >
-          ×
-        </button>
-        <h3 id="wechat-official-modal-title" className={styles.modalTitle}>
-          关注 HAMi 微信公众号
-        </h3>
-        <img className={styles.qrImage} src={wechatQr} alt="HAMi 微信公众号二维码" />
-        <p className={styles.modalDescription}>扫码关注 HAMi 公众号，获取社区动态。</p>
+        <img className={styles.qrImage} src={qrSrc} alt={alt} />
+        <p className={styles.modalDescription}>{description}</p>
       </div>
     </div>
   );
@@ -229,6 +171,8 @@ function Footer() {
   const cncfLogoLight = useBaseUrl("img/cncf-color.svg");
   const cncfLogoDark = useBaseUrl("img/cncf-white.svg");
   const cncfLogo = colorMode === "dark" ? cncfLogoDark : cncfLogoLight;
+  const wechatGroupQr = useBaseUrl("img/community/wechat-assistant-qr.jpg");
+  const wechatOfficialQr = useBaseUrl("img/community/wechat-official-account-qr.jpg");
 
   return (
     <>
@@ -249,13 +193,26 @@ function Footer() {
           <span>{isZh ? "HAMi 是 CNCF 孵化项目" : "HAMi is a CNCF Incubating project"}</span>
         </a>
       </div>
-      {i18n.currentLocale === "zh" && (
-        <WechatGroupModal isOpen={isWechatModalOpen} onClose={() => setIsWechatModalOpen(false)} />
+      {isZh && (
+        <WechatModal
+          isOpen={isWechatModalOpen}
+          onClose={() => setIsWechatModalOpen(false)}
+          qrSrc={wechatGroupQr}
+          titleId="wechat-group-modal-title"
+          title="添加微信小助手，加入 HAMi 微信群"
+          alt="HAMi 微信小助手二维码"
+          description="扫码添加小助手后，会邀请你进入 HAMi 微信群。"
+        />
       )}
-      {i18n.currentLocale === "zh" && (
-        <WechatOfficialModal
+      {isZh && (
+        <WechatModal
           isOpen={isWechatOfficialOpen}
           onClose={() => setIsWechatOfficialOpen(false)}
+          qrSrc={wechatOfficialQr}
+          titleId="wechat-official-modal-title"
+          title="关注 HAMi 微信公众号"
+          alt="HAMi 微信公众号二维码"
+          description="扫码关注 HAMi 公众号，获取社区动态。"
         />
       )}
     </>
