@@ -9,6 +9,8 @@ import {
   faGithub,
   faLinkedin,
   faSlack,
+  faXTwitter,
+  faYoutube,
 } from "@fortawesome/free-brands-svg-icons";
 import {
   faBookOpen,
@@ -107,6 +109,11 @@ export default function CommunityPage() {
           href: "https://www.linkedin.com/company/project-hami-io/",
           icon: faLinkedin,
         },
+        {
+          label: { en: "X", zh: "X" },
+          href: "https://x.com/HAMiProject",
+          icon: faXTwitter,
+        },
       ],
     },
     {
@@ -162,8 +169,8 @@ export default function CommunityPage() {
         },
         {
           label: { en: "Meeting Recordings", zh: "会议录屏" },
-          href: "https://space.bilibili.com/1105878584",
-          icon: faVideo,
+          href: isZh ? "https://space.bilibili.com/1105878584" : "https://www.youtube.com/@hami-community",
+          icon: isZh ? faVideo : faYoutube,
         },
         { label: { en: "Blog", zh: "博客" }, href: isZh ? "/zh/blog" : "/blog", icon: faFileLines },
       ],

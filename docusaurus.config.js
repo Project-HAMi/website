@@ -394,8 +394,8 @@ module.exports = {
               href: "https://www.linkedin.com/company/project-hami-io/",
             },
             {
-              label: "Releases",
-              to: "/changelog",
+              label: "X",
+              href: "https://x.com/HAMiProject",
             },
           ],
         },

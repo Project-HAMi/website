@@ -6,6 +6,7 @@ import {
   faLinkedin,
   faSlack,
   faWeixin,
+  faXTwitter,
 } from "@fortawesome/free-brands-svg-icons";
 import { faBullhorn, faDownload, faRocket, faUsers } from "@fortawesome/free-solid-svg-icons";
 import { useColorMode, useThemeConfig } from "@docusaurus/theme-common";
@@ -125,6 +126,7 @@ function Footer() {
     Discord: faDiscord,
     GitHub: faGithub,
     LinkedIn: faLinkedin,
+    X: faXTwitter,
     Adoption: faUsers,
     Releases: faBullhorn,
     发布记录: faBullhorn,
