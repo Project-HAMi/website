@@ -9,7 +9,7 @@ translated: true
 resources:
   limits:
     nvidia.com/gpu: 1 # 请求 1 个 vGPU
-    nvidia.com/gpumem: 3000 # 每个 vGPU 包含 3000m 设备显存
+    nvidia.com/gpumem: 3000 # 每个 vGPU 包含 3000 MiB 设备显存
 ```
 
 将在容器内看到 3G 设备显存。
