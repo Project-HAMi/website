@@ -26,7 +26,7 @@ helm install hami hami-charts/hami \
 
 ### 2. 调度器全局设置
 
-启动 `hami-scheduler` 时添加 `gpu-scheduler-policy=topology-aware`。
+启动 `hami-scheduler` 时添加 `--gpu-scheduler-policy=topology-aware`。
 
 ### 3. Pod 级别注解
 

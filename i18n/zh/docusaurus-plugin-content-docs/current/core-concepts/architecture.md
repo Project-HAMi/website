@@ -16,7 +16,7 @@ HAMi 由以下组件组成：
 
 ## HAMi MutatingWebhook {#hami-mutatingwebhook}
 
-HAMi MutatingWebhook 检查该任务是否可以由 HAMi 处理，它扫描每个提交的 Pod 的资源字段，如果这些 Pod 所需的每个资源是 'cpu'、'memory' 或 HAMi 资源，则会将该 Pod 的 schedulerName 字段设置为 'HAMi-scheduler'。
+HAMi MutatingWebhook 检查该任务是否可以由 HAMi 处理，它扫描每个提交的 Pod 的资源字段，如果这些 Pod 所需的每个资源是 'cpu'、'memory' 或 HAMi 资源，则会将该 Pod 的 schedulerName 字段设置为 'hami-scheduler'。
 
 ## HAMi 调度器 {#hami-scheduler}
 
