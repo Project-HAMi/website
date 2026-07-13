@@ -9,7 +9,7 @@ If your cluster can’t directly access the internet, you can install HAMi offli
 You need to save the following images into a tarball file and copy it into the cluster.
 
 ```yaml
-projecthami/hami:{HAMi version} ghcr.io/kubernetes/ingress-nginx/kube-webhook-certgen:v1.5.2 registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:{your kubernetes version}
+projecthami/hami:{HAMi version} docker.io/jettech/kube-webhook-certgen:v1.5.2 liangjw/kube-webhook-certgen:v1.1.1 registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:{your kubernetes version}
 ```
 
 Load the images, tag them with your internal registry, and push them to your registry.
@@ -18,8 +18,9 @@ Load the images, tag them with your internal registry, and push them to your reg
 docker load -i {HAMi_image}.tar
 docker tag projecthami/hami:{HAMi version} {your_inner_registry}/hami:{HAMi version}
 docker push {your_inner_registry}/hami:{HAMi version}
-docker tag ghcr.io/kubernetes/ingress-nginx/kube-webhook-certgen:v1.5.2 {your_inner_registry}/kube-webhook-certgen:v1.5.2
+docker tag docker.io/jettech/kube-webhook-certgen:v1.5.2 {your_inner_registry}/kube-webhook-certgen:v1.5.2
 docker push {your_inner_registry}/kube-webhook-certgen:v1.5.2
+docker tag liangjw/kube-webhook-certgen:v1.1.1 {your_inner_registry}/kube-webhook-certgen:v1.1.1
 docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:{your kubernetes version} {your_inner_registry}/kube-scheduler:{your kubernetes version}
 docker push {your_inner_registry}/kube-scheduler:{your kubernetes version}
 ```
@@ -45,7 +46,7 @@ scheduler:
 Run the following command in your $\{CHART_PATH\} folder:
 
 ```bash
-helm install hami hami --set scheduler.kubeScheduler.imageTag={your k8s server version} -n kube-system
+helm install hami hami --set scheduler.kubeScheduler.image.tag={your k8s server version} -n kube-system
 ```
 
 ## Verify your installation

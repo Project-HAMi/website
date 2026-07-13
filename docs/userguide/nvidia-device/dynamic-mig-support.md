@@ -85,7 +85,7 @@ nvidia:
           memory: 24576
           count: 1
 
-    - models: ["A100-SXM4-40GB", "A100-40GB-PCIe", "A100-PCIE-40GB", "A100-SXM4-40GB"]
+    - models: ["A100-SXM4-40GB", "A100-40GB-PCIe", "A100-PCIE-40GB"]
       allowedGeometries:
         - name: 1g.5gb
           memory: 5120

@@ -77,7 +77,7 @@ Verify the HAMi device plugin is running and reporting resources:
 
 ```bash
 kubectl get pods -n kube-system | grep hami
-kubectl logs -n kube-system -l app=hami-scheduler -f
+kubectl logs -n kube-system -l app.kubernetes.io/component=hami-scheduler -f
 ```
 
 ## Resource Annotation Tracking

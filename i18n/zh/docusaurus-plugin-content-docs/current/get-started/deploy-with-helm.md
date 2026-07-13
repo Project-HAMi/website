@@ -114,7 +114,7 @@ helm repo add hami-charts https://project-hami.github.io/HAMi/
 
 ```bash
 helm install hami hami-charts/hami \
-  --set scheduler.kubeScheduler.imageTag=v1.16.8 \
+  --set scheduler.kubeScheduler.image.tag=v1.16.8 \
   -n kube-system
 ```
 

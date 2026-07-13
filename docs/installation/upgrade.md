@@ -35,7 +35,7 @@ helm get values hami -n kube-system > hami-backup-values.yaml
 kubectl get configmap hami-scheduler-device -n kube-system -o yaml > hami-configmap-backup.yaml
 
 # Check current state
-kubectl get all -n kube-system -l app=hami -o yaml > hami-state-backup.yaml
+kubectl get all -n kube-system -l app.kubernetes.io/instance=hami -o yaml > hami-state-backup.yaml
 ```
 
 ### 3. Clear Running Workloads
@@ -65,11 +65,11 @@ Before proceeding, ensure all HAMi components are healthy:
 
 ```bash
 # Check pod status
-kubectl get pods -n kube-system -l app=hami
+kubectl get pods -n kube-system -l app.kubernetes.io/instance=hami
 
 # Check for errors
-kubectl logs -n kube-system -l app=hami-scheduler --tail=50
-kubectl logs -n kube-system -l app=hami-device-plugin --tail=50
+kubectl logs -n kube-system -l app.kubernetes.io/component=hami-scheduler --tail=50
+kubectl logs -n kube-system -l app.kubernetes.io/component=hami-device-plugin --tail=50
 ```
 
 ## Upgrade Process
@@ -123,7 +123,7 @@ After the upgrade completes, verify that HAMi is functioning correctly:
 ### 1. Check Pod Status
 
 ```bash
-kubectl get pods -n kube-system -l app=hami
+kubectl get pods -n kube-system -l app.kubernetes.io/instance=hami
 ```
 
 All pods should be in `Running` state.
@@ -132,10 +132,10 @@ All pods should be in `Running` state.
 
 ```bash
 # Check scheduler logs for errors
-kubectl logs -n kube-system -l app=hami-scheduler | grep -i "error\|warning" | head -20
+kubectl logs -n kube-system -l app.kubernetes.io/component=hami-scheduler | grep -i "error\|warning" | head -20
 
 # Check device plugin logs
-kubectl logs -n kube-system -l app=hami-device-plugin | grep -i "error" | head -20
+kubectl logs -n kube-system -l app.kubernetes.io/component=hami-device-plugin | grep -i "error" | head -20
 ```
 
 ### 3. Test GPU Allocation
@@ -188,7 +188,7 @@ If pods remain in pending state after upgrade:
 kubectl describe pod <pod-name>
 
 # Check scheduler logs
-kubectl logs -n kube-system -l app=hami-scheduler | grep -i "pending\|error"
+kubectl logs -n kube-system -l app.kubernetes.io/component=hami-scheduler | grep -i "pending\|error"
 
 # Verify GPU availability
 kubectl describe nodes | grep -i "gpu"
@@ -214,7 +214,7 @@ nvidia-smi
 exit
 
 # Restart device plugin on affected node
-kubectl delete pods -n kube-system -l app=hami-device-plugin --field-selector spec.nodeName=<node-name>
+kubectl delete pods -n kube-system -l app.kubernetes.io/component=hami-device-plugin --field-selector spec.nodeName=<node-name>
 ```
 
 ### Segmentation Fault During Upgrade

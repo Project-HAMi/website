@@ -98,7 +98,7 @@ To reinstall HAMi, follow the [installation guide](./online-installation.md).
 If HAMi pods are stuck in the "Terminating" state, you can force delete them:
 
 ```bash
-kubectl delete pods -n kube-system -l app=hami --grace-period=0 --force
+kubectl delete pods -n kube-system -l app.kubernetes.io/instance=hami --grace-period=0 --force
 ```
 
 Then try the uninstall command again.

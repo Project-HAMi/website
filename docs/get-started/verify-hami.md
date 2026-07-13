@@ -155,7 +155,7 @@ If you encounter issues, follow this sequence:
 2. Container Runtime: Ensure `sudo ctr run` or `docker run` works outside K8s.
 3. Stale Plugins: Remove conflicting plugins: `kubectl delete daemonset nvidia-device-plugin-daemonset -n kube-system --ignore-not-found`.
 4. Node Resources: Verify K8s sees the GPU: `kubectl get nodes -o jsonpath='{.items[*].status.allocatable}' | grep -i nvidia`.
-5. Scheduler Layer: Check HAMi logs: `kubectl logs -n kube-system -l app=hami-scheduler`.
+5. Scheduler Layer: Check HAMi logs: `kubectl logs -n kube-system -l app.kubernetes.io/component=hami-scheduler`.
 
 ## Cleanup
 

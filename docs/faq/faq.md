@@ -225,4 +225,4 @@ DCGM Exporter is not affected and continues to report physical-level counters no
 
 ## How do I set up Prometheus and Grafana monitoring for HAMi vGPU metrics?
 
-The `hami-device-plugin` pod on each node exposes per-container vGPU metrics on port `31992` (configurable via `devicePlugin.monitorPort`). See [Grafana Dashboard](../userguide/monitoring/grafana-dashboard) for the full setup including Prometheus scrape config and dashboard import.
+The `hami-device-plugin` pod on each node exposes per-container vGPU metrics on port `31992` (configurable via `devicePlugin.service.httpPort`). See [Grafana Dashboard](../userguide/monitoring/grafana-dashboard) for the full setup including Prometheus scrape config and dashboard import.

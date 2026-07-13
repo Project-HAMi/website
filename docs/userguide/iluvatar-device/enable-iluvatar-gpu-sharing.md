@@ -34,7 +34,7 @@ Install only gpu-manager. Do not install the gpu-admission package.
 - Set `devices.iluvatar.enabled=true` when installing HAMi
 
 ```bash
-helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag={your kubernetes version} --set devices.iluvatar.enabled=true -n kube-system
+helm install hami hami-charts/hami --set scheduler.kubeScheduler.image.tag={your kubernetes version} --set devices.iluvatar.enabled=true -n kube-system
 ```
 
 The currently supported GPU models and resource names are defined in [device-configmap.yaml](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/templates/scheduler/device-configmap.yaml):
