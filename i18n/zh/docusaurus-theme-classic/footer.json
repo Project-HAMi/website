@@ -15,13 +15,17 @@
     "message": "安装部署",
     "description": "The label of footer link with label=Installation"
   },
-  "link.item.label.Install": {
-    "message": "安装",
-    "description": "The label of footer link with label=Install linking to /docs/installation/online-installation"
+  "link.item.label.Concepts": {
+    "message": "原理",
+    "description": "The label of footer link with label=Concepts linking to /docs/core-concepts/gpu-virtualization"
   },
   "link.item.label.Quick Start": {
     "message": "快速开始",
     "description": "The label of footer link with label=Quick Start linking to /docs/get-started/deploy-with-helm"
+  },
+  "link.item.label.Tutorials": {
+    "message": "教程",
+    "description": "The label of footer link with label=Tutorials linking to /tutorials"
   },
   "link.item.label.User Guide": {
     "message": "用户指南",
@@ -34,6 +38,10 @@
   "link.title.More": {
     "message": "更多",
     "description": "The title of the footer links column with title=More in the footer"
+  },
+  "link.title.Follow Us": {
+    "message": "关注我们",
+    "description": "The title of the footer links column with title=Follow Us in the footer"
   },
   "link.item.label.GitHub": {
     "message": "GitHub",
@@ -58,6 +66,10 @@
   "link.item.label.WeChat Group": {
     "message": "微信入群",
     "description": "The label of footer link with label=WeChat Group linking to /community?wechat=group"
+  },
+  "link.item.label.WeChat Official Account": {
+    "message": "公众号",
+    "description": "The label of footer link with label=WeChat Official Account linking to /community?wechat=official"
   },
   "link.item.label.Adopters": {
     "message": "采用者",

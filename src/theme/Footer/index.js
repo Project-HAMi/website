@@ -8,7 +8,7 @@ import {
   faWeixin,
   faXTwitter,
 } from "@fortawesome/free-brands-svg-icons";
-import { faBullhorn, faDownload, faRocket, faUsers } from "@fortawesome/free-solid-svg-icons";
+import { faBullhorn, faGraduationCap, faLightbulb, faRocket, faUsers } from "@fortawesome/free-solid-svg-icons";
 import { useColorMode, useThemeConfig } from "@docusaurus/theme-common";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import FooterLinks from "@theme/Footer/Links";
@@ -74,11 +74,68 @@ function WechatGroupModal({ isOpen, onClose }) {
   );
 }
 
+function WechatOfficialModal({ isOpen, onClose }) {
+  const wechatQr = useBaseUrl("img/community/wechat-official-account-qr.jpg");
+
+  useEffect(() => {
+    if (!isOpen) {
+      return undefined;
+    }
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [isOpen, onClose]);
+
+  if (!isOpen) {
+    return null;
+  }
+
+  return (
+    <div className={styles.modalBackdrop} onClick={onClose} role="presentation">
+      <div
+        className={styles.modal}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="wechat-official-modal-title"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <button
+          type="button"
+          className={styles.closeButton}
+          aria-label="关闭弹窗"
+          onClick={onClose}
+        >
+          ×
+        </button>
+        <h3 id="wechat-official-modal-title" className={styles.modalTitle}>
+          关注 HAMi 微信公众号
+        </h3>
+        <img className={styles.qrImage} src={wechatQr} alt="HAMi 微信公众号二维码" />
+        <p className={styles.modalDescription}>扫码关注 HAMi 公众号，获取社区动态。</p>
+      </div>
+    </div>
+  );
+}
+
 function Footer() {
   const { footer } = useThemeConfig();
   const { colorMode } = useColorMode();
   const { i18n } = useDocusaurusContext();
   const [isWechatModalOpen, setIsWechatModalOpen] = useState(false);
+  const [isWechatOfficialOpen, setIsWechatOfficialOpen] = useState(false);
 
   if (!footer) {
     return null;
@@ -102,6 +159,10 @@ function Footer() {
         event.preventDefault();
         event.stopPropagation();
         setIsWechatModalOpen(true);
+      } else if (href.includes("/community?wechat=official")) {
+        event.preventDefault();
+        event.stopPropagation();
+        setIsWechatOfficialOpen(true);
       }
     };
 
@@ -110,18 +171,21 @@ function Footer() {
     return () => document.removeEventListener("click", onFooterLinkClick, true);
   }, [i18n.currentLocale]);
 
+  const zhOnlyLabels = new Set(["WeChat Group", "WeChat Official Account"]);
   const adjustedLinks =
     i18n.currentLocale === "zh"
       ? links
       : links?.map((group) => ({
           ...group,
-          items: group.items?.filter((item) => item.label !== "WeChat Group"),
+          items: group.items?.filter((item) => !zhOnlyLabels.has(item.label)),
         }));
   const iconMap = {
-    Install: faDownload,
-    安装: faDownload,
+    Concepts: faLightbulb,
+    原理: faLightbulb,
     "Quick Start": faRocket,
     快速开始: faRocket,
+    Tutorials: faGraduationCap,
+    教程: faGraduationCap,
     "Slack (#hami-dev)": faSlack,
     Discord: faDiscord,
     GitHub: faGithub,
@@ -132,6 +196,8 @@ function Footer() {
     发布记录: faBullhorn,
     "WeChat Group": faWeixin,
     微信入群: faWeixin,
+    "WeChat Official Account": faWeixin,
+    公众号: faWeixin,
   };
   const iconizedLinks = adjustedLinks?.map((group) => ({
     ...group,
@@ -179,6 +245,12 @@ function Footer() {
       </div>
       {i18n.currentLocale === "zh" && (
         <WechatGroupModal isOpen={isWechatModalOpen} onClose={() => setIsWechatModalOpen(false)} />
+      )}
+      {i18n.currentLocale === "zh" && (
+        <WechatOfficialModal
+          isOpen={isWechatOfficialOpen}
+          onClose={() => setIsWechatOfficialOpen(false)}
+        />
       )}
     </>
   );

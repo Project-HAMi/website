@@ -7,9 +7,7 @@ import {
   faBilibili,
   faDiscord,
   faGithub,
-  faLinkedin,
   faSlack,
-  faXTwitter,
   faYoutube,
 } from "@fortawesome/free-brands-svg-icons";
 import {
@@ -77,7 +75,7 @@ export default function CommunityPage() {
   const cardConfig = [
     {
       key: "join",
-      title: { en: "Join Chat", zh: "加入交流" },
+      title: { en: "Join Community", zh: "加入社区" },
       items: [
         {
           label: { en: "Discord (recommended)", zh: "Discord（推荐）" },
@@ -98,21 +96,6 @@ export default function CommunityPage() {
           label: { en: "Mailing list", zh: "邮件列表" },
           href: "https://groups.google.com/forum/#!forum/hami-project",
           icon: faFileLines,
-        },
-        {
-          label: { en: "Bilibili", zh: "Bilibili" },
-          href: "https://space.bilibili.com/1105878584",
-          icon: faBilibili,
-        },
-        {
-          label: { en: "LinkedIn", zh: "LinkedIn" },
-          href: "https://www.linkedin.com/company/project-hami-io/",
-          icon: faLinkedin,
-        },
-        {
-          label: { en: "X", zh: "X" },
-          href: "https://x.com/HAMiProject",
-          icon: faXTwitter,
         },
       ],
     },
@@ -168,9 +151,9 @@ export default function CommunityPage() {
           icon: faBookOpen,
         },
         {
-          label: { en: "Meeting Recordings", zh: "会议录屏" },
+          label: { en: "Videos", zh: "视频" },
           href: isZh ? "https://space.bilibili.com/1105878584" : "https://www.youtube.com/@hami-community",
-          icon: isZh ? faVideo : faYoutube,
+          icon: isZh ? faBilibili : faYoutube,
         },
         { label: { en: "Blog", zh: "博客" }, href: isZh ? "/zh/blog" : "/blog", icon: faFileLines },
       ],
