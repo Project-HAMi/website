@@ -8,7 +8,13 @@ import {
   faWeixin,
   faXTwitter,
 } from "@fortawesome/free-brands-svg-icons";
-import { faBullhorn, faGraduationCap, faLightbulb, faRocket, faUsers } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBullhorn,
+  faGraduationCap,
+  faLightbulb,
+  faRocket,
+  faUsers,
+} from "@fortawesome/free-solid-svg-icons";
 import { useColorMode, useThemeConfig } from "@docusaurus/theme-common";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import FooterLinks from "@theme/Footer/Links";

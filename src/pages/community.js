@@ -152,7 +152,9 @@ export default function CommunityPage() {
         },
         {
           label: { en: "Videos", zh: "视频" },
-          href: isZh ? "https://space.bilibili.com/1105878584" : "https://www.youtube.com/@hami-community",
+          href: isZh
+            ? "https://space.bilibili.com/1105878584"
+            : "https://www.youtube.com/@hami-community",
           icon: isZh ? faBilibili : faYoutube,
         },
         { label: { en: "Blog", zh: "博客" }, href: isZh ? "/zh/blog" : "/blog", icon: faFileLines },
