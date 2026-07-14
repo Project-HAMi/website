@@ -59,7 +59,7 @@ website
 
 `docs/` 目录是**未发布的开发版**（托管在 `/docs/next/*`），**不是**「当前/最新稳定版本」。最新稳定版本是 `versions.json` 的第一项（如 v2.9.0），托管在 `/docs`。
 
-`current` 是 Docusaurus 对这个开发版目录的内部约定名（`CURRENT_VERSION_NAME`），标签显示为「Next / 下一个」，容易和「当前稳定版」混淆——它们是两个不同的东西。
+`current` 是 Docusaurus 对这个开发版目录的内部约定名（`CURRENT_VERSION_NAME`），标签显示为「Next / 下一个」，容易和「当前稳定版」混淆，它们是两个不同的东西。
 
 贡献者主要编辑 `docs/`，为下一个版本贡献文档。
 
