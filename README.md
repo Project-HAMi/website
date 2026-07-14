@@ -95,7 +95,7 @@ This site uses several build optimizations for fast builds despite containing:
 
 - 250+ English documentation pages
 - 1700+ translated (English/Chinese) pages
-- 7 historical versions (v1.3.0 to v2.8.0)
+- 8 historical versions (v1.3.0 to v2.9.0)
 - Full-text search indexing
 
 See [BUILD_OPTIMIZATION.md](./BUILD_OPTIMIZATION.md) for details on optimizations including:
