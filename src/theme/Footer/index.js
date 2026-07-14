@@ -6,8 +6,15 @@ import {
   faLinkedin,
   faSlack,
   faWeixin,
+  faXTwitter,
 } from "@fortawesome/free-brands-svg-icons";
-import { faBullhorn, faDownload, faRocket, faUsers } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBullhorn,
+  faGraduationCap,
+  faLightbulb,
+  faRocket,
+  faUsers,
+} from "@fortawesome/free-solid-svg-icons";
 import { useColorMode, useThemeConfig } from "@docusaurus/theme-common";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import FooterLinks from "@theme/Footer/Links";
@@ -17,9 +24,7 @@ import FooterLayout from "@theme/Footer/Layout";
 import useBaseUrl from "@docusaurus/useBaseUrl";
 import styles from "./styles.module.css";
 
-function WechatGroupModal({ isOpen, onClose }) {
-  const wechatQr = useBaseUrl("img/community/wechat-assistant-qr.jpg");
-
+function WechatModal({ isOpen, onClose, qrSrc, titleId, title, alt, description }) {
   useEffect(() => {
     if (!isOpen) {
       return undefined;
@@ -52,7 +57,7 @@ function WechatGroupModal({ isOpen, onClose }) {
         className={styles.modal}
         role="dialog"
         aria-modal="true"
-        aria-labelledby="wechat-group-modal-title"
+        aria-labelledby={titleId}
         onClick={(event) => event.stopPropagation()}
       >
         <button
@@ -63,11 +68,11 @@ function WechatGroupModal({ isOpen, onClose }) {
         >
           ×
         </button>
-        <h3 id="wechat-group-modal-title" className={styles.modalTitle}>
-          添加微信小助手，加入 HAMi 微信群
+        <h3 id={titleId} className={styles.modalTitle}>
+          {title}
         </h3>
-        <img className={styles.qrImage} src={wechatQr} alt="HAMi 微信小助手二维码" />
-        <p className={styles.modalDescription}>扫码添加小助手后，会邀请你进入 HAMi 微信群。</p>
+        <img className={styles.qrImage} src={qrSrc} alt={alt} />
+        <p className={styles.modalDescription}>{description}</p>
       </div>
     </div>
   );
@@ -78,6 +83,7 @@ function Footer() {
   const { colorMode } = useColorMode();
   const { i18n } = useDocusaurusContext();
   const [isWechatModalOpen, setIsWechatModalOpen] = useState(false);
+  const [isWechatOfficialOpen, setIsWechatOfficialOpen] = useState(false);
 
   if (!footer) {
     return null;
@@ -101,6 +107,10 @@ function Footer() {
         event.preventDefault();
         event.stopPropagation();
         setIsWechatModalOpen(true);
+      } else if (href.includes("/community?wechat=official")) {
+        event.preventDefault();
+        event.stopPropagation();
+        setIsWechatOfficialOpen(true);
       }
     };
 
@@ -109,27 +119,33 @@ function Footer() {
     return () => document.removeEventListener("click", onFooterLinkClick, true);
   }, [i18n.currentLocale]);
 
+  const zhOnlyLabels = new Set(["WeChat Group", "WeChat Official Account"]);
   const adjustedLinks =
     i18n.currentLocale === "zh"
       ? links
       : links?.map((group) => ({
           ...group,
-          items: group.items?.filter((item) => item.label !== "WeChat Group"),
+          items: group.items?.filter((item) => !zhOnlyLabels.has(item.label)),
         }));
   const iconMap = {
-    Install: faDownload,
-    安装: faDownload,
+    Concepts: faLightbulb,
+    原理: faLightbulb,
     "Quick Start": faRocket,
     快速开始: faRocket,
+    Tutorials: faGraduationCap,
+    教程: faGraduationCap,
     "Slack (#hami-dev)": faSlack,
     Discord: faDiscord,
     GitHub: faGithub,
     LinkedIn: faLinkedin,
+    X: faXTwitter,
     Adoption: faUsers,
     Releases: faBullhorn,
     发布记录: faBullhorn,
     "WeChat Group": faWeixin,
     微信入群: faWeixin,
+    "WeChat Official Account": faWeixin,
+    公众号: faWeixin,
   };
   const iconizedLinks = adjustedLinks?.map((group) => ({
     ...group,
@@ -155,6 +171,8 @@ function Footer() {
   const cncfLogoLight = useBaseUrl("img/cncf-color.svg");
   const cncfLogoDark = useBaseUrl("img/cncf-white.svg");
   const cncfLogo = colorMode === "dark" ? cncfLogoDark : cncfLogoLight;
+  const wechatGroupQr = useBaseUrl("img/community/wechat-assistant-qr.jpg");
+  const wechatOfficialQr = useBaseUrl("img/community/wechat-official-account-qr.jpg");
 
   return (
     <>
@@ -175,8 +193,27 @@ function Footer() {
           <span>{isZh ? "HAMi 是 CNCF 孵化项目" : "HAMi is a CNCF Incubating project"}</span>
         </a>
       </div>
-      {i18n.currentLocale === "zh" && (
-        <WechatGroupModal isOpen={isWechatModalOpen} onClose={() => setIsWechatModalOpen(false)} />
+      {isZh && (
+        <WechatModal
+          isOpen={isWechatModalOpen}
+          onClose={() => setIsWechatModalOpen(false)}
+          qrSrc={wechatGroupQr}
+          titleId="wechat-group-modal-title"
+          title="添加微信小助手，加入 HAMi 微信群"
+          alt="HAMi 微信小助手二维码"
+          description="扫码添加小助手后，会邀请你进入 HAMi 微信群。"
+        />
+      )}
+      {isZh && (
+        <WechatModal
+          isOpen={isWechatOfficialOpen}
+          onClose={() => setIsWechatOfficialOpen(false)}
+          qrSrc={wechatOfficialQr}
+          titleId="wechat-official-modal-title"
+          title="关注 HAMi 微信公众号"
+          alt="HAMi 微信公众号二维码"
+          description="扫码关注 HAMi 公众号，获取社区动态。"
+        />
       )}
     </>
   );

@@ -356,12 +356,16 @@ module.exports = {
           title: "Documentation",
           items: [
             {
-              label: "Install",
-              to: "/docs/installation/online-installation",
+              label: "Concepts",
+              to: "/docs/core-concepts/gpu-virtualization",
             },
             {
               label: "Quick Start",
               to: "/docs/get-started/deploy-with-helm",
+            },
+            {
+              label: "Tutorials",
+              to: "/tutorials",
             },
           ],
         },
@@ -383,19 +387,19 @@ module.exports = {
           ],
         },
         {
-          title: "More",
+          title: "Follow Us",
           items: [
             {
-              label: "GitHub",
-              href: "https://github.com/Project-HAMi/HAMi",
+              label: "WeChat Official Account",
+              href: "/community?wechat=official",
             },
             {
               label: "LinkedIn",
               href: "https://www.linkedin.com/company/project-hami-io/",
             },
             {
-              label: "Releases",
-              to: "/changelog",
+              label: "X",
+              href: "https://x.com/HAMiProject",
             },
           ],
         },
