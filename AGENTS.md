@@ -173,7 +173,6 @@ See `docs/contributor/contributing.md` (§ DCO Sign-off) and `docs/contributor/g
 - `button.js` - Custom button component
 - `featuresList.js` - Features display
 - `gitHubButton.js` - GitHub integration button
-- `supportersList.js` - Supporters/community display
 - `whatIs.js` - "What is HAMi" content component
 - `adoptersList.js` - Adopters list (data from `src/data/adopters.json`)
 - `caseStudiesList.js` - Case studies listing
