@@ -149,6 +149,11 @@ This adds the DCO signature: `Signed-off-by: Your Name <your.email@example.com>`
 | `npm run fetch-changelog`    | Fetch changelog from GitHub releases         |
 | `npm run write-translations` | Update translation files                     |
 | `npm run clear`              | Clear Docusaurus cache                       |
+| `npm run lint`               | Lint markdown files                          |
+| `npm run format:check`       | Check code style with Prettier               |
+| `npm run format`             | Fix code style with Prettier                 |
+| `npm run check-links`        | Build and check for broken links             |
+| `npm run check:all`          | Run lint, format:check, and check-links      |
 
 ## Multi-Language Support
 
