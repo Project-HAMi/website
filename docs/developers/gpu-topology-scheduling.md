@@ -38,7 +38,7 @@ metadata:
 
 After submitting the Pod, check the logs of `hami-scheduler` (log level must be greater than 5):
 
-```
+```plaintext
 I0703 08:34:27.032644  1 device.go:708] "device allocate success" pod="default/testpod" best device combination={"NVIDIA":[{"Idx":7,"UUID":"GPU-dsaf","Type":"NVIDIA","Usedmem":1024,"Usedcores":0},{"Idx":5,"UUID":"GPU-gads","Type":"NVIDIA","Usedmem":1024,"Usedcores":0}]}
 ```
 
