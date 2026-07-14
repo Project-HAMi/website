@@ -21,7 +21,7 @@ toc_max_heading_level: 2
 
 import Tabs from '@theme/Tabs'; import TabItem from '@theme/TabItem';
 
-本实验使用 NVIDIA 的 **nvml-mock** 库在本地 **kind** 集群中模拟一个高端 GPU 节点——8 张虚拟 A100 GPU。你将直接基于 `main` 分支构建 HAMi，然后验证 GPU 调度功能：共享、显存/算力限制、百分比显存申请以及多 GPU 分配——全部无需物理硬件。
+本实验使用 NVIDIA 的 **nvml-mock** 库在本地 **kind** 集群中模拟一个高端 GPU 节点，8 张虚拟 A100 GPU。你将直接基于 `main` 分支构建 HAMi，然后验证 GPU 调度功能：共享、显存/算力限制、百分比显存申请以及多 GPU 分配，全部无需物理硬件。
 
 ## 你将得到什么
 
@@ -146,7 +146,7 @@ Windows 用户请使用 [WSL2](https://learn.microsoft.com/zh-cn/windows/wsl/ins
 kind create cluster --name nvml-mock-test
 ```
 
-设置一次 `NODE_NAME` 变量——后续所有命令都会用到它：
+设置一次 `NODE_NAME` 变量，后续所有命令都会用到它：
 
 ```bash
 NODE_NAME=$(kubectl get nodes -o jsonpath='{.items[0].metadata.name}')
@@ -306,7 +306,7 @@ kubectl -n kube-system rollout restart daemonset/hami-device-plugin
 kubectl -n kube-system rollout status daemonset/hami-device-plugin --timeout=120s
 ```
 
-检查是否有 MIG 相关错误——空响应即为预期输出：
+检查是否有 MIG 相关错误，空响应即为预期输出：
 
 ```bash
 kubectl -n kube-system logs daemonset/hami-device-plugin -c device-plugin | grep -i mig
@@ -328,7 +328,7 @@ hami-scheduler-7858c744cc-7pb79   2/2     Running            0          13m
 
 :::note
 
-`vgpu-monitor` sidecar 会崩溃，因为它需要真实的 GPU 监控基础设施。`device-plugin` 容器运行正常——此处 `1/2` 是预期状态，不影响 GPU 调度。
+`vgpu-monitor` sidecar 会崩溃，因为它需要真实的 GPU 监控基础设施。`device-plugin` 容器运行正常，此处 `1/2` 是预期状态，不影响 GPU 调度。
 
 :::
 
@@ -351,7 +351,7 @@ kubectl describe node ${NODE_NAME} | grep nvidia.com/gpu
   nvidia.com/gpu     0           0
 ```
 
-`Capacity` 和 `Allocatable` 都显示 `80`，确认 device-plugin 已注册全部虚拟 GPU 槽位。最后一行是 `Allocated resources` 表——当前为 `0`，因为还没有 Pod 申请 GPU。
+`Capacity` 和 `Allocatable` 都显示 `80`，确认 device-plugin 已注册全部虚拟 GPU 槽位。最后一行是 `Allocated resources` 表，当前为 `0`，因为还没有 Pod 申请 GPU。
 
 ---
 
@@ -404,7 +404,7 @@ kubectl describe pod gpu-test-1 | grep vgpu-devices-allocated
 hami.io/vgpu-devices-allocated: GPU-12345678-1234-1234-1234-123456780006,NVIDIA,40960,100:;
 ```
 
-> 注解格式为 `<UUID>,<厂商>,<显存MiB>,<算力>`。A100 GPU 有 40960 MiB 显存——看到这个注解即确认调度器分配并记录了一个虚拟 GPU。
+> 注解格式为 `<UUID>,<厂商>,<显存MiB>,<算力>`。A100 GPU 有 40960 MiB 显存，看到这个注解即确认调度器分配并记录了一个虚拟 GPU。
 
 ---
 
@@ -485,7 +485,7 @@ EOF
 
 :::info
 
-资源限制格式 `nvidia.com/gpumem` 接受**以 MiB 为单位的绝对值**——`"10"` 表示 10 MiB。`nvidia.com/gpucores: "30"` 表示在所选 GPU 上申请 30 个计算核心。
+资源限制格式 `nvidia.com/gpumem` 接受**以 MiB 为单位的绝对值**：`"10"` 表示 10 MiB。`nvidia.com/gpucores: "30"` 表示在所选 GPU 上申请 30 个计算核心。
 
 :::
 
@@ -501,7 +501,7 @@ kubectl describe pod gpu-limits | grep vgpu-devices-allocated
 hami.io/vgpu-devices-allocated: GPU-12345678-1234-1234-1234-123456780002,NVIDIA,10,30:;
 ```
 
-注解记录了 `10` MiB 和 `30` 个核心——正是所申请的值。
+注解记录了 `10` MiB 和 `30` 个核心，正是所申请的值。
 
 ---
 
@@ -564,7 +564,7 @@ kubectl get pod gpu-mem-30pct \
 GPU-12345678-1234-1234-1234-123456780003,NVIDIA,12288,100:;
 ```
 
-> 第三个字段显示 `12288` MiB——即 40960 MiB 的 30%——确认调度器正确地将百分比转换为本次分配的绝对显存预算。
+> 第三个字段显示 `12288` MiB（即 40960 MiB 的 30%），确认调度器正确地将百分比转换为本次分配的绝对显存预算。
 
 ---
 
@@ -624,7 +624,7 @@ Events:
   Normal  Started           67s   kubelet         Container started
 ```
 
-`hami-scheduler` 事件——`FilteringSucceed`、`Scheduled` 和 `BindingSucceed`——确认 HAMi 的调度器处理了这个 Pod，并成功将其绑定到带 2 个 GPU 槽位的节点。
+`hami-scheduler` 事件：`FilteringSucceed`、`Scheduled` 和 `BindingSucceed`，确认 HAMi 的调度器处理了这个 Pod，并成功将其绑定到带 2 个 GPU 槽位的节点。
 
 :::tip 查看完整的 vgpu-devices-allocated 注解
 

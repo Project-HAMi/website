@@ -19,7 +19,7 @@ toc_max_heading_level: 2
 
 import Tabs from '@theme/Tabs'; import TabItem from '@theme/TabItem';
 
-本实验将引导你搭建一个纯本地 Kubernetes 集群——使用 **OrbStack**（macOS）或 **kind**（Linux/Ubuntu）——配合 [run-ai/fake-gpu-operator](https://github.com/run-ai/fake-gpu-operator)，然后在线安装 HAMi。
+本实验将引导你搭建一个纯本地 Kubernetes 集群，使用 **OrbStack**（macOS）或 **kind**（Linux/Ubuntu），配合 [run-ai/fake-gpu-operator](https://github.com/run-ai/fake-gpu-operator)，然后在线安装 HAMi。
 
 这个实验不需要真实 NVIDIA GPU，适合用于课堂预习、讲解 HAMi 组件组成、验证 GPU Pod 调度流程，以及在个人电脑上快速熟悉 HAMi 的基础使用方式。
 
