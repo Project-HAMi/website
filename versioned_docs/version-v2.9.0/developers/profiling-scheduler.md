@@ -54,7 +54,7 @@ go tool pprof --seconds 120 https+insecure://<POD_IP>/debug/pprof/profile
 
 Example output:
 
-```
+```bash
 root@hami-pprof-76cfcb66f6-jpjnm:/# go tool pprof --seconds 120 https+insecure://10.42.0.24/debug/pprof/profile
 Fetching profile over HTTP from https+insecure://10.42.0.24/debug/pprof/profile?seconds=120
 Please wait... (2m0s)
@@ -98,7 +98,7 @@ go tool pprof https+insecure://<POD_IP>/debug/pprof/allocs
 
 Example output from the allocation profile:
 
-```
+```bash
 root@hami-scheduler-ffd687cb7-7gqm2:/# /usr/local/go/bin/go tool pprof --seconds 120 https+insecure://10.42.0.24/debug/pprof/allocs
 Fetching profile over HTTP from https+insecure://10.42.0.24/debug/pprof/allocs?seconds=120
 Saved profile in /root/pprof/pprof.scheduler.alloc_objects.alloc_space.inuse_objects.inuse_space.041.pb.gz
