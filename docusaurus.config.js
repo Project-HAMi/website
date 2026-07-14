@@ -425,7 +425,7 @@ module.exports = {
         docs: false,
         gtag: {
           trackingID: "G-MK932R9NMD",
-          anonymizeIP: false,
+          anonymizeIP: true,
         },
         blog: false,
         theme: {
