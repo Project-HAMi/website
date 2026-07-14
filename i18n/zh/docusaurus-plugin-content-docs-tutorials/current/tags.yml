@@ -7,6 +7,9 @@
 "alibaba-cloud":
   label: "alibaba-cloud"
   permalink: "/alibaba-cloud"
+"gang-scheduling":
+  label: "gang-scheduling"
+  permalink: "/gang-scheduling"
 "hami":
   label: "hami"
   permalink: "/hami"
@@ -22,9 +25,18 @@
 "nvml-mock":
   label: "nvml-mock"
   permalink: "/nvml-mock"
+"queue":
+  label: "queue"
+  permalink: "/queue"
+"vgpu":
+  label: "vgpu"
+  permalink: "/vgpu"
 "vllm":
   label: "vllm"
   permalink: "/vllm"
+"volcano":
+  label: "volcano"
+  permalink: "/volcano"
 "安装":
   label: "安装"
   permalink: "/installation"
