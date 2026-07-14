@@ -10,7 +10,7 @@ translated: true
 resources:
   limits:
     nvidia.com/gpu: 1 # 请求 1 个 GPU
-    nvidia.com/gpumem: 3000 # 每个 GPU 包含 3000m 设备显存
+    nvidia.com/gpumem: 3000 # 每个 GPU 包含 3000 MiB 设备显存
 ```
 
 通过指定资源 `nvidia.com/gpumem-percentage` 来分配设备显存的百分比。可选项，每个 `nvidia.com/gpumem-percentage` 单位等于设备显存的 1% 百分比。
