@@ -13,6 +13,9 @@
 "inference":
   label: "inference"
   permalink: "/inference"
+"k3s":
+  label: "k3s"
+  permalink: "/k-3-s"
 "nvidia":
   label: "nvidia"
   permalink: "/nvidia"
