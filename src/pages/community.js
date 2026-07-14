@@ -190,7 +190,14 @@ export default function CommunityPage() {
     },
   ];
   return (
-    <Layout title={isZh ? "HAMi 社区" : "HAMi Community"}>
+    <Layout
+      title={isZh ? "HAMi 社区" : "HAMi Community"}
+      description={
+        isZh
+          ? "参与 HAMi 开源社区，通过讨论、会议和贡献推动异构 AI 基础设施的发展。"
+          : "Join the HAMi open-source community and advance heterogeneous AI infrastructure through discussions, meetings, and contributions."
+      }
+    >
       <main className={styles.page}>
         <section className={styles.hero}>
           <div className="container">
