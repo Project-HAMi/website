@@ -197,9 +197,6 @@
   "What is HAMi?": {
     "message": "什么是 HAMi？"
   },
-  "HAMi (Heterogeneous AI Computing Virtualization Middleware)  formerly known as k8s-vGPU-scheduler, is an 'all-in-one' chart designed to manage Heterogeneous AI Computing Devices in a k8s cluster. It can provide the ability to share Heterogeneous AI devices and provide resource isolation among tasks.": {
-    "message": "HAMi (Heterogeneous AI Computing Virtualization Middleware) 以前称为 k8s-vGPU-scheduler，是一个 'all-in-one' Chart，用于管理 k8s 集群中的异构 AI 计算设备。它能够提供共享异构 AI 设备的能力，并在任务之间提供资源隔离。"
-  },
   "HAMi is committed to improving the utilization rate of heterogeneous computing devices in Kubernetes clusters and providing a unified multiplexing interface for different types of heterogeneous devices.": {
     "message": "HAMi 致力于提高 Kubernetes 集群中异构计算设备的使用率，并为不同类型的异构设备提供统一的复用接口。"
   },
@@ -537,7 +534,7 @@
     "message": "使用年份和标签快速定位重要版本。"
   },
   "HAMi (Heterogeneous AI Computing Virtualization Middleware) formerly known as k8s-vGPU-scheduler, is an 'all-in-one' chart designed to manage Heterogeneous AI Computing Devices in a k8s cluster. It can provide the ability to share Heterogeneous AI devices and provide resource isolation among tasks.": {
-    "message": "HAMi (Heterogeneous AI Computing Virtualization Middleware) formerly known as k8s-vGPU-scheduler, is an 'all-in-one' chart designed to manage Heterogeneous AI Computing Devices in a k8s cluster. It can provide the ability to share Heterogeneous AI devices and provide resource isolation among tasks."
+    "message": "HAMi (Heterogeneous AI Computing Virtualization Middleware) 以前称为 k8s-vGPU-scheduler，是一个 'all-in-one' Chart，用于管理 k8s 集群中的异构 AI 计算设备。它能够提供共享异构 AI 设备的能力，并在任务之间提供资源隔离。"
   },
   "changelog.backLink": {
     "message": "← 返回索引页"
