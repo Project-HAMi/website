@@ -1,6 +1,7 @@
 ---
 layout: post
 title: HAMi 项目 GPU Pod 调度流程源码走读
+date: "2024-12-31"
 slug: hami-gpu-scheduling-source-code
 catalog: true
 tags: [Kubernetes, GPU, AI, Source Code, 调度]
