@@ -173,7 +173,10 @@ curl -fsS "${root_url}/" >/dev/null 2>&1 || {
   exit 1
 }
 
-mapfile -t skip_args < "${tmpdir}/skip-args.txt"
+skip_args=()
+while IFS= read -r line; do
+  skip_args+=("${line}")
+done < "${tmpdir}/skip-args.txt"
 
 run_linkinator() {
   node "${linkinator_cli}" "${root_url}" \
