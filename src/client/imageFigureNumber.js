@@ -43,7 +43,7 @@ function addFigureNumbers() {
     const existingFigure = img.closest("figure");
     if (existingFigure) {
       const existingFigcaption = existingFigure.querySelector("figcaption");
-      if (existingFigcaption && existingFigcaption.textContent.match(/^[图Figure]\d+:/)) {
+      if (existingFigcaption && existingFigcaption.textContent.match(/^(图|Figure)\d+:/)) {
         figureCount++;
         return;
       }
@@ -62,7 +62,7 @@ function addFigureNumbers() {
 
     // Remove existing figcaption if any (but only if it doesn't have figure number)
     const existingFigcaption = figure.querySelector("figcaption");
-    if (existingFigcaption && !existingFigcaption.textContent.match(/^[图Figure]\d+:/)) {
+    if (existingFigcaption && !existingFigcaption.textContent.match(/^(图|Figure)\d+:/)) {
       existingFigcaption.remove();
     } else if (existingFigcaption) {
       // Update existing figcaption with figure number
