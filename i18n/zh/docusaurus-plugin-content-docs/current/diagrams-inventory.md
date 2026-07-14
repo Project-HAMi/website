@@ -5,7 +5,7 @@ translated: true
 
 本页面编目了仓库中的所有图表：`docs/`、`blog/`、`i18n/`、`versioned_docs/` 和 `static/`。它是 [#421](https://github.com/Project-HAMi/website/issues/421) 中跟踪的图表重绘工作的输入依据。
 
-**范围说明：** 博客中的活动照片（KubeCon 展位照、主题演讲照片、演讲者照片）被排除在外——它们是照片，而非技术图表。此处仅列出了传达架构、流程或系统行为的图片。
+**范围说明：** 博客中的活动照片（KubeCon 展位照、主题演讲照片、演讲者照片）被排除在外，它们是照片，而非技术图表。此处仅列出了传达架构、流程或系统行为的图片。
 
 ---
 
@@ -75,7 +75,7 @@ translated: true
 | `static/img/docs/common/developers/protocol/device-registration.png` | PNG | `i18n/zh/.../developers/protocol.md`（仅中文） | none | unknown | not separated |
 | `static/img/docs/common/developers/protocol/task-dispatch.png` | PNG | `i18n/zh/.../developers/protocol.md`（仅中文） | none | unknown | not separated |
 
-**发现的不一致：** 英文版 `docs/developers/protocol.md` 仅引用了 `protocol-register.png`。中文版引用了 `device-registration.png` 和 `task-dispatch.png`——这是两个不同的文件，它们并未出现在英文文档中。英文文档似乎缺少了任务分派图。这一不一致必须在重绘之前解决。
+**发现的不一致：** 英文版 `docs/developers/protocol.md` 仅引用了 `protocol-register.png`。中文版引用了 `device-registration.png` 和 `task-dispatch.png`：这是两个不同的文件，它们并未出现在英文文档中。英文文档似乎缺少了任务分派图。这一不一致必须在重绘之前解决。
 
 ---
 
