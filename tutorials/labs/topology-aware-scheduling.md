@@ -33,9 +33,9 @@ After completing this lab, you will have:
 
 :::note
 
-The fake GPU topology scores here are synthetic - nvml-mock reports symmetric connectivity by default, and we overwrite the node annotation ourselves to create an artificial "worst-connected" GPU. This lab validates the *scheduler's* logic against a known topology, not real PCIe/NVLink measurement.
+The fake GPU topology scores here are synthetic - nvml-mock reports symmetric connectivity by default, and we overwrite the node annotation ourselves to create an artificial "worst-connected" GPU. This lab validates the _scheduler's_ logic against a known topology, not real PCIe/NVLink measurement.
 
-**Score direction matters.** In HAMi's actual scheduling code (`pkg/device/nvidia/device.go`), a *higher* pairwise score means *better* connectivity (like NVLink), and a *lower* score means worse. Multi-GPU requests pick the combination with the **highest** total score; single-GPU requests under `--sgpu-topology-aware` pick the device with the **lowest** total score. To make GPU7 the worst-connected device, we set its scores **below** the 50 baseline, not above it.
+**Score direction matters.** In HAMi's actual scheduling code (`pkg/device/nvidia/device.go`), a _higher_ pairwise score means _better_ connectivity (like NVLink), and a _lower_ score means worse. Multi-GPU requests pick the combination with the **highest** total score; single-GPU requests under `--sgpu-topology-aware` pick the device with the **lowest** total score. To make GPU7 the worst-connected device, we set its scores **below** the 50 baseline, not above it.
 
 :::
 
@@ -134,7 +134,7 @@ curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
 ## Step 1: Set Up and Verify Local Environment
 
-*Why: We need a working Kubernetes cluster to deploy nvml-mock and HAMi.*
+_Why: We need a working Kubernetes cluster to deploy nvml-mock and HAMi._
 
 <Tabs groupId="os">
 <TabItem value="macos" label="macOS" default>
@@ -209,7 +209,7 @@ From here on, all commands work the same on macOS and Linux. The only difference
 
 ## Step 2: Build and Deploy nvml-mock (8 Simulated A100 GPUs)
 
-*Why: nvml-mock provides fake GPU devices and NVML topology data so HAMi can discover and score them.*
+_Why: nvml-mock provides fake GPU devices and NVML topology data so HAMi can discover and score them._
 
 ### 2.1 Clone the NVIDIA Test Infrastructure Repository
 
@@ -250,7 +250,7 @@ NAME       GPU
 
 ## Step 3: Build HAMi from Main and Install with Topology-Aware Scheduling
 
-*Why: HAMi's scheduler replaces the default Kubernetes scheduler for GPU pods and can make topology-aware decisions when the `topology-aware` policy is enabled.*
+_Why: HAMi's scheduler replaces the default Kubernetes scheduler for GPU pods and can make topology-aware decisions when the `topology-aware` policy is enabled._
 
 ### 3.1 Clone HAMi and Check Out the Verified Commit
 
@@ -306,7 +306,7 @@ nvidia.com/gpu: 80
 
 ## Step 4: Create a Custom Topology that Isolates GPU7
 
-*Why: By default, all GPU pairs have the same connectivity score (50). We'll manually craft a topology where GPU7 has a very low score (5) with every other GPU, then freeze the device plugin to prevent it from overwriting our custom values. This makes GPU7 the "worst-connected" device.*
+_Why: By default, all GPU pairs have the same connectivity score (50). We'll manually craft a topology where GPU7 has a very low score (5) with every other GPU, then freeze the device plugin to prevent it from overwriting our custom values. This makes GPU7 the "worst-connected" device._
 
 The device plugin periodically recomputes and patches the topology annotation. The gate is `ENABLE_TOPOLOGY_SCORE`. When set to `false`, the plugin stops including the score in its patch, leaving your manual annotation untouched.
 
@@ -398,7 +398,7 @@ kubectl delete pod multi-gpu single-gpu --ignore-not-found
 
 ## Step 5: Enable Single-GPU Topology-Aware Scheduling and Bump Verbosity
 
-*Why: By default, topology scoring only applies to multi-GPU pods. Adding `--sgpu-topology-aware=true` extends it to single-GPU pods. Raising log verbosity to `-v=6` exposes the `best device combination` / `worst device` log lines that prove the scheduler used your custom scores.*
+_Why: By default, topology scoring only applies to multi-GPU pods. Adding `--sgpu-topology-aware=true` extends it to single-GPU pods. Raising log verbosity to `-v=6` exposes the `best device combination` / `worst device` log lines that prove the scheduler used your custom scores._
 
 ### 5.1 Enable Single-GPU Topology Awareness
 
@@ -445,7 +445,7 @@ You should see `-v=6` for both the `kube-scheduler` and `vgpu-scheduler-extender
 
 ## Step 6: Verification Tests
 
-*Why: We run a pod that requests 2 GPUs (should avoid GPU7) and another that requests 1 GPU (should pick GPU7). The scheduler's logs and pod annotations confirm the behavior.*
+_Why: We run a pod that requests 2 GPUs (should avoid GPU7) and another that requests 1 GPU (should pick GPU7). The scheduler's logs and pod annotations confirm the behavior._
 
 ### 6.1 Multi-GPU Pod - Must Avoid GPU7
 
@@ -458,15 +458,15 @@ metadata:
   name: multi-gpu
 spec:
   containers:
-  - name: sleep
-    image: busybox
-    command: ["sleep", "3600"]
-    env:
-    - name: CUDA_DISABLE_CONTROL
-      value: "true"
-    resources:
-      limits:
-        nvidia.com/gpu: "2"
+    - name: sleep
+      image: busybox
+      command: ["sleep", "3600"]
+      env:
+        - name: CUDA_DISABLE_CONTROL
+          value: "true"
+      resources:
+        limits:
+          nvidia.com/gpu: "2"
 ```
 
 Apply the Pod:
@@ -507,15 +507,15 @@ metadata:
   name: single-gpu
 spec:
   containers:
-  - name: sleep
-    image: busybox
-    command: ["sleep", "3600"]
-    env:
-    - name: CUDA_DISABLE_CONTROL
-      value: "true"
-    resources:
-      limits:
-        nvidia.com/gpu: 1
+    - name: sleep
+      image: busybox
+      command: ["sleep", "3600"]
+      env:
+        - name: CUDA_DISABLE_CONTROL
+          value: "true"
+      resources:
+        limits:
+          nvidia.com/gpu: 1
 ```
 
 Apply the Pod:
@@ -547,7 +547,7 @@ Expected: `"worst device":[{"Idx":7,...}]`.
 
 ## Step 7: (Optional) Observe the Scheduler's Topology Decisions
 
-*Why: The `best device combination` / `worst device` log lines are the direct proof that the scheduler used your custom topology scores. The `computer score` log is unrelated (it's for resource utilization, not topology).*
+_Why: The `best device combination` / `worst device` log lines are the direct proof that the scheduler used your custom topology scores. The `computer score` log is unrelated (it's for resource utilization, not topology)._
 
 If you haven't already increased verbosity to 6, do it now (see Step 5.2). Then run any test pod again and grep the logs:
 
