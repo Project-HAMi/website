@@ -1,5 +1,5 @@
 ---
-title: "Lab 3: GPU Topology-Aware Scheduling on Fake GPUs"
+title: "Lab 9: GPU Topology-Aware Scheduling on Fake GPUs"
 description: "Simulate an asymmetric PCIe topology and verify HAMi's topology-aware scheduler avoids a poorly-connected GPU for multi-GPU requests and picks it for single-GPU requests, no real GPU required."
 sidebar_label: "Lab 3: Topology-Aware Scheduling"
 lab:
