@@ -31,6 +31,9 @@
 "queue":
   label: "queue"
   permalink: "/queue"
+"quota":
+  label: "配额"
+  permalink: "/quota"
 "vgpu":
   label: "vgpu"
   permalink: "/vgpu"

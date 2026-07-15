@@ -13,7 +13,7 @@ tags:
   - kueue
   - DRA
   - vgpu
-  - queue
+  - quota
 toc_max_heading_level: 2
 ---
 
