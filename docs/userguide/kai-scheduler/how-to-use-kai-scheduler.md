@@ -17,7 +17,7 @@ This turns KAI Scheduler's cooperative GPU sharing (the scheduler keeps the sum 
 ## Prerequisites
 
 - A Kubernetes cluster with NVIDIA GPUs and the NVIDIA GPU operator or device plugin installed.
-- KAI Scheduler supported from its next release. Confirm the version exposes `scheduler.gpuSharing.hamicoreEnabled` before you rely on this guide.
+- KAI Scheduler supported from its next release. Confirm the version exposes `binder.plugins.hamicore.enabled` before you rely on this guide.
 - Helm 3.
 
 ## 1. Install KAI Scheduler with the hamicore plugin
@@ -26,12 +26,12 @@ Install KAI Scheduler with GPU sharing enabled and the `hamicore` plugin activat
 
 ```bash
 helm install kai-scheduler oci://ghcr.io/nvidia/kai-scheduler \
-  --set scheduler.gpuSharing.enabled=true \
-  --set scheduler.gpuSharing.hamicoreEnabled=true \
+  --set global.gpuSharing=true \
+  --set binder.plugins.hamicore.enabled=true \
   --namespace kai-scheduler --create-namespace
 ```
 
-`scheduler.gpuSharing.enabled=true` turns on GPU sharing. `scheduler.gpuSharing.hamicoreEnabled=true` activates the `hamicore` plugin, which injects `CUDA_DEVICE_MEMORY_LIMIT` into containers that share a GPU.
+`global.gpuSharing=true` turns on GPU sharing. `binder.plugins.hamicore.enabled=true` activates the `hamicore` plugin, which injects `CUDA_DEVICE_MEMORY_LIMIT` into containers that share a GPU.
 
 ## 2. Deploy kai-resource-isolator
 

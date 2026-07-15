@@ -17,7 +17,7 @@ KAI Scheduler 负责调度 Pod，并通过其 Admission 组件向每个请求共
 ## 前置条件
 
 - 一个已安装 NVIDIA GPU，并部署 NVIDIA GPU Operator 或 device plugin 的 Kubernetes 集群。
-- KAI Scheduler 下个版本起支持。使用本指南前请确认所用版本已暴露 `scheduler.gpuSharing.hamicoreEnabled` 参数。
+- KAI Scheduler 下个版本起支持。使用本指南前请确认所用版本已暴露 `binder.plugins.hamicore.enabled` 参数。
 - Helm 3。
 
 ## 1. 安装启用 hamicore 插件的 KAI Scheduler
@@ -26,12 +26,12 @@ KAI Scheduler 负责调度 Pod，并通过其 Admission 组件向每个请求共
 
 ```bash
 helm install kai-scheduler oci://ghcr.io/nvidia/kai-scheduler \
-  --set scheduler.gpuSharing.enabled=true \
-  --set scheduler.gpuSharing.hamicoreEnabled=true \
+  --set global.gpuSharing=true \
+  --set binder.plugins.hamicore.enabled=true \
   --namespace kai-scheduler --create-namespace
 ```
 
-`scheduler.gpuSharing.enabled=true` 开启 GPU 共享，`scheduler.gpuSharing.hamicoreEnabled=true` 激活 `hamicore` 插件，由其为共享 GPU 的容器注入 `CUDA_DEVICE_MEMORY_LIMIT` 环境变量。
+`global.gpuSharing=true` 开启 GPU 共享，`binder.plugins.hamicore.enabled=true` 激活 `hamicore` 插件，由其为共享 GPU 的容器注入 `CUDA_DEVICE_MEMORY_LIMIT` 环境变量。
 
 ## 2. 部署 kai-resource-isolator
 

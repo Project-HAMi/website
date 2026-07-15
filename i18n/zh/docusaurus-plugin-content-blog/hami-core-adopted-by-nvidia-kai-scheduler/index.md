@@ -104,8 +104,8 @@ graph TD
 
 ```bash
 helm install kai-scheduler oci://ghcr.io/nvidia/kai-scheduler \
-  --set scheduler.gpuSharing.enabled=true \
-  --set scheduler.gpuSharing.hamicoreEnabled=true \
+  --set global.gpuSharing=true \
+  --set binder.plugins.hamicore.enabled=true \
   --namespace kai-scheduler --create-namespace
 ```
 
@@ -214,12 +214,12 @@ graph TD
 
 ```bash
 helm install kai-scheduler oci://ghcr.io/nvidia/kai-scheduler \
-  --set scheduler.gpuSharing.enabled=true \
-  --set scheduler.gpuSharing.hamicoreEnabled=true \
+  --set global.gpuSharing=true \
+  --set binder.plugins.hamicore.enabled=true \
   --namespace kai-scheduler --create-namespace
 ```
 
-`scheduler.gpuSharing.enabled=true` 开启 GPU 共享，`scheduler.gpuSharing.hamicoreEnabled=true` 激活 `hamicore` 插件，由其为共享 GPU 的容器注入 `CUDA_DEVICE_MEMORY_LIMIT` 环境变量；再配合节点侧的 kai-resource-isolator 强制执行，即可实现显存硬隔离（完整步骤见上文「部署方式」）。
+`global.gpuSharing=true` 开启 GPU 共享，`binder.plugins.hamicore.enabled=true` 激活 `hamicore` 插件，由其为共享 GPU 的容器注入 `CUDA_DEVICE_MEMORY_LIMIT` 环境变量；再配合节点侧的 kai-resource-isolator 强制执行，即可实现显存硬隔离（完整步骤见上文「部署方式」）。
 
 ### 后续规划
 

@@ -105,8 +105,8 @@ Integrating HAMi into KAI Scheduler is simple, only two steps.
 
 ```bash
 helm install kai-scheduler oci://ghcr.io/nvidia/kai-scheduler \
-  --set scheduler.gpuSharing.enabled=true \
-  --set scheduler.gpuSharing.hamicoreEnabled=true \
+  --set global.gpuSharing=true \
+  --set binder.plugins.hamicore.enabled=true \
   --namespace kai-scheduler --create-namespace
 ```
 
@@ -215,12 +215,12 @@ Both core PRs have fully merged into the KAI Scheduler main branch and are expec
 
 ```bash
 helm install kai-scheduler oci://ghcr.io/nvidia/kai-scheduler \
-  --set scheduler.gpuSharing.enabled=true \
-  --set scheduler.gpuSharing.hamicoreEnabled=true \
+  --set global.gpuSharing=true \
+  --set binder.plugins.hamicore.enabled=true \
   --namespace kai-scheduler --create-namespace
 ```
 
-`scheduler.gpuSharing.enabled=true` turns on GPU sharing, and `scheduler.gpuSharing.hamicoreEnabled=true` activates the `hamicore` plugin, which injects the `CUDA_DEVICE_MEMORY_LIMIT` environment variable into containers that share a GPU. Combined with the node-side kai-resource-isolator that enforces it, this delivers memory hard isolation (full steps above, in "Deploy").
+`global.gpuSharing=true` turns on GPU sharing, and `binder.plugins.hamicore.enabled=true` activates the `hamicore` plugin, which injects the `CUDA_DEVICE_MEMORY_LIMIT` environment variable into containers that share a GPU. Combined with the node-side kai-resource-isolator that enforces it, this delivers memory hard isolation (full steps above, in "Deploy").
 
 ### Roadmap
 
