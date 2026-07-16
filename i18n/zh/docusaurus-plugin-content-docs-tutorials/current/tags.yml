@@ -19,6 +19,9 @@
 "k3s":
   label: "k3s"
   permalink: "/k-3-s"
+"kueue":
+  label: "Kueue"
+  permalink: "/kueue"
 "nvidia":
   label: "nvidia"
   permalink: "/nvidia"
@@ -28,6 +31,9 @@
 "queue":
   label: "queue"
   permalink: "/queue"
+"quota":
+  label: "配额"
+  permalink: "/quota"
 "vgpu":
   label: "vgpu"
   permalink: "/vgpu"

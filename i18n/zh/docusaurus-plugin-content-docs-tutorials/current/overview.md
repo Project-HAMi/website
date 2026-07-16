@@ -19,4 +19,4 @@ import LabCardGridAuto from '@site/src/components/labs/LabCardGridAuto';
 
 <LabCardGridAuto />
 
-每个实验都列出了各自的前提条件。实验 3 和 4 直接复用实验 1 搭建的集群，一次开机即可完成全部三个实验；实验 2 可在任意笔记本上运行，无需 GPU。实验 7 在租用的 GPU 虚拟机上自行搭建单节点 k3s 集群，不使用 GPU Operator。实验 8 需要已有的 Volcano GPU 集群，用于验证 Volcano vGPU、Gang 调度和队列级资源限制。
+每个实验都列出了各自的前提条件。实验 3 和 4 直接复用实验 1 搭建的集群，一次开机即可完成全部三个实验；实验 2 可在任意笔记本上运行，无需 GPU。实验 7 在租用的 GPU 虚拟机上自行搭建单节点 k3s 集群，不使用 GPU Operator。实验 8 需要已有的 Volcano GPU 集群，用于验证 Volcano vGPU、Gang 调度和队列级资源限制。实验 9 使用 Kueue 准入控制限制 HAMi vGPU 数量、显存和算力配额。
