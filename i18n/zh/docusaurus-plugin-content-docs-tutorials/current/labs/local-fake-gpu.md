@@ -579,9 +579,10 @@ DCGM_FI_DEV_GPU_UTIL{..., device="nvidia0", ..., modelName="Tesla-K80", ...} => 
 
 ### 5.1 创建测试 Pod
 
-先看一下 Pod YAML：
+创建 Pod：
 
-```yaml
+```bash
+kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Pod
 metadata:
@@ -609,6 +610,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: spec.nodeName
+EOF
 ```
 
 > YAML 要点：
@@ -617,12 +619,6 @@ spec:
 > - `run.ai/simulated-gpu-utilization: "10-30"` 注解：fake-gpu-operator 会让 `nvidia-smi` 报告 10%-30% 的 GPU 利用率
 > - `resources.limits.nvidia.com/gpu: 1`：申请 1 块 GPU
 > - `sleep 3600`：让容器保持运行 1 小时，方便我们进入容器观察
-
-创建 Pod：
-
-```bash
-kubectl apply -f fake-gpu-pod.yaml
-```
 
 ```plaintext
 pod/fake-gpu-pod created
