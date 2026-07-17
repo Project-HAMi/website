@@ -217,7 +217,7 @@ spec:
 > `hami-share-b` is identical except for the name. The `devel` image is used because Step 6 compiles a small CUDA allocator with `nvcc` inside the Pod; it is large to pull, which is expected. On a 24 GB card use ~4000 MiB slices instead.
 
 ```bash
-kubectl apply -f share-two-pods.yaml
+kubectl apply -f tutorials/labs/examples/07-hami-isolation-k3s/share-two-pods.yaml
 kubectl wait --for=condition=Ready pod/hami-share-a pod/hami-share-b --timeout=300s
 kubectl get pods -o wide
 ```
@@ -303,7 +303,7 @@ cudaMalloc refused after 7424 MiB allocated: out of memory
 Now prove the card's memory is one shared, finite budget. `oversubscribe-pending.yaml` requests a 90000 MiB slice - it would fit an empty 96 GB card, but not beside the two 8000 MiB slices already held (97887 − 16000 ≈ 82000 MiB free):
 
 ```bash
-kubectl apply -f oversubscribe-pending.yaml
+kubectl apply -f tutorials/labs/examples/07-hami-isolation-k3s/oversubscribe-pending.yaml
 sleep 15
 kubectl get pod hami-oversubscribe
 kubectl describe pod hami-oversubscribe | grep -A5 Events:
