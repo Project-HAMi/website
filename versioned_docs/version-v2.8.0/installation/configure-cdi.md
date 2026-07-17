@@ -1,13 +1,15 @@
 ---
-title: Enable CDI support for HAMi
-sidebar_label: CDI support
+title: Enable NVIDIA CDI support for HAMi
+sidebar_label: NVIDIA CDI support
 ---
 
-This page explains what CDI does, how HAMi uses it, and which Helm chart values enable CDI-based NVIDIA GPU injection.
+This page explains what CDI does and which Helm chart values enable HAMi's NVIDIA CDI integration.
 
 ## What is CDI?
 
 [CDI (Container Device Interface)](https://github.com/cncf-tags/container-device-interface) is a specification for describing the OCI configuration that a container needs to use a device. A CDI specification can define device nodes, mounts, environment variables, and OCI hooks in JSON or YAML.
+
+CDI is vendor-neutral. HAMi currently supports CDI device injection only for NVIDIA GPUs. The HAMi configuration and troubleshooting guidance on this page do not apply to devices from other vendors.
 
 CDI identifies each device by a fully qualified name:
 
@@ -17,7 +19,7 @@ vendor.com/class=device-name
 
 When a container runtime receives this name, it finds the matching CDI specification in a directory such as `/etc/cdi` or `/var/run/cdi` and applies the specified changes to the container's OCI runtime specification.
 
-CDI does not schedule devices, allocate resources, or enforce quotas. In HAMi, the scheduler and Device Plugin continue to select and allocate GPUs; CDI injects the allocated GPUs and their runtime requirements into containers.
+CDI does not schedule devices, allocate resources, or enforce quotas. In HAMi's NVIDIA CDI integration, the scheduler and NVIDIA Device Plugin continue to select and allocate GPUs; CDI injects the allocated GPUs and their runtime requirements into containers.
 
 ## What problems does CDI solve?
 
@@ -30,9 +32,9 @@ CDI moves these OCI changes into a common specification. It provides:
 - Less dependency on runtime-specific device injection implementations.
 - An inspectable record of the device configuration applied to a container.
 
-## How HAMi uses CDI
+## How HAMi uses CDI for NVIDIA GPUs
 
-With `cdi-annotations` enabled, HAMi uses the following injection flow:
+With `cdi-annotations` enabled for the NVIDIA Device Plugin, HAMi uses the following injection flow:
 
 1. The HAMi scheduler and NVIDIA Device Plugin select and allocate a GPU.
 2. The Device Plugin generates a CDI specification and writes it to `/var/run/cdi` on the node.
@@ -47,7 +49,7 @@ k8s.device-plugin.nvidia.com/gpu
 
 ## Prerequisites
 
-Before enabling CDI in HAMi, confirm that:
+Before enabling NVIDIA CDI support in HAMi, confirm that:
 
 - The NVIDIA driver and NVIDIA Container Toolkit are installed on each GPU node.
 - The container runtime supports CDI and has CDI enabled.
@@ -86,6 +88,7 @@ Install or upgrade HAMi:
 
 ```bash
 helm upgrade --install hami hami-charts/hami \
+  --version 2.8.0 \
   --namespace kube-system \
   --create-namespace \
   --values values-cdi.yaml

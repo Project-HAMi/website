@@ -1,14 +1,16 @@
 ---
-title: 为 HAMi 启用 CDI 支持
-sidebar_label: CDI 支持
+title: 为 HAMi 启用 NVIDIA CDI 支持
+sidebar_label: NVIDIA CDI 支持
 translated: true
 ---
 
-本文说明 CDI 的作用、HAMi 使用 CDI 的方式，以及启用 CDI 时需要配置的 Helm Chart 参数。本文以 NVIDIA GPU 为例，适用于需要通过 CDI 将 GPU 设备注入容器的 HAMi 部署。
+本文介绍 CDI 的作用，以及为 HAMi 配置 NVIDIA CDI 支持所需的 Helm Chart 参数。
 
 ## CDI 是什么
 
 [CDI（Container Device Interface）](https://github.com/cncf-tags/container-device-interface)是一项容器设备接口规范。它使用 JSON 或 YAML 文件描述容器使用某个设备时需要应用的 OCI 配置，包括设备节点、文件挂载、环境变量和 OCI hook。
+
+CDI 是与设备厂商无关的通用规范。HAMi 当前仅支持通过 CDI 注入 NVIDIA GPU；本文中的 HAMi 配置和排错方法不适用于其他厂商设备。
 
 CDI 使用完全限定的设备名称标识设备：
 
@@ -18,7 +20,7 @@ vendor.com/class=device-name
 
 容器运行时收到设备名称后，会从 `/etc/cdi`、`/var/run/cdi` 等目录查找对应的 CDI spec，并将其中的配置写入容器的 OCI runtime spec。
 
-CDI 本身不负责设备调度、资源分配或配额管理。在 HAMi 中，调度器和 Device Plugin 仍然负责选择、分配 GPU；CDI 负责把已经分配的 GPU 及其运行环境注入容器。
+CDI 本身不负责设备调度、资源分配或配额管理。在 HAMi 的 NVIDIA CDI 集成中，调度器和 NVIDIA Device Plugin 仍然负责选择、分配 GPU；CDI 负责把已经分配的 GPU 及其运行环境注入容器。
 
 ## CDI 解决什么问题
 
@@ -31,9 +33,9 @@ CDI 将这些设备相关的 OCI 配置集中写入 spec，主要解决以下问
 - 减少设备注入逻辑对特定容器运行时实现的依赖。
 - 便于检查容器最终使用了哪些设备配置。
 
-## HAMi 如何使用 CDI
+## HAMi 如何为 NVIDIA GPU 使用 CDI
 
-HAMi 启用 `cdi-annotations` 后，设备注入流程如下：
+为 NVIDIA Device Plugin 启用 `cdi-annotations` 后，HAMi 的设备注入流程如下：
 
 1. HAMi 调度器和 NVIDIA Device Plugin 完成 GPU 选择与分配。
 2. NVIDIA Device Plugin 生成 HAMi 使用的 CDI spec，并写入节点的 `/var/run/cdi` 目录。
@@ -48,7 +50,7 @@ k8s.device-plugin.nvidia.com/gpu
 
 ## 前置条件
 
-启用 HAMi CDI 前，需要确认以下条件：
+启用 HAMi 的 NVIDIA CDI 支持前，需要确认以下条件：
 
 - 节点已经安装 NVIDIA 驱动和 NVIDIA Container Toolkit。
 - 容器运行时支持并已启用 CDI。
@@ -87,6 +89,7 @@ devicePlugin:
 
 ```bash
 helm upgrade --install hami hami-charts/hami \
+  --version 2.8.0 \
   --namespace kube-system \
   --create-namespace \
   --values values-cdi.yaml
