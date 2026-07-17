@@ -142,7 +142,7 @@ This adds the DCO signature: `Signed-off-by: Your Name <your.email@example.com>`
 | Command                      | Description                                  |
 | ---------------------------- | -------------------------------------------- |
 | `npm start`                  | Start development server with hot-reload     |
-| `npm start:network`          | Start dev server accessible on local network |
+| `npm run start:network`      | Start dev server accessible on local network |
 | `npm run build`              | Build full production site (all languages)   |
 | `npm run build:fast`         | Build English only (faster for testing)      |
 | `npm run serve`              | Serve production build locally               |
