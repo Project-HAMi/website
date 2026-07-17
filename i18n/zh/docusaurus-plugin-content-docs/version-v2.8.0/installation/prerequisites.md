@@ -20,6 +20,8 @@ translated: true
 
 参阅：[https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)
 
+如需使用 CDI 注入 NVIDIA GPU，请在安装 HAMi 前参阅[为 HAMi 启用 CDI 支持](./configure-cdi.md)，确认容器运行时、驱动根目录和 NVIDIA Container Toolkit 路径。
+
 ### 适用于基于 Debian 系统的 `Docker` 和 `containerd` 示例
 
 #### 安装 `nvidia-container-toolkit`

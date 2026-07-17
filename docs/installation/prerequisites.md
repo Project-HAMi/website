@@ -17,6 +17,8 @@ This guide assumes pre-installation of NVIDIA drivers and the `nvidia-container-
 
 For details see [Installing the NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html).
 
+To inject NVIDIA GPUs through CDI, follow [Enable CDI support for HAMi](./configure-cdi.md) before installing HAMi. Verify the container runtime, driver root, and NVIDIA Container Toolkit path first.
+
 ### Example for debian-based systems with Docker and containerd
 
 #### Install the `nvidia-container-toolkit`
