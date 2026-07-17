@@ -51,6 +51,11 @@ module.exports = {
           id: "labs/volcano-vgpu-gang-queue",
           customProps: { level: "Advanced", duration: "about 60 minutes" },
         },
+        {
+          type: "doc",
+          id: "labs/kueue-hami-vgpu",
+          customProps: { level: "Advanced", duration: "about 60 minutes" },
+        },
       ],
     },
   ],

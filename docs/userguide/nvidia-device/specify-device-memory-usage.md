@@ -9,7 +9,7 @@ Allocate a certain size of device memory by specifying resources such as `nvidia
 resources:
   limits:
     nvidia.com/gpu: 1 # requesting 1 GPU
-    nvidia.com/gpumem: 3000 # Each GPU contains 3000m device memory
+    nvidia.com/gpumem: 3000 # Each GPU contains 3000 MiB device memory
 ```
 
 Allocate a percentage of device memory by specifying resource `nvidia.com/gpumem-percentage`. Optional, each unit of `nvidia.com/gpumem-percentage` equals 1% of device memory.

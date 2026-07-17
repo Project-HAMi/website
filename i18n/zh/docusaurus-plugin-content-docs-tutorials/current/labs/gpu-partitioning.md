@@ -137,7 +137,7 @@ kubectl exec gpumem-pod-a -- nvidia-smi
 +-----------------------------------------+------------------------+----------------------+
 ```
 
-> **`0MiB / 4000MiB`**：容器看到的是一块 4000 MiB 的 GPU，而不是物理的 15360 MiB。这是 HAMi-core 的核心能力——一个通过 `LD_PRELOAD` 注入到容器中的库，它拦截 CUDA 和 NVML 调用并重写内存数值。另一个 Pod 在同一张物理卡上看到的是独立的 4000 MiB 上限。
+> **`0MiB / 4000MiB`**：容器看到的是一块 4000 MiB 的 GPU，而不是物理的 15360 MiB。这是 HAMi-core 的核心能力：一个通过 `LD_PRELOAD` 注入到容器中的库，它拦截 CUDA 和 NVML 调用并重写内存数值。另一个 Pod 在同一张物理卡上看到的是独立的 4000 MiB 上限。
 
 ## 步骤 4: 通过 OOM 测试验证显存隔离
 
@@ -297,7 +297,7 @@ kubectl exec -n monitoring prometheus-prometheus-kube-prometheus-prometheus-0 -c
 > - **default**（默认）：Pod 可以在 GPU 空闲时突破 `gpucores` 份额。有利于提高利用率，隔离较宽松。
 > - **force**（`GPU_CORE_UTILIZATION_POLICY=force`）：始终严格限制，如上测量所示。适合需要可预测性能隔离的场景。
 >
-> 如果不设置 `force` 环境变量，你会看到同样的工作负载在空闲卡上以 100% 利用率运行——这是设计如此：HAMi 会将空闲容量分配出去，而不是浪费它。
+> 如果不设置 `force` 环境变量，你会看到同样的工作负载在空闲卡上以 100% 利用率运行，这是设计如此：HAMi 会将空闲容量分配出去，而不是浪费它。
 
 ## 步骤 6: 清理
 

@@ -44,15 +44,15 @@ The entire installation process consists of 10 steps:
 ```mermaid
 %% title: Fake-GPU Scheduling Installation Overview
 flowchart LR
-    Step1["Step 1\nCreate kind Cluster"] --> Step2["Step 2\nBuild & Deploy nvml-mock"]
-    Step2 --> Step3["Step 3\nBuild HAMi from main"]
-    Step3 --> Step4["Step 4\nDeploy HAMi"]
-    Step4 --> Step5["Step 5\nVerify GPU Resources"]
-    Step5 --> Step6["Step 6\nBasic GPU Scheduling"]
-    Step6 --> Step7["Step 7\nGPU Sharing"]
-    Step7 --> Step8["Step 8\nMemory & Core Limits"]
-    Step8 --> Step9["Step 9\nPercentage Memory"]
-    Step9 --> Step10["Step 10\nMulti-GPU Allocation"]
+    Step1["Step 1<br/>Create kind Cluster"] --> Step2["Step 2<br/>Build & Deploy nvml-mock"]
+    Step2 --> Step3["Step 3<br/>Build HAMi from main"]
+    Step3 --> Step4["Step 4<br/>Deploy HAMi"]
+    Step4 --> Step5["Step 5<br/>Verify GPU Resources"]
+    Step5 --> Step6["Step 6<br/>Basic GPU Scheduling"]
+    Step6 --> Step7["Step 7<br/>GPU Sharing"]
+    Step7 --> Step8["Step 8<br/>Memory & Core Limits"]
+    Step8 --> Step9["Step 9<br/>Percentage Memory"]
+    Step9 --> Step10["Step 10<br/>Multi-GPU Allocation"]
 ```
 
 | Step | Purpose | What It Solves |

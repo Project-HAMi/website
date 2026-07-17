@@ -1,0 +1,74 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: hami-kueue-running-a
+  namespace: hami-kueue-demo
+  labels:
+    kueue.x-k8s.io/queue-name: hami-queue
+spec:
+  suspend: true
+  parallelism: 1
+  completions: 1
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: cuda
+          image: nvcr.io/nvidia/cuda:12.6.0-base-ubuntu24.04
+          imagePullPolicy: IfNotPresent
+          command: ["bash", "-c", "nvidia-smi && echo HAMI_KUEUE_RUNNING_A && sleep 3600"]
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+              nvidia.com/gpumem: 4096
+              nvidia.com/gpucores: 50
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: hami-kueue-running-b
+  namespace: hami-kueue-demo
+  labels:
+    kueue.x-k8s.io/queue-name: hami-queue
+spec:
+  suspend: true
+  parallelism: 1
+  completions: 1
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: cuda
+          image: nvcr.io/nvidia/cuda:12.6.0-base-ubuntu24.04
+          imagePullPolicy: IfNotPresent
+          command: ["bash", "-c", "nvidia-smi && echo HAMI_KUEUE_RUNNING_B && sleep 3600"]
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+              nvidia.com/gpumem: 4096
+              nvidia.com/gpucores: 50
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: hami-kueue-pending-c
+  namespace: hami-kueue-demo
+  labels:
+    kueue.x-k8s.io/queue-name: hami-queue
+spec:
+  suspend: true
+  parallelism: 1
+  completions: 1
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: cuda
+          image: nvcr.io/nvidia/cuda:12.6.0-base-ubuntu24.04
+          imagePullPolicy: IfNotPresent
+          command: ["bash", "-c", "nvidia-smi && echo HAMI_KUEUE_PENDING_C && sleep 3600"]
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+              nvidia.com/gpumem: 4096
+              nvidia.com/gpucores: 50

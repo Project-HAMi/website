@@ -68,14 +68,14 @@ The answer is yes.
 
 ## Test Machine
 
-```
+```plaintext
 GPU:  1x NVIDIA L40S (46GB VRAM)
 CPU:  8 vCPUs
 RAM:  32GB
 OS:   Ubuntu 24.04 LTS for NVIDIA GPUs (CUDA 13)
 ```
 
-```
+```bash
 nvidia-smi
 | NVIDIA-SMI 580.126.09    CUDA Version: 13.0      |
 |   0  NVIDIA L40S    0MiB / 46068MiB    0%        |
@@ -221,7 +221,7 @@ nvidia.com/gpu: 11
 
 but the cluster only has 10 virtual GPUs:
 
-```
+```plaintext
 Warning  FailedScheduling  hami-scheduler
 ```
 
@@ -254,7 +254,7 @@ All state stored in PostgreSQL.
 
 Every Agent exposes:
 
-```
+```plaintext
 /.well-known/agent-card.json
 ```
 

@@ -57,21 +57,22 @@ You can customize the MIG configuration by following the steps below:
 
 ### Edit `device-configmap.yaml` in charts/hami/templates/scheduler
 
+<!-- prettier-ignore -->
 ```yaml
 nvidia:
-  resourceCountName: { { .Values.resourceName } }
-  resourceMemoryName: { { .Values.resourceMem } }
-  resourceMemoryPercentageName: { { .Values.resourceMemPercentage } }
-  resourceCoreName: { { .Values.resourceCores } }
-  resourcePriorityName: { { .Values.resourcePriority } }
+  resourceCountName: {{ .Values.resourceName }}
+  resourceMemoryName: {{ .Values.resourceMem }}
+  resourceMemoryPercentageName: {{ .Values.resourceMemPercentage }}
+  resourceCoreName: {{ .Values.resourceCores }}
+  resourcePriorityName: {{ .Values.resourcePriority }}
   overwriteEnv: false
   defaultMemory: 0
   defaultCores: 0
   defaultGPUNum: 1
   memoryFactor: 1
-  deviceSplitCount: { { .Values.devicePlugin.deviceSplitCount } }
-  deviceMemoryScaling: { { .Values.devicePlugin.deviceMemoryScaling } }
-  deviceCoreScaling: { { .Values.devicePlugin.deviceCoreScaling } }
+  deviceSplitCount: {{ .Values.devicePlugin.deviceSplitCount }}
+  deviceMemoryScaling: {{ .Values.devicePlugin.deviceMemoryScaling }}
+  deviceCoreScaling: {{ .Values.devicePlugin.deviceCoreScaling }}
   knownMigGeometries:
     - models: ["A30"]
       allowedGeometries:

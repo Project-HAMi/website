@@ -69,14 +69,14 @@ Nebius Token Factory 是一个兼容 OpenAI API 的推理服务。
 
 ## 测试机器
 
-```
+```plaintext
 GPU:  1x NVIDIA L40S (46GB VRAM)
 CPU:  8 vCPUs
 RAM:  32GB
 OS:   Ubuntu 24.04 LTS for NVIDIA GPUs (CUDA 13)
 ```
 
-```
+```bash
 nvidia-smi
 | NVIDIA-SMI 580.126.09    CUDA Version: 13.0      |
 |   0  NVIDIA L40S    0MiB / 46068MiB    0%        |
@@ -222,7 +222,7 @@ nvidia.com/gpu: 11
 
 但集群只有 10 张虚拟 GPU 时：
 
-```
+```plaintext
 Warning  FailedScheduling  hami-scheduler
 ```
 
@@ -255,7 +255,7 @@ kagent CLI 可以查看：
 
 每个 Agent 都会暴露：
 
-```
+```plaintext
 /.well-known/agent-card.json
 ```
 
