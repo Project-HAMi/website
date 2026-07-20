@@ -105,6 +105,7 @@ Integrating HAMi into KAI Scheduler is simple, only two steps.
 
 ```bash
 helm install kai-scheduler oci://ghcr.io/nvidia/kai-scheduler \
+  --version v0.16.4 \
   --set global.gpuSharing=true \
   --set binder.plugins.hamicore.enabled=true \
   --namespace kai-scheduler --create-namespace
@@ -215,6 +216,7 @@ Both core PRs have fully merged into the KAI Scheduler main branch and are expec
 
 ```bash
 helm install kai-scheduler oci://ghcr.io/nvidia/kai-scheduler \
+  --version v0.16.4 \
   --set global.gpuSharing=true \
   --set binder.plugins.hamicore.enabled=true \
   --namespace kai-scheduler --create-namespace

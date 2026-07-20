@@ -2,9 +2,9 @@
 title: 如何在 KAI Scheduler 中使用 HAMi
 ---
 
-[KAI Scheduler](https://github.com/kai-scheduler/KAI-Scheduler) 是 NVIDIA 开源的 Kubernetes 原生 AI 工作负载调度器。从下个版本起，KAI Scheduler 内置了由 HAMi-core 驱动的 GPU 显存硬隔离能力。只需一个 Helm 参数即可开启，再由节点侧组件在 CUDA 层强制执行显存上限。
+[KAI Scheduler](https://github.com/kai-scheduler/KAI-Scheduler) 是 NVIDIA 开源的 Kubernetes 原生 AI 工作负载调度器。从下个版本起，KAI Scheduler 内置了由 HAMi-core 驱动的 GPU 显存硬隔离能力。只需两个 Helm 参数即可开启，再由节点侧组件在 CUDA 层强制执行显存上限。
 
-关于 KAI Scheduler 为何需要 HAMi-core、两者如何分工的背景，见[生态集成](../../core-concepts/ecosystem-integrations.md)。关于本次采用的公告与背后的开源协作故事，阅读博客：[HAMi-core 被 NVIDIA KAI Scheduler 采用：GPU 共享正式迈入硬隔离时代](/blog/hami-core-adopted-by-nvidia-kai-scheduler)。
+关于 KAI Scheduler 为何需要 HAMi-core、两者如何分工的背景，见[生态集成](../../core-concepts/ecosystem-integrations.md)。关于本次采用的公告与背后的开源协作故事，阅读博客：[HAMi-core 被 NVIDIA KAI Scheduler 采用：GPU 共享正式迈入硬隔离时代](/zh/blog/hami-core-adopted-by-nvidia-kai-scheduler)。
 
 > 该集成直接使用 HAMi-core，而非完整 HAMi 平台。KAI Scheduler 保留自身调度能力，仅引入 HAMi-core 提供 GPU 显存隔离。
 
@@ -26,6 +26,7 @@ KAI Scheduler 负责调度 Pod，并通过其 Admission 组件向每个请求共
 
 ```bash
 helm install kai-scheduler oci://ghcr.io/nvidia/kai-scheduler \
+  --version v0.16.4 \
   --set global.gpuSharing=true \
   --set binder.plugins.hamicore.enabled=true \
   --namespace kai-scheduler --create-namespace
