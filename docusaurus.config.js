@@ -3,6 +3,11 @@ const lightTheme = themes.github;
 const darkTheme = themes.dracula;
 const defaultLocale = "en";
 const siteUrl = (process.env.DOCUSAURUS_SITE_URL || "https://project-hami.io").replace(/\/$/, "");
+const githubEditBaseUrl = "https://github.com/Project-HAMi/website/edit/master/";
+
+function getDocEditUrl(versionDocsDirPath, docPath) {
+  return `${githubEditBaseUrl}${[versionDocsDirPath, docPath].filter(Boolean).join("/")}`;
+}
 
 async function localizedBlogPlugin(context, opts) {
   const p = await require("@docusaurus/plugin-content-blog").default(context, opts);
@@ -125,21 +130,6 @@ module.exports = {
         "window.dataLayer=window.dataLayer||[];if(typeof window.gtag!=='function'){window.gtag=function(){window.dataLayer.push(arguments);};}",
     },
     {
-      tagName: "meta",
-      attributes: {
-        name: "description",
-        content:
-          "HAMi is an open-source Kubernetes-native virtualization middleware for heterogeneous AI accelerators.",
-      },
-    },
-    {
-      tagName: "link",
-      attributes: {
-        rel: "canonical",
-        href: `${siteUrl}/`,
-      },
-    },
-    {
       tagName: "link",
       attributes: {
         rel: "apple-touch-icon",
@@ -221,8 +211,8 @@ module.exports = {
       "./src/plugins/docs/index.js",
       {
         sidebarPath: require.resolve("./sidebars.js"),
-        editUrl: function ({ locale, docPath }) {
-          return `https://github.com/Project-HAMi/website/edit/master/docs/${docPath}`;
+        editUrl: function ({ versionDocsDirPath, docPath }) {
+          return getDocEditUrl(versionDocsDirPath, docPath);
         },
         showLastUpdateAuthor: false,
         showLastUpdateTime: true,
@@ -240,8 +230,8 @@ module.exports = {
         path: "tutorials",
         routeBasePath: "tutorials",
         sidebarPath: require.resolve("./sidebars-tutorials.js"),
-        editUrl: function ({ locale, docPath }) {
-          return `https://github.com/Project-HAMi/website/edit/master/tutorials/${docPath}`;
+        editUrl: function ({ versionDocsDirPath, docPath }) {
+          return getDocEditUrl(versionDocsDirPath, docPath);
         },
         showLastUpdateTime: true,
         numberPrefixParser: false,

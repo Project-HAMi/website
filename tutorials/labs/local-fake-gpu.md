@@ -45,12 +45,12 @@ The entire local installation process consists of 7 steps:
 ```mermaid
 %% title: Local Fake GPU Installation Overview
 flowchart LR
-    Step1["Step 1\nSet Up & Verify Environment"] --> Step2["Step 2\nInstall fake-gpu-operator"]
-    Step2 --> Step3["Step 3\nInstall HAMi"]
-    Step3 --> Step4["Step 4\nInstall Prometheus"]
-    Step4 --> Step5["Step 5\nRun Simulated GPU Workloads"]
-    Step5 --> Step6["Step 6\nInstall HAMi WebUI"]
-    Step6 --> Step7["Step 7\nObserve HAMi and fake GPU"]
+    Step1["Step 1<br/>Set Up & Verify Environment"] --> Step2["Step 2<br/>Install fake-gpu-operator"]
+    Step2 --> Step3["Step 3<br/>Install HAMi"]
+    Step3 --> Step4["Step 4<br/>Install Prometheus"]
+    Step4 --> Step5["Step 5<br/>Run Simulated GPU Workloads"]
+    Step5 --> Step6["Step 6<br/>Install HAMi WebUI"]
+    Step6 --> Step7["Step 7<br/>Observe HAMi and fake GPU"]
 ```
 
 | Step | Purpose | What It Solves |

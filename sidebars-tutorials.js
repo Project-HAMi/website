@@ -53,6 +53,11 @@ module.exports = {
         },
         {
           type: "doc",
+          id: "labs/kueue-hami-vgpu",
+          customProps: { level: "Advanced", duration: "about 60 minutes" },
+        },
+        {
+          type: "doc",
           id: "labs/topology-aware-scheduling",
           customProps: { level: "Intermediate", duration: "about 45 minutes" },
         },

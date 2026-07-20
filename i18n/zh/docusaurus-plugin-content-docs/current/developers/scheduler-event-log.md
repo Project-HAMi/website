@@ -35,7 +35,7 @@ spec:
           nvidia.com/gpucores: "30"
 ```
 
-```
+```bash
 $ kubectl describe pod gpu-pod
 ...
 Events:
@@ -44,7 +44,7 @@ Events:
   Warning  FilteringFailed   11s   hami-scheduler  no available node, all node scores do not meet
 ```
 
-```
+```bash
 $ kubectl logs -f hami-scheduler-d69cb679b-9vtdg -c vgpu-scheduler-extender
 I0422 13:42:30.272812       1 pod.go:44] "collect requestreqs" counts=[{"NVIDIA":{"Nums":2,"Type":"NVIDIA","Memreq":3000,"MemPercentagereq":101,"Coresreq":30}}]
 I0422 13:42:30.272827       1 scheduler.go:499] All node scores do not meet for pod gpu-pod
@@ -70,7 +70,7 @@ I0422 13:42:30.273047       1 event.go:307] "Event occurred" object="default/gpu
 
 失败示例：
 
-```
+```plaintext
 Events:
   Type     Reason            Age    From            Message
   Warning  FilteringFailed   2m45s  hami-scheduler  no available node, %d nodes do not meet
@@ -78,7 +78,7 @@ Events:
 
 成功示例：
 
-```
+```plaintext
 Events:
   Type     Reason             Age    From            Message
   Normal   FilteringSucceed   2m45s  hami-scheduler  find fit node(node3), 7 nodes not fit, 2 nodes fit(node3:0.98,node4:0.65)
@@ -99,7 +99,7 @@ Events:
 
 日志格式规范：
 
-```
+```plaintext
 <ErrorReason> <Namespace/PodName> <NodeName> <DeviceUUID>
 ```
 
@@ -117,7 +117,7 @@ Events:
 
 示例日志：
 
-```
+```plaintext
 (v=5) I0422 02:15:42.349712  1 score.go:210] NodeInsufficientDevice pod="llm/deepseek-5996b8569d-kgwgx" node="node2" request devices nums=2 node device nums=1
 (v=5) I0422 02:15:42.349712  1 score.go:99]  CardTypeMismatch pod="llm/deepseek-5996b8569d-kgwgx" node="node1" device="GPU-0fc3eda5-e98b-a25b-5b0d-cf5c855d1448"
 (v=5) I0422 02:15:42.349712  1 score.go:137] CardInsufficientMemory pod="llm/deepseek-5996b8569d-kgwgx" node="node3" device="GPU-62b7408e-edb2-41d1-bc91-f46165c61130" device total memory=50 request memory=1000

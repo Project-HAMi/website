@@ -116,7 +116,7 @@ impl SchedulerClient {
 
 The Limiter binary and `libvnpu.so` are placed at a fixed host path so they can be mounted into containers:
 
-```
+```text
 /usr/local/hami-vnpu-core/
 ├── limiter
 ├── libvnpu.so
@@ -125,7 +125,7 @@ The Limiter binary and `libvnpu.so` are placed at a fixed host path so they can 
 
 `ld.so.preload` content:
 
-```
+```plaintext
 /hami-vnpu-core/target/debug/libvnpu.so
 ```
 

@@ -8,7 +8,7 @@ A simple demonstration for device isolation: A task with the following resources
 resources:
   limits:
     nvidia.com/gpu: 1 # requesting 1 vGPU
-    nvidia.com/gpumem: 3000 # Each vGPU contains 3000m device memory
+    nvidia.com/gpumem: 3000 # Each vGPU contains 3000 MiB device memory
 ```
 
 will see 3G device memory inside container

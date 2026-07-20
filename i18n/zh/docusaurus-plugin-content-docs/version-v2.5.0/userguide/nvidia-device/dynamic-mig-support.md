@@ -61,20 +61,21 @@ HAMi 目前有一个[内置的 MIG 配置](https://github.com/Project-HAMi/HAMi/
 
 ### 更改 charts/hami/templates/scheduler 中 'device-configmap.yaml'
 
+<!-- prettier-ignore -->
 ```yaml
 nvidia:
-  resourceCountName: { { .Values.resourceName } }
-  resourceMemoryName: { { .Values.resourceMem } }
-  resourceMemoryPercentageName: { { .Values.resourceMemPercentage } }
-  resourceCoreName: { { .Values.resourceCores } }
-  resourcePriorityName: { { .Values.resourcePriority } }
+  resourceCountName: {{ .Values.resourceName }}
+  resourceMemoryName: {{ .Values.resourceMem }}
+  resourceMemoryPercentageName: {{ .Values.resourceMemPercentage }}
+  resourceCoreName: {{ .Values.resourceCores }}
+  resourcePriorityName: {{ .Values.resourcePriority }}
   overwriteEnv: false
   defaultMemory: 0
   defaultCores: 0
   defaultGPUNum: 1
-  deviceSplitCount: { { .Values.devicePlugin.deviceSplitCount } }
-  deviceMemoryScaling: { { .Values.devicePlugin.deviceMemoryScaling } }
-  deviceCoreScaling: { { .Values.devicePlugin.deviceCoreScaling } }
+  deviceSplitCount: {{ .Values.devicePlugin.deviceSplitCount }}
+  deviceMemoryScaling: {{ .Values.devicePlugin.deviceMemoryScaling }}
+  deviceCoreScaling: {{ .Values.devicePlugin.deviceCoreScaling }}
   knownMigGeometries:
     - models: ["A30"]
       allowedGeometries:
