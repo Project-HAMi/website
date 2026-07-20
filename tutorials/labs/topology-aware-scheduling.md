@@ -280,8 +280,8 @@ The lab was tested against HAMi `main` branch as of **2026-07-14**. If your curr
 cd ~
 git clone https://github.com/Project-HAMi/HAMi.git
 cd HAMi
-git log --until=2026-07-14 --oneline -1   
-git checkout a1b418c  
+git log --until=2026-07-14 --oneline -1
+git checkout a1b418c
 git submodule update --init --recursive
 docker build -t hami:local -f docker/Dockerfile .
 ```
