@@ -1,14 +1,14 @@
 ---
 title: "HAMi-core 被 NVIDIA KAI Scheduler 采用：GPU 共享正式迈入硬隔离时代"
 date: "2026-06-20"
-description: "两项核心 PR 已合并进入 NVIDIA KAI Scheduler 主干，HAMi 的 GPU 显存硬隔离能力将成为 KAI Scheduler 下个版本的内置特性。云原生 GPU 资源调度正式从「软共享」迈入「硬隔离」时代。"
+description: "两项核心 PR 已合并进入 NVIDIA KAI Scheduler 主干，HAMi 的 GPU 显存硬隔离能力已成为 KAI Scheduler v0.16.4 的内置特性。云原生 GPU 资源调度正式从「软共享」迈入「硬隔离」时代。"
 authors: [hami_community]
 tags: ["HAMi", "NVIDIA", "KAI Scheduler", "GPU 共享", "硬隔离", "Kubernetes", "云原生"]
 ---
 
 > 本文中的集成对象严格来说是 HAMi-core，而非完整 HAMi 平台。KAI Scheduler 保留自身调度能力，引入 HAMi-core 提供 GPU Memory Isolation 能力。
 
-2026 年 6 月，两项核心 PR 正式合并进入 NVIDIA KAI Scheduler 主干。这意味着，HAMi 的 GPU 显存硬隔离能力将作为 KAI Scheduler 下个版本的内置特性发布，云原生 GPU 资源调度正式从「软共享」迈入「硬隔离」时代。
+2026 年 6 月，两项核心 PR 正式合并进入 NVIDIA KAI Scheduler 主干。HAMi 的 GPU 显存硬隔离能力已作为内置特性随 KAI Scheduler v0.16.4 发布，云原生 GPU 资源调度正式从「软共享」迈入「硬隔离」时代。
 
 <!-- truncate -->
 
@@ -209,9 +209,9 @@ graph TD
 
 > "We're currently using KAI Scheduler to handle our ML workloads, but we have a new requirement: we need to enforce strict vGPU restrictions (memory/compute isolation) at the pod level. I know HAMi excels at this."
 
-## 展望：KAI Scheduler 下个版本即将发布
+## 现已可用：KAI Scheduler v0.16.4 中的 HAMi 资源隔离
 
-两项核心 PR 已全部合并进入 KAI Scheduler 主干，预计将在下个版本中正式发布。届时用户只需在 Helm 安装 KAI Scheduler 时启用 GPU 共享与 `hamicore` 插件，即可获得 HAMi 资源隔离：
+两项核心 PR 已全部合并进入 KAI Scheduler 主干，并随 v0.16.4 正式发布。用户只需在 Helm 安装 KAI Scheduler 时启用 GPU 共享与 `hamicore` 插件，即可获得 HAMi 资源隔离：
 
 ```bash
 helm install kai-scheduler oci://ghcr.io/nvidia/kai-scheduler \
