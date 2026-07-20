@@ -35,7 +35,7 @@ After completing this lab, you will have:
 
 The fake GPU topology scores here are synthetic - nvml-mock reports symmetric connectivity by default, and we overwrite the node annotation ourselves to create an artificial "worst-connected" GPU. This lab validates the _scheduler's_ logic against a known topology, not real PCIe/NVLink measurement.
 
-**Score direction matters.** In HAMi's actual scheduling code (`pkg/device/nvidia/device.go`), a _higher_ pairwise score means _better_ connectivity (like NVLink), and a _lower_ score means worse. Multi-GPU requests pick the combination with the **highest** total score (via `computeBestCombination`); single-GPU requests pick the device with the **lowest** score (via `computeWorstSignleCard`) - both paths are gated by the same `needTopology` check in `Fit()`, driven entirely by `gpuSchedulerPolicy=topology-aware`. There is no separate flag to enable single-GPU scoring; it's on by default the moment the policy is set. To make GPU7 the worst-connected device, we set its scores **below** the 50 baseline, not above it.
+**Score direction matters.** In HAMi's actual scheduling code (`pkg/device/nvidia/device.go`), a _higher_ pairwise score means _better_ connectivity (like NVLink), and a _lower_ score means worse. Multi-GPU requests pick the combination with the **highest** total score (via `computeBestCombination`); single-GPU requests pick the device with the **lowest** score (via `computeWorstSingleCard`) - both paths are gated by the same `needTopology` check in `Fit()`, driven entirely by `gpuSchedulerPolicy=topology-aware`. There is no separate flag to enable single-GPU scoring; it's on by default the moment the policy is set. To make GPU7 the worst-connected device, we set its scores **below** the 50 baseline, not above it.
 
 :::
 
@@ -280,8 +280,8 @@ The lab was tested against HAMi `main` branch as of **2026-07-14**. If your curr
 cd ~
 git clone https://github.com/Project-HAMi/HAMi.git
 cd HAMi
-git log --until=2026-07-14 --oneline -1   # should output 5dca58e
-git checkout 5dca58e   # or the commit hash you just got
+git log --until=2026-07-14 --oneline -1   
+git checkout a1b418c  
 git submodule update --init --recursive
 docker build -t hami:local -f docker/Dockerfile .
 ```
@@ -532,6 +532,7 @@ Add this hard stop before moving on:
 ```bash
 if [ -z "$GPU7_UUID" ]; then
   echo "ERROR: GPU7_UUID is empty. Re-run the extraction command above in this shell before continuing." >&2
+  exit 1
 else
   echo "OK: GPU7_UUID is set to $GPU7_UUID"
 fi
