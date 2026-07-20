@@ -305,6 +305,13 @@ kind load docker-image hami:local --name topo-lab
 
 ### 3.2 Install HAMi with the Topology-Aware Policy
 
+Read the Kubernetes server version straight from the running cluster so the scheduler's bundled `kube-scheduler` binary stays aligned with whatever API server you actually have. OrbStack reports something like `v1.33.9+orb1` while kind reports `v1.35.0`, so a single hardcoded tag would only ever be correct on one platform:
+
+```bash
+K8S_VERSION=$(kubectl version -o json | python3 -c "import json,sys; print(json.load(sys.stdin)['serverVersion']['gitVersion'].split('+')[0])")
+echo "K8S_VERSION=${K8S_VERSION}"
+```
+
 ```bash
 helm install hami ./charts/hami \
   -n kube-system \
@@ -313,11 +320,11 @@ helm install hami ./charts/hami \
   --set scheduler.image.repository=hami \
   --set scheduler.image.tag=local \
   --set devicePlugin.nvidiaDriverRoot=/var/lib/nvml-mock/driver \
-  --set scheduler.kubeScheduler.imageTag=v1.35.0 \
+  --set scheduler.kubeScheduler.imageTag=${K8S_VERSION} \
   --set scheduler.defaultSchedulerPolicy.gpuSchedulerPolicy=topology-aware
 ```
 
-> `gpuSchedulerPolicy=topology-aware` tells the scheduler to use pairwise connectivity scores from the node annotation when selecting GPUs. This single setting covers **both** multi-GPU and single-GPU requests - HAMi's `Fit()` function (`pkg/device/nvidia/device.go`) checks this policy once, then branches internally: multi-GPU requests go through `computeBestCombination()`, single-GPU requests go through `computeWorstSignleCard()`. There's no separate flag to turn on for single-GPU scoring.
+> `gpuSchedulerPolicy=topology-aware` tells the scheduler to use pairwise connectivity scores from the node annotation when selecting GPUs. This single setting covers **both** multi-GPU and single-GPU requests - HAMi's `Fit()` function (`pkg/device/nvidia/device.go`) checks this policy once, then branches internally: multi-GPU requests go through `computeBestCombination()`, single-GPU requests go through `computeWorstSignleCard()`. There's no separate flag to turn on for single-GPU scoring. `scheduler.kubeScheduler.imageTag` is read from the live cluster rather than hardcoded, since OrbStack and kind ship different Kubernetes versions, and this keeps the scheduler's embedded kube-scheduler binary aligned with whatever API server is actually running.
 
 ### 3.3 Label the Node and Configure NVML Discovery
 
