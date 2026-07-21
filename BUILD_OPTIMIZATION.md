@@ -105,7 +105,7 @@ npm run clear
 1. **首次构建**: 首次构建或清理缓存后，构建时间会稍长，后续构建会利用缓存加速
 2. **开发环境**: 开发环境 (`npm start`) 也会从这些优化中受益
 3. **CI/CD**: 确保 CI/CD 环境有足够的内存和 CPU 资源
-4. **版本兼容**: 这些优化基于 Docusaurus 3.9.2+
+4. **版本兼容**: 这些优化基于 Docusaurus 3.10.1+
 
 ## 持续优化建议
 
@@ -134,10 +134,10 @@ npm run clear
 
 ## 技术栈
 
-- **框架**: Docusaurus 3.9.2
+- **框架**: Docusaurus 3.10.1
 - **打包工具**: Rspack (通过 @docusaurus/faster)
 - **编译器**: SWC
-- **Node.js**: v25.4.0
+- **Node.js**: v20+
 - **包管理器**: npm
 
 ---
