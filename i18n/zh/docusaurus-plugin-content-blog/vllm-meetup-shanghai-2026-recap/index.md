@@ -18,7 +18,7 @@ tags:
 authors: [archlitchi]
 ---
 
-import YouTube from "@site/src/components/YouTube";
+import Bilibili from "@site/src/components/Bilibili";
 
 ![vLLM 推理集群优化的三个阶段｜李孟轩](/img/vllm-meetup-shanghai-2026-recap/title.webp)
 
@@ -32,7 +32,7 @@ import YouTube from "@site/src/components/YouTube";
 
 ## 视频回放
 
-<YouTube id="t_vOogph-ns" title="你的算力用的好么？vLLM 推理集群优化的三个阶段 - 李孟轩" />
+<Bilibili bvid="BV1amK462EhY" title="你的算力用的好么？vLLM Meetup上海站，李孟轩" />
 
 ## 核心问题：你的算力真的用好了吗？
 
