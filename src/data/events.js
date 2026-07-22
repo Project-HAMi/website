@@ -36,8 +36,8 @@ const events = [
       url: "https://www.cncf.io/case-studies/snow-corp/",
     },
     cta: {
-      discordUrl: "https://discord.gg/Nwt3jVVpnT",
-      githubUrl: "https://github.com/Project-HAMi/HAMi",
+      discordUrl: "https://go.dynamia.ai/hami-chat",
+      githubUrl: "https://go.dynamia.ai/proj-hami-jpvn",
     },
   },
 ];
