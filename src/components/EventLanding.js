@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDiscord, faGithub } from "@fortawesome/free-brands-svg-icons";
@@ -14,32 +15,28 @@ function pick(locale, obj) {
   return locale === "zh" && obj.zh ? obj.zh : obj.en;
 }
 
-function localeStr(locale) {
-  return locale === "zh" ? "zh-CN" : "en-US";
+function fmt(dateStr, locale) {
+  return locale === "zh"
+    ? dayjs(dateStr).format("YYYY[年]M[月]D[日]")
+    : dayjs(dateStr).format("MMMM D, YYYY");
 }
 
-function formatDate(dateStr, locale) {
-  return new Date(dateStr).toLocaleDateString(localeStr(locale), {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+function fmtShort(dateStr, locale) {
+  return locale === "zh"
+    ? dayjs(dateStr).format("M[月]D[日]")
+    : dayjs(dateStr).format("MMMM D");
 }
 
 function formatDateRange(startStr, endStr, locale) {
-  const lang = localeStr(locale);
-  const opts = { month: "long", day: "numeric" };
-  const start = new Date(startStr);
-  const end = new Date(endStr);
-  if (start.getFullYear() === end.getFullYear()) {
-    const startShort = start.toLocaleDateString(lang, opts);
-    const endShort = end.toLocaleDateString(lang, opts);
-    if (start.getMonth() === end.getMonth()) {
-      return `${startShort} – ${end.getDate()}, ${end.getFullYear()}`;
+  const s = dayjs(startStr);
+  const e = dayjs(endStr);
+  if (s.year() === e.year()) {
+    if (s.month() === e.month()) {
+      return `${fmtShort(startStr, locale)} – ${e.date()}, ${e.year()}`;
     }
-    return `${startShort} – ${endShort}, ${end.getFullYear()}`;
+    return `${fmtShort(startStr, locale)} – ${fmtShort(endStr, locale)}, ${e.year()}`;
   }
-  return `${formatDate(startStr, locale)} – ${formatDate(endStr, locale)}`;
+  return `${fmt(startStr, locale)} – ${fmt(endStr, locale)}`;
 }
 
 export default function EventLanding({ event }) {
@@ -64,7 +61,7 @@ export default function EventLanding({ event }) {
               <FontAwesomeIcon icon={faCalendarDays} className={styles.metaIcon} />
               {event.endDate
                 ? formatDateRange(event.date, event.endDate, locale)
-                : formatDate(event.date, locale)}
+                : fmt(event.date, locale)}
             </span>
             <span className={styles.metaItem}>
               <FontAwesomeIcon icon={faLocationDot} className={styles.metaIcon} />
