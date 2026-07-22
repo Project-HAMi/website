@@ -30,14 +30,15 @@ export default function pluginEvents(context, options) {
           for (const ev of vevents) {
             const expanded = ical.expandRecurringEvent(ev, { from: now, to: rangeEnd });
             for (const inst of expanded) {
+              if (!inst.start) {
+                continue;
+              }
               instances.push({
-                summary: inst.event.summary || ev.summary || "",
-                start: inst.start?.toISOString() || "",
+                summary: inst.summary || ev.summary || "",
+                start: inst.start.toISOString(),
                 end: inst.end?.toISOString() || "",
-                location: inst.event.location || ev.location || "",
-                description: sanitizeCalendarDescription(
-                  inst.event.description || ev.description || "",
-                ),
+                location: inst.location || ev.location || "",
+                description: sanitizeCalendarDescription(inst.description || ev.description || ""),
                 categories: [sourceTag],
               });
             }

@@ -131,6 +131,7 @@ export default function EventsPage() {
                   onClick={() => setWeekOffset((o) => o - 1)}
                   disabled={weekOffset <= 0}
                   title={isZh ? "前两周" : "Previous two weeks"}
+                  aria-label={isZh ? "前两周" : "Previous two weeks"}
                 >
                   ←
                 </button>
@@ -138,6 +139,7 @@ export default function EventsPage() {
                   className={styles.navToday}
                   onClick={() => setWeekOffset(0)}
                   disabled={weekOffset === 0}
+                  aria-label={isZh ? "回到今天" : "Back to today"}
                 >
                   {isZh ? "今天" : "Today"}
                 </button>
@@ -145,6 +147,7 @@ export default function EventsPage() {
                   className={styles.navArrow}
                   onClick={() => setWeekOffset((o) => o + 1)}
                   title={isZh ? "后两周" : "Next two weeks"}
+                  aria-label={isZh ? "后两周" : "Next two weeks"}
                 >
                   →
                 </button>
@@ -184,8 +187,8 @@ export default function EventsPage() {
                         <strong>{formatDateFull(d)}</strong>
                       </div>
                       <div className={styles.agendaEvents}>
-                        {dayEvents.map((ev, i) => (
-                          <div key={i} className={styles.agendaEvent}>
+                        {dayEvents.map((ev) => (
+                          <div key={`${ev.start}-${ev.summary}`} className={styles.agendaEvent}>
                             <span className={styles.agendaTime}>
                               {formatTime(ev.start, locale)}
                               {ev.end ? ` - ${formatTime(ev.end, locale)}` : ""}
@@ -194,10 +197,9 @@ export default function EventsPage() {
                               <span className={styles.agendaSummary}>{ev.summary}</span>
                               {ev.location && (
                                 <span className={styles.agendaLocation}>
-                                  {" "}
-                                  —{" "}
+                                  {" - "}
                                   {/^https?:\/\//.test(ev.location) ? (
-                                    <a href={ev.location} target="_blank" rel="noreferrer">
+                                    <a href={ev.location} target="_blank" rel="noopener noreferrer">
                                       {ev.location}
                                     </a>
                                   ) : (
@@ -224,9 +226,11 @@ export default function EventsPage() {
               </div>
             )}
 
-            {(!events || events.length === 0) && (
+            {daysWithEvents.length === 0 && (
               <p className={styles.emptyNote}>
-                {isZh ? "暂无活动安排，敬请期待。" : "No upcoming events. Check back soon."}
+                {isZh
+                  ? "该时间段暂无活动安排，敬请期待。"
+                  : "No events in this period. Check back soon."}
               </p>
             )}
           </div>
@@ -254,7 +258,7 @@ export default function EventsPage() {
               href="https://discord.gg/Nwt3jVVpnT"
               className="button button--primary"
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
             >
               {isZh ? "加入 Discord 活动频道" : "Join the events channel on Discord"}
             </a>
