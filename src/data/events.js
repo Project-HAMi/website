@@ -11,27 +11,11 @@ const events = [
       en: "Yokohama, Japan",
       zh: "日本 横滨",
     },
-    banner: "/img/landing/kubecon-japan-banner.jpeg",
     description: {
       en: 'Join the HAMi team at KubeCon + CloudNativeCon Japan 2026, the CNCF\'s flagship conference. Visit our booth in the Solutions Showcase and catch our talk "Shared GPU Scheduling + Proactive Autoscaling" on orchestrating GPU workloads with HAMi on Kubernetes.',
       zh: "欢迎参加 KubeCon + CloudNativeCon 日本 2026，CNCF 旗舰大会。欢迎莅临 Solutions Showcase 展区 HAMi 展位，并聆听我们的演讲「共享 GPU 调度与主动自动伸缩」——基于 Kubernetes 与 HAMi 编排 GPU 工作负载。",
     },
     resources: {
-      communityFlyer: {
-        en: "Community Status Flyer",
-        zh: "社区状态宣传册",
-        url: "/pdf/landing/kubecon-japan-community-flyer.pdf",
-      },
-      talkSlides: {
-        en: "Talk Slides",
-        zh: "演讲幻灯片",
-        url: "/pdf/landing/kubecon-japan-slides.pdf",
-      },
-      speakerReel: {
-        en: "Speaker Reel",
-        zh: "演讲视频",
-        url: null,
-      },
     },
     caseStudy: {
       company: "SNOW Corp.",

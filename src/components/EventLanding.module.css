@@ -61,7 +61,6 @@
 
 .sectionTitle {
   font-family: var(--hami-font-display);
-  font-size: var(--hami-text-h3);
   margin-bottom: var(--hami-space-24);
   color: var(--hami-color-muted-2);
   text-transform: uppercase;
