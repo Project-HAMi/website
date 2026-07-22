@@ -1,4 +1,3 @@
-import dayjs from "dayjs";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDiscord, faGithub } from "@fortawesome/free-brands-svg-icons";
@@ -15,28 +14,20 @@ function pick(locale, obj) {
   return locale === "zh" && obj.zh ? obj.zh : obj.en;
 }
 
-function fmt(dateStr, locale) {
-  return locale === "zh"
-    ? dayjs(dateStr).format("YYYY[年]M[月]D[日]")
-    : dayjs(dateStr).format("MMMM D, YYYY");
+function dateFmt(locale) {
+  return new Intl.DateTimeFormat(locale === "zh" ? "zh-CN" : "en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 }
 
-function fmtShort(dateStr, locale) {
-  return locale === "zh"
-    ? dayjs(dateStr).format("M[月]D[日]")
-    : dayjs(dateStr).format("MMMM D");
+function formatDate(dateStr, locale) {
+  return dateFmt(locale).format(new Date(dateStr));
 }
 
 function formatDateRange(startStr, endStr, locale) {
-  const s = dayjs(startStr);
-  const e = dayjs(endStr);
-  if (s.year() === e.year()) {
-    if (s.month() === e.month()) {
-      return `${fmtShort(startStr, locale)} – ${e.date()}, ${e.year()}`;
-    }
-    return `${fmtShort(startStr, locale)} – ${fmtShort(endStr, locale)}, ${e.year()}`;
-  }
-  return `${fmt(startStr, locale)} – ${fmt(endStr, locale)}`;
+  return dateFmt(locale).formatRange(new Date(startStr), new Date(endStr));
 }
 
 export default function EventLanding({ event }) {
@@ -61,7 +52,7 @@ export default function EventLanding({ event }) {
               <FontAwesomeIcon icon={faCalendarDays} className={styles.metaIcon} />
               {event.endDate
                 ? formatDateRange(event.date, event.endDate, locale)
-                : fmt(event.date, locale)}
+                : formatDate(event.date, locale)}
             </span>
             <span className={styles.metaItem}>
               <FontAwesomeIcon icon={faLocationDot} className={styles.metaIcon} />
