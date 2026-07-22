@@ -8,8 +8,9 @@ import styles from "./events.module.css";
 
 const DAYS = 14;
 
-// en-CA uses YYYY-MM-DD format in local timezone (vs toISOString which is UTC)
-const dateKey = (d) => d.toLocaleDateString("en-CA");
+// local-timezone YYYY-MM-DD, built by hand so the key is deterministic across runtimes
+const dateKey = (d) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 
 function startOfDay(d) {
   const c = new Date(d);
