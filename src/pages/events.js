@@ -6,9 +6,9 @@ import { formatDay, formatWeekday, formatFullDate, formatTime } from "../utils/d
 import styles from "./events.module.css";
 
 const DAYS = 14;
-const DAY_MS = 86400000;
 
-const dateKey = (d) => d.toISOString().slice(0, 10);
+// en-CA uses YYYY-MM-DD format in local timezone (vs toISOString which is UTC)
+const dateKey = (d) => d.toLocaleDateString("en-CA");
 
 function startOfDay(d) {
   const c = new Date(d);
@@ -37,12 +37,15 @@ export default function EventsPage() {
   const today = startOfDay(new Date());
   const baseSunday = new Date(today);
   baseSunday.setDate(today.getDate() - today.getDay());
-  const sunday = new Date(baseSunday.getTime() + weekOffset * DAYS * DAY_MS);
+  const sunday = new Date(baseSunday);
+  sunday.setDate(sunday.getDate() + weekOffset * DAYS);
   const days = Array.from({ length: DAYS }, (_, i) => {
-    const d = new Date(sunday.getTime() + i * DAY_MS);
+    const d = new Date(sunday);
+    d.setDate(d.getDate() + i);
     return d;
   });
-  const rangeEnd = new Date(sunday.getTime() + DAYS * DAY_MS);
+  const rangeEnd = new Date(sunday);
+  rangeEnd.setDate(rangeEnd.getDate() + DAYS);
 
   const categories = useMemo(() => {
     const set = new Set();

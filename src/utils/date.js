@@ -1,9 +1,7 @@
-function lang(locale) {
-  return locale === "zh" ? "zh-CN" : "en-US";
-}
+const LOCALE_MAP = { zh: "zh-CN", en: "en-US" };
 
 export function formatDate(dateStr, locale) {
-  return new Intl.DateTimeFormat(lang(locale), {
+  return new Intl.DateTimeFormat(LOCALE_MAP[locale], {
     year: "numeric",
     month: "long",
     day: "numeric",
@@ -11,7 +9,7 @@ export function formatDate(dateStr, locale) {
 }
 
 export function formatDateRange(startStr, endStr, locale) {
-  return new Intl.DateTimeFormat(lang(locale), {
+  return new Intl.DateTimeFormat(LOCALE_MAP[locale], {
     year: "numeric",
     month: "long",
     day: "numeric",
@@ -19,15 +17,15 @@ export function formatDateRange(startStr, endStr, locale) {
 }
 
 export function formatDay(date, locale) {
-  return date.toLocaleDateString(lang(locale), { day: "numeric" });
+  return date.toLocaleDateString(LOCALE_MAP[locale], { day: "numeric" });
 }
 
 export function formatWeekday(date, locale) {
-  return date.toLocaleDateString(lang(locale), { weekday: "short" });
+  return date.toLocaleDateString(LOCALE_MAP[locale], { weekday: "short" });
 }
 
 export function formatFullDate(date, locale) {
-  return date.toLocaleDateString(lang(locale), {
+  return date.toLocaleDateString(LOCALE_MAP[locale], {
     weekday: "long",
     month: "long",
     day: "numeric",
@@ -35,7 +33,7 @@ export function formatFullDate(date, locale) {
 }
 
 export function formatTime(isoStr, locale) {
-  return new Date(isoStr).toLocaleTimeString(lang(locale), {
+  return new Date(isoStr).toLocaleTimeString(LOCALE_MAP[locale], {
     hour: "2-digit",
     minute: "2-digit",
     timeZoneName: "short",
