@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import Layout from "@theme/Layout";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
+import useIsBrowser from "@docusaurus/useIsBrowser";
 import { usePluginData } from "@docusaurus/useGlobalData";
 import { formatDay, formatWeekday, formatFullDate, formatTime } from "../utils/date";
 import styles from "./events.module.css";
@@ -25,6 +26,7 @@ function sameDay(a, b) {
 }
 
 export default function EventsPage() {
+  const isBrowser = useIsBrowser();
   const { i18n } = useDocusaurusContext();
   const pluginData = usePluginData("plugin-events");
   const events = pluginData?.events || [];
@@ -105,133 +107,141 @@ export default function EventsPage() {
 
         <section className={styles.section}>
           <div className="container">
-            <div className={styles.toolbar}>
-              {categories.length > 0 && (
-                <div className={styles.filters}>
-                  <button
-                    className={`${styles.filterPill} ${activeCategory === null ? styles.filterPillActive : ""}`}
-                    onClick={() => setActiveCategory(null)}
-                  >
-                    {isZh ? "全部" : "All"}
-                  </button>
-                  {categories.map((cat) => (
-                    <button
-                      key={cat}
-                      className={`${styles.filterPill} ${activeCategory === cat ? styles.filterPillActive : ""}`}
-                      onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
-                    >
-                      {cat}
-                    </button>
-                  ))}
-                </div>
-              )}
-              <div className={styles.nav}>
-                <button
-                  className={styles.navArrow}
-                  onClick={() => setWeekOffset((o) => o - 1)}
-                  disabled={weekOffset <= 0}
-                  title={isZh ? "前两周" : "Previous two weeks"}
-                  aria-label={isZh ? "前两周" : "Previous two weeks"}
-                >
-                  ←
-                </button>
-                <button
-                  className={styles.navToday}
-                  onClick={() => setWeekOffset(0)}
-                  disabled={weekOffset === 0}
-                  aria-label={isZh ? "回到今天" : "Back to today"}
-                >
-                  {isZh ? "今天" : "Today"}
-                </button>
-                <button
-                  className={styles.navArrow}
-                  onClick={() => setWeekOffset((o) => o + 1)}
-                  title={isZh ? "后两周" : "Next two weeks"}
-                  aria-label={isZh ? "后两周" : "Next two weeks"}
-                >
-                  →
-                </button>
-              </div>
-            </div>
-
-            <div className={styles.cardGrid}>
-              {days.map((d) => {
-                const key = dateKey(d);
-                const dayEvents = eventsByDay[key] || [];
-                const isToday = sameDay(d, today);
-                const hasEvents = dayEvents.length > 0;
-
-                return (
-                  <div
-                    key={key}
-                    className={`${styles.dayCard} ${!hasEvents ? styles.dayCardEmpty : ""} ${isToday ? styles.dayCardToday : ""}`}
-                  >
-                    <span className={styles.dayWeekday}>{formatWeekday(d, locale)}</span>
-                    <span className={styles.dayDate}>{formatDay(d, locale)}</span>
-                    {hasEvents && <span className={styles.dayDot} />}
-                  </div>
-                );
-              })}
-            </div>
-
-            {daysWithEvents.length > 0 && (
-              <div className={styles.agenda}>
-                <h2 className={styles.agendaTitle}>{isZh ? "日程" : "Agenda"}</h2>
-                {daysWithEvents.map((d) => {
-                  const key = dateKey(d);
-                  const dayEvents = eventsByDay[key] || [];
-
-                  return (
-                    <div key={key} className={styles.agendaDay}>
-                      <div className={styles.agendaDayLabel}>
-                        <strong>{formatDateFull(d)}</strong>
-                      </div>
-                      <div className={styles.agendaEvents}>
-                        {dayEvents.map((ev) => (
-                          <div key={`${ev.start}-${ev.summary}`} className={styles.agendaEvent}>
-                            <span className={styles.agendaTime}>
-                              {formatTime(ev.start, locale)}
-                              {ev.end ? ` - ${formatTime(ev.end, locale)}` : ""}
-                            </span>
-                            <div>
-                              <span className={styles.agendaSummary}>{ev.summary}</span>
-                              {ev.location && (
-                                <span className={styles.agendaLocation}>
-                                  {" - "}
-                                  {/^https?:\/\//.test(ev.location) ? (
-                                    <a href={ev.location} target="_blank" rel="noopener noreferrer">
-                                      {ev.location}
-                                    </a>
-                                  ) : (
-                                    ev.location
-                                  )}
-                                </span>
-                              )}
-                              {ev.categories.length > 0 && (
-                                <span className={styles.agendaTags}>
-                                  {ev.categories.map((cat) => (
-                                    <span key={cat} className={styles.agendaTag}>
-                                      {cat}
-                                    </span>
-                                  ))}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
+            {isBrowser && (
+              <>
+                <div className={styles.toolbar}>
+                  {categories.length > 0 && (
+                    <div className={styles.filters}>
+                      <button
+                        className={`${styles.filterPill} ${activeCategory === null ? styles.filterPillActive : ""}`}
+                        onClick={() => setActiveCategory(null)}
+                      >
+                        {isZh ? "全部" : "All"}
+                      </button>
+                      {categories.map((cat) => (
+                        <button
+                          key={cat}
+                          className={`${styles.filterPill} ${activeCategory === cat ? styles.filterPillActive : ""}`}
+                          onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
+                        >
+                          {cat}
+                        </button>
+                      ))}
                     </div>
-                  );
-                })}
-              </div>
-            )}
+                  )}
+                  <div className={styles.nav}>
+                    <button
+                      className={styles.navArrow}
+                      onClick={() => setWeekOffset((o) => o - 1)}
+                      disabled={weekOffset <= 0}
+                      title={isZh ? "前两周" : "Previous two weeks"}
+                      aria-label={isZh ? "前两周" : "Previous two weeks"}
+                    >
+                      ←
+                    </button>
+                    <button
+                      className={styles.navToday}
+                      onClick={() => setWeekOffset(0)}
+                      disabled={weekOffset === 0}
+                      aria-label={isZh ? "回到今天" : "Back to today"}
+                    >
+                      {isZh ? "今天" : "Today"}
+                    </button>
+                    <button
+                      className={styles.navArrow}
+                      onClick={() => setWeekOffset((o) => o + 1)}
+                      title={isZh ? "后两周" : "Next two weeks"}
+                      aria-label={isZh ? "后两周" : "Next two weeks"}
+                    >
+                      →
+                    </button>
+                  </div>
+                </div>
 
-            {daysWithEvents.length === 0 && (
-              <p className={styles.emptyNote}>
-                {isZh
-                  ? "该时间段暂无活动安排，敬请期待。"
-                  : "No events in this period. Check back soon."}
-              </p>
+                <div className={styles.cardGrid}>
+                  {days.map((d) => {
+                    const key = dateKey(d);
+                    const dayEvents = eventsByDay[key] || [];
+                    const isToday = sameDay(d, today);
+                    const hasEvents = dayEvents.length > 0;
+
+                    return (
+                      <div
+                        key={key}
+                        className={`${styles.dayCard} ${!hasEvents ? styles.dayCardEmpty : ""} ${isToday ? styles.dayCardToday : ""}`}
+                      >
+                        <span className={styles.dayWeekday}>{formatWeekday(d, locale)}</span>
+                        <span className={styles.dayDate}>{formatDay(d, locale)}</span>
+                        {hasEvents && <span className={styles.dayDot} />}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {daysWithEvents.length > 0 && (
+                  <div className={styles.agenda}>
+                    <h2 className={styles.agendaTitle}>{isZh ? "日程" : "Agenda"}</h2>
+                    {daysWithEvents.map((d) => {
+                      const key = dateKey(d);
+                      const dayEvents = eventsByDay[key] || [];
+
+                      return (
+                        <div key={key} className={styles.agendaDay}>
+                          <div className={styles.agendaDayLabel}>
+                            <strong>{formatDateFull(d)}</strong>
+                          </div>
+                          <div className={styles.agendaEvents}>
+                            {dayEvents.map((ev) => (
+                              <div key={`${ev.start}-${ev.summary}`} className={styles.agendaEvent}>
+                                <span className={styles.agendaTime}>
+                                  {formatTime(ev.start, locale)}
+                                  {ev.end ? ` - ${formatTime(ev.end, locale)}` : ""}
+                                </span>
+                                <div>
+                                  <span className={styles.agendaSummary}>{ev.summary}</span>
+                                  {ev.location && (
+                                    <span className={styles.agendaLocation}>
+                                      {" - "}
+                                      {/^https?:\/\//.test(ev.location) ? (
+                                        <a
+                                          href={ev.location}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                        >
+                                          {ev.location}
+                                        </a>
+                                      ) : (
+                                        ev.location
+                                      )}
+                                    </span>
+                                  )}
+                                  {ev.categories.length > 0 && (
+                                    <span className={styles.agendaTags}>
+                                      {ev.categories.map((cat) => (
+                                        <span key={cat} className={styles.agendaTag}>
+                                          {cat}
+                                        </span>
+                                      ))}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {daysWithEvents.length === 0 && (
+                  <p className={styles.emptyNote}>
+                    {isZh
+                      ? "该时间段暂无活动安排，敬请期待。"
+                      : "No events in this period. Check back soon."}
+                  </p>
+                )}
+              </>
             )}
           </div>
         </section>
