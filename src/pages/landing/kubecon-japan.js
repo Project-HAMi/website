@@ -7,7 +7,7 @@ const event = events.find((e) => e.slug === "kubecon-japan");
 
 export default function KubeConJapan() {
   const { i18n } = useDocusaurusContext();
-  const isZh = i18n.currentLocale === "zh";
+  const isZh = i18n.currentLocale.startsWith("zh");
 
   if (!event) {
     return (

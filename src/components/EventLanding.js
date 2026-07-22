@@ -10,8 +10,12 @@ import {
 import useBaseUrl from "@docusaurus/useBaseUrl";
 import styles from "./EventLanding.module.css";
 
+function isChinese(locale) {
+  return locale.startsWith("zh");
+}
+
 function pick(locale, obj) {
-  return locale === "zh" && obj.zh ? obj.zh : obj.en;
+  return isChinese(locale) && obj.zh ? obj.zh : obj.en;
 }
 
 function utm(url, slug) {
@@ -33,10 +37,11 @@ const DEFAULTS = {
 };
 
 function dateFmt(locale) {
-  return new Intl.DateTimeFormat(locale === "zh" ? "zh-CN" : "en-US", {
+  return new Intl.DateTimeFormat(isChinese(locale) ? "zh-CN" : "en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",
+    timeZone: "UTC",
   });
 }
 
@@ -54,7 +59,7 @@ function formatDateRange(startStr, endStr, locale) {
 
 export default function EventLanding({ event }) {
   const { i18n } = useDocusaurusContext();
-  const isZh = i18n.currentLocale === "zh";
+  const isZh = isChinese(i18n.currentLocale);
   const locale = i18n.currentLocale;
   const bannerUrl = useBaseUrl(event.banner || "");
 
@@ -95,8 +100,8 @@ export default function EventLanding({ event }) {
                   })}
                 </div>
                 <ul className={styles.highlights}>
-                  {event.caseStudy.highlights.map((h, i) => (
-                    <li key={i}>{pick(locale, h)}</li>
+                  {event.caseStudy.highlights.map((h) => (
+                    <li key={h.en}>{pick(locale, h)}</li>
                   ))}
                 </ul>
                 <a
