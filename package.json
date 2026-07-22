@@ -7,7 +7,10 @@
     "url": "https://github.com/Project-HAMi/website.git"
   },
   "version": "0.0.1",
-  "private": false,
+  "engines": {
+    "node": ">=20.18.1"
+  },
+  "private": true,
   "scripts": {
     "docusaurus": "docusaurus",
     "start": "docusaurus start",
