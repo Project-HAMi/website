@@ -25,7 +25,8 @@ function sameDay(a, b) {
 
 export default function EventsPage() {
   const {i18n} = useDocusaurusContext();
-  const {events} = usePluginData("plugin-events");
+  const pluginData = usePluginData("plugin-events");
+  const events = pluginData?.events || [];
   const isZh = i18n.currentLocale === "zh";
   const localeStr = isZh ? "zh-CN" : "en-US";
 
@@ -139,7 +140,7 @@ export default function EventsPage() {
               )}
               <div className={styles.nav}>
                 <button
-                  className={styles.navButton}
+                  className={styles.navArrow}
                   onClick={() => setWeekOffset((o) => o - 1)}
                   disabled={weekOffset <= 0}
                   title={isZh ? "前两周" : "Previous two weeks"}
@@ -147,15 +148,14 @@ export default function EventsPage() {
                   ←
                 </button>
                 <button
-                  className={styles.navButton}
+                  className={styles.navToday}
                   onClick={() => setWeekOffset(0)}
                   disabled={weekOffset === 0}
-                  title={isZh ? "今天" : "Today"}
                 >
                   {isZh ? "今天" : "Today"}
                 </button>
                 <button
-                  className={styles.navButton}
+                  className={styles.navArrow}
                   onClick={() => setWeekOffset((o) => o + 1)}
                   title={isZh ? "后两周" : "Next two weeks"}
                 >
@@ -257,7 +257,7 @@ export default function EventsPage() {
         </section>
 
         <section className={styles.cta}>
-          <div className="container">
+          <div className={`container ${styles.ctaInner}`}>
             <h2 className={styles.ctaTitle}>
               {isZh
                 ? "想要主办或参与 HAMi 活动？"
@@ -282,7 +282,7 @@ export default function EventsPage() {
             </ul>
             <a
               href="https://discord.gg/Nwt3jVVpnT"
-              className={styles.ctaEmail}
+              className="button button--primary"
               target="_blank"
               rel="noreferrer"
             >

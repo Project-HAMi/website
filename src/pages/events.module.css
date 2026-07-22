@@ -48,11 +48,12 @@
 
 .nav {
   display: flex;
-  gap: 4px;
+  gap: 0;
   flex-shrink: 0;
+  margin-left: auto;
 }
 
-.navButton {
+.navArrow {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -67,14 +68,45 @@
   transition:
     border-color var(--hami-motion-fast),
     background var(--hami-motion-fast);
+  flex-shrink: 0;
 }
 
-.navButton:hover:not(:disabled) {
+.navArrow:hover:not(:disabled) {
   border-color: var(--hami-color-primary);
   background: var(--hami-primary-muted);
 }
 
-.navButton:disabled {
+.navArrow:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.navToday {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  padding: 0 16px;
+  margin: 0 4px;
+  border-radius: 8px;
+  border: 1px solid var(--hami-color-border);
+  background: var(--hami-color-surface);
+  color: var(--hami-color-text);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    border-color var(--hami-motion-fast),
+    background var(--hami-motion-fast);
+}
+
+.navToday:hover:not(:disabled) {
+  border-color: var(--hami-color-primary);
+  background: var(--hami-primary-muted);
+}
+
+.navToday:disabled {
   opacity: 0.35;
   cursor: default;
 }
@@ -249,37 +281,29 @@
   padding: var(--hami-space-64) 0;
   border-top: 1px solid var(--hami-color-border);
   background: linear-gradient(180deg, rgba(17, 208, 93, 0.04), transparent);
+}
+
+.ctaInner {
+  max-width: 560px;
+  margin: 0 auto;
   text-align: center;
 }
 
 .ctaTitle {
-  margin: 0 0 var(--hami-space-20);
+  margin: 0 0 var(--hami-space-32);
   font-size: 1.3rem;
 }
 
 .ctaList {
-  margin: 0 auto var(--hami-space-20);
-  padding: 0;
+  margin: 0 0 var(--hami-space-32);
+  padding: 0 0 0 2rem;
   display: inline-flex;
   flex-direction: column;
   gap: var(--hami-space-8);
   color: var(--hami-color-muted);
   font-size: 0.96rem;
   line-height: 1.6;
-  list-style: none;
-  text-align: center;
-}
-
-.ctaEmail {
-  display: block;
-  font-weight: 700;
-  font-size: 1rem;
-  color: var(--hami-color-primary);
-}
-
-.ctaEmail:hover {
-  color: var(--hami-color-primary-hover);
-  text-decoration: none;
+  text-align: left;
 }
 
 /* ── dark mode ── */
