@@ -37,18 +37,16 @@ export default function EventsPage() {
   const [activeCategory, setActiveCategory] = useState(null);
   const [weekOffset, setWeekOffset] = useState(0);
 
-  const today = startOfDay(new Date());
-  const baseSunday = new Date(today);
-  baseSunday.setDate(today.getDate() - today.getDay());
-  const sunday = new Date(baseSunday);
-  sunday.setDate(sunday.getDate() + weekOffset * DAYS);
-  const days = Array.from({ length: DAYS }, (_, i) => {
-    const d = new Date(sunday);
-    d.setDate(d.getDate() + i);
-    return d;
-  });
-  const rangeEnd = new Date(sunday);
-  rangeEnd.setDate(rangeEnd.getDate() + DAYS);
+  const today = useMemo(() => startOfDay(new Date()), [isBrowser]);
+  const days = useMemo(() => {
+    const sunday = new Date(today);
+    sunday.setDate(today.getDate() - today.getDay() + weekOffset * DAYS);
+    return Array.from({ length: DAYS }, (_, i) => {
+      const d = new Date(sunday);
+      d.setDate(d.getDate() + i);
+      return d;
+    });
+  }, [today, weekOffset]);
 
   const categories = useMemo(() => {
     const set = new Set();
@@ -68,17 +66,13 @@ export default function EventsPage() {
       map[dateKey(d)] = [];
     });
     filtered.forEach((e) => {
-      const start = new Date(e.start);
-      if (start >= rangeEnd) return;
-      for (let i = 0; i < DAYS; i++) {
-        if (sameDay(start, days[i])) {
-          map[dateKey(days[i])].push(e);
-          break;
-        }
+      const key = dateKey(new Date(e.start));
+      if (map[key]) {
+        map[key].push(e);
       }
     });
     return map;
-  }, [filtered, days, rangeEnd]);
+  }, [filtered, days]);
 
   const daysWithEvents = useMemo(
     () => days.filter((d) => (eventsByDay[dateKey(d)] || []).length > 0),
