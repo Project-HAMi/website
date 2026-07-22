@@ -21,7 +21,7 @@ export default function pluginEvents(context, options) {
 
       for (const src of sources) {
         try {
-          const data = await ical.async.fromURL(src.icsUrl, {});
+          const data = await ical.async.fromURL(src.icsUrl, { timeout: 10000 });
           const sourceTag = src.name;
 
           const vevents = Object.values(data).filter((e) => e.type === "VEVENT");
@@ -44,7 +44,7 @@ export default function pluginEvents(context, options) {
           }
 
           console.log(
-            `plugin-events: "${src.name}" — ${vevents.length} VEVENTs → ${instances.length} instances expanded`,
+            `plugin-events: "${src.name}": ${vevents.length} VEVENTs, ${instances.length} instances expanded`,
           );
           all.push(...instances);
         } catch (err) {
