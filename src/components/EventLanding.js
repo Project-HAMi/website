@@ -15,8 +15,11 @@ function pick(locale, obj) {
 }
 
 function utm(url, slug) {
-  const prefix = url.includes("?") ? "&" : "?";
-  return `${url}${prefix}utm_source=${slug}&utm_medium=event-landing&utm_campaign=${slug}`;
+  const u = new URL(url);
+  u.searchParams.set("utm_source", slug);
+  u.searchParams.set("utm_medium", "event-landing");
+  u.searchParams.set("utm_campaign", slug);
+  return u.toString();
 }
 
 const DEFAULTS = {
