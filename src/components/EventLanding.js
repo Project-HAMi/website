@@ -54,11 +54,7 @@ export default function EventLanding({ event }) {
       <section className={styles.hero}>
         <div className="container">
           {bannerUrl && (
-            <img
-              src={bannerUrl}
-              alt={pick(locale, event.title)}
-              className={styles.banner}
-            />
+            <img src={bannerUrl} alt={pick(locale, event.title)} className={styles.banner} />
           )}
           <h1 className={styles.title}>{pick(locale, event.title)}</h1>
           <div className={styles.meta}>
@@ -82,7 +78,7 @@ export default function EventLanding({ event }) {
           <div className="container">
             <div className={`hami-section-card ${styles.caseStudyCard}`}>
               <h2 className={styles.sectionTitle}>{isZh ? "相关案例" : "Related Case Study"}</h2>
-              <div className={styles.caseStudyBody}>
+              <div>
                 <div className={styles.caseStudyCompany}>
                   {pick(locale, {
                     en: event.caseStudy.company,
