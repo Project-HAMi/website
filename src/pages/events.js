@@ -102,12 +102,18 @@ export default function EventsPage() {
 
         <section className={styles.section}>
           <div className="container">
+            {!isBrowser && (
+              <p className={styles.emptyNote}>
+                {isZh ? "正在加载日历……" : "Loading the calendar..."}
+              </p>
+            )}
             {isBrowser && (
               <>
                 <div className={styles.toolbar}>
                   {categories.length > 0 && (
                     <div className={styles.filters}>
                       <button
+                        type="button"
                         className={`${styles.filterPill} ${activeCategory === null ? styles.filterPillActive : ""}`}
                         onClick={() => setActiveCategory(null)}
                       >
@@ -115,6 +121,7 @@ export default function EventsPage() {
                       </button>
                       {categories.map((cat) => (
                         <button
+                          type="button"
                           key={cat}
                           className={`${styles.filterPill} ${activeCategory === cat ? styles.filterPillActive : ""}`}
                           onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
@@ -126,6 +133,7 @@ export default function EventsPage() {
                   )}
                   <div className={styles.nav}>
                     <button
+                      type="button"
                       className={styles.navArrow}
                       onClick={() => setWeekOffset((o) => o - 1)}
                       disabled={weekOffset <= 0}
@@ -135,6 +143,7 @@ export default function EventsPage() {
                       ←
                     </button>
                     <button
+                      type="button"
                       className={styles.navToday}
                       onClick={() => setWeekOffset(0)}
                       disabled={weekOffset === 0}
@@ -143,6 +152,7 @@ export default function EventsPage() {
                       {isZh ? "今天" : "Today"}
                     </button>
                     <button
+                      type="button"
                       className={styles.navArrow}
                       onClick={() => setWeekOffset((o) => o + 1)}
                       title={isZh ? "后两周" : "Next two weeks"}
