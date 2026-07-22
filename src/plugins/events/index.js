@@ -1,5 +1,4 @@
 import ical from "node-ical";
-import { sanitizeCalendarDescription } from "../../utils/ical.js";
 
 export default function pluginEvents(context, options) {
   const { sources } = options;
@@ -38,7 +37,6 @@ export default function pluginEvents(context, options) {
                 start: inst.start.toISOString(),
                 end: inst.end?.toISOString() || "",
                 location: inst.location || ev.location || "",
-                description: sanitizeCalendarDescription(inst.description || ev.description || ""),
                 categories: [sourceTag],
               });
             }
