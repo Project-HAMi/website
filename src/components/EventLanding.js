@@ -47,13 +47,13 @@ export default function EventLanding({ event }) {
   const { i18n } = useDocusaurusContext();
   const isZh = i18n.currentLocale === "zh";
   const locale = i18n.currentLocale;
-  const bannerUrl = event.banner && useBaseUrl(event.banner);
+  const bannerUrl = useBaseUrl(event.banner || "");
 
   return (
     <main className={styles.page}>
       <section className={styles.hero}>
         <div className="container">
-          {bannerUrl && (
+          {event.banner && (
             <img src={bannerUrl} alt={pick(locale, event.title)} className={styles.banner} />
           )}
           <h1 className={styles.title}>{pick(locale, event.title)}</h1>
