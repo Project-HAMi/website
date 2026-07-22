@@ -103,7 +103,7 @@ export default function EventLanding({ event }) {
         </section>
       )}
 
-      {event.resources && (
+      {event.resources && Object.values(event.resources).some((r) => r?.url) && (
         <section className={styles.resources}>
           <div className="container">
             <div className={`hami-section-card ${styles.resourcesCard}`}>
