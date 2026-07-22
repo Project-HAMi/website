@@ -15,7 +15,12 @@ function pick(locale, obj) {
 }
 
 function utm(url, slug) {
-  const u = new URL(url);
+  let u;
+  try {
+    u = new URL(url);
+  } catch {
+    return url;
+  }
   u.searchParams.set("utm_source", slug);
   u.searchParams.set("utm_medium", "event-landing");
   u.searchParams.set("utm_campaign", slug);
@@ -40,7 +45,11 @@ function formatDate(dateStr, locale) {
 }
 
 function formatDateRange(startStr, endStr, locale) {
-  return dateFmt(locale).formatRange(new Date(startStr), new Date(endStr));
+  const fmt = dateFmt(locale);
+  if (typeof fmt.formatRange !== "function") {
+    return `${fmt.format(new Date(startStr))} - ${fmt.format(new Date(endStr))}`;
+  }
+  return fmt.formatRange(new Date(startStr), new Date(endStr));
 }
 
 export default function EventLanding({ event }) {
@@ -94,7 +103,7 @@ export default function EventLanding({ event }) {
                   href={utm(event.caseStudy.url, event.slug)}
                   className={styles.caseStudyLink}
                   target="_blank"
-                  rel="noopener"
+                  rel="noopener noreferrer"
                 >
                   {isZh ? "查看 CNCF 原文" : "Read on CNCF"} →
                 </a>
@@ -145,11 +154,7 @@ export default function EventLanding({ event }) {
             </p>
             <div className={styles.ctaButtons}>
               <a
-                href={
-                  event.cta?.discordUrl
-                    ? event.cta.discordUrl
-                    : utm(DEFAULTS.discordUrl, event.slug)
-                }
+                href={utm(event.cta?.discordUrl || DEFAULTS.discordUrl, event.slug)}
                 className="button button--primary button--lg"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -158,9 +163,7 @@ export default function EventLanding({ event }) {
                 Discord
               </a>
               <a
-                href={
-                  event.cta?.githubUrl ? event.cta.githubUrl : utm(DEFAULTS.githubUrl, event.slug)
-                }
+                href={utm(event.cta?.githubUrl || DEFAULTS.githubUrl, event.slug)}
                 className="button button--outline button--lg"
                 target="_blank"
                 rel="noopener noreferrer"

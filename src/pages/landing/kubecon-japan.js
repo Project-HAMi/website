@@ -9,6 +9,16 @@ export default function KubeConJapan() {
   const { i18n } = useDocusaurusContext();
   const isZh = i18n.currentLocale === "zh";
 
+  if (!event) {
+    return (
+      <Layout title="Event not found">
+        <main className="container margin-vert--xl">
+          <h1>{isZh ? "未找到活动" : "Event not found"}</h1>
+        </main>
+      </Layout>
+    );
+  }
+
   return (
     <Layout
       title={isZh ? event.title.zh : event.title.en}
