@@ -171,11 +171,8 @@ See `docs/contributor/contributing.md` (§ DCO Sign-off) and `docs/contributor/g
 **Location:** `src/components/`
 
 - `button.js` - Custom button component
-- `featuresList.js` - Features display
 - `gitHubButton.js` - GitHub integration button
-- `whatIs.js` - "What is HAMi" content component
-- `adoptersList.js` - Adopters list (data from `src/data/adopters.json`)
-- `caseStudiesList.js` - Case studies listing
+- `logoWall.js` - Logo wall for adopters and ecosystem (data from `src/data/adopters.json`)
 - `contributorsList.js` - Contributors display
 - `BeforeAfterComparison.js` - Before/after image comparison widget
 
