@@ -14,6 +14,16 @@ function pick(locale, obj) {
   return locale === "zh" && obj.zh ? obj.zh : obj.en;
 }
 
+function utm(url, slug) {
+  const prefix = url.includes("?") ? "&" : "?";
+  return `${url}${prefix}utm_source=${slug}&utm_medium=event-landing&utm_campaign=${slug}`;
+}
+
+const DEFAULTS = {
+  discordUrl: "https://discord.gg/Nwt3jVVpnT",
+  githubUrl: "https://github.com/Project-HAMi/HAMi",
+};
+
 function dateFmt(locale) {
   return new Intl.DateTimeFormat(locale === "zh" ? "zh-CN" : "en-US", {
     year: "numeric",
@@ -81,10 +91,10 @@ export default function EventLanding({ event }) {
                   ))}
                 </ul>
                 <a
-                  href={event.caseStudy.url}
+                  href={utm(event.caseStudy.url, event.slug)}
                   className={styles.caseStudyLink}
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="noopener"
                 >
                   {isZh ? "查看 CNCF 原文" : "Read on CNCF"} →
                 </a>
@@ -109,7 +119,7 @@ export default function EventLanding({ event }) {
                   .map((r) => (
                     <a
                       key={r.key}
-                      href={event.resources[r.key].url}
+                      href={utm(event.resources[r.key].url, event.slug)}
                       className={styles.resourceLink}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -135,7 +145,11 @@ export default function EventLanding({ event }) {
             </p>
             <div className={styles.ctaButtons}>
               <a
-                href={event.cta.discordUrl}
+                href={
+                  event.cta?.discordUrl
+                    ? event.cta.discordUrl
+                    : utm(DEFAULTS.discordUrl, event.slug)
+                }
                 className="button button--primary button--lg"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -144,7 +158,9 @@ export default function EventLanding({ event }) {
                 Discord
               </a>
               <a
-                href={event.cta.githubUrl}
+                href={
+                  event.cta?.githubUrl ? event.cta.githubUrl : utm(DEFAULTS.githubUrl, event.slug)
+                }
                 className="button button--outline button--lg"
                 target="_blank"
                 rel="noopener noreferrer"
