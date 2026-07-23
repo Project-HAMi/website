@@ -1,6 +1,6 @@
 ---
 title: "Lab 12: Serve Models from a KitOps ModelKit on HAMi"
-description: "Replace runtime Hugging Face downloads with a KitOps ModelKit delivered by an initContainer, then serve locally with SGLang (and optionally vLLM) on HAMi GPU shares."
+description: "Package a model as a KitOps ModelKit, pull it from Jozu Hub with an initContainer, and serve it locally with SGLang (and optionally vLLM) on HAMi GPU shares."
 sidebar_label: "Lab 12: KitOps ModelKit Inference"
 lab:
   level: Intermediate
@@ -19,15 +19,15 @@ tags:
 toc_max_heading_level: 2
 ---
 
-This lab demonstrates how to replace a runtime **Hugging Face** model download with a **[KitOps](https://kitops.org/) ModelKit** pulled from an OCI registry ([Jozu Hub](https://jozu.ml) in the examples). The model is delivered into the Pod by a KitOps `initContainer`, then served from a **local directory** by [SGLang](https://github.com/sgl-project/sglang) (primary) or vLLM (optional co-resident example) on HAMi-virtualized GPU shares.
+This lab demonstrates how to package a model as a **[KitOps](https://kitops.org/) ModelKit** — a versioned OCI artifact — and download it from an OCI registry (**[Jozu Hub](https://jozu.ml)** in the examples) into the Pod using a KitOps `initContainer`, then serve it from a **local directory** with [SGLang](https://github.com/sgl-project/sglang) (primary) or vLLM (optional co-resident example) on HAMi-virtualized GPU shares.
 
-Compared with [Lab 6 (vLLM)](./hami-vllm) and Lab 11 (SGLang), the inference engines still run on HAMi resources — but the **model supply chain** changes from `engine serve <hf-repo>` to **unpack ModelKit → serve local path**.
+Like [Lab 6 (vLLM)](./hami-vllm) and Lab 11 (SGLang), the inference engines run on HAMi resources. Here the **model supply chain** is registry-native: the model is packaged as a ModelKit, versioned and stored on Jozu Hub, pulled into the Pod as an OCI artifact, and served from a local path.
 
 ## Learning Objectives
 
 - Inspect a public KitOps ModelKit on an OCI registry
 - Build a small `kitunpacker` init image and a custom SGLang serve image
-- Deploy a Pod that pulls/unpacks a ModelKit via `initContainer` (no HF download in the main container)
+- Deploy a Pod that pulls/unpacks a ModelKit via `initContainer` (the main container loads the model from the KitOps-delivered volume)
 - Schedule the workload with HAMi `nvidia.com/gpu` / `gpumem` / `gpucores`
 - Prove inference works against the OpenAI-compatible SGLang API
 - Optionally co-locate a vLLM Pod serving the same ModelKit on the same physical GPU
@@ -128,7 +128,7 @@ Example (truncated) output from the verification environment:
 }
 ```
 
-The ModelKit carries safetensors weights plus tokenizer/config as OCI layers. The initContainer will unpack and flatten them into a Hugging Face-style directory that SGLang/vLLM can load locally.
+The ModelKit carries safetensors weights plus tokenizer/config as OCI layers. The initContainer will unpack and flatten them into a flat model directory (`config.json` + `*.safetensors`) that SGLang/vLLM can load locally.
 
 ## Step 3: Build the Pipeline Images
 
@@ -162,8 +162,8 @@ ENTRYPOINT ["/usr/local/bin/unpack.sh"]
 ```sh
 #!/usr/bin/env sh
 # kitunpacker: pull a ModelKit from an OCI registry (Jozu Hub by default) and
-# unpack the model into a Hugging Face-style directory that vLLM / SGLang can
-# load directly -- no Hugging Face download at runtime.
+# unpack the model into a flat directory (config.json + *.safetensors) that
+# vLLM / SGLang can load directly from local disk.
 #
 # Env (all overridable from the Pod spec):
 #   MODELKIT_REF   full ModelKit reference, e.g. jozu.ml/<org>/<repo>:<tag>
@@ -244,7 +244,7 @@ Build:
 docker build -t hami-kitunpacker:latest ./kitunpacker
 ```
 
-### 3.2 Custom SGLang image (local model path, no HF repo)
+### 3.2 Custom SGLang image (serves a local model path)
 
 `sglang/Dockerfile`:
 
@@ -270,7 +270,7 @@ ENTRYPOINT ["/usr/local/bin/serve.sh"]
 #!/usr/bin/env bash
 # Custom SGLang entrypoint: serve a model unpacked from a KitOps ModelKit that
 # the kitunpacker initContainer placed on a shared volume. Serves from a LOCAL
-# directory (--model-path) so there is no Hugging Face download at runtime.
+# directory (--model-path) delivered straight from the Jozu Hub ModelKit.
 set -euo pipefail
 
 MODEL_DIR="${MODEL_DIR:-/models/qwen3}"
@@ -280,7 +280,7 @@ MEM_FRACTION="${MEM_FRACTION:-0.8}"
 PORT="${PORT:-30000}"
 ATTENTION_BACKEND="${ATTENTION_BACKEND:-triton}"
 
-echo "[sglang-jozu] serving KitOps model from ${MODEL_DIR} (source: Jozu Hub, no HF download)"
+echo "[sglang-jozu] serving KitOps model from ${MODEL_DIR} (source: Jozu Hub ModelKit)"
 if [ ! -f "${MODEL_DIR}/config.json" ]; then
   echo "[sglang-jozu] ERROR: ${MODEL_DIR}/config.json not found -- did the kitunpacker init run?" >&2
   exit 1
@@ -338,9 +338,8 @@ ENTRYPOINT ["/usr/local/bin/serve.sh"]
 ```bash
 #!/usr/bin/env bash
 # Custom vLLM entrypoint: serve a model unpacked from a KitOps ModelKit that the
-# kitunpacker initContainer placed on a shared volume. This deliberately serves
-# from a LOCAL directory instead of the default `vllm serve <hf-repo>` so there
-# is no Hugging Face download at runtime.
+# kitunpacker initContainer placed on a shared volume. It serves from a LOCAL
+# directory (--model-path) populated from the Jozu Hub ModelKit.
 set -euo pipefail
 
 MODEL_DIR="${MODEL_DIR:-/models/qwen3}"
@@ -349,7 +348,7 @@ MAX_MODEL_LEN="${MAX_MODEL_LEN:-8192}"
 GPU_MEM_UTIL="${GPU_MEM_UTIL:-0.85}"
 PORT="${PORT:-8000}"
 
-echo "[vllm-jozu] serving KitOps model from ${MODEL_DIR} (source: Jozu Hub, no HF download)"
+echo "[vllm-jozu] serving KitOps model from ${MODEL_DIR} (source: Jozu Hub ModelKit)"
 if [ ! -f "${MODEL_DIR}/config.json" ]; then
   echo "[vllm-jozu] ERROR: ${MODEL_DIR}/config.json not found -- did the kitunpacker init run?" >&2
   exit 1
@@ -515,10 +514,10 @@ kubectl -n kitops rollout status deploy/sglang-modelkit --timeout=30m
 kubectl -n kitops logs -l app.kubernetes.io/name=sglang-modelkit -c sglang --tail=50
 ```
 
-You should see the custom entrypoint message proving a **local** ModelKit path (not an HF repo id):
+You should see the custom entrypoint message confirming the model is served from the **local** ModelKit path:
 
 ```plaintext
-[sglang-jozu] serving KitOps model from /models/qwen3 (source: Jozu Hub, no HF download)
+[sglang-jozu] serving KitOps model from /models/qwen3 (source: Jozu Hub ModelKit)
 ... model_path='/models/qwen3' ... served_model_name='qwen3-4b-instruct' ...
 ```
 
@@ -706,7 +705,7 @@ Ensure combined `gpumem` requests fit on the physical GPU (for example two × 30
 #     jozu.ml/jonathangamer202002/qwen3-4b-instruct:latest
 #
 # This Kitfile is provided so you can (re)pack and push your OWN ModelKit to a
-# registry (Jozu Hub, ACR, GHCR, ...) from a local HF-format model directory:
+# registry (Jozu Hub, ACR, GHCR, ...) from a local model directory (config.json + safetensors):
 #
 #     # 1) get a model directory (e.g. via `kit unpack` or `kit import`)
 #     # 2) place this Kitfile next to a ./qwen3 directory of safetensors + config
@@ -720,7 +719,7 @@ package:
   authors:
     - HAMi KubeCon Demo
   description: >
-    Qwen3-4B-Instruct-2507 packaged as a KitOps ModelKit (HF safetensors layout),
+    Qwen3-4B-Instruct-2507 packaged as a KitOps ModelKit (safetensors layout),
     served on HAMi-virtualized GPUs by vLLM and SGLang.
 model:
   name: qwen3-4b-instruct
@@ -734,7 +733,7 @@ docs:
 ```
 
 ```bash
-# After placing a HF-layout model directory at ./qwen3 next to the Kitfile:
+# After placing a safetensors-layout model directory at ./qwen3 next to the Kitfile:
 kit pack . -t jozu.ml/<your-org>/qwen3-4b-instruct:latest
 kit push jozu.ml/<your-org>/qwen3-4b-instruct:latest
 ```
@@ -766,7 +765,7 @@ kubectl delete namespace kitops --ignore-not-found
 | Claim | Evidence |
 | --- | --- |
 | Model is an OCI ModelKit | `kit inspect --remote` returns KitOps manifest / model layers. |
-| Model delivered without HF in the main container | initContainer logs show `kit unpack`; SGLang logs show `serving KitOps model from /models/qwen3` and `model_path='/models/qwen3'`. |
+| Model delivered from the ModelKit into the main container | initContainer logs show `kit unpack`; SGLang logs show `serving KitOps model from /models/qwen3` and `model_path='/models/qwen3'`. |
 | HAMi schedules the workload | `schedulerName: hami-scheduler` + Filtering/Binding events. |
 | GPU memory/compute caps apply | `CUDA_DEVICE_MEMORY_LIMIT_0=30000m`, `CUDA_DEVICE_SM_LIMIT=30`; in-pod `nvidia-smi` shows `... / 30000MiB`. |
 | Inference works | `/v1/models` lists `qwen3-4b-instruct`; chat completions return content. |
@@ -776,4 +775,4 @@ kubectl delete namespace kitops --ignore-not-found
 - Swap the public Jozu ModelKit for your internal registry ModelKit and wire imagePullSecrets / `kit login` Secrets.
 - Share one PVC across SGLang and vLLM so the ModelKit is unpacked once.
 - Combine with [Lab 3: GPU Partitioning](./gpu-partitioning) to pack more tenants per GPU.
-- Return to Lab 11: SGLang if you need the simpler Hugging Face runtime path for debugging engines independently of the supply chain.
+- Return to Lab 11: SGLang for the simpler path where the engine pulls the model directly at startup, useful for debugging engines independently of the supply chain.
