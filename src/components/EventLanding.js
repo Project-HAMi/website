@@ -64,6 +64,7 @@ export default function EventLanding({ slug }) {
   const isZh = isChinese(i18n.currentLocale);
   const locale = i18n.currentLocale;
   const event = events.find((e) => e.slug === slug);
+  const bannerUrl = useBaseUrl(event?.banner ?? "");
 
   if (!event) {
     return (
@@ -74,8 +75,6 @@ export default function EventLanding({ slug }) {
       </Layout>
     );
   }
-
-  const bannerUrl = useBaseUrl(event.banner || "");
   const eventJsonLd = {
     "@context": "https://schema.org",
     "@type": "Event",
