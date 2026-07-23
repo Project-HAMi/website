@@ -10,6 +10,11 @@ const events = [
       en: "Hanoi, Vietnam",
       zh: "越南 河内",
     },
+    address: {
+      addressLocality: "Hanoi",
+      addressCountry: "VN",
+      streetAddress: "Sheraton Hanoi Hotel, K5 Nghi Tam, 11 Xuan Dieu, Tay Ho",
+    },
     banner:
       "/img/events/2026-kcd-vietnam/from-project-to-production-hami-and-viettel-cloud_jelveh-nguyen.jpeg",
     description: {
@@ -35,6 +40,11 @@ const events = [
     location: {
       en: "Yokohama, Japan",
       zh: "日本 横滨",
+    },
+    address: {
+      addressLocality: "Yokohama",
+      addressRegion: "Kanagawa",
+      addressCountry: "JP",
     },
     banner:
       "/img/events/2026-kubecon-jp/shared-gpu-scheduling-proactive-autoscaling-a-p_kim-jelveh.jpeg",

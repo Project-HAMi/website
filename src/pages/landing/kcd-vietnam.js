@@ -1,5 +1,3 @@
-import EventLandingPage from "@site/src/components/EventLandingPage";
+import EventLanding from "@site/src/components/EventLanding";
 
-export default function KCDVietnam() {
-  return <EventLandingPage slug="kcd-vietnam" />;
-}
+export default () => <EventLanding slug="kcd-vietnam" />;

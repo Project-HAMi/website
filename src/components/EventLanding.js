@@ -1,3 +1,4 @@
+import Layout from "@theme/Layout";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDiscord, faGithub } from "@fortawesome/free-brands-svg-icons";
@@ -8,6 +9,7 @@ import {
   faVideo,
 } from "@fortawesome/free-solid-svg-icons";
 import useBaseUrl from "@docusaurus/useBaseUrl";
+import events from "@site/src/data/events";
 import styles from "./EventLanding.module.css";
 
 function isChinese(locale) {
@@ -57,10 +59,22 @@ function formatDateRange(startStr, endStr, locale) {
   return fmt.formatRange(new Date(startStr), new Date(endStr));
 }
 
-export default function EventLanding({ event }) {
+export default function EventLanding({ slug }) {
   const { i18n } = useDocusaurusContext();
   const isZh = isChinese(i18n.currentLocale);
   const locale = i18n.currentLocale;
+  const event = events.find((e) => e.slug === slug);
+
+  if (!event) {
+    return (
+      <Layout title={isZh ? "未找到活动" : "Event not found"}>
+        <main className="container margin-vert--xl">
+          <h1>{isZh ? "未找到活动" : "Event not found"}</h1>
+        </main>
+      </Layout>
+    );
+  }
+
   const bannerUrl = useBaseUrl(event.banner || "");
   const eventJsonLd = {
     "@context": "https://schema.org",
@@ -71,6 +85,9 @@ export default function EventLanding({ event }) {
     location: {
       "@type": "Place",
       name: pick(locale, event.location),
+      ...(event.address && {
+        address: { "@type": "PostalAddress", ...event.address },
+      }),
     },
     description: pick(locale, event.description),
     image: event.banner ? `https://project-hami.io${event.banner}` : undefined,
@@ -78,7 +95,11 @@ export default function EventLanding({ event }) {
   };
 
   return (
-    <>
+    <Layout
+      title={isZh ? event.title.zh : event.title.en}
+      description={isZh ? event.description.zh : event.description.en}
+      image={event.banner}
+    >
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(eventJsonLd) }}
@@ -224,6 +245,6 @@ export default function EventLanding({ event }) {
           </div>
         </section>
       </main>
-    </>
+    </Layout>
   );
 }

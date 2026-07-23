@@ -1,5 +1,3 @@
-import EventLandingPage from "@site/src/components/EventLandingPage";
+import EventLanding from "@site/src/components/EventLanding";
 
-export default function KubeConJapan() {
-  return <EventLandingPage slug="kubecon-japan" />;
-}
+export default () => <EventLanding slug="kubecon-japan" />;
