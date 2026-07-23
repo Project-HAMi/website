@@ -11,6 +11,7 @@ const events = [
       en: "Yokohama, Japan",
       zh: "日本 横滨",
     },
+    banner: "img/events/2026-kubecon-jp/shared-gpu-scheduling-proactive-autoscaling-a-p_kim-jelveh.jpeg",
     description: {
       en: 'Join the HAMi team at KubeCon + CloudNativeCon Japan 2026, the CNCF\'s flagship conference. Visit our booth in the Solutions Showcase and catch our talk "Shared GPU Scheduling + Proactive Autoscaling" on orchestrating GPU workloads with HAMi on Kubernetes.',
       zh: "欢迎参加 KubeCon + CloudNativeCon 日本 2026，CNCF 旗舰大会。欢迎莅临 Solutions Showcase 展区 HAMi 展位，并聆听我们的演讲「共享 GPU 调度与主动自动伸缩」——基于 Kubernetes 与 HAMi 编排 GPU 工作负载。",
