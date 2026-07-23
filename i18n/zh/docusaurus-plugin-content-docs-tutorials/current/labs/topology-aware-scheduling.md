@@ -71,7 +71,7 @@ flowchart LR
 
 - macOS，Intel 或 Apple Silicon
 - 已安装 [OrbStack](https://orbstack.dev/) 并启用内置 Kubernetes
-- `docker`、`go`（1.21+）、`git`、`python3`
+- `docker`、`git`、`python3`
 - 可访问 GitHub、GHCR 和 HAMi Helm 仓库
 - 至少 8 GB 空闲内存和 4 个 CPU 核心
 
@@ -98,7 +98,7 @@ brew install helm
 
 - Ubuntu 20.04 LTS 或更高版本，x86_64 或 ARM64
 - [Docker Engine](https://docs.docker.com/engine/install/ubuntu/)、[`kind`](https://kind.sigs.k8s.io/docs/user/quick-start/#installation) v0.20+、[`kubectl`](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)、Helm 3.x
-- `go`（1.21+）、`git`、`python3`
+- `git`、`python3`
 - 可访问 GitHub、GHCR 和 HAMi Helm 仓库
 - 至少 8 GB 空闲内存和 4 个 CPU 核心
 
@@ -116,13 +116,17 @@ curl -fsSL https://get.docker.com | sudo sh
 sudo usermod -aG docker $USER
 newgrp docker
 
-# kind
+# git、python3
+sudo apt-get update && sudo apt-get install -y git python3
+
+# kind（自动适配架构：amd64 或 arm64）
 KIND_VERSION=v0.23.0
-curl -Lo ./kind "https://kind.sigs.k8s.io/dl/${KIND_VERSION}/kind-linux-amd64"
+ARCH=$(dpkg --print-architecture)
+curl -Lo ./kind "https://kind.sigs.k8s.io/dl/${KIND_VERSION}/kind-linux-${ARCH}"
 chmod +x ./kind && sudo mv ./kind /usr/local/bin/kind
 
-# kubectl
-curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+# kubectl（自动适配架构：amd64 或 arm64）
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/${ARCH}/kubectl"
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl && rm kubectl
 
 # Helm
@@ -165,7 +169,7 @@ Server Version: v1.33.9+orb1
 创建本地 Kubernetes 集群：
 
 ```bash
-kind create cluster --name topo-lab
+kind create cluster --name topo-lab --image kindest/node:v1.35.0
 ```
 
 示例输出：

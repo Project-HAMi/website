@@ -71,7 +71,7 @@ flowchart LR
 
 - macOS, Intel or Apple Silicon
 - [OrbStack](https://orbstack.dev/) installed with built-in Kubernetes enabled
-- `docker`, `go` (1.21+), `git`, `python3`
+- `docker`, `git`, `python3`
 - Access to GitHub, GHCR, and the HAMi Helm repository
 - At least 8 GB of free memory and 4 CPU cores available
 
@@ -98,7 +98,7 @@ brew install helm
 
 - Ubuntu 20.04 LTS or later, x86_64 or ARM64
 - [Docker Engine](https://docs.docker.com/engine/install/ubuntu/), [`kind`](https://kind.sigs.k8s.io/docs/user/quick-start/#installation) v0.20+, [`kubectl`](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/), Helm 3.x
-- `go` (1.21+), `git`, `python3`
+- `git`, `python3`
 - Access to GitHub, GHCR, and the HAMi Helm repository
 - At least 8 GB of free memory and 4 CPU cores available
 
@@ -116,13 +116,17 @@ curl -fsSL https://get.docker.com | sudo sh
 sudo usermod -aG docker $USER
 newgrp docker
 
-# kind
+# git, python3
+sudo apt-get update && sudo apt-get install -y git python3
+
+# kind (architecture-aware: amd64 or arm64)
 KIND_VERSION=v0.23.0
-curl -Lo ./kind "https://kind.sigs.k8s.io/dl/${KIND_VERSION}/kind-linux-amd64"
+ARCH=$(dpkg --print-architecture)
+curl -Lo ./kind "https://kind.sigs.k8s.io/dl/${KIND_VERSION}/kind-linux-${ARCH}"
 chmod +x ./kind && sudo mv ./kind /usr/local/bin/kind
 
-# kubectl
-curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+# kubectl (architecture-aware: amd64 or arm64)
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/${ARCH}/kubectl"
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl && rm kubectl
 
 # Helm
@@ -165,7 +169,7 @@ The `+orb1` suffix in `Server Version` identifies OrbStack's built-in Kubernetes
 Create a local Kubernetes cluster:
 
 ```bash
-kind create cluster --name topo-lab
+kind create cluster --name topo-lab --image kindest/node:v1.35.0
 ```
 
 Example output:
