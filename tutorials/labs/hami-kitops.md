@@ -21,7 +21,7 @@ toc_max_heading_level: 2
 
 This lab demonstrates how to replace a runtime **Hugging Face** model download with a **[KitOps](https://kitops.org/) ModelKit** pulled from an OCI registry ([Jozu Hub](https://jozu.ml) in the examples). The model is delivered into the Pod by a KitOps `initContainer`, then served from a **local directory** by [SGLang](https://github.com/sgl-project/sglang) (primary) or vLLM (optional co-resident example) on HAMi-virtualized GPU shares.
 
-Compared with [Lab 6 (vLLM)](./hami-vllm) and [Lab 11 (SGLang)](./hami-sglang), the inference engines still run on HAMi resources — but the **model supply chain** changes from `engine serve <hf-repo>` to **unpack ModelKit → serve local path**.
+Compared with [Lab 6 (vLLM)](./hami-vllm) and Lab 11 (SGLang), the inference engines still run on HAMi resources — but the **model supply chain** changes from `engine serve <hf-repo>` to **unpack ModelKit → serve local path**.
 
 ## Learning Objectives
 
@@ -69,7 +69,7 @@ flowchart TB
 
 ## Prerequisites
 
-- Everything from [Lab 11](./hami-sglang) (or Lab 6): a Kubernetes cluster with NVIDIA GPUs, HAMi installed and healthy, `kubectl`, `helm`
+- Everything from Lab 11 (or Lab 6): a Kubernetes cluster with NVIDIA GPUs, HAMi installed and healthy, `kubectl`, `helm`
 - Docker (or an equivalent builder) to build and load images into the cluster
 - [`kit`](https://github.com/jozu-ai/kitops) CLI on your workstation (optional but recommended for `kit inspect`)
 - Ability to pull from the public registry `jozu.ml` (no login required for the sample ModelKit)
@@ -776,4 +776,4 @@ kubectl delete namespace kitops --ignore-not-found
 - Swap the public Jozu ModelKit for your internal registry ModelKit and wire imagePullSecrets / `kit login` Secrets.
 - Share one PVC across SGLang and vLLM so the ModelKit is unpacked once.
 - Combine with [Lab 3: GPU Partitioning](./gpu-partitioning) to pack more tenants per GPU.
-- Return to [Lab 11: SGLang](./hami-sglang) if you need the simpler Hugging Face runtime path for debugging engines independently of the supply chain.
+- Return to Lab 11: SGLang if you need the simpler Hugging Face runtime path for debugging engines independently of the supply chain.
