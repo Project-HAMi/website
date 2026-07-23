@@ -23,6 +23,8 @@ import Tabs from '@theme/Tabs'; import TabItem from '@theme/TabItem';
 
 ## 你将得到什么
 
+完成本实验后，你将获得：
+
 - 一个使用 nvml-mock 模拟 8 张 A100 GPU 的本地集群（HAMi 将每张 GPU 切分为 10 份后共 80 个虚拟槽位）
 - 从已验证的提交构建并安装 HAMi，启用拓扑感知调度（`gpuSchedulerPolicy=topology-aware`）
 - 一个节点注解（`hami.io/node-nvidia-score`），定义了一套自定义拓扑，其中 GPU7 与其余所有 GPU 的连接都很差
@@ -199,9 +201,9 @@ echo "NODE_NAME=${NODE_NAME}"
 
 ---
 
-:::info[步骤 2–7 在两个平台上完全相同]
+:::info[后续大部分步骤在两个平台上是一致的]
 
-从这里开始，所有命令在 macOS 和 Linux 上都完全一致。你唯一会注意到的差异是示例输出中的节点名不同。
+从这里开始，大多数命令在 macOS 和 Linux 上是一致的。仍有少数步骤存在差异 —— 步骤 2.3 和步骤 3.1 中分别有一条仅 Linux 需要执行的额外 `kind load` 命令 —— 其余部分完全相同，只是示例输出中的节点名不同。
 
 :::
 
@@ -272,7 +274,7 @@ _为什么：HAMi 的调度器会替代默认 Kubernetes 调度器处理 GPU Pod
 
 ### 3.1 克隆 HAMi 并检出已验证的提交
 
-本实验基于 2026-07-14 时的 HAMi `main` 分支验证通过。如果你当前的 `main` 分支表现不符合预期，请使用确切的提交 `5dca58e`：
+本实验基于 2026-07-14 时的 HAMi `main` 分支验证通过。如果你当前的 `main` 分支表现不符合预期，请使用确切的提交 `a1b418c`：
 
 ```bash
 cd ~
@@ -322,7 +324,7 @@ helm install hami ./charts/hami \
   --set scheduler.defaultSchedulerPolicy.gpuSchedulerPolicy=topology-aware
 ```
 
-> `gpuSchedulerPolicy=topology-aware` 告诉调度器在选择 GPU 时使用节点注解中的成对连接性分数。这一个设置同时覆盖多 GPU 和单 GPU 两种请求 —— HAMi 的 `Fit()` 函数（`pkg/device/nvidia/device.go`）只检查一次该策略，然后在内部分支处理：多 GPU 请求走 `computeBestCombination()`，单 GPU 请求走 `computeWorstSignleCard()`。单 GPU 评分没有单独需要打开的开关。`scheduler.kubeScheduler.imageTag` 是从实际运行的集群读取的，而不是写死的，因为 OrbStack 和 kind 提供的 Kubernetes 版本不同，这样可以让调度器内置的 `kube-scheduler` 二进制文件始终与实际运行的 API server 保持一致。
+> `gpuSchedulerPolicy=topology-aware` 告诉调度器在选择 GPU 时使用节点注解中的成对连接性分数。这一个设置同时覆盖多 GPU 和单 GPU 两种请求 —— HAMi 的 `Fit()` 函数（`pkg/device/nvidia/device.go`）只检查一次该策略，然后在内部分支处理：多 GPU 请求走 `computeBestCombination()`，单 GPU 请求走 `computeWorstSingleCard()`。单 GPU 评分没有单独需要打开的开关。`scheduler.kubeScheduler.imageTag` 是从实际运行的集群读取的，而不是写死的，因为 OrbStack 和 kind 提供的 Kubernetes 版本不同，这样可以让调度器内置的 `kube-scheduler` 二进制文件始终与实际运行的 API server 保持一致。
 
 ### 3.3 为节点打标签并配置 NVML 发现
 
@@ -503,7 +505,7 @@ Devices: 8
 GPU7 UUID: GPU-12345678-1234-1234-1234-123456780007
 ```
 
-### 定位 GPU7 的 UUID
+### 4.2.1 定位 GPU7 的 UUID
 
 现在提取 GPU7 的 UUID（无论来自真实注解还是手动创建的文件）：
 
@@ -682,7 +684,7 @@ spec:
           value: "true"
       resources:
         limits:
-          nvidia.com/gpu: "2"
+          nvidia.com/gpu: 2
 EOF
 ```
 
@@ -748,7 +750,7 @@ kubectl apply -f single-gpu-pod.yaml
 等待它运行起来，然后检查分配到的 GPU：
 
 ```bash
-kubectl get pod single-gpu -w
+kubectl get pod single-gpu -w   # 等待变为 Running，然后按 Ctrl+C
 kubectl describe pod single-gpu | grep vgpu-devices-allocated
 ```
 

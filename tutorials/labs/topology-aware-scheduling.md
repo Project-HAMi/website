@@ -46,12 +46,12 @@ The entire lab consists of 7 steps:
 ```mermaid
 %% title: Topology-Aware Scheduling Lab Overview
 flowchart LR
-    Step1["Step 1\nSet Up & Verify Environment"] --> Step2["Step 2\nBuild nvml-mock (8 fake A100s)"]
-    Step2 --> Step3["Step 3\nBuild & Install HAMi, Topology Policy On"]
-    Step3 --> Step4["Step 4\nIsolate GPU7 in the Topology Annotation"]
-    Step4 --> Step5["Step 5\nRaise Scheduler Log Verbosity"]
-    Step5 --> Step6["Step 6\nVerify: Multi-GPU Avoids, Single-GPU Picks GPU7"]
-    Step6 --> Step7["Step 7\n(Optional) Observe Scheduler Topology Logs"]
+    Step1["Step 1<br/>Set Up & Verify Environment"] --> Step2["Step 2<br/>Build nvml-mock (8 fake A100s)"]
+    Step2 --> Step3["Step 3<br/>Build & Install HAMi, Topology Policy On"]
+    Step3 --> Step4["Step 4<br/>Isolate GPU7 in the Topology Annotation"]
+    Step4 --> Step5["Step 5<br/>Raise Scheduler Log Verbosity"]
+    Step5 --> Step6["Step 6<br/>Verify: Multi-GPU Avoids, Single-GPU Picks GPU7"]
+    Step6 --> Step7["Step 7<br/>(Optional) Observe Scheduler Topology Logs"]
 ```
 
 | Step | Purpose | What It Solves |
@@ -201,9 +201,9 @@ echo "NODE_NAME=${NODE_NAME}"
 
 ---
 
-:::info[Steps 2–7 are identical on both platforms]
+:::info[Most remaining steps are the same on both platforms]
 
-From here on, all commands work the same on macOS and Linux. The only difference you will notice is your node name in example outputs.
+From here on, most commands work the same on macOS and Linux. A couple of steps still differ - Step 2.3 and Step 3.1 each call out an extra `kind load` command needed only on Linux. Everything else is identical, aside from the node name you'll see in example outputs.
 
 :::
 
@@ -274,7 +274,7 @@ _Why: HAMi's scheduler replaces the default Kubernetes scheduler for GPU pods an
 
 ### 3.1 Clone HAMi and Check Out the Verified Commit
 
-The lab was tested against HAMi `main` branch as of **2026-07-14**. If your current `main` doesn't work as expected, use the exact commit `5dca58e`:
+The lab was tested against HAMi `main` branch as of **2026-07-14**. If your current `main` doesn't work as expected, use the exact commit `a1b418c`:
 
 ```bash
 cd ~
@@ -324,7 +324,7 @@ helm install hami ./charts/hami \
   --set scheduler.defaultSchedulerPolicy.gpuSchedulerPolicy=topology-aware
 ```
 
-> `gpuSchedulerPolicy=topology-aware` tells the scheduler to use pairwise connectivity scores from the node annotation when selecting GPUs. This single setting covers **both** multi-GPU and single-GPU requests - HAMi's `Fit()` function (`pkg/device/nvidia/device.go`) checks this policy once, then branches internally: multi-GPU requests go through `computeBestCombination()`, single-GPU requests go through `computeWorstSignleCard()`. There's no separate flag to turn on for single-GPU scoring. `scheduler.kubeScheduler.imageTag` is read from the live cluster rather than hardcoded, since OrbStack and kind ship different Kubernetes versions, and this keeps the scheduler's embedded kube-scheduler binary aligned with whatever API server is actually running.
+> `gpuSchedulerPolicy=topology-aware` tells the scheduler to use pairwise connectivity scores from the node annotation when selecting GPUs. This single setting covers **both** multi-GPU and single-GPU requests - HAMi's `Fit()` function (`pkg/device/nvidia/device.go`) checks this policy once, then branches internally: multi-GPU requests go through `computeBestCombination()`, single-GPU requests go through `computeWorstSingleCard()`. There's no separate flag to turn on for single-GPU scoring. `scheduler.kubeScheduler.imageTag` is read from the live cluster rather than hardcoded, since OrbStack and kind ship different Kubernetes versions, and this keeps the scheduler's embedded kube-scheduler binary aligned with whatever API server is actually running.
 
 ### 3.3 Label the Node and Configure NVML Discovery
 
@@ -505,9 +505,9 @@ Devices: 8
 GPU7 UUID: GPU-12345678-1234-1234-1234-123456780007
 ```
 
-### Locate GPU7 UUID
+### 4.2.1 Locate GPU7 UUID
 
-Now extract the UUID of GPU7 (whether from the real annotation or the manually‑created file):
+Now extract the UUID of GPU7 (whether from the real annotation or the manually-created file):
 
 ```bash
 GPU7_UUID=$(python3 -c "
@@ -576,7 +576,7 @@ kubectl -n kube-system rollout restart daemonset/hami-device-plugin
 kubectl -n kube-system rollout status daemonset/hami-device-plugin --timeout=120s
 ```
 
-:::note[Timeout is non‑critical]
+:::note[Timeout is non-critical]
 
 If this `rollout status` times out, it's almost always the same harmless `vgpu-monitor` container restart cycle described in Step 3.3, not a real problem — `vgpu-monitor` has nothing to monitor in this fake-GPU lab, so it exits cleanly and restarts, which can keep the pod's overall `READY` count below the daemonset's expected total. What matters is that `device-plugin` itself is ready and the env var took effect:
 
@@ -684,7 +684,7 @@ spec:
           value: "true"
       resources:
         limits:
-          nvidia.com/gpu: "2"
+          nvidia.com/gpu: 2
 EOF
 ```
 
@@ -750,7 +750,7 @@ kubectl apply -f single-gpu-pod.yaml
 Wait for it to run, then check the allocated GPU:
 
 ```bash
-kubectl get pod single-gpu -w
+kubectl get pod single-gpu -w   # wait for Running, then Ctrl+C
 kubectl describe pod single-gpu | grep vgpu-devices-allocated
 ```
 
