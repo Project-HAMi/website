@@ -543,5 +543,5 @@ kubectl label node <gpu-node-name> gpu-
 
 - Increase `replicas` and observe how HAMi packs multiple SGLang Pods with `binpack`.
 - Lower `nvidia.com/gpumem` / `nvidia.com/gpucores` further and co-locate another small workload on the same GPU.
-- Continue with [Lab 12: Serve Models from a KitOps ModelKit on HAMi](./hami-kitops) to replace the runtime Hugging Face download with an OCI ModelKit.
+- Deliver the model from an OCI registry instead of Hugging Face: a companion **KitOps ModelKit** lab replaces the runtime download with a `kitops-init` initContainer ([website#561](https://github.com/Project-HAMi/website/issues/561)).
 - For memory isolation and small-slice sharing patterns, see [Lab 3: GPU Partitioning](./gpu-partitioning).
