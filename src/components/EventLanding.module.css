@@ -50,6 +50,24 @@
   color: var(--hami-color-muted);
 }
 
+.heroLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--hami-space-16);
+  margin-top: var(--hami-space-16);
+}
+
+.externalLink {
+  color: var(--hami-color-primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.externalLink:hover {
+  color: var(--hami-color-primary-hover);
+  text-decoration: none;
+}
+
 /* Case study */
 .caseStudySection {
   padding: var(--hami-space-32) 0;

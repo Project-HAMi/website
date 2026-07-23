@@ -84,6 +84,30 @@ export default function EventLanding({ event }) {
             </span>
           </div>
           <p className={styles.description}>{pick(locale, event.description)}</p>
+          {(event.externalUrl || event.talkUrl) && (
+            <div className={styles.heroLinks}>
+              {event.externalUrl && (
+                <a
+                  href={event.externalUrl}
+                  className={styles.externalLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {isZh ? "查看活动官网" : "Event Website"} →
+                </a>
+              )}
+              {event.talkUrl && (
+                <a
+                  href={event.talkUrl}
+                  className={styles.externalLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {isZh ? "查看演讲详情" : "Talk Details"} →
+                </a>
+              )}
+            </div>
+          )}
         </div>
       </section>
 
