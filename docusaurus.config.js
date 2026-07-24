@@ -293,6 +293,13 @@ module.exports = {
       defaultMode: "dark",
       respectPrefersColorScheme: false,
     },
+    announcementBar: {
+      id: "kubecon_japan_2026",
+      content: "kubecon_japan_2026",
+      backgroundColor: "#20232a",
+      textColor: "#ffffff",
+      isCloseable: true,
+    },
     navbar: {
       title: "HAMi",
       logo: {
