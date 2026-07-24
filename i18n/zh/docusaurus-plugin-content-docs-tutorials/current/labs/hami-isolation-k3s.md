@@ -217,7 +217,7 @@ spec:
 > `hami-share-b` 除名称外完全相同。使用 `devel` 镜像是因为步骤 6 需要在 Pod 内用 `nvcc` 编译一个小型 CUDA 分配器；镜像较大、拉取较慢是正常的。在 24 GB 显卡上请改用约 4000 MiB 的切片。
 
 ```bash
-kubectl apply -f share-two-pods.yaml
+kubectl apply -f tutorials/labs/examples/07-hami-isolation-k3s/share-two-pods.yaml
 kubectl wait --for=condition=Ready pod/hami-share-a pod/hami-share-b --timeout=300s
 kubectl get pods -o wide
 ```
@@ -303,7 +303,7 @@ cudaMalloc refused after 7424 MiB allocated: out of memory
 现在证明显卡的显存是一个共享的、有限的预算。`oversubscribe-pending.yaml` 请求一个 90000 MiB 的切片，空的 96 GB 卡放得下，但在已有两个 8000 MiB 切片的情况下放不下（97887 − 16000 ≈ 82000 MiB 空闲）：
 
 ```bash
-kubectl apply -f oversubscribe-pending.yaml
+kubectl apply -f tutorials/labs/examples/07-hami-isolation-k3s/oversubscribe-pending.yaml
 sleep 15
 kubectl get pod hami-oversubscribe
 kubectl describe pod hami-oversubscribe | grep -A5 Events:

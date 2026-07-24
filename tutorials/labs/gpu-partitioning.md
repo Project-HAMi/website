@@ -93,7 +93,7 @@ spec:
 `gpumem-pod-b.yaml` is identical except for the name. Apply both:
 
 ```bash
-kubectl apply -f gpumem-pod-a.yaml -f gpumem-pod-b.yaml
+kubectl apply -f tutorials/labs/examples/03-gpu-partitioning/gpumem-pod-a.yaml -f tutorials/labs/examples/03-gpu-partitioning/gpumem-pod-b.yaml
 kubectl get pods gpumem-pod-a gpumem-pod-b -o wide
 ```
 
@@ -174,7 +174,7 @@ spec:
 ```
 
 ```bash
-kubectl apply -f oom-test-pod.yaml
+kubectl apply -f tutorials/labs/examples/03-gpu-partitioning/oom-test-pod.yaml
 ```
 
 While the image pulls, watch the HAMi scheduler make its decision:
@@ -240,7 +240,7 @@ resources:
 ```
 
 ```bash
-kubectl apply -f gpucores-pod.yaml
+kubectl apply -f tutorials/labs/examples/03-gpu-partitioning/gpucores-pod.yaml
 ```
 
 Check the environment HAMi injected into the container:

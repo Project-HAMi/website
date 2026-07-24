@@ -1,6 +1,6 @@
 # HAMi Documentation Website
 
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FProject-HAMi%2Fwebsite.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FProject-HAMi%2Fwebsite?ref=badge_shield)
+[![Docs Health Check](https://github.com/Project-HAMi/website/actions/workflows/docs-health.yml/badge.svg)](https://github.com/Project-HAMi/website/actions/workflows/docs-health.yml) [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FProject-HAMi%2Fwebsite.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FProject-HAMi%2Fwebsite?ref=badge_shield) [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](./LICENSE)
 
 Official documentation and website for [HAMi (Heterogeneous AI Computing Virtualization Middleware)](https://project-hami.io/) - an open-source GPU virtualization solution for heterogeneous AI computing.
 
@@ -142,7 +142,7 @@ This adds the DCO signature: `Signed-off-by: Your Name <your.email@example.com>`
 | Command                      | Description                                  |
 | ---------------------------- | -------------------------------------------- |
 | `npm start`                  | Start development server with hot-reload     |
-| `npm start:network`          | Start dev server accessible on local network |
+| `npm run start:network`      | Start dev server accessible on local network |
 | `npm run build`              | Build full production site (all languages)   |
 | `npm run build:fast`         | Build English only (faster for testing)      |
 | `npm run serve`              | Serve production build locally               |
