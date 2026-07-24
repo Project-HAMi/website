@@ -253,6 +253,18 @@ module.exports = {
         onInlineAuthors: "warn",
       },
     ],
+    [
+      "./src/plugins/events/index.js",
+      {
+        sources: [
+          {
+            name: "Community Call",
+            icsUrl:
+              "https://calendar.google.com/calendar/ical/4eef0c8621ddcb873a7e4be9cf487db9d2278de173451abc78dfbc988c7cad45%40group.calendar.google.com/public/basic.ics",
+          },
+        ],
+      },
+    ],
   ],
   themes: [
     "@docusaurus/theme-mermaid",
@@ -280,6 +292,13 @@ module.exports = {
     colorMode: {
       defaultMode: "dark",
       respectPrefersColorScheme: false,
+    },
+    announcementBar: {
+      id: "kubecon_japan_2026",
+      content: "kubecon_japan_2026",
+      backgroundColor: "#20232a",
+      textColor: "#ffffff",
+      isCloseable: true,
     },
     navbar: {
       title: "HAMi",
@@ -317,6 +336,12 @@ module.exports = {
           to: "/community",
           activeBasePath: "community",
           label: "Community",
+          position: "left",
+        },
+        {
+          to: "/events",
+          activeBasePath: "events",
+          label: "Events",
           position: "left",
         },
         {
