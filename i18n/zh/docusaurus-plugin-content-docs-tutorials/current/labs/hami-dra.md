@@ -114,8 +114,8 @@ accept-nvidia-visible-devices-as-volume-mounts = true
 驱动以 kubelet 插件 DaemonSet 方式运行。两个清单文件：先 RBAC，再 DaemonSet。
 
 ```bash
-kubectl apply -f rbac.yaml
-kubectl apply -f ds-gpu-operator.yaml
+kubectl apply -f tutorials/labs/examples/04-hami-dra/rbac.yaml
+kubectl apply -f tutorials/labs/examples/04-hami-dra/ds-gpu-operator.yaml
 
 kubectl get pods -n hami-dra-driver
 ```
@@ -192,8 +192,8 @@ spec:
 部署并验证：
 
 ```bash
-kubectl apply -f setup.yaml
-kubectl create -f pod-0.yaml
+kubectl apply -f tutorials/labs/examples/04-hami-dra/setup.yaml
+kubectl create -f tutorials/labs/examples/04-hami-dra/pod-0.yaml
 kubectl get pod pod-0 -n test-dra
 kubectl get resourceclaim single-gpu-0 -n test-dra -o jsonpath='{.status.allocation.devices.results[0]}' | python3 -m json.tool
 ```
@@ -232,7 +232,7 @@ kubectl exec -n test-dra pod-0 -- nvidia-smi | head -11
 `pod-tpl-0.yaml` 使用 `ResourceClaimTemplate`，因此每个 Pod 会获得自动生成的独立 Claim：
 
 ```bash
-kubectl create -f pod-tpl-0.yaml
+kubectl create -f tutorials/labs/examples/04-hami-dra/pod-tpl-0.yaml
 kubectl get pods -n test-dra
 kubectl get resourceclaims -n test-dra
 ```

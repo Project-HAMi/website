@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: HAMi software bug
+    url: https://github.com/Project-HAMi/HAMi/issues/new/choose
+    about: For bugs in the HAMi scheduler or device plugins, file an issue in the main HAMi repo instead.

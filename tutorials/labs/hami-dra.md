@@ -114,8 +114,8 @@ accept-nvidia-visible-devices-as-volume-mounts = true
 The driver runs as a kubelet plugin DaemonSet. Two manifests: RBAC, then the DaemonSet.
 
 ```bash
-kubectl apply -f rbac.yaml
-kubectl apply -f ds-gpu-operator.yaml
+kubectl apply -f tutorials/labs/examples/04-hami-dra/rbac.yaml
+kubectl apply -f tutorials/labs/examples/04-hami-dra/ds-gpu-operator.yaml
 
 kubectl get pods -n hami-dra-driver
 ```
@@ -192,8 +192,8 @@ spec:
 Apply and verify:
 
 ```bash
-kubectl apply -f setup.yaml
-kubectl create -f pod-0.yaml
+kubectl apply -f tutorials/labs/examples/04-hami-dra/setup.yaml
+kubectl create -f tutorials/labs/examples/04-hami-dra/pod-0.yaml
 kubectl get pod pod-0 -n test-dra
 kubectl get resourceclaim single-gpu-0 -n test-dra -o jsonpath='{.status.allocation.devices.results[0]}' | python3 -m json.tool
 ```
@@ -232,7 +232,7 @@ kubectl exec -n test-dra pod-0 -- nvidia-smi | head -11
 `pod-tpl-0.yaml` uses a `ResourceClaimTemplate`, so each Pod gets its own auto-generated claim:
 
 ```bash
-kubectl create -f pod-tpl-0.yaml
+kubectl create -f tutorials/labs/examples/04-hami-dra/pod-tpl-0.yaml
 kubectl get pods -n test-dra
 kubectl get resourceclaims -n test-dra
 ```
