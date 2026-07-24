@@ -12,6 +12,7 @@ By installing the [HAMi DRA webhook](https://github.com/Project-HAMi/HAMi-DRA) i
 ## Prerequisites
 
 * Kubernetes version >= 1.34 with DRA Consumable Capacity [featuregate](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/) enabled
+* [CDI](./configure-cdi.md) must be enabled in the underlying container runtime (such as containerd or CRI-O)
 
 ## Installation
 
