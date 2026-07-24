@@ -375,13 +375,13 @@ export default function Home() {
   const { i18n } = useDocusaurusContext();
   const isZh = i18n.currentLocale === "zh";
   const [starsCount, setStarsCount] = useState(3100);
-  const [dockerPulls, setDockerPulls] = useState(162000);
+  const [dockerPulls, setDockerPulls] = useState(325000);
   const kubernetesLogo = useBaseUrl("img/kubernetes-logo.svg");
   const hamiLogo = useBaseUrl("img/hami-graph-color.svg");
   const hamiHorizontalLogoLight = useBaseUrl("img/hami-horizontal-color-black.svg");
   const hamiHorizontalLogoDark = useBaseUrl("img/hami-horizontal-color-white.svg");
   const contributorsCount = useCountUp(500);
-  const contributorCountries = useCountUp(17);
+  const contributorCountries = useCountUp(27);
   const starsCountDisplay = useCountUp(starsCount);
   const dockerPullsDisplay = useCountUp(dockerPulls);
 
