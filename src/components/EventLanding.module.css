@@ -41,6 +41,8 @@
 .metaIcon {
   color: var(--hami-color-primary);
   font-size: 0.95rem;
+  width: 0.95em;
+  height: 0.95em;
 }
 
 .description {
@@ -48,6 +50,24 @@
   font-size: 1.1rem;
   line-height: 1.7;
   color: var(--hami-color-muted);
+}
+
+.heroLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--hami-space-16);
+  margin-top: var(--hami-space-16);
+}
+
+.externalLink {
+  color: var(--hami-color-primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.externalLink:hover {
+  color: var(--hami-color-primary-hover);
+  text-decoration: none;
 }
 
 /* Case study */
