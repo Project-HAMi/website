@@ -36,11 +36,11 @@
     "@docusaurus/plugin-sitemap": "^3.10.1",
     "@docusaurus/preset-classic": "^3.10.1",
     "@docusaurus/theme-mermaid": "^3.10.1",
-    "@easyops-cn/docusaurus-search-local": "^0.55.1",
-    "@fortawesome/free-brands-svg-icons": "^7.2.0",
-    "@fortawesome/free-solid-svg-icons": "^7.2.0",
-    "@fortawesome/react-fontawesome": "^3.2.0",
-    "asciinema-player": "^3.0.1",
+    "@easyops-cn/docusaurus-search-local": "^0.55.2",
+    "@fortawesome/free-brands-svg-icons": "^7.3.0",
+    "@fortawesome/free-solid-svg-icons": "^7.3.0",
+    "@fortawesome/react-fontawesome": "^3.3.1",
+    "asciinema-player": "^3.17.0",
     "clsx": "^1.2.1",
     "node-ical": "^0.26.1",
     "prism-react-renderer": "^2.4.0",
@@ -62,10 +62,10 @@
   },
   "devDependencies": {
     "@docusaurus/faster": "^3.10.1",
-    "@swc/core": "^1.15.18",
+    "@swc/core": "^1.15.43",
     "gh-pages": "^6.1.1",
-    "markdownlint-cli": "^0.48.0",
-    "prettier": "^3.8.4",
+    "markdownlint-cli": "^0.49.0",
+    "prettier": "^3.9.4",
     "swc-loader": "^0.2.7"
   }
 }
