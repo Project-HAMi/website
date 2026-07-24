@@ -202,7 +202,7 @@ Use HAMi vGPU when the GPU does not support MIG, workloads need flexible memory 
 
 ## Why is my nvidia.com/gpumem limit not enforced? {#why-is-my-nvidiagpumem-limit-not-enforced}
 
-The four most common causes: `CUDA_DISABLE_CONTROL=true` is set, the workload runs inside Docker-in-Docker, the application calls the GPU driver directly (bypassing `libvgpu.so`), or `nvidia-container-runtime` is not the default runtime on the node. See [Troubleshooting](./troubleshooting) for resolution steps.
+The four most common causes: `CUDA_DISABLE_CONTROL=true` is set, the workload runs inside Docker-in-Docker, the application calls the GPU driver directly (bypassing `libvgpu.so`), or `nvidia-container-runtime` is not the default runtime on the node. See [Troubleshooting](../troubleshooting/troubleshooting.md) for resolution steps.
 
 ## Does HAMi replace kube-scheduler or run alongside it?
 

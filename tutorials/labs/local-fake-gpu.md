@@ -572,9 +572,10 @@ Since this lab does not enable the HAMi device-plugin, the test Pod explicitly b
 
 ### 5.1 Create a Test Pod
 
-Review the Pod YAML before applying:
+Apply the Pod:
 
-```yaml
+```bash
+kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Pod
 metadata:
@@ -602,6 +603,11 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: spec.nodeName
+EOF
+```
+
+```plaintext
+pod/fake-gpu-pod created
 ```
 
 > YAML key points:
@@ -610,16 +616,6 @@ spec:
 > - `run.ai/simulated-gpu-utilization: "10-30"`: fake-gpu-operator will make `nvidia-smi` report 10%–30% GPU utilization
 > - `resources.limits.nvidia.com/gpu: 1`: Requests 1 GPU
 > - `sleep 3600`: Keeps the container running for 1 hour for observation
-
-Apply the Pod:
-
-```bash
-kubectl apply -f fake-gpu-pod.yaml
-```
-
-```plaintext
-pod/fake-gpu-pod created
-```
 
 ### 5.2 Wait for the Pod to Run
 

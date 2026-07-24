@@ -9,13 +9,13 @@ tags:
 
 > The integration target here is strictly HAMi-core, not the full HAMi platform. KAI Scheduler keeps its own scheduling capability and brings in HAMi-core to provide GPU memory isolation.
 
-In June 2026, two core PRs were officially merged into the NVIDIA KAI Scheduler main branch. This means HAMi's GPU memory hard isolation will ship as a built-in feature in the next KAI Scheduler release. Cloud-native GPU scheduling has officially moved from "cooperative sharing" into the "hard isolation" era.
+In June 2026, two core PRs were officially merged into the NVIDIA KAI Scheduler main branch. HAMi's GPU memory hard isolation shipped as a built-in feature starting with KAI Scheduler v0.16.4. Cloud-native GPU scheduling has officially moved from "cooperative sharing" into the "hard isolation" era.
 
 <!-- truncate -->
 
 ## What is KAI Scheduler?
 
-[KAI Scheduler](https://github.com/kai-scheduler/KAI-Scheduler) is NVIDIA's open source, Kubernetes-native scheduler for AI workloads. It grew out of the Run:ai scheduling engine. After NVIDIA acquired Run:ai in late 2024, it was open sourced under Apache 2.0 in April 2025 and is now a CNCF Sandbox project.
+[KAI Scheduler](https://github.com/kai-scheduler/KAI-Scheduler) is NVIDIA's open-source, Kubernetes-native scheduler for AI workloads. It grew out of the Run:ai scheduling engine. After NVIDIA acquired Run:ai in late 2024, it was open sourced under Apache 2.0 in April 2025 and is now a CNCF Sandbox project.
 
 The Kubernetes default scheduler was designed for stateless services and schedules GPUs the same way it schedules CPU cores: one Pod takes a whole GPU, with no gang scheduling, no team fairness, and no topology awareness. KAI Scheduler exists to solve the scheduling problems unique to AI scenarios:
 
@@ -48,7 +48,7 @@ A simple way to understand HAMi's position:
 - **KAI Scheduler** decides "who uses which GPU, and when" (the scheduling layer).
 - **HAMi** ensures "once allocated, that is all you get, and you cannot take more" (the isolation layer).
 
-Only by combining the two do you get true production-grade GPU sharing. HAMi supports NVIDIA GPUs, Huawei Ascend NPUs, Cambricon MLUs, Hygon DCUs, Kunlun XPUs, and many other heterogeneous accelerators, making it the open source solution with the broadest coverage in cloud-native GPU virtualization. For the full list of supported accelerators, see the [HAMi documentation](/docs/userguide/device-supported).
+Only by combining the two do you get true production-grade GPU sharing. HAMi supports NVIDIA GPUs, Huawei Ascend NPUs, Cambricon MLUs, Hygon DCUs, Kunlun XPUs, and many other heterogeneous accelerators, making it the open-source solution with the broadest coverage in cloud-native GPU virtualization. For the full list of supported accelerators, see the [HAMi documentation](/docs/userguide/device-supported).
 
 ## Integration architecture: how HAMi and KAI Scheduler work together
 
@@ -105,8 +105,9 @@ Integrating HAMi into KAI Scheduler is simple, only two steps.
 
 ```bash
 helm install kai-scheduler oci://ghcr.io/nvidia/kai-scheduler \
-  --set scheduler.gpuSharing.enabled=true \
-  --set scheduler.gpuSharing.hamicoreEnabled=true \
+  --version v0.16.4 \
+  --set global.gpuSharing=true \
+  --set binder.plugins.hamicore.enabled=true \
   --namespace kai-scheduler --create-namespace
 ```
 
@@ -160,9 +161,9 @@ This post covers the highlights. For the complete setup guide (prerequisites, in
 
 :::
 
-## Open source collaboration: from proposal to merge
+## Open-source collaboration: from proposal to merge
 
-This integration is a model of open source community collaboration. It took over a year of close work between the HAMi team and the NVIDIA KAI Scheduler team:
+This integration is a model of open-source community collaboration. It took over a year of close work between the HAMi team and the NVIDIA KAI Scheduler team:
 
 | Date | Milestone | Participants |
 | --- | --- | --- |
@@ -209,18 +210,19 @@ For users who already use both KAI Scheduler and HAMi, this integration solves t
 
 > "We're currently using KAI Scheduler to handle our ML workloads, but we have a new requirement: we need to enforce strict vGPU restrictions (memory/compute isolation) at the pod level. I know HAMi excels at this."
 
-## What's next: the next KAI Scheduler release
+## Available now: HAMi resource isolation in KAI Scheduler v0.16.4
 
-Both core PRs have fully merged into the KAI Scheduler main branch and are expected to ship in the next release. At that point, users only need to enable GPU sharing and the `hamicore` plugin when installing KAI Scheduler with Helm to get HAMi resource isolation:
+Both core PRs have fully merged into the KAI Scheduler main branch and shipped starting with v0.16.4. Users only need to enable GPU sharing and the `hamicore` plugin when installing KAI Scheduler with Helm to get HAMi resource isolation:
 
 ```bash
 helm install kai-scheduler oci://ghcr.io/nvidia/kai-scheduler \
-  --set scheduler.gpuSharing.enabled=true \
-  --set scheduler.gpuSharing.hamicoreEnabled=true \
+  --version v0.16.4 \
+  --set global.gpuSharing=true \
+  --set binder.plugins.hamicore.enabled=true \
   --namespace kai-scheduler --create-namespace
 ```
 
-`scheduler.gpuSharing.enabled=true` turns on GPU sharing, and `scheduler.gpuSharing.hamicoreEnabled=true` activates the `hamicore` plugin, which injects the `CUDA_DEVICE_MEMORY_LIMIT` environment variable into containers that share a GPU. Combined with the node-side kai-resource-isolator that enforces it, this delivers memory hard isolation (full steps above, in "Deploy").
+`global.gpuSharing=true` turns on GPU sharing, and `binder.plugins.hamicore.enabled=true` activates the `hamicore` plugin, which injects the `CUDA_DEVICE_MEMORY_LIMIT` environment variable into containers that share a GPU. Combined with the node-side kai-resource-isolator that enforces it, this delivers memory hard isolation (full steps above, in "Deploy").
 
 ### Roadmap
 
