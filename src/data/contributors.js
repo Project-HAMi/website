@@ -77,7 +77,7 @@ const contributorsData = [
   {
     logo: "/img/contributors/tenxcloud.svg",
     alt: "TenxCloud",
-    href: "http://www.tenxcloud.com",
+    href: "https://www.tenxcloud.com",
   },
   {
     logo: "/img/contributors/caih.png",
