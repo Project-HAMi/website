@@ -7,6 +7,10 @@ For contribution guidelines, code of conduct, and the review process, see [Contr
 ## Quick Start
 
 ```bash
+# Install Git LFS (one-time, required for image assets)
+ # If you don't have git-lfs installed yet, see: https://git-lfs.com/
+git lfs install && git lfs pull
+
 # Install dependencies
 npm install
 
