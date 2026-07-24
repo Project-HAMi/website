@@ -50,5 +50,9 @@
   "item.label.Tutorials": {
     "message": "教程",
     "description": "Navbar item with label Tutorials"
+  },
+  "item.label.Events": {
+    "message": "活动",
+    "description": "Navbar item with label Events"
   }
 }
