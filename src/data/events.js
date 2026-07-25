@@ -21,7 +21,18 @@ const events = [
       en: "Kubernetes treats GPUs as atomic resources, forcing over-provisioning and low utilization in multi-tenant AI Notebooks. HAMi's vGPU virtualization and DRA solve this, but only if implemented correctly. This talk at KCD & OpenInfra Days Vietnam covers the mechanics of GPU sharing (DRA resource requests, HAMi fractional GPU allocation, memory isolation, compute slicing) and the production deployment at Viettel Cloud: architecture, bottlenecks, and operational realities of fractional GPUs for data science workloads at telco scale.",
       zh: "Kubernetes 将 GPU 视为原子资源，导致多租户 AI Notebook 中过度配置且利用率低下。HAMi 的 vGPU 虚拟化与 DRA 解决了这一问题——但前提是正确实施。本演讲涵盖 GPU 共享的机制（DRA 资源请求、HAMi 细粒度 GPU 分配、显存隔离、算力切片）以及 Viettel Cloud 的生产部署：架构、从测试到生产的关键瓶颈、以及电信级数据科学工作负载中 GPU 细粒度共享的运维实践。",
     },
-    resources: {},
+    resources: {
+      talkSlides: {
+        en: "Talk Slides",
+        zh: "演讲幻灯片",
+        url: "/img/events/2026-kcd-vietnam/KCD_OpenInfra_Days_Vietnam_2026_HAMixViettelCloud.pdf",
+      },
+      communityFlyer: {
+        en: "Community Flyer",
+        zh: "社区宣传册",
+        url: "/img/events/flyers/HAMi_OSS.pdf",
+      },
+    },
     cta: {
       discordUrl: "https://go.dynamia.ai/hami-chat",
       githubUrl: "https://go.dynamia.ai/proj-hami-jpvn",
@@ -52,7 +63,13 @@ const events = [
       en: 'Join the HAMi team at KubeCon + CloudNativeCon Japan 2026, the CNCF\'s flagship conference. Visit our booth in the Solutions Showcase and catch our talk "Shared GPU Scheduling + Proactive Autoscaling" on orchestrating GPU workloads with HAMi on Kubernetes.',
       zh: "欢迎参加 KubeCon + CloudNativeCon 日本 2026，CNCF 旗舰大会。欢迎莅临 Solutions Showcase 展区 HAMi 展位，并聆听我们的演讲「共享 GPU 调度与主动自动伸缩」——基于 Kubernetes 与 HAMi 编排 GPU 工作负载。",
     },
-    resources: {},
+    resources: {
+      communityFlyer: {
+        en: "Community Flyer",
+        zh: "社区宣传册",
+        url: "/img/events/flyers/HAMi_OSS.pdf",
+      },
+    },
     caseStudy: {
       company: "SNOW Corp.",
       companyZh: "SNOW",

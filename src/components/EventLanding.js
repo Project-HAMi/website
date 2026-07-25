@@ -168,7 +168,7 @@ export default function EventLanding({ slug }) {
                     ))}
                   </ul>
                   <a
-                    href={utm(event.caseStudy.url, event.slug)}
+                    href={event.caseStudy.url}
                     className={styles.caseStudyLink}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -196,7 +196,7 @@ export default function EventLanding({ slug }) {
                     .map((r) => (
                       <a
                         key={r.key}
-                        href={utm(event.resources[r.key].url, event.slug)}
+                        href={event.resources[r.key].url}
                         className={styles.resourceLink}
                         target="_blank"
                         rel="noopener noreferrer"
@@ -222,7 +222,7 @@ export default function EventLanding({ slug }) {
               </p>
               <div className={styles.ctaButtons}>
                 <a
-                  href={utm(event.cta?.discordUrl || DEFAULTS.discordUrl, event.slug)}
+                  href={event.cta?.discordUrl || utm(DEFAULTS.discordUrl, event.slug)}
                   className="button button--primary button--lg"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -231,7 +231,7 @@ export default function EventLanding({ slug }) {
                   Discord
                 </a>
                 <a
-                  href={utm(event.cta?.githubUrl || DEFAULTS.githubUrl, event.slug)}
+                  href={event.cta?.githubUrl || utm(DEFAULTS.githubUrl, event.slug)}
                   className="button button--outline button--lg"
                   target="_blank"
                   rel="noopener noreferrer"
