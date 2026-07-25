@@ -25,12 +25,12 @@ const events = [
       talkSlides: {
         en: "Talk Slides",
         zh: "演讲幻灯片",
-        url: "/img/events/2026-kcd-vietnam/KCD_OpenInfra_Days_Vietnam_2026_HAMixViettelCloud.pdf",
+        url: "/resources/2026-kcd-vietnam/talk-slides.pdf",
       },
       communityFlyer: {
         en: "Community Flyer",
         zh: "社区宣传册",
-        url: "/img/events/flyers/HAMi_OSS.pdf",
+        url: "/resources/flyers/community-flyer.pdf",
       },
     },
     cta: {
@@ -67,7 +67,7 @@ const events = [
       communityFlyer: {
         en: "Community Flyer",
         zh: "社区宣传册",
-        url: "/img/events/flyers/HAMi_OSS.pdf",
+        url: "/resources/flyers/community-flyer.pdf",
       },
     },
     caseStudy: {
