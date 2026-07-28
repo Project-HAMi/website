@@ -7,7 +7,7 @@
 const fs = require("fs");
 const path = require("path");
 const https = require("https");
-const { execSync } = require("child_process");
+const { spawnSync } = require("child_process");
 const foundContributors = new Map();
 const version = process.argv[2];
 if (!version) {
@@ -159,13 +159,21 @@ function fetchReleaseInfo() {
 function fetchFromWebPage() {
   return new Promise((resolve, reject) => {
     try {
-      let curlCmd = `curl -s "${GITHUB_URL}"`;
-      if (githubToken) {
-        curlCmd = `curl -s -H "Authorization: token ${githubToken}" "${GITHUB_URL}"`;
-      }
       let content = "";
       try {
-        content = execSync(curlCmd).toString();
+        const result = spawnSync("curl", ["-fsSL", "--max-time", "30", GITHUB_URL], {
+          encoding: "utf8",
+          maxBuffer: 16 * 1024 * 1024,
+        });
+        if (result.error) {
+          throw result.error;
+        }
+        if (result.status !== 0) {
+          const reason =
+            result.status === null ? `signal ${result.signal}` : `status ${result.status}`;
+          throw new Error(result.stderr.trim() || `curl exited with ${reason}`);
+        }
+        content = result.stdout;
       } catch (error) {
         reject(new Error(`Failed to fetch web page content: ${error.message}`));
         return;
