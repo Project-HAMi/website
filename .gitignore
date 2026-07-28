@@ -8,3 +8,4 @@ build
 .worktrees/
 .DS_Store
 changelog/source
+.codegraph/
