@@ -69,6 +69,11 @@ const events = [
         zh: "社区宣传册",
         url: "/resources/flyers/community-flyer.pdf",
       },
+      talkSlides: {
+        en: "Talk Slides",
+        zh: "演讲幻灯片",
+        url: "/resources/2026-kubecon-japan/snow_corp_cncf.pdf",
+      },
     },
     caseStudy: {
       company: "SNOW Corp.",

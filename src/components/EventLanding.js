@@ -97,7 +97,7 @@ export default function EventLanding({ slug }) {
     <Layout
       title={isZh ? event.title.zh : event.title.en}
       description={isZh ? event.description.zh : event.description.en}
-      image={event.banner}
+      image={bannerUrl || undefined}
     >
       <script
         type="application/ld+json"
