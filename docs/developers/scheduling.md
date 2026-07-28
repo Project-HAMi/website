@@ -175,3 +175,17 @@ GPU2 Score: ((20+70)/100 + (1000+6000)/8000)) * 10 = 17.75
 ```
 
 In `Spread` policy, `GPU1` is selected.
+
+#### Mutex
+
+Mutex gives a pod exclusive use of a GPU card. Only cards with no existing workloads (`used == 0`) are eligible; any card already in use is skipped with the `ExclusiveDeviceAllocateConflict` reason. If every card on a node is in use, the pod cannot be scheduled to that node.
+
+Set it per pod via the annotation:
+
+```yaml
+metadata:
+  annotations:
+    hami.io/gpu-scheduler-policy: "mutex"
+```
+
+Using the same example, `GPU1` and `GPU2` both already have workloads, so neither is eligible and the pod stays pending until a fully idle card is available. A card allocated to a `mutex` pod can still be selected for other pods afterwards; to keep the card exclusive for the lifetime of the workload, request all of its resources or use it together with `use-gpuuuid` constraints.
