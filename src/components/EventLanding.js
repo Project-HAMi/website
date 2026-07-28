@@ -102,6 +102,7 @@ export default function EventLanding({ slug }) {
       {bannerUrl && (
         <Head>
           <meta property="og:image" content={`${siteConfig.url}${bannerUrl}`} />
+          <meta name="twitter:image" content={`${siteConfig.url}${bannerUrl}`} />
         </Head>
       )}
       <script
