@@ -15,6 +15,7 @@ function formatDate(date, locale) {
     year: "numeric",
     month: "numeric",
     day: "numeric",
+    timeZone: "UTC",
   });
 }
 
