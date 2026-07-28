@@ -6,6 +6,15 @@
     publish = "build"
 
 [[headers]]
+    for = "/*"
+    [headers.values]
+        X-Content-Type-Options = "nosniff"
+        X-Frame-Options = "SAMEORIGIN"
+        Referrer-Policy = "strict-origin-when-cross-origin"
+        Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+        Strict-Transport-Security = "max-age=31536000"
+
+[[headers]]
     for = "/"
     [headers.values]
         Link = "</.well-known/api-catalog>; rel=\"api-catalog\", </.well-known/openapi.json>; rel=\"service-desc\"; type=\"application/openapi+json\", </docs>; rel=\"service-doc\"; type=\"text/html\", </.well-known/agent-skills/index.json>; rel=\"describedby\"; type=\"application/json\", </.well-known/mcp/server-card.json>; rel=\"describedby\"; type=\"application/json\""
