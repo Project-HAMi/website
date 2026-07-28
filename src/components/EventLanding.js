@@ -1,4 +1,5 @@
 import Layout from "@theme/Layout";
+import Head from "@docusaurus/Head";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDiscord, faGithub } from "@fortawesome/free-brands-svg-icons";
@@ -60,7 +61,7 @@ function formatDateRange(startStr, endStr, locale) {
 }
 
 export default function EventLanding({ slug }) {
-  const { i18n } = useDocusaurusContext();
+  const { i18n, siteConfig } = useDocusaurusContext();
   const isZh = isChinese(i18n.currentLocale);
   const locale = i18n.currentLocale;
   const event = events.find((e) => e.slug === slug);
@@ -89,7 +90,7 @@ export default function EventLanding({ slug }) {
       }),
     },
     description: pick(locale, event.description),
-    image: event.banner ? `https://project-hami.io${event.banner}` : undefined,
+    image: bannerUrl ? `${siteConfig.url}${bannerUrl}` : undefined,
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
   };
 
@@ -97,8 +98,13 @@ export default function EventLanding({ slug }) {
     <Layout
       title={isZh ? event.title.zh : event.title.en}
       description={isZh ? event.description.zh : event.description.en}
-      image={event.banner}
     >
+      {bannerUrl && (
+        <Head>
+          <meta property="og:image" content={`${siteConfig.url}${bannerUrl}`} />
+          <meta name="twitter:image" content={`${siteConfig.url}${bannerUrl}`} />
+        </Head>
+      )}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(eventJsonLd) }}
