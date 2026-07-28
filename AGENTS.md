@@ -205,7 +205,6 @@ See `docs/contributor/contributing.md` (§ DCO Sign-off) and `docs/contributor/g
 
 - `img/` - Images (logos, diagrams, screenshots)
 - `favicons/` - Website favicons in multiple sizes
-- `CNAME` - Custom domain record for project-hami.io
 
 ## Key Patterns
 
@@ -352,7 +351,7 @@ The changelog plugin (`src/plugins/changelog/index.js`) is a customized Docusaur
 ### Hosting
 
 - **Production:** Netlify (configured in `netlify.toml`)
-- **Custom domain:** project-hami.io (via `static/CNAME`)
+- **Custom domain:** project-hami.io (DNS managed in Netlify)
 - **Build command:** `npm run build`
 - **Node version:** 20
 
