@@ -342,7 +342,6 @@ status:
       message: >-
         couldn't assign flavors to pod set main: insufficient unused quota for nvidia.com/gpu in flavor hami-t4, 1 more needed, insufficient unused quota for nvidia.com/total-gpucores in flavor hami-t4, 50 more needed
 
-
   resourceRequests:
     - resources:
         nvidia.com/gpu: "1"
