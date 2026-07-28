@@ -5,6 +5,7 @@ export function formatDate(dateStr, locale) {
     year: "numeric",
     month: "long",
     day: "numeric",
+    timeZone: "UTC",
   }).format(new Date(dateStr));
 }
 
@@ -13,9 +14,11 @@ export function formatDateRange(startStr, endStr, locale) {
     year: "numeric",
     month: "long",
     day: "numeric",
+    timeZone: "UTC",
   }).formatRange(new Date(startStr), new Date(endStr));
 }
 
+// These take local Dates from the events calendar, so no UTC here.
 export function formatDay(date, locale) {
   return date.toLocaleDateString(LOCALE_MAP[locale], { day: "numeric" });
 }
