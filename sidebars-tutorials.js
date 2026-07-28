@@ -64,7 +64,7 @@ module.exports = {
         {
           type: "doc",
           id: "labs/hami-kitops",
-          customProps: { level: "Intermediate", duration: "about 60 minutes" },
+          customProps: { level: "Advanced", duration: "about 60 minutes" },
         },
       ],
     },

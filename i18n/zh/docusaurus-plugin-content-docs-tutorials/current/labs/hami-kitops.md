@@ -1,11 +1,11 @@
 ---
-title: "Lab 12: Serve Models from a KitOps ModelKit on HAMi"
-description: "Package a model as a KitOps ModelKit, pull it from Jozu Hub with an initContainer, and serve it locally with SGLang (and optionally vLLM) on HAMi GPU shares."
-sidebar_label: "Lab 12: KitOps ModelKit Inference"
+title: "实验 12：在 HAMi 上使用 KitOps ModelKit 提供模型服务"
+description: "将模型打包为 KitOps ModelKit，通过 initContainer 从 Jozu Hub 拉取，并使用 SGLang（可选 vLLM）在 HAMi GPU 共享资源上从本地提供服务。"
+sidebar_label: "实验 12：KitOps ModelKit 推理"
 lab:
   level: Advanced
-  duration: about 60 minutes
-  environment: Kubernetes cluster with NVIDIA GPUs
+  duration: 约 60 分钟
+  environment: 配备 NVIDIA GPU 的 Kubernetes 集群
   authors:
     - rudrakshkarpe
     - shivaylamba
@@ -19,20 +19,20 @@ tags:
 toc_max_heading_level: 2
 ---
 
-This lab demonstrates how to package a model as a **[KitOps](https://kitops.org/) ModelKit**, a versioned OCI artifact, and download it from an OCI registry (**[Jozu Hub](https://jozu.ml)** in the examples) into the Pod using a KitOps `initContainer`, then serve it from a **local directory** with [SGLang](https://github.com/sgl-project/sglang) (primary) or vLLM (optional co-resident example) on HAMi-virtualized GPU shares.
+本实验演示如何将模型打包为 **[KitOps](https://kitops.org/) ModelKit**（一种带版本的 OCI 制品），使用 KitOps `initContainer` 从 OCI 注册表（示例中使用 **[Jozu Hub](https://jozu.ml)**）下载到 Pod，然后通过 [SGLang](https://github.com/sgl-project/sglang)（主要示例）或 vLLM（可选的共置示例）从**本地目录**在 HAMi 虚拟化 GPU 共享资源上提供服务。
 
-Like [Lab 6 (vLLM)](./hami-vllm) and Lab 11 (SGLang), the inference engines run on HAMi resources. Here the **model supply chain** is registry-native: the model is packaged as a ModelKit, versioned and stored on Jozu Hub, pulled into the Pod as an OCI artifact, and served from a local path.
+与[实验 6（vLLM）](./hami-vllm)和实验 11（SGLang）一样，推理引擎运行在 HAMi 资源上。本实验采用注册表原生的**模型供应链**：模型被打包为 ModelKit，在 Jozu Hub 上进行版本管理和存储，以 OCI 制品的形式拉取到 Pod，并从本地路径提供服务。
 
-## Learning Objectives
+## 学习目标
 
-- Inspect a public KitOps ModelKit on an OCI registry
-- Build a small `kitunpacker` init image and a custom SGLang serve image
-- Deploy a Pod that pulls/unpacks a ModelKit via `initContainer` (the main container loads the model from the KitOps-delivered volume)
-- Schedule the workload with HAMi `nvidia.com/gpu` / `gpumem` / `gpucores`
-- Prove inference works against the OpenAI-compatible SGLang API
-- Optionally co-locate a vLLM Pod serving the same ModelKit on the same physical GPU
+- 检查 OCI 注册表中的公共 KitOps ModelKit
+- 构建精简的 `kitunpacker` 初始化镜像和自定义 SGLang 服务镜像
+- 部署一个通过 `initContainer` 拉取并解包 ModelKit 的 Pod，主容器从 KitOps 提供的卷中加载模型
+- 使用 HAMi 的 `nvidia.com/gpu`、`gpumem` 和 `gpucores` 调度工作负载
+- 通过兼容 OpenAI 的 SGLang API 验证推理
+- 可选地在同一物理 GPU 上共置一个使用相同 ModelKit 的 vLLM Pod
 
-## Lab Overview
+## 实验概览
 
 ```mermaid
 %% title: HAMi + KitOps ModelKit Lab Flowchart
@@ -47,7 +47,7 @@ flowchart LR
     Step8 --> Step9["Step 9<br/>Cleanup"]
 ```
 
-## Deployment Architecture
+## 部署架构
 
 ```mermaid
 %% title: KitOps ModelKit delivery on HAMi
@@ -67,50 +67,50 @@ flowchart TB
     GPU["Physical NVIDIA GPU"] --> HAMI
 ```
 
-## Prerequisites
+## 前置条件
 
-- Everything from Lab 11 (or Lab 6): a Kubernetes cluster with NVIDIA GPUs, HAMi installed and healthy, `kubectl`, `helm`
-- Docker (or an equivalent builder) to build and load images into the cluster
-- [`kit`](https://github.com/jozu-ai/kitops) CLI on your workstation (optional but recommended for `kit inspect`)
-- Ability to pull from the public registry `jozu.ml` (no login required for the sample ModelKit)
+- 实验 11（或实验 6）的全部前置条件：配备 NVIDIA GPU 的 Kubernetes 集群、正常运行的 HAMi，以及 `kubectl` 和 `helm`
+- Docker（或等效的构建工具），用于构建镜像并将其加载到集群
+- 工作站上的 [`kit`](https://github.com/jozu-ai/kitops) CLI（可选，但建议用于 `kit inspect`）
+- 能够从公共注册表 `jozu.ml` 拉取制品（示例 ModelKit 无需登录）
 
-This lab assumes HAMi is already installed as in Lab 11. If not, complete Lab 11 Steps 1–3 first.
+本实验假设已经按照实验 11 安装 HAMi。若尚未安装，请先完成实验 11 的步骤 1 至 3。
 
-## Example Cluster State
+## 示例集群状态
 
-Verification used the same kind + H100 cluster as Lab 11, with HAMi advertising 10 vGPUs and both `hami-scheduler` / `hami-device-plugin` Running.
+验证使用与实验 11 相同的 kind + H100 集群。HAMi 公布 10 个 vGPU，`hami-scheduler` 和 `hami-device-plugin` 均处于 Running 状态。
 
-Public ModelKit used throughout:
+本实验使用以下公共 ModelKit：
 
 ```plaintext
 jozu.ml/jonathangamer202002/qwen3-4b-instruct@sha256:df4629f6a10bba7bec45e12bd15f910ed1024699bfbb44b63240899f71bb1c19
 ```
 
-## Step 1: Confirm HAMi Is Ready
+## 步骤 1：确认 HAMi 已就绪
 
 ```bash
 kubectl get pods -n kube-system -l app.kubernetes.io/instance=hami -o wide
 kubectl get nodes -o 'custom-columns=NAME:.metadata.name,GPU:.status.allocatable.nvidia\.com/gpu'
 ```
 
-Expected: device plugin and scheduler Running; GPU nodes show allocatable `nvidia.com/gpu` (for example `10`).
+预期结果：设备插件和调度器处于 Running 状态，GPU 节点显示可分配的 `nvidia.com/gpu`（例如 `10`）。
 
-Check the workloads currently using GPU shares and scale down any workloads that are not needed for this lab. The ModelKit and 4B model need a 30 GiB HAMi memory share in the example below.
+检查当前使用 GPU 共享资源的工作负载，并缩容本实验不需要的工作负载。下面示例中的 ModelKit 和 4B 模型需要 30 GiB 的 HAMi 显存共享资源。
 
 ```bash
 kubectl get pods --all-namespaces \
   -o custom-columns='NAMESPACE:.metadata.namespace,NAME:.metadata.name,GPU-MEM:.spec.containers[*].resources.limits.nvidia\.com/gpumem'
 ```
 
-## Step 2: Inspect the ModelKit
+## 步骤 2：检查 ModelKit
 
-On a machine with the `kit` CLI:
+在安装了 `kit` CLI 的计算机上运行：
 
 ```bash
 kit inspect --remote jozu.ml/jonathangamer202002/qwen3-4b-instruct@sha256:df4629f6a10bba7bec45e12bd15f910ed1024699bfbb44b63240899f71bb1c19
 ```
 
-Example (truncated) output from the verification environment:
+验证环境中的输出示例（已截断）：
 
 ```json
 {
@@ -129,13 +129,13 @@ Example (truncated) output from the verification environment:
 }
 ```
 
-The ModelKit carries safetensors weights plus tokenizer/config as OCI layers. The initContainer will unpack and flatten them into a flat model directory (`config.json` + `*.safetensors`) that SGLang/vLLM can load locally.
+ModelKit 将 safetensors 权重、分词器和配置作为 OCI 层保存。initContainer 会将它们解包并整理为扁平的模型目录（`config.json` + `*.safetensors`），供 SGLang 或 vLLM 从本地加载。
 
-## Step 3: Build the Pipeline Images
+## 步骤 3：构建流水线镜像
 
-Create a working directory and the files below.
+创建工作目录和以下文件。
 
-### 3.1 `kitunpacker` init image
+### 3.1 `kitunpacker` 初始化镜像
 
 `kitunpacker/Dockerfile`:
 
@@ -242,13 +242,13 @@ echo "[kitunpacker] done."
 
 ```
 
-Build:
+构建镜像：
 
 ```bash
 docker build -t hami-kitunpacker:latest ./kitunpacker
 ```
 
-### 3.2 Custom SGLang image (serves a local model path)
+### 3.2 自定义 SGLang 镜像（从本地模型路径提供服务）
 
 `sglang/Dockerfile`:
 
@@ -301,24 +301,24 @@ exec python3 -m sglang.launch_server \
 
 ```
 
-Build:
+构建镜像：
 
 ```bash
 docker build -t hami-sglang-jozu:latest ./sglang
 ```
 
-### 3.3 Load images into the cluster
+### 3.3 将镜像加载到集群
 
-For kind:
+对于 kind：
 
 ```bash
 kind load docker-image hami-kitunpacker:latest --name <your-cluster>
 kind load docker-image hami-sglang-jozu:latest --name <your-cluster>
 ```
 
-For other clusters, push the images to a registry your nodes can pull and update the Deployment image fields accordingly.
+对于其他集群，请将镜像推送到节点可以访问的注册表，并相应更新 Deployment 中的镜像字段。
 
-### 3.4 Optional: custom vLLM image (for Step 8)
+### 3.4 可选：自定义 vLLM 镜像（用于步骤 8）
 
 `vllm/Dockerfile`:
 
@@ -372,16 +372,16 @@ docker build -t hami-vllm-jozu:latest ./vllm
 # kind load docker-image hami-vllm-jozu:latest --name <your-cluster>
 ```
 
-## Step 4: Deploy SGLang Serving the ModelKit
+## 步骤 4：部署使用 ModelKit 的 SGLang 服务
 
-The Deployment uses:
+该 Deployment 使用以下组件：
 
-1. `initContainer: kitops-init` — pulls and flattens the ModelKit into `/models/qwen3`
-2. main container `hami-sglang-jozu` — serves that local directory
-3. HAMi scheduler + `gpumem` / `gpucores` caps
-4. `emptyDir` for the model volume (portable; use a PVC in production)
+1. `initContainer: kitops-init`，将 ModelKit 拉取并整理到 `/models/qwen3`
+2. 主容器 `hami-sglang-jozu`，从该本地目录提供服务
+3. HAMi 调度器以及 `gpumem` 和 `gpucores` 限制
+4. 用于模型卷的 `emptyDir`（便于移植，生产环境请使用 PVC）
 
-The model layer is about 7.5 GiB. During unpacking, it exists in both `KITOPS_HOME` and the staging directory, so peak usage is about 15 GiB. Keep the example volume at 20 GiB or larger.
+模型层约为 7.5 GiB。解包期间，模型同时存在于 `KITOPS_HOME` 和暂存目录中，因此峰值用量约为 15 GiB。请将示例卷保持为 20 GiB 或更大。
 
 ```bash
 kubectl apply -f - <<'EOF'
@@ -492,16 +492,16 @@ spec:
 EOF
 ```
 
-For a **private** registry, add `REGISTRY_URL`, `USERNAME`, and `PASSWORD` env vars to `kitops-init` (from a Secret). `unpack.sh` will run `kit login` before pulling.
+对于**私有**注册表，请通过 Secret 向 `kitops-init` 添加 `REGISTRY_URL`、`USERNAME` 和 `PASSWORD` 环境变量。`unpack.sh` 会在拉取前运行 `kit login`。
 
-## Step 5: Watch the ModelKit Unpack
+## 步骤 5：观察 ModelKit 解包过程
 
 ```bash
 kubectl -n kitops get pods -w
 kubectl -n kitops logs -l app.kubernetes.io/name=sglang-modelkit -c kitops-init -f
 ```
 
-Successful unpack looks like:
+成功解包时输出如下：
 
 ```plaintext
 [kitunpacker] ref=jozu.ml/jonathangamer202002/qwen3-4b-instruct@sha256:df4629f6a10bba7bec45e12bd15f910ed1024699bfbb44b63240899f71bb1c19 -> /models/qwen3
@@ -513,33 +513,33 @@ Unpacking to /models/.raw-qwen3
 [kitunpacker] done.
 ```
 
-Then wait for the SGLang container:
+然后等待 SGLang 容器就绪：
 
 ```bash
 kubectl -n kitops rollout status deploy/sglang-modelkit --timeout=30m
 kubectl -n kitops logs -l app.kubernetes.io/name=sglang-modelkit -c sglang --tail=50
 ```
 
-You should see the custom entrypoint message confirming the model is served from the **local** ModelKit path:
+自定义入口点会输出以下消息，确认模型从 ModelKit 的**本地**路径提供服务：
 
 ```plaintext
 [sglang-jozu] serving KitOps model from /models/qwen3 (source: Jozu Hub ModelKit)
 ... model_path='/models/qwen3' ... served_model_name='qwen3-4b-instruct' ...
 ```
 
-## Step 6: Test Inference
+## 步骤 6：测试推理
 
 ```bash
 kubectl -n kitops port-forward svc/sglang-modelkit 8001:8001
 ```
 
-In another terminal:
+在另一个终端中运行：
 
 ```bash
 curl -s http://127.0.0.1:8001/v1/models | python3 -m json.tool
 ```
 
-Example:
+输出示例：
 
 ```json
 {
@@ -555,7 +555,7 @@ Example:
 }
 ```
 
-Chat completion:
+聊天补全：
 
 ```bash
 curl -s http://127.0.0.1:8001/v1/chat/completions \
@@ -570,9 +570,9 @@ curl -s http://127.0.0.1:8001/v1/chat/completions \
   }' | python3 -m json.tool
 ```
 
-If `choices[0].message.content` is present, ModelKit → local SGLang inference is working.
+如果存在 `choices[0].message.content`，则说明 ModelKit 到本地 SGLang 的推理流程正常工作。
 
-## Step 7: Verify HAMi Caps
+## 步骤 7：验证 HAMi 资源限制
 
 ```bash
 POD=$(kubectl get pod -n kitops -l app.kubernetes.io/name=sglang-modelkit -o jsonpath='{.items[0].metadata.name}')
@@ -582,7 +582,7 @@ kubectl exec -n kitops ${POD} -c sglang -- env | grep -E 'CUDA_DEVICE|NVIDIA_VIS
 kubectl exec -n kitops ${POD} -c sglang -- nvidia-smi
 ```
 
-Verification cluster evidence:
+验证集群中的结果：
 
 ```plaintext
 hami-scheduler
@@ -595,11 +595,11 @@ CUDA_DEVICE_SM_LIMIT=30
 | NVIDIA H100 80GB HBM3 ... | 24745MiB / 30000MiB |
 ```
 
-The main container loaded weights from `/models/qwen3` (OCI ModelKit), while HAMi still enforced a **30000 MiB** in-pod memory ceiling on the shared H100.
+主容器从 `/models/qwen3`（OCI ModelKit）加载权重，同时 HAMi 在共享 H100 上仍将 Pod 内显存上限限制为 **30000 MiB**。
 
-## Step 8 (Optional): Co-locate vLLM on the Same ModelKit Pattern
+## 步骤 8（可选）：使用相同 ModelKit 模式共置 vLLM
 
-After building/loading `hami-vllm-jozu:latest`, deploy a second engine with its own HAMi slice. Use a **PVC** (or node-local cache) if you want both Pods to reuse one unpacked ModelKit; with `emptyDir` each Pod unpacks independently.
+构建并加载 `hami-vllm-jozu:latest` 后，部署使用独立 HAMi 共享资源的第二个引擎。如果希望两个 Pod 复用同一个已解包的 ModelKit，请使用 **PVC**（或节点本地缓存）。使用 `emptyDir` 时，每个 Pod 都会独立解包。
 
 ```bash
 kubectl apply -f - <<'EOF'
@@ -693,16 +693,16 @@ spec:
 EOF
 ```
 
-Test with:
+使用以下命令测试：
 
 ```bash
 kubectl -n kitops port-forward svc/vllm-modelkit 8000:8000
 curl -s http://127.0.0.1:8000/v1/models
 ```
 
-Ensure combined `gpumem` requests fit on the physical GPU (for example two × 30000 MiB needs ≥ 60 GiB free on that card).
+确保合计的 `gpumem` 请求能够容纳在物理 GPU 上。例如，两个 30000 MiB 的请求需要该 GPU 至少有 60 GiB 可用显存。
 
-## Reference: Kitfile (repack your own ModelKit)
+## 参考：Kitfile（重新打包自己的 ModelKit）
 
 ```yaml
 # Reference Kitfile for the Qwen3-4B-Instruct ModelKit used in this demo.
@@ -741,21 +741,21 @@ kit pack . -t jozu.ml/<your-org>/qwen3-4b-instruct:latest
 kit push jozu.ml/<your-org>/qwen3-4b-instruct:latest
 ```
 
-Then point `MODELKIT_REF` in the Deployment at your tag.
+然后将 Deployment 中的 `MODELKIT_REF` 指向你的标签。
 
-## Troubleshooting
+## 故障排查
 
-| Symptom | What to Check |
+| 现象 | 检查内容 |
 | --- | --- |
-| initContainer stuck pulling | Registry reachability from the node; disk pressure on `emptyDir`; increase `sizeLimit`. |
-| `config.json not found after unpack` | ModelKit layout differs; inspect with `kit inspect --remote` and adjust flatten logic / `MODEL_SUBDIR`. |
-| SGLang exits: model dir missing | initContainer failed; `kubectl logs ... -c kitops-init`. |
-| ImagePullBackOff for custom images | `kind load` / push to your registry; set `imagePullPolicy: IfNotPresent` for local tags. |
-| Pod Pending on GPU | Free HAMi shares; lower `gpumem`; confirm `hami-scheduler` events. |
-| Private registry 401 | Set `REGISTRY_URL` / `USERNAME` / `PASSWORD` on `kitops-init`. |
-| In-pod memory still full GPU size | Same as Lab 11 — verify HAMi env vars and `schedulerName`. |
+| initContainer 一直处于拉取状态 | 检查节点到注册表的连通性以及 `emptyDir` 的磁盘压力，必要时增大 `sizeLimit`。 |
+| `config.json not found after unpack` | ModelKit 布局不同。使用 `kit inspect --remote` 检查，并调整整理逻辑或 `MODEL_SUBDIR`。 |
+| SGLang 退出并提示模型目录缺失 | initContainer 失败。查看 `kubectl logs ... -c kitops-init`。 |
+| 自定义镜像出现 ImagePullBackOff | 使用 `kind load` 或推送到你的注册表。本地标签请设置 `imagePullPolicy: IfNotPresent`。 |
+| GPU Pod 处于 Pending 状态 | 释放 HAMi 共享资源、降低 `gpumem`，并检查 `hami-scheduler` 事件。 |
+| 私有注册表返回 401 | 在 `kitops-init` 上设置 `REGISTRY_URL`、`USERNAME` 和 `PASSWORD`。 |
+| Pod 内仍显示完整 GPU 显存 | 与实验 11 相同，请检查 HAMi 环境变量和 `schedulerName`。 |
 
-## Cleanup
+## 清理
 
 ```bash
 kubectl delete namespace kitops --ignore-not-found
@@ -763,19 +763,19 @@ kubectl delete namespace kitops --ignore-not-found
 # docker rmi hami-kitunpacker:latest hami-sglang-jozu:latest hami-vllm-jozu:latest
 ```
 
-## Verification Results
+## 验证结果
 
-| Claim | Evidence |
+| 验证项 | 证据 |
 | --- | --- |
-| Model is an OCI ModelKit | `kit inspect --remote` returns KitOps manifest / model layers. |
-| Model delivered from the ModelKit into the main container | initContainer logs show `kit unpack`; SGLang logs show `serving KitOps model from /models/qwen3` and `model_path='/models/qwen3'`. |
-| HAMi schedules the workload | `schedulerName: hami-scheduler` + Filtering/Binding events. |
-| GPU memory/compute caps apply | `CUDA_DEVICE_MEMORY_LIMIT_0=30000m`, `CUDA_DEVICE_SM_LIMIT=30`; in-pod `nvidia-smi` shows `... / 30000MiB`. |
-| Inference works | `/v1/models` lists `qwen3-4b-instruct`; chat completions return content. |
+| 模型是 OCI ModelKit | `kit inspect --remote` 返回 KitOps 清单和模型层。 |
+| 模型从 ModelKit 交付到主容器 | initContainer 日志显示 `kit unpack`，SGLang 日志显示 `serving KitOps model from /models/qwen3` 和 `model_path='/models/qwen3'`。 |
+| HAMi 调度工作负载 | `schedulerName: hami-scheduler` 以及 Filtering 和 Binding 事件。 |
+| GPU 显存和计算限制生效 | `CUDA_DEVICE_MEMORY_LIMIT_0=30000m`、`CUDA_DEVICE_SM_LIMIT=30`，Pod 内的 `nvidia-smi` 显示 `... / 30000MiB`。 |
+| 推理正常工作 | `/v1/models` 列出 `qwen3-4b-instruct`，聊天补全返回内容。 |
 
-## Next Steps
+## 后续步骤
 
-- Swap the public Jozu ModelKit for your internal registry ModelKit and wire imagePullSecrets / `kit login` Secrets.
-- Share one PVC across SGLang and vLLM so the ModelKit is unpacked once.
-- Combine with [Lab 3: GPU Partitioning](./gpu-partitioning) to pack more tenants per GPU.
-- Return to Lab 11: SGLang for the simpler path where the engine pulls the model directly at startup, useful for debugging engines independently of the supply chain.
+- 将公共 Jozu ModelKit 换成内部注册表中的 ModelKit，并配置 imagePullSecrets 或 `kit login` Secret。
+- 在 SGLang 和 vLLM 之间共享一个 PVC，使 ModelKit 只需解包一次。
+- 结合[实验 3：GPU 切分](./gpu-partitioning)，在每个 GPU 上容纳更多租户。
+- 返回实验 11：SGLang，了解引擎在启动时直接拉取模型的简化方式。该方式适合在不涉及供应链的情况下独立调试推理引擎。
