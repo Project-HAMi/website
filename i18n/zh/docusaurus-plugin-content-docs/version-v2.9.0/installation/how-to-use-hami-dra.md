@@ -18,7 +18,7 @@ HAMi 已经提供了对 K8s [DRA](https://kubernetes.io/docs/concepts/scheduling
 ## 前提条件
 
 - Kubernetes 版本 >= 1.34 并且 DRA Consumable Capacity [featuregate](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/) 已启用
-- 底层容器运行时（例如 containerd 或 CRI-O）必须启用 [CDI](https://github.com/cncf-tags/container-device-interface?tab=readme-ov-file#how-to-configure-cdi)
+- 底层容器运行时（例如 containerd 或 CRI-O）必须启用 [CDI](./configure-cdi.md)
 - NVIDIA GPU 驱动版本 440 及以上
 
 ## 安装

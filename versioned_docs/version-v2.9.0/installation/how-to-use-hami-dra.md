@@ -18,7 +18,7 @@ HAMi has provided support for K8s [DRA](https://kubernetes.io/docs/concepts/sche
 ## Prerequisites
 
 - Kubernetes version >= 1.34 with DRA Consumable Capacity [featuregate](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/) enabled
-- [CDI](https://github.com/cncf-tags/container-device-interface?tab=readme-ov-file#how-to-configure-cdi) must be enabled in the underlying container runtime (such as containerd or CRI-O)
+- [CDI](./configure-cdi.md) must be enabled in the underlying container runtime (such as containerd or CRI-O)
 - NVIDIA GPU Driver 440 or later
 
 ## Installation

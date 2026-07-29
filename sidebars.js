@@ -49,6 +49,7 @@ module.exports = {
       },
       items: [
         "installation/prerequisites",
+        "installation/configure-cdi",
         "installation/online-installation",
         "installation/offline-installation",
         "installation/upgrade",
