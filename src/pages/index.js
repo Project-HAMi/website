@@ -375,7 +375,8 @@ export default function Home() {
   const { i18n } = useDocusaurusContext();
   const isZh = i18n.currentLocale === "zh";
   const [starsCount, setStarsCount] = useState(3100);
-  const [dockerPulls, setDockerPulls] = useState(325000);
+  // Static: Docker Hub's API sends no CORS header, so it cannot be read from the browser.
+  const dockerPulls = 325000;
   const kubernetesLogo = useBaseUrl("img/kubernetes-logo.svg");
   const hamiLogo = useBaseUrl("img/hami-graph-color.svg");
   const hamiHorizontalLogoLight = useBaseUrl("img/hami-horizontal-color-black.svg");
@@ -431,23 +432,7 @@ export default function Home() {
       }
     };
 
-    const fetchDockerPulls = async () => {
-      try {
-        const response = await fetch("https://hub.docker.com/v2/repositories/projecthami/hami/", {
-          signal: controller.signal,
-        });
-        if (!response.ok) return;
-        const data = await response.json();
-        if (typeof data?.pull_count === "number") {
-          setDockerPulls(data.pull_count);
-        }
-      } catch (error) {
-        // Keep fallback value when API is unavailable.
-      }
-    };
-
     fetchGitHubStars();
-    fetchDockerPulls();
 
     return () => controller.abort();
   }, []);
