@@ -83,6 +83,10 @@
     "message": "管理 AWS Neuron 设备",
     "description": "The label for category 'Managing AWS Neuron devices' in sidebar 'docs'"
   },
+  "sidebar.docs.category.Managing Biren devices": {
+    "message": "管理壁仞设备",
+    "description": "The label for category 'Managing Biren devices' in sidebar 'docs'"
+  },
   "sidebar.docs.category.Managing Vastai devices": {
     "message": "管理 Vastai 设备",
     "description": "The label for category 'Managing Vastai devices' in sidebar 'docs'"
