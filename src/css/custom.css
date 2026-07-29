@@ -1037,6 +1037,12 @@ html[data-theme="dark"] .support-wrapper li {
   display: block;
 }
 
+.support-wrapper picture {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
 /* Adopter Card Styles */
 .support-wrapper .adopter-name-card {
   width: 100%;

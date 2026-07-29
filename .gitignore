@@ -5,6 +5,7 @@ node_modules
 .hugo_build.lock
 .idea
 build
+static/img/responsive
 .worktrees/
 .DS_Store
 changelog/source
