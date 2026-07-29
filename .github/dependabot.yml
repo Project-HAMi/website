@@ -6,6 +6,10 @@ updates:
       interval: weekly
     open-pull-requests-limit: 5
     groups:
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
       npm-minor-patch:
         applies-to: version-updates
         patterns:
