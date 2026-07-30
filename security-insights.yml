@@ -1,7 +1,7 @@
 header:
   schema-version: 2.2.0
-  last-updated: "2026-07-22"
-  last-reviewed: "2026-07-22"
+  last-updated: "2026-07-30"
+  last-reviewed: "2026-07-30"
   url: https://raw.githubusercontent.com/Project-HAMi/website/master/security-insights.yml
   comment: Security insights for the HAMi documentation website repository.
 
@@ -39,10 +39,19 @@ project:
     - name: community
       url: https://github.com/Project-HAMi/community
       comment: Governance and community documents. The full list of subproject repositories is at https://github.com/orgs/Project-HAMi/repositories.
+  documentation:
+    detailed-guide: https://project-hami.io/docs
+    quickstart-guide: https://project-hami.io/docs/get-started/deploy-with-helm
+    code-of-conduct: https://github.com/Project-HAMi/HAMi/blob/master/CODE_OF_CONDUCT.md
   vulnerability-reporting:
     reports-accepted: true
     bug-bounty-available: false
     policy: https://github.com/Project-HAMi/HAMi/blob/master/SECURITY.md
+    contact:
+      name: archlitchi
+      affiliation: Project HAMi
+      social: https://github.com/archlitchi
+      primary: true
     comment: Report vulnerabilities privately through GitHub Security Advisories on the affected repository.
 
 repository:
