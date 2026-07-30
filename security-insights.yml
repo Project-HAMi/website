@@ -81,3 +81,12 @@ repository:
     assessments:
       self:
         comment: Static documentation site built with Docusaurus and deployed via Netlify. No user data is collected or stored by this repository. Dependencies are updated through maintenance pull requests driven by npm audit.
+    champions:
+      - name: archlitchi
+        affiliation: Project HAMi
+        social: https://github.com/archlitchi
+        primary: true
+      - name: wawa0210
+        affiliation: Project HAMi
+        social: https://github.com/wawa0210
+        primary: false
