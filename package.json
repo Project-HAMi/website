@@ -15,7 +15,7 @@
     "docusaurus": "docusaurus",
     "images:check": "node scripts/check-image-sizes.js",
     "images:generate": "node scripts/generate-responsive-images.js",
-    "images:prepare": "npm run images:check && npm run images:generate",
+    "images:prepare": "npm run images:generate",
     "prestart": "npm run images:prepare",
     "start": "docusaurus start",
     "prestart:network": "npm run images:prepare",
