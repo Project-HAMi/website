@@ -216,8 +216,8 @@ describe("document preamble", () => {
 
   // Docusaurus always emits <main>; this is the fallback for anything that does
   // not. The whole document is converted, so text from <head> ends up in the
-  // body — acceptable for a path that production never takes, but pinned so the
-  // fallback is not mistaken for clean extraction.
+  // body. That is acceptable for a path production never takes, but it is
+  // pinned so the fallback is not mistaken for clean extraction.
   it("falls back to the whole document when there is no <main>", async () => {
     const markdown = await render(
       "<html><head><title>T | HAMi</title></head><body><p>only body</p></body></html>",
