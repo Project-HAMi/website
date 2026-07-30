@@ -4,12 +4,6 @@ title: Device supported by HAMi
 
 The table below lists the devices supported by HAMi:
 
-Support status:
-
-- **Stable** — Available in the latest released HAMi version and verified working.
-- **Experimental** — Implemented in HAMi but not yet included in a released version.
-- **Under Validation** — Support is still being implemented; not yet functional.
-
 <!-- prettier-ignore -->
 | Type   | Manufacturer  | Models                  | Status            | MemoryIsolation | CoreIsolation | MultiCard Support |
 | ------ | ------------- | ------------------------ | ----------------- | --------------- | ------------- | ----------------- |
@@ -23,6 +17,18 @@ Support status:
 | GCU    | Enflame       | S60                      | Stable             | Yes             | Yes           | No                |
 | XPU    | Kunlunxin     | P800                     | Stable             | Yes             | Yes           | No                |
 | GPU    | Vastai        | VA16                     | Stable             | Yes             | Yes           | No                |
-| Neuron | AWS Neuron    | Inf, Trn                 | Stable             | Yes             | Yes           | No                |
+| Neuron | AWS           | Inf, Trn                 | Stable             | Yes             | Yes           | Yes               |
 | GPU    | Biren         | Biren166M                | Experimental       | Yes             | Yes           | No                |
-| DPU    | Teco          | Checking                 | Under Validation   | In progress     | In progress   | No                |
+| DPU    | Teco          | Checking                 | Under Validation   | No              | No            | No                |
+
+Support status:
+
+- **Stable** - Available in the latest released HAMi version.
+- **Experimental** - Implemented in HAMi but not yet included in a released version.
+- **Under Validation** - Support is still being implemented; not yet functional.
+
+Capability columns:
+
+- **MemoryIsolation** - Whether HAMi enforces a hard VRAM limit per container: workloads that exceed their requested memory are rejected instead of drawing on the full physical device memory.
+- **CoreIsolation** - Whether HAMi enforces a hard compute usage limit per container: kernel execution is throttled to stay within the requested share instead of using the physical device's compute freely.
+- **MultiCard Support** - Whether a single Pod can request and be scheduled onto more than one physical card of that type, with HAMi coordinating placement across the selected cards.
