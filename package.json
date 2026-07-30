@@ -83,10 +83,6 @@
     "sockjs": {
       "uuid": "11.1.1"
     },
-    "serve-handler": {
-      "minimatch": {
-        "brace-expansion": "1.1.17"
-      }
-    }
+    "brace-expansion": "5.0.8"
   }
 }
