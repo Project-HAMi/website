@@ -90,3 +90,22 @@ repository:
         affiliation: Project HAMi
         social: https://github.com/wawa0210
         primary: false
+    tools:
+      - name: GitHub secret scanning
+        type: secret-scanning
+        rulesets:
+          - default
+        integration:
+          adhoc: true
+          ci: false
+          release: false
+        comment: Secret scanning and push protection are both enabled on the repository. Push protection blocks a push that contains a known secret pattern before it reaches the branch.
+      - name: Dependabot
+        type: SCA
+        rulesets:
+          - default
+        integration:
+          adhoc: true
+          ci: false
+          release: false
+        comment: Version updates are configured in .github/dependabot.yml and security updates are enabled, so advisories against the npm lockfile open a pull request automatically.
