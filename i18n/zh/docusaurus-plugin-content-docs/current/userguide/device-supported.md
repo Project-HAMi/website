@@ -18,8 +18,8 @@ HAMi 支持的设备如下表所示：
 | GCU        | 燧原科技（Enflame）       | S60                         | 稳定         | 是       | 是       | 否       |
 | XPU        | 昆仑芯（Kunlunxin）       | P800                        | 稳定         | 是       | 是       | 否       |
 | GPU        | 瀚博（Vastai）            | VA16                        | 稳定         | 是       | 是       | 否       |
-| Neuron     | AWS                       | Inf、Trn                    | 稳定         | 是       | 是       | 是       |
-| GPU        | 壁仞（Biren）             | Biren166M                   | 实验性       | 是       | 是       | 否       |
+| Neuron     | AWS                       | Inf、Trn                    | 稳定         | 否       | 否       | 是       |
+| GPU        | 壁仞（Biren）             | Biren166M                   | 稳定         | 是       | 是       | 否       |
 | DPU        | 太初元碁（Teco）          | 检查中                      | 验证中       | 否     | 否     | 否       |
 
 支持状态：
