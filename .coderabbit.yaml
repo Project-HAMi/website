@@ -1,0 +1,27 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+#
+# Label vocabulary for CodeRabbit. Without this file CodeRabbit infers labels
+# from past pull requests, which is how the flat `enhancement` label kept coming
+# back after it was deleted. With `labeling_instructions` set, CodeRabbit only
+# suggests labels from the list below.
+#
+# Scope is limited to `kind/*` on purpose. `area/*` is applied deterministically
+# by path globs in .github/labeler.yml, and `priority/*` is a maintainer call.
+
+reviews:
+  labeling_instructions:
+    - label: kind/bug
+      instructions: Apply when the pull request fixes broken behavior on the site, such as a wrong link, a rendering fault, a build failure, or a script that does not work as documented.
+    - label: kind/feature
+      instructions: Apply when the pull request adds new site functionality or a new component, page, or build step. Also apply for performance work that changes how assets are produced or served.
+    - label: kind/documentation
+      instructions: Apply when the pull request only changes documentation, blog, tutorial, or translation content, including corrections to prose, tables, and front matter.
+    - label: kind/cleanup
+      instructions: Apply when the pull request refactors, reformats, or updates configuration and dependencies without changing behavior for site visitors.
+  mutually_exclusive_groups:
+    kind:
+      - kind/bug
+      - kind/feature
+      - kind/documentation
+      - kind/cleanup
+  auto_apply_labels: true
