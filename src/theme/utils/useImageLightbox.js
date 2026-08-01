@@ -9,6 +9,8 @@ const BLOCKED_SCOPE =
 
 const MERMAID_CONTAINER = ".docusaurus-mermaid-container";
 
+let activeConsumers = 0;
+
 function isImageHref(href = "") {
   return /\.(png|jpe?g|webp|gif|avif|svg)(\?|#|$)/i.test(href);
 }
@@ -31,10 +33,10 @@ function shouldOpenLightbox(image) {
 
 function sanitizeSvgIds(clone) {
   const uniqueSuffix = `-lb-${Math.random().toString(36).substring(2, 8)}`;
-  const idElements = clone.querySelectorAll("[id]");
+  const allElements = [clone, ...Array.from(clone.querySelectorAll("*"))];
   const idMap = new Map();
 
-  idElements.forEach((el) => {
+  allElements.forEach((el) => {
     const oldId = el.getAttribute("id");
     if (oldId) {
       const newId = `${oldId}${uniqueSuffix}`;
@@ -44,17 +46,26 @@ function sanitizeSvgIds(clone) {
   });
 
   if (idMap.size > 0) {
-    const allElements = clone.querySelectorAll("*");
     allElements.forEach((el) => {
       Array.from(el.attributes).forEach((attr) => {
         let val = attr.value;
         let changed = false;
+
         idMap.forEach((newId, oldId) => {
           if (val.includes(`#${oldId}`)) {
             val = val.replace(new RegExp(`#${oldId}\\b`, "g"), `#${newId}`);
             changed = true;
           }
+
+          if (attr.name === "aria-labelledby" || attr.name === "aria-describedby") {
+            const tokens = val.split(/\s+/);
+            if (tokens.includes(oldId)) {
+              val = tokens.map((t) => (t === oldId ? newId : t)).join(" ");
+              changed = true;
+            }
+          }
         });
+
         if (changed) {
           el.setAttribute(attr.name, val);
         }
@@ -137,6 +148,7 @@ function ensureLightbox() {
   document.addEventListener("keydown", handleKeyDown);
   root.__hamiLightboxCleanup = () => {
     document.removeEventListener("keydown", handleKeyDown);
+    document.body.classList.remove("hami-lightbox-open");
     if (root.parentNode) {
       root.parentNode.removeChild(root);
     }
@@ -235,20 +247,27 @@ function handleImageClick(event) {
 
 export default function useImageLightbox() {
   useEffect(() => {
-    if (!ExecutionEnvironment.canUseDOM || window.__hamiLightboxInitialized) {
+    if (!ExecutionEnvironment.canUseDOM) {
       return undefined;
     }
 
-    window.__hamiLightboxInitialized = true;
-    document.addEventListener("click", handleImageClick);
+    activeConsumers++;
+    if (!window.__hamiLightboxInitialized) {
+      window.__hamiLightboxInitialized = true;
+      document.addEventListener("click", handleImageClick);
+    }
 
     return () => {
-      document.removeEventListener("click", handleImageClick);
-      const root = document.querySelector(".hami-lightbox");
-      if (root && typeof root.__hamiLightboxCleanup === "function") {
-        root.__hamiLightboxCleanup();
+      activeConsumers--;
+      if (activeConsumers <= 0) {
+        activeConsumers = 0;
+        document.removeEventListener("click", handleImageClick);
+        const root = document.querySelector(".hami-lightbox");
+        if (root && typeof root.__hamiLightboxCleanup === "function") {
+          root.__hamiLightboxCleanup();
+        }
+        window.__hamiLightboxInitialized = false;
       }
-      window.__hamiLightboxInitialized = false;
     };
   }, []);
 }
