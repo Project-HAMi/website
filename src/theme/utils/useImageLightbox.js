@@ -29,6 +29,40 @@ function shouldOpenLightbox(image) {
   return Boolean(image.currentSrc || image.src);
 }
 
+function sanitizeSvgIds(clone) {
+  const uniqueSuffix = `-lb-${Math.random().toString(36).substring(2, 8)}`;
+  const idElements = clone.querySelectorAll("[id]");
+  const idMap = new Map();
+
+  idElements.forEach((el) => {
+    const oldId = el.getAttribute("id");
+    if (oldId) {
+      const newId = `${oldId}${uniqueSuffix}`;
+      idMap.set(oldId, newId);
+      el.setAttribute("id", newId);
+    }
+  });
+
+  if (idMap.size > 0) {
+    const allElements = clone.querySelectorAll("*");
+    allElements.forEach((el) => {
+      Array.from(el.attributes).forEach((attr) => {
+        let val = attr.value;
+        let changed = false;
+        idMap.forEach((newId, oldId) => {
+          if (val.includes(`#${oldId}`)) {
+            val = val.replace(new RegExp(`#${oldId}\\b`, "g"), `#${newId}`);
+            changed = true;
+          }
+        });
+        if (changed) {
+          el.setAttribute(attr.name, val);
+        }
+      });
+    });
+  }
+}
+
 function ensureLightbox() {
   let root = document.querySelector(".hami-lightbox");
   if (root) {
@@ -92,14 +126,21 @@ function ensureLightbox() {
 
   lightboxImage.addEventListener("click", close);
   svgHost.addEventListener("click", close);
-
   closeButton.addEventListener("click", close);
 
-  document.addEventListener("keydown", (event) => {
+  const handleKeyDown = (event) => {
     if (event.key === "Escape" && !root.hidden) {
       close();
     }
-  });
+  };
+
+  document.addEventListener("keydown", handleKeyDown);
+  root.__hamiLightboxCleanup = () => {
+    document.removeEventListener("keydown", handleKeyDown);
+    if (root.parentNode) {
+      root.parentNode.removeChild(root);
+    }
+  };
 
   root.__hamiLightboxOpen = ({ src, alt, caption: captionText }) => {
     lightboxImage.src = src;
@@ -114,9 +155,8 @@ function ensureLightbox() {
 
   root.__hamiLightboxOpenSvg = (svg, captionText) => {
     const clone = svg.cloneNode(true);
-    // Mermaid caps the inline SVG at its rendered size; lift the cap and let
-    // it scale to fit the lightbox box in both dimensions (the viewBox keeps
-    // the aspect ratio), so the whole diagram is visible without scrolling.
+    sanitizeSvgIds(clone);
+
     clone.style.maxWidth = "none";
     clone.style.width = "100%";
     clone.style.height = "100%";
@@ -152,7 +192,6 @@ function handleImageClick(event) {
     return;
   }
 
-  // Mermaid diagrams: clicking anywhere in the rendered container zooms it.
   const mermaidContainer = target.closest(MERMAID_CONTAINER);
   if (
     mermaidContainer &&
@@ -205,6 +244,10 @@ export default function useImageLightbox() {
 
     return () => {
       document.removeEventListener("click", handleImageClick);
+      const root = document.querySelector(".hami-lightbox");
+      if (root && typeof root.__hamiLightboxCleanup === "function") {
+        root.__hamiLightboxCleanup();
+      }
       window.__hamiLightboxInitialized = false;
     };
   }, []);

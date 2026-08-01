@@ -356,13 +356,46 @@ pre {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
+.theme-doc-markdown article,
+.theme-blog-markdown article,
+article.markdown,
+.markdown {
+  counter-reset: hami-figure-counter;
+}
+
+figure.hami-doc-figure {
+  counter-increment: hami-figure-counter;
+  margin: 2em 0;
+  text-align: center;
+}
+
+figure.hami-doc-figure img,
 .theme-doc-markdown img,
 .theme-blog-markdown img,
 article.markdown img {
+  max-width: 100%;
+  height: auto;
   background: #ffffff;
   border-radius: 10px;
   padding: 4px;
   cursor: zoom-in;
+}
+
+figure.hami-doc-figure figcaption {
+  margin-top: 0.8em;
+  font-size: 0.9em;
+  color: var(--ifm-color-emphasis-600);
+  font-style: italic;
+}
+
+figure.hami-doc-figure figcaption::before {
+  content: "Figure " counter(hami-figure-counter) ": ";
+  font-weight: 600;
+}
+
+html[lang^="zh"] figure.hami-doc-figure figcaption::before {
+  content: "图 " counter(hami-figure-counter) ": ";
+  font-weight: 600;
 }
 
 body.hami-lightbox-open {
