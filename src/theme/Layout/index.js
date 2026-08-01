@@ -1,8 +1,12 @@
 import React from "react";
 import Layout from "@theme-original/Layout";
-import useImageLightbox from "../utils/useImageLightbox";
+import ImageLightbox from "../Lightbox";
 
 export default function LayoutWrapper(props) {
-  useImageLightbox();
-  return <Layout {...props} />;
+  return (
+    <>
+      <Layout {...props} />
+      <ImageLightbox />
+    </>
+  );
 }

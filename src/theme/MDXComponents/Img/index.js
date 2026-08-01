@@ -4,9 +4,11 @@ export default function MDXImg(props) {
   const { alt = "", className = "" } = props;
   const trimmedAlt = alt.trim();
 
-  const isLogoClass = /\b(logo|avatar)\b/i.test(className);
-  const isLogoAlt = /\blogo\b/i.test(trimmedAlt);
-  const isLogo = isLogoClass || isLogoAlt;
+  const classTokens = className.split(/\s+/).filter(Boolean);
+  const isLogo =
+    classTokens.some(
+      (token) => token.toLowerCase() === "logo" || token.toLowerCase() === "avatar",
+    ) || /\blogo\b/i.test(trimmedAlt);
 
   if (!trimmedAlt || isLogo) {
     return <img {...props} />;
