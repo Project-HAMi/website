@@ -16,8 +16,8 @@ function localeFromPathname(pathname) {
 }
 
 export function onRouteDidUpdate({ location }) {
-  // Only run on blog and doc pages
-  if (!location.pathname.match(/\/blog\//) && !location.pathname.match(/\/docs\//)) {
+  // Only run on blog and doc pages (including root doc paths like /docs or /zh/docs)
+  if (!/(?:^|\/)(?:blog|docs)(?:$|\/)/.test(location.pathname)) {
     return;
   }
 
@@ -60,12 +60,15 @@ function addFigureNumbers(locale) {
 
     figureCount++;
 
-    // Wrap in <figure> if not already wrapped
+    // Wrap in <figure> if not already wrapped. If the image is inside an anchor link,
+    // move the anchor element into the figure to preserve clickable links.
     let figure = img.closest("figure");
     if (!figure) {
       figure = document.createElement("figure");
-      img.parentNode.insertBefore(figure, img);
-      figure.appendChild(img);
+      const targetElement =
+        img.parentElement && img.parentElement.tagName === "A" ? img.parentElement : img;
+      targetElement.parentNode.insertBefore(figure, targetElement);
+      figure.appendChild(targetElement);
     }
 
     // Find or create the <figcaption>, always overwriting its text so that
