@@ -4,6 +4,8 @@ title: Device supported by HAMi
 
 The table below lists the devices supported by HAMi:
 
+This matrix reflects HAMi v2.9.0, the latest released version.
+
 <!-- prettier-ignore -->
 | Type   | Manufacturer  | Models                  | Status            | MemoryIsolation | CoreIsolation | MultiCard Support |
 | ------ | ------------- | ------------------------ | ----------------- | --------------- | ------------- | ----------------- |
@@ -32,3 +34,20 @@ Capability columns:
 - **MemoryIsolation** - Whether HAMi enforces a hard VRAM limit per container: workloads that exceed their requested memory are rejected instead of drawing on the full physical device memory.
 - **CoreIsolation** - Whether HAMi enforces a hard compute usage limit per container: kernel execution is throttled to stay within the requested share instead of using the physical device's compute freely.
 - **MultiCard Support** - Whether a single Pod can request and be scheduled onto more than one physical card of that type, with HAMi coordinating placement across the selected cards.
+
+## Device Guides
+
+Each linked guide covers device-specific setup instructions, configuration notes, and known limitations and constraints; consult it before deploying that device.
+
+- **NVIDIA**: [Allocate device memory to container](nvidia-device/specify-device-memory-usage.md)
+- **Cambricon**: [Enable Cambricon MLU Sharing](cambricon-device/enable-cambricon-mlu-sharing.md)
+- **Hygon**: [Enable Hygon DCU sharing](hygon-device/enable-hygon-dcu-sharing.md)
+- **Huawei Ascend**: [Enable Huawei Ascend sharing](ascend-device/enable-ascend-sharing.md)
+- **Iluvatar**: [Enable Iluvatar GPU Sharing](iluvatar-device/enable-iluvatar-gpu-sharing.md)
+- **Mthreads**: [Enable Mthreads GPU sharing](mthreads-device/enable-mthreads-gpu-sharing.md)
+- **MetaX**: [Enable MetaX GPU sharing](metax-device/metax-sgpu/enable-metax-gpu-sharing.md)
+- **Enflame**: [Enable Enflame GCU Sharing](enflame-device/enable-enflame-gcu-sharing.md)
+- **Kunlunxin**: [Enable Kunlunxin GPU Topology-Aware Scheduling](kunlunxin-device/enable-kunlunxin-schedule.md)
+- **Vastai**: [Enable Vastai Sharing](vastai/enable-vastai-sharing.md)
+- **AWS Neuron**: [Enable AWS-Neuron device Sharing](awsneuron-device/enable-awsneuron-managing.md)
+- **Biren**: [Enable Biren Sharing](biren-device/enable-biren-sharing.md)
