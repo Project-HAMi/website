@@ -7,17 +7,8 @@ import Translate from "@docusaurus/Translate";
 import BlogPostItemHeaderTitle from "@theme/BlogPostItem/Header/Title";
 import BlogPostItemHeaderInfo from "@theme/BlogPostItem/Header/Info";
 import BlogPostItemHeaderAuthors from "@theme/BlogPostItem/Header/Authors";
+import { formatNumericDate } from "@site/src/utils/date";
 import styles from "./styles.module.css";
-
-function formatDate(date, locale) {
-  const language = locale === "zh" ? "zh-CN" : "en-US";
-  return new Date(date).toLocaleDateString(language, {
-    year: "numeric",
-    month: "numeric",
-    day: "numeric",
-    timeZone: "UTC",
-  });
-}
 
 function formatAuthors(metadata, fallbackLabel) {
   const names = (metadata.authors || []).map((author) => author?.name).filter(Boolean);
@@ -76,7 +67,7 @@ export default function BlogPostItemHeader() {
               </Translate>
               :
             </strong>{" "}
-            {formatDate(metadata.date, i18n.currentLocale)}
+            {formatNumericDate(metadata.date, i18n.currentLocale)}
           </div>
         </div>
       )}

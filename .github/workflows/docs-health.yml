@@ -37,6 +37,9 @@ jobs:
       - name: Format Check
         run: npm run format:check
 
+      - name: Unit Tests
+        run: npm run test
+
       - name: Build Site
         env:
           DOCUSAURUS_SITE_URL: http://127.0.0.1:3000
