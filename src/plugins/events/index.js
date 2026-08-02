@@ -1,4 +1,5 @@
 import ical from "node-ical";
+import landingEvents from "../../data/events";
 
 export default function pluginEvents(context, options) {
   const { sources } = options;
@@ -10,6 +11,10 @@ export default function pluginEvents(context, options) {
 
   return {
     name: "plugin-events",
+
+    getPathsToWatch() {
+      return [require.resolve("../../data/events")];
+    },
 
     async loadContent() {
       const now = new Date();
@@ -59,6 +64,19 @@ export default function pluginEvents(context, options) {
 
     async contentLoaded({ content, actions }) {
       actions.setGlobalData({ events: content });
+      const basePath = context.baseUrl.endsWith("/")
+        ? context.baseUrl.slice(0, -1)
+        : context.baseUrl;
+      for (const event of landingEvents) {
+        actions.addRoute({
+          path: `${basePath}/landing/${event.slug}`,
+          component: "@site/src/components/EventLanding.js",
+          exact: true,
+          props: {
+            slug: event.slug,
+          },
+        });
+      }
     },
   };
 }
