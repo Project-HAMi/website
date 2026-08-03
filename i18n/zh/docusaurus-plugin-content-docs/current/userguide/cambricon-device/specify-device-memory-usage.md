@@ -13,6 +13,12 @@ resources:
     cambricon.com/mlu.smlu.vmemory: "20" # 每个 MLU 包含 20% 的设备显存
 ```
 
+:::warning
+
+请将 `cambricon.com/mlu.smlu.vmemory` 设置为**纯整数**（此处为 1 到 100 的百分比），不要使用 Kubernetes 数量单位。带单位的值（例如 `16Gi`）会被解析为字节数（约 170 亿），从而超出 HAMi 的 32 位显存字段范围并被静默截断，通常截断为 `0`。显存请求为 0 时会无条件通过调度器的显存检查，导致 Pod 被调度到显存已满的设备上，并在运行时发生显存不足（OOM）。请使用上面示例中的整数形式（例如 `20`）。
+
+:::
+
 :::note
 
 根据 cambricon-device-plugin 的参数，资源名称可以是 `cambricon.com/mlu370.smlu.vmemory` 或其他类型
