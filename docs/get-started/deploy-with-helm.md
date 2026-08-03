@@ -1,110 +1,36 @@
 ---
-title: Deploy HAMi using Helm
+title: Quick Start
+sidebar_label: Get Started
+translated: true
 ---
 
-This guide covers:
-
-- Configuring NVIDIA container runtime on each GPU node
-- Deploying HAMi using Helm
-- Launching a vGPU task
-- Verifying container resource limits
+Get HAMi up and running in minutes by deploying the Helm chart and submitting your first shared GPU workload.
 
 ## Prerequisites {#prerequisites}
+
+Before deploying HAMi, ensure your GPU nodes meet the following prerequisites:
 
 - [Helm](https://helm.sh/docs/) v3+
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) v1.23+
 - [CUDA](https://developer.nvidia.com/cuda-toolkit) v10.2+
 - [NVIDIA Driver](https://www.nvidia.cn/drivers/unix/) v440+
+- [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) (with `nvidia-container-runtime` configured as the container runtime)
 
-## Installation {#installation}
+---
 
-### 1. Configure nvidia-container-toolkit {#configure-nvidia-container-toolkit}
+## 1. Label your nodes {#label-your-nodes}
 
-Perform the following steps on all GPU nodes.
-
-This guide assumes that NVIDIA drivers and the `nvidia-container-toolkit` are already installed, and that `nvidia-container-runtime` is set as the default low-level runtime.
-
-See [nvidia-container-toolkit installation guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html).
-
-The following example applies to Debian-based systems using Docker or containerd:
-
-#### Install the `nvidia-container-toolkit` {#install-the-nvidia-container-toolkit}
-
-```bash
-curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
-  && curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
-    sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
-    sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
-
-sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
-```
-
-#### Configure Docker {#configure-docker}
-
-When running Kubernetes with Docker, edit the configuration file (usually `/etc/docker/daemon.json`) to set `nvidia-container-runtime` as the default runtime:
-
-```json
-{
-  "default-runtime": "nvidia",
-  "runtimes": {
-    "nvidia": {
-      "path": "/usr/bin/nvidia-container-runtime",
-      "runtimeArgs": []
-    }
-  }
-}
-```
-
-Restart Docker:
-
-```bash
-sudo systemctl daemon-reload && sudo systemctl restart docker
-```
-
-#### Configure containerd {#configure-containerd}
-
-When using Kubernetes with containerd, modify the configuration file (usually `/etc/containerd/config.toml`) to set `nvidia-container-runtime` as the default runtime:
-
-```toml
-version = 2
-[plugins]
-  [plugins."io.containerd.grpc.v1.cri"]
-    [plugins."io.containerd.grpc.v1.cri".containerd]
-      default_runtime_name = "nvidia"
-
-      [plugins."io.containerd.grpc.v1.cri".containerd.runtimes]
-        [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia]
-          privileged_without_host_devices = false
-          runtime_engine = ""
-          runtime_root = ""
-          runtime_type = "io.containerd.runc.v2"
-          [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia.options]
-            BinaryName = "/usr/bin/nvidia-container-runtime"
-```
-
-Restart containerd:
-
-```bash
-sudo systemctl daemon-reload && sudo systemctl restart containerd
-```
-
-### 2. Label your nodes {#label-your-nodes}
-
-Label your GPU nodes for HAMi scheduling with `gpu=on`. Nodes without this label cannot be managed by the scheduler.
+Label the target GPU nodes with `gpu=on`. Nodes without this label will not be managed by HAMi:
 
 ```bash
 kubectl label nodes <node-name> gpu=on
 ```
 
-### 3. Deploy HAMi using Helm {#deploy-hami-using-helm}
+---
 
-Check your Kubernetes version:
+## 2. Deploy HAMi using Helm {#deploy-hami-using-helm}
 
-```bash
-kubectl version
-```
-
-Add the Helm repository:
+Add the official HAMi Helm repository and deploy the chart:
 
 ```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/
@@ -112,13 +38,17 @@ helm repo update
 helm install hami hami-charts/hami -n kube-system
 ```
 
-If successful, both `hami-device-plugin` and `hami-scheduler` pods should be in the `Running` state.
+Verify that the `hami-scheduler` and `hami-device-plugin` pods are running:
 
-## Demo {#demo}
+```bash
+kubectl get pods -n kube-system | grep hami
+```
 
-### 1. Submit demo task {#submit-demo-task}
+---
 
-Containers can now request NVIDIA vGPUs using the `nvidia.com/gpu` resource type.
+## 3. Submit a vGPU Workload {#submit-a-vgpu-workload}
+
+Create a Pod requesting 1 vGPU with 10240 MiB of GPU memory limit:
 
 ```yaml
 apiVersion: v1
@@ -132,59 +62,48 @@ spec:
       command: ["bash", "-c", "sleep 86400"]
       resources:
         limits:
-          nvidia.com/gpu: 1 # Request 1 vGPU
-          nvidia.com/gpumem: 10240 # Each vGPU provides 10240 MiB device memory (optional)
+          nvidia.com/gpu: 1
+          nvidia.com/gpumem: 10240
 ```
 
-Wait for the pod to be ready:
+Apply the manifest and wait for the Pod to become ready:
 
 ```bash
+kubectl apply -f gpu-pod.yaml
 kubectl wait --for=condition=Ready pod/gpu-pod --timeout=120s
 ```
 
-### 2. Verify container resource limits {#verify-in-container-resource-control}
+---
 
-Run the following command:
+## 4. Verify GPU Memory Isolation {#verify-gpu-memory-isolation}
+
+Execute `nvidia-smi` inside the running container:
 
 ```bash
 kubectl exec -it gpu-pod -- nvidia-smi
 ```
 
-Expected output:
+Expected output showing HAMi-core hard memory limit (`10240MiB`):
 
 ```text
-[HAMI-core Msg(28:140561996502848:libvgpu.c:836)]: Initializing.....
-Wed Apr 10 09:28:58 2024
+[HAMI-core Msg]: Initializing.....
 +-----------------------------------------------------------------------------------------+
 | NVIDIA-SMI 550.54.15              Driver Version: 550.54.15      CUDA Version: 12.4     |
 |-----------------------------------------+------------------------+----------------------+
 | GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
 | Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
-|                                         |                        |               MIG M. |
 |=========================================+========================+======================|
 |   0  Tesla V100-PCIE-32GB           On  |   00000000:3E:00.0 Off |                    0 |
 | N/A   29C    P0             24W /  250W |       0MiB /  10240MiB |      0%      Default |
-|                                         |                        |                  N/A |
-+-----------------------------------------+------------------------+----------------------+
-
 +-----------------------------------------------------------------------------------------+
-| Processes:                                                                              |
-|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
-|        ID   ID                                                               Usage      |
-|=========================================================================================|
-|  No running processes found                                                             |
-+-----------------------------------------------------------------------------------------+
-[HAMI-core Msg(28:140561996502848:multiprocess_memory_limit.c:434)]: Calling exit handler 28
 ```
 
-## Cleanup
+---
+
+## Cleanup {#cleanup}
+
+Delete the test Pod:
 
 ```bash
 kubectl delete pod gpu-pod
 ```
-
-## Next steps
-
-- [Validate HAMi](./verify-hami) - deeper validation including native GPU stack checks
-- [Configure HAMi](../userguide/configure) - resource limits, scheduling policies, and more
-- [Device Sharing](../key-features/device-sharing) - how GPU sharing works under the hood
