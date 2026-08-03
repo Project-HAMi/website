@@ -195,6 +195,19 @@ module.exports = {
         },
         {
           type: "category",
+          label: "Share AMD GPU devices",
+          items: [
+            "userguide/amd-device/enable-amd-gpu-sharing",
+            {
+              type: "category",
+              label: "Examples",
+              key: "amd-examples",
+              items: ["userguide/amd-device/examples/allocate-core-and-memory"],
+            },
+          ],
+        },
+        {
+          type: "category",
           label: "Managing AWS Neuron devices",
           items: [
             "userguide/awsneuron-device/enable-awsneuron-managing",
