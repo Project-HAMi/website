@@ -18,4 +18,5 @@ The table below lists the devices supported by HAMi:
 | XPU  | Kunlunxin     | P800                    | Yes             | Yes           | No                |
 | GPU  | Vastai        | VA16                    | Yes             | Yes           | No                |
 | GPU  | Biren         | Biren166M               | Yes             | Yes           | No                |
+| GPU  | AMD           | Instinct / ROCm         | Yes             | Yes           | No                |
 | DPU  | Teco          | Checking                | In progress     | In progress   | No                |
