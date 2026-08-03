@@ -77,6 +77,7 @@ kubectl -n kube-amd-gpu patch deviceconfig default --type=merge -p \
 ```bash
 git clone https://github.com/Project-HAMi/amd-device-plugin.git
 helm install amd-gpu ./amd-device-plugin/helm/amd-gpu -n kube-system \
+  --dependency-update \
   --set dp.image.repository=<amd-device-plugin-image> \
   --set dp.image.tag=<tag>
 ```
@@ -99,7 +100,7 @@ kubectl get node <node-name> -o json | \
 结果必须包含 `devmem` 和 `devcore`。例如 MI300X VF：
 
 ```json
-[{"count":10,"devmem":196608,"devcore":304,"type":"AMD_Instinct_MI300X_VF"}]
+[{ "count": 10, "devmem": 196608, "devcore": 304, "type": "AMD_Instinct_MI300X_VF" }]
 ```
 
 ## 运行 AMD vGPU 任务

@@ -202,9 +202,7 @@ module.exports = {
               type: "category",
               label: "Examples",
               key: "amd-examples",
-              items: [
-                "userguide/amd-device/examples/allocate-core-and-memory",
-              ],
+              items: ["userguide/amd-device/examples/allocate-core-and-memory"],
             },
           ],
         },

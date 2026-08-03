@@ -76,6 +76,7 @@ Deploy [amd-device-plugin](https://github.com/Project-HAMi/amd-device-plugin) to
 ```bash
 git clone https://github.com/Project-HAMi/amd-device-plugin.git
 helm install amd-gpu ./amd-device-plugin/helm/amd-gpu -n kube-system \
+  --dependency-update \
   --set dp.image.repository=<amd-device-plugin-image> \
   --set dp.image.tag=<tag>
 ```
@@ -98,7 +99,7 @@ kubectl get node <node-name> -o json | \
 The result must include `devmem` and `devcore`. Example for MI300X VF:
 
 ```json
-[{"count":10,"devmem":196608,"devcore":304,"type":"AMD_Instinct_MI300X_VF"}]
+[{ "count": 10, "devmem": 196608, "devcore": 304, "type": "AMD_Instinct_MI300X_VF" }]
 ```
 
 ## Running AMD vGPU Jobs
