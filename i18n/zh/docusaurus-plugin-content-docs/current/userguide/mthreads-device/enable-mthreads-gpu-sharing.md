@@ -71,7 +71,7 @@ spec:
 
 :::note
 
-每一单位的 sgpu-memory 代表 512M 的显存。
+每一单位的 sgpu-memory 代表 512MiB 的显存。
 
 :::
 

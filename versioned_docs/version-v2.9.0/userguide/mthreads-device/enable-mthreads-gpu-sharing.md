@@ -37,10 +37,10 @@ You can remove `mt-mutating-webhook` and `mt-gpu-scheduler` after installation (
 
 :::
 
-- set the 'devices.mthreads.enabled = true' when installing hami
+- Set `devices.mthreads.enabled=true` when installing HAMi
 
 ```bash
-helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag={your kubernetes version} --set devices.mthreads.enabled=true -n kube-system
+helm install hami hami-charts/hami --set scheduler.kubeScheduler.image.tag={your kubernetes version} --set devices.mthreads.enabled=true -n kube-system
 ```
 
 ## Running Mthreads jobs
@@ -69,6 +69,6 @@ spec:
 
 :::note
 
-Each unit of `sgpu-memory` represents 512 MB of device memory. More examples are available in the [examples/mthreads folder](https://github.com/Project-HAMi/HAMi/tree/master/examples/mthreads/).
+Each unit of `sgpu-memory` represents 512 MiB of device memory. More examples are available in the [examples/mthreads folder](https://github.com/Project-HAMi/HAMi/tree/master/examples/mthreads/).
 
 :::
