@@ -16,7 +16,9 @@ HAMi 支持共享 AMD Instinct/ROCm GPU。工作负载通过标准 Kubernetes �
 
 :::caution
 
-请使用与 HAMi 版本匹配的 [amd-device-plugin](https://github.com/Project-HAMi/amd-device-plugin) 镜像和部署清单。不要用上游 ROCm `k8s-device-plugin` 镜像来跑 HAMi soft vGPU。
+请使用 [amd-device-plugin](https://github.com/Project-HAMi/amd-device-plugin) 镜像和 Helm chart。不要用上游 ROCm `k8s-device-plugin` 镜像来跑 HAMi soft vGPU。
+
+显存隔离依赖 glibc `LD_AUDIT` 加载 `libamvgpu.so`，当前需要 `GLIBC_2.34` 及以上符号。基于更旧 glibc（例如 Ubuntu 20.04、RHEL 8）或 musl/Alpine 的工作负载镜像暂不支持。详见 [HAMi#2265](https://github.com/Project-HAMi/HAMi/issues/2265)。
 
 :::
 
@@ -28,9 +30,9 @@ HAMi 支持共享 AMD Instinct/ROCm GPU。工作负载通过标准 Kubernetes �
 | --- | --- | --- |
 | HAMi | 调度、设备分配和准入 | scheduler 正常运行，并管理三个 AMD 资源 |
 | AMD GPU Operator（推荐） | 驱动和 ROCm 环境 | 禁用 Operator 原生 device-plugin |
-| [amd-device-plugin](https://github.com/Project-HAMi/amd-device-plugin) | 注册 AMD 资源、分配 CU、注入容器运行时限制 | 部署 HAMi fork；通过 amd-smi/libdrm 发现显存与 CU |
+| [amd-device-plugin](https://github.com/Project-HAMi/amd-device-plugin) | 注册 AMD 资源、分配 CU、注入容器运行时限制 | 部署 chart/镜像 `0.0.1` 或更新版本；通过 amd-smi/libdrm 发现显存与 CU |
 
-节点还必须具备可用的 AMD 驱动和 ROCm。可用以下命令确认：
+节点还必须具备可用的 AMD 驱动和 ROCm（已在 ROCm 7.0.2 上验证）。可用以下命令确认：
 
 ```bash
 amd-smi static --gpu 0
@@ -72,17 +74,16 @@ kubectl -n kube-amd-gpu patch deviceconfig default --type=merge -p \
 
 ### 部署 amd-device-plugin
 
-在所有 AMD GPU 节点上部署 [amd-device-plugin](https://github.com/Project-HAMi/amd-device-plugin)。推荐使用该仓库中的 Helm chart：
+在所有 AMD GPU 节点上部署 [amd-device-plugin](https://github.com/Project-HAMi/amd-device-plugin)。Chart `0.0.1` 默认镜像为 `ghcr.io/project-hami/amd-device-plugin:0.0.1`，并通过 `postStart` lifecycle hook 将镜像内的 `libamvgpu.so` 安装到节点：
 
 ```bash
-git clone https://github.com/Project-HAMi/amd-device-plugin.git
-helm install amd-gpu ./amd-device-plugin/helm/amd-gpu -n kube-system \
-  --dependency-update \
-  --set dp.image.repository=<amd-device-plugin-image> \
-  --set dp.image.tag=<tag>
+helm upgrade --install amd-gpu \
+  https://github.com/Project-HAMi/amd-device-plugin/releases/download/amd-gpu-helm-0.0.1/amd-gpu-0.0.1.tgz \
+  --namespace kube-system \
+  --create-namespace
 ```
 
-将 `<amd-device-plugin-image>` 和 `<tag>` 替换为与当前 HAMi 版本匹配的镜像。Chart 会挂载 `/var/lib/kubelet/device-plugins`、`/sys` 和 vGPU hook 路径，并将 `NODE_NAME` 设为 `spec.nodeName`。
+若环境中 GHCR 包为私有，请配置 `imagePullSecrets`。也可以 clone 仓库后从 `./helm/amd-gpu` 安装。
 
 等待 DaemonSet 就绪：
 
@@ -93,14 +94,28 @@ kubectl -n kube-system rollout status ds/amd-gpu-device-plugin-daemonset
 确认 device-plugin 已将完整设备信息注册给 HAMi：
 
 ```bash
-kubectl get node <node-name> -o json | \
-  jq -r '.metadata.annotations["hami.io/node-amd-register"]'
+kubectl get node <node-name> -o jsonpath='{.metadata.annotations.hami\.io/node-amd-register}'
 ```
 
 结果必须包含 `devmem` 和 `devcore`。例如 MI300X VF：
 
 ```json
-[{ "count": 10, "devmem": 196608, "devcore": 304, "type": "AMD_Instinct_MI300X_VF" }]
+[
+  {
+    "id": "8eff74b5-0000-1000-801b-b56457addd1b",
+    "index": 0,
+    "count": 10,
+    "devmem": 196288,
+    "devcore": 304,
+    "type": "AMD Instinct MI300X VF",
+    "numa": 0,
+    "health": true,
+    "devicevendor": "amd",
+    "custominfo": {
+      "pciBDF": "0000:83:00.0"
+    }
+  }
+]
 ```
 
 ## 运行 AMD vGPU 任务
@@ -110,6 +125,8 @@ kubectl get node <node-name> -o json | \
 - `amd.com/gpu`：Pod 需要的 AMD GPU 数量
 - `amd.com/gpumem`：每张 GPU 的显存配额，单位为 MiB
 - `amd.com/gpucores`：每张 GPU 的 CU 配额百分比，范围为 0-100；例如 `25` 在 304 CU 的设备上约分配 76 CU
+
+请使用满足上述 `GLIBC_2.34` 要求的 glibc 工作负载镜像（例如较新的 `rocm/pytorch` 标签）：
 
 ```yaml
 apiVersion: v1
@@ -163,7 +180,8 @@ AMD Instinct MI300X VF
 | `node unregistered` | 检查 `amd-device-plugin` 是否运行，以及 `hami.io/node-amd-register` 是否包含 `devmem`、`devcore`。必要时重启 DaemonSet。 |
 | `CardInsufficientMemory` | Pod 请求的显存超过设备剩余显存；降低 `amd.com/gpumem` 或等待其他工作负载结束。 |
 | `insufficient free CUs` | 删除已完成的 AMD vGPU 测试 Pod，并重启 `amd-device-plugin` 清理过期分配。 |
-| 容器内显存仍为物理卡大小 | 检查 Pod 环境是否有 `LD_AUDIT` 和 `HIP_DEVICE_MEMORY_LIMIT`。 |
+| 容器内显存仍为物理卡大小 | 检查 Pod 环境是否有 `LD_AUDIT` 和 `HIP_DEVICE_MEMORY_LIMIT`，以及工作负载镜像的 glibc 是否兼容。 |
+| 工作负载无法启动 / 加载不了 `libamvgpu.so` | 换用 `GLIBC_2.34` 及以上的 glibc 镜像；musl/Alpine 和旧发行版暂不支持。 |
 
 测试完成后删除工作负载：
 
@@ -173,6 +191,7 @@ kubectl delete pod amd-vgpu-example
 
 ## 注意事项
 
-1. 请部署 [amd-device-plugin](https://github.com/Project-HAMi/amd-device-plugin)，并使用与 HAMi 版本匹配的镜像。
+1. 请部署 [amd-device-plugin](https://github.com/Project-HAMi/amd-device-plugin) `0.0.1` 或更新版本（`ghcr.io/project-hami/amd-device-plugin`）。
 2. 使用 HAMi AMD soft vGPU 共享时，请保持 AMD GPU Operator 原生 device-plugin 关闭。
 3. 未设置 `amd.com/gpucores` 时，容器会获得每张已分配 GPU 的全部 CU。
+4. 当前镜像内置的 `libamvgpu.so` 分发方式是临时方案，后续将迁移到 `amd-hami-core` 正式产物。
