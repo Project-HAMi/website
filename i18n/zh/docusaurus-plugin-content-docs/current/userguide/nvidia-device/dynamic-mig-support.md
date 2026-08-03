@@ -3,6 +3,13 @@ title: 启用动态 MIG 功能
 translated: true
 ---
 
+<div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px', flexWrap: 'wrap' }}>
+  <strong style={{ fontSize: '0.9rem' }}>支持组件/模式：</strong>
+  <a href="/zh/docs/get-started/deploy-with-helm" style={{ display: 'inline-block', padding: '3px 12px', borderRadius: '12px', background: '#10b981', color: '#fff', fontWeight: 600, fontSize: '0.82rem', textDecoration: 'none' }}>HAMi</a>
+  <a href="/zh/docs/userguide/volcano-vgpu/nvidia-gpu/how-to-use-volcano-vgpu" style={{ display: 'inline-block', padding: '3px 12px', borderRadius: '12px', background: '#3b82f6', color: '#fff', fontWeight: 600, fontSize: '0.82rem', textDecoration: 'none' }}>Volcano</a>
+  <a href="/zh/docs/userguide/nvidia-device/dynamic-resource-allocation" style={{ display: 'inline-block', padding: '3px 12px', borderRadius: '12px', background: '#8b5cf6', color: '#fff', fontWeight: 600, fontSize: '0.82rem', textDecoration: 'none' }}>HAMi-DRA</a>
+</div>
+
 HAMi v2.10 采用预留优先、拓扑感知的方式实现 NVIDIA 多实例 GPU（MIG）的动态切分。它不再选择并切换预定义的整卡几何配置，而是：
 
 1. device plugin 通过 NVML 发现每块物理 GPU 支持的 MIG profile 和合法 placement。
