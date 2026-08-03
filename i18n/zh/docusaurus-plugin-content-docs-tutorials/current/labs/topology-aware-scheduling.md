@@ -11,7 +11,7 @@ lab:
     - maishivamhoo123
   verified: "2026-07-20"
 tags:
-  - simulation
+  - 模拟
   - scheduler-internals
   - topology
 toc_max_heading_level: 2

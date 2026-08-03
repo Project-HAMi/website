@@ -41,7 +41,7 @@ This is exactly where HAMi's core capability lives.
 
 ## What is HAMi?
 
-HAMi is a CNCF Sandbox project focused on heterogeneous AI compute virtualization middleware. Its core capability is container-level hard isolation of GPU memory and compute, through a CUDA interception library (HAMi-core).
+HAMi is a CNCF Sandbox project focused on heterogeneous AI compute virtualization middleware. Its core capability is enforcing GPU memory and compute limits at the CUDA API layer through a CUDA interception library (HAMi-core), so a workload cannot oversubscribe its allocated share.
 
 A simple way to understand HAMi's position:
 
