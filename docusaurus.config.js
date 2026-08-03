@@ -5,6 +5,22 @@ const defaultLocale = "en";
 const siteUrl = (process.env.DOCUSAURUS_SITE_URL || "https://project-hami.io").replace(/\/$/, "");
 const githubEditBaseUrl = "https://github.com/Project-HAMi/website/edit/master/";
 
+// Site-wide announcement bar switch. Flip to true to show it; keep `id` stable
+// so visitors who dismissed a previous announcement stay dismissed (bump `id`
+// only when you publish a genuinely new announcement you want everyone to see).
+const announcementBarEnabled = false;
+const announcementBar = announcementBarEnabled
+  ? {
+      id: "announcement-bar",
+      // `content` is a translation key resolved per-locale from
+      // i18n/<locale>/docusaurus-theme-classic/announcementBar.json
+      content: "community",
+      backgroundColor: "#20232a",
+      textColor: "#ffffff",
+      isCloseable: true,
+    }
+  : undefined;
+
 function getDocEditUrl(versionDocsDirPath, docPath) {
   return `${githubEditBaseUrl}${[versionDocsDirPath, docPath].filter(Boolean).join("/")}`;
 }
@@ -293,13 +309,7 @@ module.exports = {
       defaultMode: "dark",
       respectPrefersColorScheme: false,
     },
-    announcementBar: {
-      id: "kubecon_japan_2026",
-      content: "kubecon_japan_2026",
-      backgroundColor: "#20232a",
-      textColor: "#ffffff",
-      isCloseable: true,
-    },
+    announcementBar,
     navbar: {
       title: "HAMi",
       logo: {

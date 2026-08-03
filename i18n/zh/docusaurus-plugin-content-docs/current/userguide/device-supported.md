@@ -18,4 +18,5 @@ HAMi 支持的设备如下表所示：
 | GCU      | 燧原科技（Enflame）       | S60                         | 是       | 是       | 否       |
 | XPU      | 昆仑芯（Kunlunxin）       | P800                        | 是       | 是       | 否       |
 | GPU      | 瀚博（Vastai）            | VA16                        | 是       | 是       | 否       |
+| GPU      | AMD                       | Instinct / ROCm             | 是       | 是       | 否       |
 | DPU      | 太初元碁（Teco）          | 检查中                      | 进行中   | 进行中   | 否       |

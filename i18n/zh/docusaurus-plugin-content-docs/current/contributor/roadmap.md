@@ -34,5 +34,5 @@ sidebar_label: 路线图
 - [ ] 丰富的可观测性支持
 - [x] 支持 DRA
 - [ ] 支持 Intel GPU 设备
-- [ ] 支持 AMD GPU 设备
+- [x] 支持 AMD GPU 设备
 - [x] 支持 Enflame GCU 设备

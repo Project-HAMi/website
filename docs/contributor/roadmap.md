@@ -33,5 +33,5 @@ sidebar_label: Roadmap
 - [ ] Rich observability support
 - [x] DRA support
 - [ ] Support Intel GPU device
-- [ ] Support AMD GPU device
+- [x] Support AMD GPU device
 - [x] Support Enflame GCU device

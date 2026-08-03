@@ -5,7 +5,7 @@ description: "On July 16, 2026, Li Mengxuan, Co-founder & CTO of Dynamia and HAM
 image: /img/vllm-meetup-shanghai-2026-recap/title.webp
 tags:
   [
-    "vLLM",
+    { label: "vLLM", permalink: "vllm" },
     "GPU Virtualization",
     "PD Disaggregation",
     "LLM-D",
