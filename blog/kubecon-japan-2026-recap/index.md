@@ -16,7 +16,7 @@ For the full overview, talk slides, and the SNOW case study, see the [KubeCon Ja
 
 ![HAMi appeared in the keynote slides of Chris Aniszczyk and Jonathan Bryce at KubeCon Japan 2026](/img/kubecon-japan-2026-recap/keynote.jpg)
 
-HAMi was featured in the opening keynote, appearing in the slides of CNCF CTO Chris Aniszczyk and CNCF Executive Director Jonathan Bryce.
+HAMi was featured in the opening keynote, appearing in the slides of CNCF CTO Chris Aniszczyk and Jonathan Bryce, Executive Director, Cloud and Infrastructure, The Linux Foundation.
 
 ## On Stage: Shared GPU Scheduling + Proactive Autoscaling
 

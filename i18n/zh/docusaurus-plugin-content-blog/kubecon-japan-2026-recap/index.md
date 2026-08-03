@@ -16,7 +16,7 @@ authors: [hami_community]
 
 ![HAMi 出现在 Chris Aniszczyk 与 Jonathan Bryce 在 KubeCon 日本 2026 的 Keynote 幻灯片中](/img/kubecon-japan-2026-recap/keynote.jpg)
 
-HAMi 出现在开场 Keynote 中，CNCF 首席技术官 Chris Aniszczyk 与 CNCF 执行董事 Jonathan Bryce 的幻灯片对其进行了介绍。
+HAMi 出现在开场 Keynote 中，CNCF 首席技术官 Chris Aniszczyk 与 Linux 基金会云与基础设施执行董事 Jonathan Bryce 的幻灯片对其进行了介绍。
 
 ## 主舞台：共享 GPU 调度与主动自动伸缩
 
