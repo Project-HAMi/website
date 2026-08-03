@@ -175,66 +175,142 @@ const heroDiagramCopy = {
     zh: "显存 / 核心利用趋势",
   },
 };
-const runtimeLanes = [
-  {
-    key: "control",
-    tone: "control",
-    title: { en: "Control Plane", zh: "控制面" },
-    summary: { en: "Decision path", zh: "决策路径" },
-    steps: [
+const runtimeModesData = {
+  hami: {
+    key: "hami",
+    label: { en: "HAMi (Device Plugin)", zh: "HAMi (Device Plugin 模式)" },
+    title: { en: "HAMi Runtime Mechanism (Device Plugin)", zh: "HAMi 运行时机制 (Device Plugin)" },
+    entryLabel: { en: "Request Entry / Runtime Interface", zh: "请求入口 / 运行时接口" },
+    entryValue: {
+      en: "PodSpec + Extended Resources (nvidia.com/gpu + gpumem / gpucores)",
+      zh: "PodSpec + 扩展资源 (nvidia.com/gpu + gpumem / gpucores)",
+    },
+    lanes: [
       {
-        key: "webhook",
-        emphasis: "secondary",
-        label: { en: "MutatingWebhook", zh: "MutatingWebhook" },
-        note: { en: "Admission Entry", zh: "准入入口" },
+        key: "control",
+        tone: "control",
+        title: { en: "Control Plane", zh: "控制面" },
+        summary: { en: "Decision path", zh: "决策路径" },
+        steps: [
+          {
+            key: "webhook",
+            emphasis: "secondary",
+            label: { en: "MutatingWebhook", zh: "MutatingWebhook" },
+            note: { en: "Admission Entry", zh: "准入入口" },
+          },
+          {
+            key: "scheduler",
+            emphasis: "primary",
+            label: { en: "HAMi Scheduler", zh: "HAMi Scheduler" },
+            note: { en: "Policy / Topology", zh: "策略 / 拓扑" },
+          },
+          {
+            key: "binding",
+            emphasis: "primary",
+            label: { en: "Device Binding Decision", zh: "设备绑定决策" },
+            note: { en: "Target GPU Selected", zh: "完成目标设备选择" },
+          },
+        ],
       },
       {
-        key: "scheduler",
-        emphasis: "primary",
-        label: { en: "HAMi Scheduler", zh: "HAMi Scheduler" },
-        note: { en: "Policy / Topology", zh: "策略 / 拓扑" },
-      },
-      {
-        key: "binding",
-        emphasis: "primary",
-        label: { en: "Device Binding Decision", zh: "设备绑定决策" },
-        note: { en: "Target GPU Selected", zh: "完成目标设备选择" },
+        key: "data",
+        tone: "data",
+        title: { en: "Data Plane", zh: "数据面" },
+        summary: { en: "Enforcement Path", zh: "执行路径" },
+        steps: [
+          {
+            key: "injection",
+            emphasis: "primary",
+            label: { en: "Device Plugin Injection", zh: "Device Plugin 注入" },
+            note: { en: "Device Attached", zh: "完成设备注入" },
+          },
+          {
+            key: "isolation",
+            emphasis: "primary",
+            label: { en: "HAMi Core", zh: "HAMi Core" },
+            note: { en: "Memory / Core Isolation", zh: "显存 / 核心隔离" },
+          },
+          {
+            key: "runtime",
+            emphasis: "secondary",
+            label: { en: "Container Workload", zh: "容器工作负载" },
+            note: { en: "Execution Starts", zh: "开始运行" },
+          },
+        ],
       },
     ],
+    resources: {
+      type: "extended",
+      label: { en: "Resource Semantics", zh: "资源语义" },
+    },
   },
-  {
-    key: "data",
-    tone: "data",
-    title: { en: "Data Plane", zh: "数据面" },
-    summary: { en: "Enforcement Path", zh: "执行路径" },
-    steps: [
+  "hami-dra": {
+    key: "hami-dra",
+    label: { en: "HAMi-DRA Mode", zh: "HAMi-DRA 模式" },
+    title: { en: "HAMi-DRA Runtime Mechanism (DRA Mode)", zh: "HAMi-DRA 运行时机制 (DRA 模式)" },
+    entryLabel: { en: "Request Entry / Runtime Interface", zh: "请求入口 / 运行时接口" },
+    entryValue: {
+      en: "PodSpec + ResourceClaim / ResourceSlice + CDI",
+      zh: "PodSpec + ResourceClaim / ResourceSlice + CDI 声明",
+    },
+    lanes: [
       {
-        key: "injection",
-        emphasis: "primary",
-        label: { en: "Device Plugin + CDI Injection", zh: "Device Plugin + CDI 注入" },
-        note: { en: "Device Attached", zh: "完成设备注入" },
+        key: "control",
+        tone: "control",
+        title: { en: "Control Plane", zh: "控制面" },
+        summary: { en: "Decision path", zh: "决策路径" },
+        steps: [
+          {
+            key: "webhook",
+            emphasis: "secondary",
+            label: { en: "HAMi-DRA Webhook", zh: "HAMi-DRA Webhook" },
+            note: { en: "Auto-Conversion & Admission", zh: "资源改写与准入" },
+          },
+          {
+            key: "scheduler",
+            emphasis: "primary",
+            label: { en: "Native Kube-Scheduler", zh: "原生 Kube-Scheduler" },
+            note: { en: "K8s DRA Plugin Scheduling", zh: "K8s 原生 DRA 调度" },
+          },
+          {
+            key: "binding",
+            emphasis: "primary",
+            label: { en: "ResourceClaim Allocation", zh: "ResourceClaim 绑定" },
+            note: { en: "DeviceClass & Slice Selected", zh: "完成设备切片选择" },
+          },
+        ],
       },
       {
-        key: "isolation",
-        emphasis: "primary",
-        label: { en: "HAMi Core", zh: "HAMi Core" },
-        note: { en: "Memory / Core Isolation", zh: "显存 / 核心隔离" },
-      },
-      {
-        key: "runtime",
-        emphasis: "secondary",
-        label: { en: "Container Workload", zh: "容器工作负载" },
-        note: { en: "Execution Starts", zh: "开始运行" },
+        key: "data",
+        tone: "data",
+        title: { en: "Data Plane", zh: "数据面" },
+        summary: { en: "Enforcement Path", zh: "执行路径" },
+        steps: [
+          {
+            key: "injection",
+            emphasis: "primary",
+            label: { en: "HAMi-DRA Driver + CDI", zh: "HAMi-DRA Driver + CDI 注入" },
+            note: { en: "CDI Spec & Preload", zh: "CDI 设备与预加载注入" },
+          },
+          {
+            key: "isolation",
+            emphasis: "primary",
+            label: { en: "HAMi Core", zh: "HAMi Core" },
+            note: { en: "Memory / Core Isolation", zh: "显存 / 核心隔离" },
+          },
+          {
+            key: "runtime",
+            emphasis: "secondary",
+            label: { en: "Container Workload", zh: "容器工作负载" },
+            note: { en: "Execution Starts", zh: "开始运行" },
+          },
+        ],
       },
     ],
-  },
-];
-const runtimeDiagramCopy = {
-  title: { en: "HAMi Runtime Mechanism", zh: "HAMi 运行时机制" },
-  entryLabel: { en: "Request Entry / Runtime Interface", zh: "请求入口 / 运行时接口" },
-  entryValue: {
-    en: "PodSpec + Device Plugin / DRA + CDI",
-    zh: "PodSpec + Device Plugin / DRA + CDI 运行时接口",
+    resources: {
+      type: "dra",
+      label: { en: "Resource Semantics", zh: "资源语义" },
+    },
   },
 };
 const architectureSectionCopy = {
@@ -375,6 +451,7 @@ export default function Home() {
   const { i18n } = useDocusaurusContext();
   const isZh = i18n.currentLocale === "zh";
   const [starsCount, setStarsCount] = useState(3100);
+  const [archMode, setArchMode] = useState("hami");
   // Static: Docker Hub's API sends no CORS header, so it cannot be read from the browser.
   const dockerPulls = 325000;
   const kubernetesLogo = useBaseUrl("img/kubernetes-logo.svg");
@@ -764,50 +841,96 @@ export default function Home() {
             </p>
 
             <div className={styles.architectureOverview}>
+              <div className={styles.archModeToggleRow}>
+                <div className={styles.archModeToggle}>
+                  <button
+                    type="button"
+                    className={clsx(
+                      styles.archModeBtn,
+                      archMode === "hami" && styles.archModeBtnActive,
+                    )}
+                    onClick={() => setArchMode("hami")}
+                  >
+                    {pickLocalized(i18n.currentLocale, runtimeModesData.hami.label)}
+                  </button>
+                  <button
+                    type="button"
+                    className={clsx(
+                      styles.archModeBtn,
+                      archMode === "hami-dra" && styles.archModeBtnActive,
+                    )}
+                    onClick={() => setArchMode("hami-dra")}
+                  >
+                    {pickLocalized(i18n.currentLocale, runtimeModesData["hami-dra"].label)}
+                  </button>
+                </div>
+              </div>
+
               <article
                 ref={addRevealRef}
                 data-reveal-scale="1"
                 className={clsx(styles.runtimeMechanism, styles.reveal)}
-                aria-label={isZh ? "HAMi 运行时机制架构图" : "HAMi runtime architecture diagram"}
+                aria-label={pickLocalized(
+                  i18n.currentLocale,
+                  (runtimeModesData[archMode] || runtimeModesData.hami).title,
+                )}
               >
-                <div
-                  className={styles.runtimeDiagramFrame}
-                  role="img"
-                  aria-label={isZh ? "HAMi 运行时机制架构图" : "HAMi runtime architecture diagram"}
-                >
-                  <h3 className={styles.runtimeDiagramTitle}>
-                    {pickLocalized(i18n.currentLocale, runtimeDiagramCopy.title)}
-                  </h3>
-                  <section className={styles.runtimeStage} data-runtime-part="entry">
-                    <span className={styles.runtimeSectionLabel}>
-                      {pickLocalized(i18n.currentLocale, runtimeDiagramCopy.entryLabel)}
-                    </span>
-                    <div className={styles.runtimeStageCard}>
-                      {pickLocalized(i18n.currentLocale, runtimeDiagramCopy.entryValue)}
+                {(() => {
+                  const activeMode = runtimeModesData[archMode] || runtimeModesData.hami;
+                  return (
+                    <div
+                      className={styles.runtimeDiagramFrame}
+                      role="img"
+                      aria-label={pickLocalized(i18n.currentLocale, activeMode.title)}
+                    >
+                      <h3 className={styles.runtimeDiagramTitle}>
+                        {pickLocalized(i18n.currentLocale, activeMode.title)}
+                      </h3>
+                      <section className={styles.runtimeStage} data-runtime-part="entry">
+                        <span className={styles.runtimeSectionLabel}>
+                          {pickLocalized(i18n.currentLocale, activeMode.entryLabel)}
+                        </span>
+                        <div className={styles.runtimeStageCard}>
+                          {pickLocalized(i18n.currentLocale, activeMode.entryValue)}
+                        </div>
+                      </section>
+                      <div className={styles.runtimeStageConnector} aria-hidden="true">
+                        <span className={styles.runtimeConnectorLine} />
+                      </div>
+                      <section
+                        className={styles.runtimePipelineSection}
+                        data-runtime-part="pipeline"
+                      >
+                        <div className={styles.runtimeLaneGrid}>
+                          <RuntimeLaneCard lane={activeMode.lanes[0]} locale={i18n.currentLocale} />
+                          <RuntimeLaneCard lane={activeMode.lanes[1]} locale={i18n.currentLocale} />
+                        </div>
+                      </section>
+                      <section className={styles.runtimeResources} data-runtime-part="resources">
+                        <span className={styles.runtimeResourcesLabel}>
+                          {pickLocalized(i18n.currentLocale, activeMode.resources.label)}
+                        </span>
+                        <div className={styles.runtimeResourcesValue}>
+                          {activeMode.key === "hami" ? (
+                            <>
+                              <code>nvidia.com/gpu</code>
+                              <span className={styles.runtimeResourcesDivider}>+</span>
+                              <code>gpumem</code>
+                              <span className={styles.runtimeResourcesSlash}>/</span>
+                              <code>gpucores</code>
+                            </>
+                          ) : (
+                            <>
+                              <code>ResourceClaim</code>
+                              <span className={styles.runtimeResourcesDivider}></span>
+                              <code>(DeviceClass + memory/cores)</code>
+                            </>
+                          )}
+                        </div>
+                      </section>
                     </div>
-                  </section>
-                  <div className={styles.runtimeStageConnector} aria-hidden="true">
-                    <span className={styles.runtimeConnectorLine} />
-                  </div>
-                  <section className={styles.runtimePipelineSection} data-runtime-part="pipeline">
-                    <div className={styles.runtimeLaneGrid}>
-                      <RuntimeLaneCard lane={runtimeLanes[0]} locale={i18n.currentLocale} />
-                      <RuntimeLaneCard lane={runtimeLanes[1]} locale={i18n.currentLocale} />
-                    </div>
-                  </section>
-                  <section className={styles.runtimeResources} data-runtime-part="resources">
-                    <span className={styles.runtimeResourcesLabel}>
-                      {isZh ? "资源语义" : "Resource Semantics"}
-                    </span>
-                    <div className={styles.runtimeResourcesValue}>
-                      <code>nvidia.com/gpu</code>
-                      <span className={styles.runtimeResourcesDivider}>+</span>
-                      <code>gpumem</code>
-                      <span className={styles.runtimeResourcesSlash}>/</span>
-                      <code>gpucores</code>
-                    </div>
-                  </section>
-                </div>
+                  );
+                })()}
               </article>
             </div>
           </div>

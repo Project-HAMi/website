@@ -40,6 +40,7 @@
     "@docusaurus/preset-classic": "^3.10.1",
     "@docusaurus/theme-mermaid": "^3.10.1",
     "@easyops-cn/docusaurus-search-local": "^0.55.3",
+    "@fortawesome/fontawesome-svg-core": "^7.3.1",
     "@fortawesome/free-brands-svg-icons": "^7.3.1",
     "@fortawesome/free-solid-svg-icons": "^7.3.1",
     "@fortawesome/react-fontawesome": "^3.5.0",
