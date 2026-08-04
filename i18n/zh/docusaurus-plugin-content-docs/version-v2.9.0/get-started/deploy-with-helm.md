@@ -1,7 +1,6 @@
 ---
 title: 快速开始
 sidebar_label: 快速开始
-translated: true
 ---
 
 只需几分钟，即可通过部署 Helm Chart 并提交您的第一个 GPU 共享工作负载快速上手 HAMi。
@@ -14,7 +13,7 @@ translated: true
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) v1.23+
 - [CUDA](https://developer.nvidia.com/cuda-toolkit) v10.2+
 - [NVIDIA 驱动](https://www.nvidia.cn/drivers/unix/) v440+
-- [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) (需预先配置并将 `nvidia-container-runtime` 设为默认容器运行时)
+- [NVIDIA Container Toolkit](../installation/prerequisites) (需预先配置并将 `nvidia-container-runtime` 设为默认容器运行时)
 
 ---
 
@@ -107,3 +106,11 @@ kubectl exec -it gpu-pod -- nvidia-smi
 ```bash
 kubectl delete pod gpu-pod
 ```
+
+---
+
+## 下一步 {#next-steps}
+
+- 参阅 [验证 HAMi 安装](./verify-hami.md) 查看详细验证步骤。
+- 参阅 [配置指南](../userguide/configure.md) 了解如何自定义部署参数与设备配置。
+
