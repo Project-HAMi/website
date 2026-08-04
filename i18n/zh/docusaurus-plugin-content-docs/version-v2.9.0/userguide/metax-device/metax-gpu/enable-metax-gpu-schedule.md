@@ -51,7 +51,8 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: gpu-pod1
-  annotations: hami.io/node-scheduler-policy: "spread" # 当此参数设置为 spread 时，调度器将尝试为此任务找到最佳拓扑。
+  annotations:
+    hami.io/node-scheduler-policy: "spread" # 当此参数设置为 spread 时，调度器将尝试为此任务找到最佳拓扑。
 spec:
   containers:
     - name: ubuntu-container
