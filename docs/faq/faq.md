@@ -223,6 +223,8 @@ devicePlugin:
 
 DCGM Exporter is not affected and continues to report physical-level counters normally. HAMi’s per-container virtual metrics are separate; see [GPU Utilization Metrics](../developers/gpu-utilization-metrics).
 
+If the HAMi Device Plugin or workloads fail after upgrading to GPU Operator 25.10+, see [NVIDIA containers fail with GPU Operator 25.10+](../troubleshooting/troubleshooting.md#nvidia-toolkit-gpu-operator-25-10).
+
 ## How do I set up Prometheus and Grafana monitoring for HAMi vGPU metrics?
 
 The `hami-device-plugin` pod on each node exposes per-container vGPU metrics on port `31992` (configurable via `devicePlugin.service.httpPort`). See [Grafana Dashboard](../userguide/monitoring/grafana-dashboard) for the full setup including Prometheus scrape config and dashboard import.
