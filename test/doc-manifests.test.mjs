@@ -13,7 +13,7 @@
  */
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, readdirSync, statSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
 import { loadAll } from "js-yaml";
@@ -21,10 +21,12 @@ import { loadAll } from "js-yaml";
 const roots = ["docs", "tutorials", "i18n/zh/docusaurus-plugin-content-docs/current"];
 
 function markdownFiles(dir, out = []) {
-  for (const entry of readdirSync(dir)) {
-    const p = join(dir, entry);
-    if (statSync(p).isDirectory()) markdownFiles(p, out);
-    else if (entry.endsWith(".md") || entry.endsWith(".mdx")) out.push(p);
+  // withFileTypes avoids following symlinks into directories.
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const p = join(dir, entry.name);
+    if (entry.isDirectory()) markdownFiles(p, out);
+    else if (entry.isFile() && (entry.name.endsWith(".md") || entry.name.endsWith(".mdx")))
+      out.push(p);
   }
   return out;
 }
