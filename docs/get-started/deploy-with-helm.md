@@ -1,7 +1,6 @@
 ---
 title: Quick Start
 sidebar_label: Get Started
-translated: true
 ---
 
 Get HAMi up and running in minutes by deploying the Helm chart and submitting your first shared GPU workload.
@@ -107,3 +106,11 @@ Delete the test Pod:
 ```bash
 kubectl delete pod gpu-pod
 ```
+
+---
+
+## Next steps {#next-steps}
+
+- Verify your setup in detail with [Verify HAMi Installation](./verify-hami.md).
+- Learn how to customize your deployment parameters in the [Configuration Guide](../userguide/configure.md).
+
