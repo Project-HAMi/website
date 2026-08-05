@@ -3,7 +3,7 @@ title: 协议设计
 translated: true
 ---
 
-### 设备注册
+## 设备注册
 
 <img src="/img/docs/common/developers/protocol/protocol-register.png" width="600px" alt="HAMi 设备注册协议图，显示节点注解过程" />
 
@@ -25,7 +25,7 @@ hami.io/node-\{device-type\}-register: \{Device 1\}:\{Device2\}:...:\{Device N\}
 ```text
 hami.io/node-handshake-nvidia: Reported 2024-01-23 04:30:04.434037031 +0000 UTC m=+1104711.777756895
 hami.io/node-handshake-mlu: Requesting_2024.01.10 04:06:57
-hami.io/node-mlu-register: MLU-45013011-2257-0000-0000-000000000000,10,23308,0,MLU-MLU370-X4,0,false:MLU-54043011-2257-0000-0000-000000000000,10,23308,0,
+hami.io/node-mlu-register: MLU-45013011-2257-0000-0000-000000000000,10,23308,0,MLU-MLU370-X4,0,false:MLU-54043011-2257-0000-0000-000000000000,10,23308,0,MLU-MLU370-X4,0,false:
 hami.io/node-nvidia-register: GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec,10,32768,100,NVIDIA-Tesla V100-PCIE-32GB,0,true:GPU-0fc3eda5-e98b-a25b-5b0d-cf5c855d1448,10,32768,100,NVIDIA-Tesla V100-PCIE-32GB,0,true:
 
 ```
