@@ -1,0 +1,42 @@
+{
+  "title": {
+    "message": "HAMi",
+    "description": "The title in the navbar"
+  },
+  "logo.alt": {
+    "message": "HAMi",
+    "description": "The alt text of navbar logo"
+  },
+  "item.label.Home": {
+    "message": "Home",
+    "description": "Navbar item with label Home"
+  },
+  "item.label.Docs": {
+    "message": "Documentazione",
+    "description": "Navbar item with label Docs"
+  },
+  "item.label.Tutorials": {
+    "message": "Tutorial",
+    "description": "Navbar item with label Tutorials"
+  },
+  "item.label.Case Studies": {
+    "message": "Casi studio",
+    "description": "Navbar item with label Case Studies"
+  },
+  "item.label.Community": {
+    "message": "Community",
+    "description": "Navbar item with label Community"
+  },
+  "item.label.Events": {
+    "message": "Eventi",
+    "description": "Navbar item with label Events"
+  },
+  "item.label.Blog": {
+    "message": "Blog",
+    "description": "Navbar item with label Blog"
+  },
+  "item.label.Releases": {
+    "message": "Versioni",
+    "description": "Navbar item with label Releases"
+  }
+}

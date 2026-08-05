@@ -87,13 +87,16 @@ module.exports = {
   ],
   i18n: {
     defaultLocale: defaultLocale,
-    locales: ["en", "zh"],
+    locales: ["en", "zh", "it"],
     localeConfigs: {
       en: {
         label: "English",
       },
       zh: {
         label: "简体中文",
+      },
+      it: {
+        label: "Italiano",
       },
     },
   },

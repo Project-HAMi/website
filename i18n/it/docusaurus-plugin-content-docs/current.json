@@ -1,0 +1,234 @@
+{
+  "version.label": {
+    "message": "Next",
+    "description": "The label for version current"
+  },
+  "sidebar.docs.category.Core Concepts": {
+    "message": "Core Concepts",
+    "description": "The label for category 'Core Concepts' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Core Concepts.link.generated-index.title": {
+    "message": "Core Concepts",
+    "description": "The generated-index page title for category 'Core Concepts' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Core Concepts.link.generated-index.description": {
+    "message": "Learn what HAMi is and how the core architecture works.",
+    "description": "The generated-index page description for category 'Core Concepts' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Key Features": {
+    "message": "Key Features",
+    "description": "The label for category 'Key Features' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Key Features.link.generated-index.title": {
+    "message": "Key Features",
+    "description": "The generated-index page title for category 'Key Features' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Key Features.link.generated-index.description": {
+    "message": "Explore the most important capabilities in HAMi.",
+    "description": "The generated-index page description for category 'Key Features' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Get Started": {
+    "message": "Get Started",
+    "description": "The label for category 'Get Started' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Get Started.link.generated-index.title": {
+    "message": "Get Started",
+    "description": "The generated-index page title for category 'Get Started' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Get Started.link.generated-index.description": {
+    "message": "Install and run HAMi quickly with a guided first deployment path.",
+    "description": "The generated-index page description for category 'Get Started' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Installation": {
+    "message": "Installation",
+    "description": "The label for category 'Installation' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Installation.link.generated-index.title": {
+    "message": "Installation",
+    "description": "The generated-index page title for category 'Installation' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Installation.link.generated-index.description": {
+    "message": "Installation methods, prerequisites, upgrades and integrations.",
+    "description": "The generated-index page description for category 'Installation' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.User Guide": {
+    "message": "User Guide",
+    "description": "The label for category 'User Guide' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.User Guide.link.generated-index.title": {
+    "message": "User Guide",
+    "description": "The generated-index page title for category 'User Guide' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.User Guide.link.generated-index.description": {
+    "message": "Configure devices, request resources, monitor workloads and troubleshoot usage.",
+    "description": "The generated-index page description for category 'User Guide' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Monitoring": {
+    "message": "Monitoring",
+    "description": "The label for category 'Monitoring' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Share NVIDIA GPU devices": {
+    "message": "Share NVIDIA GPU devices",
+    "description": "The label for category 'Share NVIDIA GPU devices' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.nvidia-examples": {
+    "message": "Examples",
+    "description": "The label for category 'Examples' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Share Cambricon MLU devices": {
+    "message": "Share Cambricon MLU devices",
+    "description": "The label for category 'Share Cambricon MLU devices' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.cambricon-examples": {
+    "message": "Examples",
+    "description": "The label for category 'Examples' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Share Hygon DCU devices": {
+    "message": "Share Hygon DCU devices",
+    "description": "The label for category 'Share Hygon DCU devices' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.hygon-examples": {
+    "message": "Examples",
+    "description": "The label for category 'Examples' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Share Mthreads GPU devices": {
+    "message": "Share Mthreads GPU devices",
+    "description": "The label for category 'Share Mthreads GPU devices' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.mthreads-examples": {
+    "message": "Examples",
+    "description": "The label for category 'Examples' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Share Iluvatar GPU devices": {
+    "message": "Share Iluvatar GPU devices",
+    "description": "The label for category 'Share Iluvatar GPU devices' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.iluvatar-examples": {
+    "message": "Examples",
+    "description": "The label for category 'Examples' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Share Enflame GCU devices": {
+    "message": "Share Enflame GCU devices",
+    "description": "The label for category 'Share Enflame GCU devices' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Share AMD GPU devices": {
+    "message": "Share AMD GPU devices",
+    "description": "The label for category 'Share AMD GPU devices' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.amd-examples": {
+    "message": "Examples",
+    "description": "The label for category 'Examples' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Managing AWS Neuron devices": {
+    "message": "Managing AWS Neuron devices",
+    "description": "The label for category 'Managing AWS Neuron devices' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.awsneuron-examples": {
+    "message": "Examples",
+    "description": "The label for category 'Examples' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Managing Vastai devices": {
+    "message": "Managing Vastai devices",
+    "description": "The label for category 'Managing Vastai devices' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.vastai-examples": {
+    "message": "Examples",
+    "description": "The label for category 'Examples' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Managing Biren devices": {
+    "message": "Managing Biren devices",
+    "description": "The label for category 'Managing Biren devices' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.biren-examples": {
+    "message": "Examples",
+    "description": "The label for category 'Examples' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Optimize Kunlunxin devices scheduling": {
+    "message": "Optimize Kunlunxin devices scheduling",
+    "description": "The label for category 'Optimize Kunlunxin devices scheduling' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.kunlunxin-examples": {
+    "message": "Examples",
+    "description": "The label for category 'Examples' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Optimize MetaX GPU scheduling": {
+    "message": "Optimize MetaX GPU scheduling",
+    "description": "The label for category 'Optimize MetaX GPU scheduling' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Share MetaX GPU devices": {
+    "message": "Share MetaX GPU devices",
+    "description": "The label for category 'Share MetaX GPU devices' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.metax-sgpu-examples": {
+    "message": "Examples",
+    "description": "The label for category 'Examples' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.MetaX GPU topology-aware scheduling": {
+    "message": "MetaX GPU topology-aware scheduling",
+    "description": "The label for category 'MetaX GPU topology-aware scheduling' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.metax-gpu-examples": {
+    "message": "Examples",
+    "description": "The label for category 'Examples' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Share Ascend devices": {
+    "message": "Share Ascend devices",
+    "description": "The label for category 'Share Ascend devices' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.ascend-examples": {
+    "message": "Examples",
+    "description": "The label for category 'Examples' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Scheduler Integrations": {
+    "message": "Scheduler Integrations",
+    "description": "The label for category 'Scheduler Integrations' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Volcano vGPU": {
+    "message": "Volcano vGPU",
+    "description": "The label for category 'Volcano vGPU' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.NVIDIA GPU": {
+    "message": "NVIDIA GPU",
+    "description": "The label for category 'NVIDIA GPU' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.volcano-vgpu-examples": {
+    "message": "Examples",
+    "description": "The label for category 'Examples' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Using HAMi with Kueue": {
+    "message": "Using HAMi with Kueue",
+    "description": "The label for category 'Using HAMi with Kueue' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.kueue-examples": {
+    "message": "Examples",
+    "description": "The label for category 'Examples' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Using HAMi with KAI Scheduler": {
+    "message": "Using HAMi with KAI Scheduler",
+    "description": "The label for category 'Using HAMi with KAI Scheduler' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Developer Guide": {
+    "message": "Developer Guide",
+    "description": "The label for category 'Developer Guide' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Developer Guide.link.generated-index.title": {
+    "message": "Developer Guide",
+    "description": "The generated-index page title for category 'Developer Guide' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Developer Guide.link.generated-index.description": {
+    "message": "Architecture deep dive, build workflow and scheduler internals.",
+    "description": "The generated-index page description for category 'Developer Guide' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Contributor Guide": {
+    "message": "Contributor Guide",
+    "description": "The label for category 'Contributor Guide' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Contributor Guide.link.generated-index.title": {
+    "message": "Contributor Guide",
+    "description": "The generated-index page title for category 'Contributor Guide' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Contributor Guide.link.generated-index.description": {
+    "message": "Contribution workflow, governance and maintainer ladder.",
+    "description": "The generated-index page description for category 'Contributor Guide' in sidebar 'docs'"
+  }
+}

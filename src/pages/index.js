@@ -129,109 +129,121 @@ const heroDiagramCopy = {
   workloads: {
     en: "AI Workloads",
     zh: "AI 工作负载",
+    it: "Workload AI",
   },
   schedulerEcosystem: {
     en: "Kubernetes Scheduling Ecosystem",
     zh: "Kubernetes 调度生态",
+    it: "Ecosistema di scheduling di Kubernetes",
   },
   heterogeneousAccelerators: {
     en: "Heterogeneous Accelerators",
     zh: "异构加速器",
+    it: "Acceleratori eterogenei",
   },
   hamiLogoAlt: {
     en: "HAMi logo",
     zh: "HAMi 图标",
+    it: "Logo di HAMi",
   },
   moreAccelerators: {
     en: "and more...",
     zh: "更多",
+    it: "e altri...",
   },
   capabilities: {
     en: "Virtualization • Sharing • Isolation • Scheduling",
     zh: "虚拟化 • 共享 • 隔离 • 调度",
+    it: "Virtualizzazione • Condivisione • Isolamento • Scheduling",
   },
   gpuSlicing: {
     en: "GPU slicing capabilities",
     zh: "GPU 切分能力",
+    it: "Funzionalità di slicing (suddivisione) della GPU",
   },
   observability: {
     en: "Observability",
     zh: "可观测性",
+    it: "Osservabilità",
   },
   allocatedDevices: {
     en: "Allocated Devices",
     zh: "已分配设备",
+    it: "Dispositivi allocati",
   },
   allocatedDevicesDesc: {
     en: "Allocation count and spread",
     zh: "设备分配总量与分布",
+    it: "Conteggio e distribuzione dell'allocazione",
   },
   realTimeUsage: {
     en: "vGPU Real-time Usage",
     zh: "vGPU 实时使用率",
+    it: "Utilizzo in tempo reale di vGPU",
   },
   realTimeUsageDesc: {
     en: "GPU memory/core utilization",
     zh: "显存 / 核心利用趋势",
+    it: "Utilizzo di memoria/core della GPU",
   },
 };
 const runtimeLanes = [
   {
     key: "control",
     tone: "control",
-    title: { en: "Control Plane", zh: "控制面" },
-    summary: { en: "Decision path", zh: "决策路径" },
+    title: { en: "Control Plane", zh: "控制面", it: "Control Plane" },
+    summary: { en: "Decision path", zh: "决策路径", it: "Percorso decisionale" },
     steps: [
       {
         key: "webhook",
         emphasis: "secondary",
-        label: { en: "MutatingWebhook", zh: "MutatingWebhook" },
-        note: { en: "Admission Entry", zh: "准入入口" },
+        label: { en: "MutatingWebhook", zh: "MutatingWebhook", it: "MutatingWebhook" },
+        note: { en: "Admission Entry", zh: "准入入口", it: "Punto di Ammissione" },
       },
       {
         key: "scheduler",
         emphasis: "primary",
-        label: { en: "HAMi Scheduler", zh: "HAMi Scheduler" },
-        note: { en: "Policy / Topology", zh: "策略 / 拓扑" },
+        label: { en: "HAMi Scheduler", zh: "HAMi Scheduler", it: "HAMi Scheduler" },
+        note: { en: "Policy / Topology", zh: "策略 / 拓扑", it: "Policy / Topologia" },
       },
       {
         key: "binding",
         emphasis: "primary",
-        label: { en: "Device Binding Decision", zh: "设备绑定决策" },
-        note: { en: "Target GPU Selected", zh: "完成目标设备选择" },
+        label: { en: "Device Binding Decision", zh: "设备绑定决策", it: "Decisione di binding del dispositivo" },
+        note: { en: "Target GPU Selected", zh: "完成目标设备选择", it: "GPU di destinazione selezionata" },
       },
     ],
   },
   {
     key: "data",
     tone: "data",
-    title: { en: "Data Plane", zh: "数据面" },
-    summary: { en: "Enforcement Path", zh: "执行路径" },
+    title: { en: "Data Plane", zh: "数据面", it: "Data Plane" },
+    summary: { en: "Enforcement Path", zh: "执行路径", it: "Percorso di esecuzione" },
     steps: [
       {
         key: "injection",
         emphasis: "primary",
-        label: { en: "Device Plugin + CDI Injection", zh: "Device Plugin + CDI 注入" },
-        note: { en: "Device Attached", zh: "完成设备注入" },
+        label: { en: "Device Plugin + CDI Injection", zh: "Device Plugin + CDI 注入", it: "Device Plugin + Iniezione CDI" },
+        note: { en: "Device Attached", zh: "完成设备注入", it: "Dispositivo collegato" },
       },
       {
         key: "isolation",
         emphasis: "primary",
-        label: { en: "HAMi Core", zh: "HAMi Core" },
-        note: { en: "Memory / Core Isolation", zh: "显存 / 核心隔离" },
+        label: { en: "HAMi Core", zh: "HAMi Core", it: "HAMi Core" },
+        note: { en: "Memory / Core Isolation", zh: "显存 / 核心隔离", it: "Isolamento di memoria / core" },
       },
       {
         key: "runtime",
         emphasis: "secondary",
-        label: { en: "Container Workload", zh: "容器工作负载" },
-        note: { en: "Execution Starts", zh: "开始运行" },
+        label: { en: "Container Workload", zh: "容器工作负载", it: "Workload del container" },
+        note: { en: "Execution Starts", zh: "开始运行", it: "Avvio dell'esecuzione" },
       },
     ],
   },
 ];
 const runtimeDiagramCopy = {
-  title: { en: "HAMi Runtime Mechanism", zh: "HAMi 运行时机制" },
-  entryLabel: { en: "Request Entry / Runtime Interface", zh: "请求入口 / 运行时接口" },
+  title: { en: "HAMi Runtime Mechanism", zh: "HAMi 运行时机制", it: "Meccanismo di runtime di HAMi" },
+  entryLabel: { en: "Request Entry / Runtime Interface", zh: "请求入口 / 运行时接口", it: "Ingresso della richiesta / Interfaccia di runtime" },
   entryValue: {
     en: "PodSpec + Device Plugin / DRA + CDI",
     zh: "PodSpec + Device Plugin / DRA + CDI 运行时接口",
@@ -241,6 +253,7 @@ const architectureSectionCopy = {
   lead: {
     en: "From request to isolation, HAMi turns GPU slicing and heterogeneous scheduling into usable Kubernetes runtime paths.",
     zh: "从请求到隔离执行，HAMi 将 GPU 切分与异构调度组织成可落地的 Kubernetes 运行时链路。",
+    it: "Dalla richiesta all'isolamento, HAMi trasforma lo slicing (suddivisione) della GPU e lo scheduling eterogeneo in percorsi di runtime utilizzabili per Kubernetes.",
   },
 };
 const vendorEcosystem = [
@@ -337,7 +350,9 @@ function useCountUp(target, duration = 900) {
 }
 
 function pickLocalized(locale, textObj) {
-  return locale === "zh" ? textObj.zh : textObj.en;
+  if (locale === "zh") return textObj.zh;
+  if (locale === "it" && textObj.it) return textObj.it;
+  return textObj.en;
 }
 function pickLocalizedOrRaw(locale, value) {
   return typeof value === "string" ? value : pickLocalized(locale, value);
@@ -371,9 +386,225 @@ function RuntimeLaneCard({ lane, locale }) {
   );
 }
 
+const heroCopy = {
+  title: {
+    en: "Heterogeneous GPU Sharing on Kubernetes",
+    zh: "Kubernetes 上的异构 GPU 共享",
+    it: "Condivisione eterogenea di GPU su Kubernetes",
+  },
+  description: {
+    en: "HAMi is an open-source, cloud-native GPU virtualization middleware that brings sharing, isolation and scheduling of heterogeneous accelerators to AI workloads on Kubernetes.",
+    zh: "HAMi 是开源的云原生 GPU 虚拟化中间件，为 AI 工作负载提供异构加速器的共享、隔离与调度能力。",
+    it: "HAMi è un middleware di virtualizzazione GPU open-source e cloud-native che porta condivisione, isolamento e scheduling di acceleratori eterogenei ai workload AI su Kubernetes.",
+  },
+  featureChips: {
+    en: ["GPU Slicing", "Heterogeneous Accelerators", "Kubernetes-native Scheduling"],
+    zh: ["GPU 切分", "异构加速器", "Kubernetes 原生调度"],
+    it: ["Slicing (suddivisione) della GPU", "Acceleratori eterogenei", "Scheduling nativo di Kubernetes"],
+  },
+  quickStart: {
+    en: "Quick Start",
+    zh: "快速开始",
+    it: "Avvio rapido",
+  },
+  joinCommunity: {
+    en: "Join Community",
+    zh: "加入社区",
+    it: "Unisciti alla community",
+  },
+  ariaLabel: {
+    en: "HAMi AI infrastructure ecosystem architecture diagram",
+    zh: "HAMi AI 基础设施生态架构图",
+    it: "Diagramma dell'ecosistema dell'infrastruttura AI di HAMi",
+  }
+};
+
+const cncfCopy = {
+  eyebrow: {
+    en: "CNCF Incubating Project",
+    zh: "CNCF 孵化项目",
+    it: "Progetto in incubazione CNCF",
+  },
+  title: {
+    en: "HAMi is a CNCF Incubating project",
+    zh: "HAMi 是 CNCF 孵化项目",
+    it: "HAMi è un progetto in incubazione CNCF",
+  },
+  text: {
+    en: (
+      <>
+        HAMi is an{" "}
+        <a
+          href="https://landscape.cncf.io/?group=projects-and-products&project=incubating&item=orchestration-management--scheduling-orchestration--hami"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Incubating project
+        </a>{" "}
+        of the Cloud Native Computing Foundation (CNCF), listed in both the CNCF
+        Landscape and the CNAI Landscape.
+      </>
+    ),
+    zh: (
+      <>
+        HAMi 是云原生计算基金会（CNCF）的{" "}
+        <a
+          href="https://landscape.cncf.io/?group=projects-and-products&project=incubating&item=orchestration-management--scheduling-orchestration--hami"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          孵化项目
+        </a>
+        ，并被收录于 CNCF 技术全景图和 CNAI 技术全景图。
+      </>
+    ),
+    it: (
+      <>
+        HAMi è un{" "}
+        <a
+          href="https://landscape.cncf.io/?group=projects-and-products&project=incubating&item=orchestration-management--scheduling-orchestration--hami"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          progetto in incubazione
+        </a>{" "}
+        della Cloud Native Computing Foundation (CNCF), presente sia nell'ecosistema CNCF sia in quello CNAI.
+      </>
+    ),
+  }
+};
+
+const whyAndArchCopy = {
+  whyTitle: {
+    en: "Why HAMi",
+    zh: "为什么使用 HAMi",
+    it: "Perché usare HAMi",
+  },
+  archTitle: {
+    en: "Architecture & How It Works",
+    zh: "架构与工作原理",
+    it: "Architettura e funzionamento",
+  },
+  runtimeDiagramAria: {
+    en: "HAMi runtime architecture diagram",
+    zh: "HAMi 运行时机制架构图",
+    it: "Diagramma dell'architettura di runtime di HAMi",
+  },
+  resourceSemantics: {
+    en: "Resource Semantics",
+    zh: "资源语义",
+    it: "Semantica delle risorse",
+  },
+  beforeAfterTitle: {
+    en: "Before and After Using HAMi",
+    zh: "使用 HAMi 前后对比",
+    it: "Confronto prima e dopo l'uso di HAMi",
+  },
+  beforeAfterLead: {
+    en: "Compare traditional whole-GPU allocation with HAMi GPU sharing under the same workloads.",
+    zh: "相同工作负载下，对比传统整卡独占与 HAMi GPU 共享后的资源利用率变化。",
+    it: "Confronta l'allocazione tradizionale dell'intera GPU con la condivisione GPU di HAMi a parità di workload.",
+  }
+};
+
+const footerSectionsCopy = {
+  ecosystemTitle: {
+    en: "Ecosystem & Device Support",
+    zh: "生态与设备支持",
+    it: "Ecosistema e supporto dispositivi",
+  },
+  ecosystemLead: {
+    en: "Broad accelerator ecosystem across vendors. See docs for full support matrix.",
+    zh: "覆盖多厂商加速设备生态，详情和支持矩阵见文档。",
+    it: "Ampio ecosistema di acceleratori tra vari produttori. Consulta la documentazione per la matrice di supporto completa.",
+  },
+  ecosystemAria: {
+    en: "HAMi ecosystem wall",
+    zh: "HAMi 生态支持",
+    it: "Muro dell'ecosistema di HAMi",
+  },
+  ecosystemLink: {
+    en: "View full supported devices list →",
+    zh: "查看完整设备支持列表 →",
+    it: "Visualizza l'elenco completo dei dispositivi supportati →",
+  },
+  compatTitle: {
+    en: "Works with HAMi",
+    zh: "与 HAMi 协同",
+    it: "Compatibile con HAMi",
+  },
+  compatLead: {
+    en: "HAMi integrates with these open-source schedulers, queuing layers, and cloud platforms, either as an embeddable device layer or at the scheduling layer.",
+    zh: "HAMi 与以下开源调度器、队列及云平台协同工作，既可作为设备层嵌入，也可在调度层集成。",
+    it: "HAMi si integra con questi scheduler open-source, livelli di accodamento e piattaforme cloud, sia come livello di dispositivo incorporabile sia a livello di scheduling.",
+  },
+  adoptersTitle: {
+    en: "Adopters",
+    zh: "采用者",
+    it: "Chi usa HAMi",
+  },
+  adoptersLead: {
+    en: "The organizations below are evaluating or using HAMi in production environments.",
+    zh: "以下组织正在评估或在生产环境中使用 HAMi。",
+    it: "Le organizzazioni seguenti stanno valutando o utilizzando HAMi in ambienti di produzione.",
+  },
+  adoptersCtaTitle: {
+    en: "Join the adopters list",
+    zh: "加入采用者列表",
+    it: "Unisciti all'elenco di chi usa il progetto",
+  },
+  adoptersCtaText: {
+    en: "Submit your organization through the contributor guide process.",
+    zh: "请按照贡献者指南流程提交贵组织信息。",
+    it: "Invia la tua organizzazione seguendo la procedura della guida per i contributori.",
+  },
+  adoptersCtaButton: {
+    en: "See submission instructions →",
+    zh: "查看提交说明 →",
+    it: "Vedi le istruzioni per l'invio →",
+  },
+  contributorsTitle: {
+    en: "Contributors",
+    zh: "贡献组织",
+    it: "Contributori",
+  },
+  contributorsLead: {
+    en: "HAMi is advanced by contributors from the community and industry. These organizations actively participate in project development and ecosystem collaboration.",
+    zh: "HAMi 由社区与企业贡献者共同推进，以下组织持续参与项目建设与生态协作。",
+    it: "HAMi si sviluppa grazie ai contributori della community e dell'industria. Queste organizzazioni partecipano attivamente allo sviluppo del progetto e alla collaborazione dell'ecosistema.",
+  },
+  metricsTitle: {
+    en: "Global Community Metrics",
+    zh: "全球社区指标",
+    it: "Metriche della community globale",
+  },
+  metricsLead: {
+    en: "A live snapshot of HAMi community growth and open-source momentum.",
+    zh: "实时展示 HAMi 社区增长与开源活跃度。",
+    it: "Una panoramica in tempo reale della crescita della community di HAMi e del suo slancio open source.",
+  }
+};
+
+const metricsCopy = {
+  starsSource: { en: "Source: GitHub", zh: "数据来源：GitHub", it: "Fonte: GitHub" },
+  starsAria: { en: "View stars data source", zh: "查看 Stars 数据来源", it: "Visualizza fonte dati stars" },
+  dockerLabel: { en: "Docker Pulls", zh: "镜像下载", it: "Download Docker" },
+  dockerSource: { en: "Source: Docker Hub", zh: "数据来源：Docker Hub", it: "Fonte: Docker Hub" },
+  dockerAria: { en: "View Docker pulls data source", zh: "查看 Docker 下载数据来源", it: "Visualizza fonte dati download Docker" },
+  contributorsLabel: { en: "Contributors", zh: "贡献者", it: "Contributori" },
+  contributorsSource: { en: "Source: DevStats", zh: "数据来源：DevStats", it: "Fonte: DevStats" },
+  contributorsAria: { en: "View contributors data source", zh: "查看贡献者数据来源", it: "Visualizza fonte dati contributori" },
+  countriesLabel: { en: "Contributor Countries", zh: "贡献者国家", it: "Paesi dei contributori" },
+  countriesSource: { en: "Source: DevStats", zh: "数据来源：DevStats", it: "Fonte: DevStats" },
+  countriesAria: { en: "View countries data source", zh: "查看国家数据来源", it: "Visualizza fonte dati paesi" },
+  starButton: { en: "Star HAMi on GitHub", zh: "给 HAMi 点个 Star", it: "Metti uno Star a HAMi su GitHub" },
+  communityButton: { en: "Join Community", zh: "加入社区", it: "Unisciti alla community" }
+};
+
 export default function Home() {
   const { i18n } = useDocusaurusContext();
-  const isZh = i18n.currentLocale === "zh";
+  const currentLocale = i18n.currentLocale;
+  const isZh = currentLocale === "zh";
   const [starsCount, setStarsCount] = useState(3100);
   // Static: Docker Hub's API sends no CORS header, so it cannot be read from the browser.
   const dockerPulls = 325000;
@@ -439,12 +670,8 @@ export default function Home() {
 
   return (
     <Layout
-      title={isZh ? "Kubernetes 上的异构 GPU 共享" : "Heterogeneous GPU Sharing on Kubernetes"}
-      description={
-        isZh
-          ? "HAMi 是开源的云原生 GPU 虚拟化中间件，为 AI 工作负载提供异构加速器的共享、隔离与调度能力。"
-          : "HAMi is an open-source, cloud-native GPU virtualization middleware that brings sharing, isolation and scheduling of heterogeneous accelerators to AI workloads on Kubernetes."
-      }
+      title={pickLocalized(currentLocale, heroCopy.title)}
+      description={pickLocalized(currentLocale, heroCopy.description)}
     >
       <main>
         <section className={clsx(styles.hero, "hami-shell-bg")}>
@@ -456,36 +683,25 @@ export default function Home() {
                     <span key={item.key} className="hami-pill">
                       <strong>
                         {typeof item.label === "object"
-                          ? isZh
-                            ? item.label.zh
-                            : item.label.en
+                          ? pickLocalized(currentLocale, item.label)
                           : item.label}
                         :
                       </strong>
                       &nbsp;
                       {typeof item.value === "object"
-                        ? isZh
-                          ? item.value.zh
-                          : item.value.en
+                        ? pickLocalized(currentLocale, item.value)
                         : item.value}
                     </span>
                   ))}
                 </div>
                 <h1 className={styles.heroTitle}>
-                  {isZh
-                    ? "Kubernetes 上的异构 GPU 共享"
-                    : "Heterogeneous GPU Sharing on Kubernetes"}
+                  {pickLocalized(currentLocale, heroCopy.title)}
                 </h1>
                 <p className={styles.heroSubtitle}>
-                  {isZh
-                    ? "HAMi 是开源的云原生 GPU 虚拟化中间件，为 AI 工作负载提供异构加速器的共享、隔离与调度能力。"
-                    : "HAMi is an open-source, cloud-native GPU virtualization middleware that brings sharing, isolation and scheduling of heterogeneous accelerators to AI workloads on Kubernetes."}
+                  {pickLocalized(currentLocale, heroCopy.description)}
                 </p>
                 <div className={styles.heroFeatureChips}>
-                  {(isZh
-                    ? ["GPU 切分", "异构加速器", "Kubernetes 原生调度"]
-                    : ["GPU Slicing", "Heterogeneous Accelerators", "Kubernetes-native Scheduling"]
-                  ).map((chip) => (
+                  {pickLocalized(currentLocale, heroCopy.featureChips).map((chip) => (
                     <span key={chip} className={styles.heroFeatureChip}>
                       {chip}
                     </span>
@@ -496,10 +712,10 @@ export default function Home() {
                     className="button button--primary button--lg"
                     to={useBaseUrl("/docs/get-started/deploy-with-helm")}
                   >
-                    {isZh ? "快速开始" : "Quick Start"}
+                    {pickLocalized(currentLocale, heroCopy.quickStart)}
                   </Link>
                   <Link className="button button--outline button--lg" to={useBaseUrl("/community")}>
-                    {isZh ? "加入社区" : "Join Community"}
+                    {pickLocalized(currentLocale, heroCopy.joinCommunity)}
                   </Link>
                 </div>
               </div>
@@ -507,11 +723,7 @@ export default function Home() {
                 <div
                   className={styles.ecosystemDiagram}
                   role="img"
-                  aria-label={
-                    isZh
-                      ? "HAMi AI 基础设施生态架构图"
-                      : "HAMi AI infrastructure ecosystem architecture diagram"
-                  }
+                  aria-label={pickLocalized(currentLocale, heroCopy.ariaLabel)}
                 >
                   <div className={styles.ecosystemStack}>
                     <section className={clsx(styles.ecoLayer, styles.ecoLayerWorkloads)}>
@@ -687,38 +899,13 @@ export default function Home() {
               </div>
               <div className={styles.cncfFeatureBody}>
                 <span className={styles.cncfEyebrow}>
-                  {isZh ? "CNCF 孵化项目" : "CNCF Incubating Project"}
+                  {pickLocalized(currentLocale, cncfCopy.eyebrow)}
                 </span>
                 <h2 className={styles.cncfFeatureTitle}>
-                  {isZh ? "HAMi 是 CNCF 孵化项目" : "HAMi is a CNCF Incubating project"}
+                  {pickLocalized(currentLocale, cncfCopy.title)}
                 </h2>
                 <p className={styles.cncfFeatureText}>
-                  {isZh ? (
-                    <>
-                      HAMi 是云原生计算基金会（CNCF）的{" "}
-                      <a
-                        href="https://landscape.cncf.io/?group=projects-and-products&project=incubating&item=orchestration-management--scheduling-orchestration--hami"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        孵化项目
-                      </a>
-                      ，并被收录于 CNCF 技术全景图和 CNAI 技术全景图。
-                    </>
-                  ) : (
-                    <>
-                      HAMi is an{" "}
-                      <a
-                        href="https://landscape.cncf.io/?group=projects-and-products&project=incubating&item=orchestration-management--scheduling-orchestration--hami"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Incubating project
-                      </a>{" "}
-                      of the Cloud Native Computing Foundation (CNCF), listed in both the CNCF
-                      Landscape and the CNAI Landscape.
-                    </>
-                  )}
+                  {pickLocalized(currentLocale, cncfCopy.text)}
                 </p>
               </div>
             </div>
@@ -727,7 +914,7 @@ export default function Home() {
 
         <section ref={addRevealRef} id="why" className={clsx(styles.section, styles.reveal)}>
           <div className="container">
-            <h2 className={styles.sectionTitle}>{isZh ? "为什么使用 HAMi" : "Why HAMi"}</h2>
+            <h2 className={styles.sectionTitle}>{pickLocalized(currentLocale, whyAndArchCopy.whyTitle)}</h2>
             <div className={styles.cardGrid}>
               {valueCards.map((card) => {
                 const icon = cardIcons[card.icon] ?? fallbackCardIcon;
@@ -757,10 +944,10 @@ export default function Home() {
         <section ref={addRevealRef} className={clsx(styles.section, styles.reveal)}>
           <div className="container">
             <h2 className={styles.sectionTitle}>
-              {isZh ? "架构与工作原理" : "Architecture & How It Works"}
+              {pickLocalized(currentLocale, whyAndArchCopy.archTitle)}
             </h2>
             <p className={styles.sectionLead}>
-              {pickLocalized(i18n.currentLocale, architectureSectionCopy.lead)}
+              {pickLocalized(currentLocale, architectureSectionCopy.lead)}
             </p>
 
             <div className={styles.architectureOverview}>
@@ -768,12 +955,12 @@ export default function Home() {
                 ref={addRevealRef}
                 data-reveal-scale="1"
                 className={clsx(styles.runtimeMechanism, styles.reveal)}
-                aria-label={isZh ? "HAMi 运行时机制架构图" : "HAMi runtime architecture diagram"}
+                aria-label={pickLocalized(currentLocale, whyAndArchCopy.runtimeDiagramAria)}
               >
                 <div
                   className={styles.runtimeDiagramFrame}
                   role="img"
-                  aria-label={isZh ? "HAMi 运行时机制架构图" : "HAMi runtime architecture diagram"}
+                  aria-label={pickLocalized(currentLocale, whyAndArchCopy.runtimeDiagramAria)}
                 >
                   <h3 className={styles.runtimeDiagramTitle}>
                     {pickLocalized(i18n.currentLocale, runtimeDiagramCopy.title)}
@@ -797,7 +984,7 @@ export default function Home() {
                   </section>
                   <section className={styles.runtimeResources} data-runtime-part="resources">
                     <span className={styles.runtimeResourcesLabel}>
-                      {isZh ? "资源语义" : "Resource Semantics"}
+                      {pickLocalized(currentLocale, whyAndArchCopy.resourceSemantics)}
                     </span>
                     <div className={styles.runtimeResourcesValue}>
                       <code>nvidia.com/gpu</code>
@@ -816,12 +1003,10 @@ export default function Home() {
         <section ref={addRevealRef} className={clsx(styles.section, styles.reveal)}>
           <div className="container">
             <h2 className={styles.sectionTitle}>
-              {isZh ? "使用 HAMi 前后对比" : "Before and After Using HAMi"}
+              {pickLocalized(currentLocale, whyAndArchCopy.beforeAfterTitle)}
             </h2>
             <p className={styles.sectionLead}>
-              {isZh
-                ? "相同工作负载下，对比传统整卡独占与 HAMi GPU 共享后的资源利用率变化。"
-                : "Compare traditional whole-GPU allocation with HAMi GPU sharing under the same workloads."}
+              {pickLocalized(currentLocale, whyAndArchCopy.beforeAfterLead)}
             </p>
 
             <div
@@ -840,17 +1025,15 @@ export default function Home() {
         >
           <div className="container">
             <h2 className={styles.sectionTitle}>
-              {isZh ? "生态与设备支持" : "Ecosystem & Device Support"}
+              {pickLocalized(currentLocale, footerSectionsCopy.ecosystemTitle)}
             </h2>
             <p className={styles.sectionLead}>
-              {isZh
-                ? "覆盖多厂商加速设备生态，详情和支持矩阵见文档。"
-                : "Broad accelerator ecosystem across vendors. See docs for full support matrix."}
+              {pickLocalized(currentLocale, footerSectionsCopy.ecosystemLead)}
             </p>
             <div className={styles.supportersWrap}>
               <ul
                 className="support-wrapper"
-                aria-label={isZh ? "HAMi 生态支持" : "HAMi ecosystem wall"}
+                aria-label={pickLocalized(currentLocale, footerSectionsCopy.ecosystemAria)}
               >
                 {vendorEcosystem.map((vendor) => (
                   <li key={vendor.key}>
@@ -870,18 +1053,16 @@ export default function Home() {
               className={clsx(styles.inlineLink, styles.supportDocsLink)}
               to={useBaseUrl("/docs/userguide/device-supported")}
             >
-              {isZh ? "查看完整设备支持列表 →" : "View full supported devices list →"}
+              {pickLocalized(currentLocale, footerSectionsCopy.ecosystemLink)}
             </Link>
           </div>
         </section>
 
         <section ref={addRevealRef} className={clsx(styles.section, styles.reveal)}>
           <div className="container">
-            <h2 className={styles.sectionTitle}>{isZh ? "与 HAMi 协同" : "Works with HAMi"}</h2>
+            <h2 className={styles.sectionTitle}>{pickLocalized(currentLocale, footerSectionsCopy.compatTitle)}</h2>
             <p className={styles.sectionLead}>
-              {isZh
-                ? "HAMi 与以下开源调度器、队列及云平台协同工作，既可作为设备层嵌入，也可在调度层集成。"
-                : "HAMi integrates with these open-source schedulers, queuing layers, and cloud platforms, either as an embeddable device layer or at the scheduling layer."}
+              {pickLocalized(currentLocale, footerSectionsCopy.compatLead)}
             </p>
             <div className={styles.supportersWrap}>
               <LogoWall items={ecosystemData} imgPrefix="/img/ecosystem" />
@@ -891,23 +1072,19 @@ export default function Home() {
 
         <section ref={addRevealRef} className={clsx(styles.section, styles.reveal)}>
           <div className="container">
-            <h2 className={styles.sectionTitle}>{isZh ? "采用者" : "Adopters"}</h2>
+            <h2 className={styles.sectionTitle}>{pickLocalized(currentLocale, footerSectionsCopy.adoptersTitle)}</h2>
             <p className={styles.sectionLead}>
-              {isZh
-                ? "以下组织正在评估或在生产环境中使用 HAMi。"
-                : "The organizations below are evaluating or using HAMi in production environments."}
+              {pickLocalized(currentLocale, footerSectionsCopy.adoptersLead)}
             </p>
             <div className={styles.supportersWrap}>
               <LogoWall items={adoptersData} imgPrefix="/img/adopters" />
             </div>
             <article className={styles.adoptersCta}>
               <h3 className={styles.adoptersCtaTitle}>
-                {isZh ? "加入采用者列表" : "Join the adopters list"}
+                {pickLocalized(currentLocale, footerSectionsCopy.adoptersCtaTitle)}
               </h3>
               <p className={styles.adoptersCtaText}>
-                {isZh
-                  ? "请按照贡献者指南流程提交贵组织信息。"
-                  : "Submit your organization through the contributor guide process."}
+                {pickLocalized(currentLocale, footerSectionsCopy.adoptersCtaText)}
               </p>
               <a
                 className={clsx("button", "button--primary", styles.adoptersCtaButton)}
@@ -915,7 +1092,7 @@ export default function Home() {
                 target="_blank"
                 rel="noreferrer"
               >
-                {isZh ? "查看提交说明 →" : "See submission instructions →"}
+                {pickLocalized(currentLocale, footerSectionsCopy.adoptersCtaButton)}
               </a>
             </article>
           </div>
@@ -926,23 +1103,19 @@ export default function Home() {
           className={clsx(styles.section, styles.sectionAlt, styles.reveal)}
         >
           <div className="container">
-            <h2 className={styles.sectionTitle}>{isZh ? "贡献组织" : "Contributors"}</h2>
+            <h2 className={styles.sectionTitle}>{pickLocalized(currentLocale, footerSectionsCopy.contributorsTitle)}</h2>
             <p className={styles.sectionLead}>
-              {isZh
-                ? "HAMi 由社区与企业贡献者共同推进，以下组织持续参与项目建设与生态协作。"
-                : "HAMi is advanced by contributors from the community and industry. These organizations actively participate in project development and ecosystem collaboration."}
+              {pickLocalized(currentLocale, footerSectionsCopy.contributorsLead)}
             </p>
             <div className={styles.supportersWrap}>
               <ContributorsList />
             </div>
             <div className={styles.communityMetricsHeader}>
               <h3 className={styles.communityMetricsTitle}>
-                {isZh ? "全球社区指标" : "Global Community Metrics"}
+                {pickLocalized(currentLocale, footerSectionsCopy.metricsTitle)}
               </h3>
               <p className={styles.communityMetricsDesc}>
-                {isZh
-                  ? "实时展示 HAMi 社区增长与开源活跃度。"
-                  : "A live snapshot of HAMi community growth and open-source momentum."}
+                {pickLocalized(currentLocale, footerSectionsCopy.metricsLead)}
               </p>
             </div>
             <div className={styles.communityMetricsRow}>
@@ -951,14 +1124,14 @@ export default function Home() {
                   <span className={styles.communityMetricIcon} aria-hidden="true">
                     <FontAwesomeIcon icon={faStar} />
                   </span>
-                  <strong>{isZh ? "GitHub Stars" : "GitHub Stars"}</strong>
+                  <strong>GitHub Stars</strong>
                   <a
                     className={styles.metricSourceHint}
                     href={GITHUB_REPO_URL}
                     target="_blank"
                     rel="noreferrer"
-                    data-source={isZh ? "数据来源：GitHub" : "Source: GitHub"}
-                    aria-label={isZh ? "查看 Stars 数据来源" : "View stars data source"}
+                    data-source={pickLocalized(currentLocale, metricsCopy.starsSource)}
+                    aria-label={pickLocalized(currentLocale, metricsCopy.starsAria)}
                   >
                     <FontAwesomeIcon icon={faCircleInfo} />
                   </a>
@@ -970,14 +1143,14 @@ export default function Home() {
                   <span className={styles.communityMetricIcon} aria-hidden="true">
                     <FontAwesomeIcon icon={faBoxOpen} />
                   </span>
-                  <strong>{isZh ? "镜像下载" : "Docker Pulls"}</strong>
+                  <strong>{pickLocalized(currentLocale, metricsCopy.dockerLabel)}</strong>
                   <a
                     className={styles.metricSourceHint}
                     href={DOCKER_IMAGE_URL}
                     target="_blank"
                     rel="noreferrer"
-                    data-source={isZh ? "数据来源：Docker Hub" : "Source: Docker Hub"}
-                    aria-label={isZh ? "查看 Docker 下载数据来源" : "View Docker pulls data source"}
+                    data-source={pickLocalized(currentLocale, metricsCopy.dockerSource)}
+                    aria-label={pickLocalized(currentLocale, metricsCopy.dockerAria)}
                   >
                     <FontAwesomeIcon icon={faCircleInfo} />
                   </a>
@@ -989,14 +1162,14 @@ export default function Home() {
                   <span className={styles.communityMetricIcon} aria-hidden="true">
                     <FontAwesomeIcon icon={faUsers} />
                   </span>
-                  <strong>{isZh ? "贡献者" : "Contributors"}</strong>
+                  <strong>{pickLocalized(currentLocale, metricsCopy.contributorsLabel)}</strong>
                   <a
                     className={styles.metricSourceHint}
                     href={DEVSTATS_URL}
                     target="_blank"
                     rel="noreferrer"
-                    data-source={isZh ? "数据来源：DevStats" : "Source: DevStats"}
-                    aria-label={isZh ? "查看贡献者数据来源" : "View contributors data source"}
+                    data-source={pickLocalized(currentLocale, metricsCopy.contributorsSource)}
+                    aria-label={pickLocalized(currentLocale, metricsCopy.contributorsAria)}
                   >
                     <FontAwesomeIcon icon={faCircleInfo} />
                   </a>
