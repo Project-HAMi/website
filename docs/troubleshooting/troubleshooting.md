@@ -148,7 +148,7 @@ HAMi supports two device-injection paths:
 
 The HAMi chart applies `devicePlugin.runtimeClassName` both to the Device Plugin and to NVIDIA workloads mutated by the HAMi scheduler. This is why setting it to `nvidia` fixes the management container and keeps the workload runtime path consistent.
 
-For new clusters, we recommend GPU Operator because it provides one entry point for configuring and upgrading the driver, Container Toolkit, and monitoring components. If these components are already installed on the hosts and you maintain their runtime configuration yourself, GPU Operator is optional; follow [Prerequisites](../installation/prerequisites.md).
+For new clusters, GPU Operator is recommended because it provides one entry point for configuring and upgrading the driver, Container Toolkit, and monitoring components. If these components are already installed on the hosts and you maintain their runtime configuration yourself, GPU Operator is optional; follow [Prerequisites](../installation/prerequisites.md).
 
 :::warning
 
