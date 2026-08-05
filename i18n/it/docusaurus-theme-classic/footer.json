@@ -1,0 +1,54 @@
+{
+  "link.title.Documentation": {
+    "message": "Documentazione",
+    "description": "The title of the footer links column with title=Documentation in the footer"
+  },
+  "link.title.Community": {
+    "message": "Community",
+    "description": "The title of the footer links column with title=Community in the footer"
+  },
+  "link.title.Follow Us": {
+    "message": "Seguici su",
+    "description": "The title of the footer links column with title=Follow Us in the footer"
+  },
+  "link.item.label.Concepts": {
+    "message": "Concetti",
+    "description": "The label of footer link with label=Concepts linking to /docs/core-concepts/gpu-virtualization"
+  },
+  "link.item.label.Quick Start": {
+    "message": "Avvio rapido",
+    "description": "The label of footer link with label=Quick Start linking to /docs/get-started/deploy-with-helm"
+  },
+  "link.item.label.Tutorials": {
+    "message": "Tutorial",
+    "description": "The label of footer link with label=Tutorials linking to /tutorials"
+  },
+  "link.item.label.Discord": {
+    "message": "Discord",
+    "description": "The label of footer link with label=Discord linking to https://discord.gg/Amhy7XmbNq"
+  },
+  "link.item.label.Slack (#hami-dev)": {
+    "message": "Slack (#hami-dev)",
+    "description": "The label of footer link with label=Slack (#hami-dev) linking to https://cloud-native.slack.com/archives/C07T10BU4R2/"
+  },
+  "link.item.label.WeChat Group": {
+    "message": "Gruppo WeChat",
+    "description": "The label of footer link with label=WeChat Group linking to /community?wechat=group"
+  },
+  "link.item.label.WeChat Official Account": {
+    "message": "Account ufficiale WeChat",
+    "description": "The label of footer link with label=WeChat Official Account linking to /community?wechat=official"
+  },
+  "link.item.label.LinkedIn": {
+    "message": "LinkedIn",
+    "description": "The label of footer link with label=LinkedIn linking to https://www.linkedin.com/company/project-hami-io/"
+  },
+  "link.item.label.X": {
+    "message": "X",
+    "description": "The label of footer link with label=X linking to https://x.com/HAMiProject"
+  },
+  "copyright": {
+    "message": "\n        <br />\n        <strong>© Autori di HAMi 2026 | Documentazione distribuita sotto licenza <a href=\"https://creativecommons.org/licenses/by/4.0\">CC-BY-4.0</a> </strong> <strong>| Supportato da <a href=\"https://www.netlify.com\">Netlify</a></strong>\n        <br />\n        <br />\n        Copyright © HAMi a Series of LF Projects, LLC\n        <br />\n        For website terms of use, trademark policy and other project policies please see <a href=\"https://lfprojects.org/policies/\">lfprojects.org/policies/</a>.\n      ",
+    "description": "The footer copyright"
+  }
+}
