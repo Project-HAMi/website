@@ -1,5 +1,6 @@
 ---
 title: "Lab 11: KAI Scheduler + HAMi-core on a Fake GPU"
+description: "Install NVIDIA KAI Scheduler with HAMi-core isolation and verify the scheduling and injection control plane — no real GPU required."
 sidebar_label: "Lab 11: KAI + HAMi (nvml-mock)"
 lab:
   level: Advanced
