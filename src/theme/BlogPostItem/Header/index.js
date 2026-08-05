@@ -31,6 +31,7 @@ export default function BlogPostItemHeader() {
   const { metadata, frontMatter, isBlogPostPage } = useBlogPost();
   const { i18n } = useDocusaurusContext();
   const cover = frontMatter.cover;
+  const coverUrl = useBaseUrl(cover || "");
   const fallbackLabel = (
     <Translate
       id="theme.hami.blog.meta.unknownAuthor"
@@ -44,11 +45,7 @@ export default function BlogPostItemHeader() {
     <header>
       {isBlogPostPage && cover && (
         <div className={styles.coverWrap}>
-          <img
-            className={styles.cover}
-            src={useBaseUrl(cover)}
-            alt={frontMatter.title || metadata.title}
-          />
+          <img className={styles.cover} src={coverUrl} alt={frontMatter.title || metadata.title} />
         </div>
       )}
       <BlogPostItemHeaderTitle />

@@ -1,6 +1,6 @@
 import Layout from "@theme/Layout";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
-import useBaseUrl from "@docusaurus/useBaseUrl";
+import { useBaseUrlUtils } from "@docusaurus/useBaseUrl";
 import caseStudies from "../data/caseStudies";
 import styles from "./case-studies.module.css";
 
@@ -16,6 +16,7 @@ function formatDate(date, locale) {
 
 export default function CaseStudiesPage() {
   const { i18n } = useDocusaurusContext();
+  const { withBaseUrl } = useBaseUrlUtils();
   const isZh = i18n.currentLocale === "zh";
   const t = (item) => (isZh ? item.zh : item.en);
 
@@ -48,7 +49,7 @@ export default function CaseStudiesPage() {
                   <div className={styles.logoBox}>
                     <img
                       className={styles.logo}
-                      src={useBaseUrl(logo)}
+                      src={withBaseUrl(logo)}
                       alt={displayName}
                       loading="lazy"
                     />

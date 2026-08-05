@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useCallback, useState } from "react";
 import clsx from "clsx";
 import Layout from "@theme/Layout";
 import Link from "@docusaurus/Link";
-import useBaseUrl from "@docusaurus/useBaseUrl";
+import { useBaseUrlUtils } from "@docusaurus/useBaseUrl";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -373,14 +373,15 @@ function RuntimeLaneCard({ lane, locale }) {
 
 export default function Home() {
   const { i18n } = useDocusaurusContext();
+  const { withBaseUrl } = useBaseUrlUtils();
   const isZh = i18n.currentLocale === "zh";
   const [starsCount, setStarsCount] = useState(3100);
   // Static: Docker Hub's API sends no CORS header, so it cannot be read from the browser.
   const dockerPulls = 325000;
-  const kubernetesLogo = useBaseUrl("img/kubernetes-logo.svg");
-  const hamiLogo = useBaseUrl("img/hami-graph-color.svg");
-  const hamiHorizontalLogoLight = useBaseUrl("img/hami-horizontal-color-black.svg");
-  const hamiHorizontalLogoDark = useBaseUrl("img/hami-horizontal-color-white.svg");
+  const kubernetesLogo = withBaseUrl("img/kubernetes-logo.svg");
+  const hamiLogo = withBaseUrl("img/hami-graph-color.svg");
+  const hamiHorizontalLogoLight = withBaseUrl("img/hami-horizontal-color-black.svg");
+  const hamiHorizontalLogoDark = withBaseUrl("img/hami-horizontal-color-white.svg");
   const contributorsCount = useCountUp(500);
   const contributorCountries = useCountUp(27);
   const starsCountDisplay = useCountUp(starsCount);
@@ -494,11 +495,14 @@ export default function Home() {
                 <div className={styles.heroActions}>
                   <Link
                     className="button button--primary button--lg"
-                    to={useBaseUrl("/docs/get-started/deploy-with-helm")}
+                    to={withBaseUrl("/docs/get-started/deploy-with-helm")}
                   >
                     {isZh ? "快速开始" : "Quick Start"}
                   </Link>
-                  <Link className="button button--outline button--lg" to={useBaseUrl("/community")}>
+                  <Link
+                    className="button button--outline button--lg"
+                    to={withBaseUrl("/community")}
+                  >
                     {isZh ? "加入社区" : "Join Community"}
                   </Link>
                 </div>
@@ -521,7 +525,7 @@ export default function Home() {
                           <div key={item.key} className={styles.ecoLogoChip}>
                             {item.logo ? (
                               <img
-                                src={useBaseUrl(item.logo)}
+                                src={withBaseUrl(item.logo)}
                                 alt={pickLocalizedOrRaw(i18n.currentLocale, item.label)}
                               />
                             ) : (
@@ -542,7 +546,7 @@ export default function Home() {
                             {heroSchedulerEcosystem.map((item) => (
                               <div key={item.key} className={styles.ecoLogoChip}>
                                 <img
-                                  src={useBaseUrl(item.logo)}
+                                  src={withBaseUrl(item.logo)}
                                   alt={pickLocalizedOrRaw(i18n.currentLocale, item.label)}
                                 />
                               </div>
@@ -624,13 +628,13 @@ export default function Home() {
                         <div className={styles.observabilityLogoRow}>
                           <div className={styles.ecoLogoChip}>
                             <img
-                              src={useBaseUrl("img/ecosystem/prometheus.svg")}
+                              src={withBaseUrl("img/ecosystem/prometheus.svg")}
                               alt="Prometheus"
                             />
                           </div>
                           <div className={styles.ecoLogoChip}>
                             <img
-                              src={useBaseUrl("img/ecosystem/opentelemetry.svg")}
+                              src={withBaseUrl("img/ecosystem/opentelemetry.svg")}
                               alt="OpenTelemetry"
                             />
                           </div>
@@ -649,7 +653,7 @@ export default function Home() {
                         {heroDeviceEcosystem.map((item) => (
                           <div key={item.key} className={styles.ecoLogoChip}>
                             <img
-                              src={useBaseUrl(item.logo)}
+                              src={withBaseUrl(item.logo)}
                               alt={pickLocalizedOrRaw(i18n.currentLocale, item.label)}
                             />
                           </div>
@@ -672,14 +676,14 @@ export default function Home() {
               <div className={styles.cncfFeatureMedia}>
                 <div className={styles.cncfLogoBox}>
                   <img
-                    src={useBaseUrl("img/cncf-color.svg")}
+                    src={withBaseUrl("img/cncf-color.svg")}
                     alt="CNCF logo"
                     className={styles.cncfFeatureLogoLight}
                   />
                 </div>
                 <div className={styles.cnaiLogoBox}>
                   <img
-                    src={useBaseUrl("img/ecosystem/cnai.svg")}
+                    src={withBaseUrl("img/ecosystem/cnai.svg")}
                     alt="CNAI Landscape logo"
                     className={styles.cnaiLogo}
                   />
@@ -860,7 +864,7 @@ export default function Home() {
                       rel="noopener noreferrer"
                       className="adopter-card-link"
                     >
-                      {vendor.logo && <img src={useBaseUrl(vendor.logo)} alt={vendor.name} />}
+                      {vendor.logo && <img src={withBaseUrl(vendor.logo)} alt={vendor.name} />}
                     </a>
                   </li>
                 ))}
@@ -868,7 +872,7 @@ export default function Home() {
             </div>
             <Link
               className={clsx(styles.inlineLink, styles.supportDocsLink)}
-              to={useBaseUrl("/docs/userguide/device-supported")}
+              to={withBaseUrl("/docs/userguide/device-supported")}
             >
               {isZh ? "查看完整设备支持列表 →" : "View full supported devices list →"}
             </Link>
@@ -1032,7 +1036,7 @@ export default function Home() {
               >
                 {isZh ? "给 HAMi 点个 Star" : "Star HAMi on GitHub"}
               </a>
-              <Link className={clsx("button", "button--outline")} to={useBaseUrl("/community")}>
+              <Link className={clsx("button", "button--outline")} to={withBaseUrl("/community")}>
                 {isZh ? "加入社区" : "Join Community"}
               </Link>
             </div>
