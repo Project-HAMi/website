@@ -6,7 +6,7 @@ tags: ["KubeCon", "GPU", "Kubernetes", "AI", "Japan"]
 authors: [hami_community]
 ---
 
-[KubeCon + CloudNativeCon Japan 2026](https://events.linuxfoundation.org/kubecon-cloudnativecon-japan/) was held July 28-30 at the Pacifico Yokohama. HAMi took part with a main-stage session and a booth in the Project Pavilion. [Reza Jelveh](https://github.com/fishman) presented the session and staffed the booth.
+[KubeCon + CloudNativeCon Japan 2026](https://events.linuxfoundation.org/kubecon-cloudnativecon-japan/) was held July 28-30 at Pacifico Yokohama. HAMi took part with a main-stage session and a booth in the Project Pavilion. [Reza Jelveh](https://github.com/fishman) presented the session and staffed the booth.
 
 For the full overview, talk slides, and the SNOW case study, see the [KubeCon Japan 2026 page](/landing/kubecon-japan).
 
@@ -26,8 +26,6 @@ The session [**Shared GPU Scheduling & Proactive Autoscaling: A Production Bluep
 
 The session described how SNOW serves Snow, Epik, and B612, three widely used AI applications reaching more than 200 million users, on over 1000 NVIDIA A100 GPUs. The architecture combines HAMi for GPU sharing with KEDA for proactive autoscaling, halving the GPUs required for the same traffic and improving recovery under load.
 
-The complete metrics, the SNOW case study, and the [talk slides](/resources/2026-kubecon-japan/snow_corp_cncf.pdf) are available on the [KubeCon Japan page](/landing/kubecon-japan).
-
 ## At the Booth
 
 ![The HAMi booth at the KubeCon Japan 2026 Project Pavilion](/img/kubecon-japan-2026-recap/hami-booth.jpg)
@@ -40,4 +38,4 @@ At the HAMi booth in the Project Pavilion, engineers stopped by with questions i
 
 ## Learn More
 
-The talk, case study, slides, and ways to get involved are collected on the [KubeCon Japan 2026 page](/landing/kubecon-japan). To join the discussion, visit the [HAMi community](/community/).
+The talk, SNOW case study, complete metrics, slides, and ways to get involved are available on the [KubeCon Japan 2026 page](/landing/kubecon-japan). To join the discussion, visit the [HAMi community](/community).

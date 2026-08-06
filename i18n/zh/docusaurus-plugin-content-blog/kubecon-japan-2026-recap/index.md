@@ -26,8 +26,6 @@ HAMi 出现在开场 Keynote 中，CNCF 首席技术官 Chris Aniszczyk 与 Linu
 
 该分享介绍了 SNOW 如何以超过 1000 张 NVIDIA A100 GPU，服务 Snow、Epik、B612 三款覆盖超过 2 亿用户的 AI 应用。其架构以 HAMi 完成 GPU 共享，以 KEDA 实现主动式扩容，在相同流量下将 GPU 需求减半，并提升了负载波动下的恢复能力。
 
-完整的指标、SNOW 案例与[演讲幻灯片](/resources/2026-kubecon-japan/snow_corp_cncf.pdf) 均可在 [KubeCon 日本专页](/zh/landing/kubecon-japan) 查看。
-
 ## 展台
 
 ![KubeCon 日本 2026 Project Pavilion 的 HAMi 展台](/img/kubecon-japan-2026-recap/hami-booth.jpg)
@@ -40,4 +38,4 @@ HAMi 出现在开场 Keynote 中，CNCF 首席技术官 Chris Aniszczyk 与 Linu
 
 ## 进一步了解
 
-本次活动的演讲、案例、幻灯片与参与方式，已汇总于 [KubeCon 日本 2026 专页](/zh/landing/kubecon-japan)。如需参与讨论，欢迎加入 [HAMi 社区](/zh/community/)。
+本次活动的演讲、SNOW 案例、完整指标、幻灯片与参与方式，均可在 [KubeCon 日本 2026 专页](/zh/landing/kubecon-japan) 查看。如需参与讨论，欢迎加入 [HAMi 社区](/zh/community)。
