@@ -55,6 +55,9 @@
 "India":
   label: "India"
   permalink: "/india"
+"Japan":
+  label: "Japan"
+  permalink: "/japan"
 "KAI Scheduler":
   label: "KAI Scheduler"
   permalink: "/kai-scheduler"
