@@ -55,11 +55,11 @@ flowchart LR
 <TabItem value="aws" label="AWS">
 
 - AWS account that can run a [G-instance type](https://aws.amazon.com/ec2/instance-types/g4/). To use this instance, take the following steps:
-    1. Search for the "Service Quota" service in the AWS console search bar and select it.
-    2. At the right of the screen, under "Manage quotas", search for "Amazon Elastic Compute Cloud" quotas and select "View quotas".
-    3. Search for "All G and VT Spot Instance Requests" in the quota search bar and select it.
-    4. At the top right of the service page, click "Request increase at account level" and request for 4 vCPU.
-- `aws` CLI installed and authenticated (`aws login`)
+  1. Search for the "Service Quota" service in the AWS console search bar and select it.
+  2. At the right of the screen, under "Manage quotas", search for "Amazon Elastic Compute Cloud" quotas and select "View quotas".
+  3. Search for "All G and VT Spot Instance Requests" in the quota search bar and select it.
+  4. At the top right of the service page, click "Request increase at account level" and request for 4 vCPU.
+- `AWS` CLI installed and authenticated (`aws login`)
 - **Instance type**: `g4dn.xlarge` instance type because it supports the nvidia-tesla-t4.
 - **Operating System**: `Ubuntu 24.04 LTS`
 - **Kubernetes version**: `1.33`
@@ -81,16 +81,17 @@ flowchart LR
 > To get the full list of supported OS, Kubernetes version, and VM Kernel version supported by the NVIDIA GPU Operator v25.3 used in this tutorial, visit [NVIDIA GPU Operator Platform Support v25.3](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/25.3/platform-support.html#supported-operating-systems-and-kubernetes-platforms).
 
 ---
+
 ## Step 1: Create a Virtual Machine
 
 <Tabs groupId="cloud-provider">
 <TabItem value="aws" label="AWS">
 
-### Purpose
+### AWS Purpose
 
 Create a virtual machine with a GPU to serve as the foundation for the entire lab. HAMi requires physical GPU hardware (or pass-through virtual GPU) to function, it does not emulate GPUs; instead, it partitions and shares real GPUs.
 
-### Instructions
+### AWS Instructions
 
 #### 1.1 Export EC2 Configuration Variables
 
@@ -129,8 +130,7 @@ sudo -i
 
 #### 1.4 Downgrade to the v6.8 AWS Kernel, Use It as the Default, and Reboot
 
-The GPU operator installation in Step 5, runs v25.3.0, and this version [only supports a specific kernel version](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/25.3/platform-support.html#supported-precompiled-drivers) depending on the operating system being used.
-AWS ships with a different version on default, this step changes it to the supported one.
+The GPU operator installation in Step 5, runs v25.3.0, and this version [only supports a specific kernel version](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/25.3/platform-support.html#supported-precompiled-drivers) depending on the operating system being used. AWS ships with a different version on default, this step changes it to the supported one.
 
 ```bash
 # Install the AWS 6.8 kernel and its headers
@@ -153,7 +153,7 @@ reboot
 
 ```bash
 export NODE_PUBLIC_IP=<your-vm-public-ip>
-ssh -i ~/Downloads/hami-eks.pem ubuntu@$NODE_PUBLIC_IP
+ssh -i <your-pem-key-file-path> ubuntu@$NODE_PUBLIC_IP
 
 # After logging in, switch to root a user:
 sudo -i
@@ -171,11 +171,11 @@ The output is similar to the following:
 </TabItem>
 <TabItem value="gcp" label="GCP">
 
-### Purpose
+### GCP Purpose
 
 Create a virtual machine with a GPU to serve as the foundation for the entire lab. HAMi requires physical GPU hardware (or pass-through virtual GPU) to function, it does not emulate GPUs; instead, it partitions and shares real GPUs.
 
-### Instructions
+### GCP Instructions
 
 Set environment variables:
 
@@ -360,6 +360,7 @@ apt-get update
 apt-get install -y kubelet kubeadm kubectl
 apt-mark hold kubelet kubeadm kubectl
 ```
+
 </TabItem>
 </Tabs>
 
@@ -420,8 +421,6 @@ Expected output (STATUS of Ready indicates the cluster is ready):
 NAME            STATUS   ROLES           AGE    VERSION
 hami-workshop   Ready    control-plane   2m     v1.34.8
 ```
-
-> Cost note: If you are using AWS, skip the next step and continue from Step 4
 
 #### 3.8 Allow Master Node to Schedule Pods
 
@@ -586,7 +585,10 @@ The expected output includes GPU information (driver version, CUDA version, GPU 
 ```
 
 ### Get The GPU Node Name
+
+```bash
 kubectl get nodes
+```
 
 The output is similar to the following:
 
@@ -711,6 +713,7 @@ helm install my-hami-webui hami-webui/hami-webui \
 > `--set dcgm-exporter.enabled=false` because the GPU Operator already installed dcgm-exporter, avoiding duplicate deployment.
 
 Check the pod is running:
+
 ```bash
 kubectl get pods -n kube-system -l app.kubernetes.io/name=hami-webui
 ```
@@ -718,7 +721,7 @@ kubectl get pods -n kube-system -l app.kubernetes.io/name=hami-webui
 Access the WebUI via port forwarding:
 
 ```bash
-kubectl port-forward --address <your-vm-public-ip-address> service/my-hami-webui 3000:3000 --namespace=kube-system
+kubectl port-forward --address 0.0.0.0 service/my-hami-webui 3000:3000 --namespace=kube-system
 ```
 
 Visit `http://<your-vm-public-ip-address>:3000` to open the HAMi WebUI.
