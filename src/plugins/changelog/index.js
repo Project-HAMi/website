@@ -13,17 +13,18 @@ import {aliasedSitePath, docuHash, normalizeUrl} from '@docusaurus/utils';
 /**
  * Multiple versions may be published on the same day, causing the order to be
  * the reverse. Therefore, our publish time has a "fake hour" to order them.
+ *
+ * NOTE: Both sets are passed in from loadContent() so that each build pass
+ * (en, zh, …) starts with a clean slate and locale runs cannot interfere with
+ * each other's timestamps or author maps.
  */
-const publishTimes = new Set();
-/**
- * @type {Record<string, {name: string, url: string,alias: string, imageURL: string}>}
- */
-const authorsMap = {};
 
 /**
  * @param {string} section
+ * @param {Set<string>} publishTimes  per-invocation dedup set
+ * @param {Record<string, {name: string, url: string, alias: string, imageURL: string}>} authorsMap  per-invocation authors accumulator
  */
-function processSection(section) {
+function processSection(section, publishTimes, authorsMap) {
   const title = section
     .match(/\n## .*/)?.[0]
     .trim()
@@ -94,7 +95,7 @@ function processSection(section) {
   publishTimes.add(`${date}T${hour}:00`);
 
   return {
-    title: title.replace(/ \(.*\)/, ''),
+    title: title.replace(/ \(.*\)/, ""),
     content: `---
 mdx:
  format: md
@@ -138,10 +139,16 @@ export default async function ChangelogPlugin(context, options) {
     ...blogPlugin,
     name: 'changelog-plugin',
     async loadContent() {
+      // Create fresh state per loadContent() call so that sequential locale
+      // build passes (en → zh) cannot see each other's timestamps or authors.
+      const publishTimes = new Set();
+      /** @type {Record<string, {name: string, url: string, alias: string, imageURL: string}>} */
+      const authorsMap = {};
+
       const fileContent = (await fs.readFile(changelogPath, 'utf-8')).replace(/\r\n/g, '\n');
       const sections = fileContent
         .split(/(?=\n## )/)
-        .map(processSection)
+        .map((section) => processSection(section, publishTimes, authorsMap))
         .filter(Boolean);
       await Promise.all(
         sections.map((section) =>
