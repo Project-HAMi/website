@@ -10,6 +10,7 @@ lab:
   authors:
     - rootsongjc
     - saiyam1814
+    - creativeklvn
   verified: "2026-06-04"
 tags:
   - installation
