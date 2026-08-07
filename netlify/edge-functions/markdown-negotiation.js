@@ -314,11 +314,13 @@ function toMarkdownTable(tableHtml) {
 }
 
 function htmlToMarkdown(html, pageUrl) {
-  const rawTitle = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] ?? "";
-  const rawDescription =
-    html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']*)["'][^>]*>/i)?.[1] ?? "";
+  html = protectQuotedAngles(html);
+  const rawTitle = restoreQuotedAngles(html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] ?? "");
+  const rawDescription = restoreQuotedAngles(
+    html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']*)["'][^>]*>/i)?.[1] ?? "",
+  );
 
-  let content = protectQuotedAngles(html.match(/<main[^>]*>([\s\S]*?)<\/main>/i)?.[1] ?? html);
+  let content = html.match(/<main[^>]*>([\s\S]*?)<\/main>/i)?.[1] ?? html;
 
   content = content
     .replace(/<script[\s\S]*?<\/script>/gi, "")

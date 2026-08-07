@@ -347,6 +347,10 @@ describe("inline formatting", () => {
     );
   });
 
+  it("still finds <main> when a quoted attribute on it contains `>`", async () => {
+    assert.equal(await body('<main data-label="a > b"><p>inside</p></main>'), "inside");
+  });
+
   it("still strips tags when the `>` in an attribute is entity-encoded", async () => {
     assert.equal(await body('<main><p><span title="a &gt; b">Hello</span></p></main>'), "Hello");
   });
