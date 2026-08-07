@@ -188,7 +188,7 @@ function handleImageClick(event) {
   const lightbox = ensureLightbox();
   const caption = getImageCaption(image);
   lightbox.__hamiLightboxOpen({
-    src: image.currentSrc || image.src,
+    src: image.dataset.lightboxSrc || image.currentSrc || image.src,
     alt: image.alt || caption,
     caption,
   });

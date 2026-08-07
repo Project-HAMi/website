@@ -55,9 +55,10 @@ function addFigureNumbers() {
     // Create figure wrapper if it doesn't exist
     let figure = img.closest("figure");
     if (!figure) {
+      const imageContainer = img.closest("picture") || img;
       figure = document.createElement("figure");
-      img.parentNode.insertBefore(figure, img);
-      figure.appendChild(img);
+      imageContainer.parentNode.insertBefore(figure, imageContainer);
+      figure.appendChild(imageContainer);
     }
 
     // Remove existing figcaption if any (but only if it doesn't have figure number)

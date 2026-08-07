@@ -1,0 +1,12 @@
+{
+  "/img/adopters/szzt.png": {
+    "width": 15000,
+    "height": 2571,
+    "widths": [140, 170, 280, 340]
+  },
+  "/img/blog-hami-at-kubecon-eu-2026-booth.png": {
+    "width": 1280,
+    "height": 370,
+    "widths": [320, 640, 960, 1280]
+  }
+}
