@@ -11,6 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import useBaseUrl from "@docusaurus/useBaseUrl";
 import events from "@site/src/data/events";
+import { formatDate, formatDateRange } from "@site/src/utils/date";
 import styles from "./EventLanding.module.css";
 
 function isChinese(locale) {
@@ -38,27 +39,6 @@ const DEFAULTS = {
   discordUrl: "https://discord.gg/Nwt3jVVpnT",
   githubUrl: "https://github.com/Project-HAMi/HAMi",
 };
-
-function dateFmt(locale) {
-  return new Intl.DateTimeFormat(isChinese(locale) ? "zh-CN" : "en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    timeZone: "UTC",
-  });
-}
-
-function formatDate(dateStr, locale) {
-  return dateFmt(locale).format(new Date(dateStr));
-}
-
-function formatDateRange(startStr, endStr, locale) {
-  const fmt = dateFmt(locale);
-  if (typeof fmt.formatRange !== "function") {
-    return `${fmt.format(new Date(startStr))} - ${fmt.format(new Date(endStr))}`;
-  }
-  return fmt.formatRange(new Date(startStr), new Date(endStr));
-}
 
 export default function EventLanding({ slug }) {
   const { i18n, siteConfig } = useDocusaurusContext();

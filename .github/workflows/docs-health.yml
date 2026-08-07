@@ -38,7 +38,7 @@ jobs:
         run: npm run format:check
 
       - name: Unit Tests
-        run: npm test
+        run: npm run test
 
       - name: Build Site
         env:
