@@ -3,41 +3,41 @@ sidebar_label: Online Installation from Helm
 title: Online Installation from Helm (Recommended)
 ---
 
-The recommended way to deploy HAMi is via Helm.
+The recommended way to deploy HAMi in a Kubernetes cluster is via the official Helm chart.
 
-## Add HAMi repo
+## 1. Add HAMi Helm Repository {#add-hami-repo}
 
-You can add HAMi chart repository using the following command:
+Add the HAMi chart repository and update local repository cache:
 
 ```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/
 helm repo update
 ```
 
-## Get your Kubernetes version
+## 2. Deploy HAMi {#deploy-hami}
 
-A Kubernetes version is required for proper installation. You can retrieve your Kubernetes server version with:
-
-```bash
-kubectl version
-```
-
-## Installation
-
-Ensure the `scheduler.kubeScheduler.image.tag` matches your Kubernetes server version. For instance, if your cluster server is v1.29.0, use the following command to deploy:
+Ensure `scheduler.kubeScheduler.imageTag` matches your Kubernetes server version (e.g. `v1.29.0`). Deploy HAMi into the `kube-system` namespace using Helm:
 
 ```bash
-helm install hami hami-charts/hami --set scheduler.kubeScheduler.image.tag=v1.29.0 -n kube-system
+helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag=v1.29.0 -n kube-system
 ```
 
-Customize your installation by editing the [configurations](../userguide/configure.md).
+### Customizing Helm Configurations
 
-## Verify your installation
-
-You can verify your installation using the following command:
+You can customize your deployment by passing parameters with `--set` or providing a custom `values.yaml` file:
 
 ```bash
-kubectl get pods -n kube-system
+helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag=v1.29.0 -n kube-system -f custom-values.yaml
 ```
 
-If both hami-device-plugin and hami-scheduler pods are in the Running state, your installation is successful.
+For a detailed breakdown of available chart options and configuration keys, see the [Configuration Guide](../userguide/configure.md).
+
+## 3. Verify Installation {#verify-installation}
+
+Verify that the HAMi components (`hami-device-plugin` and `hami-scheduler`) are running correctly:
+
+```bash
+kubectl get pods -n kube-system | grep hami
+```
+
+If both `hami-device-plugin` and `hami-scheduler` pods are in the `Running` state, your installation is successful.
