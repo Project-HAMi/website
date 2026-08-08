@@ -102,6 +102,43 @@ const events = [
     talkUrl:
       "https://events.linuxfoundation.org/kubecon-cloudnativecon-japan/program/schedule/?id=1182713",
   },
+  {
+    slug: "coscup-2026",
+    title: {
+      en: "Running Multiple AI Workloads on One GPU with HAMi: Architecture and Gotchas",
+      zh: "用 HAMi 在一块 GPU 上运行多个 AI 工作负载：架构与注意事项",
+    },
+    date: "2026-08-09",
+    startTime: "11:20",
+    endTime: "11:50",
+    location: {
+      en: "Taipei, Taiwan",
+      zh: "中国台湾 台北",
+    },
+    resources: {
+      communityFlyer: {
+        en: "Community Flyer",
+        zh: "社区宣传册",
+        url: "/resources/flyers/community-flyer.pdf",
+      },
+      talkSlides: {
+        en: "Talk Slides",
+        zh: "演讲幻灯片",
+        url: "/resources/2026-coscup/coscup_2026.pdf",
+      },
+    },
+    cta: {
+      discordUrl: "https://go.dynamia.ai/hami-chat-coscup",
+      githubUrl: "https://go.dynamia.ai/proj-hami-coscup",
+    },
+    room: "TR214",
+    description: {
+      en: "GPUs are expensive. Kubernetes doesn't share them well yet, and DRA is still work in progress. HAMi brings heterogeneous GPU sharing to Kubernetes. This talk covers how HAMi hijacks CUDA calls without touching your application code, why memory isolation matters, and real production use cases where teams cut GPU costs by 40-60%.",
+      zh: "GPU 很贵。Kubernetes 目前还无法很好地共享它们，DRA 仍在开发中。HAMi 为 Kubernetes 带来异构 GPU 共享。本演讲将介绍 HAMi 如何在不改动应用代码的情况下接管 CUDA 调用、为什么显存隔离至关重要，以及真实的生产用例——团队将 GPU 成本降低了 40-60%。",
+    },
+    externalUrl: "https://coscup.org/2026/en/",
+    talkUrl: "https://coscup.org/2026/en/session/BGYZ3B",
+  },
 ];
 
 export default events;

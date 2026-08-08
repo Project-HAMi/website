@@ -6,6 +6,8 @@ import { faDiscord, faGithub } from "@fortawesome/free-brands-svg-icons";
 import {
   faCalendarDays,
   faLocationDot,
+  faClock,
+  faDoorOpen,
   faFilePdf,
   faVideo,
 } from "@fortawesome/free-solid-svg-icons";
@@ -107,6 +109,19 @@ export default function EventLanding({ slug }) {
                 <FontAwesomeIcon icon={faLocationDot} className={styles.metaIcon} />
                 {pick(locale, event.location)}
               </span>
+              {event.startTime && (
+                <span className={styles.metaItem}>
+                  <FontAwesomeIcon icon={faClock} className={styles.metaIcon} />
+                  {event.startTime}
+                  {event.endTime ? ` - ${event.endTime}` : ""}
+                </span>
+              )}
+              {event.room && (
+                <span className={styles.metaItem}>
+                  <FontAwesomeIcon icon={faDoorOpen} className={styles.metaIcon} />
+                  {event.room}
+                </span>
+              )}
             </div>
             <p className={styles.description}>{pick(locale, event.description)}</p>
             {(event.externalUrl || event.talkUrl) && (
