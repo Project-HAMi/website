@@ -189,7 +189,7 @@ apiVersion: node.k8s.io/v1
 kind: RuntimeClass
 metadata:
   name: nvidia
-handler: runc
+handler: runc   # 仅限 mock —— 切勿在真实 GPU 节点上应用
 EOF
 
 kubectl get pods -n kai-resource-isolator
@@ -243,7 +243,7 @@ kai-whole-gpu   1/1     Running   0          10s   10.244.0.22   kai-hami-test-c
 
 ## 步骤 7: 调度共享 GPU Pod 并检查注入
 
-`gpu-memory` 注解使其成为共享 Pod，且不带 `nvidia.com/gpu` 请求——由 KAI 预留分数。`20480` MiB 是半块 A100。`CUDA_DISABLE_CONTROL=true` 可避免 HAMi-core 因缺少 CUDA 驱动而中止。
+`gpu-memory` 注解使其成为共享 Pod，且不带 `nvidia.com/gpu` 请求——由 KAI 预留分数。`20480` MiB 是半块 A100。
 
 ```bash
 kubectl apply -f - <<'EOF'
@@ -261,9 +261,6 @@ spec:
     - name: gpu-workload
       image: busybox
       command: ["sleep", "3600"]
-      env:
-        - name: CUDA_DISABLE_CONTROL
-          value: "true"
 EOF
 
 kubectl logs -n kai-scheduler deploy/kai-scheduler-default --tail=40 \
