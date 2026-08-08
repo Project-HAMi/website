@@ -115,6 +115,22 @@ const events = [
       en: "Taipei, Taiwan",
       zh: "中国台湾 台北",
     },
+    resources: {
+      communityFlyer: {
+        en: "Community Flyer",
+        zh: "社区宣传册",
+        url: "/resources/flyers/community-flyer.pdf",
+      },
+      talkSlides: {
+        en: "Talk Slides",
+        zh: "演讲幻灯片",
+        url: "/resources/2026-coscup/coscup_2026.pdf",
+      },
+    },
+    cta: {
+      discordUrl: "https://go.dynamia.ai/hami-chat-coscup",
+      githubUrl: "https://go.dynamia.ai/proj-hami-coscup",
+    },
     room: "TR214",
     description: {
       en: "GPUs are expensive. Kubernetes doesn't share them well yet, and DRA is still work in progress. HAMi brings heterogeneous GPU sharing to Kubernetes. This talk covers how HAMi hijacks CUDA calls without touching your application code, why memory isolation matters, and real production use cases where teams cut GPU costs by 40-60%.",
