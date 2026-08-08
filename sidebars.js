@@ -419,8 +419,14 @@ module.exports = {
       ],
     },
     {
-      type: "doc",
-      id: "troubleshooting/troubleshooting",
+      type: "category",
+      label: "Troubleshooting",
+      link: {
+        type: "generated-index",
+        title: "Troubleshooting",
+        description: "Diagnose and resolve common HAMi issues across the GPU runtime stack.",
+      },
+      items: ["troubleshooting/troubleshooting", "troubleshooting/cuda-memory-enforcement"],
     },
     {
       type: "doc",
