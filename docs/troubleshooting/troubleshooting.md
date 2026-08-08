@@ -17,6 +17,12 @@ If a container exceeds its `nvidia.com/gpumem` limit, check the following causes
 
   The output must show `nvidia`. If not, follow the [Prerequisites](../installation/online-installation) guide.
 
+:::tip Deep dive
+
+For a detailed explanation of how HAMi's memory enforcement works (soft CUDA-level interception via `libvgpu.so`), step-by-step diagnostic commands, and all known bypass scenarios, see [GPU Memory Enforcement: How It Works and How to Debug It](./cuda-memory-enforcement.md).
+
+:::
+
 - If you don’t explicitly request vGPUs when using the device plugin with NVIDIA images, all GPUs on the host may be exposed to your container.
 - Currently, A100 MIG can be supported in only "none" and "mixed" modes.
 - Tasks with the "nodeName" field cannot be scheduled at the moment; please use "nodeSelector" instead.
