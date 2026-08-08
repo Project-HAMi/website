@@ -75,10 +75,7 @@ export default function EventLanding({ slug }) {
   };
 
   return (
-    <Layout
-      title={isZh ? event.title.zh : event.title.en}
-      description={isZh ? event.description.zh : event.description.en}
-    >
+    <Layout title={pick(locale, event.title)} description={pick(locale, event.description)}>
       {bannerUrl && (
         <Head>
           <meta property="og:image" content={`${siteConfig.url}${bannerUrl}`} />
