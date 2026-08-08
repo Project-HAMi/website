@@ -87,10 +87,10 @@ export default function EventLanding({ slug }) {
       validFrom: event.offerValidFrom || event.date,
     },
     ...(event.speaker && {
-      performer: {
+      performer: event.speaker.split(",").map((name) => ({
         "@type": "Person",
-        name: event.speaker,
-      },
+        name: name.trim(),
+      })),
     }),
   };
 
