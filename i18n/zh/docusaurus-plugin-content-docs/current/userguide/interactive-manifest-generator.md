@@ -5,9 +5,9 @@ sidebar_label: Manifest 生成器
 
 # 交互式 Manifest 生成器
 
-Project HAMi 支持跨多个硬件制造商的 GPU 虚拟化，包括 NVIDIA、寒武纪 (Cambricon)、海光 (Hygon) 和华为升腾 (Huawei Ascend)。每个设备需要在您的 Pod 或 Deployment `resources.limits` 中使用特定的 Kubernetes 注解，以便正确分配设备内存和核心。
+Project HAMi 支持跨多个硬件制造商的 GPU 虚拟化，包括 NVIDIA、寒武纪 (Cambricon)、海光 (Hygon)、天数智芯 (Iluvatar) 和华为升腾 (Huawei Ascend)。每个设备需要在您的容器 `resources.limits` 中使用特定的 Kubernetes 资源键以便正确分配设备内存和核心，并使用特定的 `metadata.annotations` 来限制设备类型或 UUID。
 
-使用下方的交互式工具，为您的用例生成准确的 YAML 配置。您可以将生成的 `resources.limits` 直接复制到您的部署规范中。
+使用下方的交互式工具，为您的用例生成准确的 YAML 配置。您可以将生成的配置直接集成到您的部署规范中（例如将资源添加到您的 `spec.template.spec.containers` 部分）。
 
 import ManifestGenerator from '@site/src/components/ManifestGenerator';
 

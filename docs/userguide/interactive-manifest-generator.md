@@ -5,9 +5,9 @@ sidebar_label: Manifest Generator
 
 # Interactive Manifest Generator
 
-Project HAMi supports GPU virtualization across a variety of hardware manufacturers, including NVIDIA, Cambricon, Hygon, and Huawei. Each device requires specific Kubernetes annotations in your Pod or Deployment `resources.limits` to correctly allocate device memory and cores.
+Project HAMi supports GPU virtualization across a variety of hardware manufacturers, including NVIDIA, Cambricon, Hygon, Iluvatar, and Huawei. Each device requires specific Kubernetes resource keys in your container `resources.limits` to correctly allocate device memory and cores, and specific `metadata.annotations` to constrain to device types or UUIDs.
 
-Use the interactive tool below to generate the exact YAML configuration needed for your use case. You can copy the generated `resources.limits` directly into your deployment specifications.
+Use the interactive tool below to generate the exact YAML configuration needed for your use case. You can integrate the generated configuration directly into your deployment specifications (such as adding the resources to your `spec.template.spec.containers` section).
 
 import ManifestGenerator from '@site/src/components/ManifestGenerator';
 

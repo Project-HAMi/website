@@ -103,10 +103,10 @@ export default function ManifestGenerator() {
 
     if (advanced) {
       if (deviceType && v.typeKey) {
-        annotations.push(`    ${v.typeKey}: "${deviceType}"`);
+        annotations.push(`    ${v.typeKey}: ${JSON.stringify(deviceType)}`);
       }
       if (deviceUuid && v.uuidKey) {
-        annotations.push(`    ${v.uuidKey}: "${deviceUuid}"`);
+        annotations.push(`    ${v.uuidKey}: ${JSON.stringify(deviceUuid)}`);
       }
     }
 
@@ -221,12 +221,12 @@ ${limits.join('\n')}`;
           </div>
         )}
 
-        <div className={clsx(styles.advancedToggle, styles.interactiveText)} onClick={() => setAdvanced(!advanced)}>
+        <button type="button" aria-expanded={advanced} className={clsx(styles.advancedToggle, styles.interactiveText)} onClick={() => setAdvanced(!advanced)} style={{ background: 'none', border: 'none', padding: 0 }}>
           <span>
             {advanced ? '▼ ' : '▶ '}
             <Translate id="manifest.generator.advanced">Advanced Configurations (Device Type / UUID)</Translate>
           </span>
-        </div>
+        </button>
 
         {advanced && vInfo.typeKey && (
           <div className={styles.inputGroup}>
@@ -253,7 +253,7 @@ ${limits.join('\n')}`;
           <Translate id="manifest.generator.previewTitle">Generated YAML Manifest</Translate>
         </h3>
         <p>
-          <Translate id="manifest.generator.previewDesc">Copy this into your Kubernetes Pod or Deployment spec.</Translate>
+          <Translate id="manifest.generator.previewDesc">Integrate this into your Kubernetes Pod or Deployment spec.</Translate>
         </p>
         <CodeBlock language="yaml" title="pod.yaml">
           {yamlCode}
