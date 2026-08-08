@@ -257,6 +257,41 @@ describe("block structure", () => {
     );
   });
 
+  // Regression for #688.
+  it("keeps nested lists nested", async () => {
+    assert.equal(
+      await body(
+        "<main><ol><li>Outer step one<ul><li>sub A</li><li>sub B</li></ul></li>" +
+          "<li>Outer step two</li></ol></main>",
+      ),
+      "1. Outer step one\n   - sub A\n   - sub B\n2. Outer step two",
+    );
+  });
+
+  it("keeps nested lists nested when items wrap content in <p>", async () => {
+    assert.equal(
+      await body(
+        "<main><ol><li><p>Install deps</p><ul><li>Node 20</li><li>npm ci</li></ul></li>" +
+          "<li><p>Build the site</p></li></ol></main>",
+      ),
+      "1. Install deps\n   - Node 20\n   - npm ci\n2. Build the site",
+    );
+  });
+
+  it("keeps nested ordered lists nested", async () => {
+    assert.equal(
+      await body("<main><ol><li>A<ol><li>A1</li><li>A2</li></ol></li><li>B</li></ol></main>"),
+      "1. A\n   1. A1\n   2. A2\n2. B",
+    );
+  });
+
+  it("indents nested unordered lists under unordered parents", async () => {
+    assert.equal(
+      await body("<main><ul><li>A<ul><li>A1</li></ul></li><li>B</li></ul></main>"),
+      "- A\n  - A1\n- B",
+    );
+  });
+
   it("converts line breaks", async () => {
     assert.equal(await body("<main><p>one<br>two</p></main>"), "one\ntwo");
   });
@@ -301,6 +336,23 @@ describe("inline formatting", () => {
       ),
       "[Read `values.yaml`](/a)",
     );
+  });
+
+  // Regression for #688.
+  it("does not leak when a quoted attribute value contains `>`", async () => {
+    assert.equal(await body('<main><p><span title="a > b">Hello</span></p></main>'), "Hello");
+    assert.equal(
+      await body('<main><p><a href="/x" title="see > docs">link text</a></p></main>'),
+      "[link text](/x)",
+    );
+  });
+
+  it("still finds <main> when a quoted attribute on it contains `>`", async () => {
+    assert.equal(await body('<main data-label="a > b"><p>inside</p></main>'), "inside");
+  });
+
+  it("still strips tags when the `>` in an attribute is entity-encoded", async () => {
+    assert.equal(await body('<main><p><span title="a &gt; b">Hello</span></p></main>'), "Hello");
   });
 });
 
