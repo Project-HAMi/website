@@ -22,7 +22,7 @@ curl {GPU 节点 IP}:31992/metrics
 | 指标 | 描述 | 示例 |
 | --- | --- | --- |
 | hami_container_device_utilization_ratio | 容器设备 SM 利用率 | `{container="cuda",device_uuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",namespace="default",pod="vgpu-share",vdevice_index="0",zone="vGPU"}` 0 |
-| hami_container_device_memory_bytes | 容器设备显存使用明细（字节） | `{buffer_size="0",container="cuda",context_size="0",device_uuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",module_size="0",namespace="default",offset="0",pod="vgpu-share",vdevice_index="0",zone="vGPU"}` 0 |
+| hami_container_device_memory_bytes | 容器设备显存使用量（字节） | `{container="cuda",device_uuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",namespace="default",pod="vgpu-share",vdevice_index="0",zone="vGPU"}` 0 |
 | hami_container_last_kernel_elapsed_seconds | 容器中自上次 kernel 执行以来经过的秒数 | `{container="cuda",device_uuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",namespace="default",pod="vgpu-share",vdevice_index="0",zone="vGPU"}` 3664 |
 | hami_vgpu_memory_used_bytes | vGPU 设备显存使用量（字节） | `{container="cuda",device_uuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",namespace="default",pod="vgpu-share",vdevice_index="0",zone="vGPU"}` 0 |
 | hami_vgpu_memory_limit_bytes | vGPU 设备显存上限（字节） | `{container="cuda",device_uuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",namespace="default",pod="vgpu-share",vdevice_index="0",zone="vGPU"}` 2.097152e+10 |
@@ -32,6 +32,6 @@ curl {GPU 节点 IP}:31992/metrics
 
 :::note
 
-`hami_container_device_memory_bytes` 上的 `context_size`、`module_size`、`buffer_size` 和 `offset` 标签将在 v2.10.0 中弃用，请改用 `hami_vgpu_memory_context_bytes`、`hami_vgpu_memory_module_bytes` 和 `hami_vgpu_memory_buffer_bytes`。
+在 v2.10.0 中，`hami_container_device_memory_bytes` 不再包含 `context_size`、`module_size`、`buffer_size` 和 `offset` 标签。context、module 和 buffer 显存分别通过 `hami_vgpu_memory_context_bytes`、`hami_vgpu_memory_module_bytes` 和 `hami_vgpu_memory_buffer_bytes` 指标提供。
 
 :::
