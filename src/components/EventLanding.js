@@ -72,6 +72,26 @@ export default function EventLanding({ slug }) {
     description: pick(locale, event.description),
     image: bannerUrl ? `${siteConfig.url}${bannerUrl}` : undefined,
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+    eventStatus: `https://schema.org/${event.eventStatus || "EventScheduled"}`,
+    organizer: {
+      "@type": "Organization",
+      name: "HAMi",
+      url: "https://project-hami.io/",
+    },
+    offers: {
+      "@type": "Offer",
+      url: event.externalUrl || `${siteConfig.url}/events/${event.slug}`,
+      price: event.price ?? "0",
+      priceCurrency: event.priceCurrency || "USD",
+      availability: "https://schema.org/InStock",
+      validFrom: event.offerValidFrom || event.date,
+    },
+    ...(event.speaker && {
+      performer: {
+        "@type": "Person",
+        name: event.speaker,
+      },
+    }),
   };
 
   return (
