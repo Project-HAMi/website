@@ -70,6 +70,59 @@
   text-decoration: none;
 }
 
+/* Backlink */
+.backLink {
+  display: inline-block;
+  margin-bottom: var(--hami-space-16);
+  color: var(--hami-color-muted);
+  font-size: 0.95rem;
+  text-decoration: none;
+}
+
+.backLink:hover {
+  color: var(--hami-color-primary);
+  text-decoration: none;
+}
+
+.moreEvents {
+  padding: var(--hami-space-16) 0 var(--hami-space-48);
+  text-align: center;
+}
+
+/* Event list (landing index) */
+.eventList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hami-space-16);
+  margin-top: var(--hami-space-32);
+}
+
+.eventCard {
+  display: block;
+  padding: var(--hami-space-24) var(--hami-space-32);
+  text-decoration: none;
+  transition: border-color var(--hami-motion-fast);
+}
+
+.eventCard:hover {
+  border-color: var(--hami-color-primary);
+  text-decoration: none;
+}
+
+.eventTitle {
+  font-family: var(--hami-font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--hami-color-text);
+  margin-bottom: var(--hami-space-8);
+}
+
+.eventMeta {
+  color: var(--hami-color-muted);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
 /* Case study */
 .caseStudySection {
   padding: var(--hami-space-32) 0;
