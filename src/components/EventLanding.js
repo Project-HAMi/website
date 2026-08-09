@@ -114,6 +114,7 @@ export default function EventLanding({ slug }) {
                   <FontAwesomeIcon icon={faClock} className={styles.metaIcon} />
                   {event.startTime}
                   {event.endTime ? ` - ${event.endTime}` : ""}
+                  {event.timeZone ? ` ${event.timeZone}` : ""}
                 </span>
               )}
               {event.room && (
