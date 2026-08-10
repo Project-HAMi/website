@@ -2,6 +2,13 @@
 title: Enable dynamic MIG feature
 ---
 
+<div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px', flexWrap: 'wrap' }}>
+  <strong style={{ fontSize: '0.9rem' }}>Supported Components:</strong>
+  <a href="/docs/get-started/deploy-with-helm" style={{ display: 'inline-block', padding: '3px 12px', borderRadius: '12px', background: '#10b981', color: '#fff', fontWeight: 600, fontSize: '0.82rem', textDecoration: 'none' }}>HAMi</a>
+  <a href="/docs/userguide/volcano-vgpu/nvidia-gpu/how-to-use-volcano-vgpu" style={{ display: 'inline-block', padding: '3px 12px', borderRadius: '12px', background: '#3b82f6', color: '#fff', fontWeight: 600, fontSize: '0.82rem', textDecoration: 'none' }}>Volcano</a>
+  <a href="/docs/userguide/nvidia-device/dynamic-resource-allocation" style={{ display: 'inline-block', padding: '3px 12px', borderRadius: '12px', background: '#8b5cf6', color: '#fff', fontWeight: 600, fontSize: '0.82rem', textDecoration: 'none' }}>HAMi-DRA</a>
+</div>
+
 HAMi now supports dynamic MIG using mig-parted to adjust MIG devices dynamically, including:
 
 - **Dynamic MIG Instance Management**: Users no longer need to operate directly on GPU nodes or use commands like `nvidia-smi -i 0 -mig 1` to manage MIG instances. HAMi-device-plugin will handle this automatically.
@@ -86,7 +93,7 @@ nvidia:
           memory: 24576
           count: 1
 
-    - models: ["A100-SXM4-40GB", "A100-40GB-PCIe", "A100-PCIE-40GB", "A100-SXM4-40GB"]
+    - models: ["A100-SXM4-40GB", "A100-40GB-PCIe", "A100-PCIE-40GB"]
       allowedGeometries:
         - name: 1g.5gb
           memory: 5120
