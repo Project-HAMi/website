@@ -1,5 +1,6 @@
 import Layout from "@theme/Layout";
 import Head from "@docusaurus/Head";
+import Link from "@docusaurus/Link";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDiscord, faGithub } from "@fortawesome/free-brands-svg-icons";
@@ -14,15 +15,8 @@ import {
 import useBaseUrl from "@docusaurus/useBaseUrl";
 import events from "@site/src/data/events";
 import { formatDate, formatDateRange } from "@site/src/utils/date";
+import { isChinese, pick } from "@site/src/utils/i18n";
 import styles from "./EventLanding.module.css";
-
-function isChinese(locale) {
-  return locale.startsWith("zh");
-}
-
-function pick(locale, obj) {
-  return isChinese(locale) && obj.zh ? obj.zh : obj.en;
-}
 
 function utm(url, slug) {
   let u;
@@ -94,6 +88,9 @@ export default function EventLanding({ slug }) {
       <main className={styles.page}>
         <section className={styles.hero}>
           <div className="container">
+            <Link to="/landing" className={styles.backLink}>
+              ← {isZh ? "落地页" : "Landing Pages"}
+            </Link>
             {event.banner && (
               <img src={bannerUrl} alt={pick(locale, event.title)} className={styles.banner} />
             )}
@@ -243,6 +240,13 @@ export default function EventLanding({ slug }) {
                 </a>
               </div>
             </div>
+          </div>
+        </section>
+        <section className={styles.moreEvents}>
+          <div className="container">
+            <Link to="/events" className={styles.backLink}>
+              ← {isZh ? "活动日历" : "Events Calendar"}
+            </Link>
           </div>
         </section>
       </main>
