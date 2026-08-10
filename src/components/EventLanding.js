@@ -89,7 +89,7 @@ export default function EventLanding({ slug }) {
         <section className={styles.hero}>
           <div className="container">
             <Link to="/landing" className={styles.backLink}>
-              ← {isZh ? "所有活动" : "All Events"}
+              ← {isZh ? "落地页" : "Landing Pages"}
             </Link>
             {event.banner && (
               <img src={bannerUrl} alt={pick(locale, event.title)} className={styles.banner} />
@@ -244,8 +244,8 @@ export default function EventLanding({ slug }) {
         </section>
         <section className={styles.moreEvents}>
           <div className="container">
-            <Link to="/landing" className={styles.backLink}>
-              ← {isZh ? "所有活动" : "All Events"}
+            <Link to="/events" className={styles.backLink}>
+              ← {isZh ? "活动日历" : "Events Calendar"}
             </Link>
           </div>
         </section>

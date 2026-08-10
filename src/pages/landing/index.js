@@ -13,20 +13,20 @@ export default function EventLandingList() {
 
   return (
     <Layout
-      title={isZh ? "活动" : "Events"}
+      title={isZh ? "落地页 - 列表" : "Landing Pages"}
       description={
         isZh
-          ? "查看 HAMi 团队参与的活动与演讲，获取演讲幻灯片与社区资料。"
+          ? "查看 HAMi 团队的活动落地页，获取演讲详情与社区资料。"
           : "See the events and talks the HAMi team is part of, with slides and community resources."
       }
     >
       <main className={styles.page}>
         <section className={styles.hero}>
           <div className="container">
-            <h1 className={styles.title}>{isZh ? "活动" : "Events"}</h1>
+            <h1 className={styles.title}>{isZh ? "落地页" : "Landing Pages"}</h1>
             <p className={styles.description}>
               {isZh
-                ? "查看 HAMi 团队参与的活动与演讲，获取演讲幻灯片与社区资料。"
+                ? "查看 HAMi 团队的活动落地页，获取演讲详情与社区资料。"
                 : "See the events and talks the HAMi team is part of, with slides and community resources."}
             </p>
             <div className={styles.eventList}>
