@@ -7,13 +7,23 @@
   padding: var(--hami-space-32) 0 var(--hami-space-48);
 }
 
-.banner {
+.bannerWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100%;
+  margin-bottom: var(--hami-space-32);
+}
+
+.banner {
+  max-width: 100%;
   max-height: 480px;
-  object-fit: cover;
+  width: auto;
+  height: auto;
+  object-fit: contain;
   border-radius: var(--hami-radius-md);
   border: 1px solid var(--hami-color-border);
-  margin-bottom: var(--hami-space-32);
+  display: block;
 }
 
 .title {
