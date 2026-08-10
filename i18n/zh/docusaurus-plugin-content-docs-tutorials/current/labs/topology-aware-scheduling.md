@@ -203,8 +203,6 @@ NODE_NAME=$(kubectl get nodes -o jsonpath='{.items[0].metadata.name}')
 echo "NODE_NAME=${NODE_NAME}"
 ```
 
----
-
 :::info[后续大部分步骤在两个平台上是一致的]
 
 从这里开始，大多数命令在 macOS 和 Linux 上是一致的。仍有少数步骤存在差异 —— 步骤 2.3 和步骤 3.1 中分别有一条仅 Linux 需要执行的额外 `kind load` 命令 —— 其余部分完全相同，只是示例输出中的节点名不同。
