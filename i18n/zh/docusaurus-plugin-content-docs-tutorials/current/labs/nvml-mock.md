@@ -485,7 +485,7 @@ EOF
 
 :::info
 
-资源限制格式 `nvidia.com/gpumem` 接受**以 MiB 为单位的绝对值**：`"10"` 表示 10 MiB。`nvidia.com/gpucores: "30"` 表示在所选 GPU 上申请 30 个计算核心。
+资源限制格式 `nvidia.com/gpumem` 接受**以 MiB 为单位的绝对值**：`"10"` 表示 10 MiB。`nvidia.com/gpucores: "30"` 表示在所选 GPU 上申请 30% 的计算算力。
 
 :::
 
@@ -501,7 +501,7 @@ kubectl describe pod gpu-limits | grep vgpu-devices-allocated
 hami.io/vgpu-devices-allocated: GPU-12345678-1234-1234-1234-123456780002,NVIDIA,10,30:;
 ```
 
-注解记录了 `10` MiB 和 `30` 个核心，正是所申请的值。
+注解记录了 `10` MiB 和 `30`（即 30% 的计算算力），正是所申请的值。
 
 ---
 
@@ -646,7 +646,7 @@ kubectl get pod gpu-multi \
 | 基础 GPU 调度 | `gpu-test-1` | 注解显示 1 个 vGPU UUID + 40960 MiB |
 | GPU 共享（时间片） | `gpu-test-1` 到 `gpu-test-4` | 4 个 Pod 并发运行 |
 | 显存限制（`gpumem`） | `gpu-limits` | 注解显示 `10` MiB |
-| 算力限制（`gpucores`） | `gpu-limits` | 注解显示 `30` 个核心 |
+| 算力限制（`gpucores`） | `gpu-limits` | 注解显示 `30`（30% 的计算算力） |
 | 百分比显存（`gpumem-percentage`） | `gpu-mem-30pct` | 注解显示 `12288` MiB（A100 的 30%） |
 | 多 GPU 分配 | `gpu-multi` | hami-scheduler 事件显示 `BindingSucceed` |
 

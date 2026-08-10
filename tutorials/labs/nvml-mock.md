@@ -485,7 +485,7 @@ EOF
 
 :::info
 
-Resource Limits Format `nvidia.com/gpumem` takes an **absolute value in MiB** — `"10"` means 10 MiB. `nvidia.com/gpucores: "30"` requests 30 compute cores on the selected GPU.
+Resource Limits Format `nvidia.com/gpumem` takes an **absolute value in MiB** — `"10"` means 10 MiB. `nvidia.com/gpucores: "30"` requests 30% of the compute cores on the selected GPU.
 
 :::
 
@@ -501,7 +501,7 @@ Expected output:
 hami.io/vgpu-devices-allocated: GPU-12345678-1234-1234-1234-123456780002,NVIDIA,10,30:;
 ```
 
-The annotation records `10` MiB and `30` cores — exactly the values requested.
+The annotation records `10` MiB and `30` (30% of the GPU's compute cores) — exactly the values requested.
 
 ---
 
@@ -646,7 +646,7 @@ You will see two semicolon-separated device entries, one per allocated vGPU slot
 | Basic GPU scheduling | `gpu-test-1` | Annotation shows 1 vGPU UUID + 40960 MiB |
 | GPU sharing (time-slicing) | `gpu-test-1` through `gpu-test-4` | All 4 Pods run concurrently |
 | Memory limit (`gpumem`) | `gpu-limits` | Annotation shows `10` MiB |
-| Core limit (`gpucores`) | `gpu-limits` | Annotation shows `30` cores |
+| Core limit (`gpucores`) | `gpu-limits` | Annotation shows `30` (30% of cores) |
 | Percentage memory (`gpumem-percentage`) | `gpu-mem-30pct` | Annotation shows `12288` MiB (30% of A100) |
 | Multi-GPU allocation | `gpu-multi` | hami-scheduler events show `BindingSucceed` |
 
