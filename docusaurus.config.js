@@ -278,6 +278,11 @@ module.exports = {
             icsUrl:
               "https://calendar.google.com/calendar/ical/4eef0c8621ddcb873a7e4be9cf487db9d2278de173451abc78dfbc988c7cad45%40group.calendar.google.com/public/basic.ics",
           },
+          {
+            name: "Conferences",
+            icsUrl:
+              "https://calendar.google.com/calendar/ical/b04a8d52400e0a3a41c0bf1f3bd60653120bc745f6ea2551ea0907267282c8bb%40group.calendar.google.com/public/basic.ics",
+          },
         ],
       },
     ],
