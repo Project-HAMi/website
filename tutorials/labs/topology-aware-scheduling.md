@@ -203,8 +203,6 @@ NODE_NAME=$(kubectl get nodes -o jsonpath='{.items[0].metadata.name}')
 echo "NODE_NAME=${NODE_NAME}"
 ```
 
----
-
 :::info[Most remaining steps are the same on both platforms]
 
 From here on, most commands work the same on macOS and Linux. A couple of steps still differ - Step 2.3 and Step 3.1 each call out an extra `kind load` command needed only on Linux. Everything else is identical, aside from the node name you'll see in example outputs.

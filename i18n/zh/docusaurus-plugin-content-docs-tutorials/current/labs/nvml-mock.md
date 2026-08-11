@@ -138,8 +138,6 @@ Windows 用户请使用 [WSL2](https://learn.microsoft.com/zh-cn/windows/wsl/ins
 
 :::
 
----
-
 ## 步骤 1：创建 kind 集群
 
 ```bash
@@ -158,8 +156,6 @@ echo "NODE_NAME=${NODE_NAME}"
 ```plaintext
 NODE_NAME=nvml-mock-test-control-plane
 ```
-
----
 
 ## 步骤 2：构建并部署 nvml-mock
 
@@ -210,8 +206,6 @@ NAME                             GPU_PRESENT
 nvml-mock-test-control-plane     true
 ```
 
----
-
 ## 步骤 3：基于 `main` 分支构建 HAMi
 
 `main` 分支包含一个修复：当未启用 MIG 时，阻止调用 `nvidia-mig-parted`。从源码构建可确保该修复已包含在内，无需等待正式发布版本。
@@ -244,8 +238,6 @@ kind load docker-image hami:local --name nvml-mock-test
 ```
 
 调度器和 device-plugin 二进制文件都打包在单个 `hami:local` 镜像中。
-
----
 
 ## 步骤 4：部署 HAMi
 
@@ -332,8 +324,6 @@ hami-scheduler-7858c744cc-7pb79   2/2     Running            0          13m
 
 :::
 
----
-
 ## 步骤 5：验证 GPU 资源
 
 HAMi 将每张物理 GPU 切分成 10 个虚拟槽位。节点有 8 张物理 GPU，因此应该对外提供 **80** 个可分配的虚拟 GPU。
@@ -352,8 +342,6 @@ kubectl describe node ${NODE_NAME} | grep nvidia.com/gpu
 ```
 
 `Capacity` 和 `Allocatable` 都显示 `80`，确认 device-plugin 已注册全部虚拟 GPU 槽位。最后一行是 `Allocated resources` 表，当前为 `0`，因为还没有 Pod 申请 GPU。
-
----
 
 ## 步骤 6：测试基础 GPU 调度
 
@@ -406,8 +394,6 @@ hami.io/vgpu-devices-allocated: GPU-12345678-1234-1234-1234-123456780006,NVIDIA,
 
 > 注解格式为 `<UUID>,<厂商>,<显存MiB>,<算力>`。A100 GPU 有 40960 MiB 显存，看到这个注解即确认调度器分配并记录了一个虚拟 GPU。
 
----
-
 ## 步骤 7：测试 GPU 共享（时间片）
 
 再部署三个 Pod，每个申请 1 张 GPU：
@@ -457,8 +443,6 @@ gpu-test-4   1/1     Running   0          9s
 
 四个 Pod 并发运行在 80 个虚拟 GPU 槽位的资源池上。调度器通过各自独立的 `vgpu-devices-allocated` 注解独立跟踪每次分配。
 
----
-
 ## 步骤 8：测试显存和算力限制
 
 ```bash
@@ -485,7 +469,7 @@ EOF
 
 :::info
 
-资源限制格式 `nvidia.com/gpumem` 接受**以 MiB 为单位的绝对值**：`"10"` 表示 10 MiB。`nvidia.com/gpucores: "30"` 表示在所选 GPU 上申请 30 个计算核心。
+资源限制格式 `nvidia.com/gpumem` 接受**以 MiB 为单位的绝对值**：`"10"` 表示 10 MiB。`nvidia.com/gpucores: "30"` 表示在所选 GPU 上申请 30% 的计算算力。
 
 :::
 
@@ -501,9 +485,7 @@ kubectl describe pod gpu-limits | grep vgpu-devices-allocated
 hami.io/vgpu-devices-allocated: GPU-12345678-1234-1234-1234-123456780002,NVIDIA,10,30:;
 ```
 
-注解记录了 `10` MiB 和 `30` 个核心，正是所申请的值。
-
----
+注解记录了 `10` MiB 和 `30`（即 30% 的计算算力），正是所申请的值。
 
 ## 步骤 9：测试百分比显存申请
 
@@ -565,8 +547,6 @@ GPU-12345678-1234-1234-1234-123456780003,NVIDIA,12288,100:;
 ```
 
 > 第三个字段显示 `12288` MiB（即 40960 MiB 的 30%），确认调度器正确地将百分比转换为本次分配的绝对显存预算。
-
----
 
 ## 步骤 10：测试多 GPU 分配
 
@@ -637,8 +617,6 @@ kubectl get pod gpu-multi \
 
 :::
 
----
-
 ## 已验证功能总结
 
 | 功能 | 测试 Pod | 如何验证 |
@@ -646,7 +624,7 @@ kubectl get pod gpu-multi \
 | 基础 GPU 调度 | `gpu-test-1` | 注解显示 1 个 vGPU UUID + 40960 MiB |
 | GPU 共享（时间片） | `gpu-test-1` 到 `gpu-test-4` | 4 个 Pod 并发运行 |
 | 显存限制（`gpumem`） | `gpu-limits` | 注解显示 `10` MiB |
-| 算力限制（`gpucores`） | `gpu-limits` | 注解显示 `30` 个核心 |
+| 算力限制（`gpucores`） | `gpu-limits` | 注解显示 `30`（30% 的计算算力） |
 | 百分比显存（`gpumem-percentage`） | `gpu-mem-30pct` | 注解显示 `12288` MiB（A100 的 30%） |
 | 多 GPU 分配 | `gpu-multi` | hami-scheduler 事件显示 `BindingSucceed` |
 
@@ -658,8 +636,6 @@ kubectl get pod gpu-multi \
 - 显存超卖和显存覆盖功能
 
 :::
-
----
 
 ## 清理
 
@@ -699,8 +675,6 @@ kind delete cluster --name nvml-mock-test
 如果你想保留环境以便继续实验，可以跳过删除集群这一步。
 
 :::
-
----
 
 ## 下一步
 
