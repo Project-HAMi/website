@@ -220,6 +220,8 @@ devicePlugin:
 
 DCGM Exporter 不受影响，继续正常上报物理级计数器。HAMi 的每容器虚拟指标是独立的；参见 [GPU 利用率指标](./developers/gpu-utilization-metrics)。
 
+如果升级到 GPU Operator 25.10+ 后 HAMi Device Plugin 或工作负载启动失败，请参见[使用 GPU Operator 25.10+ 时 NVIDIA 容器启动失败](../troubleshooting/troubleshooting.md#nvidia-toolkit-gpu-operator-25-10)。
+
 ## 如何为 HAMi vGPU 指标设置 Prometheus 和 Grafana 监控？
 
-每个节点上的 `hami-device-plugin` Pod 在端口 `31992`（可通过 `devicePlugin.monitorPort` 配置）上暴露每容器 vGPU 指标。完整的设置步骤（包括 Prometheus 采集配置和 Dashboard 导入）参见 [Grafana Dashboard](./userguide/monitoring/grafana-dashboard)。
+每个节点上的 `hami-device-plugin` Pod 在端口 `31992`（可通过 `devicePlugin.service.httpPort` 配置）上暴露每容器 vGPU 指标。完整的设置步骤（包括 Prometheus 采集配置和 Dashboard 导入）参见 [Grafana Dashboard](./userguide/monitoring/grafana-dashboard)。

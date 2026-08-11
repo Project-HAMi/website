@@ -175,7 +175,7 @@ HAMi 的调度器需要从节点获取足够的 GPU 信息来完成资源调度�
 
 ## HAMi 如何强制执行 GPU 显存和算力限制？
 
-HAMi 通过 `/etc/ld.so.preload` 将 `libvgpu.so` 注入容器。该库拦截 CUDA 显存分配调用，当超过 `nvidia.com/gpumem` 限制时返回 OOM；算力限制通过令牌桶算法对 kernel launch 调用进行节流。绕过 CUDA 库的应用（如 Docker-in-Docker、直接调用驱动 API）不受管控。完整的拦截流程参见 [GPU 虚拟化](../core-concepts/gpu-virtualization)。
+HAMi 通过 `/etc/ld.so.preload` 将 `libvgpu.so` 注入容器。该库拦截 CUDA 显存分配调用，当超过 `nvidia.com/gpumem` 限制时返回 OOM；算力限制通过令牌桶算法对 kernel launch 调用进行节流。绕过 CUDA 库的应用（如 Docker-in-Docker、直接调用驱动 API）不受管控。完整的拦截流程参见 [GPU 虚拟化](./core-concepts/gpu-virtualization)。
 
 ## HAMi vGPU 与 NVIDIA MIG 有何区别？各适用于什么场景？
 
@@ -191,11 +191,11 @@ HAMi vGPU 是纯软件方案，无硬件要求。NVIDIA MIG 是硬件分区，�
 | 动态重配置     | 支持，无需排空节点            | 需要重新配置 MIG 配置文件                  |
 | 多租户噪声隔离 | 尽力而为                      | 强隔离                                     |
 
-当 GPU 不支持 MIG、工作负载需要灵活的显存大小、或需要无需排空节点的动态重打包时，使用 HAMi vGPU。当硬隔离是合规或 SLA 要求时，使用 MIG。HAMi 也通过 `mig-parted` 支持动态 MIG；参见[动态 MIG 支持](../userguide/nvidia-device/dynamic-mig-support)。
+当 GPU 不支持 MIG、工作负载需要灵活的显存大小、或需要无需排空节点的动态重打包时，使用 HAMi vGPU。当硬隔离是合规或 SLA 要求时，使用 MIG。HAMi 也通过 `mig-parted` 支持动态 MIG；参见[动态 MIG 支持](./userguide/nvidia-device/dynamic-mig-support)。
 
 ## 为什么容器内 nvidia-smi 显示的显存比宿主机少？
 
-`libvgpu.so` 拦截了 `nvmlDeviceGetMemoryInfo` 及相关调用，返回 `nvidia.com/gpumem` 限制值而非物理显存。这是预期行为：根据上报显存大小进行分配的工作负载（如 vLLM）将只使用其配额。宿主机的 `nvidia-smi` 始终显示物理显存。参见 [GPU 虚拟化](../core-concepts/gpu-virtualization)。
+`libvgpu.so` 拦截了 `nvmlDeviceGetMemoryInfo` 及相关调用，返回 `nvidia.com/gpumem` 限制值而非物理显存。这是预期行为：根据上报显存大小进行分配的工作负载（如 vLLM）将只使用其配额。宿主机的 `nvidia-smi` 始终显示物理显存。参见 [GPU 虚拟化](./core-concepts/gpu-virtualization)。
 
 ## 为什么 nvidia.com/gpumem 限制未生效？ {#why-is-my-nvidiagpumem-limit-not-enforced}
 
@@ -203,7 +203,7 @@ HAMi vGPU 是纯软件方案，无硬件要求。NVIDIA MIG 是硬件分区，�
 
 ## HAMi 是替换 kube-scheduler 还是与其并行运行？
 
-HAMi 作为 [scheduler extender](https://github.com/kubernetes/design-proposals-archive/blob/main/scheduling/scheduler_extender.md) 与 kube-scheduler 并行运行，不会替换它。MutatingWebhook 仅在请求 HAMi 资源的 Pod 上设置 `schedulerName: hami-scheduler`；所有其他 Pod 仍走默认调度器路径。参见[架构](../core-concepts/architecture)。
+HAMi 作为 [scheduler extender](https://github.com/kubernetes/design-proposals-archive/blob/main/scheduling/scheduler_extender.md) 与 kube-scheduler 并行运行，不会替换它。MutatingWebhook 仅在请求 HAMi 资源的 Pod 上设置 `schedulerName: hami-scheduler`；所有其他 Pod 仍走默认调度器路径。参见[架构](./core-concepts/architecture)。
 
 ## HAMi 是否支持 vLLM？多 GPU 张量并行有哪些已知限制？
 
@@ -218,8 +218,10 @@ devicePlugin:
   enabled: false
 ```
 
-DCGM Exporter 不受影响，继续正常上报物理级计数器。HAMi 的每容器虚拟指标是独立的；参见 [GPU 利用率指标](../developers/gpu-utilization-metrics)。
+DCGM Exporter 不受影响，继续正常上报物理级计数器。HAMi 的每容器虚拟指标是独立的；参见 [GPU 利用率指标](./developers/gpu-utilization-metrics)。
+
+如果升级到 GPU Operator 25.10+ 后 HAMi Device Plugin 或工作负载启动失败，请参见[使用 GPU Operator 25.10+ 时 NVIDIA 容器启动失败](../troubleshooting/troubleshooting.md#nvidia-toolkit-gpu-operator-25-10)。
 
 ## 如何为 HAMi vGPU 指标设置 Prometheus 和 Grafana 监控？
 
-每个节点上的 `hami-device-plugin` Pod 在端口 `31992`（可通过 `devicePlugin.service.httpPort` 配置）上暴露每容器 vGPU 指标。完整的设置步骤（包括 Prometheus 采集配置和 Dashboard 导入）参见 [Grafana Dashboard](../userguide/monitoring/grafana-dashboard)。
+每个节点上的 `hami-device-plugin` Pod 在端口 `31992`（可通过 `devicePlugin.service.httpPort` 配置）上暴露每容器 vGPU 指标。完整的设置步骤（包括 Prometheus 采集配置和 Dashboard 导入）参见 [Grafana Dashboard](./userguide/monitoring/grafana-dashboard)。
