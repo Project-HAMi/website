@@ -22,6 +22,9 @@
 "kueue":
   label: "Kueue"
   permalink: "/kueue"
+"kserve":
+  label: "KServe"
+  permalink: "/kserve"
 "nvidia":
   label: "nvidia"
   permalink: "/nvidia"
