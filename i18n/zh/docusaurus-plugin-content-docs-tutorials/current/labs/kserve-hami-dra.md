@@ -18,9 +18,9 @@ tags:
 toc_max_heading_level: 2
 ---
 
-本实验将部署一套完整的 KServe Standard 推理服务，并接入 HAMi 原生动态资源分配（DRA）驱动。你将安装网络和模型服务组件，创建原生 `ResourceClaimTemplate`，再运行两个 Qwen vLLM Predictor Pod。两个 Pod 分别从同一张 Tesla T4 获得 `3 GiB` 显存和 `20` 算力配额。
+本实验通过原生动态资源分配（DRA）把 KServe 模型服务与 HAMi GPU 共享结合起来。KServe 负责管理 vLLM 推理服务，HAMi 负责为每个 Predictor Pod 分配显存和算力。你将通过两份独立的 `ResourceClaim`，让两个 Predictor 副本共享同一张 Tesla T4，并分别获得 `3 GiB` 显存和 `20` 算力配额。
 
-文中的实测环境为 Kubernetes 1.36.1、KServe 0.18.0、HAMi-DRA 0.2.1、Envoy Gateway 1.8.2、containerd 2.2.4、NVIDIA Driver 580.173.02，以及一张 15 GiB Tesla T4。
+文中的实测环境为 Kubernetes 1.36.1、KServe 0.18.0、HAMi-DRA 0.2.1，以及一张 15 GiB Tesla T4。
 
 :::warning 版本相关 API
 
@@ -30,9 +30,9 @@ toc_max_heading_level: 2
 
 ## 你将学到什么
 
-- 为 Kubernetes GPU 节点准备 DRA Consumable Capacity；
+- 检查集群是否已经暴露 GPU 和 DRA 容量；
 - 使用 Gateway API 和 Envoy Gateway 安装 KServe Standard 模式；
-- 通过 hostPath PersistentVolume 发布本地 Qwen 模型；
+- 使用 KServe Storage Initializer 下载公开的 Qwen 模型；
 - 使用 HAMi 原生 `ResourceClaimTemplate` 声明显存与算力；
 - 验证两个 KServe Predictor 副本共享同一张物理 GPU，并且各自只能看到 3 GiB 显存。
 
@@ -41,22 +41,22 @@ toc_max_heading_level: 2
 ```mermaid
 %% title: KServe 与 HAMi DRA 实验流程
 flowchart LR
-    Step1["步骤 1<br/>准备 GPU 与 DRA"] --> Step2["步骤 2<br/>安装 HAMi-DRA"]
-    Step2 --> Step3["步骤 3<br/>安装 Gateway 与 KServe"]
-    Step3 --> Step4["步骤 4<br/>发布 Qwen 模型"]
-    Step4 --> Step5["步骤 5<br/>创建 DRA InferenceService"]
-    Step5 --> Step6["步骤 6<br/>验证两个副本共享 GPU"]
-    Step6 --> Step7["步骤 7<br/>发起推理请求"]
+    Step1["步骤 1<br/>安装 HAMi-DRA"] --> Step2["步骤 2<br/>安装 Gateway 与 KServe"]
+    Step2 --> Step3["步骤 3<br/>创建 InferenceService"]
+    Step3 --> Step4["步骤 4<br/>验证两个副本共享 GPU"]
+    Step4 --> Step5["步骤 5<br/>发起推理请求"]
 ```
 
 ## 前提条件
 
 - Kubernetes 1.34 或更高版本的集群，并且至少有一个 NVIDIA GPU 节点。实测节点使用 15 GiB Tesla T4。
 - 已安装 Helm 3、`kubectl`、`curl` 和 `python3`。
-- NVIDIA Driver 440 或更高版本。推荐使用 GPU Operator 安装 Driver 和 Container Toolkit。
-- 具有集群管理员权限。本实验会创建 CRD、GatewayClass、集群级 DRA 资源和静态 PersistentVolume。
-- 控制面与 kubelet 已启用 DRA Consumable Capacity。尚未启用时，请参考[实验 4 的功能门控步骤](./hami-dra.md)。
-- 容器运行时已启用 CDI 与 NVIDIA volume mount。GPU Operator 用户可以参考[实验 4 的容器运行时配置](./hami-dra.md)。
+- GPU Operator 或等价组件已提供 NVIDIA Driver 和 GPU Feature Discovery 标签。
+- NVIDIA Device Plugin 已关闭。本实验由 HAMi 接管 GPU 设备路径。
+- 具有集群管理员权限。本实验会创建 CRD、GatewayClass 和集群级 DRA 资源。
+- 集群可以访问 Hugging Face，以便 KServe 下载公开的 Qwen 模型。
+- 控制面与 kubelet 已启用 DRA Consumable Capacity。尚未启用时，请参考[实验 4 的功能门控步骤](./hami-dra.md#步骤-1-启用-draconsumablecapacity-feature-gate)。
+- 容器运行时已启用 CDI 与 NVIDIA volume mount。GPU Operator 用户可以参考[实验 4 的容器运行时配置](./hami-dra.md#步骤-2-配置容器运行时)。
 - 已获取 [`tutorials/labs/examples/11-kserve-hami-dra/`](https://github.com/Project-HAMi/website/tree/master/tutorials/labs/examples/11-kserve-hami-dra) 中的实验清单。
 
 开始前检查节点：
@@ -66,48 +66,7 @@ kubectl get nodes -o custom-columns=NAME:.metadata.name,GPU:.status.allocatable.
 kubectl get nodes -l nvidia.com/gpu.product
 ```
 
-## 步骤 1：准备 GPU 节点
-
-如果 GPU Operator 管理 GPU 节点，安装时需要关闭 NVIDIA Device Plugin。GPU 设备应由 HAMi-DRA 发布：
-
-```bash
-helm repo add nvidia https://helm.ngc.nvidia.com/nvidia
-helm repo update
-
-helm upgrade --install gpu-operator nvidia/gpu-operator \
-  --namespace gpu-operator --create-namespace \
-  --version=v26.3.1 \
-  --set driver.enabled=true \
-  --set devicePlugin.enabled=false \
-  --wait --timeout=10m
-```
-
-如果宿主机已经安装 NVIDIA Driver，将 `driver.enabled` 改为 `false`。无论驱动由谁安装，都要保留 `devicePlugin.enabled=false`，不要让 NVIDIA Device Plugin 和 HAMi-DRA 同时管理一张 GPU。
-
-在 kubeadm 集群中，继续前需要在控制面和 kubelet 启用 Consumable Capacity：
-
-```bash
-for component in kube-apiserver kube-scheduler kube-controller-manager; do
-  sed -i "/    - $component/a\\    - --feature-gates=DRAConsumableCapacity=true" \
-    "/etc/kubernetes/manifests/${component}.yaml"
-done
-
-cat >> /var/lib/kubelet/config.yaml <<'EOF'
-featureGates:
-  DRAConsumableCapacity: true
-EOF
-systemctl restart kubelet
-```
-
-确认集群已经提供 DRA API：
-
-```bash
-kubectl api-resources --api-group=resource.k8s.io
-```
-
-输出中应包含 `resource.k8s.io/v1` 版本的 `DeviceClass`、`ResourceClaim`、`ResourceClaimTemplate` 和 `ResourceSlice`。
-
-## 步骤 2：安装 cert-manager 与 HAMi-DRA
+## 步骤 1: 安装 cert-manager 与 HAMi-DRA
 
 HAMi-DRA 和 KServe 的 Webhook 都使用 cert-manager，安装一次即可：
 
@@ -149,7 +108,7 @@ kubectl get resourceslice -o jsonpath='{.items[0].spec.devices[0]}' | python3 -m
 
 设备应包含 `allowMultipleAllocations: true`、`memory: 15Gi` 和 `cores: 100`。两个 Predictor Claim 都会从这个容量池中扣减资源。
 
-## 步骤 3：安装 Envoy Gateway 与 KServe
+## 步骤 2: 安装 Envoy Gateway 与 KServe
 
 安装 Envoy Gateway。实测集群没有云 LoadBalancer，因此清单将 Envoy Service 配置为 NodePort：
 
@@ -190,43 +149,30 @@ helm upgrade --install kserve-runtime-configs \
   --wait --timeout=10m
 ```
 
-确认 HuggingFace Runtime 已经创建：
+确认 Hugging Face Runtime 已经创建：
 
 ```bash
 kubectl get clusterservingruntime kserve-huggingfaceserver
 ```
 
-## 步骤 4：发布 Qwen 模型
-
-在 GPU 节点下载小型 Qwen 模型。实测环境无法稳定访问 Hugging Face，因此这里使用 ModelScope：
+为模型下载提高 Storage Initializer 的内存上限：
 
 ```bash
-pip install modelscope
-modelscope download \
-  --model Qwen/Qwen2.5-0.5B-Instruct \
-  --local-dir /opt/models/Qwen2.5-0.5B-Instruct
+kubectl patch clusterstoragecontainer default --type=merge -p \
+  '{"spec":{"container":{"resources":{"limits":{"memory":"4Gi"}}}}}'
 ```
 
-实验清单中的 `hostPath` 必须存在于 Predictor 所在节点。应用静态 PV 和 PVC：
-
-```bash
-kubectl apply -f tutorials/labs/examples/11-kserve-hami-dra/02-model-storage.yaml
-kubectl get pv,pvc -n kserve-test
-```
-
-多节点集群应把 hostPath 替换为 NFS、CephFS 等共享存储，或者使用 KServe 支持的对象存储初始化方式。
-
-## 步骤 5：使用 HAMi 原生 Claim 创建 KServe 服务
+## 步骤 3: 使用 HAMi 原生 Claim 创建 KServe 服务
 
 应用 ResourceClaimTemplate 和 InferenceService：
 
 ```bash
-kubectl apply -f tutorials/labs/examples/11-kserve-hami-dra/03-inference-service.yaml
+kubectl apply -f tutorials/labs/examples/11-kserve-hami-dra/02-inference-service.yaml
 kubectl wait --for=condition=Ready \
   inferenceservice/qwen-llm -n kserve-test --timeout=30m
 ```
 
-核心配置是 Predictor 与 Claim Template 之间的两级引用：
+KServe 会在模型容器启动前下载 `hf://Qwen/Qwen2.5-0.5B-Instruct`。GPU 共享的核心配置是 Predictor 与 Claim Template 之间的两级引用：
 
 ```yaml
 predictor:
@@ -251,7 +197,7 @@ kubectl get resourceclaim -n kserve-test -o jsonpath='{range .items[*]}{.metadat
 
 两份 Claim 都应指向 `hami-gpu-0`，并分别显示 `3Gi` 和 `20`。
 
-## 步骤 6：验证共享 GPU 的显存上限
+## 步骤 4: 验证共享 GPU 的显存上限
 
 查看两个 Predictor Pod，确认它们被调度到同一节点：
 
@@ -279,7 +225,7 @@ Tesla T4, 3072 MiB
 
 两个容器分别看到 3 GiB 的显存上限，而 Claim 状态表明两份分配都使用同一张物理 `hami-gpu-0`。DRA Driver 准备好设备后，HAMi-core 会把显存限制应用到容器内部。
 
-## 步骤 7：发起推理请求
+## 步骤 5: 发起推理请求
 
 读取 Envoy NodePort 和节点地址：
 
@@ -315,11 +261,10 @@ Client -> Envoy Proxy -> HTTPRoute -> Predictor Service -> HuggingFaceServer -> 
 
 ## 清理
 
-先删除推理服务和模型资源。如果集群只用于本实验，再删除 Gateway 和各个 Controller：
+先删除推理服务。如果集群只用于本实验，再删除 Gateway 和各个 Controller：
 
 ```bash
-kubectl delete -f tutorials/labs/examples/11-kserve-hami-dra/03-inference-service.yaml
-kubectl delete -f tutorials/labs/examples/11-kserve-hami-dra/02-model-storage.yaml
+kubectl delete -f tutorials/labs/examples/11-kserve-hami-dra/02-inference-service.yaml
 kubectl delete -f tutorials/labs/examples/11-kserve-hami-dra/01-gateway.yaml
 helm uninstall kserve-runtime-configs kserve kserve-crd -n kserve
 helm uninstall eg -n envoy-gateway-system
@@ -337,6 +282,6 @@ helm uninstall hami-dra -n hami-system
 
 ## 下一步
 
-- 在多 GPU 节点环境中，将 hostPath 替换为共享存储。
+- 需要固定模型版本时，在 Hugging Face URI 中指定 revision。
 - 把 Claim 调整为 `6Gi` 和 `40` 算力，再观察 `ResourceSlice` 剩余容量和 Claim 状态。
 - 与[实验 4](./hami-dra.md)对比，后者直接在 Pod 层使用 Claim，没有模型服务 Controller。
