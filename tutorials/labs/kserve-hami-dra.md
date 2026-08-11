@@ -55,6 +55,8 @@ flowchart LR
 - NVIDIA Device Plugin disabled because HAMi owns the GPU device path in this lab.
 - Cluster-admin access. This lab creates CRDs, a GatewayClass, and cluster-scoped DRA resources.
 - Outbound access to Hugging Face so KServe can download the public Qwen model.
+- Access to the `docker.io` and `ghcr.io` OCI registries, or an equivalent registry mirror, for the Envoy Gateway and KServe charts and their images.
+- Sufficient free ephemeral storage on the GPU node for the model artifacts and container images. Check this with node access before starting, for example `df -h /var/lib/containerd /var/lib/kubelet`.
 - DRA Consumable Capacity enabled on the control plane and kubelet. Follow [Lab 4](./hami-dra.md#step-1-enable-the-draconsumablecapacity-feature-gate) if it is not enabled.
 - CDI and NVIDIA volume-mount support enabled in the container runtime. GPU Operator users can follow [Lab 4](./hami-dra.md#step-2-configure-the-container-runtime).
 - The manifests in [`tutorials/labs/examples/11-kserve-hami-dra/`](https://github.com/Project-HAMi/website/tree/master/tutorials/labs/examples/11-kserve-hami-dra).
@@ -62,7 +64,7 @@ flowchart LR
 Check the node before starting:
 
 ```bash
-kubectl get nodes -o custom-columns=NAME:.metadata.name,GPU:.status.allocatable.nvidia\.com/gpu
+kubectl get nodes -o 'custom-columns=NAME:.metadata.name,GPU:.status.allocatable.nvidia\.com/gpu'
 kubectl get nodes -l nvidia.com/gpu.product
 ```
 
@@ -89,7 +91,11 @@ helm repo update
 
 export GPU_NODE=$(kubectl get nodes -l nvidia.com/gpu.product=Tesla-T4 \
   -o jsonpath='{.items[0].metadata.name}')
-test -n "${GPU_NODE}" && echo "GPU_NODE=${GPU_NODE}"
+if [ -z "${GPU_NODE}" ]; then
+  echo "No Tesla-T4 GPU node found. Set GPU_NODE to an eligible GPU node before continuing." >&2
+  exit 1
+fi
+echo "GPU_NODE=${GPU_NODE}"
 kubectl label node "${GPU_NODE}" gpu=on --overwrite
 
 helm upgrade --install hami-dra hami-dra/hami-dra \
@@ -237,12 +243,14 @@ NODE_PORT=$(kubectl get service -n envoy-gateway-system "${ENVOY_SERVICE}" \
   -o jsonpath='{.spec.ports[?(@.port==80)].nodePort}')
 NODE_IP=$(kubectl get node -o jsonpath='{.items[0].status.addresses[?(@.type=="InternalIP")].address}')
 export GATEWAY_ADDR="${NODE_IP}:${NODE_PORT}"
+INFERENCE_HOST=$(kubectl get inferenceservice qwen-llm -n kserve-test \
+  -o jsonpath='{.status.url}' | sed -E 's#^https?://##')
 ```
 
 Call the OpenAI-compatible endpoint through the KServe HTTPRoute:
 
 ```bash
-curl -H 'Host: qwen-llm-kserve-test.example.com' \
+curl -H "Host: ${INFERENCE_HOST}" \
   -H 'Content-Type: application/json' \
   "http://${GATEWAY_ADDR}/openai/v1/chat/completions" \
   -d '{

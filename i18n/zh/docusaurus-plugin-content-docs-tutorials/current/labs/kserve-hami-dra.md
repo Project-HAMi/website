@@ -55,6 +55,8 @@ flowchart LR
 - NVIDIA Device Plugin 已关闭。本实验由 HAMi 接管 GPU 设备路径。
 - 具有集群管理员权限。本实验会创建 CRD、GatewayClass 和集群级 DRA 资源。
 - 集群可以访问 Hugging Face，以便 KServe 下载公开的 Qwen 模型。
+- 集群可以访问 `docker.io` 和 `ghcr.io` OCI 镜像仓库，或配置等价镜像站，以拉取 Envoy Gateway、KServe Chart 及其镜像。
+- GPU 节点有足够的临时存储空间存放模型文件和容器镜像。开始前请通过节点访问方式检查，例如执行 `df -h /var/lib/containerd /var/lib/kubelet`。
 - 控制面与 kubelet 已启用 DRA Consumable Capacity。尚未启用时，请参考[实验 4 的功能门控步骤](./hami-dra.md#步骤-1-启用-draconsumablecapacity-feature-gate)。
 - 容器运行时已启用 CDI 与 NVIDIA volume mount。GPU Operator 用户可以参考[实验 4 的容器运行时配置](./hami-dra.md#步骤-2-配置容器运行时)。
 - 已获取 [`tutorials/labs/examples/11-kserve-hami-dra/`](https://github.com/Project-HAMi/website/tree/master/tutorials/labs/examples/11-kserve-hami-dra) 中的实验清单。
@@ -62,7 +64,7 @@ flowchart LR
 开始前检查节点：
 
 ```bash
-kubectl get nodes -o custom-columns=NAME:.metadata.name,GPU:.status.allocatable.nvidia\.com/gpu
+kubectl get nodes -o 'custom-columns=NAME:.metadata.name,GPU:.status.allocatable.nvidia\.com/gpu'
 kubectl get nodes -l nvidia.com/gpu.product
 ```
 
@@ -89,7 +91,11 @@ helm repo update
 
 export GPU_NODE=$(kubectl get nodes -l nvidia.com/gpu.product=Tesla-T4 \
   -o jsonpath='{.items[0].metadata.name}')
-test -n "${GPU_NODE}" && echo "GPU_NODE=${GPU_NODE}"
+if [ -z "${GPU_NODE}" ]; then
+  echo "未找到 Tesla-T4 GPU 节点。请将 GPU_NODE 设置为可用的 GPU 节点后再继续。" >&2
+  exit 1
+fi
+echo "GPU_NODE=${GPU_NODE}"
 kubectl label node "${GPU_NODE}" gpu=on --overwrite
 
 helm upgrade --install hami-dra hami-dra/hami-dra \
@@ -237,12 +243,14 @@ NODE_PORT=$(kubectl get service -n envoy-gateway-system "${ENVOY_SERVICE}" \
   -o jsonpath='{.spec.ports[?(@.port==80)].nodePort}')
 NODE_IP=$(kubectl get node -o jsonpath='{.items[0].status.addresses[?(@.type=="InternalIP")].address}')
 export GATEWAY_ADDR="${NODE_IP}:${NODE_PORT}"
+INFERENCE_HOST=$(kubectl get inferenceservice qwen-llm -n kserve-test \
+  -o jsonpath='{.status.url}' | sed -E 's#^https?://##')
 ```
 
 通过 KServe HTTPRoute 调用 OpenAI 兼容接口：
 
 ```bash
-curl -H 'Host: qwen-llm-kserve-test.example.com' \
+curl -H "Host: ${INFERENCE_HOST}" \
   -H 'Content-Type: application/json' \
   "http://${GATEWAY_ADDR}/openai/v1/chat/completions" \
   -d '{
