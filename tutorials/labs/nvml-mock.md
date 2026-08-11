@@ -138,8 +138,6 @@ Windows users Use [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install) 
 
 :::
 
----
-
 ## Step 1: Create the kind Cluster
 
 ```bash
@@ -158,8 +156,6 @@ Example output:
 ```plaintext
 NODE_NAME=nvml-mock-test-control-plane
 ```
-
----
 
 ## Step 2: Build and Deploy nvml-mock
 
@@ -210,8 +206,6 @@ NAME                             GPU_PRESENT
 nvml-mock-test-control-plane     true
 ```
 
----
-
 ## Step 3: Build HAMi from the `main` Branch
 
 The `main` branch contains a fix preventing `nvidia-mig-parted` from being called when MIG is not enabled. Building from source ensures the fix is present without waiting for a tagged release.
@@ -244,8 +238,6 @@ kind load docker-image hami:local --name nvml-mock-test
 ```
 
 Both the scheduler and device-plugin binaries are packaged into the single `hami:local` image.
-
----
 
 ## Step 4: Deploy HAMi
 
@@ -332,8 +324,6 @@ The `vgpu-monitor` sidecar crashes because it requires real GPU monitoring infra
 
 :::
 
----
-
 ## Step 5: Verify GPU Resources
 
 HAMi partitions each physical GPU into 10 virtual slots. With 8 physical GPUs the node should advertise **80** allocatable virtual GPUs.
@@ -352,8 +342,6 @@ Expected output:
 ```
 
 Both `Capacity` and `Allocatable` showing `80` confirms the device-plugin registered all virtual GPU slots. The final line is the `Allocated resources` table — currently `0` because no Pods have claimed GPUs yet.
-
----
 
 ## Step 6: Test Basic GPU Scheduling
 
@@ -406,8 +394,6 @@ hami.io/vgpu-devices-allocated: GPU-12345678-1234-1234-1234-123456780006,NVIDIA,
 
 > The annotation format is `<UUID>,<vendor>,<memMiB>,<cores>`. A100 GPUs have 40960 MiB of VRAM — seeing this annotation confirms one virtual GPU was allocated and recorded by the scheduler.
 
----
-
 ## Step 7: Test GPU Sharing (Time-slicing)
 
 Deploy three more Pods each requesting 1 GPU:
@@ -457,8 +443,6 @@ gpu-test-4   1/1     Running   0          9s
 
 All four Pods run concurrently against the pool of 80 virtual GPU slots. The scheduler independently tracks each allocation via its own `vgpu-devices-allocated` annotation.
 
----
-
 ## Step 8: Test Memory and Core Limits
 
 ```bash
@@ -485,7 +469,7 @@ EOF
 
 :::info
 
-Resource Limits Format `nvidia.com/gpumem` takes an **absolute value in MiB** — `"10"` means 10 MiB. `nvidia.com/gpucores: "30"` requests 30 compute cores on the selected GPU.
+Resource Limits Format `nvidia.com/gpumem` takes an **absolute value in MiB** — `"10"` means 10 MiB. `nvidia.com/gpucores: "30"` requests 30% of the selected GPU's compute capacity.
 
 :::
 
@@ -501,9 +485,7 @@ Expected output:
 hami.io/vgpu-devices-allocated: GPU-12345678-1234-1234-1234-123456780002,NVIDIA,10,30:;
 ```
 
-The annotation records `10` MiB and `30` cores — exactly the values requested.
-
----
+The annotation records `10` MiB and `30` (30% of the GPU's compute capacity) — exactly the values requested.
 
 ## Step 9: Test Percentage-Based Memory Request
 
@@ -565,8 +547,6 @@ GPU-12345678-1234-1234-1234-123456780003,NVIDIA,12288,100:;
 ```
 
 > The third field shows `12288` MiB — 30% of 40960 MiB — confirming the scheduler correctly translated the percentage into an absolute memory budget for the allocation.
-
----
 
 ## Step 10: Test Multi-GPU Allocation
 
@@ -637,8 +617,6 @@ You will see two semicolon-separated device entries, one per allocated vGPU slot
 
 :::
 
----
-
 ## Summary of Verified Features
 
 | Feature | Test Pod | How It Is Verified |
@@ -646,7 +624,7 @@ You will see two semicolon-separated device entries, one per allocated vGPU slot
 | Basic GPU scheduling | `gpu-test-1` | Annotation shows 1 vGPU UUID + 40960 MiB |
 | GPU sharing (time-slicing) | `gpu-test-1` through `gpu-test-4` | All 4 Pods run concurrently |
 | Memory limit (`gpumem`) | `gpu-limits` | Annotation shows `10` MiB |
-| Core limit (`gpucores`) | `gpu-limits` | Annotation shows `30` cores |
+| Compute limit (`gpucores`) | `gpu-limits` | Annotation shows `30` (30% of compute capacity) |
 | Percentage memory (`gpumem-percentage`) | `gpu-mem-30pct` | Annotation shows `12288` MiB (30% of A100) |
 | Multi-GPU allocation | `gpu-multi` | hami-scheduler events show `BindingSucceed` |
 
@@ -658,8 +636,6 @@ You will see two semicolon-separated device entries, one per allocated vGPU slot
 - Memory overcommit and memory override features
 
 :::
-
----
 
 ## Cleanup
 
@@ -699,8 +675,6 @@ kind delete cluster --name nvml-mock-test
 Skip the cluster deletion step if you want to keep the environment for further experimentation.
 
 :::
-
----
 
 ## Next Steps
 
