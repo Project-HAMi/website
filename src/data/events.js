@@ -162,6 +162,18 @@ const events = [
       en: "Open-source agents like Hermes and OpenClaw can reason and use tools, but edge deployment is still hard - not the model, the compute underneath: limited memory, tight power budgets, no ops team. Democratizing agentic AI means fixing the compute layer. This deep dive covers GPU and memory slicing at the edge: carving one device's unified memory so multiple agents run concurrently on hardware as small as an NVIDIA Jetson, and time-sharing when demand exceeds memory. We compare Jetson-class GPUs with NPUs from Axelera and DeepX - higher performance per watt - and what it takes to make them schedulable. HAMi, the CNCF Incubation project for hardware-agnostic GPU virtualization, is that layer: one scheduling plane across heterogeneous accelerators, fine-grained memory slicing, open source. A blueprint for edge AI without a cloud budget.",
       zh: "开源智能体（如 Hermes 和 OpenClaw）能够推理并使用工具，但边缘部署仍然困难——问题不在模型，而在底层的算力：内存有限、功耗预算紧张、没有运维团队。让智能体 AI 普及化，关键在于修复算力层。本次深度解析涵盖边缘 GPU 与显存切片：将一块设备的统一内存切分，让多个智能体在 NVIDIA Jetson 这样的小型硬件上并发运行，并在内存不足时进行时间共享。我们对比 Jetson 级 GPU 与 Axelera、DeepX 的 NPU——每瓦性能更高——以及让它们可被调度的必要条件。HAMi 是 CNCF 孵化项目，提供与硬件无关的 GPU 虚拟化，正是这一层：跨异构加速器的统一调度平面、细粒度显存切片、开源。一份无需云预算的边缘 AI 蓝图。",
     },
+    resources: {
+      communityFlyer: {
+        en: "Community Flyer",
+        zh: "社区宣传册",
+        url: "/resources/flyers/community-flyer.pdf",
+      },
+      talkSlides: {
+        en: "Talk Slides",
+        zh: "演讲幻灯片",
+        url: "/resources/2026-ossummit-korea/ossummit_korea.pdf",
+      },
+    },
     cta: {
       discordUrl: "https://go.dynamia.ai/hami-chat-korea",
       githubUrl: "https://go.dynamia.ai/proj-hami-korea",
