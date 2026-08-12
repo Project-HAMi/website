@@ -10,12 +10,32 @@ import BlogPostItemHeaderAuthors from "@theme/BlogPostItem/Header/Authors";
 import { formatNumericDate } from "@site/src/utils/date";
 import styles from "./styles.module.css";
 
-function formatAuthors(metadata, fallbackLabel) {
-  const names = (metadata.authors || []).map((author) => author?.name).filter(Boolean);
+function renderAuthors(metadata, fallbackLabel) {
+  const authors = metadata.authors || [];
+  const names = authors.map((author) => author?.name).filter(Boolean);
   if (names.length === 0) {
     return fallbackLabel;
   }
-  return names.join(", ");
+  return authors.map((author, index) => {
+    const name = author?.name;
+    if (!name) {
+      return null;
+    }
+    const separator = index < authors.length - 1 ? ", " : null;
+    const key = author.key || `author-${index}`;
+    return (
+      <React.Fragment key={key}>
+        {author.url ? (
+          <a href={author.url} target="_blank" rel="noopener noreferrer">
+            {name}
+          </a>
+        ) : (
+          name
+        )}
+        {separator}
+      </React.Fragment>
+    );
+  });
 }
 
 export default function BlogPostItemHeader() {
@@ -55,7 +75,7 @@ export default function BlogPostItemHeader() {
               </Translate>
               :
             </strong>{" "}
-            {formatAuthors(metadata, fallbackLabel)}
+            {renderAuthors(metadata, fallbackLabel)}
           </div>
           <div className={styles.metaItem}>
             <strong>
