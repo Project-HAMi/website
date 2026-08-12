@@ -5,6 +5,8 @@ translated: true
 sidebar_label: 调度器事件日志
 ---
 
+本页记录的是调度器事件与日志格式的设计。如果你正在排查一个卡在 `Pending` 状态的 Pod，请改看[调度失败排查](../troubleshooting/scheduling-failures.md)：那里列出了调度器会输出的每一个原因码及其处理方式。
+
 ## 当前状态
 
 ### 模糊的事件描述使问题诊断变得困难

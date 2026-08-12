@@ -4,6 +4,8 @@ title: Scheduler Event Log
 sidebar_label: Scheduler Event Log
 ---
 
+This page records the design of the scheduler's event and log format. If you are diagnosing a Pod that is stuck in `Pending` right now, read [Scheduling Failures](../troubleshooting/scheduling-failures.md) instead: it lists every reason code the scheduler emits and what to do about each one.
+
 ## Current Status
 
 ### Ambiguous Event Descriptions Make Problem Diagnosis Difficult
