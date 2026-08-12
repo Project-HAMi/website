@@ -3,15 +3,7 @@ title: "GPU Memory Hard Isolation with KAI Scheduler and HAMi: How It Works and 
 date: "2026-08-11"
 description: "From the CUDA interception principle to a reproducible verification on GKE: use KAI Scheduler v0.17.0 for shared GPU scheduling and kai-resource-isolator 1.1.0-chart (built on HAMi-core) for CUDA level memory isolation, so two pods on a single NVIDIA T4 each see only their own memory quota. Explains the CUDA_DEVICE_MEMORY_LIMIT contract between the scheduling layer and the isolation layer, plus the node label, queue, and RuntimeClass pitfalls."
 authors: [rootsongjc]
-tags:
-  [
-    "HAMi",
-    "KAI Scheduler",
-    "GPU Memory Hard Isolation",
-    "GPU Sharing",
-    "Kubernetes",
-    "Cloud Native",
-  ]
+tags: ["HAMi", "KAI Scheduler", "Hard Isolation", "GPU Sharing", "Kubernetes", "Cloud Native"]
 ---
 
 GPU sharing has been discussed in the Kubernetes ecosystem for years, but the scheduling layer and the isolation layer have long operated in isolation from each other. The scheduler places several pods onto the same card, yet once a container touches the GPU it still sees the full device memory. Whichever container calls `cudaMalloc` first can occupy everything, so the isolation is effectively absent. So called "sharing" is really just "grabbing", with no resource guarantee at all.
