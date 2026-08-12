@@ -10,15 +10,27 @@
 "gang-scheduling":
   label: "gang-scheduling"
   permalink: "/gang-scheduling"
+"gke":
+  label: "GKE"
+  permalink: "/gke"
+"gpu-sharing":
+  label: "GPU 共享"
+  permalink: "/gpu-sharing"
 "hami":
   label: "hami"
   permalink: "/hami"
+"hami-core":
+  label: "HAMi-core"
+  permalink: "/hami-core"
 "inference":
   label: "inference"
   permalink: "/inference"
 "k3s":
   label: "k3s"
   permalink: "/k-3-s"
+"kai-scheduler":
+  label: "KAI Scheduler"
+  permalink: "/kai-scheduler"
 "kueue":
   label: "Kueue"
   permalink: "/kueue"
