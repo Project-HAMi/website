@@ -4,14 +4,14 @@ sidebar_label: OpenShift 上的 HAMi
 translated: true
 ---
 
-本文介绍 HAMi 在 OpenShift 上的推荐部署方式，重点涵盖 SCC、随机 UID、非特权端口和 SELinux。
+本文说明如何在 OpenShift 上部署 HAMi，涵盖 SCC、随机 UID、非特权端口和 SELinux。
 
 ## 前置条件
 
-- OpenShift 集群已安装 NVIDIA GPU Operator；
-- NVIDIA 驱动和 Container Toolkit 已就绪；
-- 集群中存在 GPU Operator 配置的 NVIDIA RuntimeClass；
-- 安装者有权创建集群级 `SecurityContextConstraints`（SCC）。
+- OpenShift 集群已安装 NVIDIA GPU Operator
+- NVIDIA 驱动和 Container Toolkit 已就绪
+- 集群中已有 GPU Operator 配置的 NVIDIA RuntimeClass
+- 具备创建集群级 `SecurityContextConstraints`（SCC）的权限
 
 确认集群配置：
 
@@ -21,7 +21,7 @@ oc get nodes -L nvidia.com/gpu.present
 oc describe node <gpu-node> | grep -A5 Taints
 ```
 
-以下示例采用 GPU Operator 的常见配置：
+下文示例基于常见的 GPU Operator 配置。若名称或路径不同，请按集群实际情况调整：
 
 ```text
 RuntimeClass: nvidia
@@ -31,11 +31,9 @@ driver root: /run/nvidia/driver
 toolkit validation: /run/nvidia/validations
 ```
 
-如果集群使用不同的名称或路径，请同步调整 values。
-
 ## 推荐配置
 
-建议将 HAMi 安装到独立项目：
+为 HAMi 创建独立项目：
 
 ```bash
 oc new-project hami
@@ -58,8 +56,6 @@ selinux:
   level: s0
 
 scheduler:
-  patch:
-    runAsUser: null
   service:
     httpPort: 443
     httpTargetPort: 9443
@@ -74,11 +70,15 @@ devicePlugin:
 
   nvidiaNodeSelector:
     nvidia.com/gpu.present: "true"
+```
 
-  tolerations:
-    - key: nvidia.com/gpu
-      operator: Exists
-      effect: NoSchedule
+若使用 OpenShift 内置 `privileged` SCC：
+
+```yaml
+openshift:
+  securityContextConstraints:
+    create: false
+    name: privileged
 ```
 
 安装 HAMi：
@@ -97,9 +97,9 @@ helm upgrade --install hami hami-charts/hami \
 
 ### Scheduler 和 admission
 
-scheduler 和 admission 组件应使用 OpenShift 的 `restricted-v2` 或集群等价的 restricted SCC。
+scheduler 与 admission 使用 OpenShift `restricted-v2` 或等价的 restricted SCC。
 
-推荐安全上下文：
+启用 OpenShift 时应用的安全上下文：
 
 ```yaml
 securityContext:
@@ -112,29 +112,29 @@ securityContext:
     type: RuntimeDefault
 ```
 
-`runAsUser` 保持为空，由 OpenShift 从项目 UID range 自动分配 UID。
+容器 UID 由 OpenShift 从项目 UID range 分配。非 OpenShift 集群仍使用 Chart 默认值 `scheduler.patch.runAsUser: 2000`。
 
-scheduler extender 在容器内监听非特权端口 `9443`，Service 对外继续提供 `443`：
+端口映射：
 
 ```text
 Service port 443 -> targetPort 9443 -> containerPort 9443
 ```
 
-Deployment、Service 和 kube-scheduler extender ConfigMap 使用相同的 target port。
+Deployment、Service 与 kube-scheduler extender ConfigMap 使用相同的 target port。
 
 ### Device plugin
 
-device-plugin 使用 Chart 创建的 `hami-device-plugin` SCC。该 SCC 只授予 device-plugin ServiceAccount，并允许当前节点组件需要的权限：
+Chart 创建 `hami-device-plugin` SCC，并授予 device-plugin ServiceAccount。该 SCC 允许：
 
-- privileged container；
-- host PID；
-- hostPath；
-- `SYS_ADMIN` capability；
-- `RunAsAny` UID 和 SELinux context。
+- privileged container
+- host PID
+- hostPath
+- `SYS_ADMIN` capability
+- UID 与 SELinux context 使用 `RunAsAny`
 
-SCC 禁用 host IPC、host network 和 host ports，并限制允许的 volume 类型。
+允许的 volume 类型：`configMap`、`downwardAPI`、`emptyDir`、`hostPath`、`projected`、`secret`。host IPC、host network、host ports 保持关闭。
 
-scheduler、admission 和普通业务 ServiceAccount 不绑定该 SCC。
+scheduler、admission 与业务工作负载继续使用平台 restricted SCC。
 
 ## SELinux
 
@@ -147,7 +147,7 @@ selinux:
   level: s0
 ```
 
-relabel initContainer 只处理 HAMi 管理且需要容器访问的共享目录，包括：
+relabel initContainer 为 HAMi 共享目录设置 `container_file_t`：
 
 ```text
 /usr/local/vgpu
@@ -155,19 +155,19 @@ relabel initContainer 只处理 HAMi 管理且需要容器访问的共享目录�
 /tmp/vgpulock
 ```
 
-这些路径使用 `container_file_t`，使受限业务容器能够在正常 SELinux container domain 下访问 HAMi 共享数据。
+受限业务容器即可在标准 SELinux container domain 下访问这些路径。
 
-NVIDIA driver root 由 GPU Operator 管理，并以只读方式挂载给 device-plugin 和 monitor：
+NVIDIA driver root 由 GPU Operator 管理，并以只读方式挂载到 device-plugin 和 monitor：
 
 ```text
 /run/nvidia/driver
 ```
 
-HAMi 不修改该路径的 SELinux label。
+driver root 的 SELinux label 由 GPU Operator 维护。卸载后如需恢复宿主机 SELinux label 与目录权限，请手动处理。
 
 ## 验证
 
-检查渲染结果：
+渲染清单：
 
 ```bash
 helm template hami hami-charts/hami \
@@ -194,18 +194,18 @@ oc get pods -n hami \
 
 预期结果：
 
-- scheduler 和 admission 使用 restricted SCC；
-- device-plugin 使用 `hami-device-plugin` SCC；
-- scheduler extender 监听 `9443`；
-- scheduler Service 将 `443` 转发到 `9443`；
-- device-plugin 使用配置的 NVIDIA RuntimeClass；
-- SELinux relabel 仅处理 HAMi 共享目录。
+- scheduler 与 admission：restricted SCC
+- device-plugin：`hami-device-plugin` SCC
+- scheduler extender 监听 `9443`
+- scheduler Service 将 `443` 映射到 `9443`
+- device-plugin 使用配置的 NVIDIA RuntimeClass
+- SELinux relabel 范围：HAMi 共享目录
 
-检查节点上的 SELinux label：
+检查节点 SELinux label：
 
 ```bash
 oc debug node/<gpu-node> -- chroot /host \
-  ls -Zd /usr/local/vgpu /usr/local/vgpu/containers
+  ls -Zd /usr/local/vgpu /usr/local/vgpu/containers /tmp/vgpulock
 ```
 
-HAMi 共享目录应使用配置的 `container_file_t`。
+HAMi 共享目录应显示配置的 `container_file_t`。

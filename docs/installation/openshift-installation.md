@@ -4,16 +4,16 @@ sidebar_label: HAMi on OpenShift
 translated: true
 ---
 
-This guide describes the recommended way to deploy HAMi on OpenShift, covering SCC, random UIDs, non-privileged ports, and SELinux.
+This guide covers deploying HAMi on OpenShift, including SCC, random UIDs, non-privileged ports, and SELinux.
 
 ## Prerequisites
 
-- An OpenShift cluster with the NVIDIA GPU Operator installed
+- OpenShift cluster with the NVIDIA GPU Operator installed
 - NVIDIA drivers and Container Toolkit ready
-- An NVIDIA RuntimeClass configured by the GPU Operator
+- NVIDIA RuntimeClass configured by the GPU Operator
 - Permission to create cluster-scoped `SecurityContextConstraints` (SCC)
 
-Confirm the cluster setup:
+Verify the cluster:
 
 ```bash
 oc get runtimeclass
@@ -21,7 +21,7 @@ oc get nodes -L nvidia.com/gpu.present
 oc describe node <gpu-node> | grep -A5 Taints
 ```
 
-The examples below use a common GPU Operator configuration:
+Example values in this guide assume the following GPU Operator layout. Adjust names and paths to match your cluster:
 
 ```text
 RuntimeClass: nvidia
@@ -31,11 +31,9 @@ driver root: /run/nvidia/driver
 toolkit validation: /run/nvidia/validations
 ```
 
-If your cluster uses different names or paths, adjust the values accordingly.
-
 ## Recommended configuration
 
-Install HAMi into a dedicated project:
+Create a dedicated project for HAMi:
 
 ```bash
 oc new-project hami
@@ -58,8 +56,6 @@ selinux:
   level: s0
 
 scheduler:
-  patch:
-    runAsUser: null
   service:
     httpPort: 443
     httpTargetPort: 9443
@@ -74,11 +70,15 @@ devicePlugin:
 
   nvidiaNodeSelector:
     nvidia.com/gpu.present: "true"
+```
 
-  tolerations:
-    - key: nvidia.com/gpu
-      operator: Exists
-      effect: NoSchedule
+To use the built-in OpenShift `privileged` SCC instead of creating a custom SCC:
+
+```yaml
+openshift:
+  securityContextConstraints:
+    create: false
+    name: privileged
 ```
 
 Install HAMi:
@@ -97,9 +97,9 @@ helm upgrade --install hami hami-charts/hami \
 
 ### Scheduler and admission
 
-The scheduler and admission components should use OpenShift `restricted-v2` or an equivalent restricted SCC.
+Scheduler and admission run under OpenShift `restricted-v2` or an equivalent restricted SCC.
 
-Recommended security context:
+Security context applied when OpenShift is enabled:
 
 ```yaml
 securityContext:
@@ -112,29 +112,29 @@ securityContext:
     type: RuntimeDefault
 ```
 
-Leave `runAsUser` unset so OpenShift assigns a UID from the project UID range.
+OpenShift assigns the container UID from the project UID range. On non-OpenShift clusters, the chart default remains `scheduler.patch.runAsUser: 2000`.
 
-The scheduler extender listens on non-privileged port `9443` inside the container, while the Service continues to expose `443`:
+Port mapping:
 
 ```text
 Service port 443 -> targetPort 9443 -> containerPort 9443
 ```
 
-The Deployment, Service, and kube-scheduler extender ConfigMap must use the same target port.
+The Deployment, Service, and kube-scheduler extender ConfigMap use the same target port.
 
 ### Device plugin
 
-The device plugin uses the Chart-created `hami-device-plugin` SCC. This SCC is granted only to the device-plugin ServiceAccount and allows the permissions required by the node component:
+The chart creates the `hami-device-plugin` SCC and grants it to the device-plugin ServiceAccount. The SCC allows:
 
 - privileged container
 - host PID
 - hostPath
 - `SYS_ADMIN` capability
-- `RunAsAny` UID and SELinux context
+- `RunAsAny` for UID and SELinux context
 
-The SCC disables host IPC, host network, and host ports, and restricts allowed volume types.
+Allowed volume types: `configMap`, `downwardAPI`, `emptyDir`, `hostPath`, `projected`, `secret`. Host IPC, host network, and host ports remain off.
 
-Scheduler, admission, and regular workload ServiceAccounts are not bound to this SCC.
+Scheduler, admission, and workload ServiceAccounts continue to use the platform restricted SCC.
 
 ## SELinux
 
@@ -147,7 +147,7 @@ selinux:
   level: s0
 ```
 
-The relabel initContainer only processes shared directories managed by HAMi that containers need to access:
+The relabel initContainer applies `container_file_t` to HAMi shared directories:
 
 ```text
 /usr/local/vgpu
@@ -155,7 +155,7 @@ The relabel initContainer only processes shared directories managed by HAMi that
 /tmp/vgpulock
 ```
 
-These paths use `container_file_t` so restricted workload containers can access HAMi shared data under the normal SELinux container domain.
+Restricted workload containers can then access these paths under the standard SELinux container domain.
 
 The NVIDIA driver root is managed by the GPU Operator and mounted read-only into the device plugin and monitor:
 
@@ -163,11 +163,11 @@ The NVIDIA driver root is managed by the GPU Operator and mounted read-only into
 /run/nvidia/driver
 ```
 
-HAMi does not change the SELinux label of that path.
+SELinux labels on the driver root remain under GPU Operator ownership. After uninstall, restore host SELinux labels and directory permissions manually if the node requires it.
 
 ## Verification
 
-Check the rendered manifests:
+Render manifests:
 
 ```bash
 helm template hami hami-charts/hami \
@@ -178,14 +178,14 @@ grep -nE 'SecurityContextConstraints|system:openshift:scc|http_bind|targetPort|u
   /tmp/hami-openshift.yaml
 ```
 
-Check component status:
+Check rollout status:
 
 ```bash
 oc rollout status deployment/hami-scheduler -n hami
 oc rollout status daemonset/hami-device-plugin -n hami
 ```
 
-Check which SCC each Pod uses:
+Check assigned SCC:
 
 ```bash
 oc get pods -n hami \
@@ -194,18 +194,18 @@ oc get pods -n hami \
 
 Expected results:
 
-- scheduler and admission use a restricted SCC
-- device-plugin uses the `hami-device-plugin` SCC
+- scheduler and admission: restricted SCC
+- device-plugin: `hami-device-plugin` SCC
 - scheduler extender listens on `9443`
-- scheduler Service forwards `443` to `9443`
+- scheduler Service maps `443` to `9443`
 - device-plugin uses the configured NVIDIA RuntimeClass
-- SELinux relabel covers only HAMi shared directories
+- SELinux relabel scope: HAMi shared directories
 
 Check SELinux labels on the node:
 
 ```bash
 oc debug node/<gpu-node> -- chroot /host \
-  ls -Zd /usr/local/vgpu /usr/local/vgpu/containers
+  ls -Zd /usr/local/vgpu /usr/local/vgpu/containers /tmp/vgpulock
 ```
 
-HAMi shared directories should use the configured `container_file_t`.
+HAMi shared directories should show the configured `container_file_t`.
