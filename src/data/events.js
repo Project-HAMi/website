@@ -6,7 +6,7 @@ const events = [
       zh: "从项目到生产：HAMi 与 Viettel Cloud 亮相 KCD 越南",
     },
     date: "2026-07-25",
-    speaker: "fishman, The Anh Nguyen",
+    speaker: "Reza Jelveh, The Anh Nguyen",
     location: {
       en: "Hanoi, Vietnam",
       zh: "越南 河内",
