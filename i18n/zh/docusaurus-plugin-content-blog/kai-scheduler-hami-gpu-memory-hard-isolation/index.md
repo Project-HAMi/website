@@ -46,7 +46,7 @@ HAMi 社区多年打磨的 HAMi-core（CNCF 孵化项目）正是这样的隔离
 
 - **HAMi-core（`libvgpu.so`）**：HAMi 项目的 CUDA 拦截库，是**隔离引擎本身**。它通过 `LD_PRELOAD` 拦截容器里的 CUDA 调用（如 `cudaMalloc`），按一个显存配额强制限制。它不关心配额是谁给的：任何调度器只要按约定把配额传进来，它都能执行隔离。在 KAI 之前，它已经被 HAMi 自带的 device-plugin/webhook、Volcano 的 `volcano-vgpu-device-plugin` 等复用。
 
-- **KAI Scheduler**：NVIDIA 开源的 Kubernetes AI 工作负载调度器。它只负责**调度层**，即决定 Pod 落到哪个节点、用哪张 GPU、分多少显存。自 v0.16.4 起，它的 `hamicore` 插件在绑定 Pod 时，会把算好的显存配额写进容器的环境变量。
+- **KAI Scheduler**：NVIDIA 开源的 Kubernetes AI 工作负载调度器。它只负责**调度层**，即决定 Pod 落到哪个节点、用哪张 GPU、分多少显存。自 v0.16.4 起，它的 `hamicore` 插件在绑定 Pod 时，会把计算出的显存配额写进容器的环境变量。
 
 - **`kai-resource-isolator`**：HAMi 项目侧为 KAI Scheduler 这条集成路径**专门提供的配套组件**。它把 HAMi-core 的 `libvgpu.so` 分发到每个 GPU 节点，并用 MutatingWebhook 改写 Pod，把库和 `ld.so.preload` 注入进去。换言之，它是“把 KAI 的调度决策落地成 HAMi-core 能执行的隔离”的桥梁。
 
@@ -105,8 +105,9 @@ graph TD
     RUN["3. 容器启动<br/>libvgpu.so 经 LD_PRELOAD 拦截 cudaMalloc"]
     ENF["按 LIMIT 拒绝超额分配<br/>nvidia-smi 仅显示配额内显存"]
 
-    KAI --> ENV --> ISO --> RUN --> ENF
-    LIB -. "注入 hostPath 与 ld.so.preload" .-> ISO
+    KAI --> ENV --> ISO
+    ISO -->|"注入 hostPath 与 ld.so.preload"| RUN --> ENF
+    LIB -. "在节点上提供 libvgpu.so" .-> RUN
     MON -. "采集各容器显存" .-> RUN
 
     style KAI fill:#d9f99d,stroke:#4f7d00,stroke-width:2px,color:#1f2937
@@ -131,7 +132,7 @@ graph TD
 隔离的“最后一公里”发生在容器进程里，链路是这样的：
 
 1. **KAI 在调度时注入 `CUDA_DEVICE_MEMORY_LIMIT`**（带上 Pod 申请的显存配额，单位 MiB）。
-2. **kai-resource-isolator 的 webhook 改写 Pod**：挂载宿主机上的 `libvgpu.so`，并把 `/etc/ld.so.preload` 指向它。`ld.so.preload` 是动态链接器的机制，被列在里面的共享库会在所有其他库之前加载。
+2. **kai-resource-isolator 的 webhook 改写 Pod**：挂载宿主机上的 `libvgpu.so`，并把 `/etc/ld.so.preload` 指向它。`ld.so.preload` 是动态链接器的机制，列在其中的共享库会在所有其他库之前加载。
 3. **容器进程启动后**，任何对 CUDA 运行时（`libcudart`）或驱动 API 的调用，都会先经过 `libvgpu.so`。后者拦截 `cudaMalloc` 之类的显存分配调用，从 `CUDA_DEVICE_MEMORY_LIMIT` 读出配额，累计该容器的显存用量；一旦超额就拒绝分配。
 4. **对外可见的效果**：`nvidia-smi` 只显示配额内的显存（HAMi-core 会改写设备查询的返回值），容器再怎么 `cudaMalloc` 也越不过这条线。
 

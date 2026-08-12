@@ -6,7 +6,7 @@ authors: [rootsongjc]
 tags: ["HAMi", "KAI Scheduler", "Hard Isolation", "GPU Sharing", "Kubernetes", "Cloud Native"]
 ---
 
-GPU sharing has been discussed in the Kubernetes ecosystem for years, but the scheduling layer and the isolation layer have long operated in isolation from each other. The scheduler places several pods onto the same card, yet once a container touches the GPU it still sees the full device memory. Whichever container calls `cudaMalloc` first can occupy everything, so the isolation is effectively absent. So called "sharing" is really just "grabbing", with no resource guarantee at all.
+GPU sharing has been discussed in the Kubernetes ecosystem for years, but the scheduling layer and the isolation layer have long operated in isolation from each other. The scheduler places several pods onto the same card, yet once a container touches the GPU it still sees the full device memory. Whichever container calls `cudaMalloc` first can occupy everything, so the isolation is effectively absent. So-called "sharing" is really just "grabbing", with no resource guarantee at all.
 
 Solving this requires the scheduling layer (deciding "who uses which GPU, and how much") and the isolation layer (guaranteeing "once a quota is set, it cannot be exceeded") to cooperate. **HAMi-core** is exactly such an isolation engine, reusable by multiple schedulers. Before KAI Scheduler, it already supported the Kubernetes native scheduler (via HAMi's own `hami-scheduler` extender), [Kueue](/docs/userguide/kueue/how-to-use-kueue), [Volcano](/docs/installation/how-to-use-volcano-vgpu), and more (see the full landscape in [Ecosystem Integrations](/docs/next/core-concepts/ecosystem-integrations)).
 
@@ -46,7 +46,7 @@ The three components have similar-sounding names, so getting their roles straigh
 
 - **HAMi-core (`libvgpu.so`)**: HAMi's CUDA interception library (CNCF incubating), and **the isolation engine itself**. It intercepts CUDA calls (like `cudaMalloc`) inside the container via `LD_PRELOAD` and enforces a memory quota. It does not care who provided the quota: any scheduler that hands in the quota by convention gets isolation for free. Before KAI, it was already reused by HAMi's own device-plugin/webhook, Volcano's `volcano-vgpu-device-plugin`, and others.
 
-- **KAI Scheduler**: NVIDIA's open source Kubernetes scheduler for AI workloads. It only owns the **scheduling layer**, deciding which node a pod lands on, which GPU it uses, and how much memory it gets. Since v0.16.4, its `hamicore` plugin writes the computed memory quota into the container's environment variable at bind time.
+- **KAI Scheduler**: NVIDIA's open-source Kubernetes scheduler for AI workloads. It only owns the **scheduling layer**, deciding which node a pod lands on, which GPU it uses, and how much memory it gets. Since v0.16.4, its `hamicore` plugin writes the computed memory quota into the container's environment variable at bind time.
 
 - **`kai-resource-isolator`**: a companion component **provided by the HAMi project specifically for the KAI Scheduler integration path**. It ships HAMi-core's `libvgpu.so` to every GPU node and uses a MutatingWebhook to rewrite pods, injecting the library and `ld.so.preload`. In other words, it is the bridge that turns KAI's scheduling decision into isolation HAMi-core can actually enforce.
 
@@ -105,8 +105,9 @@ graph TD
     RUN["3. Container starts<br/>libvgpu.so intercepts cudaMalloc via LD_PRELOAD"]
     ENF["Rejects over limit allocation<br/>nvidia-smi shows only the quota"]
 
-    KAI --> ENV --> ISO --> RUN --> ENF
-    LIB -. "inject hostPath and ld.so.preload" .-> ISO
+    KAI --> ENV --> ISO
+    ISO -->|"injects hostPath and ld.so.preload"| RUN --> ENF
+    LIB -. "provides libvgpu.so on the node" .-> RUN
     MON -. "collects per container memory" .-> RUN
 
     style KAI fill:#d9f99d,stroke:#4f7d00,stroke-width:2px,color:#1f2937
@@ -149,13 +150,13 @@ This integration path is the result of more than a year of work between the HAMi
 
 KAI Scheduler's support for HAMi-core first appeared in **v0.16.4**. The current integration documentation requires KAI Scheduler v0.17.0 or later, and this post tests v0.17.0. The key piece is the `hamicore` plugin: once enabled, when KAI binds a shared GPU pod to a node, it injects the `CUDA_DEVICE_MEMORY_LIMIT` environment variable into the container based on the `gpu-memory` (or `gpu-fraction`) annotation, exactly the quota that HAMi-core needs to enforce isolation, per the contract above.
 
-Other GPU related changes in v0.17.0 include: fixing invalid volume names caused by `/` in shared pod names; correcting the allocation math for `MinNodeGPUMemoryMiB` and fractional `gpu-memory`; and using the largest GPU profile in the cluster for overLimit decisions. It also adds preemption-delay (a time window for Cluster Autoscaler to bring up nodes), NUMA aware scoring, and GitOps and ArgoCD installation support.
+Other GPU-related changes in v0.17.0 include: fixing invalid volume names caused by `/` in shared pod names; correcting the allocation math for `MinNodeGPUMemoryMiB` and fractional `gpu-memory`; and using the largest GPU profile in the cluster for overLimit decisions. It also adds preemption-delay (a time window for Cluster Autoscaler to bring up nodes), NUMA-aware scoring, and GitOps and ArgoCD installation support.
 
 ### kai-resource-isolator 1.1.0-chart
 
 This is the isolator shipped alongside HAMi. It receives the quota injected by KAI and, before the container actually starts, puts the HAMi-core `libvgpu.so` in place. Compared with the first release, 1.1.0 adds several operational improvements:
 
-- **New `kai-vgpu-monitor`**: runs as a DaemonSet, exposes HAMi compatible metrics on `:9394` (`hami_vgpu_memory_used_bytes`, `hami_vgpu_memory_limit_bytes`, `hami_container_device_utilization_ratio`), supports ServiceMonitor, and can be scraped directly by Prometheus.
+- **New `kai-vgpu-monitor`**: runs as a DaemonSet, exposes HAMi-compatible metrics on `:9394` (`hami_vgpu_memory_used_bytes`, `hami_vgpu_memory_limit_bytes`, `hami_container_device_utilization_ratio`), supports ServiceMonitor, and can be scraped directly by Prometheus.
 - **Multi container injection fix**: when a pod has multiple containers, the webhook now handles them correctly and no longer skips any.
 - **Security tightening**: the webhook now uses a namespaced Issuer (instead of a ClusterIssuer), and the ClusterRole no longer reads Secrets.
 - **Global image repository** precedence cleaned up, and `hamicore` installation parameters corrected.
@@ -215,4 +216,4 @@ Behind this is more than a year of careful alignment between the KAI Scheduler t
 - The background story: [HAMi-core adopted by NVIDIA KAI Scheduler](/blog/hami-core-adopted-by-nvidia-kai-scheduler)
 - User docs: [How to use HAMi with KAI Scheduler](/docs/next/userguide/kai-scheduler/how-to-use-kai-scheduler)
 - Related repos: [Project-HAMi/KAI-resource-isolator](https://github.com/Project-HAMi/KAI-resource-isolator), [Project-HAMi/HAMi-core](https://github.com/Project-HAMi/HAMi-core) (the CNCF incubating CUDA interception library), [kai-scheduler/KAI-Scheduler](https://github.com/kai-scheduler/KAI-Scheduler), [KAI Scheduler HAMi resource isolation docs](https://github.com/kai-scheduler/KAI-Scheduler/blob/main/docs/gpu-sharing/hami/README.md)
-- Run it on your own GKE, AWS, or self built cluster, and share real results in an issue or the community group. If HAMi-core lacks support for a certain card or CUDA version, open an issue at [Project-HAMi/HAMi](https://github.com/Project-HAMi/HAMi). This is the feedback the community values most.
+- Run it on your own GKE, AWS, or self-built cluster, and share real results in an issue or the community group. If HAMi-core lacks support for a certain card or CUDA version, open an issue at [Project-HAMi/HAMi](https://github.com/Project-HAMi/HAMi). This is the feedback the community values most.

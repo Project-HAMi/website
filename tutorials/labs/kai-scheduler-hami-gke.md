@@ -139,7 +139,7 @@ kubectl label node -l cloud.google.com/gke-accelerator=nvidia-tesla-t4 \
 
 Use the value reported by `nvidia-smi`, not the T4's marketed 16 GiB. If you add the labels after KAI starts, restart `kai-scheduler` so it refreshes its node cache.
 
-## Step 3: Install KAI Scheduler and Its Queue
+## Step 3: Install KAI Scheduler and Its Default Queues
 
 Install KAI v0.17.0 with GPU sharing, HAMi-core integration, and CDI enabled:
 
@@ -156,17 +156,15 @@ kubectl -n kai-scheduler wait --for=condition=available \
   --timeout=180s deploy --all
 kubectl -n kai-scheduler wait --for=condition=Ready \
   --timeout=300s config/kai-config
-kubectl apply \
-  -f tutorials/labs/examples/12-kai-scheduler-hami-gke/01-queues.yaml
 kubectl get queues
 ```
 
-The two required queues should appear:
+KAI v0.17.0 creates its default parent and child queues automatically:
 
 ```plaintext
-NAME            PARENT
-default
-default-queue   default
+NAME                   PARENT
+default-parent-queue
+default-queue          default-parent-queue
 ```
 
 :::important `cdiEnabled` must be a string
@@ -382,10 +380,11 @@ kubectl delete \
   -f tutorials/labs/examples/12-kai-scheduler-hami-gke/03-gke-policies.yaml
 helm uninstall kyverno -n kyverno
 helm uninstall kai-resource-isolator -n kai-resource-isolator
-kubectl delete \
-  -f tutorials/labs/examples/12-kai-scheduler-hami-gke/01-queues.yaml
+kubectl delete queues default-queue default-parent-queue --ignore-not-found
 helm uninstall kai-scheduler -n kai-scheduler
 ```
+
+The explicit Queue deletion is intentional: KAI annotates its default queues with `helm.sh/resource-policy: keep`, so Helm preserves them during uninstall.
 
 Delete `02-runtimeclass.yaml` only if Step 5 created it; preserve a RuntimeClass that already belonged to the cluster:
 
