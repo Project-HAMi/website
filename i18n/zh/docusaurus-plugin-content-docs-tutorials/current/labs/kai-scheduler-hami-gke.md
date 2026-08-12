@@ -139,7 +139,7 @@ kubectl label node -l cloud.google.com/gke-accelerator=nvidia-tesla-t4 \
 
 显存值应来自 `nvidia-smi`，不要使用 T4 标称的 16 GiB。如果 KAI 启动后才补标签，需要重启 `kai-scheduler` 刷新节点缓存。
 
-## 步骤 3: 安装 KAI Scheduler 与队列
+## 步骤 3: 安装 KAI Scheduler 与默认队列
 
 安装 KAI v0.17.0，启用 GPU sharing、HAMi-core 集成和 CDI：
 
@@ -156,17 +156,15 @@ kubectl -n kai-scheduler wait --for=condition=available \
   --timeout=180s deploy --all
 kubectl -n kai-scheduler wait --for=condition=Ready \
   --timeout=300s config/kai-config
-kubectl apply \
-  -f tutorials/labs/examples/12-kai-scheduler-hami-gke/01-queues.yaml
 kubectl get queues
 ```
 
-应出现两个队列：
+KAI v0.17.0 会自动创建默认的父子队列：
 
 ```plaintext
-NAME            PARENT
-default
-default-queue   default
+NAME                   PARENT
+default-parent-queue
+default-queue          default-parent-queue
 ```
 
 :::important `cdiEnabled` 必须是字符串
@@ -382,10 +380,11 @@ kubectl delete \
   -f tutorials/labs/examples/12-kai-scheduler-hami-gke/03-gke-policies.yaml
 helm uninstall kyverno -n kyverno
 helm uninstall kai-resource-isolator -n kai-resource-isolator
-kubectl delete \
-  -f tutorials/labs/examples/12-kai-scheduler-hami-gke/01-queues.yaml
+kubectl delete queues default-queue default-parent-queue --ignore-not-found
 helm uninstall kai-scheduler -n kai-scheduler
 ```
+
+这里显式删除 Queue 是有意为之：KAI 给默认队列添加了 `helm.sh/resource-policy: keep` 注解，因此 Helm 卸载时会保留它们。
 
 只有步骤 5 创建了 RuntimeClass 时才删除 `02-runtimeclass.yaml`；如果该 RuntimeClass 原本就属于集群，应予以保留：
 
