@@ -66,6 +66,11 @@ module.exports = {
           id: "labs/kserve-hami-dra",
           customProps: { level: "Advanced", duration: "about 90 minutes" },
         },
+        {
+          type: "doc",
+          id: "labs/kai-scheduler-hami-gke",
+          customProps: { level: "Advanced", duration: "about 90 minutes" },
+        },
       ],
     },
   ],
