@@ -12,16 +12,13 @@ import styles from "./styles.module.css";
 
 function renderAuthors(metadata, fallbackLabel) {
   const authors = metadata.authors || [];
-  const names = authors.map((author) => author?.name).filter(Boolean);
-  if (names.length === 0) {
+  const namedAuthors = authors.filter((author) => author?.name);
+  if (namedAuthors.length === 0) {
     return fallbackLabel;
   }
-  return authors.map((author, index) => {
-    const name = author?.name;
-    if (!name) {
-      return null;
-    }
-    const separator = index < authors.length - 1 ? ", " : null;
+  return namedAuthors.map((author, index) => {
+    const name = author.name;
+    const separator = index < namedAuthors.length - 1 ? ", " : null;
     const key = author.key || `author-${index}`;
     return (
       <React.Fragment key={key}>
