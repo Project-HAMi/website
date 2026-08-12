@@ -61,6 +61,11 @@ module.exports = {
           id: "labs/topology-aware-scheduling",
           customProps: { level: "Intermediate", duration: "about 45 minutes" },
         },
+        {
+          type: "doc",
+          id: "labs/kserve-hami-dra",
+          customProps: { level: "Advanced", duration: "about 90 minutes" },
+        },
       ],
     },
   ],
