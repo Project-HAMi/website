@@ -239,6 +239,8 @@ kubectl rollout status ds/kai-resource-isolator-libsync \
   -n kai-resource-isolator --timeout=300s
 kubectl rollout status ds/kai-resource-isolator-monitor \
   -n kai-resource-isolator --timeout=300s
+kubectl rollout status deploy/kai-resource-isolator-webhook \
+  -n kai-resource-isolator --timeout=300s
 kubectl get pods -n kai-resource-isolator
 ```
 
@@ -279,6 +281,9 @@ kubectl wait -n kyverno --for=condition=Ready pod \
   -l app.kubernetes.io/component=admission-controller --timeout=300s
 kubectl apply \
   -f tutorials/labs/examples/12-kai-scheduler-hami-gke/03-gke-policies.yaml
+kubectl wait --for=condition=Ready --timeout=180s \
+  clusterpolicy/inject-nvidia-library-path \
+  clusterpolicy/inject-gpu-devices
 kubectl get runtimeclass nvidia
 kubectl get pods -n kyverno
 kubectl get clusterpolicy \

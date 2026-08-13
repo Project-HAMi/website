@@ -109,6 +109,8 @@ kubectl rollout status ds/kai-resource-isolator-libsync \
   -n kai-resource-isolator --timeout=300s
 kubectl rollout status ds/kai-resource-isolator-monitor \
   -n kai-resource-isolator --timeout=300s
+kubectl rollout status deploy/kai-resource-isolator-webhook \
+  -n kai-resource-isolator --timeout=300s
 kubectl get pods -n kai-resource-isolator
 ```
 
@@ -160,6 +162,8 @@ kai-hami-check   1/1     Running   gpu-node-1
 
 ```bash
 kubectl exec kai-hami-check -- sh -lc '
+  test -n "$CUDA_DEVICE_MEMORY_LIMIT"
+  test -f /usr/local/vgpu/libvgpu.so
   printf "limit=%s\n" "$CUDA_DEVICE_MEMORY_LIMIT"
   cat /etc/ld.so.preload
   nvidia-smi --query-gpu=uuid,memory.total --format=csv,noheader
