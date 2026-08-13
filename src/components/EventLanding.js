@@ -52,6 +52,8 @@ export default function EventLanding({ slug }) {
       </Layout>
     );
   }
+  const effectiveEventStatus = event.eventStatus || "EventScheduled";
+
   const eventJsonLd = {
     "@context": "https://schema.org",
     "@type": "Event",
@@ -68,6 +70,34 @@ export default function EventLanding({ slug }) {
     description: pick(locale, event.description),
     image: bannerUrl ? `${siteConfig.url}${bannerUrl}` : undefined,
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+    eventStatus: `https://schema.org/${effectiveEventStatus}`,
+    organizer: {
+      "@type": "Organization",
+      name: "HAMi",
+      url: "https://project-hami.io/",
+    },
+    ...(event.speaker
+      ? {
+          performer: event.speaker
+            .split(",")
+            .map((name) => ({ "@type": "Person", name: name.trim() })),
+        }
+      : {}),
+    ...(event.price !== undefined || event.externalUrl
+      ? {
+          offers: {
+            "@type": "Offer",
+            url: event.externalUrl || `${siteConfig.url}/events/${event.slug}`,
+            price: event.price ?? "0",
+            priceCurrency: event.priceCurrency || "USD",
+            availability:
+              effectiveEventStatus === "EventScheduled"
+                ? "https://schema.org/InStock"
+                : "https://schema.org/SoldOut",
+            validFrom: event.offerValidFrom || event.date,
+          },
+        }
+      : {}),
   };
 
   return (

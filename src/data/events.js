@@ -6,6 +6,7 @@ const events = [
       zh: "从项目到生产：HAMi 与 Viettel Cloud 亮相 KCD 越南",
     },
     date: "2026-07-25",
+    speaker: "Reza Jelveh, The Anh Nguyen",
     location: {
       en: "Hanoi, Vietnam",
       zh: "越南 河内",
@@ -47,6 +48,7 @@ const events = [
       zh: "HAMi 亮相 KubeCon 日本 2026",
     },
     date: "2026-07-28",
+    speaker: "Jeonghyun Kim, Reza Jelveh",
     endDate: "2026-07-30",
     location: {
       en: "Yokohama, Japan",
