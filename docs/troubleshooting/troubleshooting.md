@@ -189,5 +189,5 @@ When testing scheduler extender behavior or debugging `Pending` pod states witho
    kubectl logs -n kube-system -l app.kubernetes.io/component=hami-scheduler
    ```
 
-For a complete step-by-step tutorial, see the [Local Mock GPU Testing Guide](../get-started/local-testing-with-mock-gpu).
+For a complete step-by-step tutorial, see the [Local Mock GPU Testing Guide](../get-started/local-testing-with-mock-gpu.md).
 
