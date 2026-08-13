@@ -74,6 +74,12 @@ gcloud container clusters get-credentials kai-hami-test \
 
 GPU 节点会产生费用，完成实验后请执行清理步骤。
 
+:::note 关于输出块
+
+下文输出均采集自 2026-08-12 的验证运行。Pod 后缀、运行时长、IP 地址和节点名称因环境而异；复现时应重点比较组件名称、就绪状态、调度位置和测量值。
+
+:::
+
 ## 步骤 1: 验证 GKE GPU 栈
 
 确认 GPU 节点已经上报 `nvidia.com/gpu`：
@@ -87,9 +93,9 @@ kubectl get nodes \
 
 ```plaintext
 NAME                                           GPU   ACCEL
-gke-kai-hami-test-default-pool-...             1     nvidia-tesla-t4
-gke-kai-hami-test-default-pool-...             1     nvidia-tesla-t4
-gke-kai-hami-test-default-pool-...             1     nvidia-tesla-t4
+gke-kai-hami-test-default-pool-370c394b-fxh2   1     nvidia-tesla-t4
+gke-kai-hami-test-default-pool-370c394b-pm4j   1     nvidia-tesla-t4
+gke-kai-hami-test-default-pool-370c394b-r8n5   1     nvidia-tesla-t4
 ```
 
 如果 `GPU` 为空，且节点带有 `gke-no-default-nvidia-gpu-device-plugin=true`，启用 GKE device plugin：
@@ -123,7 +129,15 @@ kubectl logs gpu-smi-test
 kubectl delete pod gpu-smi-test
 ```
 
-验证环境中的 T4 报告 15360 MiB 可寻址显存。
+实测 `nvidia-smi` 中与本实验相关的输出为：
+
+```plaintext
+GPU  Name        Persistence-M | Bus-Id        Disp.A | Volatile Uncorr. ECC
+  0  Tesla T4               Off | 00000000:00:04.0 Off |                    0
+...                         0MiB / 15360MiB
+```
+
+驱动补丁版本可能不同，但业务镜像必须与之兼容。记录这里报告的显存值，供步骤 2 使用。
 
 ## 步骤 2: 添加 KAI 所需的 GPU 标签
 
@@ -135,6 +149,18 @@ kubectl label node -l cloud.google.com/gke-accelerator=nvidia-tesla-t4 \
   nvidia.com/gpu.product=NVIDIA-Tesla-T4 \
   nvidia.com/gpu.count=1 \
   nvidia.com/gpu.present=true --overwrite
+
+kubectl get nodes -o custom-columns=\
+'NAME:.metadata.name,GPU.MEMORY:.metadata.labels.nvidia\.com/gpu\.memory,GPU.PRODUCT:.metadata.labels.nvidia\.com/gpu\.product'
+```
+
+实测节点随后暴露了 KAI 读取的标签值：
+
+```plaintext
+NAME                                           GPU.MEMORY   GPU.PRODUCT
+gke-kai-hami-test-default-pool-370c394b-fxh2   15360        NVIDIA-Tesla-T4
+gke-kai-hami-test-default-pool-370c394b-pm4j   15360        NVIDIA-Tesla-T4
+gke-kai-hami-test-default-pool-370c394b-r8n5   15360        NVIDIA-Tesla-T4
 ```
 
 显存值应来自 `nvidia-smi`，不要使用 T4 标称的 16 GiB。如果 KAI 启动后才补标签，需要重启 `kai-scheduler` 刷新节点缓存。
@@ -156,10 +182,24 @@ kubectl -n kai-scheduler wait --for=condition=available \
   --timeout=180s deploy --all
 kubectl -n kai-scheduler wait --for=condition=Ready \
   --timeout=300s config/kai-config
+kubectl get pods -n kai-scheduler
 kubectl get queues
 ```
 
-KAI v0.17.0 会自动创建默认的父子队列：
+实测安装中的七个 KAI 控制面组件均处于运行状态。自动生成的 Pod 后缀会不同：
+
+```plaintext
+NAME                                      READY   STATUS    RESTARTS   AGE
+admission-759b9bb99c-...                   1/1     Running   0          4m
+binder-54665cc5d9-...                      1/1     Running   0          4m
+kai-operator-997c6886c-...                 1/1     Running   0          4m
+kai-scheduler-default-d85d7dbdf-...        1/1     Running   0          4m
+pod-grouper-68f4fb47-...                   1/1     Running   0          4m
+podgroup-controller-5947b5b4dd-...         1/1     Running   0          4m
+queue-controller-6cc8c844c8-...            1/1     Running   0          4m
+```
+
+KAI v0.17.0 还会自动创建默认的父子队列：
 
 ```plaintext
 NAME                   PARENT
@@ -202,7 +242,22 @@ kubectl rollout status ds/kai-resource-isolator-monitor \
 kubectl get pods -n kai-resource-isolator
 ```
 
-ConfigMap 输出必须为 `/home/kubernetes/bin/nvidia/vgpu/libvgpu.so`。
+实测路径和组件状态如下：
+
+```plaintext
+/home/kubernetes/bin/nvidia/vgpu/libvgpu.so
+
+NAME                                        READY   STATUS    RESTARTS   AGE
+kai-resource-isolator-libsync-...           1/1     Running   0          2m
+kai-resource-isolator-libsync-...           1/1     Running   0          2m
+kai-resource-isolator-libsync-...           1/1     Running   0          2m
+kai-resource-isolator-monitor-26bj8         1/1     Running   0          2m
+kai-resource-isolator-monitor-hf67f         1/1     Running   0          2m
+kai-resource-isolator-monitor-tnj9l         1/1     Running   0          2m
+kai-resource-isolator-webhook-...           1/1     Running   0          2m
+```
+
+每个 GPU 节点都应有一个 libsync 和一个 monitor Pod，并且 webhook Pod 已就绪。
 
 ## 步骤 5: 适配 GKE CDI 设备路径
 
@@ -224,6 +279,27 @@ kubectl wait -n kyverno --for=condition=Ready pod \
   -l app.kubernetes.io/component=admission-controller --timeout=300s
 kubectl apply \
   -f tutorials/labs/examples/12-kai-scheduler-hami-gke/03-gke-policies.yaml
+kubectl get runtimeclass nvidia
+kubectl get pods -n kyverno
+kubectl get clusterpolicy \
+  inject-nvidia-library-path inject-gpu-devices
+```
+
+实测时兼容对象与 Kyverno 控制器均已就绪：
+
+```plaintext
+NAME     HANDLER   AGE
+nvidia   runc      3m
+
+NAME                                             READY   STATUS    RESTARTS   AGE
+kyverno-admission-controller-7cdf5b9c-...         1/1     Running   0          2m
+kyverno-background-controller-7b54965bf9-...      1/1     Running   0          2m
+kyverno-cleanup-controller-59c8fdfb66-...         1/1     Running   0          2m
+kyverno-reports-controller-5c96886c9-...          1/1     Running   0          2m
+
+NAME                          ADMISSION   BACKGROUND   READY
+inject-nvidia-library-path    true        true         true
+inject-gpu-devices            true        true         true
 ```
 
 第一条策略给 reservation Pod 添加 NVML 库路径；第二条给共享 Pod 挂载 `/dev/nvidia*`、`nvidia-smi` 与 NVIDIA 库。使用这条 workaround 时，共享 Pod 还需要 `privileged: true`。
@@ -268,7 +344,15 @@ for pod in kai-hami-lab12-a kai-hami-lab12-b; do
 done
 ```
 
-实测时两个 Pod 都返回：
+实测时两个 Pod 在同一节点就绪：
+
+```plaintext
+NAME                READY   STATUS    RESTARTS   IP           NODE
+kai-hami-lab12-a    1/1     Running   0          10.84.2.66   gke-kai-hami-test-default-pool-370c394b-pm4j
+kai-hami-lab12-b    1/1     Running   0          10.84.2.67   gke-kai-hami-test-default-pool-370c394b-pm4j
+```
+
+两者的启动日志都返回：
 
 ```plaintext
 limit=4147m
@@ -290,12 +374,22 @@ for pod in kai-hami-lab12-a kai-hami-lab12-b; do
 done
 ```
 
-两个 Pod 的实测输出均为：
+实测时间区间互相重叠，并且每个 Pod 都返回 `PASS`：
 
 ```plaintext
+=== kai-hami-lab12-a ===
+test_start=2026-08-12T05:11:13Z
 allocate 3 GiB: no error
 allocate another 2 GiB: out of memory
 PASS: in-quota allocation succeeded and over-quota allocation failed
+test_end=2026-08-12T05:11:44Z
+
+=== kai-hami-lab12-b ===
+test_start=2026-08-12T05:11:11Z
+allocate 3 GiB: no error
+allocate another 2 GiB: out of memory
+PASS: in-quota allocation succeeded and over-quota allocation failed
+test_end=2026-08-12T05:11:43Z
 ```
 
 比较 `test_start` 与 `test_end`，两个 30 秒区间必须重叠。实测时两个 Pod 在同时持有 3 GiB 的情况下都返回 `PASS`。各自累计申请 5 GiB 时，HAMi-core 都记录 `Device 0 OOM 5475663872 / 4348444672`。将验证程序作为容器启动命令执行，也避免了长时间 `kubectl exec` WebSocket 中断影响判断。
