@@ -97,10 +97,10 @@ Create a virtual machine with a GPU to serve as the foundation for the entire la
 
 ```bash
 export INSTANCE_TYPE="g4dn.xlarge"
-export AMI_ID="ami-0e140dd298ww13"
+export AMI_ID="<YOUR_AWS_AMI_ID>"
 export KEY_NAME="hami-eks"
 export VOLUME_SIZE="50"
-export REGION="eu-west-3"
+export REGION="<YOUR_AWS_REGION>"
 ```
 
 #### 1.2 Create the EC2 Spot Instance
