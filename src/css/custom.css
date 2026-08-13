@@ -145,6 +145,23 @@
     rgba(241, 246, 250, 0.95)
   );
   --hami-diagram-outcome-bg: rgba(255, 255, 255, 0.62);
+
+  /* mermaid class roles: kai, info, run, ok, bad */
+  --hami-mermaid-kai-fill: #d9f99d;
+  --hami-mermaid-kai-stroke: #4f7d00;
+  --hami-mermaid-kai-text: #1f2937;
+  --hami-mermaid-info-fill: #dbeafe;
+  --hami-mermaid-info-stroke: #1a5fb4;
+  --hami-mermaid-info-text: #1f2937;
+  --hami-mermaid-run-fill: #fef3c7;
+  --hami-mermaid-run-stroke: #b45309;
+  --hami-mermaid-run-text: #1f2937;
+  --hami-mermaid-ok-fill: #dcfce7;
+  --hami-mermaid-ok-stroke: #0b6b3c;
+  --hami-mermaid-ok-text: #1f2937;
+  --hami-mermaid-bad-fill: #fee2e2;
+  --hami-mermaid-bad-stroke: #b3261e;
+  --hami-mermaid-bad-text: #1f2937;
 }
 
 :root[data-theme="dark"] {
@@ -246,6 +263,22 @@
     rgba(28, 38, 49, 0.84)
   );
   --hami-diagram-outcome-bg: rgba(255, 255, 255, 0.04);
+
+  --hami-mermaid-kai-fill: #365314;
+  --hami-mermaid-kai-stroke: #a3e635;
+  --hami-mermaid-kai-text: #ecfccb;
+  --hami-mermaid-info-fill: #1e3a5f;
+  --hami-mermaid-info-stroke: #60a5fa;
+  --hami-mermaid-info-text: #dbeafe;
+  --hami-mermaid-run-fill: #78350f;
+  --hami-mermaid-run-stroke: #fbbf24;
+  --hami-mermaid-run-text: #fef3c7;
+  --hami-mermaid-ok-fill: #14532d;
+  --hami-mermaid-ok-stroke: #4ade80;
+  --hami-mermaid-ok-text: #dcfce7;
+  --hami-mermaid-bad-fill: #7f1d1d;
+  --hami-mermaid-bad-stroke: #f87171;
+  --hami-mermaid-bad-text: #fee2e2;
 
   --ifm-navbar-search-input-icon: url("data:image/svg+xml;utf8,<svg fill='rgba(255,255,255,0.5)' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' height='16px' width='16px'><path d='M6.02945,10.20327a4.17382,4.17382,0,1,1,4.17382-4.17382A4.15609,4.15609,0,0,1,6.02945,10.20327Zm9.69195,4.2199L10.8989,9.59979A5.88021,5.88021,0,0,0,12.058,6.02856,6.00467,6.00467,0,1,0,9.59979,10.8989l4.82338,4.82338a.89729.89729,0,0,0,1.29912,0,.89749.89749,0,0,0-.00087-1.29909Z'/></svg>");
 }
@@ -424,6 +457,78 @@ html[data-theme="dark"] .hami-lightbox__svg {
 .docusaurus-mermaid-container {
   cursor: zoom-in;
   text-align: center;
+}
+
+.docusaurus-mermaid-container svg {
+  background: transparent !important;
+}
+
+/* mermaid leaves subgraph titles / edge labels dark even on the dark theme */
+.docusaurus-mermaid-container .cluster-label,
+.docusaurus-mermaid-container .cluster-label span,
+.docusaurus-mermaid-container .cluster span,
+.docusaurus-mermaid-container .edgeLabel,
+.docusaurus-mermaid-container .edgeLabel span,
+.docusaurus-mermaid-container .edgeLabel p {
+  color: var(--ifm-font-color-base) !important;
+}
+
+.docusaurus-mermaid-container .cluster-label text,
+.docusaurus-mermaid-container .edgeLabel text {
+  fill: var(--ifm-font-color-base) !important;
+}
+
+.docusaurus-mermaid-container .edgeLabel,
+.docusaurus-mermaid-container .edgeLabel p,
+.docusaurus-mermaid-container .labelBkg {
+  background-color: var(--ifm-background-color) !important;
+}
+
+.docusaurus-mermaid-container .edgeLabel rect {
+  background-color: var(--ifm-background-color) !important;
+  fill: var(--ifm-background-color) !important;
+}
+
+.docusaurus-mermaid-container .kai {
+  --hami-mermaid-node-fill: var(--hami-mermaid-kai-fill);
+  --hami-mermaid-node-stroke: var(--hami-mermaid-kai-stroke);
+  --hami-mermaid-node-text: var(--hami-mermaid-kai-text);
+}
+
+.docusaurus-mermaid-container .info {
+  --hami-mermaid-node-fill: var(--hami-mermaid-info-fill);
+  --hami-mermaid-node-stroke: var(--hami-mermaid-info-stroke);
+  --hami-mermaid-node-text: var(--hami-mermaid-info-text);
+}
+
+.docusaurus-mermaid-container .run {
+  --hami-mermaid-node-fill: var(--hami-mermaid-run-fill);
+  --hami-mermaid-node-stroke: var(--hami-mermaid-run-stroke);
+  --hami-mermaid-node-text: var(--hami-mermaid-run-text);
+}
+
+.docusaurus-mermaid-container .ok {
+  --hami-mermaid-node-fill: var(--hami-mermaid-ok-fill);
+  --hami-mermaid-node-stroke: var(--hami-mermaid-ok-stroke);
+  --hami-mermaid-node-text: var(--hami-mermaid-ok-text);
+}
+
+.docusaurus-mermaid-container .bad {
+  --hami-mermaid-node-fill: var(--hami-mermaid-bad-fill);
+  --hami-mermaid-node-stroke: var(--hami-mermaid-bad-stroke);
+  --hami-mermaid-node-text: var(--hami-mermaid-bad-text);
+}
+
+.docusaurus-mermaid-container
+  :is(.kai, .info, .run, .ok, .bad)
+  > :is(rect, polygon, circle, ellipse, path) {
+  fill: var(--hami-mermaid-node-fill) !important;
+  stroke: var(--hami-mermaid-node-stroke) !important;
+  stroke-width: 2px !important;
+}
+
+.docusaurus-mermaid-container :is(.kai, .info, .run, .ok, .bad) :is(.nodeLabel, span) {
+  color: var(--hami-mermaid-node-text) !important;
 }
 
 .mermaid-figure {
