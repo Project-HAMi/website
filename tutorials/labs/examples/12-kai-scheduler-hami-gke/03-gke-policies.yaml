@@ -1,0 +1,88 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: inject-nvidia-library-path
+spec:
+  rules:
+    - name: add-ld-library-path
+      match:
+        any:
+          - resources:
+              kinds: [Pod]
+              namespaces: [kai-resource-reservation]
+      mutate:
+        foreach:
+          - list: "request.object.spec.containers[]"
+            patchStrategicMerge:
+              spec:
+                containers:
+                  - name: "{{ element.name }}"
+                    env:
+                      - name: LD_LIBRARY_PATH
+                        value: /usr/local/nvidia/lib64
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: inject-gpu-devices
+spec:
+  background: false
+  rules:
+    - name: add-gpu-volumes
+      match:
+        any:
+          - resources:
+              kinds: [Pod]
+      preconditions:
+        all:
+          - key: '{{ request.object.metadata.annotations."gpu-memory" || '''' }}'
+            operator: NotEquals
+            value: ""
+      mutate:
+        patchesJson6902: |-
+          - op: add
+            path: /spec/volumes/-
+            value: {name: nvidia-dev0, hostPath: {path: /dev/nvidia0, type: CharDevice}}
+          - op: add
+            path: /spec/volumes/-
+            value: {name: nvidia-ctl, hostPath: {path: /dev/nvidiactl, type: CharDevice}}
+          - op: add
+            path: /spec/volumes/-
+            value: {name: nvidia-uvm, hostPath: {path: /dev/nvidia-uvm, type: CharDevice}}
+          - op: add
+            path: /spec/volumes/-
+            value: {name: nvidia-modeset, hostPath: {path: /dev/nvidia-modeset, type: CharDevice}}
+          - op: add
+            path: /spec/volumes/-
+            value: {name: nvidia-caps, hostPath: {path: /dev/nvidia-caps, type: Directory}}
+          - op: add
+            path: /spec/volumes/-
+            value: {name: nvidia-bin, hostPath: {path: /home/kubernetes/bin/nvidia/bin, type: Directory}}
+          - op: add
+            path: /spec/volumes/-
+            value: {name: nvidia-lib, hostPath: {path: /home/kubernetes/bin/nvidia/lib64, type: Directory}}
+    - name: add-gpu-volume-mounts
+      match:
+        any:
+          - resources:
+              kinds: [Pod]
+      preconditions:
+        all:
+          - key: '{{ request.object.metadata.annotations."gpu-memory" || '''' }}'
+            operator: NotEquals
+            value: ""
+      mutate:
+        foreach:
+          - list: "request.object.spec.containers[]"
+            patchStrategicMerge:
+              spec:
+                containers:
+                  - name: "{{ element.name }}"
+                    volumeMounts:
+                      - { name: nvidia-dev0, mountPath: /dev/nvidia0 }
+                      - { name: nvidia-ctl, mountPath: /dev/nvidiactl }
+                      - { name: nvidia-uvm, mountPath: /dev/nvidia-uvm }
+                      - { name: nvidia-modeset, mountPath: /dev/nvidia-modeset }
+                      - { name: nvidia-caps, mountPath: /dev/nvidia-caps }
+                      - { name: nvidia-bin, mountPath: /usr/local/nvidia/bin }
+                      - { name: nvidia-lib, mountPath: /usr/local/nvidia/lib64 }
