@@ -155,7 +155,7 @@ reboot
 export NODE_PUBLIC_IP=<your-vm-public-ip>
 ssh -i <your-pem-key-file-path> ubuntu@$NODE_PUBLIC_IP
 
-# After logging in, switch to root a user:
+# After logging in, switch to the root user:
 sudo -i
 
 # Check the currently running Linux kernel version
