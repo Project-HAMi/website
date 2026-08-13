@@ -23,6 +23,12 @@ int main() {
     cudaFree(within_limit);
     return 2;
   }
+  if (second != cudaErrorMemoryAllocation) {
+    std::cerr << "ERROR: expected out of memory, got "
+              << cudaGetErrorString(second) << std::endl;
+    cudaFree(within_limit);
+    return 3;
+  }
 
   const char *hold = std::getenv("HOLD_SECONDS");
   if (hold) {
