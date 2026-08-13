@@ -5,6 +5,10 @@
  */
 import React from "react";
 import clsx from "clsx";
+import Head from "@docusaurus/Head";
+import useBaseUrl from "@docusaurus/useBaseUrl";
+import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
+import useRouteContext from "@docusaurus/useRouteContext";
 import { useWindowSize } from "@docusaurus/theme-common";
 import { useDoc } from "@docusaurus/plugin-content-docs/client";
 import DocItemPaginator from "@theme/DocItem/Paginator";
@@ -18,6 +22,7 @@ import DocBreadcrumbs from "@theme/DocBreadcrumbs";
 import ContentVisibility from "@theme/ContentVisibility";
 import styles from "./styles.module.css";
 import useImageLightbox from "../../utils/useImageLightbox";
+import { buildTechArticleJsonLd, serializeJsonLd } from "../../../utils/jsonLd";
 
 function useDocTOC() {
   const { frontMatter, toc } = useDoc();
@@ -35,26 +40,52 @@ function useDocTOC() {
 export default function DocItemLayout({ children }) {
   useImageLightbox();
   const docTOC = useDocTOC();
-  const { metadata } = useDoc();
+  const { metadata, frontMatter, assets } = useDoc();
+  const { i18n, siteConfig } = useDocusaurusContext();
+  const { plugin } = useRouteContext();
+  const image = assets.image ?? frontMatter.image ?? siteConfig.themeConfig.image;
+  const imageUrl = useBaseUrl(image, { absolute: true });
+  const techArticleJsonLd = buildTechArticleJsonLd({
+    siteUrl: siteConfig.url,
+    title: metadata.title,
+    description: metadata.description,
+    permalink: metadata.permalink,
+    image: imageUrl,
+    locale: i18n.currentLocale,
+    lastUpdatedAt: metadata.lastUpdatedAt,
+    version:
+      plugin.id === "tutorials"
+        ? undefined
+        : metadata.version === "current"
+          ? "next"
+          : metadata.version,
+    organizationLogo: siteConfig.customFields.defaultOgImage,
+  });
+
   return (
-    <div className="row">
-      <div className={clsx("col", !docTOC.hidden && styles.docItemCol)}>
-        <ContentVisibility metadata={metadata} />
-        <DocVersionBanner />
-        <div className={styles.docItemContainer}>
-          <article>
-            <div className={styles.docBreadcrumbsRow}>
-              <DocBreadcrumbs />
-              <DocVersionBadge />
-            </div>
-            {docTOC.mobile}
-            <DocItemContent>{children}</DocItemContent>
-            <DocItemFooter />
-          </article>
-          <DocItemPaginator />
+    <>
+      <Head>
+        <script type="application/ld+json">{serializeJsonLd(techArticleJsonLd)}</script>
+      </Head>
+      <div className="row">
+        <div className={clsx("col", !docTOC.hidden && styles.docItemCol)}>
+          <ContentVisibility metadata={metadata} />
+          <DocVersionBanner />
+          <div className={styles.docItemContainer}>
+            <article>
+              <div className={styles.docBreadcrumbsRow}>
+                <DocBreadcrumbs />
+                <DocVersionBadge />
+              </div>
+              {docTOC.mobile}
+              <DocItemContent>{children}</DocItemContent>
+              <DocItemFooter />
+            </article>
+            <DocItemPaginator />
+          </div>
         </div>
+        {docTOC.desktop && <div className="col col--3">{docTOC.desktop}</div>}
       </div>
-      {docTOC.desktop && <div className="col col--3">{docTOC.desktop}</div>}
-    </div>
+    </>
   );
 }

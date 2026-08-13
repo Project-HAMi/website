@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useCallback, useState } from "react";
 import clsx from "clsx";
 import Layout from "@theme/Layout";
+import Head from "@docusaurus/Head";
 import Link from "@docusaurus/Link";
 import { useBaseUrlUtils } from "@docusaurus/useBaseUrl";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
@@ -29,6 +30,7 @@ import adoptersData from "../data/adopters.json";
 import ecosystemData from "../data/ecosystem.json";
 import heroStats from "../data/home/heroStats";
 import valueCards from "../data/home/valueCards";
+import { buildSiteJsonLd, serializeJsonLd } from "../utils/jsonLd";
 
 const cardIcons = {
   "network-wired": faNetworkWired,
@@ -448,7 +450,7 @@ function RuntimeLaneCard({ lane, locale }) {
 }
 
 export default function Home() {
-  const { i18n } = useDocusaurusContext();
+  const { i18n, siteConfig } = useDocusaurusContext();
   const { withBaseUrl } = useBaseUrlUtils();
   const isZh = i18n.currentLocale === "zh";
   const [starsCount, setStarsCount] = useState(3100);
@@ -515,6 +517,13 @@ export default function Home() {
     return () => controller.abort();
   }, []);
 
+  const siteJsonLd = buildSiteJsonLd({
+    siteUrl: siteConfig.url,
+    name: siteConfig.title,
+    description: siteConfig.tagline,
+    logoPath: siteConfig.customFields.defaultOgImage,
+  });
+
   return (
     <Layout
       title={isZh ? "Kubernetes 上的异构 GPU 共享" : "Heterogeneous GPU Sharing on Kubernetes"}
@@ -524,6 +533,9 @@ export default function Home() {
           : "HAMi is an open-source, cloud-native GPU virtualization middleware that brings sharing, isolation and scheduling of heterogeneous accelerators to AI workloads on Kubernetes."
       }
     >
+      <Head>
+        <script type="application/ld+json">{serializeJsonLd(siteJsonLd)}</script>
+      </Head>
       <main>
         <section className={clsx(styles.hero, "hami-shell-bg")}>
           <div className={styles.heroContainer}>
