@@ -21,7 +21,7 @@ It also exposes per-container and per-vGPU metrics for each scheduled task:
 | Metrics | Description | Example |
 | --- | --- | --- |
 | hami_container_device_utilization_ratio | Container device SM utilization ratio | `{container="cuda",device_uuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",namespace="default",pod="vgpu-share",vdevice_index="0",zone="vGPU"}` 0 |
-| hami_container_device_memory_bytes | Container device memory usage breakdown in bytes | `{buffer_size="0",container="cuda",context_size="0",device_uuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",module_size="0",namespace="default",offset="0",pod="vgpu-share",vdevice_index="0",zone="vGPU"}` 0 |
+| hami_container_device_memory_bytes | Container device memory usage in bytes | `{container="cuda",device_uuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",namespace="default",pod="vgpu-share",vdevice_index="0",zone="vGPU"}` 0 |
 | hami_container_last_kernel_elapsed_seconds | Seconds since last kernel execution in container | `{container="cuda",device_uuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",namespace="default",pod="vgpu-share",vdevice_index="0",zone="vGPU"}` 3664 |
 | hami_vgpu_memory_used_bytes | vGPU device memory usage in bytes | `{container="cuda",device_uuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",namespace="default",pod="vgpu-share",vdevice_index="0",zone="vGPU"}` 0 |
 | hami_vgpu_memory_limit_bytes | vGPU device memory limit in bytes | `{container="cuda",device_uuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",namespace="default",pod="vgpu-share",vdevice_index="0",zone="vGPU"}` 2.097152e+10 |
@@ -31,6 +31,6 @@ It also exposes per-container and per-vGPU metrics for each scheduled task:
 
 :::note
 
-The `context_size`, `module_size`, `buffer_size` and `offset` labels on `hami_container_device_memory_bytes` will be deprecated in v2.10.0. Use `hami_vgpu_memory_context_bytes`, `hami_vgpu_memory_module_bytes` and `hami_vgpu_memory_buffer_bytes` instead.
+In v2.10.0, `hami_container_device_memory_bytes` no longer includes the `context_size`, `module_size`, `buffer_size`, and `offset` labels. Context, module, and buffer memory are exposed through `hami_vgpu_memory_context_bytes`, `hami_vgpu_memory_module_bytes`, and `hami_vgpu_memory_buffer_bytes`.
 
 :::
