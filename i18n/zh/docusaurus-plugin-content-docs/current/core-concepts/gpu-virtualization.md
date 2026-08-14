@@ -249,13 +249,3 @@ GPU2 得分 = ((1+6)/10 + (20+70)/100 + (1000+6000)/8000) × 10 = 24.75
 
 - 学习 HAMi 的[架构设计](./architecture.md)
 - 在你的 Kubernetes 集群中[安装 HAMi](../installation/prerequisites.md)
-
-:::tip 动手实践
-
-通过以下动手实验将这些概念付诸实践：
-
-- [Lab 3: 使用 HAMi 进行 GPU 切分](/tutorials/labs/gpu-partitioning) — 将单张 GPU 切分给多个 Pod，并验证显存限制
-- [Lab 7: 在 k3s 上实现 GPU 隔离（无需 GPU Operator）](/tutorials/labs/hami-isolation-k3s) — 在轻量集群上端到端验证显存隔离
-- [Lab 6: 在 HAMi GPU 共享上运行 vLLM](/tutorials/labs/hami-vllm) — 使用 HAMi 共享 GPU 资源来提供大语言模型推理服务
-
-:::

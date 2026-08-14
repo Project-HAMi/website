@@ -1,5 +1,12 @@
 ---
 title: "HAMi Cluster Architecture After Installation"
+sidebar_label: HAMi Architecture
+tags:
+  - simulation
+  - nvml-mock
+  - hami
+  - scheduling
+  - local-setup
 ---
 
 After completing the HAMi installation, the cluster is no longer an ordinary Kubernetes cluster, it becomes an AI infrastructure platform with GPU virtualization capabilities. This document breaks down the responsibilities and dependencies of every layer and every component in the cluster after installation.
@@ -360,12 +367,3 @@ Throughout this process, each layer fulfills its role: Kubernetes provides the s
 | Visualization Layer | HAMi WebUI | GPU resource visualization |
 
 Once you understand the responsibilities and dependencies of these components, you can quickly identify which layer has a problem when issues arise in the cluster: if Pods cannot be scheduled, check the scheduling layer; if GPUs are unavailable, check the Runtime Stack; if metrics are missing, check the monitoring layer.
-
-:::tip Try it yourself
-
-Explore the HAMi cluster architecture with hands-on labs:
-
-- [Lab 2: Local Fake GPU Setup](/tutorials/labs/local-fake-gpu) — build a local HAMi cluster without real GPU hardware and inspect each architectural layer
-- [Lab 5: Fake-GPU Scheduling with nvml-mock](/tutorials/labs/nvml-mock) — simulate GPU device discovery and trace the scheduling flow through all layers
-
-:::

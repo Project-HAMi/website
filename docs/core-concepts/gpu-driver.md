@@ -1,5 +1,10 @@
 ---
-title: "Understanding GPU Drivers"
+title: "Understanding NVIDIA GPU Drivers in Kubernetes"
+sidebar_label: "GPU Driver"
+tags:
+  - nvidia
+  - simulation
+  - nvml-mock
 ---
 
 Before using a GPU, you first need to verify that the GPU driver is properly loaded into the kernel. This document explains how to check GPU driver status and understand the architecture of NVIDIA kernel modules.
@@ -89,11 +94,3 @@ Call chain:
 - If `lsmod` shows the nvidia module but `nvidia-smi` reports an error, the problem is at the user-space library or permission level
 
 Therefore, when troubleshooting GPU issues, it is recommended to start with `lsmod | grep nvidia` to confirm the kernel module status, and then use `nvidia-smi` to check whether user space is functioning normally.
-
-:::tip Try it yourself
-
-Explore GPU driver internals with a hands-on lab:
-
-- [Lab 5: Fake-GPU Scheduling with nvml-mock](/tutorials/labs/nvml-mock) — simulate NVML device discovery and see how the driver layer reports GPU resources to Kubernetes
-
-:::

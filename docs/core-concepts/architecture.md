@@ -1,5 +1,11 @@
 ---
-title: Architecture
+title: Architecture Overview
+sidebar_label: Architecture
+tags:
+  - installation
+  - nvidia
+  - hami
+  - local-setup
 ---
 
 The overall architecture of HAMi is shown as below:
@@ -28,11 +34,3 @@ The device-plugin layer obtains the scheduling result from the annotations field
 ## HAMi-Core {#hami-core}
 
 The in-container resource control is responsible for monitoring the resource usage within the container and providing hard isolation capabilities.
-
-:::tip Try it yourself
-
-See these components in action with a hands-on lab:
-
-- [Lab 1: Online Installation of HAMi](/tutorials/labs/online-install) — deploy all four components and verify they are running in your cluster
-
-:::

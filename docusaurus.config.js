@@ -25,6 +25,55 @@ function getDocEditUrl(versionDocsDirPath, docPath) {
   return `${githubEditBaseUrl}${[versionDocsDirPath, docPath].filter(Boolean).join("/")}`;
 }
 
+/**
+ * Build-time helper: scans tutorials/labs/*.md and extracts the metadata
+ * that the RelatedLabs component needs at runtime. This avoids the need
+ * to cross-reference two separate docs-plugin instances on the client.
+ */
+function getLabData() {
+  const fs = require("fs");
+  const path = require("path");
+  const labsDir = path.join(__dirname, "tutorials", "labs");
+  if (!fs.existsSync(labsDir)) return {};
+  const files = fs.readdirSync(labsDir).filter((f) => f.endsWith(".md"));
+  const labs = {};
+  for (const file of files) {
+    const raw = fs.readFileSync(path.join(labsDir, file), "utf8");
+    // Normalise CRLF → LF so the regex works on every OS
+    const content = raw.replace(/\r\n/g, "\n");
+    const fmMatch = content.match(/^---\n([\s\S]*?)\n---/);
+    if (!fmMatch) continue;
+    const fm = fmMatch[1];
+
+    const titleMatch = fm.match(/^title:\s*"?(.+?)"?\s*$/m);
+    const descMatch = fm.match(/^description:\s*"?(.+?)"?\s*$/m);
+    const levelMatch = fm.match(/level:\s*(.+)/);
+    const durationMatch = fm.match(/duration:\s*(.+)/);
+    const tagsMatch = fm.match(/^tags:\s*\n((?:\s+-\s+.*\n?)+)/m);
+
+    const tags = tagsMatch
+      ? tagsMatch[1]
+          .split("\n")
+          .filter((l) => l.trim().startsWith("-"))
+          .map((l) => l.replace(/^\s*-\s*/, "").trim())
+          .filter(Boolean)
+      : [];
+
+    if (tags.length === 0) continue;
+
+    const docId = `labs/${file.replace(".md", "")}`;
+    labs[docId] = {
+      title: titleMatch ? titleMatch[1] : file.replace(".md", ""),
+      description: descMatch ? descMatch[1] : "",
+      level: levelMatch ? levelMatch[1].trim() : "",
+      duration: durationMatch ? durationMatch[1].trim() : "",
+      tags,
+      href: `/tutorials/${docId}`,
+    };
+  }
+  return labs;
+}
+
 async function localizedBlogPlugin(context, opts) {
   const p = await require("@docusaurus/plugin-content-blog").default(context, opts);
   const orig = p.postBuild?.bind(p);
@@ -71,6 +120,7 @@ module.exports = {
   },
   customFields: {
     defaultOgImage: "/img/hami-graph-color.png",
+    labData: getLabData(),
   },
   markdown: {
     mermaid: true,

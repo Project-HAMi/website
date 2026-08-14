@@ -1,5 +1,10 @@
 ---
-title: Ecosystem Integrations
+title: Ecosystem Integration Partners
+sidebar_label: Ecosystem Integrations
+tags:
+  - volcano
+  - kueue
+  - kai-scheduler
 ---
 
 HAMi doesn't replace your Kubernetes scheduler. It extends it. HAMi handles GPU virtualization, sharing, and runtime isolation, and it slots into the wider Kubernetes scheduling world so you can pair **GPU sharing** with **batch scheduling, job queuing, and colocation**.
@@ -100,13 +105,3 @@ HAMi-core fills it. **KAI Scheduler does the scheduling, HAMi-core does the isol
 | NVIDIA stacks, gang-scheduled training or batch needing hard isolation | KAI Scheduler | NVIDIA-native gang scheduling, fair queues, fractional GPU, plus HAMi-core hard isolation |
 
 > HAMi's own two-level `nvidia.com/priority` is a **runtime** preemption mechanism scoped to a single GPU. If you need **scheduling-level** multi-level priority across a queue of jobs, combine HAMi with one of the partners above. See the [FAQ](../faq/faq.md) for details.
-
-:::tip Try it yourself
-
-Try these ecosystem integrations in hands-on labs:
-
-- [Lab 8: Volcano vGPU with Gang Scheduling and Queues](/tutorials/labs/volcano-vgpu-gang-queue) — deploy Volcano alongside HAMi and test gang scheduling with GPU shares
-- [Lab 9: Queue HAMi vGPU Workloads with Kueue](/tutorials/labs/kueue-hami-vgpu) — set up Kueue ResourceFlavors for HAMi vGPUs and enforce queue-level quotas
-- [Lab 12: Verify KAI Scheduler and HAMi Memory Isolation on GKE](/tutorials/labs/kai-scheduler-hami-gke) — combine KAI Scheduler with HAMi-core for hard GPU isolation
-
-:::
