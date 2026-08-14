@@ -216,3 +216,12 @@ graph LR
 | **GPU Operator** | NVIDIA Operator, automates deployment and management of the full GPU software stack |
 | **HAMi** | GPU virtualization middleware, supporting fine-grained partitioning and sharing of memory and compute |
 | **HAMi Device Plugin** | HAMi's device plugin, replaces the native Device Plugin and supports GPU partition reporting |
+
+:::tip Try it yourself
+
+Explore the GPU software stack with hands-on labs:
+
+- [Lab 1: Online Installation of HAMi](/tutorials/labs/online-install) — walk through every layer of the stack from driver to HAMi scheduler
+- [Lab 5: Fake-GPU Scheduling with nvml-mock](/tutorials/labs/nvml-mock) — see how the NVML layer and Device Plugin interact without real GPU hardware
+
+:::
