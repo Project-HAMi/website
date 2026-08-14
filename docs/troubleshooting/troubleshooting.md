@@ -190,4 +190,3 @@ When testing scheduler extender behavior or debugging `Pending` pod states witho
    ```
 
 For a complete step-by-step tutorial, see the [Local Mock GPU Testing Guide](../get-started/local-testing-with-mock-gpu.md).
-
