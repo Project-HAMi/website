@@ -360,3 +360,12 @@ sequenceDiagram
 | 可视化层                 | HAMi WebUI                                    | GPU 资源可视化     |
 
 理解了这些组件的职责和依赖关系，当集群出现问题时，你可以快速定位是哪一层出了问题：Pod 无法调度看调度层，GPU 不可用看 Runtime Stack，指标缺失看监控层。
+
+:::tip 动手实践
+
+通过动手实验探索 HAMi 集群架构：
+
+- [Lab 2: 本地 Fake GPU 环境搭建](/tutorials/labs/local-fake-gpu) — 无需真实 GPU 硬件，搭建本地 HAMi 集群并逐层检查各架构层
+- [Lab 5: 使用 nvml-mock 进行 Fake-GPU 调度](/tutorials/labs/nvml-mock) — 模拟 GPU 设备发现，追踪调度流程在各层之间的流转
+
+:::

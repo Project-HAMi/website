@@ -248,3 +248,13 @@ Here are some recommended next steps:
 
 - Learn about HAMi's [architecture](./architecture.md)
 - [Install HAMi](../installation/prerequisites.md) in your Kubernetes cluster
+
+:::tip Try it yourself
+
+Put these concepts into practice with the following hands-on labs:
+
+- [Lab 3: GPU Partitioning with HAMi](/tutorials/labs/gpu-partitioning) — partition a single GPU across multiple Pods and verify VRAM limits
+- [Lab 7: GPU Isolation on k3s Without the GPU Operator](/tutorials/labs/hami-isolation-k3s) — verify end-to-end memory isolation on a lightweight cluster
+- [Lab 6: Run vLLM on HAMi GPU Shares](/tutorials/labs/hami-vllm) — serve an LLM on shared GPU resources with HAMi
+
+:::

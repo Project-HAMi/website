@@ -89,3 +89,11 @@ flowchart TB
 - 如果 `lsmod` 能看到 nvidia 模块但 `nvidia-smi` 报错，说明问题在用户态库或权限层面
 
 因此在排查 GPU 问题时，建议先从 `lsmod | grep nvidia` 开始确认内核模块状态，再使用 `nvidia-smi` 检查用户态是否正常。
+
+:::tip 动手实践
+
+通过动手实验深入了解 GPU 驱动：
+
+- [Lab 5: 使用 nvml-mock 进行 Fake-GPU 调度](/tutorials/labs/nvml-mock) — 模拟 NVML 设备发现，观察驱动层如何向 Kubernetes 上报 GPU 资源
+
+:::

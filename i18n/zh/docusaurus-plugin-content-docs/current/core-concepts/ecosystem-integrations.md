@@ -100,3 +100,13 @@ HAMi-core 补上的就是这一块。**调度交给 KAI Scheduler，隔离交给
 | NVIDIA 技术栈、成团调度的训练或批处理、需要硬隔离 | KAI Scheduler | NVIDIA 原生的成团调度、公平队列、GPU 分片，外加 HAMi-core 硬隔离 |
 
 > HAMi 自带的两级 `nvidia.com/priority` 是一种**运行时**抢占机制，作用范围是单张 GPU。如果你要对一整列作业做**调度级**的多级优先，那就把 HAMi 和上面任意一个伙伴组合起来用。细节可以看 [FAQ](../faq/faq.md)。
+
+:::tip 动手实践
+
+通过动手实验体验这些生态集成：
+
+- [Lab 8: Volcano vGPU 成团调度与队列](/tutorials/labs/volcano-vgpu-gang-queue) — 将 Volcano 与 HAMi 一起部署，测试 GPU 共享下的成团调度
+- [Lab 9: 使用 Kueue 排队 HAMi vGPU 工作负载](/tutorials/labs/kueue-hami-vgpu) — 为 HAMi vGPU 设置 Kueue ResourceFlavor，实施队列级配额
+- [Lab 12: 在 GKE 上验证 KAI Scheduler 与 HAMi 显存隔离](/tutorials/labs/kai-scheduler-hami-gke) — 将 KAI Scheduler 与 HAMi-core 结合，实现硬 GPU 隔离
+
+:::

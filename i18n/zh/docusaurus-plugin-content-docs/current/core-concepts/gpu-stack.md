@@ -216,3 +216,12 @@ graph LR
 | **GPU Operator**             | NVIDIA Operator，自动化部署和管理 GPU 相关的全栈组件       |
 | **HAMi**                     | GPU 虚拟化中间件，支持显存和算力的细粒度切分与共享         |
 | **HAMi Device Plugin**       | HAMi 的设备插件，替代原生 Device Plugin，支持 GPU 切分上报 |
+
+:::tip 动手实践
+
+通过动手实验探索 GPU 软件栈：
+
+- [Lab 1: 在线安装 HAMi](/tutorials/labs/online-install) — 从驱动到 HAMi 调度器，逐层走通整个栈
+- [Lab 5: 使用 nvml-mock 进行 Fake-GPU 调度](/tutorials/labs/nvml-mock) — 无需真实 GPU 硬件，观察 NVML 层和 Device Plugin 如何交互
+
+:::
