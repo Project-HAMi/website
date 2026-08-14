@@ -19,6 +19,12 @@ import LevelBadge from "./LevelBadge";
 import styles from "./RelatedLabs.module.css";
 import gridStyles from "./LabCardGrid.module.css";
 
+/**
+ * Maps raw duration strings from lab frontmatter to translatable React elements.
+ * Keeps duration labels consistent with LabCardGridAuto.js and supports i18n.
+ *
+ * @type {Object<string, React.ReactElement>}
+ */
 const DURATIONS = {
   "about 30 minutes": (
     <Translate id="tutorials.lab.duration.30min" description="Lab duration of about 30 minutes">
@@ -47,6 +53,16 @@ const DURATIONS = {
   ),
 };
 
+/**
+ * Renders a "Related Hands-on Labs" card grid at the bottom of doc pages.
+ *
+ * Reads the current page's frontmatter `tags` and matches them against
+ * pre-extracted lab metadata from `siteConfig.customFields.labData`.
+ * Labs with the most overlapping tags appear first. If the page has no
+ * tags or no labs match, the component renders nothing.
+ *
+ * @returns {React.ReactElement|null} A styled card grid of related labs, or null.
+ */
 export default function RelatedLabs() {
   const { frontMatter } = useDoc();
   const pageTags = frontMatter?.tags ?? [];
