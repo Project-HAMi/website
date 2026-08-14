@@ -2,7 +2,7 @@
 title: "HAMi v2.10.0 发布：Flexible MIG、可组合调度策略与更广阔的加速器生态"
 date: "2026-08-21"
 description: "HAMi v2.10.0 正式发布。本次发布带来了动态 Flexible MIG、全新的 mutex 调度策略、NUMA 排序修复与可组合调度策略、PodGroup（gang-scheduling）支持、AMD MI300X 与壁仞设备支持、更深入的昇腾管理（vNPU 与 HAMi-core 异构模式及监控），以及 KAI Scheduler + HAMi-core 集成。"
-tags: ["Release", "GPU", "Kubernetes", "Scheduling"]
+tags: ["Release", "GPU", "Kubernetes", "调度"]
 authors: [hami_community]
 ---
 
@@ -118,7 +118,7 @@ resources:
     birentech.com/gpu: "1"
 ```
 
-> **注意**：与 NVIDIA/AMD 不同，壁仞**不能**按 Pod 指定显存或算力大小，你得到的是整卡或一个 SVI 分区（2 切或 4 切）。`biren-device-plugin` DaemonSet 部署在 `biren-gpu` 命名空间。
+> **注意**：与 NVIDIA/AMD 不同，壁仞**不能**按 Pod 指定显存或算力大小，你得到的是整卡或一个 SVI 分区（2 个分区或 4 个分区）。`biren-device-plugin` DaemonSet 部署在 `biren-gpu` 命名空间。
 
 AMD 与壁仞的加入，使 HAMi 已覆盖更广泛的加速器，包括 NVIDIA、华为昇腾、寒武纪、海光 DCU、壁仞、燧原、沐曦、昆仑芯、Iluvatar、AWS Neuron 与瀚博半导体。
 
