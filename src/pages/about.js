@@ -12,9 +12,6 @@ const externalProps = {
 export default function AboutPage() {
   const { i18n } = useDocusaurusContext();
   const isZh = i18n.currentLocale === "zh";
-  const docsPath = isZh ? "/zh/docs" : "/docs";
-  const governancePath = `${docsPath}/contributor/governance`;
-  const communityPath = isZh ? "/zh/community" : "/community";
 
   return (
     <Layout
@@ -57,7 +54,7 @@ export default function AboutPage() {
                       >
                         CNCF 孵化项目
                       </a>
-                      。有关技术能力和使用方式，请从 <Link to={docsPath}>HAMi 文档</Link>开始。
+                      。有关技术能力和使用方式，请从 <Link to="/docs">HAMi 文档</Link>开始。
                     </>
                   ) : (
                     <>
@@ -69,7 +66,7 @@ export default function AboutPage() {
                         CNCF Incubating project
                       </a>
                       . For technical capabilities and usage, start with the{" "}
-                      <Link to={docsPath}>HAMi documentation</Link>.
+                      <Link to="/docs">HAMi documentation</Link>.
                     </>
                   )}
                 </p>
@@ -81,29 +78,29 @@ export default function AboutPage() {
                   {isZh ? (
                     <>
                       HAMi 由开放社区共同开发。项目角色、决策流程和维护者职责记录在
-                      <Link to={governancePath}>治理文档</Link>中，社区参与遵循{" "}
+                      <Link to="/docs/contributor/governance">治理文档</Link>中，社区参与遵循{" "}
                       <a
                         href="https://github.com/cncf/foundation/blob/main/code-of-conduct.md"
                         {...externalProps}
                       >
                         CNCF 行为准则
                       </a>
-                      。你可以通过<Link to={communityPath}>社区页面</Link>加入讨论、会议和贡献。
+                      。你可以通过<Link to="/community">社区页面</Link>加入讨论、会议和贡献。
                     </>
                   ) : (
                     <>
                       HAMi is developed by an open community. Project roles, decision-making, and
                       maintainer responsibilities are documented in the{" "}
-                      <Link to={governancePath}>governance guide</Link>, and community participation
-                      follows the{" "}
+                      <Link to="/docs/contributor/governance">governance guide</Link>, and community
+                      participation follows the{" "}
                       <a
                         href="https://github.com/cncf/foundation/blob/main/code-of-conduct.md"
                         {...externalProps}
                       >
                         CNCF Code of Conduct
                       </a>
-                      . Visit the <Link to={communityPath}>community page</Link> to join
-                      discussions, meetings, and contributions.
+                      . Visit the <Link to="/community">community page</Link> to join discussions,
+                      meetings, and contributions.
                     </>
                   )}
                 </p>
@@ -141,12 +138,10 @@ export default function AboutPage() {
                   </a>
                 </li>
                 <li>
-                  <Link to={communityPath}>{isZh ? "HAMi 社区" : "HAMi community"}</Link>
+                  <Link to="/community">{isZh ? "HAMi 社区" : "HAMi community"}</Link>
                 </li>
                 <li>
-                  <Link to={isZh ? "/zh/changelog" : "/changelog"}>
-                    {isZh ? "发布记录" : "Release changelog"}
-                  </Link>
+                  <Link to="/changelog">{isZh ? "发布记录" : "Release changelog"}</Link>
                 </li>
               </ul>
             </aside>

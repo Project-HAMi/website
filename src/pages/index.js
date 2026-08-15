@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback, useState } from "react";
+import React, { useEffect, useMemo, useRef, useCallback, useState } from "react";
 import clsx from "clsx";
 import Layout from "@theme/Layout";
 import Head from "@docusaurus/Head";
@@ -517,12 +517,18 @@ export default function Home() {
     return () => controller.abort();
   }, []);
 
-  const siteJsonLd = buildSiteJsonLd({
-    siteUrl: siteConfig.url,
-    name: siteConfig.title,
-    description: siteConfig.tagline,
-    logoPath: siteConfig.customFields.defaultOgImage,
-  });
+  const siteJsonLd = useMemo(
+    () =>
+      serializeJsonLd(
+        buildSiteJsonLd({
+          siteUrl: siteConfig.url,
+          name: siteConfig.title,
+          description: siteConfig.tagline,
+          logoPath: siteConfig.customFields.defaultOgImage,
+        }),
+      ),
+    [siteConfig.url, siteConfig.title, siteConfig.tagline, siteConfig.customFields.defaultOgImage],
+  );
 
   return (
     <Layout
@@ -534,7 +540,7 @@ export default function Home() {
       }
     >
       <Head>
-        <script type="application/ld+json">{serializeJsonLd(siteJsonLd)}</script>
+        <script type="application/ld+json">{siteJsonLd}</script>
       </Head>
       <main>
         <section className={clsx(styles.hero, "hami-shell-bg")}>

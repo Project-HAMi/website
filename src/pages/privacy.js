@@ -101,6 +101,19 @@ export default function PrivacyPage() {
                     {isZh ? "Netlify 隐私声明" : "Netlify Privacy Statement"}
                   </a>
                 </li>
+                <li>
+                  <a
+                    href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement"
+                    {...externalProps}
+                  >
+                    {isZh ? "GitHub 隐私声明" : "GitHub Privacy Statement"}
+                  </a>
+                </li>
+                <li>
+                  <a href="https://shields.io/" {...externalProps}>
+                    Shields.io
+                  </a>
+                </li>
               </ul>
             </aside>
           </div>

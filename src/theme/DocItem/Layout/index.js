@@ -3,10 +3,9 @@
  * Moves DocVersionBadge inline with DocBreadcrumbs on desktop so the version
  * badge doesn't waste a full row by itself.
  */
-import React from "react";
+import React, { useMemo } from "react";
 import clsx from "clsx";
 import Head from "@docusaurus/Head";
-import useBaseUrl from "@docusaurus/useBaseUrl";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import useRouteContext from "@docusaurus/useRouteContext";
 import { useWindowSize } from "@docusaurus/theme-common";
@@ -40,33 +39,53 @@ function useDocTOC() {
 export default function DocItemLayout({ children }) {
   useImageLightbox();
   const docTOC = useDocTOC();
-  const { metadata, frontMatter, assets } = useDoc();
+  const { metadata, frontMatter } = useDoc();
   const { i18n, siteConfig } = useDocusaurusContext();
   const { plugin } = useRouteContext();
-  const image = assets.image ?? frontMatter.image ?? siteConfig.themeConfig.image;
-  const imageUrl = useBaseUrl(image, { absolute: true });
-  const techArticleJsonLd = buildTechArticleJsonLd({
-    siteUrl: siteConfig.url,
-    title: metadata.title,
-    description: metadata.description,
-    permalink: metadata.permalink,
-    image: imageUrl,
-    locale: i18n.currentLocale,
-    lastUpdatedAt: metadata.lastUpdatedAt,
-    version:
-      plugin.id === "tutorials"
-        ? undefined
-        : metadata.version === "current"
-          ? "next"
-          : metadata.version,
-    organizationLogo: siteConfig.customFields.defaultOgImage,
-  });
+  const skipJsonLd = Boolean(frontMatter.unlisted || frontMatter.draft);
+  const techArticleJsonLd = useMemo(() => {
+    if (skipJsonLd) {
+      return null;
+    }
+    return serializeJsonLd(
+      buildTechArticleJsonLd({
+        siteUrl: siteConfig.url,
+        title: metadata.title,
+        description: metadata.description,
+        permalink: metadata.permalink,
+        image: frontMatter.image,
+        locale: i18n.currentLocale,
+        lastUpdatedAt: metadata.lastUpdatedAt,
+        version:
+          plugin?.id === "tutorials"
+            ? undefined
+            : metadata.version === "current"
+              ? "next"
+              : metadata.version,
+        organizationLogo: siteConfig.customFields?.defaultOgImage,
+      }),
+    );
+  }, [
+    skipJsonLd,
+    siteConfig.url,
+    siteConfig.customFields?.defaultOgImage,
+    metadata.title,
+    metadata.description,
+    metadata.permalink,
+    metadata.lastUpdatedAt,
+    metadata.version,
+    frontMatter.image,
+    i18n.currentLocale,
+    plugin?.id,
+  ]);
 
   return (
     <>
-      <Head>
-        <script type="application/ld+json">{serializeJsonLd(techArticleJsonLd)}</script>
-      </Head>
+      {techArticleJsonLd && (
+        <Head>
+          <script type="application/ld+json">{techArticleJsonLd}</script>
+        </Head>
+      )}
       <div className="row">
         <div className={clsx("col", !docTOC.hidden && styles.docItemCol)}>
           <ContentVisibility metadata={metadata} />

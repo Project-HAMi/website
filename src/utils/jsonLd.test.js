@@ -53,10 +53,29 @@ test("TechArticle localizes Chinese and omits unavailable optional metadata", ()
 
   assert.equal(schema.inLanguage, "zh-CN");
   assert.equal(schema.url, `${siteUrl}/zh/tutorials`);
+  assert.equal(schema.image, `${siteUrl}/img/hami-graph-color.png`);
   assert.equal("description" in schema, false);
-  assert.equal("image" in schema, false);
   assert.equal("dateModified" in schema, false);
   assert.equal("version" in schema, false);
+});
+
+test("TechArticle uses a site-root image and does not require locale or permalink", () => {
+  const withDefaultImage = buildTechArticleJsonLd({
+    siteUrl,
+    title: "Architecture",
+    permalink: "/zh/docs/core-concepts/architecture",
+    locale: "zh-Hans",
+  });
+  const withoutPermalink = buildTechArticleJsonLd({
+    siteUrl,
+    title: "Architecture",
+  });
+
+  assert.equal(withDefaultImage.inLanguage, "zh-CN");
+  assert.equal(withDefaultImage.image, `${siteUrl}/img/hami-graph-color.png`);
+  assert.equal("url" in withoutPermalink, false);
+  assert.equal("mainEntityOfPage" in withoutPermalink, false);
+  assert.equal(withoutPermalink.inLanguage, "en");
 });
 
 test("JSON-LD serialization prevents script-tag breakout", () => {

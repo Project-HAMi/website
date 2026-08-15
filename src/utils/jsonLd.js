@@ -5,7 +5,7 @@ const OFFICIAL_PROFILES = [
 ];
 
 function normalizeSiteUrl(siteUrl) {
-  return siteUrl.replace(/\/+$/, "");
+  return String(siteUrl ?? "").replace(/\/+$/, "");
 }
 
 function absoluteUrl(siteUrl, path) {
@@ -15,7 +15,23 @@ function absoluteUrl(siteUrl, path) {
   if (/^https?:\/\//i.test(path)) {
     return path;
   }
-  return `${normalizeSiteUrl(siteUrl)}/${path.replace(/^\/+/, "")}`;
+  return `${normalizeSiteUrl(siteUrl)}/${String(path).replace(/^\/+/, "")}`;
+}
+
+function schemaLanguage(locale) {
+  if (typeof locale === "string" && locale.toLowerCase().startsWith("zh")) {
+    return "zh-CN";
+  }
+  return locale || "en";
+}
+
+function canonicalPageUrl(siteUrl, permalink) {
+  const absolutePermalink = absoluteUrl(siteUrl, permalink);
+  if (!absolutePermalink) {
+    return undefined;
+  }
+  const home = `${normalizeSiteUrl(siteUrl)}/`;
+  return absolutePermalink === home ? absolutePermalink : absolutePermalink.replace(/\/$/, "");
 }
 
 function organizationReference(siteUrl, name = "HAMi", logoPath) {
@@ -79,11 +95,8 @@ export function buildTechArticleJsonLd({
   organizationName = "HAMi",
   organizationLogo = "/img/hami-graph-color.png",
 }) {
-  const absolutePermalink = absoluteUrl(siteUrl, permalink);
-  const pageUrl =
-    absolutePermalink === `${normalizeSiteUrl(siteUrl)}/`
-      ? absolutePermalink
-      : absolutePermalink.replace(/\/$/, "");
+  const pageUrl = canonicalPageUrl(siteUrl, permalink);
+  const imageUrl = absoluteUrl(siteUrl, image || organizationLogo);
   const lastUpdatedDate = Number.isFinite(lastUpdatedAt) ? new Date(lastUpdatedAt) : undefined;
   const modifiedDate =
     lastUpdatedDate && !Number.isNaN(lastUpdatedDate.getTime())
@@ -96,13 +109,15 @@ export function buildTechArticleJsonLd({
     "@type": "TechArticle",
     headline: title,
     ...(description && { description }),
-    url: pageUrl,
-    mainEntityOfPage: {
-      "@type": "WebPage",
-      "@id": pageUrl,
-    },
-    ...(image && { image: absoluteUrl(siteUrl, image) }),
-    inLanguage: locale.startsWith("zh") ? "zh-CN" : locale,
+    ...(pageUrl && {
+      url: pageUrl,
+      mainEntityOfPage: {
+        "@type": "WebPage",
+        "@id": pageUrl,
+      },
+    }),
+    ...(imageUrl && { image: imageUrl }),
+    inLanguage: schemaLanguage(locale),
     ...(modifiedDate && { dateModified: modifiedDate }),
     ...(version && { version }),
     author: organization,
