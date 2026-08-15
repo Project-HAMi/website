@@ -424,6 +424,10 @@ module.exports = {
     },
     {
       type: "doc",
+      id: "troubleshooting/node-registration",
+    },
+    {
+      type: "doc",
       id: "faq/faq",
     },
   ],
