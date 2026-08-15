@@ -1,22 +1,24 @@
 ---
-title: "Volcano + HAMi-core：在 Volcano 调度器下软切分昇腾 vNPU"
-date: "2026-08-21"
-description: "Volcano 的 HAMi 模式 deviceshare 如何把批量调度与 HAMi-core 运行时隔离结合到昇腾 NPU 上，并在昇腾 310P3 ARM 服务器上一步步启用并验证 hami-vnpu-core 软切分。"
+title: "用 Volcano + HAMi-core 软切分昇腾 vNPU：原理与真机验证"
+date: "2026-08-14"
+description: "Volcano 的 HAMi 模式 deviceshare 如何把批量调度与 HAMi-core 运行时隔离结合到昇腾 NPU 上，在昇腾 310P3 ARM 服务器上从源码编译镜像开始，端到端验证容器内显存切片、binpack 共卡与容器级监控指标。"
 authors: [rootsongjc]
 tags: ["HAMi", "Volcano", "Ascend", "vNPU", "软切分", "Kubernetes"]
 ---
 
-HAMi v2.10 让昇腾软切分工作负载可以在 Volcano 调度器下运行，把 Volcano 的批量调度能力与 HAMi-core 的运行时隔离能力结合起来。本文说明这套集成的工作原理，并给出在昇腾 310P3 ARM 服务器上启用并验证 `hami-vnpu-core` 软切分的可复现流程。
+[Volcano](https://github.com/volcano-sh/volcano) 是很多 AI 集群的批量调度器首选，HAMi-core 则是让共享加速器“守规矩”的运行时。本文关注两者在昇腾硬件上的交汇点：在 **Volcano 调度器下运行 `hami-vnpu-core` 软切分的 vNPU**，让批量调度语义（队列、Gang、binpack）与容器级隔离（在昇腾 API 层强制生效的显存与算力上限）协同工作。
+
+我们在一台昇腾 310P3 aarch64 服务器的单节点 Kubernetes 集群上验证了完整链路：源码编译 Volcano 与 [ascend-device-plugin](https://github.com/Project-HAMi/ascend-device-plugin) 镜像、部署两者，并确认申请 8192 MiB 切片的容器恰好只能看到这么多显存；同时第二个 Pod 以 binpack 方式落到同一张物理卡上、拿到独立切片，插件的 Prometheus 端点也如实上报了两个容器的配额。完整步骤（含每条命令与真实输出）见 [实验 13：用 Volcano + HAMi-core 软切分昇腾 310P3 vNPU](/zh/tutorials/labs/volcano-ascend-vnpu)。
 
 :::note 关于本文中的输出
 
-宿主机层面的输出（`npu-smi info`、硬件信息）来自测试节点的真实采集。集群内的验证输出描述的是**预期**结果，凡取决于实际运行的值都用 `<占位符>` 表示；请在执行过程中捕获真实输出，发布前再回填。
+本文所有输出均采集自 2026-08-14 的真机验证：麒麟 V10 aarch64 节点、2× 昇腾 310P3（驱动/npu-smi 25.5.1）、Kubernetes v1.28.15、containerd 1.7.1。其他集群中的 UUID、IP、Pod 后缀会不同；请对比组件名、调度位置与测量值。
 
 :::
 
 <!-- truncate -->
 
-## "Volcano vNPU 软切分"到底指什么
+## Volcano 调度昇腾 vNPU 的两种方式
 
 Volcano 调度昇腾虚拟 NPU 有**两种不同方式**，很容易混淆。先把它讲清楚，能省掉好几个小时的排错：
 
@@ -26,9 +28,17 @@ Volcano 调度昇腾虚拟 NPU 有**两种不同方式**，很容易混淆。先
 | 提供方 | Volcano 原生昇腾插件 | [Project-HAMi/ascend-device-plugin](https://github.com/Project-HAMi/ascend-device-plugin) |
 | 模板 | `vir04_3c_ndvpp`（带 `dvpp` 维度） | `vir05_1c_16g`（仅 `memory`/`aiCore`/`aiCPU` 字段） |
 | 软切分（`hami-core`）？ | 否 | **是** |
-| 资源名 | `huawei.com/npu-core` | `huawei.com/Ascend310P`、`-memory`、`-core` |
+| 资源名 | `huawei.com/npu-core` | `huawei.com/Ascend310P`、`-memory` |
 
 本文讲的是 **HAMi 模式**下的 **`hami-vnpu-core` 软切分**。这两种里只有它做运行时拦截：不是把卡预先切成固定的虚拟化模板，而是在用户态拦截昇腾调用，在运行时按容器强制显存与算力上限。Volcano 决定*哪个* Pod 拿到*多少*切片，HAMi-core 让这个决定*真正生效*。
+
+## 集成是如何工作的
+
+这条链路有三个分工：
+
+- **Volcano 的 `deviceshare` 插件**从 `hami-scheduler-device` ConfigMap（配合 `AscendHAMiVNPUEnable: "true"`）读取 vNPU 规格，并按 `binpack` 或 `spread` 策略决定每个 Pod 由哪个节点、哪张卡服务。
+- **`ascend-device-plugin` DaemonSet** 向节点注册 `huawei.com/Ascend310P`（卡数）与 `huawei.com/Ascend310P-memory`（MiB）扩展资源，并把 HAMi-core 资产（`libvnpu.so` 和 `ld.so.preload`）拷贝到宿主机 `/usr/local/hami-vnpu-core/`。
+- **HAMi-core（`libvnpu.so`）** 经 Ascend Docker Runtime 的 preload 机制注入业务容器，强制执行调度器选定的切片。
 
 ```mermaid
 %% title: Volcano HAMi 模式昇腾 vNPU 软切分链路
@@ -38,13 +48,13 @@ graph TD
     VOL["Volcano deviceshare 插件<br/>AscendHAMiVNPUEnable: true"]
     SCHD["Volcano Scheduler<br/>将 Pod 绑定到某个 vNPU 切片"]
     HOOK["hami-vnpu-core<br/>libvnpu.so 拦截昇腾调用"]
-    ENF["强制执行每容器<br/>显存 + 算力限制"]
+    ENF["按容器强制<br/>显存 + 算力上限"]
     MON[":9395/metrics<br/>容器级 HBM + 利用率"]
 
     CAP --> VOL
     CM -. "KnownGeometriesCMName" .-> VOL
     VOL --> SCHD --> HOOK --> ENF
-    HOOK -. "共享内存计量" .-> MON
+    HOOK -. "共享内存记账" .-> MON
 
     style VOL fill:#d9f99d,stroke:#4f7d00,stroke-width:2px,color:#1f2937
     style HOOK fill:#fef3c7,stroke:#b45309,stroke-width:2px,color:#1f2937
@@ -52,385 +62,128 @@ graph TD
     style MON fill:#dbeafe,stroke:#1a5fb4,stroke-width:2px,color:#1f2937
 ```
 
-Volcano 与 HAMi-core 之间的契约就是 vNPU 切片描述。Volcano 的 `deviceshare` 插件从 `hami-scheduler-device` ConfigMap 读取 vNPU 模板并放置 Pod；`ascend-device-plugin` 随后完成运行时设置，让 `hami-vnpu-core` 强制执行调度器选定的切片。
+Pod 侧的契约很简洁：`schedulerName: volcano`、`runtimeClassName: ascend`、注解 `huawei.com/vnpu-mode: hami-core`，以及对两个扩展资源的 limits。少了这个注解，Pod 会退回模板路径，在纯软切分节点上可能一直 Pending。
 
-## 前置条件与一个重要的版本坑
+有一个容易让从 HAMi NVIDIA 侧过来的用户踩坑的细节：昇腾的拦截库是 **`libvnpu.so`，不是 `libvgpu.so`**，由 [Project-HAMi/hami-vnpu-core](https://github.com/Project-HAMi/hami-vnpu-core) 提供。它在容器内通过 `/etc/ld.so.preload` 预加载，经 `/hami-shared-region` 共享内存区通信，并通过 `NPU_MEM_QUOTA` 等环境变量拿到强制配额。
 
-依据 [ascend-device-plugin Volcano 指南](https://github.com/Project-HAMi/ascend-device-plugin/blob/main/docs/volcano.md)：
+## 为什么要源码编译
 
-- **Kubernetes** ≥ 1.20
-- **Volcano** ≥ 1.14，**软切分（`hami-core`）需要 ≥ 1.16**
-- 节点上已安装 [ascend-docker-runtime](https://gitcode.com/Ascend/mind-cluster/tree/master/component/ascend-docker-runtime)
-- **昇腾驱动** ≥ 25.5
-- NPU 芯片需设置为 **`device-share` 模式**（`npu-smi set -t device-share -i <id> -d 1`）
-- **`npu-smi` 在宿主机可达**（仅软切分需要），路径为 `/usr/local/Ascend/driver/tools/npu-smi`、`/usr/local/sbin/npu-smi` 或 `/usr/local/bin/npu-smi`
-- **软切分仅支持 ARM 平台**；模板硬切分无架构限制
+软切分要求 **Volcano ≥ 1.16**，但验证时还没有稳定的 1.16：最新稳定版是 v1.15.1，仅有 `1.16.0-alpha.1` chart 可用。可选方案是 alpha chart 或源码编译；我们选择编译 **Volcano master（commit `7d9504320`）**，因为节点是 aarch64，而且我们想要确切知道自己编译的二进制。
 
-:::warning Volcano 1.16 的版本缺口
-
-这是最大的一个坑。软切分需要 Volcano ≥ 1.16，但**目前还没有稳定的 1.16 版本**。写本文时，满足该要求的只有 Volcano chart `1.16.0-alpha.1`：
+源码编译只是临时方案。等 Volcano 发布稳定的 1.16 版本后，通过 Helm 直接安装即可覆盖这条链路，实验 13 中的编译步骤可以跳过，例如：
 
 ```bash
 helm repo add volcano-sh https://volcano-sh.github.io/helm-charts
-helm search repo volcano-sh/volcano --versions | head
+helm install volcano volcano-sh/volcano \
+  --namespace volcano-system --create-namespace \
+  --version 1.16.0
 ```
 
-预期看到最新稳定版是 `1.15.1`，而 1.16 仅有 `1.16.0-alpha.1`。下面的流程会显式使用这个 alpha 版本。如果你的环境不能跑 alpha 调度器，可以回退到 **HAMi 模式下的模板切分**（稳定版 Volcano 1.14/1.15 即可）；只有运行时拦截的软切分路径才需要 1.16。
+安装之后的步骤（deviceshare 调度器配置与插件部署）完全不变。
 
-:::
+这次编译中有两个结论，即使你从不编译镜像也值得记住：
 
-:::note 无需自建镜像
+- **宿主机编译、容器只做打包。** 在 builder 容器里跑 `go mod download` 反复超时，而宿主机模块缓存是热的。在宿主机编译（`make vc-scheduler vc-controller-manager vc-webhook-manager`，约 10 秒）、由 Docker 把静态二进制打包进 alpine 镜像，在受限网络上更快也更可复现。
+- **集群运行时是 containerd，Docker 构建的镜像对 kubelet 不可见。** 每个镜像都必须用 `docker save … | ctr -n k8s.io images import -` 导入。否则即便 `docker images` 能看到 tag，Pod 依然报 `ErrImageNeverPull`。
 
-虽然 HAMi v2.10 和 Volcano 1.16 都尚未正式发布，但**这条链路上没有任何组件需要你自己构建镜像，ARM 也一样**：
+设备插件我们签出了 **v1.3.1（commit `506fe27`）**，打包时有一个关键点，也是整个过程中最大的坑：镜像必须携带**与 NPU 驱动匹配的 `libvnpu.so`**。我们最初用两个月前缓存的 `libvnpu` 镜像作为资产来源，结果容器内所有 `npu-smi info` 永久卡死在 `Initialize SchedulerClient...`。修复方式是直接从官方 v1.3.1 镜像拷贝资产（在我们的驱动 25.5.1 上 md5 为 `42b202887a27b9adb7522fd9e056b03b`），而不是用过期的本地缓存。实验 13 给出了确切的 Dockerfile 与 md5 校验方法。
 
-- Volcano 为 `v1.16.0-alpha.1` 发布了多架构镜像（`linux/amd64` 与 `linux/arm64`），涵盖 `vc-scheduler`、`vc-webhook-manager`、`vc-controller-manager`。
-- `projecthami/ascend-device-plugin:v1.4.0` 同样是多架构镜像。其 arm64 镜像已内置由插件 CI 在原生 ARM64 上、于 CANN 环境中编译的 [hami-vnpu-core](https://github.com/Project-HAMi/hami-vnpu-core) `libvnpu.so`。
-- 软切分引擎不是独立部署项：插件 DaemonSet 启动时会自动把镜像内的 `libvnpu.so` 与 `ld.so.preload` 拷贝到宿主机的 `/usr/local/hami-vnpu-core`，并自动创建 `/usr/local/hami-shared-region`。只有在修改 hami-vnpu-core 时才需要在 CANN 环境中 `cargo build` 自行构建。
-- Volcano 路径**不需要**安装完整的 HAMi chart，standalone ascend-device-plugin 即可；因此未发布的 HAMi v2.10 并不阻塞本测试。
+## 我们验证了什么
 
-:::
-
-## 测试环境
-
-测试节点是一台纯国产化的 AI 推理服务器，关键配置如下：
-
-| 项目 | 配置 |
-| :-- | :-- |
-| 服务器 | 华为鲲鹏 920，aarch64，96 核，4 个 NUMA 节点，约 512 GB 内存，麒麟 Linux V10 Lance |
-| NPU | 昇腾 310P3 × 2 张，每张可见显存约 21.5 GiB，面向 AI 推理（INT8 算力强劲） |
-| npu-smi / 驱动 | 25.5.1，满足 ≥ 25.5 的要求 |
-| Kubernetes | kubeadm 安装的单节点 all-in-one 集群，节点 `aio-node74-arm` 同时担任 control-plane 和 worker，containerd + Flannel（VXLAN） |
-| 已预装 | Volcano 与昇腾设备插件已在集群中 |
-| 其他 GPU | 另插 2 张 NVIDIA T4，但驱动未加载，当前不可用 |
-
-aarch64 架构满足软切分的 ARM-only 要求，宿主机上 `npu-smi` 可用。
-
-:::note 单节点就够
-
-软切分是节点内的能力。本文验证的所有内容（两个 Pod 共享一张卡、超限拒绝、容器级指标）都发生在单个节点内部，因此单节点 all-in-one 集群就是有效的测试环境。多节点只在跨节点场景（节点级 binpack/spread、高可用）才有意义，那不是本文的目标。
-
-:::
-
-由于测试集群已预装 Volcano 和昇腾设备插件，下文的步骤侧重于**核对并重配**现有组件，而非全新安装；安装命令保留给从零开始的读者。
-
-## 步骤 1：确认节点并打标签
-
-先检查驱动与设备。以下是测试节点上 `npu-smi info` 的真实输出：
+宿主机上两张 310P3 均为健康状态：
 
 ```text
+$ npu-smi info
 +--------------------------------------------------------------------------------------------------------+
 | npu-smi 25.5.1                                   Version: 25.5.1                                       |
 +-------------------------------+-----------------+------------------------------------------------------+
 | NPU     Name                  | Health          | Power(W)     Temp(C)           Hugepages-Usage(page) |
 | Chip    Device                | Bus-Id          | AICore(%)    Memory-Usage(MB)                        |
 +===============================+=================+======================================================+
-| 4       310P3                 | OK              | NA           36                0     / 0             |
-| 0       0                     | 0000:81:00.0    | 0            1848 / 21525                           |
+| 4       310P3                 | OK              | NA           37                0     / 0             |
+| 0       0                     | 0000:81:00.0    | 0            1848 / 21525                            |
 +===============================+=================+======================================================+
-| 5       310P3                 | OK              | NA           38                0     / 0             |
-| 0       1                     | 0000:85:00.0    | 0            1849 / 21525                           |
+| 5       310P3                 | OK              | NA           40                0     / 0             |
+| 0       1                     | 0000:85:00.0    | 0            1849 / 21525                            |
 +===============================+=================+======================================================+
 ```
 
-两张健康的 310P3 卡，每张上报 21525 MB 显存。注意硬件名称与 Pod 里请求的资源名的对应关系：芯片名是 `310P3`，但 Kubernetes 资源名来自配置里的 `commonWord`，即 `huawei.com/Ascend310P`。**没有**通用的 `huawei.com/Ascend` 资源；请始终与 device config 中的条目保持一致。
-
-测试节点名为 `aio-node74-arm`。kubeadm 的 control-plane 节点默认带污点，先确认该节点可调度（all-in-one 部署必须如此，否则除了控制面组件什么都跑不上去）：
-
-```bash
-kubectl get node aio-node74-arm -o jsonpath='{.spec.taints}'
-```
-
-预期：没有 `node-role.kubernetes.io/control-plane:NoSchedule` 污点，或现有 DaemonSet 已带上对应 toleration。若污点存在且希望该节点运行业务负载，先移除：
-
-```bash
-kubectl taint node aio-node74-arm node-role.kubernetes.io/control-plane:NoSchedule-
-```
-
-然后给节点打标签，让 device plugin 的 DaemonSet 调度上去：
-
-```bash
-kubectl label node aio-node74-arm ascend=on --overwrite
-kubectl get nodes --show-labels | grep ascend
-```
-
-## 步骤 2：安装 Volcano（1.16 alpha）
-
-测试集群已运行 Volcano，先确认它的版本：
-
-```bash
-kubectl -n volcano-system get deploy volcano-scheduler \
-  -o jsonpath='{.spec.template.spec.containers[0].image}'
-helm list -n volcano-system
-```
-
-软切分要求 ≥ 1.16；若已装版本较旧，请先升级再继续。全新安装时，把 Volcano 装到独立命名空间，显式锁定 alpha 版本以满足软切分要求：
-
-```bash
-helm install volcano volcano-sh/volcano \
-  --namespace volcano-system --create-namespace \
-  --version 1.16.0-alpha.1
-
-kubectl -n volcano-system wait --for=condition=available \
-  --timeout=300s deploy/volcano-scheduler
-kubectl get pods -n volcano-system
-```
-
-预期：`volcano-scheduler`、`volcano-admission`、`volcano-controllers` 的 Pod 为 `Running`。Pod 后缀随版本变化。
-
-## 步骤 3：安装 ascend-device-plugin（HAMi 模式）
-
-若集群中已装有昇腾插件，先确认它是 Project-HAMi 版本（镜像 `projecthami/ascend-device-plugin`）而不是华为上游插件，然后跳过全新安装，直接进行下面的 ConfigMap 修改：
-
-```bash
-kubectl -n kube-system get ds \
-  -o custom-columns='NAME:.metadata.name,IMAGE:.spec.template.spec.containers[0].image' \
-  | grep -i ascend
-```
-
-全新安装时：该插件提供原始 manifest 和 Helm chart。这里用原始 manifest 路径，最显式、便于审计。所有资源都落在 `kube-system`。
-
-创建 RuntimeClass、device-config ConfigMap、可选的 node-config ConfigMap，以及 DaemonSet：
-
-```bash
-# 每个 Ascend Pod 都需要的 RuntimeClass
-kubectl apply -f https://raw.githubusercontent.com/Project-HAMi/ascend-device-plugin/main/ascend-runtimeclass.yaml
-
-# device-config（即 "hami-scheduler-device" ConfigMap）
-kubectl apply -f https://raw.githubusercontent.com/Project-HAMi/ascend-device-plugin/main/ascend-device-configmap.yaml
-
-# 可选的节点级配置（"hami-device-node-config"）
-kubectl apply -f https://raw.githubusercontent.com/Project-HAMi/ascend-device-plugin/main/ascend-device-node-configmap.yaml
-
-# DaemonSet（镜像 projecthami/ascend-device-plugin:v1.4.0，端口 9395）
-kubectl apply -f https://raw.githubusercontent.com/Project-HAMi/ascend-device-plugin/main/ascend-device-plugin.yaml
-```
-
-接着，在 `hami-scheduler-device` ConfigMap（键 `device-config.yaml`）里的 `vnpus` 下把 `hamiVnpuCore` 设为 `true`，全局开启软切分。安全做法是把当前配置导出、改一行、再重新应用：
-
-```bash
-# 查看你芯片的模板与当前 hamiVnpuCore 取值
-kubectl -n kube-system get cm hami-scheduler-device \
-  -o jsonpath='{.data["device-config\.yaml"]}' | head -40
-
-# 导出，把 hamiVnpuCore 改成 true，再重新应用
-kubectl -n kube-system get cm hami-scheduler-device \
-  -o jsonpath='{.data["device-config\.yaml"]}' > device-config.yaml
-# 编辑 device-config.yaml：在 "vnpus:" 下设置 hamiVnpuCore: true
-kubectl -n kube-system create cm hami-scheduler-device \
-  --from-file=device-config.yaml=device-config.yaml -o yaml --dry-run=client \
-  | kubectl apply -f -
-```
-
-开启软切分后，310P3 的条目长这样（节选）：
+插件注册后，节点上报 14 个 vNPU（2 卡 × 7，310P3 的驱动上限）与 43054 MiB 可分配显存。每个测试 Pod 申请 1 个 vNPU、8192 MiB 切片：
 
 ```yaml
-vnpus:
-  hamiVnpuCore: true
-  configs:
-    - chipName: 310P3
-      commonWord: Ascend310P
-      resourceName: huawei.com/Ascend310P
-      resourceMemoryName: huawei.com/Ascend310P-memory
-      memoryAllocatable: 21527
-      memoryCapacity: 24576
-      aiCore: 8
-      aiCPU: 7
-      templates:
-        - name: vir01
-          memory: 3072
-          aiCore: 1
-          aiCPU: 1
-        - name: vir02
-          memory: 6144
-          aiCore: 2
-          aiCPU: 2
-        - name: vir04
-          memory: 12288
-          aiCore: 4
-          aiCPU: 4
+resources:
+  limits:
+    huawei.com/Ascend310P: "1"
+    huawei.com/Ascend310P-memory: "8192"
 ```
 
-:::note 310P3 上的 `-core` 资源
+### 1. 容器只看到自己的切片
 
-stock 配置只为 `910B3` 和 `Ascend910C` 声明了 `resourceCoreName`（即 `-core` 软切分资源）。要像下文的 Pod 示例（以及上游 Volcano 指南）那样请求 `huawei.com/Ascend310P-core`，需在 310P3 条目中加一行：
-
-```yaml
-resourceCoreName: huawei.com/Ascend310P-core
-```
-
-如果不加，请从 Pod 中省略 `-core` 限制；显存限制仍然生效。
-
-:::
-
-重启 device plugin 让它读取新配置，然后确认它已运行并上报容量：
-
-```bash
-kubectl -n kube-system rollout restart ds hami-ascend-device-plugin
-kubectl -n kube-system wait --for=condition=Ready \
-  --timeout=180s pod -l app.kubernetes.io/component=hami-ascend-device-plugin
-
-kubectl describe node aio-node74-arm | grep -A2 -i ascend
-```
-
-预期：节点的 capacity/allocatable 中现在出现 `huawei.com/Ascend310P`（以及 `-memory`/`-core` 扩展资源）。如果资源缺失，查看插件日志（`kubectl -n kube-system logs ds/hami-ascend-device-plugin`）是否有 `npu-smi` 路径或驱动版本的报错。
-
-## 步骤 4：开启 Volcano 的 HAMi 模式 deviceshare
-
-告诉 Volcano 调度器以 HAMi 模式调度昇腾 vNPU，并指明从哪里读取模板。编辑 `volcano-scheduler-configmap`：
-
-```bash
-kubectl -n volcano-system get cm volcano-scheduler-configmap \
-  -o jsonpath='{.data["volcano-scheduler\.conf"]}'
-```
-
-把 `volcano-scheduler.conf` 设置成让 `deviceshare` 插件指向 `hami-scheduler-device` ConfigMap：
-
-```yaml
-actions: "enqueue, allocate, backfill"
-tiers:
-  - plugins:
-      - name: predicates
-      - name: deviceshare
-        arguments:
-          deviceshare.AscendHAMiVNPUEnable: "true"
-          deviceshare.SchedulePolicy: binpack
-          deviceshare.KnownGeometriesCMNamespace: kube-system
-          deviceshare.KnownGeometriesCMName: hami-scheduler-device
-```
-
-应用并重启调度器使新配置生效：
-
-```bash
-kubectl -n volcano-system create cm volcano-scheduler-configmap \
-  --from-file=volcano-scheduler.conf=volcano-scheduler.conf \
-  -o yaml --dry-run=client | kubectl apply -f -
-kubectl -n volcano-system rollout restart deploy volcano-scheduler
-kubectl -n volcano-system rollout status deploy volcano-scheduler --timeout=180s
-```
-
-> 如果同一集群里还要用 Volcano vGPU（NVIDIA），请把两个 geometry ConfigMap 合并成一个，并把 `KnownGeometriesCMName` 指向合并后的 ConfigMap。
-
-## 步骤 5：运行软切分 vNPU Pod
-
-关键开关是 `schedulerName: volcano`、`runtimeClassName: ascend`，以及 `huawei.com/vnpu-mode: hami-core` 注解。没有该注解的 Pod 会回退到模板切分，在仅提供 hami-core 软切分的节点上可能一直 Pending。
-
-示例请求一个 8 GiB 切片加 50% 算力核，尺寸经过设计：两个这样的 Pod 恰好能共享一张 21.5 GiB 的卡：
-
-```bash
-kubectl apply -f - <<'EOF'
-apiVersion: v1
-kind: Pod
-metadata:
-  name: ascend-vnpu-check
-  annotations:
-    huawei.com/vnpu-mode: hami-core
-spec:
-  schedulerName: volcano
-  runtimeClassName: ascend
-  containers:
-    - name: npu
-      image: quay.io/ascend/vllm-ascend:v0.18.0-310p
-      command: ["sleep", "infinity"]
-      resources:
-        limits:
-          huawei.com/Ascend310P: "1"
-          huawei.com/Ascend310P-memory: "8192"
-          huawei.com/Ascend310P-core: "50"
-EOF
-
-kubectl wait --for=condition=Ready pod/ascend-vnpu-check --timeout=5m
-kubectl get pod ascend-vnpu-check -o wide
-```
-
-预期：Pod 在昇腾节点上进入 `Running`。如果一直 `Pending`，查看事件：
-
-```bash
-kubectl describe pod ascend-vnpu-check | tail -30
-```
-
-常见原因：`deviceshare` 插件名写错、`KnownGeometriesCMName` 指向了错误的 ConfigMap，或资源名与配置条目不匹配（例如请求了 `huawei.com/Ascend310P3` 或 `huawei.com/Ascend`，而不是 `huawei.com/Ascend310P`）。
-
-## 步骤 6：验证切片与隔离
-
-三项检查把调度、运行时强制执行与可观测性串起来。
-
-**1. 容器只能看到自己的切片。** 在 Pod 内，NPU 应显示请求的显存，而不是整张约 21.5 GiB 的卡：
-
-```bash
-kubectl exec ascend-vnpu-check -- sh -lc 'npu-smi info'
-```
-
-预期：容器可见的设备显示约 8 GiB 的显存窗口，而非整卡。
-
-**2. 两个 Pod 合计不能超过整卡。** 以相同配置启动第二个 Pod，确认两者都在各自限额内：
-
-```bash
-kubectl apply -f - <<'EOF'
-apiVersion: v1
-kind: Pod
-metadata:
-  name: ascend-vnpu-check-2
-  annotations:
-    huawei.com/vnpu-mode: hami-core
-spec:
-  schedulerName: volcano
-  runtimeClassName: ascend
-  containers:
-    - name: npu
-      image: quay.io/ascend/vllm-ascend:v0.18.0-310p
-      command: ["sleep", "infinity"]
-      resources:
-        limits:
-          huawei.com/Ascend310P: "1"
-          huawei.com/Ascend310P-memory: "8192"
-          huawei.com/Ascend310P-core: "50"
-EOF
-
-kubectl get pod -o wide | grep ascend-vnpu-check
-```
-
-预期：在 `binpack` 调度策略下，两个 Pod 共享同一张卡，各自绑定到自己的虚拟切片（2 × 8192 MiB 低于 21527 MiB 的可分配量）。第三个会把总量推过整卡容量的 Pod 会一直 Pending，直到前两个之一退出。
-
-**3. 容器级指标已导出。** 监控仅在 `hami-vnpu-core` 模式下运行，在 `:9395` 提供 Prometheus 指标：
-
-```bash
-PLUGIN_POD=$(kubectl -n kube-system get pod \
-  -l app.kubernetes.io/component=hami-ascend-device-plugin \
-  --field-selector spec.nodeName=aio-node74-arm \
-  -o jsonpath='{.items[0].metadata.name}')
-kubectl -n kube-system port-forward "pod/$PLUGIN_POD" 9395:9395 &
-curl -s http://127.0.0.1:9395/metrics | grep hami_
-```
-
-预期：每个容器都对应一组序列，包含容器级显存与利用率：
+第一个 Pod 内的 `npu-smi info` 显示的是 **0 / 8192 MB** 的设备，而不是宿主机在同一张卡上看到的 1848 / 21525 MB：
 
 ```text
-hami_vgpu_memory_limit_bytes{...,pod="ascend-vnpu-check",...} 8.589934592e+09
-hami_vgpu_memory_used_bytes{...,pod="ascend-vnpu-check",...} <实时用量>
-hami_container_device_utilization_ratio{...,pod="ascend-vnpu-check",...} <实时 %>
+$ kubectl exec ascend-vnpu-check -- npu-smi info
+[INFO limiter::supervisor] [Supervisor PID:10] won manager election
+[INFO limiter::manager] [Manager] Registered as Global Manager #0 (PID: 10). Compute limit: 1, Memory limit: 8192, FixedShare: false
+open global registry path is "/hami-shared-region/0_global_registry"
+...
+| 32768   310P3                 | OK              | NA           38                0     / 0             |
+| 0       0                     | 0000:81:00.0    | 0            0    / 8192                             |
 ```
 
-完整导出的指标包括 `hami_host_gpu_memory_used_bytes`、`hami_host_gpu_utilization_ratio`、`hami_vgpu_memory_used_bytes`、`hami_vgpu_memory_limit_bytes` 与 `hami_container_device_utilization_ratio`。
+`libvnpu.so` 已把设备查询改写为容器的配额，注入的环境变量也印证了接线：`NPU_MEM_QUOTA=8192`、`NPU_GLOBAL_SHM_PATH=/hami-shared-region/0_global_registry`、`ASCEND_VISIBLE_DEVICES=0`。
 
-测试结束后清理：
+### 2. binpack 让多个 Pod 共享一张物理卡
 
-```bash
-kubectl delete pod ascend-vnpu-check ascend-vnpu-check-2
+第二个同规格的 Pod 落在了**同一个 Bus-Id `0000:81:00.0`** 上，各自拥有独立的 8192 MiB 窗口，并作为 `Global Manager #1` 注册进与 Pod 1 的 `#0` 相同的共享注册表：
+
+```text
+$ kubectl exec ascend-vnpu-check-2 -- npu-smi info | grep -E "Memory limit|0000"
+[INFO limiter::manager] [Manager] Registered as Global Manager #1 (PID: 10). Compute limit: 1, Memory limit: 8192, FixedShare: false
+| 0       0                     | 0000:81:00.0    | 0            0    / 8192                             |
 ```
 
-## 注意事项与坑
+节点的已分配资源说的是同一件事：`huawei.com/Ascend310P 2`（共 14）、`huawei.com/Ascend310P-memory 16384`（共 43054），两个 8192 MiB 切片打包进一张 21.5 GiB 的卡，而不是分散到两张卡。
 
-- **`-core` 默认为 0，`-memory` 默认为整张 NPU。** 省略 `-core` 表示不预留专属算力核；它仅在 `huawei.com/vnpu-mode: hami-core` 下生效。
-- **资源名来自配置的 `commonWord`，不是芯片名。** 310P3 硬件对应的资源是 `huawei.com/Ascend310P`。仓库自带的 `examples/ascendjob-910b.yaml` 用了过时的 `huawei.com/Ascend910B`，与当前 ConfigMap 不匹配。
-- **310P3 上使用 `-core` 需先声明 `resourceCoreName`。** stock ConfigMap 只为 `910B3` 和 `Ascend910C` 声明；请按步骤 3 加上该行，再请求 `huawei.com/Ascend310P-core`。
-- **芯片支持范围注意。** hami-vnpu-core 的 README 将其独立测试范围限定在昇腾 910B；310P 的软切分路径来自 ascend-device-plugin 的文档示例。本文的测试即是对该文档路径的验证。
-- **没有官方的 HAMi 模式 VCJob 示例。** ascend-device-plugin 文档用的是带 `schedulerName: volcano` 的裸 Pod。若要跑 gang-scheduling 作业，请自行把 Pod 的 `spec` 包进 Volcano `VCJob` 的 `tasks[].template`；上面的 `deviceshare` 参数仍然适用。
-- **`npu-smi` 路径。** 若 `npu-smi` 位于 `/usr/local/bin/npu-smi`，请在 `ascend-device-plugin.yaml` 中补上该路径挂载；插件只检查文档列出的那三个路径。
-- **隔离边界。** 这是运行时 API 级强制执行（通过 `hami-vnpu-core` 的 `libvgpu.so` 软件拦截），不是 SR-IOV 式的硬件安全边界。
+### 3. 容器级监控指标正常导出
 
-## 后续
+插件（不是业务 Pod）在 `:9395` 上提供 Prometheus 指标：
 
-- Ascend device plugin：[Project-HAMi/ascend-device-plugin](https://github.com/Project-HAMi/ascend-device-plugin)
-- Volcano 部署与使用：[ascend-device-plugin Volcano 指南](https://github.com/Project-HAMi/ascend-device-plugin/blob/main/docs/volcano.md)
-- 相关发布文章：[HAMi v2.10.0 发布](/zh/blog/hami-v2-10-0-release)
-- 软切分引擎：[Project-HAMi/hami-vnpu-core](https://github.com/Project-HAMi/hami-vnpu-core)
+```text
+hami_vgpu_memory_limit_bytes{container="npu",...,pod="ascend-vnpu-check",vdevice_index="0"} 8.589934592e+09
+hami_vgpu_memory_limit_bytes{container="npu",...,pod="ascend-vnpu-check-2",vdevice_index="0"} 8.589934592e+09
+hami_host_gpu_memory_used_bytes{device_index="0",device_type="Ascend-Atlas 300I Pro",...} 1.937768448e+09
+```
+
+`8.589934592e+09` 字节恰好是 8192 MiB，与两个 Pod 的申请值一致，且两个 vdevice 挂在同一张物理卡的 UUID 上。该端点还导出 `hami_vgpu_memory_used_bytes`、`hami_container_device_utilization_ratio` 和 `hami_host_gpu_utilization_ratio`。
+
+## 验证结果
+
+| 验证项 | 结果 | 证据 |
+| :-- | :-- | :-- |
+| Volcano 源码编译（aarch64） | 通过 | 3 个镜像，scheduler `--version` 输出 commit `7d950432...` |
+| 插件镜像携带匹配的 libvnpu | 通过 | md5 `42b20288...` 与官方 v1.3.1 资产一致 |
+| Volcano + HAMi 模式 deviceshare | 通过 | 调度器日志加载 `AscendHAMiVNPUEnable: "true"` |
+| 节点资源注册 | 通过 | `Ascend310P: 14`、`Ascend310P-memory: 43054` |
+| 显存切片隔离 | 通过 | 容器内 `0 / 8192`，宿主机 `1848 / 21525` |
+| binpack 共卡 | 通过 | 两个 Pod 同为 Bus-Id `0000:81:00.0`，`Global Manager #0/#1` |
+| 资源计量 | 通过 | 节点已分配 2 vNPU、16384 MiB |
+| 监控 | 通过 | `:9395` 导出宿主机/容器/vdevice 三层指标 |
+
+## 动手前值得知道的坑
+
+- **`libvnpu.so` 必须与 NPU 驱动匹配。** 不匹配不会报错，容器内 `npu-smi` 只是永远卡在 `Initialize SchedulerClient...`。请从与驱动匹配的官方镜像版本拷贝资产并校验 md5。
+- **Docker 与 containerd 的镜像存储是隔离的。** 用 `ctr -n k8s.io images import` 导入，否则等着收 `ErrImageNeverPull`。
+- **Helm 里镜像拉取策略的 key 是 `basic.image_pull_policy`**（下划线），不是 `scheduler.imagePullPolicy`。key 写错时节点会去拉取只有本地才有的镜像。
+- **v1.3.1 不注册 `-core` 资源。** Pod spec 只需要 `huawei.com/Ascend310P`（卡数）与 `huawei.com/Ascend310P-memory`（MiB）；配置里的 `resourceCoreName` 不会上报为节点资源。
+- **指标在插件 Pod 上。** 在业务 Pod 里 curl `:9395` 毫无响应；要按 label 选中 DaemonSet Pod。
+- **卸载 Volcano 后 `volcano-system` 可能卡在 Terminating**（webhook 已删除之后）。清理 namespace 的 finalizer 即可解除。
+
+这里的软切分是运行时 API 层的强制（`libvnpu.so` 软件拦截），不是 SR-IOV 式的硬件安全边界，这一点与 HAMi-core 在 GPU 上的定性相同。
+
+## 延伸阅读
+
+- 完整流程（每条命令与真实输出）：[实验 13：用 Volcano + HAMi-core 软切分昇腾 310P3 vNPU](/zh/tutorials/labs/volcano-ascend-vnpu)
+- 用户指南：[Volcano 中的华为昇腾设备](/zh/docs/installation/how-to-use-volcano-ascend) 与 [启用昇腾共享](/zh/docs/userguide/ascend-device/enable-ascend-sharing)
+- 组件仓库：[Project-HAMi/ascend-device-plugin](https://github.com/Project-HAMi/ascend-device-plugin) · [Project-HAMi/hami-vnpu-core](https://github.com/Project-HAMi/hami-vnpu-core) · [volcano-sh/volcano](https://github.com/volcano-sh/volcano)
+- 相关实验：[实验 8：Volcano vGPU、Gang 调度与队列限制](/zh/tutorials/labs/volcano-vgpu-gang-queue) 把同一套调度器用于 NVIDIA GPU

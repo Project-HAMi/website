@@ -82,6 +82,18 @@
 "NVIDIA":
   label: "NVIDIA"
   permalink: "/nvidia"
+"Volcano":
+  label: "Volcano"
+  permalink: "/volcano"
+"Ascend":
+  label: "Ascend"
+  permalink: "/ascend"
+"vNPU":
+  label: "vNPU"
+  permalink: "/vnpu"
+"软切分":
+  label: "软切分"
+  permalink: "/soft-slicing"
 "Release":
   label: "Release"
   permalink: "/release"
