@@ -142,10 +142,10 @@ kubectl get pod mock-gpu-workload -o yaml | grep -A 10 "annotations:"
 Expected output:
 
 ```yaml
-  annotations:
-    hami.io/bind-gpu-idx: "0"
-    hami.io/bind-gpumem: "2048"
-    hami.io/bind-gpucores: "50"
+annotations:
+  hami.io/bind-gpu-idx: "0"
+  hami.io/bind-gpumem: "2048"
+  hami.io/bind-gpucores: "50"
 ```
 
 This confirms that `hami-scheduler` successfully evaluated the extended resource requests, bound the pod to mock GPU index `0`, and recorded the fractional allocation.
