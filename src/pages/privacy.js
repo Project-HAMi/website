@@ -1,26 +1,36 @@
 import React from "react";
+import { useLocation } from "@docusaurus/router";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import Layout from "@theme/Layout";
+import JsonLd from "../components/JsonLd";
+import { buildWebPageJsonLd } from "../utils/jsonLd";
 import styles from "./trust.module.css";
 
 const externalProps = {
   target: "_blank",
-  rel: "noreferrer",
+  rel: "noopener noreferrer",
 };
 
 export default function PrivacyPage() {
-  const { i18n } = useDocusaurusContext();
-  const isZh = i18n.currentLocale === "zh";
+  const { i18n, siteConfig } = useDocusaurusContext();
+  const { pathname } = useLocation();
+  const isZh = i18n.currentLocale.startsWith("zh");
+  const title = isZh ? "隐私" : "Privacy";
+  const description = isZh
+    ? "了解适用于 HAMi 网站的隐私政策和第三方服务。"
+    : "Learn about the privacy policies and third-party services relevant to the HAMi website.";
 
   return (
-    <Layout
-      title={isZh ? "隐私" : "Privacy"}
-      description={
-        isZh
-          ? "了解适用于 HAMi 网站的隐私政策和第三方服务。"
-          : "Learn about the privacy policies and third-party services relevant to the HAMi website."
-      }
-    >
+    <Layout title={title} description={description}>
+      <JsonLd
+        data={buildWebPageJsonLd({
+          siteUrl: siteConfig.url,
+          name: title,
+          description,
+          permalink: pathname,
+          locale: i18n.currentLocale,
+        })}
+      />
       <main className={styles.page}>
         <header className={styles.hero}>
           <div className="container">

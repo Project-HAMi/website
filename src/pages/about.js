@@ -1,27 +1,38 @@
 import React from "react";
 import Link from "@docusaurus/Link";
+import { useLocation } from "@docusaurus/router";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import Layout from "@theme/Layout";
+import JsonLd from "../components/JsonLd";
+import { buildWebPageJsonLd } from "../utils/jsonLd";
 import styles from "./trust.module.css";
 
 const externalProps = {
   target: "_blank",
-  rel: "noreferrer",
+  rel: "noopener noreferrer",
 };
 
 export default function AboutPage() {
-  const { i18n } = useDocusaurusContext();
-  const isZh = i18n.currentLocale === "zh";
+  const { i18n, siteConfig } = useDocusaurusContext();
+  const { pathname } = useLocation();
+  const isZh = i18n.currentLocale.startsWith("zh");
+  const title = isZh ? "关于 HAMi" : "About HAMi";
+  const description = isZh
+    ? "了解 HAMi 开源项目、治理模式、许可证和官方社区资源。"
+    : "Learn about the HAMi open-source project, its governance, licenses, and official community resources.";
 
   return (
-    <Layout
-      title={isZh ? "关于 HAMi" : "About HAMi"}
-      description={
-        isZh
-          ? "了解 HAMi 开源项目、治理模式、许可证和官方社区资源。"
-          : "Learn about the HAMi open-source project, its governance, licenses, and official community resources."
-      }
-    >
+    <Layout title={title} description={description}>
+      <JsonLd
+        data={buildWebPageJsonLd({
+          siteUrl: siteConfig.url,
+          type: "AboutPage",
+          name: title,
+          description,
+          permalink: pathname,
+          locale: i18n.currentLocale,
+        })}
+      />
       <main className={styles.page}>
         <header className={styles.hero}>
           <div className="container">
@@ -101,6 +112,25 @@ export default function AboutPage() {
                       </a>
                       . Visit the <Link to="/community">community page</Link> to join discussions,
                       meetings, and contributions.
+                    </>
+                  )}
+                </p>
+              </section>
+
+              <section>
+                <h2>{isZh ? "参与贡献" : "Contribute"}</h2>
+                <p>
+                  {isZh ? (
+                    <>
+                      HAMi 欢迎社区贡献。请从
+                      <Link to="/docs/contributor/contributing">贡献指南</Link>
+                      开始，了解如何报告问题、提交变更，以及遵循项目的 GitHub 工作流。
+                    </>
+                  ) : (
+                    <>
+                      HAMi welcomes community contributions. Start with the{" "}
+                      <Link to="/docs/contributor/contributing">contributor guide</Link> to report
+                      issues, propose changes, and follow the project's GitHub workflow.
                     </>
                   )}
                 </p>

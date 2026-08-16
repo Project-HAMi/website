@@ -1,26 +1,36 @@
 import React from "react";
+import { useLocation } from "@docusaurus/router";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import Layout from "@theme/Layout";
+import JsonLd from "../components/JsonLd";
+import { buildWebPageJsonLd } from "../utils/jsonLd";
 import styles from "./trust.module.css";
 
 const externalProps = {
   target: "_blank",
-  rel: "noreferrer",
+  rel: "noopener noreferrer",
 };
 
 export default function TermsPage() {
-  const { i18n } = useDocusaurusContext();
-  const isZh = i18n.currentLocale === "zh";
+  const { i18n, siteConfig } = useDocusaurusContext();
+  const { pathname } = useLocation();
+  const isZh = i18n.currentLocale.startsWith("zh");
+  const title = isZh ? "使用条款" : "Terms";
+  const description = isZh
+    ? "查看适用于 HAMi 网站的 LF Projects 使用条款、商标和其他项目政策。"
+    : "Find the LF Projects terms of use, trademark policy, and other project policies relevant to the HAMi website.";
 
   return (
-    <Layout
-      title={isZh ? "使用条款" : "Terms"}
-      description={
-        isZh
-          ? "查看适用于 HAMi 网站的 LF Projects 使用条款、商标和其他项目政策。"
-          : "Find the LF Projects terms of use, trademark policy, and other project policies relevant to the HAMi website."
-      }
-    >
+    <Layout title={title} description={description}>
+      <JsonLd
+        data={buildWebPageJsonLd({
+          siteUrl: siteConfig.url,
+          name: title,
+          description,
+          permalink: pathname,
+          locale: i18n.currentLocale,
+        })}
+      />
       <main className={styles.page}>
         <header className={styles.hero}>
           <div className="container">

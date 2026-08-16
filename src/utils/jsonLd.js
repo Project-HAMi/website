@@ -61,7 +61,19 @@ export function buildSiteJsonLd({
   const websiteId = `${rootUrl}#website`;
   const organization = {
     ...organizationReference(siteUrl, name, logoPath),
+    ...(description && { description }),
+    alternateName: ["Heterogeneous AI Computing Virtualization Middleware", "k8s-vGPU-scheduler"],
     sameAs: profiles,
+    parentOrganization: {
+      "@type": "Organization",
+      name: "LF Projects, LLC",
+      url: "https://lfprojects.org/",
+    },
+    memberOf: {
+      "@type": "Organization",
+      name: "Cloud Native Computing Foundation",
+      url: "https://www.cncf.io/",
+    },
   };
 
   return {
@@ -80,6 +92,36 @@ export function buildSiteJsonLd({
         },
       },
     ],
+  };
+}
+
+export function buildWebPageJsonLd({
+  siteUrl,
+  type = "WebPage",
+  name,
+  description,
+  permalink,
+  locale,
+}) {
+  const pageUrl = canonicalPageUrl(siteUrl, permalink);
+
+  return {
+    "@context": "https://schema.org",
+    "@type": type,
+    name,
+    ...(description && { description }),
+    ...(pageUrl && { "@id": pageUrl, url: pageUrl }),
+    inLanguage: schemaLanguage(locale),
+    isPartOf: {
+      "@type": "WebSite",
+      "@id": `${normalizeSiteUrl(siteUrl)}/#website`,
+    },
+    about: {
+      "@id": `${normalizeSiteUrl(siteUrl)}/#organization`,
+    },
+    publisher: {
+      "@id": `${normalizeSiteUrl(siteUrl)}/#organization`,
+    },
   };
 }
 
@@ -110,6 +152,7 @@ export function buildTechArticleJsonLd({
     headline: title,
     ...(description && { description }),
     ...(pageUrl && {
+      "@id": `${pageUrl}#article`,
       url: pageUrl,
       mainEntityOfPage: {
         "@type": "WebPage",
@@ -118,7 +161,7 @@ export function buildTechArticleJsonLd({
     }),
     ...(imageUrl && { image: imageUrl }),
     inLanguage: schemaLanguage(locale),
-    ...(modifiedDate && { dateModified: modifiedDate }),
+    ...(modifiedDate && { datePublished: modifiedDate, dateModified: modifiedDate }),
     ...(version && { version }),
     author: organization,
     publisher: organization,

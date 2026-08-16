@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useRef, useCallback, useState } from "react";
 import clsx from "clsx";
 import Layout from "@theme/Layout";
-import Head from "@docusaurus/Head";
 import Link from "@docusaurus/Link";
 import { useBaseUrlUtils } from "@docusaurus/useBaseUrl";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
@@ -30,6 +29,7 @@ import adoptersData from "../data/adopters.json";
 import ecosystemData from "../data/ecosystem.json";
 import heroStats from "../data/home/heroStats";
 import valueCards from "../data/home/valueCards";
+import JsonLd from "../components/JsonLd";
 import { buildSiteJsonLd, serializeJsonLd } from "../utils/jsonLd";
 
 const cardIcons = {
@@ -539,9 +539,7 @@ export default function Home() {
           : "HAMi is an open-source, cloud-native GPU virtualization middleware that brings sharing, isolation and scheduling of heterogeneous accelerators to AI workloads on Kubernetes."
       }
     >
-      <Head>
-        <script type="application/ld+json">{siteJsonLd}</script>
-      </Head>
+      <JsonLd data={siteJsonLd} />
       <main>
         <section className={clsx(styles.hero, "hami-shell-bg")}>
           <div className={styles.heroContainer}>
