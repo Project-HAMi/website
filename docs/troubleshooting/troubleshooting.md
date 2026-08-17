@@ -15,7 +15,7 @@ If a container exceeds its `nvidia.com/gpumem` limit, check the following causes
   containerd config dump | grep default_runtime_name
   ```
 
-  The output must show `nvidia`. If not, follow the [Prerequisites](./installation/online-installation) guide.
+  The output must show `nvidia`. If not, follow the [Prerequisites](../installation/online-installation) guide.
 
 - If you don’t explicitly request vGPUs when using the device plugin with NVIDIA images, all GPUs on the host may be exposed to your container.
 - Currently, A100 MIG can be supported in only "none" and "mixed" modes.
@@ -33,7 +33,6 @@ If a container exceeds its `nvidia.com/gpumem` limit, check the following causes
     ```
 
     This will apply the fix automatically.
-
 
 ## NVIDIA containers fail with GPU Operator 25.10+ {#nvidia-toolkit-gpu-operator-25-10}
 
@@ -204,11 +203,17 @@ spec:
           nvidia.com/gpucores: "30"
 ```
 
-Apply this Pod with `gpumem` set higher than any node has free, then check its events:
+Replace `3000` with a value higher than the free memory on any candidate node in your cluster, so the request genuinely exceeds capacity. Apply this Pod, then check its events:
 
 ```bash
 kubectl apply -f gpu-pod.yaml
 kubectl describe pod gpu-pod
 ```
 
-You should see a `CardInsufficientMemory` event referencing the specific card and its total/used memory. Adjust the request to fit within available capacity and reapply; the Pod should transition to `Running`.
+You should see a `FilteringFailed` event whose message includes `CardInsufficientMemory`. For the specific total/used memory numbers behind the failure, check the scheduler logs:
+
+```bash
+kubectl logs -f <hami-scheduler-pod-name> -n kube-system -c vgpu-scheduler-extender
+```
+
+Adjust the request to fit within available capacity and reapply; the Pod should transition to `Running`.
