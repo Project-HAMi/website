@@ -21,7 +21,7 @@ toc_max_heading_level: 2
 
 本实验从昇腾 310P3 aarch64 服务器上的干净 Kubernetes 集群开始，最终让两个 Pod 通过 `hami-vnpu-core` 软切分共享一张物理 NPU：各自锁定独立的 8192 MiB 显存窗口，并且都能被 Prometheus 指标观测到。
 
-软切分要求 [Volcano](https://github.com/volcano-sh/volcano) ≥ 1.16，而验证时（最新稳定版 v1.15.1）仅有 `1.16.0-alpha.1` chart、尚无稳定版本，因此本实验从源码编译 Volcano master 与 [ascend-device-plugin](https://github.com/Project-HAMi/ascend-device-plugin) v1.3.1。如果你运行本实验时已发布稳定的 Volcano 1.16 chart，可以用 chart 安装替代第 3、5 步，其余步骤不变。
+软切分要求 [Volcano](https://github.com/volcano-sh/volcano) ≥ 1.16，而验证时（最新稳定版 v1.15.1）仅有 `1.16.0-alpha.1` chart、尚无稳定版本，因此本实验从源码编译 Volcano master，插件直接使用官方 `v1.4.0` 镜像部署。如果你运行本实验时已发布稳定的 Volcano 1.16 chart，可以用 chart 安装替代第 3、5 步，其余步骤不变。
 
 :::note 关于本文中的输出
 
@@ -32,7 +32,7 @@ toc_max_heading_level: 2
 ## 你将学到什么
 
 - 在宿主机编译 Volcano 并把二进制打包成 containerd 可用的镜像；
-- 打包携带与 NPU 驱动匹配的 `libvnpu.so` 资产的 ascend-device-plugin 镜像；
+- 拉取插件镜像并校验其 `libvnpu.so` 资产与 NPU 驱动匹配；
 - 配置 Volcano 的 `deviceshare` 插件以 HAMi 模式 + `binpack` 调度 vNPU；
 - 全局打开 `hamiVnpuCore`、按节点打开 `hami-vnpu-core`；
 - 用 `npu-smi` 验证容器内显存隔离；
@@ -46,7 +46,7 @@ toc_max_heading_level: 2
 flowchart LR
     S1["步骤 1<br/>验证环境"] --> S2["步骤 2<br/>清理集群"]
     S2 --> S3["步骤 3<br/>编译 Volcano"]
-    S3 --> S4["步骤 4<br/>编译插件"]
+    S3 --> S4["步骤 4<br/>插件镜像"]
     S4 --> S5["步骤 5<br/>部署 Volcano"]
     S5 --> S6["步骤 6<br/>部署插件"]
     S6 --> S7["步骤 7<br/>软切分 Pod"]
@@ -58,7 +58,7 @@ flowchart LR
 - 一台带昇腾 310P（或 310P3）NPU 的 aarch64 服务器，驱动/npu-smi **≥ 25.5**，并安装了 [ascend-docker-runtime](https://gitcode.com/Ascend/mind-cluster/tree/master/component/ascend-docker-runtime)（软切分仅支持 ARM）。
 - 该服务器上一个使用 containerd 的 Kubernetes ≥ 1.20 集群。验证集群为单节点 kubeadm 集群（节点 `aio-node74-arm`，同时是控制面和工作节点），麒麟 V10、Kubernetes v1.28.15、containerd 1.7.1。
 - 宿主机上：Go 1.26（验证机为 `go1.26.2 linux/arm64`）、带 Buildx 的 Docker 24（仅用于打包镜像；其镜像存储与 containerd 隔离）、Helm 3、`ctr`（随 containerd 提供）。
-- [`tutorials/labs/examples/13-volcano-ascend-vnpu/`](https://github.com/Project-HAMi/website/tree/master/tutorials/labs/examples/13-volcano-ascend-vnpu) 下的实验文件。
+- [`tutorials/labs/examples/13-volcano-ascend-vnpu/`](https://github.com/Project-HAMi/website/tree/master/tutorials/labs/examples/13-volcano-ascend-vnpu) 下的实验文件。下文命令中所有 `tutorials/labs/examples/...` 路径均相对 website 仓库检出根目录，请在仓库根目录执行（步骤 3、4 会 `cd` 进 Volcano 与插件源码目录，应用清单前请先切回）。
 
 验证机硬件清单供参考：
 
@@ -98,7 +98,7 @@ HAMi-core 模式要求节点带 `ascend=on` 标签（插件的 DaemonSet 按它�
 
 ```bash
 kubectl get nodes -o wide
-kubectl get node aio-node74-arm -o jsonpath='{.metadata.labels}' \
+kubectl get node aio-node74-arm -o jsonpath-as-json='{.metadata.labels}' \
   | python3 -m json.tool | grep -iE "ascend|accelerator|servertype"
 ```
 
@@ -216,7 +216,7 @@ FROM alpine:3.24.1
 RUN apk add --update ca-certificates && \
     apk add --update openssl && \
     apk add --update -t deps curl && \
-    curl -L https://dl.k8s.io/release/v1.31.0/bin/linux/arm64/kubectl -o /usr/local/bin/kubectl && \
+    curl -L https://dl.k8s.io/release/v1.28.15/bin/linux/arm64/kubectl -o /usr/local/bin/kubectl && \
     chmod +x /usr/local/bin/kubectl && \
     apk del --purge deps && \
     rm /var/cache/apk/*
@@ -261,69 +261,20 @@ Built At: 2026-08-14 15:25:14
 Go Version: go1.26.2
 ```
 
-## 步骤 4：源码编译 ascend-device-plugin 镜像
+## 步骤 4：获取 ascend-device-plugin 镜像
 
-克隆插件并签出 v1.3.1：
-
-```bash
-git clone https://github.com/Project-HAMi/ascend-device-plugin.git /root/temp/ascend-device-plugin
-cd /root/temp/ascend-device-plugin
-git checkout 506fe27
-```
-
-:::note 关于镜像仓库
-
-commit `506fe27` 时，仓库中的清单与已发布镜像使用 `ghcr.io/dynamia-ai/ascend-device-plugin`。仓库现已迁入 Project-HAMi 组织，当前 `main` 分支引用 Docker Hub 上的 `projecthami/ascend-device-plugin`。本实验的采集输出保留验证时的原始路径。
-
-:::
-
-在宿主机编译：
+从 [Project-HAMi/ascend-device-plugin](https://github.com/Project-HAMi/ascend-device-plugin) 拉取官方镜像（多架构，含 arm64）并导入 containerd：
 
 ```bash
-make all VERSION=v1.3.1-local
+docker pull projecthami/ascend-device-plugin:v1.4.0
+docker save projecthami/ascend-device-plugin:v1.4.0 | ctr -n k8s.io images import -
 ```
 
-```text
-go build -ldflags '-s -w -X github.com/dynamia-ai/ascend-device-plugin/version.version=v1.3.1-local' -o ./ascend-device-plugin ./cmd/main.go
-```
-
-与 Volcano 不同，这个二进制是**动态链接**的（CGO 依赖 DCMI 驱动接口），运行时镜像必须基于 glibc（用 Ubuntu，不能用 alpine）。
-
-HAMi-core 模式的核心是 [Project-HAMi/hami-vnpu-core](https://github.com/Project-HAMi/hami-vnpu-core) 的 `libvnpu.so` 拦截库：插件把它拷贝到宿主机 `/usr/local/hami-vnpu-core/`，再由 Ascend 运行时通过 `ld.so.preload` 注入业务容器。**库的版本必须与 NPU 驱动匹配。** 打包时请从官方 v1.3.1 镜像拷贝资产，不要用本地缓存的 `libvnpu` 镜像：
+镜像内置了 [Project-HAMi/hami-vnpu-core](https://github.com/Project-HAMi/hami-vnpu-core) 的 `libvnpu.so` 拦截库（由插件 CI 在 CANN 环境中构建）：插件把它拷贝到宿主机 `/usr/local/hami-vnpu-core/`，再由 Ascend 运行时通过 `ld.so.preload` 注入业务容器。**库的版本必须与 NPU 驱动匹配。** 不匹配不会报错，容器内 `npu-smi` 只会永远卡在 `Initialize SchedulerClient...`。验证时就因两个月前缓存的 `libvnpu` 资产出现过完全相同的故障。如果遇到卡死，请对比镜像内资产与匹配驱动的镜像版本：
 
 ```bash
-cat <<'EOF' | docker buildx build -t ghcr.io/dynamia-ai/ascend-device-plugin:v1.3.1-local -f - . --load
-FROM ghcr.io/dynamia-ai/ascend-device-plugin:v1.3.1 AS assets
-FROM ubuntu:20.04
-ENV LD_LIBRARY_PATH=/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64/common
-COPY ascend-device-plugin /usr/local/bin/ascend-device-plugin
-COPY --from=assets /usr/local/hami-vnpu-core-assets/libvnpu.so /usr/local/hami-vnpu-core-assets/libvnpu.so
-COPY --from=assets /usr/local/hami-vnpu-core-assets/ld.so.preload /usr/local/hami-vnpu-core-assets/ld.so.preload
-ENTRYPOINT ["ascend-device-plugin"]
-EOF
-```
-
-验证时曾用两个月前缓存的 `libvnpu` 镜像作资产来源，结果容器内所有 `npu-smi info` 永久卡死在 `Initialize SchedulerClient...`。md5 对比定位了不匹配：
-
-```text
-$ docker run --rm --entrypoint md5sum ghcr.io/dynamia-ai/ascend-device-plugin:v1.3.1 /usr/local/hami-vnpu-core-assets/libvnpu.so
-42b202887a27b9adb7522fd9e056b03b   # 官方 v1.3.1 资产，与驱动 25.5.1 匹配
-
-$ docker run --rm --entrypoint md5sum ghcr.io/dynamia-ai/libvnpu:latest /usr/local/hami-vnpu-core-assets/libvnpu.so
-61d17e90299d780af325e736a8a5a9c8   # 过期的本地缓存，与驱动 25.5.1 不兼容
-```
-
-确认重建的镜像携带正确资产，然后导入 containerd：
-
-```bash
-docker run --rm --entrypoint md5sum ghcr.io/dynamia-ai/ascend-device-plugin:v1.3.1-local \
+docker run --rm --entrypoint md5sum projecthami/ascend-device-plugin:v1.4.0 \
   /usr/local/hami-vnpu-core-assets/libvnpu.so
-docker save ghcr.io/dynamia-ai/ascend-device-plugin:v1.3.1-local | ctr -n k8s.io images import -
-```
-
-```text
-42b202887a27b9adb7522fd9e056b03b
-unpacking ghcr.io/dynamia-ai/ascend-device-plugin:v1.3.1-local (sha256:955d1f91...)...done
 ```
 
 ## 步骤 5：部署 Volcano 并开启 HAMi 模式 deviceshare
@@ -358,7 +309,7 @@ volcano-controllers-557bd8d995-tz4st   1/1     Running     0          20s   10.2
 volcano-scheduler-ff5d85ffb-k7slw      1/1     Running     0          20s   10.244.0.87   aio-node74-arm
 ```
 
-接着把调度器的 `deviceshare` 插件指向 HAMi 的 vNPU 规格：
+接着把调度器的 `deviceshare` 插件指向 HAMi 的 vNPU 规格。请在 website 仓库根目录执行下面的清单命令（示例路径相对该根目录）：
 
 ```bash
 kubectl apply -f tutorials/labs/examples/13-volcano-ascend-vnpu/01-volcano-scheduler-configmap.yaml
@@ -408,13 +359,13 @@ I0814 07:40:47.668230     1 scheduler.go:160]           deviceshare.KnownGeometr
 
 ## 步骤 6：以 hami-core 模式部署插件
 
-先应用 RuntimeClass，再应用打开 `hamiVnpuCore` 的设备配置（仓库模板默认为 `false`）：
+先应用插件仓库的 RuntimeClass，再应用打开 `hamiVnpuCore` 的设备配置（模板默认为 `false`）：
 
 ```bash
-kubectl apply -f /root/temp/ascend-device-plugin/ascend-runtimeclass.yaml
+kubectl apply -f https://raw.githubusercontent.com/Project-HAMi/ascend-device-plugin/v1.4.0/ascend-runtimeclass.yaml
 
-sed 's/hamiVnpuCore: false/hamiVnpuCore: true/' \
-  /root/temp/ascend-device-plugin/ascend-device-configmap.yaml | kubectl apply -f -
+curl -s https://raw.githubusercontent.com/Project-HAMi/ascend-device-plugin/v1.4.0/ascend-device-configmap.yaml \
+  | sed 's/hamiVnpuCore: false/hamiVnpuCore: true/' | kubectl apply -f -
 ```
 
 ```text
@@ -422,7 +373,7 @@ runtimeclass.node.k8s.io/ascend created
 configmap/hami-scheduler-device created
 ```
 
-ConfigMap 中 310P3 的条目就是 Pod 资源与硬件的对应关系（每卡 `memoryAllocatable: 21527` MB、8 个 AI 核心；驱动实际限制 310P3 每卡 7 个 vNPU）：
+ConfigMap 中 310P3 的条目就是 Pod 资源与硬件的对应关系（每卡 `memoryAllocatable: 21527` MB、8 个 AI 核心，最小模板 `vir01` 为 3072 MB）：
 
 ```yaml
 vnpus:
@@ -438,7 +389,7 @@ vnpus:
       aiCPU: 7
 ```
 
-然后是按节点的开关。`vDeviceCount: 8` 是每张物理卡的最大 vNPU 数（310P3 实际被驱动限制为 7）：
+然后是按节点的开关。`vDeviceCount` 限制每张物理卡的 vNPU 数，插件会直接采用该值（支持由 [ascend-device-plugin PR #100](https://github.com/Project-HAMi/ascend-device-plugin/pull/100) 引入）；`7` 与下面的验证容量一致：
 
 ```bash
 kubectl apply -f tutorials/labs/examples/13-volcano-ascend-vnpu/02-hami-device-node-config.yaml
@@ -459,17 +410,16 @@ data:
     nodes:
       - name: "aio-node74-arm"
         hami-vnpu-core: true
-        vDeviceCount: 8
+        vDeviceCount: 7
         filterDevices:
           index: []
           uuid: []
 ```
 
-把 `aio-node74-arm` 换成你的节点名。最后应用仓库自带的 RBAC 与 DaemonSet，并把镜像换成本地构建的 tag：
+把 `aio-node74-arm` 换成你的节点名。最后应用 RBAC 与 DaemonSet（清单使用 `projecthami/ascend-device-plugin:v1.4.0` 且 `imagePullPolicy: IfNotPresent`，因此会运行步骤 4 导入的镜像）：
 
 ```bash
-sed 's|ghcr.io/dynamia-ai/ascend-device-plugin:v1.3.1|ghcr.io/dynamia-ai/ascend-device-plugin:v1.3.1-local|' \
-  /root/temp/ascend-device-plugin/ascend-device-plugin.yaml | kubectl apply -f -
+kubectl apply -f https://raw.githubusercontent.com/Project-HAMi/ascend-device-plugin/v1.4.0/ascend-device-plugin.yaml
 ```
 
 ```text
@@ -481,7 +431,7 @@ daemonset.apps/hami-ascend-device-plugin created
 
 :::important 一次性应用完整清单
 
-请完整应用 `ascend-device-plugin.yaml`。手工截取清单（比如只复制 DaemonSet 部分）会破坏 selector/label 匹配并产生费解的报错。上面的 `sed` 只替换镜像 tag。
+请完整应用 `ascend-device-plugin.yaml`。手工截取清单（比如只复制 DaemonSet 部分）会破坏 selector/label 匹配并产生费解的报错。
 
 :::
 
@@ -496,7 +446,7 @@ kubectl -n kube-system logs ds/hami-ascend-device-plugin | grep -iE "matched|lib
 hami-ascend-device-plugin-lnd4c   1/1   Running   0   20s   10.244.0.89   aio-node74-arm
 
 I0814 07:47:39.795228       1 main.go:124] using config file: /device-config.yaml
-I0814 07:47:40.290044       1 manager.go:72] Successfully matched node config for aio-node74-arm: {Name:aio-node74-arm HamiVnpuCore:true VDeviceCount:8}
+I0814 07:47:40.290044       1 manager.go:72] Successfully matched node config for aio-node74-arm: {Name:aio-node74-arm HamiVnpuCore:true VDeviceCount:7}
 I0814 07:47:40.391244       1 metrics.go:27] vNPU monitor metrics server starting on :9395
 I0814 07:47:40.396783       1 server.go:192] ✓ Copied /usr/local/hami-vnpu-core-assets/libvnpu.so -> /usr/local/hami-vnpu-core/libvnpu.so
 I0814 07:47:40.396900       1 server.go:180] ✓ /usr/local/hami-vnpu-core/ld.so.preload already up-to-date, skipping
@@ -555,7 +505,7 @@ ascend-vnpu-check   1/1     Running   0          30s   10.244.0.90   aio-node74-
 调度注解记录了 Volcano 分配的结果：
 
 ```bash
-kubectl get pod ascend-vnpu-check -o jsonpath='{.metadata.annotations}' \
+kubectl get pod ascend-vnpu-check -o jsonpath-as-json='{.metadata.annotations}' \
   | python3 -m json.tool | grep -iE "ascend|vnpu|bind"
 ```
 
@@ -675,7 +625,7 @@ curl -s http://localhost:9395/metrics
 
 | 症状 | 验证环境中的原因 | 处理 |
 | :-- | :-- | :-- |
-| 容器内 `npu-smi info` 卡死在 `Initialize SchedulerClient...` | `libvnpu.so` 与 NPU 驱动不匹配（资产来源镜像过期） | 从与驱动匹配的官方镜像拷贝资产重建镜像；校验 md5；重启插件刷新宿主机副本 |
+| 容器内 `npu-smi info` 卡死在 `Initialize SchedulerClient...` | `libvnpu.so` 与 NPU 驱动不匹配（资产来源镜像过期） | 改用 `libvnpu.so` 资产与驱动匹配的发布镜像（校验 md5）；重启插件刷新宿主机副本 |
 | Pod 报 `ErrImageNeverPull` | Docker 与 containerd 镜像存储隔离 | `docker save <img> \| ctr -n k8s.io images import -` |
 | 节点仍尝试拉取本地才有的镜像 | Helm 拉取策略 key 写错 | 使用 `basic.image_pull_policy`（下划线） |
 | 卸载后 `volcano-system` 卡在 `Terminating` | webhook 删除后 namespace finalizer 未释放 | 经 `finalize` 子资源清理 finalizer（步骤 2） |
@@ -686,7 +636,7 @@ curl -s http://localhost:9395/metrics
 
 :::note 三个避免困惑的事实
 
-- **`-core` 不会被注册。** v1.3.1 不会把 `huawei.com/Ascend310P-core` 注册为节点资源；配置中的 `resourceCoreName` 不会上报。Pod spec 只需卡数与显存 MiB。
+- **`-core` 不会被注册。** v1.4.0 不会把 `huawei.com/Ascend310P-core` 注册为节点资源；配置中的 `resourceCoreName` 不会上报。Pod spec 只需卡数与显存 MiB。
 - **是 `libvnpu.so`，不是 `libvgpu.so`。** HAMi 在 NVIDIA 上的拦截库是 `libvgpu.so`；昇腾 HAMi-core 用的是 `libvnpu.so`，经 `/etc/ld.so.preload` 注入，宿主机资产位于 `/usr/local/hami-vnpu-core/`。
 - **资源名来自 `commonWord`。** 芯片叫 `310P3`，但 Kubernetes 资源是 `huawei.com/Ascend310P`；写成 `huawei.com/Ascend310P3` 或 `huawei.com/Ascend` Pod 会一直 Pending。
 
@@ -717,15 +667,15 @@ rm -rf /usr/local/hami-vnpu-core/containers/* /usr/local/hami-shared-region/*
 helm uninstall volcano -n volcano-system
 ```
 
-本地构建的镜像仍留在 Docker 与 containerd 中；不再需要可删除：
+Volcano 镜像仍留在 Docker 与 containerd 中，连同插件镜像一并删除：
 
 ```bash
 for img in vc-scheduler vc-controller-manager vc-webhook-manager; do
   docker rmi volcanosh/$img:latest
   ctr -n k8s.io images remove docker.io/volcanosh/$img:latest
 done
-docker rmi ghcr.io/dynamia-ai/ascend-device-plugin:v1.3.1-local
-ctr -n k8s.io images remove ghcr.io/dynamia-ai/ascend-device-plugin:v1.3.1-local
+docker rmi projecthami/ascend-device-plugin:v1.4.0
+ctr -n k8s.io images remove docker.io/projecthami/ascend-device-plugin:v1.4.0
 ```
 
 ## 本实验证明了什么
@@ -735,10 +685,12 @@ ctr -n k8s.io images remove ghcr.io/dynamia-ai/ascend-device-plugin:v1.3.1-local
 | Volcano 以 HAMi 模式调度源码构建镜像的 vNPU | 3 个组件 Running；调度器日志含 `AscendHAMiVNPUEnable: "true"` |
 | 插件上报软切分容量 | 节点上报 `Ascend310P: 14`、`Ascend310P-memory: 43054` |
 | 容器显存视图被限制，而非仅被调度 | 容器内 `npu-smi` 显示 `0 / 8192`；宿主机显示 `1848 / 21525` |
-| 隔离按容器强制执行 | 注入 `NPU_MEM_QUOTA=8192`；两个 Pod 均报 `Memory limit: 8192` |
+| 配额按容器下发 | 注入 `NPU_MEM_QUOTA=8192`；两个 Pod 均报 `Memory limit: 8192` |
 | binpack 把多个 vNPU 装进一张卡 | 两个 Pod 同为 Bus-Id `0000:81:00.0`；节点分配 2 vNPU / 16384 MiB |
 | 切片经同一注册表协调 | `/hami-shared-region/0_global_registry` 中的 `Global Manager #0` 与 `#1` |
 | 整条链路可观测 | `:9395` 上报的容器级 limit 恰为 8192 MiB |
+
+一个如实的边界说明：测试 Pod 只在 `sleep`，因此本实验证明的是配额被下发、按容器生效并在容器内可见，并未实际执行越配额的分配。要证明超过切片的分配会被拒绝，需要运行真正吃显存的负载（例如把显存参数设到 8192 MiB 以上的 vLLM），可作为本实验的扩展；GPU 上等价的越界验证可参考[实验 12](./kai-scheduler-hami-gke.md) 中超配额 `cudaMalloc` 的做法。
 
 ## 延伸阅读
 

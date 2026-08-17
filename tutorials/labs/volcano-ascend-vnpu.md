@@ -21,7 +21,7 @@ toc_max_heading_level: 2
 
 This lab starts from a clean Kubernetes cluster on an Ascend 310P3 aarch64 server and ends with two Pods sharing one physical NPU through `hami-vnpu-core` soft slicing, each locked to its own 8192 MiB memory window and both visible to Prometheus metrics.
 
-Because soft slicing requires [Volcano](https://github.com/volcano-sh/volcano) ≥ 1.16, and no stable 1.16 existed at verification time (latest stable: v1.15.1; only a `1.16.0-alpha.1` chart existed), this lab builds Volcano master and the [ascend-device-plugin](https://github.com/Project-HAMi/ascend-device-plugin) v1.3.1 from source. If a stable Volcano 1.16 chart is published by the time you run this, you can substitute the chart install for Steps 3 and 5 and keep everything else.
+Because soft slicing requires [Volcano](https://github.com/volcano-sh/volcano) ≥ 1.16, and no stable 1.16 existed at verification time (latest stable: v1.15.1; only a `1.16.0-alpha.1` chart existed), this lab builds Volcano master from source and deploys the plugin from its official `v1.4.0` image. If a stable Volcano 1.16 chart is published by the time you run this, you can substitute the chart install for Steps 3 and 5 and keep everything else.
 
 :::note About the output blocks
 
@@ -32,7 +32,7 @@ The outputs below were captured from the verified run on 2026-08-14. Node names,
 ## What You'll Learn
 
 - compile Volcano on the host and package the binaries into images for containerd;
-- package the ascend-device-plugin image with the `libvnpu.so` asset that matches your NPU driver;
+- pull the plugin image and verify its `libvnpu.so` asset matches your NPU driver;
 - configure Volcano's `deviceshare` plugin for HAMi-mode vNPU scheduling with `binpack`;
 - switch the plugin to `hamiVnpuCore` globally and `hami-vnpu-core` per node;
 - prove in-container memory isolation with `npu-smi`;
@@ -46,7 +46,7 @@ The outputs below were captured from the verified run on 2026-08-14. Node names,
 flowchart LR
     S1["Step 1<br/>Verify environment"] --> S2["Step 2<br/>Clean cluster"]
     S2 --> S3["Step 3<br/>Build Volcano"]
-    S3 --> S4["Step 4<br/>Build plugin"]
+    S3 --> S4["Step 4<br/>Plugin image"]
     S4 --> S5["Step 5<br/>Deploy Volcano"]
     S5 --> S6["Step 6<br/>Deploy plugin"]
     S6 --> S7["Step 7<br/>Soft-sliced Pods"]
@@ -58,7 +58,7 @@ flowchart LR
 - An aarch64 server with Ascend 310P (or 310P3) NPUs, driver/npu-smi **≥ 25.5**, and [ascend-docker-runtime](https://gitcode.com/Ascend/mind-cluster/tree/master/component/ascend-docker-runtime) installed (soft slicing is ARM-only).
 - A Kubernetes ≥ 1.20 cluster on that server using containerd. The verified cluster was a single-node kubeadm cluster (node `aio-node74-arm`, both control-plane and worker) on Kylin Linux Advanced Server V10, Kubernetes v1.28.15, containerd 1.7.1.
 - On the host: Go 1.26 (the verified host used `go1.26.2 linux/arm64`), Docker 24 with Buildx (used only to package images; its image store is separate from containerd's), Helm 3, and `ctr` (ships with containerd).
-- The files under [`tutorials/labs/examples/13-volcano-ascend-vnpu/`](https://github.com/Project-HAMi/website/tree/master/tutorials/labs/examples/13-volcano-ascend-vnpu).
+- The files under [`tutorials/labs/examples/13-volcano-ascend-vnpu/`](https://github.com/Project-HAMi/website/tree/master/tutorials/labs/examples/13-volcano-ascend-vnpu). All `tutorials/labs/examples/...` paths in the commands below are relative to the website repository checkout, so run them from its root (Steps 3 and 4 `cd` into the Volcano and plugin sources; come back before applying manifests).
 
 The verified host inventory, for reference:
 
@@ -98,7 +98,7 @@ HAMi-core mode requires the node to carry `ascend=on` (the plugin's DaemonSet se
 
 ```bash
 kubectl get nodes -o wide
-kubectl get node aio-node74-arm -o jsonpath='{.metadata.labels}' \
+kubectl get node aio-node74-arm -o jsonpath-as-json='{.metadata.labels}' \
   | python3 -m json.tool | grep -iE "ascend|accelerator|servertype"
 ```
 
@@ -216,7 +216,7 @@ FROM alpine:3.24.1
 RUN apk add --update ca-certificates && \
     apk add --update openssl && \
     apk add --update -t deps curl && \
-    curl -L https://dl.k8s.io/release/v1.31.0/bin/linux/arm64/kubectl -o /usr/local/bin/kubectl && \
+    curl -L https://dl.k8s.io/release/v1.28.15/bin/linux/arm64/kubectl -o /usr/local/bin/kubectl && \
     chmod +x /usr/local/bin/kubectl && \
     apk del --purge deps && \
     rm /var/cache/apk/*
@@ -261,69 +261,20 @@ Built At: 2026-08-14 15:25:14
 Go Version: go1.26.2
 ```
 
-## Step 4: Build the ascend-device-plugin Image
+## Step 4: Get the ascend-device-plugin Image
 
-Clone the plugin and check out v1.3.1:
-
-```bash
-git clone https://github.com/Project-HAMi/ascend-device-plugin.git /root/temp/ascend-device-plugin
-cd /root/temp/ascend-device-plugin
-git checkout 506fe27
-```
-
-:::note About the image registry
-
-At commit `506fe27`, the manifests and published images used `ghcr.io/dynamia-ai/ascend-device-plugin`. The repository has since moved under the Project-HAMi org, and current `main` references `projecthami/ascend-device-plugin` on Docker Hub. The captured outputs in this lab keep the paths used at verification time.
-
-:::
-
-Compile on the host:
+Pull the official image from [Project-HAMi/ascend-device-plugin](https://github.com/Project-HAMi/ascend-device-plugin) (multi-arch, including arm64) and import it into containerd:
 
 ```bash
-make all VERSION=v1.3.1-local
+docker pull projecthami/ascend-device-plugin:v1.4.0
+docker save projecthami/ascend-device-plugin:v1.4.0 | ctr -n k8s.io images import -
 ```
 
-```text
-go build -ldflags '-s -w -X github.com/dynamia-ai/ascend-device-plugin/version.version=v1.3.1-local' -o ./ascend-device-plugin ./cmd/main.go
-```
-
-Unlike Volcano, this binary is **dynamically linked** (CGO against the DCMI driver interface), so the runtime image must be glibc-based (Ubuntu, not Alpine).
-
-HAMi-core mode hinges on the `libvnpu.so` interception library from [Project-HAMi/hami-vnpu-core](https://github.com/Project-HAMi/hami-vnpu-core): the plugin copies it onto the host at `/usr/local/hami-vnpu-core/`, and the Ascend runtime injects it into workload containers via `ld.so.preload`. **The library version must match the NPU driver.** Package the image with the asset copied from the official v1.3.1 image rather than a locally cached `libvnpu` image:
+The image bundles the `libvnpu.so` interception library from [Project-HAMi/hami-vnpu-core](https://github.com/Project-HAMi/hami-vnpu-core), built by the plugin's CI in a CANN environment: the plugin copies it onto the host at `/usr/local/hami-vnpu-core/`, and the Ascend runtime injects it into workload containers via `ld.so.preload`. **The library version must match the NPU driver.** A mismatch does not fail loudly; in-container `npu-smi` just hangs forever at `Initialize SchedulerClient...`. During verification, a two-month-old cached `libvnpu` asset produced exactly that failure. If you hit the hang, compare the asset in your image against the image release that matches your driver:
 
 ```bash
-cat <<'EOF' | docker buildx build -t ghcr.io/dynamia-ai/ascend-device-plugin:v1.3.1-local -f - . --load
-FROM ghcr.io/dynamia-ai/ascend-device-plugin:v1.3.1 AS assets
-FROM ubuntu:20.04
-ENV LD_LIBRARY_PATH=/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64/common
-COPY ascend-device-plugin /usr/local/bin/ascend-device-plugin
-COPY --from=assets /usr/local/hami-vnpu-core-assets/libvnpu.so /usr/local/hami-vnpu-core-assets/libvnpu.so
-COPY --from=assets /usr/local/hami-vnpu-core-assets/ld.so.preload /usr/local/hami-vnpu-core-assets/ld.so.preload
-ENTRYPOINT ["ascend-device-plugin"]
-EOF
-```
-
-During verification, using a two-month-old cached `libvnpu` image as the asset source made every in-container `npu-smi info` hang permanently at `Initialize SchedulerClient...`. The md5 comparison located the mismatch:
-
-```text
-$ docker run --rm --entrypoint md5sum ghcr.io/dynamia-ai/ascend-device-plugin:v1.3.1 /usr/local/hami-vnpu-core-assets/libvnpu.so
-42b202887a27b9adb7522fd9e056b03b   # official v1.3.1 asset, matches driver 25.5.1
-
-$ docker run --rm --entrypoint md5sum ghcr.io/dynamia-ai/libvnpu:latest /usr/local/hami-vnpu-core-assets/libvnpu.so
-61d17e90299d780af325e736a8a5a9c8   # stale local cache, incompatible with driver 25.5.1
-```
-
-Confirm the rebuilt image carries the correct asset, then import it into containerd:
-
-```bash
-docker run --rm --entrypoint md5sum ghcr.io/dynamia-ai/ascend-device-plugin:v1.3.1-local \
+docker run --rm --entrypoint md5sum projecthami/ascend-device-plugin:v1.4.0 \
   /usr/local/hami-vnpu-core-assets/libvnpu.so
-docker save ghcr.io/dynamia-ai/ascend-device-plugin:v1.3.1-local | ctr -n k8s.io images import -
-```
-
-```text
-42b202887a27b9adb7522fd9e056b03b
-unpacking ghcr.io/dynamia-ai/ascend-device-plugin:v1.3.1-local (sha256:955d1f91...)...done
 ```
 
 ## Step 5: Deploy Volcano and Enable HAMi-mode deviceshare
@@ -358,7 +309,7 @@ volcano-controllers-557bd8d995-tz4st   1/1     Running     0          20s   10.2
 volcano-scheduler-ff5d85ffb-k7slw      1/1     Running     0          20s   10.244.0.87   aio-node74-arm
 ```
 
-Now point the scheduler's `deviceshare` plugin at the HAMi vNPU geometries:
+Now point the scheduler's `deviceshare` plugin at the HAMi vNPU geometries. Run the manifest commands from the website repository root (the example paths are relative to it):
 
 ```bash
 kubectl apply -f tutorials/labs/examples/13-volcano-ascend-vnpu/01-volcano-scheduler-configmap.yaml
@@ -408,13 +359,13 @@ If you also run Volcano vGPU (NVIDIA) in the same cluster, merge both geometry C
 
 ## Step 6: Deploy the Plugin in hami-core Mode
 
-Apply the RuntimeClass, then the device config with `hamiVnpuCore` switched on (the repo template ships with `false`):
+Apply the RuntimeClass from the plugin repository, then the device config with `hamiVnpuCore` switched on (the template ships with `false`):
 
 ```bash
-kubectl apply -f /root/temp/ascend-device-plugin/ascend-runtimeclass.yaml
+kubectl apply -f https://raw.githubusercontent.com/Project-HAMi/ascend-device-plugin/v1.4.0/ascend-runtimeclass.yaml
 
-sed 's/hamiVnpuCore: false/hamiVnpuCore: true/' \
-  /root/temp/ascend-device-plugin/ascend-device-configmap.yaml | kubectl apply -f -
+curl -s https://raw.githubusercontent.com/Project-HAMi/ascend-device-plugin/v1.4.0/ascend-device-configmap.yaml \
+  | sed 's/hamiVnpuCore: false/hamiVnpuCore: true/' | kubectl apply -f -
 ```
 
 ```text
@@ -422,7 +373,7 @@ runtimeclass.node.k8s.io/ascend created
 configmap/hami-scheduler-device created
 ```
 
-The 310P3 entry of the ConfigMap is what matches your Pod resources to the hardware (each card: `memoryAllocatable: 21527` MB, 8 AI cores; the driver limits 310P3 to 7 vNPUs per card):
+The 310P3 entry of the ConfigMap is what matches your Pod resources to the hardware (each card: `memoryAllocatable: 21527` MB, 8 AI cores; the smallest template `vir01` reserves 3072 MB):
 
 ```yaml
 vnpus:
@@ -438,7 +389,7 @@ vnpus:
       aiCPU: 7
 ```
 
-Next, the per-node override. `vDeviceCount: 8` is the maximum vNPU count per physical card (the driver caps 310P3 at 7 in practice):
+Next, the per-node override. `vDeviceCount` caps the vNPU count per physical card, and the plugin honors it directly (support landed in [ascend-device-plugin PR #100](https://github.com/Project-HAMi/ascend-device-plugin/pull/100)); `7` matches the capacity verified below:
 
 ```bash
 kubectl apply -f tutorials/labs/examples/13-volcano-ascend-vnpu/02-hami-device-node-config.yaml
@@ -459,17 +410,16 @@ data:
     nodes:
       - name: "aio-node74-arm"
         hami-vnpu-core: true
-        vDeviceCount: 8
+        vDeviceCount: 7
         filterDevices:
           index: []
           uuid: []
 ```
 
-Replace `aio-node74-arm` with your node name. Finally, apply the RBAC and DaemonSet from the repo, swapping in the locally built image tag:
+Replace `aio-node74-arm` with your node name. Finally, apply the RBAC and DaemonSet (the manifest uses `projecthami/ascend-device-plugin:v1.4.0` with `imagePullPolicy: IfNotPresent`, so it runs the image imported in Step 4):
 
 ```bash
-sed 's|ghcr.io/dynamia-ai/ascend-device-plugin:v1.3.1|ghcr.io/dynamia-ai/ascend-device-plugin:v1.3.1-local|' \
-  /root/temp/ascend-device-plugin/ascend-device-plugin.yaml | kubectl apply -f -
+kubectl apply -f https://raw.githubusercontent.com/Project-HAMi/ascend-device-plugin/v1.4.0/ascend-device-plugin.yaml
 ```
 
 ```text
@@ -481,7 +431,7 @@ daemonset.apps/hami-ascend-device-plugin created
 
 :::important Apply the full manifest file
 
-Apply the complete `ascend-device-plugin.yaml` in one shot. Truncating the manifest (for example, copying only the DaemonSet portion) breaks selector/label matching and produces confusing apply errors. The `sed` above changes only the image tag.
+Apply the complete `ascend-device-plugin.yaml` in one shot. Truncating the manifest (for example, copying only the DaemonSet portion) breaks selector/label matching and produces confusing apply errors.
 
 :::
 
@@ -496,7 +446,7 @@ kubectl -n kube-system logs ds/hami-ascend-device-plugin | grep -iE "matched|lib
 hami-ascend-device-plugin-lnd4c   1/1   Running   0   20s   10.244.0.89   aio-node74-arm
 
 I0814 07:47:39.795228       1 main.go:124] using config file: /device-config.yaml
-I0814 07:47:40.290044       1 manager.go:72] Successfully matched node config for aio-node74-arm: {Name:aio-node74-arm HamiVnpuCore:true VDeviceCount:8}
+I0814 07:47:40.290044       1 manager.go:72] Successfully matched node config for aio-node74-arm: {Name:aio-node74-arm HamiVnpuCore:true VDeviceCount:7}
 I0814 07:47:40.391244       1 metrics.go:27] vNPU monitor metrics server starting on :9395
 I0814 07:47:40.396783       1 server.go:192] ✓ Copied /usr/local/hami-vnpu-core-assets/libvnpu.so -> /usr/local/hami-vnpu-core/libvnpu.so
 I0814 07:47:40.396900       1 server.go:180] ✓ /usr/local/hami-vnpu-core/ld.so.preload already up-to-date, skipping
@@ -555,7 +505,7 @@ ascend-vnpu-check   1/1     Running   0          30s   10.244.0.90   aio-node74-
 The scheduling annotations record what Volcano allocated:
 
 ```bash
-kubectl get pod ascend-vnpu-check -o jsonpath='{.metadata.annotations}' \
+kubectl get pod ascend-vnpu-check -o jsonpath-as-json='{.metadata.annotations}' \
   | python3 -m json.tool | grep -iE "ascend|vnpu|bind"
 ```
 
@@ -675,7 +625,7 @@ curl -s http://localhost:9395/metrics
 
 | Symptom | Cause in the verified environment | Action |
 | :-- | :-- | :-- |
-| In-container `npu-smi info` hangs at `Initialize SchedulerClient...` | `libvnpu.so` version does not match the NPU driver (stale asset source image) | Rebuild with the asset copied from the official image matching the driver; verify md5; restart the plugin so the host copy refreshes |
+| In-container `npu-smi info` hangs at `Initialize SchedulerClient...` | `libvnpu.so` version does not match the NPU driver (stale asset source image) | Use an image whose `libvnpu.so` asset comes from the release matching your driver (verify the md5); restart the plugin so the host copy refreshes |
 | Pod fails with `ErrImageNeverPull` | Docker and containerd image stores are separate | `docker save <img> \| ctr -n k8s.io images import -` |
 | Node still tries to pull local-only images | Wrong Helm key for pull policy | Use `basic.image_pull_policy` (underscore) |
 | `volcano-system` stuck `Terminating` after uninstall | Namespace finalizer not released once webhooks are gone | Clear the finalizer via the `finalize` subresource (Step 2) |
@@ -686,7 +636,7 @@ curl -s http://localhost:9395/metrics
 
 :::note Three facts that prevent confusion
 
-- **`-core` is not registered.** v1.3.1 does not report `huawei.com/Ascend310P-core` as a node resource; the `resourceCoreName` entry in the config is not uploaded. Pod specs need only the card count and memory MiB.
+- **`-core` is not registered.** v1.4.0 does not report `huawei.com/Ascend310P-core` as a node resource; the `resourceCoreName` entry in the config is not uploaded. Pod specs need only the card count and memory MiB.
 - **`libvnpu.so`, not `libvgpu.so`.** HAMi's NVIDIA interception library is `libvgpu.so`; the Ascend HAMi-core library is `libvnpu.so`, injected through `/etc/ld.so.preload` with host assets under `/usr/local/hami-vnpu-core/`.
 - **Resource names come from `commonWord`.** The chip is `310P3`, but the Kubernetes resource is `huawei.com/Ascend310P`; request `huawei.com/Ascend310P3` or `huawei.com/Ascend` and the Pod stays Pending.
 
@@ -717,15 +667,15 @@ Uninstall Volcano (clear the namespace finalizer if it hangs, as in Step 2):
 helm uninstall volcano -n volcano-system
 ```
 
-The locally built images remain in Docker and containerd; remove them if you no longer need them:
+The Volcano images remain in Docker and containerd; remove them if you no longer need them, together with the plugin image:
 
 ```bash
 for img in vc-scheduler vc-controller-manager vc-webhook-manager; do
   docker rmi volcanosh/$img:latest
   ctr -n k8s.io images remove docker.io/volcanosh/$img:latest
 done
-docker rmi ghcr.io/dynamia-ai/ascend-device-plugin:v1.3.1-local
-ctr -n k8s.io images remove ghcr.io/dynamia-ai/ascend-device-plugin:v1.3.1-local
+docker rmi projecthami/ascend-device-plugin:v1.4.0
+ctr -n k8s.io images remove docker.io/projecthami/ascend-device-plugin:v1.4.0
 ```
 
 ## What This Lab Proved
@@ -735,10 +685,12 @@ ctr -n k8s.io images remove ghcr.io/dynamia-ai/ascend-device-plugin:v1.3.1-local
 | Volcano schedules vNPUs in HAMi mode from source-built images | 3 components Running; scheduler log shows `AscendHAMiVNPUEnable: "true"` |
 | The plugin advertises soft-sliced capacity | Node reports `Ascend310P: 14`, `Ascend310P-memory: 43054` |
 | The container's memory view is capped, not just scheduled | In-container `npu-smi` shows `0 / 8192`; host shows `1848 / 21525` |
-| Isolation is enforced per container | `NPU_MEM_QUOTA=8192` injected; both Pods report `Memory limit: 8192` |
+| Each container receives its own quota | `NPU_MEM_QUOTA=8192` injected; both Pods report `Memory limit: 8192` |
 | binpack packs multiple vNPUs onto one card | Both Pods on Bus-Id `0000:81:00.0`; node allocates 2 vNPU / 16384 MiB |
 | Slices coordinate through one registry | `Global Manager #0` and `#1` in `/hami-shared-region/0_global_registry` |
 | The stack is observable | `:9395` exports per-container limits of exactly 8192 MiB |
+
+One honest limit: the test Pods only `sleep`, so this lab proves that the quota is delivered, applied per container, and visible inside the container. It does not exercise an over-quota allocation. To prove that an allocation beyond the slice fails, run a real memory-allocating workload (for example vLLM with a memory setting above 8192 MiB) as an extension; [Lab 12](./kai-scheduler-hami-gke.md) shows the equivalent proof on GPUs with an over-quota `cudaMalloc`.
 
 ## Next Steps
 

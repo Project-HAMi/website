@@ -8,7 +8,7 @@ tags: ["HAMi", "Volcano", "Ascend", "vNPU", "Soft Slicing", "Kubernetes"]
 
 [Volcano](https://github.com/volcano-sh/volcano) is the batch scheduler of choice for many AI clusters, and HAMi-core is the runtime that makes shared accelerators behave. This post covers their intersection on Ascend hardware: running **`hami-vnpu-core` soft-sliced vNPUs under the Volcano scheduler**, so batch scheduling semantics (queues, gangs, binpack) and per-container isolation (memory and compute limits enforced at the Ascend API layer) work together.
 
-We verified the full path on a single-node Kubernetes cluster running on an Ascend 310P3 aarch64 server: built Volcano and the [ascend-device-plugin](https://github.com/Project-HAMi/ascend-device-plugin) images from source, deployed both, and confirmed that a container requesting an 8192 MiB slice sees exactly that much memory, while a second Pod binpacks onto the same physical card with its own independent slice and the plugin's Prometheus endpoint reports both limits. The complete step-by-step procedure (including every command and captured output) is [Lab 13: Soft-Slicing Ascend 310P3 vNPU with Volcano and HAMi-core](/tutorials/labs/volcano-ascend-vnpu).
+We verified the full path on a single-node Kubernetes cluster running on an Ascend 310P3 aarch64 server: built the Volcano images from source, deployed the official [ascend-device-plugin](https://github.com/Project-HAMi/ascend-device-plugin) v1.4.0 image, and confirmed that a container requesting an 8192 MiB slice sees exactly that much memory, while a second Pod binpacks onto the same physical card with its own independent slice and the plugin's Prometheus endpoint reports both limits. The complete step-by-step procedure (including every command and captured output) is [Lab 13: Soft-Slicing Ascend 310P3 vNPU with Volcano and HAMi-core](/tutorials/labs/volcano-ascend-vnpu).
 
 Because this topic mixes several concepts that are often conflated, the post first separates the layers: what a vNPU is, how hard and soft slicing differ, and what exactly the Volcano integration adds beyond the existing HAMi scheduler path.
 
@@ -173,7 +173,7 @@ $ npu-smi info
 +===============================+=================+======================================================+
 ```
 
-With the plugin registered, the node advertised 14 vNPUs (2 cards × 7, the driver's limit for 310P3) and 43054 MiB of allocatable memory. Each test Pod requested one vNPU with an 8192 MiB slice:
+With the plugin registered, the node advertised 14 vNPUs (2 cards × 7, matching `vDeviceCount: 7`) and 43054 MiB of allocatable memory. Each test Pod requested one vNPU with an 8192 MiB slice:
 
 ```yaml
 resources:
@@ -227,7 +227,7 @@ hami_host_gpu_memory_used_bytes{device_index="0",device_type="Ascend-Atlas 300I 
 | Verification | Result | Evidence |
 | :-- | :-- | :-- |
 | Volcano source build (aarch64) | Pass | 3 images, scheduler `--version` reports commit `7d950432...` |
-| Plugin image with matching libvnpu | Pass | md5 `42b20288...` matches the official v1.3.1 asset |
+| Plugin image with matching libvnpu | Pass | `libvnpu.so` asset verified against the release matching driver 25.5.1 |
 | Volcano + HAMi-mode deviceshare | Pass | scheduler log loads `AscendHAMiVNPUEnable: "true"` |
 | Node resource registration | Pass | `Ascend310P: 14`, `Ascend310P-memory: 43054` |
 | Memory slice isolation | Pass | container `0 / 8192` vs host `1848 / 21525` |
@@ -240,7 +240,7 @@ hami_host_gpu_memory_used_bytes{device_index="0",device_type="Ascend-Atlas 300I 
 - **`libvnpu.so` must match the NPU driver.** A mismatch does not produce an error; in-container `npu-smi` just hangs at `Initialize SchedulerClient...`. Copy the asset from the official image release that matches your driver and verify the md5.
 - **Docker and containerd have separate image stores.** Import with `ctr -n k8s.io images import` or expect `ErrImageNeverPull`.
 - **The Helm key is `basic.image_pull_policy`** (underscore), not `scheduler.imagePullPolicy`. With the wrong key, nodes try to pull images that only exist locally.
-- **The `-core` resource is not registered in v1.3.1.** A Pod spec only needs `huawei.com/Ascend310P` (count) and `huawei.com/Ascend310P-memory` (MiB); the `resourceCoreName` entry in the config is not reported as a node resource.
+- **The `-core` resource is not registered in v1.4.0.** A Pod spec only needs `huawei.com/Ascend310P` (count) and `huawei.com/Ascend310P-memory` (MiB); the `resourceCoreName` entry in the config is not reported as a node resource.
 - **Metrics live on the plugin Pod.** Curling `:9395` from the workload Pod returns nothing; select the DaemonSet Pod by label.
 - **Uninstalling Volcano can leave `volcano-system` Terminating** after the webhooks are gone. Clearing the namespace finalizer unblocks it.
 

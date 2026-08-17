@@ -1,6 +1,7 @@
 # Per-node HAMi device plugin configuration: enable hami-vnpu-core on one node.
-# Replace "aio-node74-arm" with your Ascend node name. vDeviceCount is the max
-# vNPU count per physical card (the 310P3 driver caps it at 7 in practice).
+# Replace "aio-node74-arm" with your Ascend node name. vDeviceCount is the
+# per-card vNPU count, honored directly by the plugin (since v1.4.0); 7 matches
+# the 310P3 capacity verified in this lab.
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -15,7 +16,7 @@ data:
     nodes:
       - name: "aio-node74-arm"
         hami-vnpu-core: true
-        vDeviceCount: 8
+        vDeviceCount: 7
         filterDevices:
           index: []
           uuid: []
