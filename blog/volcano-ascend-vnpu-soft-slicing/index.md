@@ -1,6 +1,6 @@
 ---
 title: "Soft-Slicing Ascend vNPU with Volcano and HAMi-core: How It Works and How We Verified It"
-date: "2026-08-14"
+date: "2026-08-17"
 description: "How Volcano's HAMi-mode deviceshare combines batch scheduling with HAMi-core runtime isolation on Ascend NPUs, verified end to end on an Ascend 310P3 ARM server, covering source-built images, in-container memory slices, binpack card sharing, and per-container metrics."
 authors: [rootsongjc]
 tags: ["HAMi", "Volcano", "Ascend", "vNPU", "Soft Slicing", "Kubernetes"]
@@ -10,13 +10,53 @@ tags: ["HAMi", "Volcano", "Ascend", "vNPU", "Soft Slicing", "Kubernetes"]
 
 We verified the full path on a single-node Kubernetes cluster running on an Ascend 310P3 aarch64 server: built Volcano and the [ascend-device-plugin](https://github.com/Project-HAMi/ascend-device-plugin) images from source, deployed both, and confirmed that a container requesting an 8192 MiB slice sees exactly that much memory, while a second Pod binpacks onto the same physical card with its own independent slice and the plugin's Prometheus endpoint reports both limits. The complete step-by-step procedure (including every command and captured output) is [Lab 13: Soft-Slicing Ascend 310P3 vNPU with Volcano and HAMi-core](/tutorials/labs/volcano-ascend-vnpu).
 
+Because this topic mixes several concepts that are often conflated, the post first separates the layers: what a vNPU is, how hard and soft slicing differ, and what exactly the Volcano integration adds beyond the existing HAMi scheduler path.
+
 :::note About the captured output
 
-Every output block in this post was captured from the verified run on 2026-08-14: a Kylin V10 aarch64 node with 2× Ascend 310P3 (driver/npu-smi 25.5.1), Kubernetes v1.28.15, and containerd 1.7.1. UUIDs, IPs, and Pod suffixes will differ in another cluster; compare the component names, placement, and measured values.
+Every output block in this post was captured from a real run on a physical Ascend 310P3 server, verified as of the time of writing: a Kylin V10 aarch64 node with 2× Ascend 310P3 (driver/npu-smi 25.5.1), Kubernetes v1.28.15, and containerd 1.7.1. UUIDs, IPs, and Pod suffixes will differ in another cluster; compare the component names, placement, and measured values.
 
 :::
 
 <!-- truncate -->
+
+## NPU, vNPU, hard slicing, soft slicing: keep the layers apart
+
+vNPU, hard slicing, soft slicing, HAMi mode, and Volcano support sit at different layers, and mixing them together makes the whole thing look like one opaque feature. Each answers a different question:
+
+| Layer | The question it answers |
+| :-- | :-- |
+| NPU / vNPU | Which device you get: a vNPU is a logical device carved out of a physical NPU |
+| Hard / soft slicing | How that virtual device is isolated |
+| HAMi-core | What enforces the soft-slicing quota inside the container |
+| HAMi / Volcano | Who decides which Pod uses which card, and how much |
+
+An NPU is the physical device, for example one Ascend 310P3 actually installed in the server; a vNPU is a logical device carved out of a physical NPU and handed to a container (one 21.5 GiB card can become an 8 GiB slice plus another 8 GiB slice, with about 5.5 GiB left over). The name "vNPU" describes the result, not the implementation: the slice can be carved by the Ascend driver's virtualization, or simulated in software by HAMi-core. This is the easiest point to misread in this topic: the "soft-sliced vNPU" in this post is a logical slice from the Kubernetes/HAMi perspective, not a hardware vNPU created with `npu-smi ... create-vnpu`.
+
+**Hard slicing** is done by the Ascend driver/firmware virtualization, and you can only choose from predefined templates: `vir05_1c_16g`, for example, fixes a number of AI cores, AI CPUs, and 16 GiB of memory, and creating one produces a real vNPU instance at the device level. Query the templates your chip supports with `npu-smi info -t template-info`, and see Huawei's [hard-slicing practice guide](https://www.hiascend.com/developer/techArticles/20251212-1) for a full walkthrough.
+
+**Soft slicing** creates no hardware vNPU: multiple containers share the same physical NPU, and each container gets `libvnpu.so` injected to intercept and account for the application's calls to the Ascend runtime API:
+
+```text
+application
+  ↓ Ascend API call
+libvnpu.so intercepts and accounts
+  ↓ only the allocated memory and compute are allowed
+Ascend driver
+  ↓
+physical NPU
+```
+
+With a quota of 8192 MiB, a device query inside the container reports only 8192 MiB, allocations are accounted by `libvnpu.so`, and over-quota requests are blocked by the interception layer. The [ascend-device-plugin README](https://github.com/Project-HAMi/ascend-device-plugin) documents both modes explicitly. The comparison:
+
+|  | Hard slicing | Soft slicing |
+| :-- | :-- | :-- |
+| Isolation boundary | enforced by the device virtualization layer, stronger | software runtime interception, not an SR-IOV-class hardware boundary |
+| Sizing | vendor templates only, for example 8 GiB or 16 GiB steps | arbitrary MiB and compute ratios |
+| Partitioned units | AI cores, AI CPUs, memory, DVPP | memory and compute quotas |
+| Requirements | chip and driver support for the templates | `libvnpu.so` injection and driver compatibility, currently ARM-only |
+
+One analogy: hard slicing builds real walls inside the house; soft slicing keeps one shared house but puts a strict accountant and rate limiter at every door.
 
 ## Two ways Volcano can schedule Ascend vNPUs
 
@@ -27,10 +67,38 @@ There are **two different ways** Volcano can schedule Ascend virtual NPUs, and t
 | Volcano flag | `deviceshare.AscendMindClusterVNPUEnable` | `deviceshare.AscendHAMiVNPUEnable` |
 | Provided by | Volcano's native Ascend plugin | [Project-HAMi/ascend-device-plugin](https://github.com/Project-HAMi/ascend-device-plugin) |
 | Templates | `vir04_3c_ndvpp` (have a `dvpp` dimension) | `vir05_1c_16g` (fields `memory`/`aiCore`/`aiCPU` only) |
-| Soft slicing (`hami-core`)? | No | **Yes** |
+| Slicing modes | Driver templates (hard slicing) | Driver templates (hard slicing) by default, plus `hami-core` soft slicing when the Pod sets `huawei.com/vnpu-mode: hami-core` |
 | Resource names | `huawei.com/npu-core` | `huawei.com/Ascend310P`, `-memory` |
 
-This post is about **HAMi mode** with **`hami-vnpu-core` soft slicing**. That is the only one of the two that does runtime interception: instead of pre-cutting the card into fixed virtualization templates, HAMi-core intercepts Ascend calls in user space and enforces per-container memory and compute limits at runtime. Volcano decides _which_ Pod gets _what_ slice; HAMi-core makes that decision _stick_.
+This post is about **HAMi mode** with **`hami-vnpu-core` soft slicing**. Note that HAMi mode is not the same thing as soft-slicing mode: the same ascend-device-plugin supports both template-based hard slicing and hami-vnpu-core soft slicing, and the Pod's annotation selects the path. The lab's Pods set the annotation, so they take the soft path, which is the only one of the two Volcano modes that does runtime interception: instead of pre-cutting the card into fixed virtualization templates, HAMi-core intercepts Ascend calls in user space and enforces per-container memory and compute limits at runtime. Volcano decides which Pod gets which slice; HAMi-core makes that decision stick.
+
+## What the Volcano integration actually adds
+
+First, the naming: **HAMi-core** is the umbrella name for this family of in-container runtime isolation, and it originally referred to `libvgpu.so` on NVIDIA GPUs; **hami-vnpu-core** is the Ascend implementation, and what it actually injects is `libvnpu.so`.
+
+Ascend soft slicing itself is not new. The support landed in April 2026 ([ascend-device-plugin integrated hami-vnpu-core](https://github.com/Project-HAMi/ascend-device-plugin/pull/61), [HAMi added the Ascend ResourceCoreName and soft-slicing scheduling support](https://github.com/Project-HAMi/HAMi/pull/1771)), and through HAMi 2.9 the flow already works: the HAMi scheduler allocates Ascend slices, `ascend-device-plugin` mounts the devices, and `hami-vnpu-core` enforces the memory and compute limits in the container.
+
+What the Volcano integration in the upcoming HAMi 2.10 adds is the allocator: it swaps the HAMi scheduler for Volcano, while the layers below are reused as they are.
+
+```text
+HAMi 2.9:
+HAMi Scheduler → ascend-device-plugin → hami-vnpu-core → NPU
+
+HAMi 2.10 / Volcano integration:
+Volcano Scheduler → ascend-device-plugin → hami-vnpu-core → NPU
+```
+
+| Layer | HAMi 2.9 path | Volcano integration path |
+| :-- | :-- | :-- |
+| Scheduler | HAMi Scheduler | Volcano Scheduler |
+| Device discovery and mounting | ascend-device-plugin | the same ascend-device-plugin |
+| Soft-slicing enforcement | hami-vnpu-core (`libvnpu.so`) | the same hami-vnpu-core |
+| Memory and compute isolation | already supported | reused |
+| Queues, gang scheduling | not the focus | provided by Volcano |
+| binpack / spread | HAMi policy | Volcano deviceshare policy |
+| Monitoring and mixed soft/hard management | early stage | further completed in 2.10 |
+
+Volcano can now understand these HAMi Ascend resources and decide which Pod uses which physical NPU, whether several Pods binpack onto the same card, whether a group of training Pods meets its gang condition, and which queue, priority, and preemption policy applies. The precise statement is therefore: **the Volcano integration completes scheduling of Ascend HAMi-core soft-sliced resources under Volcano, together with monitoring and mixed soft/hard management; the Ascend soft-slicing capability itself existed before.**
 
 ## How the integration works
 
@@ -64,29 +132,26 @@ graph TD
 
 The Pod contract is minimal: `schedulerName: volcano`, `runtimeClassName: ascend`, the annotation `huawei.com/vnpu-mode: hami-core`, and limits on the two extended resources. Without the annotation, the Pod falls back to the template-based path and can stay Pending on a soft-slicing node.
 
-A detail that trips up people coming from HAMi's NVIDIA side: the interception library for Ascend is **`libvnpu.so`, not `libvgpu.so`**, provided by [Project-HAMi/hami-vnpu-core](https://github.com/Project-HAMi/hami-vnpu-core). It is preloaded via `/etc/ld.so.preload` inside the container, communicates through a shared-memory region at `/hami-shared-region`, and receives the enforced quota through environment variables such as `NPU_MEM_QUOTA`.
+The [hami-vnpu-core](https://github.com/Project-HAMi/hami-vnpu-core) library is preloaded via `/etc/ld.so.preload` inside the container, communicates through a shared-memory region at `/hami-shared-region`, and receives the enforced quota through environment variables such as `NPU_MEM_QUOTA`.
 
-## Why we built from source
+## The basic procedure
 
-Soft slicing requires **Volcano ≥ 1.16**, but no stable 1.16 existed at verification time: the latest stable release was v1.15.1, with only a `1.16.0-alpha.1` chart available. The options were the alpha chart or building master from source; we built **Volcano master (commit `7d9504320`)** because the node is aarch64 and we wanted the exact binaries we compiled.
+Everything ran on a single-node Kubernetes 1.28 cluster on the Ascend 310P3 server. Lab 13 carries every command and captured output; the essential steps:
 
-The source build is a temporary workaround. Once Volcano ships a stable 1.16 release, the standard Helm installation will cover this path and the compile steps in Lab 13 can be skipped, for example:
+1. **Prepare the node.** Driver/npu-smi ≥ 25.5, ascend-docker-runtime installed, and the node labeled `ascend=on`.
+2. **Install Volcano ≥ 1.16.** Soft slicing requires 1.16, and no stable 1.16 existed at the time of writing (latest stable: v1.15.1, plus a `1.16.0-alpha.1` chart), so the verification built Volcano master (`7d9504320`) from source as Lab 13 shows. Once a stable release ships, install it directly with Helm and skip the compile:
 
-```bash
-helm repo add volcano-sh https://volcano-sh.github.io/helm-charts
-helm install volcano volcano-sh/volcano \
-  --namespace volcano-system --create-namespace \
-  --version 1.16.0
-```
+   ```bash
+   helm repo add volcano-sh https://volcano-sh.github.io/helm-charts
+   helm install volcano volcano-sh/volcano \
+     --namespace volcano-system --create-namespace \
+     --version 1.16.0
+   ```
 
-Everything after the install (the `deviceshare` scheduler configuration and the plugin setup) stays exactly the same.
-
-Two decisions from that build are worth remembering even if you never compile anything:
-
-- **Host-compile, container-package.** Running `go mod download` inside the builder container kept timing out, while the host module cache was warm. Compiling on the host (`make vc-scheduler vc-controller-manager vc-webhook-manager`, ~10 s) and having Docker only package the static binaries into `alpine` images is both faster and more reproducible on restricted networks.
-- **The cluster runtime is containerd, so Docker-built images are invisible to kubelet.** Every image had to be imported with `docker save … | ctr -n k8s.io images import -`. Pods otherwise fail with `ErrImageNeverPull` even though `docker images` shows the tag.
-
-For the device plugin we checked out **v1.3.1 (commit `506fe27`)** and packaged it with one twist that turned out to be the single biggest pitfall of the whole exercise: the image must carry the **`libvnpu.so` that matches your NPU driver**. We initially reused a two-month-old `libvnpu` image as the asset source, and every in-container `npu-smi info` hung forever at `Initialize SchedulerClient...`. The fix was to copy the asset straight from the official v1.3.1 image (md5 `42b202887a27b9adb7522fd9e056b03b` on our driver, 25.5.1) instead of a stale local cache. Lab 13 shows the exact Dockerfile and the md5 check.
+3. **Enable HAMi-mode deviceshare.** Override `volcano-scheduler-configmap` so the `deviceshare` plugin runs with `AscendHAMiVNPUEnable: "true"`, `SchedulePolicy: binpack`, and `KnownGeometriesCMName: hami-scheduler-device`, then restart the scheduler.
+4. **Deploy the plugin in soft-slicing mode.** Apply the `ascend` RuntimeClass, set `hamiVnpuCore: true` in the `hami-scheduler-device` ConfigMap plus `hami-vnpu-core: true` for the node in `hami-device-node-config`, and apply the DaemonSet. The node then advertises `huawei.com/Ascend310P` and `huawei.com/Ascend310P-memory`.
+5. **Run a soft-sliced Pod.** `schedulerName: volcano`, `runtimeClassName: ascend`, the `huawei.com/vnpu-mode: hami-core` annotation, and limits of one card plus 8192 MiB of memory.
+6. **Verify.** `npu-smi info` inside the Pod shows the slice rather than the card, a second Pod binpacks onto the same physical card, and the plugin's `:9395` endpoint exports per-container metrics.
 
 ## What we verified
 
@@ -185,5 +250,6 @@ Soft slicing here is runtime API-level enforcement (software interception via `l
 
 - Full procedure with every command and captured output: [Lab 13: Soft-Slicing Ascend 310P3 vNPU with Volcano and HAMi-core](/tutorials/labs/volcano-ascend-vnpu)
 - User guide: [Huawei Ascend devices in Volcano](/docs/installation/how-to-use-volcano-ascend) and [Enable Ascend sharing](/docs/userguide/ascend-device/enable-ascend-sharing)
+- Hard slicing on Ascend: [NPU virtualization hard-slicing practice (Huawei)](https://www.hiascend.com/developer/techArticles/20251212-1)
 - Components: [Project-HAMi/ascend-device-plugin](https://github.com/Project-HAMi/ascend-device-plugin) · [Project-HAMi/hami-vnpu-core](https://github.com/Project-HAMi/hami-vnpu-core) · [volcano-sh/volcano](https://github.com/volcano-sh/volcano)
 - Related: [Lab 8: Volcano vGPU with Gang Scheduling and Queues](/tutorials/labs/volcano-vgpu-gang-queue) applies the same scheduler to NVIDIA GPUs
