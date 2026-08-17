@@ -90,7 +90,7 @@
   permalink: "/ascend"
 "vNPU":
   label: "vNPU"
-  permalink: "/vnpu"
+  permalink: "/v-npu"
 "软切分":
   label: "软切分"
   permalink: "/soft-slicing"
