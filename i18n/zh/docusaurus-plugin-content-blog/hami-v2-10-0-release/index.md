@@ -6,7 +6,7 @@ tags: ["Release", "GPU", "Kubernetes", "调度"]
 authors: [hami_community]
 ---
 
-HAMi 社区正式发布 **HAMi v2.10.0**。本次发布在三个方向上取得进展：**更灵活的调度策略、更广泛的异构加速器覆盖，以及更深入的调度器生态**。
+HAMi 社区正式发布 **HAMi v2.10.0**。本次发布在三个方向上取得进展：**更灵活的调度策略、更广泛的异构加速器覆盖，以及更加丰富的调度器生态**。
 
 v2.10.0 引入了动态 **Flexible MIG**、全新的 **mutex** 调度策略、社区期待已久的 **NUMA 排序修复**、**可组合调度策略**、**PodGroup（gang-scheduling）** 支持，以及更准确的 **init 容器** 资源计量。在设备侧，新增了 **AMD MI300X** 与**壁仞**支持、让基于模板的 vNPU 与 HAMi-core 节点在同一集群共存的**昇腾异构管理**能力，以及 **vNPU HAMi-core 监控**。同时通过全新的 KAI Resource Isolator 伴随项目，首次实现了 **KAI Scheduler + HAMi-core** 集成。
 
@@ -120,9 +120,9 @@ resources:
 
 > **注意**：与 NVIDIA/AMD 不同，壁仞**不能**按 Pod 指定显存或算力大小，你得到的是整卡或一个 SVI 分区（2 个分区或 4 个分区）。`biren-device-plugin` DaemonSet 部署在 `biren-gpu` 命名空间。
 
-AMD 与壁仞的加入，使 HAMi 已覆盖更广泛的加速器，包括 NVIDIA、华为昇腾、寒武纪、海光 DCU、壁仞、燧原、沐曦、昆仑芯、Iluvatar、AWS Neuron 与瀚博半导体。
+AMD 与壁仞的加入，使 HAMi 已覆盖更广泛的加速器，包括 NVIDIA、华为昇腾、寒武纪、海光 DCU、壁仞、燧原、沐曦、昆仑芯、天数智芯、AWS Neuron 与瀚博半导体。
 
-## 更深入的昇腾管理
+## 更灵活的昇腾管理
 
 ### 昇腾异构模式：vNPU 与 HAMi-core 同集群共存
 

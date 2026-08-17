@@ -6,7 +6,7 @@ tags: ["Release", "GPU", "Kubernetes", "Scheduling"]
 authors: [hami_community]
 ---
 
-The HAMi community is proud to announce the official release of **HAMi v2.10.0**. This release advances HAMi on three fronts: **richer scheduling policies, broader heterogeneous accelerator coverage, and a deeper scheduler ecosystem**.
+The HAMi community is proud to announce the official release of **HAMi v2.10.0**. This release advances HAMi on three fronts: **more flexible scheduling policies, broader heterogeneous accelerator coverage, and a richer scheduler ecosystem**.
 
 v2.10.0 introduces dynamic **Flexible MIG**, a new **mutex** scheduling policy, a long-requested **NUMA-aware sort fix**, **composable scheduler policies**, **gang-scheduling (PodGroup)** support, and correct **init-container** resource accounting. On the device side it adds **AMD MI300X** and **Biren** support, **heterogeneous Ascend management** that lets template-based vNPU and HAMi-core nodes coexist in one cluster, and **vNPU HAMi-core monitoring**. It also debuts a **KAI Scheduler + HAMi-core** integration through the new KAI Resource Isolator companion project.
 
@@ -122,7 +122,7 @@ resources:
 
 With AMD and Biren joining the lineup, HAMi now covers an even broader range of accelerators including NVIDIA, Huawei Ascend, Cambricon, Hygon DCU, Biren, Enflame, MetaX, Kunlunxin, Iluvatar, AWS Neuron, and Vastai Technologies.
 
-## Deeper Ascend Management
+## More Flexible Ascend Management
 
 ### Heterogeneous Ascend Mode: vNPU and HAMi-core in One Cluster
 
