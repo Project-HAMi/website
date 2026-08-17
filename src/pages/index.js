@@ -29,6 +29,7 @@ import adoptersData from "../data/adopters.json";
 import ecosystemData from "../data/ecosystem.json";
 import heroStats from "../data/home/heroStats";
 import valueCards from "../data/home/valueCards";
+import vendorDevices from "../data/home/vendorDevices";
 
 const cardIcons = {
   "network-wired": faNetworkWired,
@@ -84,47 +85,6 @@ const heroSchedulerEcosystem = [
   },
 ];
 const heroGpuSlices = ["GPU", "1/2", "1/4", "1/N"];
-const heroDeviceEcosystem = [
-  { key: "nvidia", label: { en: "NVIDIA", zh: "NVIDIA" }, logo: "img/ecosystem/nvidia.svg" },
-  {
-    key: "ascend",
-    label: { en: "Huawei Ascend", zh: "华为昇腾" },
-    logo: "img/contributors/ascend.svg",
-  },
-  {
-    key: "cambricon",
-    label: { en: "Cambricon", zh: "寒武纪" },
-    logo: "img/contributors/cambricon.svg",
-  },
-  { key: "hygon", label: { en: "Hygon", zh: "海光" }, logo: "img/contributors/hygon.png" },
-  { key: "enflame", label: { en: "Enflame", zh: "燧原" }, logo: "img/contributors/enflame.svg" },
-  {
-    key: "iluvatar",
-    label: { en: "Iluvatar", zh: "天数智芯" },
-    logo: "img/contributors/iluvatar.png",
-  },
-  {
-    key: "kunlunxin",
-    label: { en: "Kunlunxin", zh: "昆仑芯" },
-    logo: "img/contributors/kunlunxin.jpg",
-  },
-  {
-    key: "mthreads",
-    label: { en: "Moore Threads", zh: "摩尔线程" },
-    logo: "img/contributors/mthread.png",
-  },
-  { key: "metax", label: { en: "MetaX", zh: "沐曦" }, logo: "img/contributors/metax.png" },
-  {
-    key: "aws-neuron",
-    label: { en: "AWS Neuron", zh: "AWS Neuron" },
-    logo: "img/ecosystem/aws.svg",
-  },
-  {
-    key: "vaststream",
-    label: { en: "Vastai", zh: "瀚博半导体" },
-    logo: "img/ecosystem/vaststream.jpg",
-  },
-];
 const heroDiagramCopy = {
   workloads: {
     en: "AI Workloads",
@@ -319,64 +279,6 @@ const architectureSectionCopy = {
     zh: "从请求到隔离执行，HAMi 将 GPU 切分与异构调度组织成可落地的 Kubernetes 运行时链路。",
   },
 };
-const vendorEcosystem = [
-  {
-    key: "nvidia",
-    name: "NVIDIA",
-    logo: "img/ecosystem/nvidia.svg",
-    href: "https://www.nvidia.com",
-  },
-  { key: "aws", name: "AWS", logo: "img/ecosystem/aws.svg", href: "https://aws.amazon.com" },
-  {
-    key: "ascend",
-    name: "Huawei Ascend",
-    logo: "img/contributors/ascend.svg",
-    href: "https://www.hiascend.com",
-  },
-  {
-    key: "cambricon",
-    name: "Cambricon",
-    logo: "img/contributors/cambricon.svg",
-    href: "https://www.cambricon.com",
-  },
-  {
-    key: "enflame",
-    name: "Enflame",
-    logo: "img/contributors/enflame.svg",
-    href: "https://www.enflame-tech.com",
-  },
-  { key: "hygon", name: "Hygon", logo: "img/contributors/hygon.png", href: "https://www.hygon.cn" },
-  {
-    key: "iluvatar",
-    name: "Iluvatar",
-    logo: "img/contributors/iluvatar.png",
-    href: "https://www.iluvatar.com",
-  },
-  {
-    key: "kunlunxin",
-    name: "Kunlunxin",
-    logo: "img/contributors/kunlunxin.jpg",
-    href: "https://www.kunlunxin.com",
-  },
-  {
-    key: "metax",
-    name: "MetaX",
-    logo: "img/contributors/metax.png",
-    href: "https://www.metax-tech.com",
-  },
-  {
-    key: "mthreads",
-    name: "Moore Threads",
-    logo: "img/contributors/mthread.png",
-    href: "https://www.mthreads.com",
-  },
-  {
-    key: "vaststream",
-    name: "Vastai",
-    logo: "img/ecosystem/vaststream.jpg",
-    href: "https://www.birentech.com",
-  },
-];
 
 const DEVSTATS_URL = "https://hami.devstats.cncf.io/d/18/overall-project-statistics-table?orgId=1";
 const GITHUB_REPO_URL = "https://github.com/Project-HAMi/HAMi";
@@ -723,7 +625,7 @@ export default function Home() {
                         )}
                       </h3>
                       <div className={styles.ecoLogoGrid}>
-                        {heroDeviceEcosystem.map((item) => (
+                        {vendorDevices.map((item) => (
                           <div key={item.key} className={styles.ecoLogoChip}>
                             <img
                               src={useBaseUrl(item.logo)}
@@ -975,7 +877,7 @@ export default function Home() {
                 className="support-wrapper"
                 aria-label={isZh ? "HAMi 生态支持" : "HAMi ecosystem wall"}
               >
-                {vendorEcosystem.map((vendor) => (
+                {vendorDevices.map((vendor) => (
                   <li key={vendor.key}>
                     <a
                       href={vendor.href}
