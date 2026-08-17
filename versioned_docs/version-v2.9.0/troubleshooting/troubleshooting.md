@@ -160,3 +160,53 @@ devicePlugin:
 ```
 
 :::
+## Pod Stuck in Pending {#pod-stuck-in-pending}
+
+If a Pod requesting GPU resources stays in `Pending`, check the following before assuming the cluster lacks capacity.
+
+- **Confirm the Pod is using HAMi's scheduler** - HAMi's mutating webhook only rewrites `schedulerName` for Pods whose resource requests it recognizes as HAMi-manageable. If it doesn't recognize the request, the Pod falls through to the default Kubernetes scheduler silently, and none of the failure reasons below will apply. Check with:
+
+```bash
+  kubectl get pod <pod-name> -o jsonpath='{.spec.schedulerName}'
+```
+
+  If this does not return HAMi's scheduler name, confirm your resource requests use HAMi's expected resource names (e.g. `nvidia.com/gpu`), and confirm the webhook itself is running with `kubectl get pods -n kube-system | grep hami-scheduler`.
+
+- **Confirm the correct device plugin is installed** - HAMi requires its own customized device plugin per accelerator vendor. The stock/official vendor device plugin is not compatible and will produce unexpected behavior rather than a clean error. Check with `kubectl get pods -n kube-system -o wide | grep device-plugin` and confirm the image matches HAMi's documented device plugin for your vendor.
+
+- **Read the failure reason in Pod events** - as of HAMi v2.7.0, the scheduler reports a specific reason for each rejected node directly through Pod events, instead of only a generic "no available node" message. Check with `kubectl describe pod <pod-name>` and look under Events. If you're running an earlier version, Pod events show only the generic message; check the scheduler logs directly instead with `kubectl logs -f <hami-scheduler-pod-name> -n kube-system -c vgpu-scheduler-extender`.
+
+Common failure reasons and what they mean:
+
+- **`NodeInsufficientDevice`** - the Pod requested more devices (by count) than the node has at all.
+- **`CardTypeMismatch`** - the Pod's requested device type doesn't match the candidate card's actual type.
+- **`CardInsufficientMemory`** - the card doesn't have enough free memory for the request. HAMi computes free memory as `Total memory - Used memory` and compares it against the requested amount (set via `gpumem`, or as a percentage of total device memory via `gpumem-percentage` if `gpumem` is unset).
+- **`NumaNotFit`** - NUMA-aware scheduling is enabled, and the candidate device's NUMA node doesn't satisfy the Pod's topology requirement.
+
+### Worked example
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: gpu-pod
+spec:
+  containers:
+    - name: worker01
+      image: ubuntu:22.04
+      command: ["bash", "-c", "sleep 86400"]
+      resources:
+        limits:
+          nvidia.com/gpu: "1"
+          nvidia.com/gpumem: "3000"
+          nvidia.com/gpucores: "30"
+```
+
+Apply this Pod with `gpumem` set higher than any node has free, then check its events:
+
+```bash
+kubectl apply -f gpu-pod.yaml
+kubectl describe pod gpu-pod
+```
+
+You should see a `CardInsufficientMemory` event referencing the specific card and its total/used memory. Adjust the request to fit within available capacity and reapply; the Pod should transition to `Running`.
