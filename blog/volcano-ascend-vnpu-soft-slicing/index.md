@@ -173,7 +173,7 @@ $ npu-smi info
 +===============================+=================+======================================================+
 ```
 
-With the plugin registered, the node advertised 14 vNPUs (2 cards × 7, matching `vDeviceCount: 7`) and 43054 MiB of allocatable memory. Each test Pod requested one vNPU with an 8192 MiB slice:
+With the plugin registered, the node advertised 14 vNPUs (2 cards × 7, matching `vDeviceCount: 7`) and 43054 MiB of allocatable memory. The memory figure follows the chip config (`memoryAllocatable: 21527` MB per card), which sits 2 MiB per card above the 21525 MB `npu-smi` displays. Each test Pod requested one vNPU with an 8192 MiB slice:
 
 ```yaml
 resources:

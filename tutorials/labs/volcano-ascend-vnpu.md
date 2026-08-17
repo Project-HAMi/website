@@ -463,6 +463,8 @@ kubectl describe node aio-node74-arm | grep huawei.com/Ascend310P
   huawei.com/Ascend310P-memory:  43054
 ```
 
+The registered memory follows the chip config's `memoryAllocatable` of 21527 MB per card, 2 MiB per card above the 21525 MB `npu-smi` displays in Step 1, hence 43054 rather than 43050.
+
 ## Step 7: Run Soft-Sliced Pods and Verify
 
 Deploy the first test Pod, which requests one vNPU with an 8192 MiB memory slice:

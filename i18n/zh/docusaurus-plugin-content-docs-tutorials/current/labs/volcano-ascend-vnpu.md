@@ -463,6 +463,8 @@ kubectl describe node aio-node74-arm | grep huawei.com/Ascend310P
   huawei.com/Ascend310P-memory:  43054
 ```
 
+注册显存按芯片配置的每卡 `memoryAllocatable: 21527` MB 计算，比步骤 1 中 `npu-smi` 显示的 21525 MB 每卡多 2 MiB，因此是 43054 而不是 43050。
+
 ## 步骤 7：运行软切分 Pod 并验证
 
 部署第一个测试 Pod，申请 1 个 vNPU、8192 MiB 显存切片：
