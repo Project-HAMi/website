@@ -161,7 +161,6 @@ devicePlugin:
 
 :::
 
-
 ## GPU Pod Scheduling Failure with Simulated GPUs
 
 When using simulated GPUs with HAMi, a GPU workload can remain `Pending` even though Kubernetes advertises the simulated GPU resources.
@@ -175,6 +174,7 @@ kubectl get pod hami-gpu-test -o wide
 ```
 
 Output:
+
 ```
 NAME            READY   STATUS    RESTARTS   AGE
 hami-gpu-test   0/1     Pending   0          5m
@@ -185,7 +185,6 @@ The pod events may show:
 ```
 Warning  FailedScheduling  ...  node ... has been locked within 5m0s
 ```
-
 
 HAMi scheduler logs may also report:
 
@@ -233,7 +232,28 @@ echo
 The output should contain a valid JSON array similar to:
 
 ```json
-[{"id":"GPU-MOCK-0","count":1,"devmem":11441,"devcore":100,"type":"NVIDIA-Tesla-K80","health":true,"numa":0,"mode":"hami-core"},{"id":"GPU-MOCK-1","count":1,"devmem":11441,"devcore":100,"type":"NVIDIA-Tesla-K80","health":true,"numa":0,"mode":"hami-core"}]
+[
+  {
+    "id": "GPU-MOCK-0",
+    "count": 1,
+    "devmem": 11441,
+    "devcore": 100,
+    "type": "NVIDIA-Tesla-K80",
+    "health": true,
+    "numa": 0,
+    "mode": "hami-core"
+  },
+  {
+    "id": "GPU-MOCK-1",
+    "count": 1,
+    "devmem": 11441,
+    "devcore": 100,
+    "type": "NVIDIA-Tesla-K80",
+    "health": true,
+    "numa": 0,
+    "mode": "hami-core"
+  }
+]
 ```
 
 Then delete and recreate the affected pod so HAMi can attempt scheduling again:
@@ -283,8 +303,8 @@ kubectl get node kcna-cluster-worker \
 echo
 ```
 
-
 Check the HAMi GPU registration annotation:
+
 ```bash
 kubectl get node kcna-cluster-worker \
   -o jsonpath='{.metadata.annotations.hami\.io/node-nvidia-register}'
@@ -292,6 +312,7 @@ echo
 ```
 
 Check the HAMi scheduler logs:
+
 ```bash
 kubectl logs -n kube-system \
   -l app.kubernetes.io/component=hami-scheduler \
@@ -308,9 +329,9 @@ If this error appears, inspect the `hami.io/node-nvidia-register` annotation and
 
 ### Environment Tested
 
-* Kubernetes v1.36.1
-* HAMi v2.9.0
-* Kind
-* Simulated GPUs
-* Two simulated NVIDIA devices on the worker node
-* Node: `kcna-cluster-worker`
+- Kubernetes v1.36.1
+- HAMi v2.9.0
+- Kind
+- Simulated GPUs
+- Two simulated NVIDIA devices on the worker node
+- Node: `kcna-cluster-worker`
