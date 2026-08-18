@@ -80,7 +80,7 @@ module.exports = {
   },
   organizationName: "Project-HAMi",
   projectName: "website",
-  favicon: "img/logo.svg",
+  favicon: "favicon.ico",
   clientModules: [
     require.resolve("./src/client/imageFigureNumber.js"),
     require.resolve("./src/client/webmcp.js"),
@@ -157,9 +157,8 @@ module.exports = {
       tagName: "link",
       attributes: {
         rel: "icon",
-        type: "image/png",
-        sizes: "32x32",
-        href: "/favicons/favicon-32x32.png",
+        type: "image/svg+xml",
+        href: "/favicons/favicon.svg",
       },
     },
     {
@@ -167,16 +166,8 @@ module.exports = {
       attributes: {
         rel: "icon",
         type: "image/png",
-        sizes: "16x16",
-        href: "/favicons/favicon-16x16.png",
-      },
-    },
-    {
-      tagName: "link",
-      attributes: {
-        rel: "shortcut icon",
-        type: "image/png",
-        href: "/favicons/favicon-16x16.png",
+        sizes: "96x96",
+        href: "/favicons/favicon-96x96.png",
       },
     },
     {
@@ -187,25 +178,10 @@ module.exports = {
       },
     },
     {
-      tagName: "link",
-      attributes: {
-        rel: "mask-icon",
-        color: "#ffffff",
-        href: "/favicons/safari-pinned-tab.svg",
-      },
-    },
-    {
       tagName: "meta",
       attributes: {
         name: "theme-color",
         content: "#ffffff",
-      },
-    },
-    {
-      tagName: "meta",
-      attributes: {
-        name: "msapplication-config",
-        content: "/favicons/browserconfig.xml",
       },
     },
   ],
