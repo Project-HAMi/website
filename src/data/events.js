@@ -26,12 +26,12 @@ const events = [
       talkSlides: {
         en: "Talk Slides",
         zh: "演讲幻灯片",
-        url: "/resources/2026-kcd-vietnam/talk-slides.pdf",
+        url: "/resources/events/2026-kcd-vietnam/talk-slides.pdf",
       },
       communityFlyer: {
         en: "Community Flyer",
         zh: "社区宣传册",
-        url: "/resources/flyers/community-flyer.pdf",
+        url: "/resources/events/flyers/community-flyer.pdf",
       },
     },
     cta: {
@@ -69,12 +69,12 @@ const events = [
       communityFlyer: {
         en: "Community Flyer",
         zh: "社区宣传册",
-        url: "/resources/flyers/community-flyer.pdf",
+        url: "/resources/events/flyers/community-flyer.pdf",
       },
       talkSlides: {
         en: "Talk Slides",
         zh: "演讲幻灯片",
-        url: "/resources/2026-kubecon-japan/snow_corp_cncf.pdf",
+        url: "/resources/events/2026-kubecon-japan/snow_corp_cncf.pdf",
       },
     },
     caseStudy: {
@@ -121,12 +121,12 @@ const events = [
       communityFlyer: {
         en: "Community Flyer",
         zh: "社区宣传册",
-        url: "/resources/flyers/community-flyer.pdf",
+        url: "/resources/events/flyers/community-flyer.pdf",
       },
       talkSlides: {
         en: "Talk Slides",
         zh: "演讲幻灯片",
-        url: "/resources/2026-coscup/coscup_2026.pdf",
+        url: "/resources/events/2026-coscup/coscup_2026.pdf",
       },
     },
     cta: {
@@ -168,12 +168,12 @@ const events = [
       communityFlyer: {
         en: "Community Flyer",
         zh: "社区宣传册",
-        url: "/resources/flyers/community-flyer.pdf",
+        url: "/resources/events/flyers/community-flyer.pdf",
       },
       talkSlides: {
         en: "Talk Slides",
         zh: "演讲幻灯片",
-        url: "/resources/2026-ossummit-korea/ossummit_korea.pdf",
+        url: "/resources/events/2026-ossummit-korea/ossummit_korea.pdf",
       },
     },
     cta: {
