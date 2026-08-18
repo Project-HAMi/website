@@ -160,3 +160,157 @@ devicePlugin:
 ```
 
 :::
+
+
+## GPU Pod Scheduling Failure with Simulated GPUs
+
+When using simulated GPUs with HAMi, a GPU workload can remain `Pending` even though Kubernetes advertises the simulated GPU resources.
+
+### Symptom
+
+A GPU workload remains unscheduled:
+
+```bash
+kubectl get pod hami-gpu-test -o wide
+```
+
+Output:
+```
+NAME            READY   STATUS    RESTARTS   AGE
+hami-gpu-test   0/1     Pending   0          5m
+```
+
+The pod events may show:
+
+```
+Warning  FailedScheduling  ...  node ... has been locked within 5m0s
+```
+
+
+HAMi scheduler logs may also report:
+
+```
+failed to decode node devices
+```
+
+### Cause
+
+HAMi needs the GPU device information on the node in its expected JSON format.
+
+In this simulated-GPU setup, the node annotation contained a colon-delimited device string:
+
+```
+GPU-MOCK-0,0,11441,100,NVIDIA-Tesla-K80,0,true:GPU-MOCK-1,1,11441,100,NVIDIA-Tesla-K80,0,true:
+```
+
+HAMi expected JSON and therefore failed to decode the node device information:
+
+```
+failed to decode node devices
+err="invalid character 'G' looking for beginning of value"
+```
+
+### Solution
+
+Register the simulated NVIDIA devices on the node using the HAMi node registration annotation.
+
+Apply the annotation with proper JSON format:
+
+```bash
+kubectl annotate node kcna-cluster-worker \
+  'hami.io/node-nvidia-register=[{"id":"GPU-MOCK-0","count":1,"devmem":11441,"devcore":100,"type":"NVIDIA-Tesla-K80","health":true,"numa":0,"mode":"hami-core"},{"id":"GPU-MOCK-1","count":1,"devmem":11441,"devcore":100,"type":"NVIDIA-Tesla-K80","health":true,"numa":0,"mode":"hami-core"}]' \
+  --overwrite
+```
+
+Verify the annotation:
+
+```bash
+kubectl get node kcna-cluster-worker \
+  -o jsonpath='{.metadata.annotations.hami\.io/node-nvidia-register}'
+echo
+```
+
+The output should contain a valid JSON array similar to:
+
+```json
+[{"id":"GPU-MOCK-0","count":1,"devmem":11441,"devcore":100,"type":"NVIDIA-Tesla-K80","health":true,"numa":0,"mode":"hami-core"},{"id":"GPU-MOCK-1","count":1,"devmem":11441,"devcore":100,"type":"NVIDIA-Tesla-K80","health":true,"numa":0,"mode":"hami-core"}]
+```
+
+Then delete and recreate the affected pod so HAMi can attempt scheduling again:
+
+```bash
+kubectl delete pod hami-gpu-test
+```
+
+Recreate the workload using the GPU resource request appropriate for the test environment.
+
+### Verification
+
+Check the pod:
+
+```bash
+kubectl get pod hami-gpu-test -o wide
+```
+
+A successful result should show the pod running on the registered node:
+
+```
+NAME            READY   STATUS    RESTARTS   AGE
+hami-gpu-test   1/1     Running   0          11s
+```
+
+Check the scheduling events:
+
+```bash
+kubectl describe pod hami-gpu-test | grep -A10 "Events:"
+```
+
+Successful scheduling should include messages similar to:
+
+```
+Normal  FilteringSucceed  ...  find fit node(kcna-cluster-worker)
+Normal  BindingSucceed    ...  Successfully binding node [kcna-cluster-worker]
+Normal  Scheduled         ...  Successfully assigned default/hami-gpu-test to kcna-cluster-worker
+```
+
+### Troubleshooting
+
+If the pod remains `Pending`,verify that Kubernetes advertises the simulated GPU resources:
+
+```bash
+kubectl get node kcna-cluster-worker \
+  -o jsonpath='{.status.capacity.nvidia\.com/gpu}'
+echo
+```
+
+
+Check the HAMi GPU registration annotation:
+```bash
+kubectl get node kcna-cluster-worker \
+  -o jsonpath='{.metadata.annotations.hami\.io/node-nvidia-register}'
+echo
+```
+
+Check the HAMi scheduler logs:
+```bash
+kubectl logs -n kube-system \
+  -l app.kubernetes.io/component=hami-scheduler \
+  --tail=200
+```
+
+Look specifically for:
+
+```
+failed to decode node devices
+```
+
+If this error appears, inspect the `hami.io/node-nvidia-register` annotation and make sure it contains valid JSON.
+
+### Environment Tested
+
+* Kubernetes v1.36.1
+* HAMi v2.9.0
+* Kind
+* Simulated GPUs
+* Two simulated NVIDIA devices on the worker node
+* Node: `kcna-cluster-worker`
