@@ -9,7 +9,7 @@ const vendorDevices = [
   {
     key: "aws",
     name: "AWS",
-    label: { en: "AWS", zh: "AWS" },
+    label: { en: "AWS Neuron", zh: "AWS Neuron" },
     logo: "img/ecosystem/aws.svg",
     href: "https://aws.amazon.com",
   },
@@ -74,7 +74,7 @@ const vendorDevices = [
     name: "Vastai",
     label: { en: "Vastai", zh: "瀚博半导体" },
     logo: "img/ecosystem/vaststream.jpg",
-    href: "https://www.birentech.com",
+    href: "https://www.vastaitech.com",
   },
   {
     key: "amd",
