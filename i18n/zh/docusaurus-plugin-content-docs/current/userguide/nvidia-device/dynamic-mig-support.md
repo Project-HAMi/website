@@ -3,6 +3,18 @@ title: 启用动态 MIG 功能
 translated: true
 ---
 
+:::important HAMi v2.10 当前行为
+
+本说明仅用于界定 v2.10 的当前行为；下方保留的 `knownMigGeometries`、整卡 MIG 模板切换、`mig-parted` 和旧 `nodeGPUMigInstance` 指标内容描述的是 v2.9 及更早实现，不适用于 v2.10。
+
+- v2.10 使用预留优先模型。`migProfileAllowlist` 只定义集群允许使用的配置文件名称；显存、算力、切片数量及合法 placement 由每个节点通过 NVML 发现，并以 `migProfiles` 发布给调度器。当前 Chart 还包含 **RTX PRO 6000 Blackwell Server Edition** 的 `1g.24gb`、`2g.48gb` 和 `4g.96gb`。
+- 调度器在绑定 Pod 前预留物理 GPU、profile 和 placement，并写入内部注解 `hami.io/vgpu-mig-allocations`。device plugin 在 `Allocate` 阶段按该预留创建每个 Pod 的 GI/CI，随后补充 MIG UUID、GI ID 和 CI ID；用户不得自行创建或修改此注解。
+- Pod 删除、成功或失败后，device plugin 会回收该 Pod 对应的 CI/GI。重启时，具有完整运行时身份的活动实例会经 NVML 校验后被接管；旧模板/slot 标识无法安全接管。
+- 当前 MIG 指标为 `hami_node_gpu_mig_instance_info`，包含 profile、placement、MIG UUID、GI ID 和 CI ID。仅当 `legacyMetrics: true` 时才额外输出旧指标 `nodeGPUMigInstance`，Chart 默认值为 `false`。
+- 从旧 `knownMigGeometries` 升级时，需要逐节点 cordon、drain，并先升级调度器再升级 device plugin。NVIDIA MIG Manager 与 HAMi 都会修改 GI/CI，不能同时管理同一块物理 GPU；GPU Operator 可继续提供驱动、Container Toolkit 和 DCGM，但目标 GPU 上的 MIG Manager reconciliation 必须停止。
+
+:::
+
 ## 介绍
 
 **我们现在支持通过使用 mig-parted 动态调整 mig-devices 来支持 dynamic-mig**，包括：
