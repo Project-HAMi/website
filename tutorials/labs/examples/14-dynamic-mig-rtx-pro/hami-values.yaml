@@ -1,0 +1,57 @@
+global:
+  imageTag: master-634bf2b32e68
+
+scheduler:
+  defaultSchedulerPolicy:
+    nodeSchedulerPolicy: binpack
+    gpuSchedulerPolicy: binpack
+  extender:
+    image:
+      registry: localhost
+      repository: hami-dynamic-mig
+      tag: master-634bf2b32e68
+      pullPolicy: Never
+
+devicePlugin:
+  image:
+    registry: localhost
+    repository: hami-dynamic-mig
+    tag: master-634bf2b32e68
+    pullPolicy: Never
+  monitor:
+    image:
+      registry: localhost
+      repository: hami-dynamic-mig
+      tag: master-634bf2b32e68
+      pullPolicy: Never
+
+  # NVIDIA's static MIG resource exposure strategy. This is not HAMi's
+  # per-node Dynamic MIG operating mode below.
+  migStrategy: none
+
+  nodeConfiguration:
+    config: |
+      {
+        "nodeconfig": [
+          {
+            "name": "__NODE_NAME__",
+            "operatingmode": "mig",
+            "devicememoryscaling": 1,
+            "devicecorescaling": 1,
+            "devicesplitcount": 10,
+            "preconfigureddevicememory": 0,
+            "enablenumatopology": false,
+            "migstrategy": "none",
+            "filterdevices": {
+              "uuid": [],
+              "index": [0, 1, 2, 3, 5, 6, 7]
+            },
+            "enablegetpreferredallocation": false
+          }
+        ]
+      }
+
+# Use the device-config.yaml bundled with the pinned source chart. It contains
+# the RTX PRO 6000 profile allowlist tested by this lab.
+device-config:
+  content: ""

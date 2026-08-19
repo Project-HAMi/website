@@ -71,6 +71,11 @@ module.exports = {
           id: "labs/kai-scheduler-hami-gke",
           customProps: { level: "Advanced", duration: "about 90 minutes" },
         },
+        {
+          type: "doc",
+          id: "labs/dynamic-mig-rtx-pro",
+          customProps: { level: "Advanced", duration: "about 90 minutes" },
+        },
       ],
     },
   ],

@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mig-small-pack
+  namespace: hami-mig-retest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mig-small-pack
+  template:
+    metadata:
+      labels:
+        app: mig-small-pack
+      annotations:
+        nvidia.com/vgpu-mode: "mig"
+        hami.io/gpu-scheduler-policy: "binpack"
+    spec:
+      schedulerName: hami-scheduler
+      nodeSelector:
+        kubernetes.io/hostname: __NODE_NAME__
+      containers:
+        - name: cuda
+          image: nvcr.io/nvidia/k8s/cuda-sample:vectoradd-cuda12.5.0-ubuntu22.04
+          imagePullPolicy: IfNotPresent
+          command:
+            - bash
+            - -lc
+            - |
+              set -euo pipefail
+              n=0
+              echo 0 > /tmp/gpu-progress
+              while true; do
+                /cuda-samples/vectorAdd > /tmp/vectoradd.last 2>&1
+                n=$((n + 1))
+                echo "$n" > /tmp/gpu-progress.next
+                mv /tmp/gpu-progress.next /tmp/gpu-progress
+              done
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+              nvidia.com/gpumem: 8000
