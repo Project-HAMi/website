@@ -65,6 +65,7 @@ const DURATIONS = {
  */
 export default function RelatedLabs() {
   const { frontMatter } = useDoc();
+  const { siteConfig } = useDocusaurusContext();
   const pageTags = frontMatter?.tags ?? [];
 
   // Nothing to match against – render nothing.
@@ -72,7 +73,6 @@ export default function RelatedLabs() {
     return null;
   }
 
-  const { siteConfig } = useDocusaurusContext();
   const labData = siteConfig.customFields?.labData ?? {};
 
   // Build cards for labs whose tags overlap with the current page's tags.
@@ -92,7 +92,8 @@ export default function RelatedLabs() {
       };
     })
     .filter(Boolean)
-    .sort((a, b) => b.matchCount - a.matchCount);
+    .sort((a, b) => b.matchCount - a.matchCount)
+    .slice(0, 4); // Cap to top 4 to avoid long lists of loosely related labs
 
   if (matchedCards.length === 0) {
     return null;
