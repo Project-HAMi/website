@@ -1,12 +1,10 @@
-# Step 6: mutex only allows cards with zero current users.
+# Step 4: no policy annotation, so the chart default (spread) applies.
 apiVersion: v1
 kind: Pod
 metadata:
-  name: policy-mutex-a
+  name: policy-spread-a
   labels:
-    hami.run/lab-13: "true"
-  annotations:
-    hami.io/gpu-scheduler-policy: "mutex"
+    hami.run/lab-14: "true"
 spec:
   containers:
     - name: app
@@ -33,11 +31,9 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: policy-mutex-b
+  name: policy-spread-b
   labels:
-    hami.run/lab-13: "true"
-  annotations:
-    hami.io/gpu-scheduler-policy: "mutex"
+    hami.run/lab-14: "true"
 spec:
   containers:
     - name: app

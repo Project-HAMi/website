@@ -10,7 +10,7 @@ HAMi has always offered per-Pod GPU scheduling policies through the `hami.io/gpu
 
 Real clusters rarely want just one behavior at a time. A typical production wish list looks like this: pack inference replicas tightly to leave whole cards free, but keep each Pod's GPUs on the same NUMA node for bandwidth, and give the latency-critical tier cards of its own. That is **three** policies in a single sentence. Before v2.10.0 you had to pick one and give up the rest.
 
-v2.10.0 closes this gap: `hami.io/gpu-scheduler-policy` now accepts an **ordered, comma-separated list** of policies, so filter-style and sort-style policies compose ([#2621](https://github.com/Project-HAMi/HAMi/pull/2621), [@mesutoezdil](https://github.com/mesutoezdil), closes [#2010](https://github.com/Project-HAMi/HAMi/issues/2010)). This post explains how the combination actually works, and how to adopt and verify it. If you prefer to learn by doing, the companion [Lab 13: Composable GPU Scheduling Policies on GKE](/tutorials/labs/composable-scheduler-policies-gke) walks through every scenario below on a real cluster.
+v2.10.0 closes this gap: `hami.io/gpu-scheduler-policy` now accepts an **ordered, comma-separated list** of policies, so filter-style and sort-style policies compose ([#2621](https://github.com/Project-HAMi/HAMi/pull/2621), [@mesutoezdil](https://github.com/mesutoezdil), closes [#2010](https://github.com/Project-HAMi/HAMi/issues/2010)). This post explains how the combination actually works, and how to adopt and verify it. If you prefer to learn by doing, the companion [Lab 14: Composable GPU Scheduling Policies on GKE](/tutorials/labs/composable-scheduler-policies-gke) walks through every scenario below on a real cluster.
 
 <!-- truncate -->
 
@@ -165,7 +165,7 @@ kubectl -n kube-system logs deploy/hami-scheduler -c vgpu-scheduler-extender \
 
 ## Try It on a Real Cluster
 
-Reading about filters and sort keys is one thing; watching a `mutex` Pod stay Pending until you free a card, and then watching `mutex,binpack` refuse the card plain `binpack` would have chosen, is another. [Lab 13: Composable GPU Scheduling Policies on GKE](/tutorials/labs/composable-scheduler-policies-gke) runs the whole feature matrix on a single GKE node with four Tesla T4s: default `spread`, `binpack` stacking, `mutex` blocking and release, and the composed `mutex,binpack` behavior, verified through allocation annotations, events, and scheduler logs.
+Reading about filters and sort keys is one thing; watching a `mutex` Pod stay Pending until you free a card, and then watching `mutex,binpack` refuse the card plain `binpack` would have chosen, is another. [Lab 14: Composable GPU Scheduling Policies on GKE](/tutorials/labs/composable-scheduler-policies-gke) runs the whole feature matrix on a single GKE node with four Tesla T4s: default `spread`, `binpack` stacking, `mutex` blocking and release, and the composed `mutex,binpack` behavior, verified through allocation annotations, events, and scheduler logs.
 
 ## References
 
@@ -173,4 +173,4 @@ Reading about filters and sort keys is one thing; watching a `mutex` Pod stay Pe
 - Issue: [Composable scheduling policies (#2010)](https://github.com/Project-HAMi/HAMi/issues/2010)
 - [Scheduler policy design](/docs/developers/scheduling)
 - [Configuration reference](/docs/userguide/configure)
-- Hands-on lab: [Lab 13: Composable GPU Scheduling Policies on GKE](/tutorials/labs/composable-scheduler-policies-gke)
+- Hands-on lab: [Lab 14: Composable GPU Scheduling Policies on GKE](/tutorials/labs/composable-scheduler-policies-gke)

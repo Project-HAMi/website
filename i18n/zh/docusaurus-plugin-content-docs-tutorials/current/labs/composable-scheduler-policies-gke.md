@@ -1,7 +1,7 @@
 ---
-title: "实验 13: 在 GKE 上验证可组合调度策略"
+title: "实验 14: 在 GKE 上验证可组合调度策略"
 description: "在挂载四块 Tesla T4 的 GKE 节点上安装 HAMi v2.10.0，并通过分配注解与调度器日志观察 spread、binpack、mutex 以及组合的 mutex,binpack 策略链。"
-sidebar_label: "实验 13: 组合调度策略"
+sidebar_label: "实验 14: 组合调度策略"
 lab:
   level: Intermediate
   duration: 约 60 分钟
@@ -50,7 +50,7 @@ flowchart LR
 
 - 一个启用了 GKE 和 Compute Engine API 并开通计费的 GCP 项目。
 - `gcloud`、与 GKE API server 小版本相差不超过一个 minor 的 `kubectl`，以及 Helm 3 或 4。
-- [`tutorials/labs/examples/13-composable-scheduler-policies-gke/`](https://github.com/Project-HAMi/website/tree/master/tutorials/labs/examples/13-composable-scheduler-policies-gke) 下的文件。
+- [`tutorials/labs/examples/14-composable-scheduler-policies-gke/`](https://github.com/Project-HAMi/website/tree/master/tutorials/labs/examples/14-composable-scheduler-policies-gke) 下的文件。
 
 节点规格为一台 `n1-standard-8` 挂四块 T4。请先确认 GPU 配额：本实验在该区域需要 4 个 `NVIDIA_T4_GPUS`。由于 GKE 补丁版本会过期，请先选出你所在区域可用的 1.35 版本，再用它创建集群：
 
@@ -185,13 +185,13 @@ gke-hami-policy-lab-default-pool-0c191cbd-fnwq   40
 
 ## 步骤 4: 基线，默认的 `spread` 策略
 
-所有实验 Pod 都带 `hami.run/lab-13` 标签，申请 1 个 vGPU、1000 MiB 显存切片，并以只读方式挂载宿主机驱动的 `lib64`。最后一点是 GKE 上的必需项，而非 HAMi 的通用要求：HAMi 会通过 `/etc/ld.so.preload` 把 `libvgpu.so` 注入每个 vGPU Pod，`libvgpu.so` 依赖 `libcuda.so.1`，而 GKE 上没有其他组件会向容器内提供驱动库。不挂载的话，所有工作负载都会在启动时报 `bash: error while loading shared libraries: libcuda.so.1` 并退出。
+所有实验 Pod 都带 `hami.run/lab-14` 标签，申请 1 个 vGPU、1000 MiB 显存切片，并以只读方式挂载宿主机驱动的 `lib64`。最后一点是 GKE 上的必需项，而非 HAMi 的通用要求：HAMi 会通过 `/etc/ld.so.preload` 把 `libvgpu.so` 注入每个 vGPU Pod，`libvgpu.so` 依赖 `libcuda.so.1`，而 GKE 上没有其他组件会向容器内提供驱动库。不挂载的话，所有工作负载都会在启动时报 `bash: error while loading shared libraries: libcuda.so.1` 并退出。
 
 先定义一个打印每个 Pod 所选卡片的辅助函数，后续每一步都会复用：
 
 ```bash
 lab-card() {
-  kubectl get pods -l hami.run/lab-13 --no-headers -o custom-columns=\
+  kubectl get pods -l hami.run/lab-14 --no-headers -o custom-columns=\
 'POD:.metadata.name,CARD:.metadata.annotations.hami\.io/vgpu-devices-allocated'
 }
 ```
@@ -200,7 +200,7 @@ lab-card() {
 
 ```bash
 kubectl apply \
-  -f tutorials/labs/examples/13-composable-scheduler-policies-gke/01-spread-pods.yaml
+  -f tutorials/labs/examples/14-composable-scheduler-policies-gke/01-spread-pods.yaml
 kubectl wait --for=condition=Ready pod/policy-spread-a pod/policy-spread-b \
   --timeout=5m
 lab-card
@@ -219,7 +219,7 @@ policy-spread-b   GPU-66116373-061e-a66b-28a3-c60c4877e16e,NVIDIA,1000,0:;
 
 ```bash
 kubectl apply \
-  -f tutorials/labs/examples/13-composable-scheduler-policies-gke/02-binpack-pods.yaml
+  -f tutorials/labs/examples/14-composable-scheduler-policies-gke/02-binpack-pods.yaml
 kubectl wait --for=condition=Ready pod/policy-binpack-a pod/policy-binpack-b \
   --timeout=5m
 lab-card
@@ -240,7 +240,7 @@ policy-spread-b    GPU-66116373-061e-a66b-28a3-c60c4877e16e,NVIDIA,1000,0:;
 
 ```bash
 kubectl apply \
-  -f tutorials/labs/examples/13-composable-scheduler-policies-gke/03-mutex-pods.yaml
+  -f tutorials/labs/examples/14-composable-scheduler-policies-gke/03-mutex-pods.yaml
 kubectl wait --for=condition=Ready pod/policy-mutex-a pod/policy-mutex-b \
   --timeout=5m
 lab-card
@@ -261,7 +261,7 @@ policy-spread-b    GPU-66116373-061e-a66b-28a3-c60c4877e16e,NVIDIA,1000,0:;
 
 ```bash
 kubectl apply \
-  -f tutorials/labs/examples/13-composable-scheduler-policies-gke/04-mutex-blocked.yaml
+  -f tutorials/labs/examples/14-composable-scheduler-policies-gke/04-mutex-blocked.yaml
 sleep 20
 kubectl get pod policy-mutex-c
 kubectl describe pod policy-mutex-c | sed -n '/Events:/,$p' | head -8
@@ -302,8 +302,8 @@ policy-spread-a    GPU-3c5f3637-e911-b226-7a4c-52da87c38aff,NVIDIA,1000,0:;
 先清场，让场景确定：
 
 ```bash
-kubectl delete pods -l hami.run/lab-13
-kubectl wait --for=delete pod -l hami.run/lab-13 --timeout=2m
+kubectl delete pods -l hami.run/lab-14
+kubectl wait --for=delete pod -l hami.run/lab-14 --timeout=2m
 ```
 
 在空节点上构建以下状态：
@@ -314,16 +314,16 @@ kubectl wait --for=delete pod -l hami.run/lab-13 --timeout=2m
 
 ```bash
 kubectl apply \
-  -f tutorials/labs/examples/13-composable-scheduler-policies-gke/05-composed-tenant.yaml
+  -f tutorials/labs/examples/14-composable-scheduler-policies-gke/05-composed-tenant.yaml
 kubectl wait --for=condition=Ready pod/policy-tenant --timeout=5m
 
 kubectl apply \
-  -f tutorials/labs/examples/13-composable-scheduler-policies-gke/06-composed-pods.yaml
+  -f tutorials/labs/examples/14-composable-scheduler-policies-gke/06-composed-pods.yaml
 kubectl wait --for=condition=Ready pod/policy-combined-a pod/policy-combined-b \
   --timeout=5m
 
 kubectl apply \
-  -f tutorials/labs/examples/13-composable-scheduler-policies-gke/07-binpack-contrast.yaml
+  -f tutorials/labs/examples/14-composable-scheduler-policies-gke/07-binpack-contrast.yaml
 kubectl wait --for=condition=Ready pod/policy-binpack-solo --timeout=5m
 lab-card
 ```
@@ -382,7 +382,7 @@ I0818 11:39:13.896904       1 gpu_policy.go:221] device GPU-3c5f3637-e911-b226-7
 删除实验负载与 HAMi（步骤 3 的 DaemonSet patch 会随 release 一起删除）：
 
 ```bash
-kubectl delete pods -l hami.run/lab-13 --ignore-not-found
+kubectl delete pods -l hami.run/lab-14 --ignore-not-found
 helm uninstall hami -n kube-system
 ```
 

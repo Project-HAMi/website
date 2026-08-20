@@ -1,13 +1,11 @@
-# Step 6: applied when every card already has a user; stays Pending
-# with ExclusiveDeviceAllocateConflict until a card is freed.
+# Step 7: plain tenant on an empty node; default spread places it on
+# the first card, which becomes the "used" card X of the scenario.
 apiVersion: v1
 kind: Pod
 metadata:
-  name: policy-mutex-c
+  name: policy-tenant
   labels:
-    hami.run/lab-13: "true"
-  annotations:
-    hami.io/gpu-scheduler-policy: "mutex"
+    hami.run/lab-14: "true"
 spec:
   containers:
     - name: app

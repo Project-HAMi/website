@@ -1,12 +1,12 @@
-# Step 5: binpack prefers the most heavily used eligible card.
+# Step 6: mutex only allows cards with zero current users.
 apiVersion: v1
 kind: Pod
 metadata:
-  name: policy-binpack-a
+  name: policy-mutex-a
   labels:
-    hami.run/lab-13: "true"
+    hami.run/lab-14: "true"
   annotations:
-    hami.io/gpu-scheduler-policy: "binpack"
+    hami.io/gpu-scheduler-policy: "mutex"
 spec:
   containers:
     - name: app
@@ -33,11 +33,11 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: policy-binpack-b
+  name: policy-mutex-b
   labels:
-    hami.run/lab-13: "true"
+    hami.run/lab-14: "true"
   annotations:
-    hami.io/gpu-scheduler-policy: "binpack"
+    hami.io/gpu-scheduler-policy: "mutex"
 spec:
   containers:
     - name: app

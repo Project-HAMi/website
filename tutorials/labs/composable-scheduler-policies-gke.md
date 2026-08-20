@@ -1,7 +1,7 @@
 ---
-title: "Lab 13: Composable GPU Scheduling Policies on GKE"
+title: "Lab 14: Composable GPU Scheduling Policies on GKE"
 description: "Install HAMi v2.10.0 on a GKE node with four Tesla T4s and observe spread, binpack, mutex, and the composed mutex,binpack chain through allocation annotations and scheduler logs."
-sidebar_label: "Lab 13: Scheduling Policies"
+sidebar_label: "Lab 14: Scheduling Policies"
 lab:
   level: Intermediate
   duration: about 60 minutes
@@ -50,7 +50,7 @@ flowchart LR
 
 - A GCP project with the GKE and Compute Engine APIs enabled and billing active.
 - `gcloud`, a `kubectl` version within one minor release of the GKE API server, and Helm 3 or 4.
-- The files under [`tutorials/labs/examples/13-composable-scheduler-policies-gke/`](https://github.com/Project-HAMi/website/tree/master/tutorials/labs/examples/13-composable-scheduler-policies-gke).
+- The files under [`tutorials/labs/examples/14-composable-scheduler-policies-gke/`](https://github.com/Project-HAMi/website/tree/master/tutorials/labs/examples/14-composable-scheduler-policies-gke).
 
 The node shape is one `n1-standard-8` with four attached T4s. Check your GPU quota first: the lab needs four `NVIDIA_T4_GPUS` in the zone. Because GKE patch releases age out, pick an available 1.35 version in your zone first, then create the cluster with it:
 
@@ -185,13 +185,13 @@ gke-hami-policy-lab-default-pool-0c191cbd-fnwq   40
 
 ## Step 4: Baseline, the Default `spread` Policy
 
-All lab Pods carry the label `hami.run/lab-13`, request one vGPU with a 1000 MiB memory slice, and mount the host driver's `lib64` read-only. That last part is a GKE necessity, not HAMi hygiene: HAMi injects its `libvgpu.so` through `/etc/ld.so.preload` into every vGPU Pod, `libvgpu.so` needs `libcuda.so.1`, and on GKE nothing else provides the driver libraries inside the container. Without the mount, every workload dies at startup with `bash: error while loading shared libraries: libcuda.so.1`.
+All lab Pods carry the label `hami.run/lab-14`, request one vGPU with a 1000 MiB memory slice, and mount the host driver's `lib64` read-only. That last part is a GKE necessity, not HAMi hygiene: HAMi injects its `libvgpu.so` through `/etc/ld.so.preload` into every vGPU Pod, `libvgpu.so` needs `libcuda.so.1`, and on GKE nothing else provides the driver libraries inside the container. Without the mount, every workload dies at startup with `bash: error while loading shared libraries: libcuda.so.1`.
 
 Define one helper that prints each Pod's chosen card; you will reuse it in every step:
 
 ```bash
 lab-card() {
-  kubectl get pods -l hami.run/lab-13 --no-headers -o custom-columns=\
+  kubectl get pods -l hami.run/lab-14 --no-headers -o custom-columns=\
 'POD:.metadata.name,CARD:.metadata.annotations.hami\.io/vgpu-devices-allocated'
 }
 ```
@@ -200,7 +200,7 @@ Apply two Pods **without** a policy annotation. The chart default for card selec
 
 ```bash
 kubectl apply \
-  -f tutorials/labs/examples/13-composable-scheduler-policies-gke/01-spread-pods.yaml
+  -f tutorials/labs/examples/14-composable-scheduler-policies-gke/01-spread-pods.yaml
 kubectl wait --for=condition=Ready pod/policy-spread-a pod/policy-spread-b \
   --timeout=5m
 lab-card
@@ -219,7 +219,7 @@ Now apply two Pods annotated `hami.io/gpu-scheduler-policy: "binpack"`:
 
 ```bash
 kubectl apply \
-  -f tutorials/labs/examples/13-composable-scheduler-policies-gke/02-binpack-pods.yaml
+  -f tutorials/labs/examples/14-composable-scheduler-policies-gke/02-binpack-pods.yaml
 kubectl wait --for=condition=Ready pod/policy-binpack-a pod/policy-binpack-b \
   --timeout=5m
 lab-card
@@ -240,7 +240,7 @@ Apply two Pods annotated `mutex`. Only cards with **zero current users** are eli
 
 ```bash
 kubectl apply \
-  -f tutorials/labs/examples/13-composable-scheduler-policies-gke/03-mutex-pods.yaml
+  -f tutorials/labs/examples/14-composable-scheduler-policies-gke/03-mutex-pods.yaml
 kubectl wait --for=condition=Ready pod/policy-mutex-a pod/policy-mutex-b \
   --timeout=5m
 lab-card
@@ -261,7 +261,7 @@ All four cards now have users. Apply a third `mutex` Pod and watch it stay Pendi
 
 ```bash
 kubectl apply \
-  -f tutorials/labs/examples/13-composable-scheduler-policies-gke/04-mutex-blocked.yaml
+  -f tutorials/labs/examples/14-composable-scheduler-policies-gke/04-mutex-blocked.yaml
 sleep 20
 kubectl get pod policy-mutex-c
 kubectl describe pod policy-mutex-c | sed -n '/Events:/,$p' | head -8
@@ -302,8 +302,8 @@ policy-spread-a    GPU-3c5f3637-e911-b226-7a4c-52da87c38aff,NVIDIA,1000,0:;
 Start clean so the scenario is deterministic:
 
 ```bash
-kubectl delete pods -l hami.run/lab-13
-kubectl wait --for=delete pod -l hami.run/lab-13 --timeout=2m
+kubectl delete pods -l hami.run/lab-14
+kubectl wait --for=delete pod -l hami.run/lab-14 --timeout=2m
 ```
 
 Build this state on the empty node:
@@ -314,16 +314,16 @@ Build this state on the empty node:
 
 ```bash
 kubectl apply \
-  -f tutorials/labs/examples/13-composable-scheduler-policies-gke/05-composed-tenant.yaml
+  -f tutorials/labs/examples/14-composable-scheduler-policies-gke/05-composed-tenant.yaml
 kubectl wait --for=condition=Ready pod/policy-tenant --timeout=5m
 
 kubectl apply \
-  -f tutorials/labs/examples/13-composable-scheduler-policies-gke/06-composed-pods.yaml
+  -f tutorials/labs/examples/14-composable-scheduler-policies-gke/06-composed-pods.yaml
 kubectl wait --for=condition=Ready pod/policy-combined-a pod/policy-combined-b \
   --timeout=5m
 
 kubectl apply \
-  -f tutorials/labs/examples/13-composable-scheduler-policies-gke/07-binpack-contrast.yaml
+  -f tutorials/labs/examples/14-composable-scheduler-policies-gke/07-binpack-contrast.yaml
 kubectl wait --for=condition=Ready pod/policy-binpack-solo --timeout=5m
 lab-card
 ```
@@ -382,7 +382,7 @@ These lines are from the `policy-binpack-solo` scheduling pass: the three cards 
 Remove the lab workloads and HAMi (the Step 3 DaemonSet patch disappears with the release):
 
 ```bash
-kubectl delete pods -l hami.run/lab-13 --ignore-not-found
+kubectl delete pods -l hami.run/lab-14 --ignore-not-found
 helm uninstall hami -n kube-system
 ```
 

@@ -1,10 +1,12 @@
-# Step 4: no policy annotation, so the chart default (spread) applies.
+# Step 5: binpack prefers the most heavily used eligible card.
 apiVersion: v1
 kind: Pod
 metadata:
-  name: policy-spread-a
+  name: policy-binpack-a
   labels:
-    hami.run/lab-13: "true"
+    hami.run/lab-14: "true"
+  annotations:
+    hami.io/gpu-scheduler-policy: "binpack"
 spec:
   containers:
     - name: app
@@ -31,9 +33,11 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: policy-spread-b
+  name: policy-binpack-b
   labels:
-    hami.run/lab-13: "true"
+    hami.run/lab-14: "true"
+  annotations:
+    hami.io/gpu-scheduler-policy: "binpack"
 spec:
   containers:
     - name: app

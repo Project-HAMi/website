@@ -10,7 +10,7 @@ HAMi 一直通过 `hami.io/gpu-scheduler-policy` 注解提供按 Pod 生效的 G
 
 真实集群很少只需要一种行为。一份典型的生产诉求是这样的：推理副本要紧凑装箱，留出整卡空闲；同时每个 Pod 的多卡要落在同一 NUMA 节点上以保证带宽；而时延敏感的那批负载，干脆要独占几张卡。一句话里出现了**三种**策略。在 v2.10.0 之前，你只能选一个，放弃其余。
 
-v2.10.0 补上了这块拼图：`hami.io/gpu-scheduler-policy` 现在接受**有序的、逗号分隔的列表**，过滤型与排序型策略可以组合（[#2621](https://github.com/Project-HAMi/HAMi/pull/2621)，[@mesutoezdil](https://github.com/mesutoezdil)，关闭 [#2010](https://github.com/Project-HAMi/HAMi/issues/2010)）。本文解释组合是如何求值的，以及如何上手与验证。如果你喜欢动手学习，配套的[实验 13：在 GKE 上验证可组合调度策略](/zh/tutorials/labs/composable-scheduler-policies-gke)会在真实集群上逐一复现下文的每个场景。
+v2.10.0 补上了这块拼图：`hami.io/gpu-scheduler-policy` 现在接受**有序的、逗号分隔的列表**，过滤型与排序型策略可以组合（[#2621](https://github.com/Project-HAMi/HAMi/pull/2621)，[@mesutoezdil](https://github.com/mesutoezdil)，关闭 [#2010](https://github.com/Project-HAMi/HAMi/issues/2010)）。本文解释组合是如何求值的，以及如何上手与验证。如果你喜欢动手学习，配套的[实验 14：在 GKE 上验证可组合调度策略](/zh/tutorials/labs/composable-scheduler-policies-gke)会在真实集群上逐一复现下文的每个场景。
 
 <!-- truncate -->
 
@@ -67,7 +67,7 @@ flowchart LR
 
 ## 实例：一个 Pod 在四张卡上的选择路径
 
-把上面的流程放进实验 13 的真实场景：一个节点、四块 Tesla T4，一个带 `mutex,binpack` 注解、申请 1 个 vGPU（1000 MiB 切片）的 Pod 待调度。下图每张卡标出了租户数与利用率得分，箭头就是选择路径：
+把上面的流程放进实验 14 的真实场景：一个节点、四块 Tesla T4，一个带 `mutex,binpack` 注解、申请 1 个 vGPU（1000 MiB 切片）的 Pod 待调度。下图每张卡标出了租户数与利用率得分，箭头就是选择路径：
 
 ```mermaid
 %% title: 一个 mutex,binpack Pod 在四张候选卡上的选择路径
@@ -165,7 +165,7 @@ kubectl -n kube-system logs deploy/hami-scheduler -c vgpu-scheduler-extender \
 
 ## 在真实集群上试试
 
-读过滤器与排序键是一回事，亲眼看一个 `mutex` Pod 在你释放一张卡之前一直 Pending，再看 `mutex,binpack` 拒绝纯 `binpack` 本会选中的卡，是另一回事。[实验 13：在 GKE 上验证可组合调度策略](/zh/tutorials/labs/composable-scheduler-policies-gke)在一台挂四块 Tesla T4 的 GKE 节点上跑完整的特性矩阵：默认 `spread`、`binpack` 堆叠、`mutex` 阻塞与释放、组合的 `mutex,binpack` 行为，全部通过分配注解、事件和调度器日志验证。
+读过滤器与排序键是一回事，亲眼看一个 `mutex` Pod 在你释放一张卡之前一直 Pending，再看 `mutex,binpack` 拒绝纯 `binpack` 本会选中的卡，是另一回事。[实验 14：在 GKE 上验证可组合调度策略](/zh/tutorials/labs/composable-scheduler-policies-gke)在一台挂四块 Tesla T4 的 GKE 节点上跑完整的特性矩阵：默认 `spread`、`binpack` 堆叠、`mutex` 阻塞与释放、组合的 `mutex,binpack` 行为，全部通过分配注解、事件和调度器日志验证。
 
 ## 参考资料
 
@@ -173,4 +173,4 @@ kubectl -n kube-system logs deploy/hami-scheduler -c vgpu-scheduler-extender \
 - Issue：[Composable scheduling policies (#2010)](https://github.com/Project-HAMi/HAMi/issues/2010)
 - [调度策略设计文档](/zh/docs/developers/scheduling)
 - [配置参考](/zh/docs/userguide/configure)
-- 动手实验：[实验 13：在 GKE 上验证可组合调度策略](/zh/tutorials/labs/composable-scheduler-policies-gke)
+- 动手实验：[实验 14：在 GKE 上验证可组合调度策略](/zh/tutorials/labs/composable-scheduler-policies-gke)

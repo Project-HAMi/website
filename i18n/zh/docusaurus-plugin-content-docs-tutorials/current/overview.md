@@ -28,4 +28,5 @@ import LabCardGridAuto from '@site/src/components/labs/LabCardGridAuto';
 - **实验 9** 使用 Kueue 准入控制限制 HAMi vGPU 数量、显存和算力配额。
 - **实验 11** 将从头搭建完整的 KServe Standard 推理环境，并通过 HAMi 原生 DRA Claim 让两个 vLLM 副本共享一张 GPU。
 - **实验 12** 在 GKE 1.35/COS/CDI 上部署 KAI Scheduler 与 HAMi-core，并通过 CUDA 分配验证显存上限。
-- **实验 13** 在挂载四块 T4 的 GKE 节点上安装 HAMi v2.10.0，并通过分配注解与调度器日志观察可组合的 `gpu-scheduler-policy` 策略链（`spread`、`binpack`、`mutex`、`mutex,binpack`）。
+- **实验 13** 在昇腾 310P3 ARM 服务器上源码编译 Volcano 与 ascend-device-plugin，验证 hami-vnpu-core 软切分、binpack 共卡与容器级监控指标。
+- **实验 14** 在挂载四块 T4 的 GKE 节点上安装 HAMi v2.10.0，并通过分配注解与调度器日志观察可组合的 `gpu-scheduler-policy` 策略链（`spread`、`binpack`、`mutex`、`mutex,binpack`）。

@@ -6,7 +6,7 @@ kind: Pod
 metadata:
   name: policy-combined-a
   labels:
-    hami.run/lab-13: "true"
+    hami.run/lab-14: "true"
   annotations:
     hami.io/gpu-scheduler-policy: "mutex,binpack"
 spec:
@@ -37,7 +37,7 @@ kind: Pod
 metadata:
   name: policy-combined-b
   labels:
-    hami.run/lab-13: "true"
+    hami.run/lab-14: "true"
   annotations:
     hami.io/gpu-scheduler-policy: "mutex,binpack"
 spec:

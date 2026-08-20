@@ -73,6 +73,11 @@ module.exports = {
         },
         {
           type: "doc",
+          id: "labs/volcano-ascend-vnpu",
+          customProps: { level: "Advanced", duration: "about 120 minutes" },
+        },
+        {
+          type: "doc",
           id: "labs/composable-scheduler-policies-gke",
           customProps: { level: "Intermediate", duration: "about 60 minutes" },
         },
