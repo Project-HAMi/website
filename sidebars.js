@@ -55,10 +55,14 @@ module.exports = {
         "installation/upgrade",
         "installation/uninstall",
         "installation/webui-installation",
-        "installation/aws-installation",
         "installation/how-to-use-hami-dra",
         "installation/how-to-use-volcano-vgpu",
         "installation/how-to-use-volcano-ascend",
+        {
+          type: "category",
+          label: "Cloud Platforms",
+          items: ["installation/platforms/aws"],
+        },
       ],
     },
     {
