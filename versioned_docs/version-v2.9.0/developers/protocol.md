@@ -49,7 +49,7 @@ The scheduler's registration loop runs every 15 seconds, and also on node events
 
 A handshake is treated as expired once its timestamp is more than **60 seconds** old. Expiry alone does not remove the node. The scheduler additionally requires the node's allocatable device count to have dropped to zero before it runs node cleanup, which removes the node's devices from the scheduler cache and deletes the handshake annotation. A node whose device-plugin is still reporting to kubelet therefore stays available even with an expired handshake.
 
-:::note The NVIDIA device-plugin does not write the handshake
+:::note The NVIDIA device-plugin does not write the `Reported_` handshake
 
 The `Reported_` side of this protocol is written by device-plugins that implement it. The in-tree NVIDIA device-plugin does not, so on an NVIDIA node the annotation normally stays at `Requesting_<timestamp>` and ages past 60 seconds. That is the expected steady state, not a fault: the effective liveness signal for NVIDIA is the allocatable device count. See [GPU Nodes Not Registering](../troubleshooting/node-registration.md).
 
