@@ -20,7 +20,7 @@ toc_max_heading_level: 2
 
 :::note 关于本次运行
 
-下文的输出块均为一次真实运行的逐字捕获（GKE `1.35.7-gke.1150000`、COS、一台 `n1-standard-8` 挂四块 Tesla T4）。运行时 v2.10.0 的 Helm chart 与镜像尚未发布到 Helm 仓库，因此本次运行使用 HAMi master 分支的 chart 源码与官方 `projecthami/hami:latest` 镜像（其中包含 v2.10.0 发布候选代码）。待 `helm search` 中出现 `v2.10.0` 后，请改用已发布的 chart 并指定 `--version v2.10.0`，行为完全一致。
+下文的输出块均为一次真实运行的逐字捕获（GKE `1.35.7-gke.1150000`、COS、一台 `n1-standard-8` 挂四块 Tesla T4）。运行时 v2.10.0 的 Helm chart 与镜像尚未发布到 Helm 仓库，因此本次运行使用 HAMi master 分支 `45b3d46769b44cfc1445728dfcb8e524939afba1` 提交的 chart 源码与官方 `projecthami/hami:latest` 镜像（其中包含 v2.10.0 发布候选代码，步骤 3 给出了固定该版本的方法）。待 `helm search` 中出现 `v2.10.0` 后，请改用已发布的 chart 并指定 `--version v2.10.0`，行为完全一致。
 
 :::
 
@@ -130,10 +130,19 @@ gke-hami-policy-lab-default-pool-0c191cbd-fnwq   0
 - 插件容器需要 `LD_LIBRARY_PATH=/driver-root/lib64` 才能从 GKE 驱动目录加载 NVML，否则以 `invalid device discovery strategy` 退出；
 - `devicePlugin.extraEnvs` 必须是以 `{name, value}` 对象组成的列表并用 `--set-json` 传入；直接 `--set devicePlugin.extraEnvs.X=Y` 会渲染出非法 YAML，导致整个安装失败。
 
+先确认 v2.10.0 的发布产物确实已经可用：
+
+```bash
+helm search repo hami-charts/hami --version v2.10.0
+```
+
+如果能查到该 chart，直接安装已发布的产物：
+
 ```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/
 helm repo update
 helm install hami hami-charts/hami -n kube-system --version v2.10.0 \
+\
   --set devicePlugin.nvidiaDriverRoot=/home/kubernetes/bin/nvidia \
   --set global.gpuHookPath=/home/kubernetes/bin/nvidia \
   --set devicePlugin.libPath=/home/kubernetes/bin/nvidia/vgpu \
@@ -144,6 +153,22 @@ kubectl -n kube-system rollout status deploy/hami-scheduler --timeout=300s
 kubectl -n kube-system get pods -l app.kubernetes.io/instance=hami
 ```
 
+在发布产物可用之前，可以用本次运行使用的确切代码版本来复现实验：chart 取自 HAMi 源码的 `45b3d46769b44cfc1445728dfcb8e524939afba1` 提交（2026-08-17 时的 master HEAD，即 v2.10.0 对应的代码），镜像用 `global.imageTag=latest` 选择对应的 master CI 构建。`latest` 是可变标签，因此发布 chart 可用后请优先使用上面的命令：
+
+````bash
+curl -fsSL https://codeload.github.com/Project-HAMi/HAMi/tar.gz/45b3d46769b44cfc1445728dfcb8e524939afba1 \
+  -o hami-src.tar.gz
+tar xzf hami-src.tar.gz
+helm install hami \
+  HAMi-45b3d46769b44cfc1445728dfcb8e524939afba1/charts/hami \
+  -n kube-system --set global.imageTag=latest \
+\
+  --set devicePlugin.nvidiaDriverRoot=/home/kubernetes/bin/nvidia \
+  --set global.gpuHookPath=/home/kubernetes/bin/nvidia \
+  --set devicePlugin.libPath=/home/kubernetes/bin/nvidia/vgpu \
+  --set devicePlugin.monitor.ctrPath=/home/kubernetes/bin/nvidia/vgpu/containers \
+  --set-json 'devicePlugin.extraEnvs=[{"name":"LD_LIBRARY_PATH","value":"/driver-root/lib64"}]'
+
 安装后，插件 Pod 可以运行，但它的第二个容器 `vgpu-monitor` 会一直 `CrashLoopBackOff`：
 
 ```plaintext
@@ -151,7 +176,7 @@ NAME                             READY   STATUS             RESTARTS        AGE
 hami-admission-patch-g9lws       0/1     Completed          0               28m
 hami-device-plugin-h4z6l         1/2     CrashLoopBackOff   10 (4m5s ago)   30m
 hami-scheduler-87f65f795-84l6d   2/2     Running            0               46m
-```
+````
 
 其日志以 `failed to initialize NVML` 结尾：monitor 容器非特权，在 COS 上看不到 `/dev/nvidia*` 与 `/proc/driver/nvidia`，即使修好库路径也无法与内核驱动通信。monitor 只负责导出 Prometheus 指标；本实验验证的是调度决策而非指标，因此直接移除这个容器，让 DaemonSet 稳定下来：
 

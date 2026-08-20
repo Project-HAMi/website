@@ -20,7 +20,7 @@ This lab deploys HAMi v2.10.0 on a single GKE node carrying four Tesla T4s, then
 
 :::note About this run
 
-The output blocks below are verbatim captures from a real run (GKE `1.35.7-gke.1150000`, COS, one `n1-standard-8` with four Tesla T4s). At that time the v2.10.0 Helm chart and images were not yet published to the Helm repository, so the run used the chart source and the official `projecthami/hami:latest` images from the HAMi master branch, which carry the v2.10.0 release-candidate code. Once `v2.10.0` appears in `helm search`, install the published chart with `--version v2.10.0`; the behavior is identical.
+The output blocks below are verbatim captures from a real run (GKE `1.35.7-gke.1150000`, COS, one `n1-standard-8` with four Tesla T4s). At that time the v2.10.0 Helm chart and images were not yet published to the Helm repository, so the run used the chart source and the official `projecthami/hami:latest` images from the HAMi master branch at commit `45b3d46769b44cfc1445728dfcb8e524939afba1`, which carry the v2.10.0 release-candidate code (Step 3 shows how to pin that exact revision). Once `v2.10.0` appears in `helm search`, install the published chart with `--version v2.10.0`; the behavior is identical.
 
 :::
 
@@ -130,10 +130,19 @@ Three GKE specifics drive the Helm flags, all observed during the run:
 - the plugin container needs `LD_LIBRARY_PATH=/driver-root/lib64` to load NVML from the GKE driver tree, otherwise it exits with `invalid device discovery strategy`;
 - `devicePlugin.extraEnvs` must be a list of `{name, value}` objects passed with `--set-json`; a plain `--set devicePlugin.extraEnvs.X=Y` renders invalid YAML and the whole install fails.
 
+First check that the v2.10.0 release artifacts are actually published:
+
+```bash
+helm search repo hami-charts/hami --version v2.10.0
+```
+
+If the chart is listed, install the released artifacts:
+
 ```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/
 helm repo update
 helm install hami hami-charts/hami -n kube-system --version v2.10.0 \
+\
   --set devicePlugin.nvidiaDriverRoot=/home/kubernetes/bin/nvidia \
   --set global.gpuHookPath=/home/kubernetes/bin/nvidia \
   --set devicePlugin.libPath=/home/kubernetes/bin/nvidia/vgpu \
@@ -144,6 +153,22 @@ kubectl -n kube-system rollout status deploy/hami-scheduler --timeout=300s
 kubectl -n kube-system get pods -l app.kubernetes.io/instance=hami
 ```
 
+Until the release is published, reproduce the lab with the exact revision used for the run: the chart comes from the HAMi source at commit `45b3d46769b44cfc1445728dfcb8e524939afba1` (master HEAD on 2026-08-17, the code that ships as v2.10.0), and `global.imageTag=latest` selects the matching master CI image. The `latest` tag is mutable, so once the released chart is available, prefer the command above.
+
+````bash
+curl -fsSL https://codeload.github.com/Project-HAMi/HAMi/tar.gz/45b3d46769b44cfc1445728dfcb8e524939afba1 \
+  -o hami-src.tar.gz
+tar xzf hami-src.tar.gz
+helm install hami \
+  HAMi-45b3d46769b44cfc1445728dfcb8e524939afba1/charts/hami \
+  -n kube-system --set global.imageTag=latest \
+\
+  --set devicePlugin.nvidiaDriverRoot=/home/kubernetes/bin/nvidia \
+  --set global.gpuHookPath=/home/kubernetes/bin/nvidia \
+  --set devicePlugin.libPath=/home/kubernetes/bin/nvidia/vgpu \
+  --set devicePlugin.monitor.ctrPath=/home/kubernetes/bin/nvidia/vgpu/containers \
+  --set-json 'devicePlugin.extraEnvs=[{"name":"LD_LIBRARY_PATH","value":"/driver-root/lib64"}]'
+
 After install, the plugin Pod runs but its second container, `vgpu-monitor`, stays in `CrashLoopBackOff`:
 
 ```plaintext
@@ -151,7 +176,7 @@ NAME                             READY   STATUS             RESTARTS        AGE
 hami-admission-patch-g9lws       0/1     Completed          0               28m
 hami-device-plugin-h4z6l         1/2     CrashLoopBackOff   10 (4m5s ago)   30m
 hami-scheduler-87f65f795-84l6d   2/2     Running            0               46m
-```
+````
 
 Its log ends with `failed to initialize NVML`: the monitor container is non-privileged and has no `/dev/nvidia*` or `/proc/driver/nvidia` visibility on COS, so it cannot talk to the kernel driver even with the library path fixed. The monitor only exports Prometheus metrics; this lab verifies scheduling decisions, not metrics, so remove that one container and let the DaemonSet settle:
 

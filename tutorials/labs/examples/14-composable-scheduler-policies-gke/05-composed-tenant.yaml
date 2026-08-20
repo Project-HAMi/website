@@ -15,6 +15,11 @@ spec:
         limits:
           nvidia.com/gpu: 1
           nvidia.com/gpumem: 1000
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
       env:
         - name: LD_LIBRARY_PATH
           value: /host-nvidia/lib64

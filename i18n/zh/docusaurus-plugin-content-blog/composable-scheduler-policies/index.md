@@ -123,8 +123,11 @@ flowchart TB
 ```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/
 helm repo update
+helm search repo hami-charts/hami --version v2.10.0   # 必须能查到该 chart
 helm upgrade hami hami-charts/hami -n kube-system --version v2.10.0
 ```
+
+如果 `helm search` 没有结果，说明 v2.10.0 的发布产物尚未发布。[实验 14](/zh/tutorials/labs/composable-scheduler-policies-gke) 中给出了固定到运行所用源码版本的预发布安装路径。
 
 集群级默认值仍是节点选择 `binpack`、卡选择 `spread`（chart values 中的 `scheduler.defaultSchedulerPolicy.nodeSchedulerPolicy` / `gpuSchedulerPolicy`），升级不会改变任何默认值。
 
