@@ -94,7 +94,7 @@ spec:
 
 ```bash
 # Set the base repository URL for HAMi lab manifests
-export HAMI_MANIFEST_RAW="https://raw.githubusercontent.com/Project-HAMi/website/refs/heads/master/tutorials/labs/examples/"
+export HAMI_MANIFEST_RAW="https://raw.githubusercontent.com/Project-HAMi/website/refs/heads/master/tutorials/labs/examples/03-gpu-partitioning"
 
 kubectl apply -f $HAMI_MANIFEST_RAW/gpumem-pod-a.yaml -f $HAMI_MANIFEST_RAW/gpumem-pod-b.yaml
 kubectl get pods gpumem-pod-a gpumem-pod-b -o wide
@@ -177,6 +177,9 @@ spec:
 ```
 
 ```bash
+# Re-export the HAMi lab manifests
+export HAMI_MANIFEST_RAW="https://raw.githubusercontent.com/Project-HAMi/website/refs/heads/master/tutorials/labs/examples/03-gpu-partitioning"
+
 kubectl apply -f $HAMI_MANIFEST_RAW/oom-test-pod.yaml
 ```
 
