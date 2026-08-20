@@ -71,6 +71,11 @@ module.exports = {
           id: "labs/kai-scheduler-hami-gke",
           customProps: { level: "Advanced", duration: "about 90 minutes" },
         },
+        {
+          type: "doc",
+          id: "labs/volcano-ascend-vnpu",
+          customProps: { level: "Advanced", duration: "about 120 minutes" },
+        },
       ],
     },
   ],

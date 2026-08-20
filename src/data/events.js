@@ -6,6 +6,7 @@ const events = [
       zh: "从项目到生产：HAMi 与 Viettel Cloud 亮相 KCD 越南",
     },
     date: "2026-07-25",
+    speaker: "Reza Jelveh, The Anh Nguyen",
     location: {
       en: "Hanoi, Vietnam",
       zh: "越南 河内",
@@ -25,12 +26,12 @@ const events = [
       talkSlides: {
         en: "Talk Slides",
         zh: "演讲幻灯片",
-        url: "/resources/2026-kcd-vietnam/talk-slides.pdf",
+        url: "/resources/events/2026-kcd-vietnam/talk-slides.pdf",
       },
       communityFlyer: {
         en: "Community Flyer",
         zh: "社区宣传册",
-        url: "/resources/flyers/community-flyer.pdf",
+        url: "/resources/events/flyers/community-flyer.pdf",
       },
     },
     cta: {
@@ -47,6 +48,7 @@ const events = [
       zh: "HAMi 亮相 KubeCon 日本 2026",
     },
     date: "2026-07-28",
+    speaker: "Jeonghyun Kim, Reza Jelveh",
     endDate: "2026-07-30",
     location: {
       en: "Yokohama, Japan",
@@ -67,12 +69,12 @@ const events = [
       communityFlyer: {
         en: "Community Flyer",
         zh: "社区宣传册",
-        url: "/resources/flyers/community-flyer.pdf",
+        url: "/resources/events/flyers/community-flyer.pdf",
       },
       talkSlides: {
         en: "Talk Slides",
         zh: "演讲幻灯片",
-        url: "/resources/2026-kubecon-japan/snow_corp_cncf.pdf",
+        url: "/resources/events/2026-kubecon-japan/snow_corp_cncf.pdf",
       },
     },
     caseStudy: {
@@ -119,12 +121,12 @@ const events = [
       communityFlyer: {
         en: "Community Flyer",
         zh: "社区宣传册",
-        url: "/resources/flyers/community-flyer.pdf",
+        url: "/resources/events/flyers/community-flyer.pdf",
       },
       talkSlides: {
         en: "Talk Slides",
         zh: "演讲幻灯片",
-        url: "/resources/2026-coscup/coscup_2026.pdf",
+        url: "/resources/events/2026-coscup/coscup_2026.pdf",
       },
     },
     cta: {
@@ -166,12 +168,12 @@ const events = [
       communityFlyer: {
         en: "Community Flyer",
         zh: "社区宣传册",
-        url: "/resources/flyers/community-flyer.pdf",
+        url: "/resources/events/flyers/community-flyer.pdf",
       },
       talkSlides: {
         en: "Talk Slides",
         zh: "演讲幻灯片",
-        url: "/resources/2026-ossummit-korea/ossummit_korea.pdf",
+        url: "/resources/events/2026-ossummit-korea/ossummit_korea.pdf",
       },
     },
     cta: {
