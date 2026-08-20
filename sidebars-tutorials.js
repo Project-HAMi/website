@@ -71,6 +71,11 @@ module.exports = {
           id: "labs/kai-scheduler-hami-gke",
           customProps: { level: "Advanced", duration: "about 90 minutes" },
         },
+        {
+          type: "doc",
+          id: "labs/composable-scheduler-policies-gke",
+          customProps: { level: "Intermediate", duration: "about 60 minutes" },
+        },
       ],
     },
   ],
