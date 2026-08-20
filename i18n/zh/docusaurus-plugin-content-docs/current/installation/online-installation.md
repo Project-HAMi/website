@@ -16,10 +16,10 @@ helm repo update
 
 ## 2. 部署 HAMi {#deploy-hami}
 
-请确保 `scheduler.kubeScheduler.imageTag` 与您的 Kubernetes 服务端版本匹配（例如 `v1.29.0`）。将 HAMi 部署至 `kube-system` 命名空间：
+请确保 `scheduler.kubeScheduler.image.tag` 与您的 Kubernetes 服务端版本匹配（例如 `v1.29.0`）。将 HAMi 部署至 `kube-system` 命名空间：
 
 ```bash
-helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag=v1.29.0 -n kube-system
+helm install hami hami-charts/hami --set scheduler.kubeScheduler.image.tag=v1.29.0 -n kube-system
 ```
 
 ### 自定义 Helm 配置
@@ -27,7 +27,7 @@ helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag=v1.29.
 您可以通过 `--set` 参数或指定自定义 `values.yaml` 文件来自定义部署配置：
 
 ```bash
-helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag=v1.29.0 -n kube-system -f custom-values.yaml
+helm install hami hami-charts/hami --set scheduler.kubeScheduler.image.tag=v1.29.0 -n kube-system -f custom-values.yaml
 ```
 
 详细的配置项说明请参阅 [配置指南](../userguide/configure.md)。

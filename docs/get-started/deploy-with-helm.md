@@ -47,7 +47,7 @@ kubectl get pods -n kube-system | grep hami
 
 ## 3. Submit a vGPU Workload {#submit-a-vgpu-workload}
 
-Create a Pod requesting 1 vGPU with 10240 MiB of GPU memory limit:
+Save the following manifest as `gpu-pod.yaml` to request 1 vGPU with 10240 MiB of GPU memory limit:
 
 ```yaml
 apiVersion: v1
@@ -113,4 +113,3 @@ kubectl delete pod gpu-pod
 
 - Verify your setup in detail with [Verify HAMi Installation](./verify-hami.md).
 - Learn how to customize your deployment parameters in the [Configuration Guide](../userguide/configure.md).
-
