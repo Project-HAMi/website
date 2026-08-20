@@ -10,7 +10,6 @@
 .bannerWrapper {
   width: 100%;
   max-width: 960px;
-  max-height: 480px;
   height: auto;
   margin: 0 0 var(--hami-space-32);
   border-radius: var(--hami-radius-md);
