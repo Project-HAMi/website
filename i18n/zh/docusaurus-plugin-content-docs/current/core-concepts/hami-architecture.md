@@ -5,7 +5,9 @@ title: "HAMi 安装后的集群架构"
 完成 HAMi 安装后，集群不再是一个普通的 Kubernetes 集群，它变成了一个具备 GPU 虚拟化能力的 AI 基础设施平台。本文将拆解安装完成后集群中每一层、每一个组件的职责和依赖关系。
 
 :::note
+
 本文描述一种面向 NVIDIA 的参考部署拓扑（安装完成后），其中可能包含 GPU Operator、Prometheus 和 WebUI 等可选组件。HAMi 的产品组件与请求处理流程见[架构设计](./architecture.md)。
+
 :::
 
 ## 5 层架构总览
