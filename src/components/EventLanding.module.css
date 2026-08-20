@@ -11,7 +11,7 @@
   width: 100%;
   max-width: 960px;
   height: 480px;
-  margin: 0 auto var(--hami-space-32);
+  margin: 0 0 var(--hami-space-32);
   border-radius: var(--hami-radius-md);
   border: 1px solid var(--hami-color-border);
   background-color: var(--hami-color-surface);
