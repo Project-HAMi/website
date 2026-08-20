@@ -13,8 +13,9 @@ const TYPE_CLASSES = {
 export function Tag({ href, type, children }) {
   const className = `${styles.tag} ${TYPE_CLASSES[type] || styles.tagDefault}`;
   if (href) {
+    const to = href.replace(/\.mdx?(#.*)?$/, "$1");
     return (
-      <Link to={href} className={className}>
+      <Link to={to} className={className}>
         {children}
       </Link>
     );
