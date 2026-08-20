@@ -65,15 +65,15 @@ AKS 集群可能会自动部署默认的 NVIDIA Kubernetes 设备插件 (`nvidia
 
 1. 检查默认的 NVIDIA 设备插件 DaemonSet 是否正在运行：
 
-```bash
-kubectl get ds -n kube-system -l app=nvidia-device-plugin-daemonset
-```
+   ```bash
+   kubectl get ds -n kube-system -l app=nvidia-device-plugin-daemonset
+   ```
 
-2. 如果存在，请禁用或删除默认的 DaemonSet，以便 HAMi 能够作为唯一的 GPU 资源注册器运行：
+1. 如果存在，请禁用或删除默认的 DaemonSet，以便 HAMi 能够作为唯一的 GPU 资源注册器运行：
 
-```bash
-kubectl delete ds <daemonset-name> -n kube-system
-```
+   ```bash
+   kubectl delete ds <daemonset-name> -n kube-system
+   ```
 
 ## 步骤 3：使用 Helm 安装 HAMi
 

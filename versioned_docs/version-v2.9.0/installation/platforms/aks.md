@@ -65,15 +65,15 @@ If both the default NVIDIA device plugin and HAMi's device plugin run simultaneo
 
 1. Check if the default NVIDIA device plugin DaemonSet is running:
 
-```bash
-kubectl get ds -n kube-system -l app=nvidia-device-plugin-daemonset
-```
+   ```bash
+   kubectl get ds -n kube-system -l app=nvidia-device-plugin-daemonset
+   ```
 
-2. If present, disable or remove the default DaemonSet so that HAMi can act as the sole GPU resource registrar:
+1. If present, disable or remove the default DaemonSet so that HAMi can act as the sole GPU resource registrar:
 
-```bash
-kubectl delete ds <daemonset-name> -n kube-system
-```
+   ```bash
+   kubectl delete ds <daemonset-name> -n kube-system
+   ```
 
 ## Step 3: Install HAMi via Helm
 
@@ -137,6 +137,7 @@ kubectl get pods -n kube-system -l app.kubernetes.io/name=hami
 ```
 
 Expected output:
+
 ```text
 NAME                                  READY   STATUS    RESTARTS   AGE
 hami-device-plugin-xxxxx              1/1     Running   0          2m
@@ -154,6 +155,7 @@ kubectl describe node <gpu-node-name> | grep -E "(nvidia.com/gpu|nvidia.com/gpum
 ```
 
 Expected output shows `nvidia.com/gpu`, `nvidia.com/gpumem` (in MiB), and `nvidia.com/gpucores` (percentage):
+
 ```text
  nvidia.com/gpu:        1
  nvidia.com/gpumem:     16280
