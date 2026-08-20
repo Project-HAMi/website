@@ -39,7 +39,7 @@ hami.io/node-nvidia-register: GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec,10,32768,
 
 In this example, this node has two different AI devices, 2 Nvidia-V100 GPUs, and 2 Cambricon 370-X4 MLUs
 
-A device node may become unavailable due to hardware or network failure. Since the system clock on the scheduler node and on the device node may not align properly, the scheduler owns the timestamp: whenever the handshake annotation is absent or does not contain `Requesting`, the scheduler stamps it with its own clock.
+A device node may become unavailable due to hardware or network failure. Since the system clock on the scheduler node and on the device node may not align properly, the scheduler owns the timestamp. Whenever the handshake annotation is absent or does not contain `Requesting`, the scheduler stamps it with its own clock.
 
 ```text
 hami.io/node-handshake-\{device-type\}: Requesting_{scheduler_node_current_timestamp}
