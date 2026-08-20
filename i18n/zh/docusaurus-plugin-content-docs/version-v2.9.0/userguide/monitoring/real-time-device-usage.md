@@ -15,6 +15,7 @@ curl {GPU 节点 IP}:31992/metrics
 | 指标 | 描述 | 示例 |
 | --- | --- | --- |
 | hami_host_gpu_utilization_ratio | 主机上的 GPU 核心利用率（0-100） | `{device_index="0",device_type="NVIDIA-NVIDIA H200",device_uuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",zone="vGPU"}` 0 |
+| hami_host_gpu_memory_controller_utilization_ratio | 主机上的 GPU 显存控制器利用率（0-100） | `{device_index="0",device_type="NVIDIA-NVIDIA H200",device_uuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",zone="vGPU"}` 0 |
 | hami_host_gpu_memory_used_bytes | 主机上的 GPU 实时设备显存使用情况 | `{device_index="0",device_type="NVIDIA-NVIDIA H200",device_uuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",zone="vGPU"}` 2.87244288e+08 |
 
 它还为每个调度的任务暴露每容器和每 vGPU 的指标：
