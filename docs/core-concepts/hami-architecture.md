@@ -4,7 +4,9 @@ title: "HAMi Cluster Architecture After Installation"
 
 After completing the HAMi installation, the cluster is no longer an ordinary Kubernetes cluster, it becomes an AI infrastructure platform with GPU virtualization capabilities. This document breaks down the responsibilities and dependencies of every layer and every component in the cluster after installation.
 
-:::note This page describes one NVIDIA-oriented reference deployment after installation, including optional components such as GPU Operator, Prometheus, and WebUI. For HAMi's product components and the request lifecycle, see [Architecture](./architecture.md). :::
+:::note
+This page describes one NVIDIA-oriented reference deployment after installation, including optional components such as GPU Operator, Prometheus, and WebUI. For HAMi's product components and the request lifecycle, see [Architecture](./architecture.md).
+:::
 
 ## 5-Layer Architecture Overview
 
