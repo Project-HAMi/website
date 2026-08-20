@@ -41,7 +41,7 @@ graph TD
     LIB -. "提供 libvgpu.so" .-> RUN
     RUN -. "写入节点本地缓存" .-> MON
 
-    class KAI kai
+    class KAI accent
     class WEBHOOK,LIB,MON info
     class RUN run
     class ENF ok

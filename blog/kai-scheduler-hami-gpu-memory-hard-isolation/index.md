@@ -41,7 +41,7 @@ graph TD
     LIB -. "provides libvgpu.so" .-> RUN
     RUN -. "writes node-local cache" .-> MON
 
-    class KAI kai
+    class KAI accent
     class WEBHOOK,LIB,MON info
     class RUN run
     class ENF ok

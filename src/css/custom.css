@@ -146,10 +146,10 @@
   );
   --hami-diagram-outcome-bg: rgba(255, 255, 255, 0.62);
 
-  /* mermaid class roles: kai, info, run, ok, bad */
-  --hami-mermaid-kai-fill: #d9f99d;
-  --hami-mermaid-kai-stroke: #4f7d00;
-  --hami-mermaid-kai-text: #1f2937;
+  /* mermaid class roles: accent, info, run, ok, bad */
+  --hami-mermaid-accent-fill: #d9f99d;
+  --hami-mermaid-accent-stroke: #4f7d00;
+  --hami-mermaid-accent-text: #1f2937;
   --hami-mermaid-info-fill: #dbeafe;
   --hami-mermaid-info-stroke: #1a5fb4;
   --hami-mermaid-info-text: #1f2937;
@@ -264,9 +264,9 @@
   );
   --hami-diagram-outcome-bg: rgba(255, 255, 255, 0.04);
 
-  --hami-mermaid-kai-fill: #365314;
-  --hami-mermaid-kai-stroke: #a3e635;
-  --hami-mermaid-kai-text: #ecfccb;
+  --hami-mermaid-accent-fill: #365314;
+  --hami-mermaid-accent-stroke: #a3e635;
+  --hami-mermaid-accent-text: #ecfccb;
   --hami-mermaid-info-fill: #1e3a5f;
   --hami-mermaid-info-stroke: #60a5fa;
   --hami-mermaid-info-text: #dbeafe;
@@ -489,10 +489,10 @@ body.hami-lightbox-open {
   fill: var(--ifm-background-color) !important;
 }
 
-.docusaurus-mermaid-container .kai {
-  --hami-mermaid-node-fill: var(--hami-mermaid-kai-fill);
-  --hami-mermaid-node-stroke: var(--hami-mermaid-kai-stroke);
-  --hami-mermaid-node-text: var(--hami-mermaid-kai-text);
+.docusaurus-mermaid-container .accent {
+  --hami-mermaid-node-fill: var(--hami-mermaid-accent-fill);
+  --hami-mermaid-node-stroke: var(--hami-mermaid-accent-stroke);
+  --hami-mermaid-node-text: var(--hami-mermaid-accent-text);
 }
 
 .docusaurus-mermaid-container .info {
@@ -520,14 +520,14 @@ body.hami-lightbox-open {
 }
 
 .docusaurus-mermaid-container
-  :is(.kai, .info, .run, .ok, .bad)
+  :is(.accent, .info, .run, .ok, .bad)
   > :is(rect, polygon, circle, ellipse, path) {
   fill: var(--hami-mermaid-node-fill) !important;
   stroke: var(--hami-mermaid-node-stroke) !important;
   stroke-width: 2px !important;
 }
 
-.docusaurus-mermaid-container :is(.kai, .info, .run, .ok, .bad) :is(.nodeLabel, span) {
+.docusaurus-mermaid-container :is(.accent, .info, .run, .ok, .bad) :is(.nodeLabel, span) {
   color: var(--hami-mermaid-node-text) !important;
 }
 

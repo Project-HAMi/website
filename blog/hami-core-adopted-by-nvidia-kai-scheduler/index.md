@@ -199,7 +199,7 @@ graph TD
     HAMI --> Koordinator
 
     class HAMI info
-    class KAI kai
+    class KAI accent
 ```
 
 ### It creates real value for users

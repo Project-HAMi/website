@@ -198,7 +198,7 @@ graph TD
     HAMI --> Koordinator
 
     class HAMI info
-    class KAI kai
+    class KAI accent
 ```
 
 ### 为用户创造实际价值
