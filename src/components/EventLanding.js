@@ -124,7 +124,7 @@ export default function EventLanding({ slug }) {
                 )}
               </div>
               <aside className={styles.heroAside} aria-label={isZh ? "活动信息" : "Event details"}>
-                <div className={`hami-section-card ${styles.detailsCard}`}>
+                <div className={styles.detailsCard}>
                   <div className={styles.meta}>
                     <span className={styles.metaItem}>
                       <FontAwesomeIcon icon={faCalendarDays} className={styles.metaIcon} />

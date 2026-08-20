@@ -36,12 +36,16 @@
 
 .heroAside {
   min-width: 0;
+  position: sticky;
+  top: calc(var(--ifm-navbar-height) + var(--hami-space-16));
 }
 
 .detailsCard {
   padding: var(--hami-space-24);
-  position: sticky;
-  top: calc(var(--ifm-navbar-height) + var(--hami-space-16));
+  background: var(--hami-color-surface);
+  border: 1px solid var(--hami-color-border);
+  border-radius: var(--hami-radius-md);
+  box-shadow: var(--hami-shadow-sm);
 }
 
 .meta {
@@ -304,9 +308,6 @@
 
   .heroAside {
     order: -1;
-  }
-
-  .detailsCard {
     position: static;
   }
 }
