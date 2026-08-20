@@ -409,6 +409,23 @@ module.exports = {
             },
           ],
         },
+        {
+          title: "Legal",
+          items: [
+            {
+              label: "About",
+              to: "/about",
+            },
+            {
+              label: "Privacy",
+              to: "/privacy",
+            },
+            {
+              label: "Terms",
+              to: "/terms",
+            },
+          ],
+        },
       ],
       copyright: `
         <br />
