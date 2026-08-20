@@ -39,6 +39,10 @@
     "message": "开发者指南",
     "description": "The label for category 'Developer Guide' in sidebar 'docs'"
   },
+  "sidebar.docs.category.Troubleshooting": {
+    "message": "故障排查",
+    "description": "The label for category 'Troubleshooting' in sidebar 'docs'"
+  },
   "sidebar.docs.category.Key Features": {
     "message": "核心功能",
     "description": "The label for category 'Key Features' in sidebar 'docs'"
@@ -218,5 +222,13 @@
   "sidebar.docs.category.Contributor Guide.link.generated-index.description": {
     "message": "贡献流程、社区治理和维护者晋升机制。",
     "description": "The generated-index page description for category 'Contributor Guide' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Troubleshooting.link.generated-index.title": {
+    "message": "故障排查",
+    "description": "The generated-index page title for category 'Troubleshooting' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Troubleshooting.link.generated-index.description": {
+    "message": "诊断并解决 HAMi GPU 运行时环境中的常见问题。",
+    "description": "The generated-index page description for category 'Troubleshooting' in sidebar 'docs'"
   }
 }

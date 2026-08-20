@@ -18,6 +18,12 @@ translated: true
 
   输出必须显示 `nvidia`。如未显示，请按照[前置条件](../installation/online-installation)指南操作。
 
+:::tip 深入了解
+
+关于 HAMi 显存限制机制的详细说明（通过 `libvgpu.so` 实现的软件层 CUDA 拦截）、分步诊断命令以及所有已知的绕过场景，请参见 [GPU 显存限制机制：工作原理与调试方法](./cuda-memory-enforcement.md)。
+
+:::
+
 - 如果在使用 NVIDIA 镜像的设备插件时不请求 vGPU，机器上的所有 GPU 可能会在容器内暴露。
 - 目前，A100 MIG 仅支持 "none" 和 "mixed" 模式。
 - 目前无法调度带有 "nodeName" 字段的任务；请改用 "nodeSelector"。
