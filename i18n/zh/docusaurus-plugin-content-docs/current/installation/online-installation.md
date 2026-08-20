@@ -31,7 +31,7 @@ kubectl version
 helm install hami hami-charts/hami --set scheduler.kubeScheduler.image.tag=v1.29.0 -n kube-system
 ```
 
-你可以通过编辑[配置](../userguide/configure.md)来自定义安装。
+你可以通过编辑[配置](../userguide/configure.md)来自定义安装。如果你在 AWS 或 Microsoft Azure (AKS) 等托管云平台上运行，请参阅[平台指南](./platforms/aks.md)获取针对特定平台的安装说明。
 
 ## 验证你的安装
 

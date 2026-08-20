@@ -55,7 +55,16 @@ module.exports = {
         "installation/upgrade",
         "installation/uninstall",
         "installation/webui-installation",
-        "installation/aws-installation",
+        {
+          type: "category",
+          label: "Platform Guides",
+          link: {
+            type: "generated-index",
+            title: "Platform Guides",
+            description: "Deploy HAMi on various managed Kubernetes and cloud platforms.",
+          },
+          items: ["installation/platforms/aws", "installation/platforms/aks"],
+        },
         "installation/how-to-use-hami-dra",
         "installation/how-to-use-volcano-vgpu",
         "installation/how-to-use-volcano-ascend",

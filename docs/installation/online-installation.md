@@ -30,7 +30,7 @@ Ensure the `scheduler.kubeScheduler.image.tag` matches your Kubernetes server ve
 helm install hami hami-charts/hami --set scheduler.kubeScheduler.image.tag=v1.29.0 -n kube-system
 ```
 
-Customize your installation by editing the [configurations](../userguide/configure.md).
+Customize your installation by editing the [configurations](../userguide/configure.md). If you are running on managed cloud platforms such as AWS or Microsoft Azure (AKS), refer to the [Platform Guides](./platforms/aks.md) for platform-tailored installation instructions.
 
 ## Verify your installation
 
