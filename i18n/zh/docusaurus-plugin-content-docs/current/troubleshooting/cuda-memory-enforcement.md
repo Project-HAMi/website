@@ -208,5 +208,5 @@ If all seven checks pass and the limit is still not enforced, the workload may b
 - [Troubleshooting](./troubleshooting.md) — General troubleshooting checklist
 - [GPU Virtualization Principles](../core-concepts/gpu-virtualization.md) — Full architecture of the interception chain
 - [HAMi-core Design](../developers/hami-core-design.md) — Developer-level design of the hook library
-- [FAQ: How does HAMi enforce GPU memory and compute limits?](../faq/faq.md#how-does-hami-enforce-gpu-memory-and-compute-limits)
-- [FAQ: HAMi vGPU vs NVIDIA MIG](../faq/faq.md#how-does-hami-vgpu-differ-from-nvidia-mig-when-should-i-use-each)
+- [FAQ: How does HAMi enforce GPU memory and compute limits?](../faq/faq.md#hami-如何强制执行-gpu-显存和算力限制)
+- [FAQ: HAMi vGPU vs NVIDIA MIG](../faq/faq.md#hami-vgpu-与-nvidia-mig-有何区别各适用于什么场景)
