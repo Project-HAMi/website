@@ -263,4 +263,4 @@ Kueue 的 ResourceTransformation 会自动转换 HAMi vGPU 的资源请求：
 
 ## 示例
 
-完整可运行示例参见 [示例文件](./examples/default-use.md)。
+完整可运行示例参见 [示例文件](./examples/default-kueue-usage.md)。

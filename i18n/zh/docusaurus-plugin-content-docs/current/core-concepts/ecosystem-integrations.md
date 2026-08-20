@@ -62,13 +62,13 @@ HAMi 对外暴露三个角色，伙伴可以按需组合使用：
 [Volcano](https://github.com/volcano-sh/volcano) 带来了成团调度（一个作业里的所有 Pod 要么一起起来，要么都不起），还有多级队列优先级和公平份额，这些正是 **AI 训练** 需要的批处理能力。HAMi 通过 [`volcano-vgpu-device-plugin`](https://github.com/Project-HAMi/volcano-vgpu-device-plugin) 接入 Volcano，Volcano 负责调度 HAMi 管理的 vGPU，而 GPU 隔离仍然由 HAMi-core 来做。
 
 - 安装：[使用 Volcano vGPU](../installation/how-to-use-volcano-vgpu.md)
-- 指南与示例：[Volcano vGPU（NVIDIA GPU）](../userguide/volcano-vgpu/nvidia-gpu/how-to-use-volcano-vgpu.md)
+- 指南与示例：[Volcano vGPU（NVIDIA GPU）](../userguide/volcano-vgpu/nvidia-gpu/volcano-vgpu-device-plugin-for-kubernetes.md)
 
 ### Kueue：作业排队与公平份额
 
 [Kueue](https://kueue.sigs.k8s.io/) 架在默认调度器之上，通过 `ResourceFlavor` 和 `ClusterQueue` 来管理作业的准入、公平份额和配额。HAMi 暴露出来的 vGPU 资源会变成可以调度的 flavor，Kueue 可以排队后再放行。这样你不用换掉 `kube-scheduler`，就能在 GPU 共享之上叠一层**组间公平和配额约束**。
 
-- 指南：[在 HAMi 上使用 Kueue](../userguide/kueue/how-to-use-kueue.md)
+- 指南：[在 HAMi 上使用 Kueue](../userguide/kueue/how-to-use-kueue-on-hami.md)
 - 上游集成文档：[在 Kueue 中运行 HAMi 工作负载](https://kueue.sigs.k8s.io/docs/tasks/run/using_hami/)
 
 ### Koordinator：设备调度与混部

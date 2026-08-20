@@ -139,7 +139,7 @@ module.exports = {
             "userguide/hygon-device/enable-hygon-dcu-sharing",
             "userguide/hygon-device/allocate-device-memory-usage",
             "userguide/hygon-device/allocate-device-core-usage",
-            "userguide/hygon-device/assign-to-a-certain-device",
+            "userguide/hygon-device/assign-to-certain-device-uuid",
             {
               type: "category",
               label: "Examples",
@@ -157,7 +157,7 @@ module.exports = {
           label: "Share Mthreads GPU devices",
           items: [
             "userguide/mthreads-device/enable-mthreads-gpu-sharing",
-            "userguide/mthreads-device/allocate-device-memory",
+            "userguide/mthreads-device/allocate-device-memory-usage",
             "userguide/mthreads-device/allocate-device-core-usage",
             {
               type: "category",
@@ -279,7 +279,7 @@ module.exports = {
                   label: "Examples",
                   key: "metax-sgpu-examples",
                   items: [
-                    "userguide/metax-device/metax-sgpu/examples/allocate-device-core-and-memory-resource",
+                    "userguide/metax-device/metax-sgpu/examples/allocate-core-and-memory-resource",
                     "userguide/metax-device/metax-sgpu/examples/allocate-exclusive",
                     "userguide/metax-device/metax-sgpu/examples/allocate-specific-qos-policy",
                   ],
@@ -428,4 +428,3 @@ module.exports = {
     },
   ],
 };
-
