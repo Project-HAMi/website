@@ -3,12 +3,13 @@ title: 启用动态 MIG 功能
 translated: true
 ---
 
-<div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px', flexWrap: 'wrap' }}>
-  <strong style={{ fontSize: '0.9rem' }}>支持组件/模式：</strong>
-  <a href="/zh/docs/get-started/deploy-with-helm" style={{ display: 'inline-block', padding: '3px 12px', borderRadius: '12px', background: '#10b981', color: '#fff', fontWeight: 600, fontSize: '0.82rem', textDecoration: 'none' }}>HAMi</a>
-  <a href="/zh/docs/userguide/volcano-vgpu/nvidia-gpu/how-to-use-volcano-vgpu" style={{ display: 'inline-block', padding: '3px 12px', borderRadius: '12px', background: '#3b82f6', color: '#fff', fontWeight: 600, fontSize: '0.82rem', textDecoration: 'none' }}>Volcano</a>
-  <a href="/zh/docs/userguide/nvidia-device/dynamic-resource-allocation" style={{ display: 'inline-block', padding: '3px 12px', borderRadius: '12px', background: '#8b5cf6', color: '#fff', fontWeight: 600, fontSize: '0.82rem', textDecoration: 'none' }}>HAMi-DRA</a>
-</div>
+import SupportedComponents, { Tag } from '@site/src/components/SupportedComponents';
+
+<SupportedComponents>
+  <Tag href="../../get-started/deploy-with-helm.md" type="hami">HAMi</Tag>
+  <Tag href="../volcano-vgpu/nvidia-gpu/how-to-use-volcano-vgpu.md" type="volcano">Volcano</Tag>
+  <Tag href="./dynamic-resource-allocation.md" type="hami-dra">HAMi-DRA</Tag>
+</SupportedComponents>
 
 ## 介绍
 

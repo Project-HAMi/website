@@ -1,0 +1,53 @@
+.container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.label {
+  font-size: 0.9rem;
+}
+
+.tags {
+  display: inline-flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 12px;
+  color: #fff !important;
+  font-weight: 600;
+  font-size: 0.82rem;
+  text-decoration: none !important;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.tag:hover {
+  opacity: 0.9;
+  text-decoration: none !important;
+}
+
+.tagHami {
+  background-color: #065f46;
+}
+
+.tagVolcano {
+  background-color: #1e40af;
+}
+
+.tagHamiDra {
+  background-color: #5b21b6;
+}
+
+.tagCdi {
+  background-color: #075985;
+}
+
+.tagDefault {
+  background-color: #374151;
+}
