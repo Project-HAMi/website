@@ -84,12 +84,12 @@ function Footer() {
   const { i18n } = useDocusaurusContext();
   const [isWechatModalOpen, setIsWechatModalOpen] = useState(false);
   const [isWechatOfficialOpen, setIsWechatOfficialOpen] = useState(false);
-
-  if (!footer) {
-    return null;
-  }
-
-  const { copyright, links, logo, style } = footer;
+  const cncfLogoLight = useBaseUrl("img/cncf-color.svg");
+  const cncfLogoDark = useBaseUrl("img/cncf-white.svg");
+  const wechatGroupQr = useBaseUrl("img/community/wechat-assistant-qr.jpg");
+  const wechatOfficialQr = useBaseUrl("img/community/wechat-official-account-qr.jpg");
+  const cncfLogo = colorMode === "dark" ? cncfLogoDark : cncfLogoLight;
+  const isZh = i18n.currentLocale === "zh";
 
   useEffect(() => {
     if (i18n.currentLocale !== "zh") {
@@ -119,6 +119,11 @@ function Footer() {
     return () => document.removeEventListener("click", onFooterLinkClick, true);
   }, [i18n.currentLocale]);
 
+  if (!footer) {
+    return null;
+  }
+
+  const { copyright, links, logo, style } = footer;
   const zhOnlyLabels = new Set(["WeChat Group", "WeChat Official Account"]);
   const adjustedLinks =
     i18n.currentLocale === "zh"
@@ -167,12 +172,6 @@ function Footer() {
   }));
   const footerLinks =
     iconizedLinks && iconizedLinks.length > 0 ? <FooterLinks links={iconizedLinks} /> : null;
-  const isZh = i18n.currentLocale === "zh";
-  const cncfLogoLight = useBaseUrl("img/cncf-color.svg");
-  const cncfLogoDark = useBaseUrl("img/cncf-white.svg");
-  const cncfLogo = colorMode === "dark" ? cncfLogoDark : cncfLogoLight;
-  const wechatGroupQr = useBaseUrl("img/community/wechat-assistant-qr.jpg");
-  const wechatOfficialQr = useBaseUrl("img/community/wechat-official-account-qr.jpg");
 
   return (
     <>
