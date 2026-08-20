@@ -52,7 +52,7 @@ test("TechArticle uses canonical metadata and a millisecond modification date", 
   assert.equal(schema["@id"], `${schema.url}#article`);
   assert.equal(schema.mainEntityOfPage["@id"], schema.url);
   assert.equal(schema.image, `${siteUrl}/img/hami-graph-color.png`);
-  assert.equal(schema.datePublished, "2026-07-29T12:00:00.000Z");
+  assert.equal("datePublished" in schema, false);
   assert.equal(schema.dateModified, "2026-07-29T12:00:00.000Z");
   assert.equal(schema.author.name, "HAMi");
   assert.equal(schema.publisher["@id"], `${siteUrl}/#organization`);

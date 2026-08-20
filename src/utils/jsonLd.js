@@ -161,7 +161,7 @@ export function buildTechArticleJsonLd({
     }),
     ...(imageUrl && { image: imageUrl }),
     inLanguage: schemaLanguage(locale),
-    ...(modifiedDate && { datePublished: modifiedDate, dateModified: modifiedDate }),
+    ...(modifiedDate && { dateModified: modifiedDate }),
     ...(version && { version }),
     author: organization,
     publisher: organization,
