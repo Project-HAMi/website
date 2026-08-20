@@ -8,7 +8,7 @@ title: Protocol design
 
 <img src="/img/docs/common/developers/protocol/protocol-register.png" width="600px" alt="HAMi project diagram" />
 
-HAMi needs to know the spec of each AI devices in the cluster in order to schedule properly. During device registration, device-plugin needs to keep patching the spec of each device into node annotations every 30 seconds, in the format of the following:
+HAMi needs to know the spec of each AI device in the cluster to schedule properly. During device registration, device-plugin needs to keep patching the spec of each device into node annotations every 30 seconds, in the format of the following:
 
 ```text
 hami.io/node-handshake-\{device-type\}: Reported_\{device_node_current_timestamp\}
@@ -33,7 +33,7 @@ hami.io/node-nvidia-register: GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec,10,32768,
 
 In this example, this node has two different AI devices, 2 Nvidia-V100 GPUs, and 2 Cambricon 370-X4 MLUs
 
-A device node may become unavailable due to hardware or network failure, if a node hasn't registered in last 5 minutes, scheduler will mark that node as 'unavailable'.
+A device node may become unavailable due to hardware or network failure. If a node hasn't registered in the last 5 minutes, the scheduler marks it as 'unavailable'.
 
 Since system clock on scheduler node and 'device' node may not align properly, scheduler node will patch the following device node annotations every 30s
 
