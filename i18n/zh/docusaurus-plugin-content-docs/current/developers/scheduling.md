@@ -133,46 +133,95 @@ Node2 score: ((1+2)/4) * 10= 7.5
 
 ![HAMi GPU 调度策略示意图，展示在单卡上的 Binpack 与 Spread 评分对比](/img/docs/common/developers/scheduling/gpu-scheduler-policy-demo.png)
 
-#### Binpack
+#### 每个 Pod 的设备评分权重
 
-Binpack 主要关注每张卡的计算能力和显存使用情况。使用越多，得分越高。
+默认情况下，HAMi 在计算物理设备得分时，会让预测的虚拟设备槽位、设备核心和设备显存利用率具有相同的影响。若要为某个工作负载调整它们的相对影响，可为 Pod 添加 `hami.io/device-scoring-weights` 注解：
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: memory-weighted-gpu-pod
+  annotations:
+    hami.io/device-scoring-weights: "slot=1,core=1,memory=3"
+spec:
+  containers:
+    - name: workload
+      image: ubuntu:22.04
+      command: ["bash", "-c", "sleep 86400"]
+      resources:
+        limits:
+          nvidia.com/gpu: 1
+          nvidia.com/gpumem-percentage: 40
+```
+
+HAMi 会预测在放置请求后每个候选设备的利用率，然后按以下公式计算设备得分：
 
 ```text
-score: ((request.core + used.core) / allocatable.core + (request.mem + used.mem) / allocatable.mem)) * 10
+score = 10 * (
+    slotWeight * predictedSlotUtilization +
+    coreWeight * predictedCoreUtilization +
+    memoryWeight * predictedMemoryUtilization
+)
+```
+
+注解必须包含 `slot`、`core` 和 `memory` 三个键。每个值都必须是非负整数，并且至少有一个值大于零。键的顺序以及两侧的空格不会影响解析。如果未设置该注解，HAMi 将使用 `slot=1,core=1,memory=1`，从而保持默认评分行为。无效的注解会使 Pod 无法被调度，直到该注解被修正。
+
+例如，假设一个 Pod 请求 1 个 vGPU 和 40% 的设备显存，并且在计入该请求后有两个候选 GPU：
+
+| 设备  | 预测槽位利用率 | 预测核心利用率 | 预测显存利用率 |
+| ----- | -------------: | -------------: | -------------: |
+| GPU A |            0.2 |            0.9 |            0.5 |
+| GPU B |            0.8 |            0.1 |            0.6 |
+
+使用默认的 `1:1:1` 权重时，GPU A 得分为 `16`，GPU B 得分为 `15`，因此 `binpack` 会优先选择 GPU A。使用 `slot=1,core=1,memory=3` 时，GPU A 得分为 `26`，GPU B 得分为 `27`，因此 `binpack` 会优先选择 GPU B。在 `spread` 策略下，则会优先选择得分较低的设备。
+
+该注解只会改变用于排序候选设备的利用率得分。它不会绕过设备适配或容量检查、mutex 规则、NUMA 或拓扑约束，也不会改变厂商特定的 `Fit` 行为。这些约束仍保留现有的优先级；当拓扑候选项在其他方面相同时，可以使用利用率得分顺序作为决胜条件。
+
+#### Binpack
+
+Binpack 优先选择设备利用率得分较高的卡。以下默认权重示例假设每张卡有 10 个虚拟设备槽位，并且当前没有槽位被使用：
+
+```text
+score: ((request.slot + used.slot) / allocatable.slot +
+        (request.core + used.core) / allocatable.core +
+        (request.mem + used.mem) / allocatable.mem) * 10
 ```
 
 1. GPU1 的 Binpack 评分信息如下
 
 ```text
-GPU1 Score: ((20+10)/100 + (1000+2000)/8000)) * 10 = 6.75
+GPU1 Score: ((1+0)/10 + (20+10)/100 + (1000+2000)/8000) * 10 = 7.75
 ```
 
 1. GPU2 的 Binpack 评分信息如下
 
 ```text
-GPU2 Score: ((20+70)/100 + (1000+6000)/8000)) * 10 = 17.75
+GPU2 Score: ((1+0)/10 + (20+70)/100 + (1000+6000)/8000) * 10 = 18.75
 ```
 
 因此，在 `Binpack` 策略中我们可以选择 `GPU2`。
 
 #### Spread
 
-Spread 主要关注每张卡的计算能力和显存使用情况。使用越少，得分越高。
+Spread 优先选择设备利用率得分较低的卡。使用相同的默认权重示例：
 
 ```text
-score: ((request.core + used.core) / allocatable.core + (request.mem + used.mem) / allocatable.mem)) * 10
+score: ((request.slot + used.slot) / allocatable.slot +
+        (request.core + used.core) / allocatable.core +
+        (request.mem + used.mem) / allocatable.mem) * 10
 ```
 
 1. GPU1 的 Spread 评分信息如下
 
 ```text
-GPU1 Score: ((20+10)/100 + (1000+2000)/8000)) * 10 = 6.75
+GPU1 Score: ((1+0)/10 + (20+10)/100 + (1000+2000)/8000) * 10 = 7.75
 ```
 
 1. GPU2 的 Spread 评分信息如下
 
 ```text
-GPU2 Score: ((20+70)/100 + (1000+6000)/8000)) * 10 = 17.75
+GPU2 Score: ((1+0)/10 + (20+70)/100 + (1000+6000)/8000) * 10 = 18.75
 ```
 
 因此，在 `Spread` 策略中我们可以选择 `GPU1`。
