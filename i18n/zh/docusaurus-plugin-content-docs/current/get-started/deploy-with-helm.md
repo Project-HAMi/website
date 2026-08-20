@@ -47,7 +47,7 @@ kubectl get pods -n kube-system | grep hami
 
 ## 3. 提交 vGPU 工作负载 {#submit-a-vgpu-workload}
 
-创建一个申请 1 个 vGPU 及 10240 MiB 显存限制的 Pod：
+将以下配置保存为 `gpu-pod.yaml`，申请 1 个 vGPU 及 10240 MiB 显存限制：
 
 ```yaml
 apiVersion: v1
@@ -113,4 +113,3 @@ kubectl delete pod gpu-pod
 
 - 参阅 [验证 HAMi 安装](./verify-hami.md) 查看详细验证步骤。
 - 参阅 [配置指南](../userguide/configure.md) 了解如何自定义部署参数与设备配置。
-

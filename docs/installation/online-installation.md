@@ -16,10 +16,10 @@ helm repo update
 
 ## 2. Deploy HAMi {#deploy-hami}
 
-Ensure `scheduler.kubeScheduler.imageTag` matches your Kubernetes server version (e.g. `v1.29.0`). Deploy HAMi into the `kube-system` namespace using Helm:
+Ensure `scheduler.kubeScheduler.image.tag` matches your Kubernetes server version (e.g. `v1.29.0`). Deploy HAMi into the `kube-system` namespace using Helm:
 
 ```bash
-helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag=v1.29.0 -n kube-system
+helm install hami hami-charts/hami --set scheduler.kubeScheduler.image.tag=v1.29.0 -n kube-system
 ```
 
 ### Customizing Helm Configurations
@@ -27,7 +27,7 @@ helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag=v1.29.
 You can customize your deployment by passing parameters with `--set` or providing a custom `values.yaml` file:
 
 ```bash
-helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag=v1.29.0 -n kube-system -f custom-values.yaml
+helm install hami hami-charts/hami --set scheduler.kubeScheduler.image.tag=v1.29.0 -n kube-system -f custom-values.yaml
 ```
 
 For a detailed breakdown of available chart options and configuration keys, see the [Configuration Guide](../userguide/configure.md).
