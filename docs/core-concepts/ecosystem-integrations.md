@@ -62,13 +62,13 @@ Out of the box, `kube-scheduler` delegates GPU filtering and scoring to `hami-sc
 [Volcano](https://github.com/volcano-sh/volcano) adds gang scheduling, where every Pod in a job starts together or none of them do, plus multi-level queue priorities and fair-share. Those are the batch capabilities **AI training** needs. HAMi connects through the [`volcano-vgpu-device-plugin`](https://github.com/Project-HAMi/volcano-vgpu-device-plugin), so Volcano schedules HAMi-managed vGPUs while HAMi-core keeps doing the GPU isolation.
 
 - Install: [Use Volcano vGPU](../installation/how-to-use-volcano-vgpu.md)
-- Guide and examples: [Volcano vGPU (NVIDIA GPU)](../userguide/volcano-vgpu/nvidia-gpu/how-to-use-volcano-vgpu.md)
+- Guide and examples: [Volcano vGPU (NVIDIA GPU)](../userguide/volcano-vgpu/nvidia-gpu/volcano-vgpu-device-plugin-for-kubernetes.md)
 
 ### Kueue for job queuing and fairness
 
 [Kueue](https://kueue.sigs.k8s.io/) sits above the default scheduler and manages job admission, fairness, and quotas through `ResourceFlavor` and `ClusterQueue`. HAMi's vGPU resources show up as schedulable flavors that Kueue can queue and admit. That gives you **cohort fairness and quota enforcement** on top of GPU sharing, all without replacing `kube-scheduler`.
 
-- Guide: [Using HAMi with Kueue](../userguide/kueue/how-to-use-kueue.md)
+- Guide: [Using HAMi with Kueue](../userguide/kueue/how-to-use-kueue-on-hami.md)
 - Upstream integration doc: [Running HAMi workloads in Kueue](https://kueue.sigs.k8s.io/docs/tasks/run/using_hami/)
 
 ### Koordinator for device scheduling and colocation

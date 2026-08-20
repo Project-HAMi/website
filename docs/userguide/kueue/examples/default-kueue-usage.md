@@ -4,7 +4,7 @@ title: Default Kueue Usage Example
 
 This example demonstrates how to use Kueue with HAMi vGPU resources. It includes a complete configuration that sets up ResourceFlavor, ClusterQueue, LocalQueue, and a sample Deployment that requests vGPU resources.
 
-Before applying this example, ensure that HAMi and Kueue are installed, and Kueue is configured with ResourceTransformation enabled (see [How to use Kueue on HAMi](../how-to-use-kueue.md)).
+Before applying this example, ensure that HAMi and Kueue are installed, and Kueue is configured with ResourceTransformation enabled (see [How to use Kueue on HAMi](../how-to-use-kueue-on-hami.md)).
 
 ```yaml
 apiVersion: kueue.x-k8s.io/v1beta1

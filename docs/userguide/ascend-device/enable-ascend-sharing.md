@@ -6,7 +6,7 @@ The Huawei Ascend device plugin supports NPU-slicing for HAMi. It supports two m
 
 ## 1. Template-based Hard Slicing (vNPU)
 
-Memory slicing is supported based on virtualization template, the least available template is automatically used. For detailed information, check [device-template](./device-template.md).
+Memory slicing is supported based on virtualization template, the least available template is automatically used. For detailed information, check [device-template](./ascend-device-template.md).
 
 ## 2. Soft Slicing with Runtime Interception (hami-vnpu-core)
 

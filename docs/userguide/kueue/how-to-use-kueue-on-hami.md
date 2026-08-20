@@ -269,4 +269,4 @@ For example:
 
 ## Example
 
-See the [example file](./examples/default-use.md) for a complete working example.
+See the [example file](./examples/default-kueue-usage.md) for a complete working example.
