@@ -25,7 +25,7 @@ The current Chart includes profile mappings for A30, A100, H100, H20, H200, B200
 
 ### 1. Set the node operating mode to `mig`
 
-Install or upgrade the HAMi Chart as described in [Enable vGPU support in Kubernetes](https://github.com/Project-HAMi/HAMi#enabling-vgpu-support-in-kubernetes), then set `operatingmode` to `mig` for each target node. For example, the `devicePlugin.nodeConfiguration.config` value can contain:
+Install or upgrade the HAMi Chart as described in [the online installation guide](../../installation/online-installation.md), then set `operatingmode` to `mig` for each target node. For example, the `devicePlugin.nodeConfiguration.config` value can contain:
 
 ```yaml
 devicePlugin:

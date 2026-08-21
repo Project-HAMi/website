@@ -37,7 +37,7 @@ translated: true
 
 ## 启用 Dynamic-mig 支持
 
-- 使用 Helm 安装 Chart，参见[此处](https://github.com/Project-HAMi/HAMi#enabling-vgpu-support-in-kubernetes)的“在 Kubernetes 中启用 vGPU 支持”部分
+- 使用 Helm 安装 Chart，参见[在线安装指南](../../installation/online-installation.md)
 
 - 在 device-plugin ConfigMap 中将 `mode` 配置为 `mig` 以支持 MIG 节点
 
