@@ -24,13 +24,13 @@ kubectl version
 
 ## Installation
 
-Ensure the `scheduler.kubeScheduler.imageTag` matches your Kubernetes server version. For instance, if your cluster server is v1.29.0, use the following command to deploy:
+Ensure the `scheduler.kubeScheduler.image.tag` matches your Kubernetes server version. For instance, if your cluster server is v1.29.0, use the following command to deploy:
 
 ```bash
-helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag=v1.29.0 -n kube-system
+helm install hami hami-charts/hami --set scheduler.kubeScheduler.image.tag=v1.29.0 -n kube-system
 ```
 
-Customize your installation by editing the [configurations](../userguide/configure.md).
+Customize your installation by editing the [configurations](../userguide/configure.md). If you are running on managed cloud platforms such as AWS or Microsoft Azure (AKS), refer to the [Platform Guides](./platforms/aks.md) for platform-tailored installation instructions.
 
 ## Verify your installation
 

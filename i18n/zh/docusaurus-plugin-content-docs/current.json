@@ -15,6 +15,10 @@
     "message": "安装",
     "description": "The label for category 'Installation' in sidebar 'docs'"
   },
+  "sidebar.docs.category.Platform Guides": {
+    "message": "平台指南",
+    "description": "The label for category 'Platform Guides' in sidebar 'docs'"
+  },
   "sidebar.docs.category.User Guide": {
     "message": "用户指南",
     "description": "The label for category 'User Guide' in sidebar 'docs'"

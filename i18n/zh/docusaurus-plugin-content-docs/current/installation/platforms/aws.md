@@ -1,6 +1,6 @@
 ---
 title: 在 AWS 上安装与使用 HAMi
-sidebar_label: AWS 上的 HAMi
+sidebar_label: Amazon Web Services (AWS)
 translated: true
 ---
 
@@ -27,7 +27,7 @@ tar xf $(pwd)/* && find $(pwd) -maxdepth 1 -type f -delete
 helm install --generate-name --namespace <ENTER_NAMESPACE_HERE> ./*
 ```
 
-你可以通过调整[配置](../userguide/configure.md)来自定义安装。
+你可以通过调整[配置](../../userguide/configure.md)来自定义安装。
 
 ## 使用 AWS add-on 安装
 

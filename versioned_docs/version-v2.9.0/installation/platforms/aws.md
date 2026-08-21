@@ -1,5 +1,6 @@
 ---
 title: HAMi on AWS
+sidebar_label: Amazon Web Services (AWS)
 translated: true
 ---
 
@@ -26,7 +27,7 @@ tar xf $(pwd)/* && find $(pwd) -maxdepth 1 -type f -delete
 helm install --generate-name --namespace <ENTER_NAMESPACE_HERE> ./*
 ```
 
-You can customize the installation by adjusting the [configuration](../userguide/configure.md).
+You can customize the installation by adjusting the [configuration](../../userguide/configure.md).
 
 ## Install with AWS Add-on
 
