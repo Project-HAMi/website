@@ -34,7 +34,7 @@ Install only gpu-manager. Do not install the gpu-admission package.
 - Set `devices.iluvatar.enabled=true` when installing HAMi
 
 ```bash
-helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag={your kubernetes version} --set devices.iluvatar.enabled=true -n kube-system
+helm install hami hami-charts/hami --set scheduler.kubeScheduler.image.tag={your kubernetes version} --set devices.iluvatar.enabled=true -n kube-system
 ```
 
 The currently supported GPU models and resource names are defined in [device-configmap.yaml](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/templates/scheduler/device-configmap.yaml):
@@ -118,6 +118,12 @@ spec:
 :::note
 
 Each unit of `iluvatar.ai/<card-type>.vMem` represents 256 MB of device memory.
+
+:::
+
+:::warning
+
+Set `iluvatar.ai/<card-type>.vMem` as a **plain integer** (a count of 256 MB units), not a Kubernetes quantity. A suffixed value such as `16Gi` is parsed as its byte count (about 17 billion), which overflows HAMi's 32-bit memory field and is silently truncated, often to `0`. A zero memory request passes the scheduler's memory check unconditionally, so the pod can be placed on a GPU that is already full and then fails with out-of-memory errors at runtime. Use the integer form shown above (for example `64`).
 
 :::
 

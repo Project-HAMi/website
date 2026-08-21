@@ -30,7 +30,7 @@ title: 启用天数智芯 GPU 共享
 - 安装 HAMi 时设置 `devices.iluvatar.enabled=true`
 
 ```bash
-helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag={your kubernetes version} --set devices.iluvatar.enabled=true -n kube-system
+helm install hami hami-charts/hami --set scheduler.kubeScheduler.image.tag={your kubernetes version} --set devices.iluvatar.enabled=true -n kube-system
 ```
 
 **说明：** 当前支持的 GPU 型号及资源名称定义如下（位于 [https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/templates/scheduler/device-configmap.yaml](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/templates/scheduler/device-configmap.yaml)）：
@@ -114,6 +114,12 @@ spec:
 :::note
 
 每个 vcuda-memory 单位表示 256MB 显存
+
+:::
+
+:::warning
+
+请将 `iluvatar.ai/<card-type>.vMem` 设置为**纯整数**（以 256MB 为单位计数），不要使用 Kubernetes 数量单位。带单位的值（例如 `16Gi`）会被解析为字节数（约 170 亿），从而超出 HAMi 的 32 位显存字段范围并被静默截断，通常截断为 `0`。显存请求为 0 时会无条件通过调度器的显存检查，导致 Pod 被调度到显存已满的设备上，并在运行时发生显存不足（OOM）。请使用上面示例中的整数形式（例如 `64`）。
 
 :::
 
