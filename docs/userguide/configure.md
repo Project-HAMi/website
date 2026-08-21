@@ -73,7 +73,7 @@ helm install hami hami-charts/hami --set devicePlugin.deviceMemoryScaling=5 -n k
 
 ## Scheduler Configs: extender arguments
 
-The scheduler extender reads flags from `scheduler.extender.extraArgs`. The chart ships `["--debug", "-v=4"]`, and setting the value replaces the whole list, so repeat the entries you want to keep:
+The scheduler extender reads flags from `scheduler.extender.extraArgs`. The chart ships `["--debug", "-v=4"]`, and setting the value replaces the whole list, so repeat the entries you want to keep. The following command uses `--set-json`, which requires Helm 3.10 or later:
 
 ```bash
 helm upgrade hami hami-charts/hami -n kube-system --reuse-values \

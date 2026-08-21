@@ -75,7 +75,7 @@ helm install hami hami-charts/hami --set devicePlugin.deviceMemoryScaling=5 -n k
 
 ## 调度器配置：扩展器参数
 
-调度器扩展器从 `scheduler.extender.extraArgs` 读取命令行参数。chart 默认值为 `["--debug", "-v=4"]`，设置该值会替换整个列表，因此需要保留想要沿用的条目：
+调度器扩展器从 `scheduler.extender.extraArgs` 读取命令行参数。chart 默认值为 `["--debug", "-v=4"]`，设置该值会替换整个列表，因此需要保留想要沿用的条目。下面的命令使用 `--set-json`，需要 Helm 3.10 或更高版本：
 
 ```bash
 helm upgrade hami hami-charts/hami -n kube-system --reuse-values \

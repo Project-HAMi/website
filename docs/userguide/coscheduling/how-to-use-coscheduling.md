@@ -25,7 +25,7 @@ These two mechanisms meet at gang release. Coscheduling releases every member in
 
 To close that gap, the extender retries the node lock for Pods that belong to a PodGroup:
 
-- A Pod counts as a group member if it carries a non-empty `scheduling.x-k8s.io/pod-group` label, or sets `spec.schedulingGroup.podGroupName`. Such a Pod polls the lock every 100 ms until `--node-lock-retry-timeout` expires.
+- A Pod counts as a group member if it carries a non-empty `scheduling.x-k8s.io/pod-group` label. Such a Pod polls the lock every 100 ms until `--node-lock-retry-timeout` expires.
 - Any partially acquired lock is released before each retry, so a Pod requesting devices from more than one vendor cannot leave a stale lock behind.
 - Errors that are not lock contention are returned immediately and are not retried.
 - Pods that belong to no group keep the original fail-fast behavior.
@@ -40,7 +40,7 @@ To close that gap, the extender retries the node lock for Pods that belong to a 
 
 - A Kubernetes cluster with GPU nodes and HAMi installed.
 - A [scheduler-plugins release](https://github.com/kubernetes-sigs/scheduler-plugins/releases) built against your Kubernetes minor version. The minor version of scheduler-plugins matches the Kubernetes client packages it is compiled with, so pick the release that matches your cluster from the [compatibility matrix](https://github.com/kubernetes-sigs/scheduler-plugins#compatibility-matrix). The examples below use v0.34.7, which is built against Kubernetes v1.34.
-- Helm 3.
+- Helm 3.10 or later.
 - `kubectl` with cluster-admin rights.
 
 ## 1. Install HAMi with the scheduler-plugins kube-scheduler
@@ -265,5 +265,4 @@ HAMi injects `LD_PRELOAD` pointing at a glibc build of `libvgpu.so`. Images base
 - [Coscheduling plugin](https://github.com/kubernetes-sigs/scheduler-plugins/tree/master/pkg/coscheduling)
 - [scheduler-plugins releases](https://github.com/kubernetes-sigs/scheduler-plugins/releases)
 - [Global Config](../configure.md)
-- [How to use kueue on HAMi](../kueue/how-to-use-kueue.md)
 - [How to use KAI Scheduler with HAMi](../kai-scheduler/how-to-use-kai-scheduler.md)

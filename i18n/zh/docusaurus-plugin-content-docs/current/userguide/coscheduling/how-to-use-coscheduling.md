@@ -25,7 +25,7 @@ hami.io/mutex.lock: 2026-06-14T15:05:03Z,default,gang-pod-1
 
 为了消除这段空转，扩展器会为属于某个 PodGroup 的 Pod 重试节点锁：
 
-- 带有非空 `scheduling.x-k8s.io/pod-group` 标签，或设置了 `spec.schedulingGroup.podGroupName` 的 Pod，都算作分组成员。这类 Pod 每 100 毫秒轮询一次锁，直到 `--node-lock-retry-timeout` 超时。
+- 带有非空 `scheduling.x-k8s.io/pod-group` 标签的 Pod 算作分组成员。这类 Pod 每 100 毫秒轮询一次锁，直到 `--node-lock-retry-timeout` 超时。
 - 每次重试前会释放已部分获取的锁，因此同时申请多个厂商设备的 Pod 不会残留过期锁。
 - 非锁争抢类错误会立即返回，不做重试。
 - 不属于任何分组的 Pod 保持原有的快速失败行为。
@@ -40,7 +40,7 @@ hami.io/mutex.lock: 2026-06-14T15:05:03Z,default,gang-pod-1
 
 - 一个已安装 HAMi 且具备 GPU 节点的 Kubernetes 集群。
 - 与集群 Kubernetes 次版本匹配的 [scheduler-plugins 版本](https://github.com/kubernetes-sigs/scheduler-plugins/releases)。scheduler-plugins 的次版本与其编译所用的 Kubernetes 客户端库版本一致，请对照[兼容性矩阵](https://github.com/kubernetes-sigs/scheduler-plugins#compatibility-matrix)选择与集群匹配的版本。下文示例使用 v0.34.7，该版本基于 Kubernetes v1.34 构建。
-- Helm 3。
+- Helm 3.10 或更高版本。
 - 具备 cluster-admin 权限的 `kubectl`。
 
 ## 1. 使用 scheduler-plugins 的 kube-scheduler 安装 HAMi
@@ -265,5 +265,4 @@ HAMi 注入的 `LD_PRELOAD` 指向基于 glibc 构建的 `libvgpu.so`。基于 m
 - [Coscheduling 插件](https://github.com/kubernetes-sigs/scheduler-plugins/tree/master/pkg/coscheduling)
 - [scheduler-plugins 版本列表](https://github.com/kubernetes-sigs/scheduler-plugins/releases)
 - [全局配置](../configure.md)
-- [如何在 HAMi 上使用 Kueue](../kueue/how-to-use-kueue.md)
 - [如何在 KAI Scheduler 中使用 HAMi](../kai-scheduler/how-to-use-kai-scheduler.md)
