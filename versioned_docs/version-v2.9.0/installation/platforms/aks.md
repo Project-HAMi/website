@@ -35,12 +35,13 @@ az aks nodepool add \
   --labels gpu=on
 ```
 
-:::note
-Common Azure GPU VM sizes include:
+:::note Common Azure GPU VM sizes include:
+
 - `Standard_NC6s_v3` (1x NVIDIA Tesla V100 16GB)
 - `Standard_NC4as_T4_v3` (1x NVIDIA Tesla T4 16GB)
 - `Standard_NV6ads_A10_v5` (1x NVIDIA A10 24GB)
 - `Standard_ND96amsr_A100_v4` (8x NVIDIA A100 80GB)
+
 :::
 
 ### Label Your Nodes
