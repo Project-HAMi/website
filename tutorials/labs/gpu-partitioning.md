@@ -15,6 +15,8 @@ tags:
 toc_max_heading_level: 2
 ---
 
+import Tabs from '@theme/Tabs'; import TabItem from '@theme/TabItem';
+
 This lab continues from [Lab 1](./online-install.md). You have one physical Tesla T4 with 15360 MiB of VRAM. In this lab you will run multiple Pods on that single card, each with its own enforced VRAM and compute limit, and verify that the isolation is real: a Pod that tries to allocate past its slice gets a CUDA OOM while its neighbors keep running.
 
 Every command and output in this lab was captured from a live cluster built with Lab 1 (HAMi v2.9.0, GPU Operator v25.3.0, Kubernetes v1.34).
@@ -93,7 +95,11 @@ spec:
 `gpumem-pod-b.yaml` is identical except for the name. Apply both:
 
 ```bash
-kubectl apply -f tutorials/labs/examples/03-gpu-partitioning/gpumem-pod-a.yaml -f tutorials/labs/examples/03-gpu-partitioning/gpumem-pod-b.yaml
+# Set the base repository URL for HAMi lab manifests
+export HAMI_MANIFEST_RAW="https://raw.githubusercontent.com/Project-HAMi/website/refs/heads/master/tutorials/labs/examples/03-gpu-partitioning"
+
+kubectl apply -f $HAMI_MANIFEST_RAW/gpumem-pod-a.yaml -f $HAMI_MANIFEST_RAW/gpumem-pod-b.yaml
+
 kubectl get pods gpumem-pod-a gpumem-pod-b -o wide
 ```
 
@@ -174,7 +180,10 @@ spec:
 ```
 
 ```bash
-kubectl apply -f tutorials/labs/examples/03-gpu-partitioning/oom-test-pod.yaml
+# Re-export the HAMi lab manifests
+export HAMI_MANIFEST_RAW="https://raw.githubusercontent.com/Project-HAMi/website/refs/heads/master/tutorials/labs/examples/03-gpu-partitioning"
+
+kubectl apply -f $HAMI_MANIFEST_RAW/oom-test-pod.yaml
 ```
 
 While the image pulls, watch the HAMi scheduler make its decision:
@@ -191,17 +200,29 @@ kubectl describe pod oom-test-pod | tail -3
 
 > `FilteringSucceed` shows the scheduler scoring nodes (here `hami-workshop:7.21`), and `BindingSucceed` shows it binding the Pod. These events come from hami-scheduler, not the default scheduler. Note it found a fit even though two Pods already occupy the GPU: 8000 of 15360 MiB are reserved, so a third 4000 MiB slice still fits.
 
-Wait for the Pod to complete, then read its logs:
+Wait for the Pod to be completed, then read its logs:
+
+```bash
+kubectl get pods oom-test-pod -o wide
+```
+
+Expected output:
+
+```plaintext
+NAME           READY   STATUS      RESTARTS   AGE     IP              NODE              NOMINATED NODE   READINESS GATES
+oom-test-pod   0/1     Completed   0          6m17s   10.244.109.31   ip-172-31-16-62   <none>           <none>
+```
 
 ```bash
 kubectl logs oom-test-pod | tail -8
 ```
 
 ```plaintext
+Allocated 2048 MiB
 Allocated 2560 MiB
 Allocated 3072 MiB
 Allocated 3584 MiB
-[HAMI-core ERROR (pid:1 thread=... allocator.c:52)]: Device 0 OOM 4399824896 / 4194304000
+[HAMI-core ERROR (pid:1 thread=128984570163776 allocator.c:52)]: Device 0 OOM 4399824896 / 4194304000
 Hit the limit after 3584 MiB:
 CUDA out of memory
 ```
@@ -240,7 +261,18 @@ resources:
 ```
 
 ```bash
-kubectl apply -f tutorials/labs/examples/03-gpu-partitioning/gpucores-pod.yaml
+kubectl apply -f $HAMI_MANIFEST_RAW/gpucores-pod.yaml
+```
+
+```bash
+kubectl get pod gpucores-pod -o wide
+```
+
+Expected output:
+
+```plaintext
+NAME           READY   STATUS    RESTARTS   AGE   IP              NODE              NOMINATED NODE   READINESS GATES
+gpucores-pod   1/1     Running   0          2m    10.244.14.160   ip-172-31-16-62   <none>           <none>
 ```
 
 Check the environment HAMi injected into the container:
@@ -298,6 +330,40 @@ kubectl exec -n monitoring prometheus-prometheus-kube-prometheus-prometheus-0 -c
 > - **force** (`GPU_CORE_UTILIZATION_POLICY=force`): strict cap at all times, as measured above. Good for predictable performance isolation.
 >
 > Without the `force` env, you would see this same workload run at 100% utilization on an idle card, which is intentional: HAMi gives idle capacity away rather than wasting it.
+
+(Optional) Access the WebUI via port forwarding:
+
+<Tabs groupId="cloud-provider">
+<TabItem value="aws" label="AWS">
+
+```bash
+kubectl port-forward service/my-hami-webui 3000:3000 --namespace=kube-system
+```
+
+Open a separate terminal and run:
+
+```bash
+export NODE_PUBLIC_IP=<your-vm-public-ip>
+export KEY_FILE="<your-pem-key-file-path>/hami-eks.pem"
+
+ssh -i "$KEY_FILE" \
+  -L 3000:localhost:3000 \
+  ubuntu@$NODE_PUBLIC_IP
+```
+
+Visit `http://localhost:3000` to open the HAMi WebUI.
+
+</TabItem>
+<TabItem value="gcp" label="GCP">
+
+```bash
+kubectl port-forward service/my-hami-webui 3000:3000 --namespace=kube-system
+```
+
+Visit `http://localhost:3000` to open the HAMi WebUI.Expand commentComment on lines R809 to R813Resolved
+
+</TabItem>
+</Tabs>
 
 ## Step 6: Cleanup
 
