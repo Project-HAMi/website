@@ -56,6 +56,7 @@ module.exports = {
         "installation/uninstall",
         "installation/webui-installation",
         "installation/aws-installation",
+        "installation/openshift-installation",
         "installation/how-to-use-hami-dra",
         "installation/how-to-use-volcano-vgpu",
         "installation/how-to-use-volcano-ascend",
