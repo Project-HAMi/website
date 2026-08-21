@@ -93,7 +93,12 @@ spec:
 `gpumem-pod-b.yaml` 除了名称不同外完全相同。部署两个 Pod：
 
 ```bash
-kubectl apply -f tutorials/labs/examples/03-gpu-partitioning/gpumem-pod-a.yaml -f tutorials/labs/examples/03-gpu-partitioning/gpumem-pod-b.yaml
+# 设置 HAMi 实验室清单的基本存储库 URL
+
+export HAMI_MANIFEST_RAW="https://raw.githubusercontent.com/Project-HAMi/website/refs/heads/master/tutorials/labs/examples/03-gpu-partitioning"
+
+kubectl apply -f $HAMI_MANIFEST_RAW/gpumem-pod-a.yaml -f $HAMI_MANIFEST_RAW/gpumem-pod-b.yaml
+
 kubectl get pods gpumem-pod-a gpumem-pod-b -o wide
 ```
 
@@ -174,7 +179,7 @@ spec:
 ```
 
 ```bash
-kubectl apply -f tutorials/labs/examples/03-gpu-partitioning/oom-test-pod.yaml
+kubectl apply -f $HAMI_MANIFEST_RAW/oom-test-pod.yaml
 ```
 
 在镜像拉取期间，观察 HAMi 调度器的决策：
@@ -240,7 +245,10 @@ resources:
 ```
 
 ```bash
-kubectl apply -f tutorials/labs/examples/03-gpu-partitioning/gpucores-pod.yaml
+# 重新导出 HAMi 实验室清单
+export HAMI_MANIFEST_RAW="https://raw.githubusercontent.com/Project-HAMi/website/refs/heads/master/tutorials/labs/examples/03-gpu-partitioning"
+
+kubectl apply -f $HAMI_MANIFEST_RAW/gpucores-pod.yaml
 ```
 
 检查 HAMi 注入到容器中的环境变量：
