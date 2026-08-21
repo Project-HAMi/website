@@ -1,7 +1,7 @@
 ---
-title: "Lab 14: Dynamic MIG Lifecycle on RTX PRO 6000"
+title: "Lab 17: Dynamic MIG Lifecycle on RTX PRO 6000"
 description: "Build a pinned HAMi snapshot and verify per-Pod MIG placement, mixed profiles, selective reclamation, restart recovery, and multi-GPU spillover."
-sidebar_label: "Lab 14: Dynamic MIG Lifecycle"
+sidebar_label: "Lab 17: Dynamic MIG Lifecycle"
 lab:
   level: Advanced
   duration: about 90 minutes
@@ -70,7 +70,7 @@ You also need:
 - root access to the GPU node, working `nvidia-smi`, MIG mode enabled, and no unmanaged CUDA processes;
 - `git`, GNU Make, Docker, `ctr`, Helm, `kubectl`, and `jq`;
 - cluster-admin access and permission to replace the existing HAMi installation;
-- a local checkout of this website repository for the files under [`tutorials/labs/examples/14-dynamic-mig-rtx-pro/`](https://github.com/Project-HAMi/website/tree/master/tutorials/labs/examples/14-dynamic-mig-rtx-pro); and
+- a local checkout of this website repository for the files under [`tutorials/labs/examples/17-dynamic-mig-rtx-pro/`](https://github.com/Project-HAMi/website/tree/master/tutorials/labs/examples/17-dynamic-mig-rtx-pro); and
 - an explicit maintenance window for the **whole GPU node**, not only the GPUs that HAMi will register.
 
 The supplied values target the verified eight-GPU node and initially register only GPU index 4. Adapt both `filterdevices.index` lists before starting if your topology differs. You need at least two compatible GPUs to reproduce Step 8.
@@ -92,7 +92,7 @@ Select the single Kubernetes node and set a durable working directory. If your c
 ```bash
 export NODE=$(kubectl get nodes -o jsonpath='{.items[0].metadata.name}')
 export LAB=/root/hami-dynamic-mig-rerun-2026-08-11
-export EXAMPLES=tutorials/labs/examples/14-dynamic-mig-rtx-pro
+export EXAMPLES=tutorials/labs/examples/17-dynamic-mig-rtx-pro
 
 mkdir -p "$LAB"
 ```

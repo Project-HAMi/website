@@ -1,7 +1,7 @@
 ---
-title: "实验 14: RTX PRO 6000 动态 MIG 生命周期"
+title: "实验 17: RTX PRO 6000 动态 MIG 生命周期"
 description: "构建固定版本的 HAMi，并验证按 Pod 创建 MIG、混合规格、选择性回收、重启恢复和跨 GPU 调度。"
-sidebar_label: "实验 14: 动态 MIG 生命周期"
+sidebar_label: "实验 17: 动态 MIG 生命周期"
 lab:
   level: Advanced
   duration: 约 90 分钟
