@@ -20,7 +20,7 @@ toc_max_heading_level: 2
 
 :::note 关于本次运行
 
-下文的输出块均为一次真实运行的逐字捕获（GKE `1.35.7-gke.1150000`、COS、一台 `n1-standard-8` 挂四块 Tesla T4）。运行时 v2.10.0 的 Helm chart 与镜像尚未发布到 Helm 仓库，因此本次运行使用 HAMi master 分支 `45b3d46769b44cfc1445728dfcb8e524939afba1` 提交的 chart 源码与官方 `projecthami/hami:latest` 镜像（其中包含 v2.10.0 发布候选代码，步骤 3 给出了固定该版本的方法）。待 `helm search` 中出现 `v2.10.0` 后，请改用已发布的 chart 并指定 `--version v2.10.0`，行为完全一致。
+下文的输出块均为一次真实运行的逐字捕获（GKE `1.35.7-gke.1150000`、COS、一台 `n1-standard-8` 挂四块 Tesla T4）。运行时 v2.10.0 的 Helm chart 与镜像尚未发布到 Helm 仓库，因此本次运行使用 HAMi master 分支 `45b3d46769b44cfc1445728dfcb8e524939afba1` 提交的 chart 源码与逐提交镜像 `projecthami/hami:45b3d46`（其中包含 v2.10.0 发布候选代码，步骤 3 给出了固定该版本的方法）。待 `helm search` 中出现 `v2.10.0` 后，请改用已发布的 chart 并指定 `--version v2.10.0`，行为完全一致。
 
 :::
 
@@ -153,7 +153,7 @@ kubectl -n kube-system rollout status deploy/hami-scheduler --timeout=300s
 kubectl -n kube-system get pods -l app.kubernetes.io/instance=hami
 ```
 
-在发布产物可用之前，可以用本次运行使用的确切代码版本来复现实验：chart 取自 HAMi 源码的 `45b3d46769b44cfc1445728dfcb8e524939afba1` 提交（2026-08-17 时的 master HEAD，即 v2.10.0 对应的代码），镜像用 `global.imageTag=latest` 选择对应的 master CI 构建。`latest` 是可变标签，因此发布 chart 可用后请优先使用上面的命令：
+在发布产物可用之前，可以用本次运行使用的确切代码版本来复现实验：chart 取自 HAMi 源码的 `45b3d46769b44cfc1445728dfcb8e524939afba1` 提交（2026-08-17 时的 master HEAD，即 v2.10.0 对应的代码），镜像用 `global.imageTag=45b3d46` 选择 HAMi CI 为该提交发布的逐提交镜像。不要改用 `latest`：它是移动标签，本次运行后几天内就已经漂移到了更新的 master 提交。
 
 ````bash
 curl -fsSL https://codeload.github.com/Project-HAMi/HAMi/tar.gz/45b3d46769b44cfc1445728dfcb8e524939afba1 \
@@ -161,7 +161,7 @@ curl -fsSL https://codeload.github.com/Project-HAMi/HAMi/tar.gz/45b3d46769b44cfc
 tar xzf hami-src.tar.gz
 helm install hami \
   HAMi-45b3d46769b44cfc1445728dfcb8e524939afba1/charts/hami \
-  -n kube-system --set global.imageTag=latest \
+  -n kube-system --set global.imageTag=45b3d46 \
 \
   --set devicePlugin.nvidiaDriverRoot=/home/kubernetes/bin/nvidia \
   --set global.gpuHookPath=/home/kubernetes/bin/nvidia \
@@ -399,7 +399,7 @@ I0818 11:39:13.896904       1 gpu_policy.go:221] device GPU-3c5f3637-e911-b226-7
 | 节点同时出现 GKE 与 HAMi 的 GPU 容量，或在 `4` 与 `40` 之间跳变 | GKE 默认 device plugin 与 HAMi 的注册互相竞争 | 保持节点上的 `gke-no-default-nvidia-gpu-device-plugin=true`，然后重启 `hami-device-plugin` |
 | Pod 一直 Pending，报 `node(s) didn't match node selector` | GPU 节点缺少 `gpu=on` 标签 | 执行步骤 2 的打标命令 |
 | `mutex` Pod Pending，但某张卡“看起来”空闲 | 那张卡仍有已分配的 Pod；`mutex` 要求零用户 | 用 `lab-card` 检查；删除目标卡上的一个租户 |
-| `helm search` 找不到 `v2.10.0` chart | 运行时发布产物尚未发布 | 从 HAMi 仓库的 `charts/hami`（发布候选代码）安装，并用匹配的 `--set global.imageTag=` |
+| `helm search` 找不到 `v2.10.0` chart | 运行时发布产物尚未发布 | 从 HAMi 仓库的 `charts/hami`（发布候选提交）安装，并用 `--set global.imageTag=45b3d46`（逐提交镜像标签） |
 | `kubectl`/`gcloud`/`helm` 间歇性报 `Unable to connect to the server` | 客户端与 Google API 之间的瞬时 TLS 错误，本次运行中多次出现 | 重试命令即可，集群本身是健康的 |
 
 ## 清理

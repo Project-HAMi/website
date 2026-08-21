@@ -20,7 +20,7 @@ This lab deploys HAMi v2.10.0 on a single GKE node carrying four Tesla T4s, then
 
 :::note About this run
 
-The output blocks below are verbatim captures from a real run (GKE `1.35.7-gke.1150000`, COS, one `n1-standard-8` with four Tesla T4s). At that time the v2.10.0 Helm chart and images were not yet published to the Helm repository, so the run used the chart source and the official `projecthami/hami:latest` images from the HAMi master branch at commit `45b3d46769b44cfc1445728dfcb8e524939afba1`, which carry the v2.10.0 release-candidate code (Step 3 shows how to pin that exact revision). Once `v2.10.0` appears in `helm search`, install the published chart with `--version v2.10.0`; the behavior is identical.
+The output blocks below are verbatim captures from a real run (GKE `1.35.7-gke.1150000`, COS, one `n1-standard-8` with four Tesla T4s). At that time the v2.10.0 Helm chart and images were not yet published to the Helm repository, so the run used the chart source and the per-commit `projecthami/hami:45b3d46` image, both from HAMi master commit `45b3d46769b44cfc1445728dfcb8e524939afba1`, which carries the v2.10.0 release-candidate code (Step 3 shows how to pin that exact revision). Once `v2.10.0` appears in `helm search`, install the published chart with `--version v2.10.0`; the behavior is identical.
 
 :::
 
@@ -153,7 +153,7 @@ kubectl -n kube-system rollout status deploy/hami-scheduler --timeout=300s
 kubectl -n kube-system get pods -l app.kubernetes.io/instance=hami
 ```
 
-Until the release is published, reproduce the lab with the exact revision used for the run: the chart comes from the HAMi source at commit `45b3d46769b44cfc1445728dfcb8e524939afba1` (master HEAD on 2026-08-17, the code that ships as v2.10.0), and `global.imageTag=latest` selects the matching master CI image. The `latest` tag is mutable, so once the released chart is available, prefer the command above.
+Until the release is published, reproduce the lab with the exact revision used for the run: the chart comes from the HAMi source at commit `45b3d46769b44cfc1445728dfcb8e524939afba1` (master HEAD on 2026-08-17, the code that ships as v2.10.0), and `global.imageTag=45b3d46` selects the per-commit image that HAMi CI publishes for exactly that revision. Do not substitute `latest`: it is a moving tag, and within days of this run it had already drifted to a newer master commit.
 
 ````bash
 curl -fsSL https://codeload.github.com/Project-HAMi/HAMi/tar.gz/45b3d46769b44cfc1445728dfcb8e524939afba1 \
@@ -161,7 +161,7 @@ curl -fsSL https://codeload.github.com/Project-HAMi/HAMi/tar.gz/45b3d46769b44cfc
 tar xzf hami-src.tar.gz
 helm install hami \
   HAMi-45b3d46769b44cfc1445728dfcb8e524939afba1/charts/hami \
-  -n kube-system --set global.imageTag=latest \
+  -n kube-system --set global.imageTag=45b3d46 \
 \
   --set devicePlugin.nvidiaDriverRoot=/home/kubernetes/bin/nvidia \
   --set global.gpuHookPath=/home/kubernetes/bin/nvidia \
@@ -399,7 +399,7 @@ These lines are from the `policy-binpack-solo` scheduling pass: the three cards 
 | Node shows both GKE and HAMi GPU capacity, or counts jump between `4` and `40` | GKE's default device plugin competing with HAMi's | Keep `gke-no-default-nvidia-gpu-device-plugin=true` on the node, then restart `hami-device-plugin` |
 | Pods stay Pending with `node(s) didn't match node selector` | GPU node lacks the `gpu=on` label | Apply the Step 2 label command |
 | `mutex` Pod Pending although a card "looks" free | The card still has an allocated Pod; `mutex` requires zero users | Check with `lab-card`; delete a tenant from the target card |
-| `helm search` cannot find chart `v2.10.0` | Release artifacts not yet published at the time of the run | Install from the HAMi repository's `charts/hami` at the release-candidate code, with a matching `--set global.imageTag=` |
+| `helm search` cannot find chart `v2.10.0` | Release artifacts not yet published at the time of the run | Install from the HAMi repository's `charts/hami` at the release-candidate commit, with `--set global.imageTag=45b3d46` (the per-commit image tag) |
 | Intermittent `Unable to connect to the server` from `kubectl`/`gcloud`/`helm` | Transient TLS errors between the client and Google APIs, seen repeatedly during the run | Retry the command; the cluster itself is healthy |
 
 ## Cleanup
