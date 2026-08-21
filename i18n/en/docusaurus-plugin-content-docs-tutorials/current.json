@@ -1,0 +1,18 @@
+{
+  "version.label": {
+    "message": "Next",
+    "description": "The label for version current"
+  },
+  "sidebar.tutorials.category.Labs": {
+    "message": "Labs",
+    "description": "The label for category 'Labs' in sidebar 'tutorials'"
+  },
+  "sidebar.tutorials.category.Labs.link.generated-index.title": {
+    "message": "Labs",
+    "description": "The generated-index page title for category 'Labs' in sidebar 'tutorials'"
+  },
+  "sidebar.tutorials.category.Labs.link.generated-index.description": {
+    "message": "Step-by-step exercises with real captured outputs.",
+    "description": "The generated-index page description for category 'Labs' in sidebar 'tutorials'"
+  }
+}
