@@ -160,3 +160,33 @@ devicePlugin:
 ```
 
 :::
+
+## Local Zero-Hardware Sandbox & Scheduler Diagnostics {#local-zero-hardware-sandbox}
+
+If physical NVIDIA hardware or host drivers are unavailable, HAMi provides a built-in **`mockDevicePlugin`** mode for local cluster evaluation (on Kind or Minikube).
+
+When testing scheduler extender behavior or debugging `Pending` pod states without physical GPUs:
+
+1. Enable the mock plugin in Helm:
+
+   ```bash
+   helm upgrade hami hami-charts/hami -n kube-system \
+     --reuse-values \
+     --set mockDevicePlugin.enabled=true \
+     --set devicePlugin.enabled=false
+   ```
+
+2. Verify allocatable mock capacity (`nvidia.com/gpumem` and `nvidia.com/gpucores`):
+
+   ```bash
+   kubectl describe node <node-name> | grep -A 5 "Allocatable:"
+   ```
+
+3. Check scheduling failure reasons for `Pending` pods:
+
+   ```bash
+   kubectl get events --field-selector reason=FailedScheduling
+   kubectl logs -n kube-system -l app.kubernetes.io/component=hami-scheduler
+   ```
+
+For a complete step-by-step tutorial, see the [Local Mock GPU Testing Guide](../get-started/local-testing-with-mock-gpu.md).
