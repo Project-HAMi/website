@@ -424,6 +424,10 @@ module.exports = {
     },
     {
       type: "doc",
+      id: "troubleshooting/scheduling-failures",
+    },
+    {
+      type: "doc",
       id: "faq/faq",
     },
   ],
