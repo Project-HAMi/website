@@ -83,6 +83,53 @@ function createBlockStore() {
   };
 }
 
+// Same idea as the block-store marker: hide `>` inside quoted attrs so `[^>]*`
+// tag scans don't stop early.
+const ATTR_GT = "\u0001";
+
+function findTagClose(html, openIndex) {
+  let quote = null;
+  for (let i = openIndex + 1; i < html.length; i++) {
+    const c = html[i];
+    if (quote) {
+      if (c === quote) {
+        quote = null;
+      }
+      continue;
+    }
+    if (c === '"' || c === "'") {
+      quote = c;
+    } else if (c === ">") {
+      return i;
+    }
+  }
+  return -1;
+}
+
+function protectQuotedAngles(html) {
+  let result = "";
+  let cursor = 0;
+  for (let i = 0; i < html.length; i++) {
+    if (html[i] !== "<") {
+      continue;
+    }
+    const close = findTagClose(html, i);
+    if (close === -1) {
+      break;
+    }
+    result += html.slice(cursor, i);
+    result += html.slice(i, close).replace(/>/g, ATTR_GT);
+    result += ">";
+    cursor = close + 1;
+    i = close;
+  }
+  return result + html.slice(cursor);
+}
+
+function restoreQuotedAngles(text) {
+  return text.includes(ATTR_GT) ? text.replace(/\u0001/g, ">") : text;
+}
+
 // Depth-tracked because the TOC containers nest divs, so the first closing tag
 // isn't the matching one.
 function dropElements(html, tagName, classPattern) {
@@ -108,6 +155,105 @@ function dropElements(html, tagName, classPattern) {
     result += html.slice(cursor, match.index);
     cursor = end;
     tag.lastIndex = end;
+  }
+
+  return result + html.slice(cursor);
+}
+
+function findListClose(html, innerStart) {
+  const token = /<\/?(?:ul|ol)\b[^>]*>/gi;
+  token.lastIndex = innerStart;
+  let depth = 1;
+  let match;
+  while ((match = token.exec(html))) {
+    depth += match[0].startsWith("</") ? -1 : 1;
+    if (depth === 0) {
+      return { innerEnd: match.index, after: match.index + match[0].length };
+    }
+  }
+  return null;
+}
+
+function extractDirectLis(inner) {
+  const items = [];
+  const token = /<\/?(?:ul|ol|li)\b[^>]*>/gi;
+  let listDepth = 0;
+  let liStart = null;
+  let match;
+
+  while ((match = token.exec(inner))) {
+    const isClose = match[0].startsWith("</");
+    const tag = match[0].match(/<\/?([a-z]+)/i)[1].toLowerCase();
+
+    if (tag === "ul" || tag === "ol") {
+      listDepth += isClose ? -1 : 1;
+      continue;
+    }
+    if (listDepth !== 0) {
+      continue;
+    }
+    if (!isClose) {
+      if (liStart === null) {
+        liStart = match.index + match[0].length;
+      }
+      continue;
+    }
+    if (liStart !== null) {
+      items.push(inner.slice(liStart, match.index));
+      liStart = null;
+    }
+  }
+
+  return items;
+}
+
+function formatListItem(marker, content) {
+  const lines = content
+    .replace(/^\n+/, "")
+    .replace(/\n+$/, "")
+    .split("\n")
+    .filter((line) => line.trim() !== "");
+  if (lines.length === 0) {
+    return `\n${marker.trimEnd()}`;
+  }
+  const indent = " ".repeat(marker.length);
+  let out = `\n${marker}${lines[0].trimStart()}`;
+  for (let i = 1; i < lines.length; i++) {
+    out += `\n${indent}${lines[i].trimStart()}`;
+  }
+  return out;
+}
+
+function renderList(inner, ordered) {
+  const items = extractDirectLis(inner);
+  if (items.length === 0) {
+    return "";
+  }
+  return items
+    .map((item, index) => {
+      const marker = ordered ? `${index + 1}. ` : `- `;
+      return formatListItem(marker, convertLists(item));
+    })
+    .join("");
+}
+
+function convertLists(html) {
+  const open = /<(ul|ol)\b[^>]*>/gi;
+  let result = "";
+  let cursor = 0;
+  let match;
+
+  while ((match = open.exec(html))) {
+    result += html.slice(cursor, match.index);
+    const ordered = match[1].toLowerCase() === "ol";
+    const closed = findListClose(html, match.index + match[0].length);
+    if (!closed) {
+      result += html.slice(match.index);
+      return result;
+    }
+    result += renderList(html.slice(match.index + match[0].length, closed.innerEnd), ordered);
+    cursor = closed.after;
+    open.lastIndex = closed.after;
   }
 
   return result + html.slice(cursor);
@@ -168,9 +314,11 @@ function toMarkdownTable(tableHtml) {
 }
 
 function htmlToMarkdown(html, pageUrl) {
-  const rawTitle = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] ?? "";
-  const rawDescription =
-    html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']*)["'][^>]*>/i)?.[1] ?? "";
+  html = protectQuotedAngles(html);
+  const rawTitle = restoreQuotedAngles(html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] ?? "");
+  const rawDescription = restoreQuotedAngles(
+    html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']*)["'][^>]*>/i)?.[1] ?? "",
+  );
 
   let content = html.match(/<main[^>]*>([\s\S]*?)<\/main>/i)?.[1] ?? html;
 
@@ -202,11 +350,6 @@ function htmlToMarkdown(html, pageUrl) {
       /<h([1-6])\b[^>]*>([\s\S]*?)<\/h\1>/gi,
       (match, level, text) => `\n\n${"#".repeat(Number(level))} ${text}\n\n`,
     )
-    .replace(/<ol\b[^>]*>([\s\S]*?)<\/ol>/gi, (match, items) => {
-      let index = 0;
-      return items.replace(/<li\b[^>]*>([\s\S]*?)<\/li>/gi, (_, item) => `\n${++index}. ${item}`);
-    })
-    .replace(/<li\b[^>]*>([\s\S]*?)<\/li>/gi, "\n- $1")
     .replace(/<p\b[^>]*>([\s\S]*?)<\/p>/gi, "\n\n$1\n\n")
     .replace(/<br\s*\/?>/gi, "\n")
     .replace(/<img\b[^>]*>/gi, (tag) => {
@@ -214,8 +357,10 @@ function htmlToMarkdown(html, pageUrl) {
       const alt = tag.match(/\balt="([^"]*)"/i)?.[1] ?? "";
       return src ? `![${alt}](${src})` : alt;
     });
+  markdown = convertLists(markdown);
 
-  markdown = normalizeWhitespace(inlineToMarkdown(markdown).replace(/[ \t]{2,}/g, " "));
+  // Keep leading indent so nested list markers aren't collapsed.
+  markdown = normalizeWhitespace(inlineToMarkdown(markdown).replace(/(\S)[ \t]{2,}/g, "$1 "));
 
   const title =
     normalizeWhitespace(rawTitle)
@@ -247,7 +392,7 @@ function htmlToMarkdown(html, pageUrl) {
   header.push("", `Source: ${pageUrl}`);
 
   // Restore last, so the stashed blocks aren't re-normalized.
-  return `${store.restore(`${header.join("\n")}\n\n${markdown}`)}\n`;
+  return restoreQuotedAngles(`${store.restore(`${header.join("\n")}\n\n${markdown}`)}\n`);
 }
 
 function estimateTokens(markdown) {
