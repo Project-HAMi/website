@@ -73,6 +73,20 @@ helm install hami hami-charts/hami --set devicePlugin.deviceMemoryScaling=5 -n k
 | `scheduler.defaultSchedulerPolicy.nodeSchedulerPolicy` | 字符串 | GPU 节点调度策略：`"binpack"` 表示尽可能将任务分配到同一个 GPU 节点；`"spread"` 表示尽可能将任务分配到不同的 GPU 节点。 | `"binpack"` |
 | `scheduler.defaultSchedulerPolicy.gpuSchedulerPolicy` | 字符串 | GPU 调度策略：`"binpack"` 表示尽可能将任务分配到同一个 GPU；`"spread"` 表示尽可能将任务分配到不同的 GPU。 | `"spread"` |
 
+## 调度器配置：扩展器参数
+
+调度器扩展器从 `scheduler.extender.extraArgs` 读取命令行参数。chart 默认值为 `["--debug", "-v=4"]`，设置该值会替换整个列表，因此需要保留想要沿用的条目：
+
+```bash
+helm upgrade hami hami-charts/hami -n kube-system --reuse-values \
+  --set-json 'scheduler.extender.extraArgs=["--debug","-v=4","--node-lock-retry-timeout=28s"]'
+```
+
+| 参数 | 类型 | 描述 | 默认值 |
+| --- | --- | --- | --- |
+| `--node-lock-retry-timeout` | 时长 | 当节点锁被同一个 PodGroup 的其他成员持有时，`Bind` 重试该锁的时长。仅对带有 `scheduling.x-k8s.io/pod-group` 标签的 Pod 生效，其他 Pod 保持原有的快速失败行为。设为 `0` 关闭重试。该值需小于 KubeSchedulerConfiguration 中扩展器的 `httpTimeout`（chart 设为 `30s`）。参见[如何在 HAMi 中使用 Coscheduling](coscheduling/how-to-use-coscheduling.md)。 | `28s` |
+| `--node-lock-timeout` | 时长 | 一把节点锁在被其他 Pod 接管前的有效期。对所有 Pod 生效，不限于 PodGroup 成员。 | `5m` |
+
 ## Pod 配置：注解
 
 | 参数 | 类型 | 描述 | 示例 |

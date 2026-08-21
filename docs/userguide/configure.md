@@ -71,6 +71,20 @@ helm install hami hami-charts/hami --set devicePlugin.deviceMemoryScaling=5 -n k
 | `scheduler.defaultSchedulerPolicy.nodeSchedulerPolicy` | String | GPU node scheduling policy: `"binpack"` allocates jobs to the same GPU node as much as possible. `"spread"` allocates jobs to different GPU nodes as much as possible. | `"binpack"` |
 | `scheduler.defaultSchedulerPolicy.gpuSchedulerPolicy` | String | GPU scheduling policy: `"binpack"` allocates jobs to the same GPU as much as possible. `"spread"` allocates jobs to different GPUs as much as possible. `"mutex"` allocates jobs only to GPUs with no other workloads. | `"spread"` |
 
+## Scheduler Configs: extender arguments
+
+The scheduler extender reads flags from `scheduler.extender.extraArgs`. The chart ships `["--debug", "-v=4"]`, and setting the value replaces the whole list, so repeat the entries you want to keep:
+
+```bash
+helm upgrade hami hami-charts/hami -n kube-system --reuse-values \
+  --set-json 'scheduler.extender.extraArgs=["--debug","-v=4","--node-lock-retry-timeout=28s"]'
+```
+
+| Argument | Type | Description | Default |
+| --- | --- | --- | --- |
+| `--node-lock-retry-timeout` | Duration | How long `Bind` retries the node lock when it is held by another member of the same PodGroup. Applies only to pods carrying the `scheduling.x-k8s.io/pod-group` label; other pods fail fast as before. `0` disables the retry. Keep this below the extender `httpTimeout` in the KubeSchedulerConfiguration, which the chart sets to `30s`. See [How to use Coscheduling with HAMi](coscheduling/how-to-use-coscheduling.md). | `28s` |
+| `--node-lock-timeout` | Duration | How long a node lock stays valid before another pod may take it over. Applies to every pod, not only PodGroup members. | `5m` |
+
 ## Pod Configs: Annotations
 
 | Argument | Type | Description | Example |
