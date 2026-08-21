@@ -66,7 +66,7 @@ kubectl describe cm  hami-device-plugin -n kube-system
 
 ## 自定义 MIG 配置（可选）
 
-HAMi 目前有一个 [内置的 MIG 配置](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/templates/scheduler/device-configmap.yaml) 用于 MIG。
+HAMi 目前有一个 [内置的 MIG 配置](https://github.com/Project-HAMi/HAMi/blob/v2.10.0/charts/hami/templates/scheduler/device-configmap.yaml) 用于 MIG。
 
 你可以按照以下步骤自定义 MIG 配置：
 
