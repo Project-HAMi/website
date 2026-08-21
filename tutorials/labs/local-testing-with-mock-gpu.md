@@ -3,6 +3,12 @@ title: Local Zero-Hardware HAMi Sandbox & Mock GPU Testing
 sidebar_label: Local Mock GPU Testing
 ---
 
+:::info AI-ASSISTED CONTENT
+
+This guide was drafted with AI assistance. All commands and outputs have been verified against a real local Kind cluster environment.
+
+:::
+
 This guide demonstrates how to set up a local, zero-hardware HAMi testing sandbox on a CPU-only machine using [Kind](https://kind.sigs.k8s.io/) (or Minikube) and HAMi's built-in **`mockDevicePlugin`**.
 
 This enables developers, evaluators, and contributors to test `hami-scheduler` resource allocation logic, verify `nvidia.com/gpumem` and `nvidia.com/gpucores` extended resource advertising, inspect mutating webhook annotations, and debug scheduling failure modes without requiring physical NVIDIA GPUs or host-installed CUDA drivers.
@@ -13,6 +19,16 @@ This enables developers, evaluators, and contributors to test `hami-scheduler` r
 - **REAL GPU VALIDATION REQUIRED**: Hardware-level CUDA symbol interception (`libvgpu.so`), hard GPU memory enforcement, and physical kernel execution.
 
 :::
+
+## How This Guide Differs from Lab 2 and Lab 5
+
+|  | This Guide (mockDevicePlugin) | Lab 2 (fake-gpu-operator) | Lab 5 (nvml-mock) |
+| --- | --- | --- | --- |
+| **GPU Simulation** | HAMi's built-in `mockDevicePlugin` chart flag | External `run-ai/fake-gpu-operator` | NVIDIA's `nvml-mock` library |
+| **Setup Complexity** | Single `helm install` with one flag | Separate operator deployment + node labeling | Build HAMi from source + compile mock library |
+| **What's Tested** | HAMi scheduler + extended resources (`gpumem`/`gpucores`) | Full scheduling flow with `nvidia.com/gpu` | Full HAMi device-plugin + GPU sharing + memory limits |
+| **Time Required** | ~20 minutes | ~30 minutes | ~40 minutes |
+| **Best For** | Quick scheduler smoke test | Understanding HAMi + operator architecture | Deep testing of HAMi features |
 
 ## Prerequisites
 
@@ -28,7 +44,7 @@ Before starting, ensure your local CPU-only workstation has the following tools 
 Create a standard single-node Kubernetes cluster using Kind:
 
 ```bash
-kind create cluster --name hami-sandbox
+kind create cluster --name hami-sandbox --image kindest/node:v1.31.0
 ```
 
 Verify that `kubectl` is connected to your local cluster:
@@ -42,7 +58,7 @@ Expected output:
 
 ```text
 NAME                         STATUS   ROLES           AGE   VERSION
-hami-sandbox-control-plane   Ready    control-plane   30s   v1.27.3
+hami-sandbox-control-plane   Ready    control-plane   30s   v1.31.0
 ```
 
 ## Step 2: Deploy HAMi with Mock Device Plugin
@@ -122,6 +138,7 @@ spec:
       command: ["bash", "-c", "sleep 3600"]
       resources:
         limits:
+          nvidia.com/gpu: 1
           nvidia.com/gpumem: 2048
           nvidia.com/gpucores: 50
 EOF
@@ -167,6 +184,7 @@ spec:
       command: ["bash", "-c", "sleep 3600"]
       resources:
         limits:
+          nvidia.com/gpu: 1
           nvidia.com/gpumem: 7000
           nvidia.com/gpucores: 50
 EOF

@@ -38,6 +38,11 @@ module.exports = {
         },
         {
           type: "doc",
+          id: "labs/local-testing-with-mock-gpu",
+          customProps: { level: "Beginner", duration: "about 20 minutes" },
+        },
+        {
+          type: "doc",
           id: "labs/hami-vllm",
           customProps: { level: "Intermediate", duration: "about 45 minutes" },
         },
