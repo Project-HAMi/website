@@ -371,6 +371,11 @@ module.exports = {
               label: "Using HAMi with KAI Scheduler",
               items: ["userguide/kai-scheduler/how-to-use-kai-scheduler"],
             },
+            {
+              type: "category",
+              label: "Using Coscheduling with HAMi",
+              items: ["userguide/coscheduling/how-to-use-coscheduling"],
+            },
           ],
         },
       ],
