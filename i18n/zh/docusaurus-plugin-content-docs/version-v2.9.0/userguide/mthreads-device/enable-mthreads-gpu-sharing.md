@@ -39,10 +39,10 @@ translated: true
 
 :::
 
-- 在安装 HAMi 时配置'devices.mthreads.enabled = true'参数
+- 在安装 HAMi 时配置参数 `devices.mthreads.enabled=true`
 
 ```bash
-helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag={your kubernetes version} --set devices.mthreads.enabled=true -n kube-system
+helm install hami hami-charts/hami --set scheduler.kubeScheduler.image.tag={your kubernetes version} --set devices.mthreads.enabled=true -n kube-system
 ```
 
 ## 运行 GPU 任务
@@ -71,7 +71,7 @@ spec:
 
 :::note
 
-每一单位的 sgpu-memory 代表 512M 的显存。
+每一单位的 sgpu-memory 代表 512MiB 的显存。
 
 :::
 
