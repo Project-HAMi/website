@@ -94,49 +94,14 @@ spec:
 
 `gpumem-pod-b.yaml` is identical except for the name. Apply both:
 
-<Tabs groupId="cloud-provider">
-<TabItem value="aws" label="AWS">
-
-Open a seperate terminal.
-
-Use the same PEM key file and `NODE_PUBLIC_IP` defined in **Step 1.3: SSH Into the Instance** to copy the YAML files to the EC2 instance.
-
 ```bash
-scp -i ~/<your-pem-key-file-path>/hami-eks.pem \
-  tutorials/labs/examples/03-gpu-partitioning/gpumem-pod-a.yaml \
-  tutorials/labs/examples/03-gpu-partitioning/gpumem-pod-b.yaml \
-  ubuntu@<your-vm-public-ip>:/home/ubuntu/
-```
+# Set the base repository URL for HAMi lab manifests
+export HAMI_MANIFEST_RAW="https://raw.githubusercontent.com/Project-HAMi/website/refs/heads/master/tutorials/labs/examples/03-gpu-partitioning"
 
-Return to the EC2 terminal.
-
-```bash
-ls /home/ubuntu/
-```
-
-Expected output, you should see:
-
-```plaintext
-gpumem-pod-a.yaml
-gpumem-pod-b.yaml
-```
-
-```bash
-kubectl apply -f /home/ubuntu/gpumem-pod-a.yaml -f /home/ubuntu/gpumem-pod-b.yaml
-kubectl get pods gpumem-pod-a gpumem-pod-b -o wide
-```
-
-</TabItem>
-<TabItem value="gcp" label="GCP">
-
-```bash
-kubectl apply -f tutorials/labs/examples/03-gpu-partitioning/gpumem-pod-a.yaml -f tutorials/labs/examples/03-gpu-partitioning/gpumem-pod-b.yaml
+kubectl apply -f $HAMI_MANIFEST_RAW/gpumem-pod-a.yaml -f $HAMI_MANIFEST_RAW/gpumem-pod-b.yaml
 
 kubectl get pods gpumem-pod-a gpumem-pod-b -o wide
 ```
-
-</TabItem>
-</Tabs>
 
 ```plaintext
 NAME           READY   STATUS    RESTARTS   AGE   IP               NODE            NOMINATED NODE   READINESS GATES
@@ -214,34 +179,12 @@ spec:
           nvidia.com/gpumem: 4000 # limit this Pod to 4000 MiB of VRAM
 ```
 
-<Tabs groupId="cloud-provider">
-<TabItem value="aws" label="AWS">
-
-Open a seperate terminal
-
-Use the same PEM key file and `NODE_PUBLIC_IP` defined in **Step 1.3: SSH Into the Instance** to copy the YAML files to the EC2 instance.
-
 ```bash
-scp -i ~/<your-pem-key-file-path>/hami-eks.pem \
-  tutorials/labs/examples/03-gpu-partitioning/oom-test-pod.yaml \
-  ubuntu@<your-vm-public-ip>:/home/ubuntu/
+# Re-export the HAMi lab manifests
+export HAMI_MANIFEST_RAW="https://raw.githubusercontent.com/Project-HAMi/website/refs/heads/master/tutorials/labs/examples/03-gpu-partitioning"
+
+kubectl apply -f $HAMI_MANIFEST_RAW/oom-test-pod.yaml
 ```
-
-Return to the EC2 terminal.
-
-```bash
-kubectl apply -f /home/ubuntu/oom-test-pod.yaml
-```
-
-</TabItem>
-<TabItem value="gcp" label="GCP">
-
-```bash
-kubectl apply -f tutorials/labs/examples/03-gpu-partitioning/oom-test-pod.yaml
-```
-
-</TabItem>
-</Tabs>
 
 While the image pulls, watch the HAMi scheduler make its decision:
 
@@ -267,7 +210,7 @@ Expected output:
 
 ```plaintext
 NAME           READY   STATUS      RESTARTS   AGE     IP              NODE              NOMINATED NODE   READINESS GATES
-oom-test-pod   0/1     Completed   0          6m17s   10.244.109.31   ip-172-31-8-251   <none>           <none>
+oom-test-pod   0/1     Completed   0          6m17s   10.244.109.31   ip-172-31-16-62   <none>           <none>
 ```
 
 ```bash
@@ -317,45 +260,9 @@ resources:
     nvidia.com/gpucores: 30 # limit this Pod to 30% of GPU compute
 ```
 
-<Tabs groupId="cloud-provider">
-<TabItem value="aws" label="AWS">
-
-Open a seperate terminal
-
-Use the same PEM key file and `NODE_PUBLIC_IP` defined in **Step 1.3: SSH Into the Instance** to copy the YAML files to the EC2 instance.
-
 ```bash
-scp -i ~/<your-pem-key-file-path>/hami-eks.pem \
-  tutorials/labs/examples/03-gpu-partitioning/gpucores-pod.yaml \
-  ubuntu@<your-vm-public-ip>:/home/ubuntu/
+kubectl apply -f $HAMI_MANIFEST_RAW/gpucores-pod.yaml
 ```
-
-Return to the EC2 terminal.
-
-```bash
-ls /home/ubuntu/
-```
-
-Expected output, you should see:
-
-```plaintext
-gpucores-pod.yaml  gpumem-pod-b.yaml
-gpumem-pod-a.yaml  oom-test-pod.yaml
-```
-
-```bash
-kubectl apply -f /home/ubuntu/gpucores-pod.yaml
-```
-
-</TabItem>
-<TabItem value="gcp" label="GCP">
-
-```bash
-kubectl apply -f tutorials/labs/examples/03-gpu-partitioning/gpucores-pod.yaml
-```
-
-</TabItem>
-</Tabs>
 
 ```bash
 kubectl get pod gpucores-pod -o wide
@@ -365,7 +272,7 @@ Expected output:
 
 ```plaintext
 NAME           READY   STATUS    RESTARTS   AGE   IP              NODE              NOMINATED NODE   READINESS GATES
-gpucores-pod   1/1     Running   0          2m    10.244.14.160   ip-172-31-9-124   <none>           <none>
+gpucores-pod   1/1     Running   0          2m    10.244.14.160   ip-172-31-16-62   <none>           <none>
 ```
 
 Check the environment HAMi injected into the container:
@@ -426,11 +333,37 @@ kubectl exec -n monitoring prometheus-prometheus-kube-prometheus-prometheus-0 -c
 
 (Optional) Access the WebUI via port forwarding:
 
+<Tabs groupId="cloud-provider">
+<TabItem value="aws" label="AWS">
+
 ```bash
-kubectl port-forward --address 0.0.0.0 service/my-hami-webui 3000:3000 --namespace=kube-system
+kubectl port-forward service/my-hami-webui 3000:3000 --namespace=kube-system
 ```
 
-Visit `http://<your-vm-public-ip-address>:3000` to open the HAMi WebUI.
+Open a separate terminal and run:
+
+```bash
+export NODE_PUBLIC_IP=<your-vm-public-ip>
+export KEY_FILE="<your-pem-key-file-path>/hami-eks.pem"
+
+ssh -i "$KEY_FILE" \
+  -L 3000:localhost:3000 \
+  ubuntu@$NODE_PUBLIC_IP
+```
+
+Visit `http://localhost:3000` to open the HAMi WebUI.
+
+</TabItem>
+<TabItem value="gcp" label="GCP">
+
+```bash
+kubectl port-forward service/my-hami-webui 3000:3000 --namespace=kube-system
+```
+
+Visit `http://localhost:3000` to open the HAMi WebUI.Expand commentComment on lines R809 to R813Resolved
+
+</TabItem>
+</Tabs>
 
 ## Step 6: Cleanup
 
