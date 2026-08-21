@@ -5,19 +5,22 @@ sidebar_label: "Lab 1: Online Install"
 lab:
   level: Beginner
   duration: about 60 minutes
-  environment: GCP VM with one NVIDIA T4
+  environment: AWS or GCP VM with one NVIDIA T4
   cost: about $1 in VM time
   authors:
     - rootsongjc
     - saiyam1814
-  verified: "2026-06-04"
+    - creativeklvn
+  verified: "2026-08-21"
 tags:
   - installation
   - nvidia
 toc_max_heading_level: 2
 ---
 
-This lab walks you through building a Kubernetes cluster from scratch on a Google Cloud GPU virtual machine and installing HAMi online, resulting in a complete GPU virtualization runtime environment.
+import Tabs from '@theme/Tabs'; import TabItem from '@theme/TabItem';
+
+This lab walks you through building a Kubernetes cluster from scratch on an AWS EC2 GPU or Google Cloud GPU virtual machine and installing HAMi online, resulting in a complete GPU virtualization runtime environment.
 
 ## What You'll Get
 
@@ -30,7 +33,7 @@ The entire installation process is divided into 6 steps, each solving a specific
 ```mermaid
 %% title: HAMi Installation Overview
 flowchart LR
-    Step1["Step 1<br/>Create GCP VM"] --> Step2["Step 2<br/>Install Helm"]
+    Step1["Step 1<br/>Create AWS or GCP VM"] --> Step2["Step 2<br/>Install Helm"]
     Step2 --> Step3["Step 3<br/>Install Kubernetes"]
     Step3 --> Step4["Step 4<br/>Install Prometheus"]
     Step4 --> Step5["Step 5<br/>Install GPU Operator"]
@@ -39,7 +42,7 @@ flowchart LR
 
 | Step | Purpose | What Problem It Solves |
 | --- | --- | --- |
-| Create GCP VM | Provision a Linux server with a GPU | Kubernetes needs GPU hardware to schedule GPU workloads |
+| Create AWS or GCP VM | Provision a Linux server with a GPU | Kubernetes needs GPU hardware to schedule GPU workloads |
 | Install Helm | Kubernetes package manager | All subsequent components are installed via Helm, similar to apt/yum |
 | Install Kubernetes | Container orchestration platform | HAMi runs on top of Kubernetes; all GPU resources are managed by K8s |
 | Install Prometheus | Monitoring system | HAMi and GPU Operator depend on Prometheus to collect and store metrics |
@@ -48,19 +51,166 @@ flowchart LR
 
 ## Prerequisites
 
+<Tabs groupId="cloud-provider">
+<TabItem value="aws" label="AWS">
+
+- AWS account that can run a [G-instance type](https://aws.amazon.com/ec2/instance-types/g4/). To use this instance, take the following steps:
+  1. Search for the "Service Quota" service in the AWS console search bar and select it.
+  2. At the right of the screen, under "Manage quotas", search for "Amazon Elastic Compute Cloud" quotas and select "View quotas".
+  3. Search for "All G and VT Spot Instance Requests" in the quota search bar and select it.
+  4. At the top right of the service page, click "Request increase at account level" and request for 4 vCPU.
+- `AWS` CLI installed and authenticated (`aws configure`)
+- **Instance type**: `g4dn.xlarge` instance type because it supports the nvidia-tesla-t4.
+- **Operating System**: `Ubuntu 24.04 LTS`
+- **Kubernetes version**: `1.33`
+- **Kernel version**: `AWS Kernel v6.8` (The installation step is in this tutorial.)
+
+</TabItem>
+<TabItem value="gcp" label="GCP">
+
 - Google Cloud account with Compute Engine API enabled
 - `gcloud` CLI installed and authenticated (`gcloud auth login`)
 - NVIDIA T4 GPU quota available in your GCP project
+- **Operating System**: Ubuntu 22.04 LTS
+- **Kubernetes version**: `1.34`
 
 > Cost note: the `n1-standard-4` + T4 VM costs about $0.55 per hour. [Lab 3](./gpu-partitioning.md) and [Lab 4](./hami-dra.md) continue on this same cluster, so one session covers all three labs. Delete the VM when you finish.
 
-## Step 1: Create a GCP Virtual Machine
+</TabItem>
+</Tabs>
 
-### Purpose
+> To get the full list of supported OS, Kubernetes version, and VM Kernel version supported by the NVIDIA GPU Operator v25.3 used in this tutorial, visit [NVIDIA GPU Operator Platform Support v25.3](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/25.3/platform-support.html#supported-operating-systems-and-kubernetes-platforms).
+
+---
+
+## Step 1: Create a Virtual Machine
+
+<Tabs groupId="cloud-provider">
+<TabItem value="aws" label="AWS">
+
+### AWS Purpose
 
 Create a virtual machine with a GPU to serve as the foundation for the entire lab. HAMi requires physical GPU hardware (or pass-through virtual GPU) to function, it does not emulate GPUs; instead, it partitions and shares real GPUs.
 
-### Instructions
+### AWS Instructions
+
+#### 1.0 Verify AWS CLI Authentication
+
+```bash
+aws sts get-caller-identity
+```
+
+Expected output is similar to:
+
+```json
+{
+  "UserId": "AIDAXXXXXXXXXXXXXXXX",
+  "Account": "123456789012",
+  "Arn": "arn:aws:iam::123456789012:user/your-user"
+}
+```
+
+The command should return information about the AWS account and identity you are currently authenticated as.
+
+#### 1.1 Export EC2 Configuration Variables
+
+```bash
+export INSTANCE_TYPE="g4dn.xlarge"
+export AMI_ID="<YOUR_AWS_AMI_ID>"
+export KEY_NAME="hami-eks"
+export VOLUME_SIZE="50"
+export REGION="<YOUR_AWS_REGION>"
+```
+
+#### 1.2 Create the EC2 Spot Instance
+
+```bash
+aws ec2 run-instances \
+    --instance-type "$INSTANCE_TYPE" \
+    --image-id "$AMI_ID" \
+    --key-name "$KEY_NAME" \
+    --block-device-mappings "[{\"DeviceName\":\"/dev/sda1\",\"Ebs\":{\"VolumeSize\":$VOLUME_SIZE,\"VolumeType\":\"gp3\",\"DeleteOnTermination\":true}}]" \
+    --instance-market-options '{"MarketType":"spot"}' \
+    --region "$REGION"
+```
+
+#### 1.3 SSH Into the Instance
+
+```bash
+export NODE_PUBLIC_IP=<your-vm-public-ip>
+export KEY_FILE="<your-pem-key-file-path>/hami-eks.pem"
+
+ssh -i "$KEY_FILE" ubuntu@$NODE_PUBLIC_IP
+```
+
+After logging in, switch to root:
+
+```bash
+sudo -i
+```
+
+#### 1.4 Downgrade to the v6.8 AWS Kernel, Use It as the Default, and Reboot
+
+The GPU operator installation in Step 5, runs v25.3.0, and this version [only supports a specific kernel version](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/25.3/platform-support.html#supported-precompiled-drivers) depending on the operating system being used. AWS ships with a different version on default, this step changes it to the supported one.
+
+```bash
+# Install the AWS 6.8 kernel and its headers
+apt install -y linux-image-6.8.0-1008-aws linux-headers-6.8.0-1008-aws
+
+# Find the GRUB identifier for the installed 6.8 kernel
+GRUB_ID=$(grep "menuentry 'Ubuntu, with Linux 6.8.0-1008-aws'" /boot/grub/grub.cfg |
+  sed -n "s/.*'gnulinux-6.8.0-1008-aws-advanced-\([^']*\)'.*/\1/p")
+
+# Make sure the 6.8 kernel entry was found
+test -n "$GRUB_ID" || {
+  echo "Error: could not find the GRUB entry for Linux 6.8.0-1008-aws"
+  exit 1
+}
+
+echo "Found GRUB identifier: $GRUB_ID"
+
+# Configure GRUB to boot the 6.8 AWS kernel by default
+sed -i "s|^GRUB_DEFAULT=.*|GRUB_DEFAULT=\"gnulinux-advanced-${GRUB_ID}>gnulinux-6.8.0-1008-aws-advanced-${GRUB_ID}\"|" /etc/default/grub
+
+# Regenerate the GRUB boot configuration
+update-grub
+
+# Verify that GRUB_DEFAULT is set correctly
+grep '^GRUB_DEFAULT' /etc/default/grub
+
+# Reboot the EC2 instance using the new default kernel
+reboot
+```
+
+#### 1.5 SSH Into the Instance Again and Confirm Kernel Version
+
+```bash
+export NODE_PUBLIC_IP=<your-vm-public-ip>
+export KEY_FILE="<your-pem-key-file-path>/hami-eks.pem"
+
+ssh -i "$KEY_FILE" ubuntu@$NODE_PUBLIC_IP
+
+# After logging in, switch to the root user:
+sudo -i
+
+# Check the currently running Linux kernel version
+uname -r
+```
+
+The output is similar to the following:
+
+```plaintext
+6.8.0-1008-aws
+```
+
+</TabItem>
+<TabItem value="gcp" label="GCP">
+
+### GCP Purpose
+
+Create a virtual machine with a GPU to serve as the foundation for the entire lab. HAMi requires physical GPU hardware (or pass-through virtual GPU) to function, it does not emulate GPUs; instead, it partitions and shares real GPUs.
+
+### GCP Instructions
 
 Set environment variables:
 
@@ -103,6 +253,9 @@ After logging in, switch to root:
 ```bash
 sudo su -
 ```
+
+</TabItem>
+</Tabs>
 
 ## Step 2: Install Helm
 
@@ -171,7 +324,7 @@ EOF
 sysctl --system
 ```
 
-#### 3.4 Install containerd
+#### 3.4 Install Containerd
 
 containerd is the default container runtime for Kubernetes, responsible for actually creating and running containers. Docker is no longer the default runtime since Kubernetes 1.24.
 
@@ -189,7 +342,7 @@ systemctl restart containerd
 systemctl enable containerd
 ```
 
-#### 3.5 Install kubeadm, kubelet, and kubectl
+#### 3.5 Install Kubeadm, Kubelet, and Kubectl
 
 The relationship between these three tools:
 
@@ -204,6 +357,28 @@ flowchart LR
 - **kubeadm**: A one-time tool used to initialize the cluster
 - **kubelet**: A daemon process responsible for creating and destroying Pods on the local node
 - **kubectl**: The command-line tool used for day-to-day operations
+
+<Tabs groupId="cloud-provider">
+<TabItem value="aws" label="AWS">
+
+```bash
+apt-get install -y apt-transport-https ca-certificates curl gpg
+
+mkdir -p /etc/apt/keyrings
+
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.33/deb/Release.key | \
+    gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.33/deb/ /' | \
+    tee /etc/apt/sources.list.d/kubernetes.list
+
+apt-get update
+apt-get install -y kubelet kubeadm kubectl
+apt-mark hold kubelet kubeadm kubectl
+```
+
+</TabItem>
+<TabItem value="gcp" label="GCP">
 
 ```bash
 apt-get install -y apt-transport-https ca-certificates curl gpg
@@ -220,6 +395,9 @@ apt-get update
 apt-get install -y kubelet kubeadm kubectl
 apt-mark hold kubelet kubeadm kubectl
 ```
+
+</TabItem>
+</Tabs>
 
 > `apt-mark hold` prevents these packages from being automatically upgraded. Kubernetes component versions need to be managed manually.
 
@@ -256,7 +434,33 @@ Wait for the Calico Pods to be ready:
 kubectl get pods -n calico-system
 ```
 
-#### 3.8 Allow Master Node to Schedule Pods
+The output is similar to the following:
+
+```plaintext
+NAME                                       READY   STATUS    RESTARTS   AGE
+calico-kube-controllers-7566c4cd97-f8jpp   1/1     Running   0          50s
+calico-node-skfxl                          1/1     Running   0          50s
+calico-typha-5b5969dcf9-mwb99              1/1     Running   0          51s
+csi-node-driver-nppmm                      2/2     Running   0          50s
+```
+
+#### 3.8 Verify Cluster Status
+
+<Tabs groupId="cloud-provider">
+<TabItem value="aws" label="AWS">
+
+```bash
+kubectl get nodes
+```
+
+Expected output (STATUS of Ready indicates the cluster is ready):
+
+```plaintext
+NAME              STATUS   ROLES           AGE    VERSION
+ip-172-31-16-62   Ready    control-plane   106s   v1.33.13
+```
+
+#### 3.9 Allow Master Node to Schedule Pods (AWS)
 
 In a single-node cluster, this node serves as both the control plane and the worker node. By default, Kubernetes does not schedule workloads on Master nodes. You need to manually remove this restriction:
 
@@ -264,7 +468,20 @@ In a single-node cluster, this node serves as both the control plane and the wor
 kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 ```
 
-#### 3.9 Verify Cluster Status
+#### 4.0 Verify Cluster Status (AWS)
+
+```bash
+kubectl get nodes
+```
+
+Expected output (STATUS of Ready indicates the cluster is ready):
+
+```plaintext
+ip-172-31-16-62   Ready    control-plane   3m42s   v1.33.13
+```
+
+</TabItem>
+<TabItem value="gcp" label="GCP">
 
 ```bash
 kubectl get nodes
@@ -276,6 +493,30 @@ Expected output (STATUS of Ready indicates the cluster is ready):
 NAME            STATUS   ROLES           AGE    VERSION
 hami-workshop   Ready    control-plane   2m     v1.34.8
 ```
+
+#### 3.9 Allow Master Node to Schedule Pods (GCP)
+
+In a single-node cluster, this node serves as both the control plane and the worker node. By default, Kubernetes does not schedule workloads on Master nodes. You need to manually remove this restriction:
+
+```bash
+kubectl taint nodes --all node-role.kubernetes.io/control-plane-
+```
+
+#### 4.0 Verify Cluster Status (GCP)
+
+```bash
+kubectl get nodes
+```
+
+Expected output (STATUS of Ready indicates the cluster is ready):
+
+```plaintext
+NAME            STATUS   ROLES           AGE    VERSION
+hami-workshop   Ready    control-plane   2m     v1.34.8
+```
+
+</TabItem>
+</Tabs>
 
 ## Step 4: Install Prometheus
 
@@ -304,6 +545,29 @@ helm install prometheus prometheus-community/kube-prometheus-stack \
 >
 > `serviceMonitorSelectorNilUsesHelmValues=false` makes Prometheus pick up ServiceMonitors from all namespaces regardless of labels. Without it, Prometheus only selects ServiceMonitors labeled `release: prometheus`, silently ignores the one the GPU Operator creates for dcgm-exporter, and you end up with no GPU metrics at all.
 
+<Tabs groupId="cloud-provider">
+<TabItem value="aws" label="AWS">
+
+Verify Prometheus component status:
+
+```bash
+kubectl get po -n monitoring
+```
+
+All Pods should have a status of `Running`:
+
+```plaintext
+NAME                                                     READY   STATUS    RESTARTS   AGE
+alertmanager-prometheus-kube-prometheus-alertmanager-0   2/2     Running   0          28s
+prometheus-kube-prometheus-operator-58fcd77f9d-zm2w5     1/1     Running   0          35s
+prometheus-kube-state-metrics-6f8b5cc99-6p9zf            1/1     Running   0          35s
+prometheus-prometheus-kube-prometheus-prometheus-0       2/2     Running   0          28s
+prometheus-prometheus-node-exporter-5vp4b                1/1     Running   0          35s
+```
+
+</TabItem>
+<TabItem value="gcp" label="GCP">
+
 Verify Prometheus component status:
 
 ```bash
@@ -319,6 +583,9 @@ prometheus-kube-state-metrics-xxxxxxxxxx-xxxxx         1/1     Running   0      
 prometheus-prometheus-kube-prometheus-prometheus-0     2/2     Running   0          2m
 prometheus-prometheus-node-exporter-xxxxx              1/1     Running   0          2m
 ```
+
+</TabItem>
+</Tabs>
 
 > If the installation fails, uninstall first before retrying: `helm uninstall -n monitoring prometheus`
 
@@ -392,6 +659,8 @@ The expected output includes GPU information (driver version, CUDA version, GPU 
 +-----------------------------------------------------------------------------------------+
 ```
 
+---
+
 ## Step 6: Install HAMi
 
 ### Purpose
@@ -438,6 +707,10 @@ NODE_NAME=$(kubectl get nodes -o jsonpath='{.items[0].metadata.name}')
 kubectl label nodes ${NODE_NAME} gpu=on
 ```
 
+```bash
+kubectl get nodes --show-labels | grep -i gpu=on
+```
+
 The device plugin starts on the labeled node:
 
 ```bash
@@ -449,13 +722,16 @@ hami-device-plugin-bbrjj          2/2     Running   0          30s
 hami-scheduler-6d659887fc-j5ngc   2/2     Running   0          95s
 ```
 
-Verify GPU registration information:
+Install `jq` and Verify GPU registration information:
 
 ```bash
-kubectl get node ${NODE_NAME} -o jsonpath='{.metadata.annotations.hami\.io/node-nvidia-register}'
+# Install jq for JSON formatting
+sudo apt install -y jq
+# Verify GPU registration information
+kubectl get node ${NODE_NAME} -o jsonpath='{.metadata.annotations.hami\.io/node-nvidia-register}' | jq
 ```
 
-Expected output is one JSON object per GPU:
+The output is similar to the following JSON object per GPU:
 
 ```json
 [
@@ -502,10 +778,43 @@ helm install my-hami-webui hami-webui/hami-webui \
 
 > `--set dcgm-exporter.enabled=false` because the GPU Operator already installed dcgm-exporter, avoiding duplicate deployment.
 
+Check the pod is running:
+
+```bash
+kubectl get pods -n kube-system -l app.kubernetes.io/name=hami-webui
+```
+
 Access the WebUI via port forwarding:
+
+<Tabs groupId="cloud-provider">
+<TabItem value="aws" label="AWS">
+
+```bash
+kubectl port-forward service/my-hami-webui 3000:3000 --namespace=kube-system
+```
+
+Open a seperate terminal and run:
+
+```bash
+
+export NODE_PUBLIC_IP=<your-vm-public-ip>
+export KEY_FILE="<your-pem-key-file-path>/hami-eks.pem"
+
+ssh -i "$KEY_FILE" \
+  -L 3000:localhost:3000 \
+  ubuntu@$NODE_PUBLIC_IP
+```
+
+Visit `http://localhost:3000` to open the HAMi WebUI.
+
+</TabItem>
+<TabItem value="gcp" label="GCP">
 
 ```bash
 kubectl port-forward service/my-hami-webui 3000:3000 --namespace=kube-system
 ```
 
 Visit `http://localhost:3000` to open the HAMi WebUI.
+
+</TabItem>
+</Tabs>
