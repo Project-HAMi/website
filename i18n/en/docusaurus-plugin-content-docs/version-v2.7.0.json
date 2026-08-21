@@ -59,10 +59,6 @@
     "message": "Examples",
     "description": "The label for category 'Examples' in sidebar 'docs'"
   },
-  "sidebar.docs.category.Share Illuvatar GPU devices": {
-    "message": "Share Illuvatar GPU devices",
-    "description": "The label for category 'Share Illuvatar GPU devices' in sidebar 'docs'"
-  },
   "sidebar.docs.category.iluvatar-examples": {
     "message": "Examples",
     "description": "The label for category 'Examples' in sidebar 'docs'"
@@ -134,5 +130,9 @@
   "sidebar.docs.category.Contributor Guide": {
     "message": "Contributor Guide",
     "description": "The label for category 'Contributor Guide' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Share Iluvatar GPU devices": {
+    "message": "Share Iluvatar GPU devices",
+    "description": "The label for category 'Share Iluvatar GPU devices' in sidebar 'docs'"
   }
 }

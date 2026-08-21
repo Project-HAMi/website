@@ -143,10 +143,11 @@ export default function ManifestGenerator() {
       }
     }
 
+    const podName = `hami-${vendor.toLowerCase().replace(/_/g, "-")}-pod`;
     let code = `apiVersion: v1
 kind: Pod
 metadata:
-  name: hami-${vendor.toLowerCase()}-pod
+  name: ${podName}
 `;
 
     if (annotations.length > 0) {
