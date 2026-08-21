@@ -164,6 +164,12 @@ docker image inspect "$HAMI_IMAGE" \
   --format='ID={{.Id}} Architecture={{.Architecture}} SizeBytes={{.Size}}'
 ```
 
+:::note
+
+HAMi v2.10.0 (released 2026-08-21) includes commit `634bf2b`, so the released chart and images ship everything this lab builds from source. The lab keeps the pinned build it was verified with; a future revision will re-verify against the v2.10.0 release artifacts and drop the source build.
+
+:::
+
 The pinned build produced:
 
 ```plaintext
