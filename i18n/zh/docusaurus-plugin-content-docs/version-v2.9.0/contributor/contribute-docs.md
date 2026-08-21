@@ -100,7 +100,7 @@ title: 带有标签的文档
   - `/static/img/docs/zh/`：仅中文图片示例：
   - `![WebUI Overview](/img/docs/en/userguide/webui-overview.png)`
   - `![WebUI 集群概览](/img/docs/zh/userguide/webui-overview.png)`
-  - `![Architecture](/img/docs/common/architecture/hami-arch.png)`
+  - `![Architecture](/img/docs/common/developers/hami-core-design/hami-arch.png)`
 
 ### 目录组织
 
