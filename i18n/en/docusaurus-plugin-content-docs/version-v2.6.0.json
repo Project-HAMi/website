@@ -1,0 +1,122 @@
+{
+  "version.label": {
+    "message": "v2.6.0",
+    "description": "The label for version v2.6.0"
+  },
+  "sidebar.docs.category.Core Concepts": {
+    "message": "Core Concepts",
+    "description": "The label for category 'Core Concepts' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Key Features": {
+    "message": "Key Features",
+    "description": "The label for category 'Key Features' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Get Started": {
+    "message": "Get Started",
+    "description": "The label for category 'Get Started' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Installation": {
+    "message": "Installation",
+    "description": "The label for category 'Installation' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.User Guide": {
+    "message": "User Guide",
+    "description": "The label for category 'User Guide' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Monitoring": {
+    "message": "Monitoring",
+    "description": "The label for category 'Monitoring' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Share NVIDIA GPU devices": {
+    "message": "Share NVIDIA GPU devices",
+    "description": "The label for category 'Share NVIDIA GPU devices' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.nvidia-examples": {
+    "message": "Examples",
+    "description": "The label for category 'Examples' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Share Cambricon MLU devices": {
+    "message": "Share Cambricon MLU devices",
+    "description": "The label for category 'Share Cambricon MLU devices' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.cambricon-examples": {
+    "message": "Examples",
+    "description": "The label for category 'Examples' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Share Hygon DCU devices": {
+    "message": "Share Hygon DCU devices",
+    "description": "The label for category 'Share Hygon DCU devices' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.hygon-examples": {
+    "message": "Examples",
+    "description": "The label for category 'Examples' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Share Mthreads GPU devices": {
+    "message": "Share Mthreads GPU devices",
+    "description": "The label for category 'Share Mthreads GPU devices' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.mthreads-examples": {
+    "message": "Examples",
+    "description": "The label for category 'Examples' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Share Illuvatar GPU devices": {
+    "message": "Share Illuvatar GPU devices",
+    "description": "The label for category 'Share Illuvatar GPU devices' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.iluvatar-examples": {
+    "message": "Examples",
+    "description": "The label for category 'Examples' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Share Enflame GCU devices": {
+    "message": "Share Enflame GCU devices",
+    "description": "The label for category 'Share Enflame GCU devices' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Optimize MetaX GPU scheduling": {
+    "message": "Optimize MetaX GPU scheduling",
+    "description": "The label for category 'Optimize MetaX GPU scheduling' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Share MetaX GPU devices": {
+    "message": "Share MetaX GPU devices",
+    "description": "The label for category 'Share MetaX GPU devices' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.metax-sgpu-examples": {
+    "message": "Examples",
+    "description": "The label for category 'Examples' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.MetaX GPU topology-aware scheduling": {
+    "message": "MetaX GPU topology-aware scheduling",
+    "description": "The label for category 'MetaX GPU topology-aware scheduling' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.metax-gpu-examples": {
+    "message": "Examples",
+    "description": "The label for category 'Examples' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Share Ascend devices": {
+    "message": "Share Ascend devices",
+    "description": "The label for category 'Share Ascend devices' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.ascend-examples": {
+    "message": "Examples",
+    "description": "The label for category 'Examples' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Volcano vGPU": {
+    "message": "Volcano vGPU",
+    "description": "The label for category 'Volcano vGPU' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.NVIDIA GPU": {
+    "message": "NVIDIA GPU",
+    "description": "The label for category 'NVIDIA GPU' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.volcano-vgpu-examples": {
+    "message": "Examples",
+    "description": "The label for category 'Examples' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Developer Guide": {
+    "message": "Developer Guide",
+    "description": "The label for category 'Developer Guide' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Contributor Guide": {
+    "message": "Contributor Guide",
+    "description": "The label for category 'Contributor Guide' in sidebar 'docs'"
+  }
+}

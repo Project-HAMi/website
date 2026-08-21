@@ -41,7 +41,8 @@
   color: var(--ifm-color-emphasis-800);
 }
 
-.select, .input {
+.select,
+.input {
   padding: 0.6rem;
   border-radius: var(--ifm-global-radius);
   border: 1px solid var(--ifm-color-emphasis-400);
@@ -51,7 +52,8 @@
   transition: border-color 0.2s ease;
 }
 
-.select:focus, .input:focus {
+.select:focus,
+.input:focus {
   outline: none;
   border-color: var(--ifm-color-primary);
 }
