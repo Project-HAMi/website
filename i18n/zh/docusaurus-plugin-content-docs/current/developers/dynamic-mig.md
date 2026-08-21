@@ -3,6 +3,18 @@ title: NVIDIA GPU MPS 和 MIG 动态切片插件
 translated: true
 ---
 
+:::important HAMi v2.10 当前实现说明
+
+本说明仅描述 v2.10 的变更边界；下方原有的 `knownMigGeometries` 配置、模板遍历流程和架构图保留为 v2.9 及更早实现的参考，不代表 v2.10 的实现。
+
+v2.10 采用预留优先架构：节点上的 device plugin 是硬件能力与 GI/CI 变更的权威，通过 NVML 发现 allowlist 中 profile 的 `memoryMB`、`core`、`sliceCount` 和合法 `placements`，并在 `hami.io/node-nvidia-register` 的 `migProfiles` 中发布紧凑能力；调度器是 placement 策略与预留的权威，在绑定前选择 GPU、profile 和不重叠的 placement。
+
+调度器将逻辑预留持久化到 Pod 的 `hami.io/vgpu-mig-allocations`。device plugin 在 kubelet `Allocate` 阶段严格按预留创建该 Pod 的 GI/CI，并补充 MIG UUID、GI ID 和 CI ID。协调循环根据活动 Pod 回收已结束工作负载的实例；device plugin 重启后，会通过完整注解和 NVML 校验并接管仍在运行的实例。API 或注解读取不完整时会跳过破坏性清理。
+
+当前可观测性使用 `hami_node_gpu_mig_instance_info`；旧 `nodeGPUMigInstance` 仅在启用 `legacyMetrics` 后输出。HAMi 与 NVIDIA MIG Manager 不能同时修改同一块物理 GPU。从旧模板协议迁移必须先 drain 旧 MIG Pod，并先升级调度器再逐节点升级 device plugin。当前 Chart 使用 `migProfileAllowlist`，并包含 RTX PRO 6000 Blackwell Server Edition 的 profile 支持。
+
+:::
+
 ## 特别感谢
 
 没有 @sailorvii 的帮助，这个功能将无法实现。
