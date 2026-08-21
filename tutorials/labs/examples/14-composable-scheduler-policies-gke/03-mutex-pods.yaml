@@ -1,0 +1,71 @@
+# Step 6: mutex only allows cards with zero current users.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: policy-mutex-a
+  labels:
+    hami.run/lab-14: "true"
+  annotations:
+    hami.io/gpu-scheduler-policy: "mutex"
+spec:
+  containers:
+    - name: app
+      image: ubuntu:22.04
+      command: ["bash", "-c", "sleep infinity"]
+      resources:
+        limits:
+          nvidia.com/gpu: 1
+          nvidia.com/gpumem: 1000
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+      env:
+        - name: LD_LIBRARY_PATH
+          value: /host-nvidia/lib64
+      volumeMounts:
+        - name: host-nvidia-libs
+          mountPath: /host-nvidia/lib64
+          readOnly: true
+  volumes:
+    - name: host-nvidia-libs
+      hostPath:
+        path: /home/kubernetes/bin/nvidia/lib64
+        type: Directory
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: policy-mutex-b
+  labels:
+    hami.run/lab-14: "true"
+  annotations:
+    hami.io/gpu-scheduler-policy: "mutex"
+spec:
+  containers:
+    - name: app
+      image: ubuntu:22.04
+      command: ["bash", "-c", "sleep infinity"]
+      resources:
+        limits:
+          nvidia.com/gpu: 1
+          nvidia.com/gpumem: 1000
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+      env:
+        - name: LD_LIBRARY_PATH
+          value: /host-nvidia/lib64
+      volumeMounts:
+        - name: host-nvidia-libs
+          mountPath: /host-nvidia/lib64
+          readOnly: true
+  volumes:
+    - name: host-nvidia-libs
+      hostPath:
+        path: /home/kubernetes/bin/nvidia/lib64
+        type: Directory
