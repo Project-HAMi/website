@@ -14,6 +14,7 @@ It contains the following host-level metrics:
 | Metrics | Description | Example |
 | --- | --- | --- |
 | hami_host_gpu_utilization_ratio | GPU core utilization ratio on host (0-100) | `{device_index="0",device_type="NVIDIA-NVIDIA H200",device_uuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",zone="vGPU"}` 0 |
+| hami_host_gpu_memory_controller_utilization_ratio | GPU memory controller utilization ratio on host (0-100) | `{device_index="0",device_type="NVIDIA-NVIDIA H200",device_uuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",zone="vGPU"}` 0 |
 | hami_host_gpu_memory_used_bytes | GPU real-time device memory usage on host | `{device_index="0",device_type="NVIDIA-NVIDIA H200",device_uuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",zone="vGPU"}` 2.87244288e+08 |
 
 It also exposes per-container and per-vGPU metrics for each scheduled task:
