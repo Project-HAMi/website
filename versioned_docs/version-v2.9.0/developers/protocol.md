@@ -38,3 +38,25 @@ Since system clock on scheduler node and 'device' node may not align properly, s
 ```text
 hami.io/node-handshake-\{device-type\}: Requesting_{scheduler_node_current_timestamp}
 ```
+
+## Task Dispatch & Scheduling Decisions
+
+During the `bind` process, `kube-scheduler` invokes the device plugin to mount the device, but only provides the device `UUID`. In GPU sharing scenarios, the device plugin cannot natively obtain the workload's requested device specifications, such as GPU memory and compute core limits.
+
+Therefore, HAMi uses a protocol for the scheduler to communicate task allocation metadata to the device plugin. The scheduler passes this information by patching allocation annotations onto the Pod, which the device plugin reads during container setup, as shown below:
+
+<img src="/img/docs/common/developers/protocol/task-dispatch.png" width="600px" alt="HAMi task dispatch protocol diagram showing scheduler and device-plugin interaction" />
+
+During this process, three annotations are managed:
+
+- `hami.io/bind-time`: Timestamp when the scheduling decision was made.
+- `hami.io/vgpu-devices-allocated`: The devices and specifications allocated by the scheduler.
+- `hami.io/vgpu-devices-to-allocate`: The devices pending allocation. When the scheduler creates the pod annotations, `hami.io/vgpu-devices-to-allocate` contains the target devices. The device plugin determines the allocation based on this annotation, and once allocation is complete, removes the allocated devices. When the task is successfully running, `hami.io/vgpu-devices-to-allocate` becomes empty.
+
+An example of a GPU task requesting 3000 MiB of device memory generates the following annotations on the Pod:
+
+```yaml
+hami.io/bind-time: "1716199325"
+hami.io/vgpu-devices-allocated: GPU-0fc3eda5-e98b-a25b-5b0d-cf5c855d1448,NVIDIA,3000,0:;
+hami.io/vgpu-devices-to-allocate: ;
+```
