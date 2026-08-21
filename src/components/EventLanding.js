@@ -119,7 +119,9 @@ export default function EventLanding({ slug }) {
               ← {isZh ? "落地页" : "Landing Pages"}
             </Link>
             {event.banner && (
-              <img src={bannerUrl} alt={pick(locale, event.title)} className={styles.banner} />
+              <div className={styles.bannerWrapper}>
+                <img src={bannerUrl} alt={pick(locale, event.title)} className={styles.banner} />
+              </div>
             )}
             <h1 className={styles.title}>{pick(locale, event.title)}</h1>
             <div className={styles.meta}>
