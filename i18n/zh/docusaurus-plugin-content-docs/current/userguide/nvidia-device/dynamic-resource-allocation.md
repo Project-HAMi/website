@@ -3,6 +3,14 @@ title: 动态资源分配
 translated: true
 ---
 
+import SupportedComponents, { Tag } from '@site/src/components/SupportedComponents';
+
+<SupportedComponents>
+  <Tag href="../../installation/how-to-use-hami-dra.md" type="hami-dra">HAMi-DRA</Tag>
+  <Tag href="../../get-started/deploy-with-helm.md" type="hami">HAMi</Tag>
+  <Tag href="../../installation/configure-cdi.md" type="cdi">CDI 支持</Tag>
+</SupportedComponents>
+
 ## 介绍
 
 HAMi 已经在 NVIDIA 设备上支持了 K8s [DRA](https://kubernetes.io/docs/concepts/scheduling-eviction/dynamic-resource-allocation/)（动态资源分配）功能。通过安装 hami-k8s-dra-driver 你的集群调度器可以发现节点上的 NVIDIA GPU 设备。

@@ -2,6 +2,14 @@
 title: Enable dynamic MIG feature
 ---
 
+import SupportedComponents, { Tag } from '@site/src/components/SupportedComponents';
+
+<SupportedComponents>
+  <Tag href="../../get-started/deploy-with-helm.md" type="hami">HAMi</Tag>
+  <Tag href="../volcano-vgpu/nvidia-gpu/how-to-use-volcano-vgpu.md" type="volcano">Volcano</Tag>
+  <Tag href="./dynamic-resource-allocation.md" type="hami-dra">HAMi-DRA</Tag>
+</SupportedComponents>
+
 HAMi now supports dynamic MIG using mig-parted to adjust MIG devices dynamically, including:
 
 - **Dynamic MIG Instance Management**: Users no longer need to operate directly on GPU nodes or use commands like `nvidia-smi -i 0 -mig 1` to manage MIG instances. HAMi-device-plugin will handle this automatically.

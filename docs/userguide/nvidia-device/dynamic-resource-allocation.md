@@ -3,6 +3,14 @@ title: Dynamic Resource Allocation
 translated: true
 ---
 
+import SupportedComponents, { Tag } from '@site/src/components/SupportedComponents';
+
+<SupportedComponents>
+  <Tag href="../../installation/how-to-use-hami-dra.md" type="hami-dra">HAMi-DRA</Tag>
+  <Tag href="../../get-started/deploy-with-helm.md" type="hami">HAMi</Tag>
+  <Tag href="../../installation/configure-cdi.md" type="cdi">CDI Support</Tag>
+</SupportedComponents>
+
 ## Introduction
 
 HAMi has supported K8s [DRA](https://kubernetes.io/docs/concepts/scheduling-eviction/dynamic-resource-allocation/) (Dynamic Resource Allocation) on NVIDIA devices. By installing hami-k8s-dra-driver, your cluster scheduler can discover NVIDIA GPU devices on nodes.

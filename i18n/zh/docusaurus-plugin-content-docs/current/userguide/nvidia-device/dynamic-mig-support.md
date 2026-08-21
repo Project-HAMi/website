@@ -3,6 +3,14 @@ title: 启用动态 MIG 功能
 translated: true
 ---
 
+import SupportedComponents, { Tag } from '@site/src/components/SupportedComponents';
+
+<SupportedComponents>
+  <Tag href="../../get-started/deploy-with-helm.md" type="hami">HAMi</Tag>
+  <Tag href="../volcano-vgpu/nvidia-gpu/how-to-use-volcano-vgpu.md" type="volcano">Volcano</Tag>
+  <Tag href="./dynamic-resource-allocation.md" type="hami-dra">HAMi-DRA</Tag>
+</SupportedComponents>
+
 ## 介绍
 
 **我们现在支持通过使用 mig-parted 动态调整 mig-devices 来支持 dynamic-mig**，包括：
