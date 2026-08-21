@@ -34,7 +34,7 @@ Highlights:
 
 v2.10.0 adds a new **`mutex`** GPU scheduling policy ([#2011](https://github.com/Project-HAMi/HAMi/pull/2011), [@mesutoezdil](https://github.com/mesutoezdil)). A Pod annotated with `hami.io/gpu-scheduler-policy: mutex` is placed **only on GPUs that have no existing users**, guaranteeing exclusive device access for that workload. This is useful for latency-sensitive inference or workloads that must not share a die.
 
-The same change also fixes a long-standing sort bug that affected `binpack` and `spread`. Previously the scheduler used **NUMA node as the primary sort key**, which pinned workloads to a fixed NUMA node regardless of actual load ([#1806](https://github.com/Project-HAMi/HAMi/issues/1806)). With this release, **device utilization Score becomes the primary sort key, and NUMA is used only as a tiebreaker**, so `binpack` and `spread` now behave as expected across multi-NUMA topologies ([#2012](https://github.com/Project-HAMi/HAMi/pull/2012)).
+The same change also fixes a long-standing sort bug that affected `binpack` and `spread`. Previously the scheduler used **NUMA node as the primary sort key**, which pinned workloads to a fixed NUMA node regardless of actual load ([#1806](https://github.com/Project-HAMi/HAMi/issues/1806)). With this release, **device utilization Score becomes the primary sort key, and NUMA is used only as a tiebreaker**, so `binpack` and `spread` now behave as expected across multi-NUMA topologies ([#2011](https://github.com/Project-HAMi/HAMi/pull/2011)).
 
 ```yaml
 # Request an exclusively-allocated GPU

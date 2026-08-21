@@ -34,7 +34,7 @@ v2.10.0 引入了动态 **Flexible MIG**、全新的 **mutex** 调度策略、�
 
 v2.10.0 新增了 **`mutex`** GPU 调度策略（[#2011](https://github.com/Project-HAMi/HAMi/pull/2011)，[@mesutoezdil](https://github.com/mesutoezdil)）。带有 `hami.io/gpu-scheduler-policy: mutex` 注解的 Pod 会被调度到**当前没有任何用户使用的 GPU** 上，从而为该工作负载保证独占的设备访问，非常适合对延迟敏感的推理，或不能共享同一颗 die 的工作负载。
 
-同一改动还修复了一个长期存在、影响 `binpack` 与 `spread` 的排序 bug。此前调度器以 **NUMA 节点作为主排序键**，导致无论实际负载如何，工作负载都被固定到某个 NUMA 节点（[#1806](https://github.com/Project-HAMi/HAMi/issues/1806)）。本次发布后，**设备利用率 Score 成为主排序键，NUMA 仅作为 tiebreaker**，因此 `binpack` 与 `spread` 在多 NUMA 拓扑下的行为恢复正常（[#2012](https://github.com/Project-HAMi/HAMi/pull/2012)）。
+同一改动还修复了一个长期存在、影响 `binpack` 与 `spread` 的排序 bug。此前调度器以 **NUMA 节点作为主排序键**，导致无论实际负载如何，工作负载都被固定到某个 NUMA 节点（[#1806](https://github.com/Project-HAMi/HAMi/issues/1806)）。本次发布后，**设备利用率 Score 成为主排序键，NUMA 仅作为 tiebreaker**，因此 `binpack` 与 `spread` 在多 NUMA 拓扑下的行为恢复正常（[#2011](https://github.com/Project-HAMi/HAMi/pull/2011)）。
 
 ```yaml
 # 请求独占分配的 GPU
