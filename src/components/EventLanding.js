@@ -122,57 +122,69 @@ export default function EventLanding({ slug }) {
               <img src={bannerUrl} alt={pick(locale, event.title)} className={styles.banner} />
             )}
             <h1 className={styles.title}>{pick(locale, event.title)}</h1>
-            <div className={styles.meta}>
-              <span className={styles.metaItem}>
-                <FontAwesomeIcon icon={faCalendarDays} className={styles.metaIcon} />
-                {event.endDate
-                  ? formatDateRange(event.date, event.endDate, locale)
-                  : formatDate(event.date, locale)}
-              </span>
-              <span className={styles.metaItem}>
-                <FontAwesomeIcon icon={faLocationDot} className={styles.metaIcon} />
-                {pick(locale, event.location)}
-              </span>
-              {event.startTime && (
-                <span className={styles.metaItem}>
-                  <FontAwesomeIcon icon={faClock} className={styles.metaIcon} />
-                  {event.startTime}
-                  {event.endTime ? ` - ${event.endTime}` : ""}
-                  {event.timeZone ? ` ${event.timeZone}` : ""}
-                </span>
-              )}
-              {event.room && (
-                <span className={styles.metaItem}>
-                  <FontAwesomeIcon icon={faDoorOpen} className={styles.metaIcon} />
-                  {event.room}
-                </span>
-              )}
-            </div>
-            <p className={styles.description}>{pick(locale, event.description)}</p>
-            {(event.externalUrl || event.talkUrl) && (
-              <div className={styles.heroLinks}>
-                {event.externalUrl && (
-                  <a
-                    href={event.externalUrl}
-                    className={styles.externalLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {isZh ? "查看活动官网" : "Event Website"} →
-                  </a>
-                )}
-                {event.talkUrl && (
-                  <a
-                    href={event.talkUrl}
-                    className={styles.externalLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {isZh ? "查看演讲详情" : "Talk Details"} →
-                  </a>
+            <div className={styles.heroBody}>
+              <div className={styles.heroMain}>
+                <p className={styles.description}>{pick(locale, event.description)}</p>
+                {(event.externalUrl || event.talkUrl) && (
+                  <div className={styles.heroLinks}>
+                    {event.externalUrl && (
+                      <a
+                        href={event.externalUrl}
+                        className={styles.externalLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {isZh ? "查看活动官网" : "Event Website"} →
+                      </a>
+                    )}
+                    {event.talkUrl && (
+                      <a
+                        href={event.talkUrl}
+                        className={styles.externalLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {isZh ? "查看演讲详情" : "Talk Details"} →
+                      </a>
+                    )}
+                  </div>
                 )}
               </div>
-            )}
+              <aside className={styles.heroAside} aria-label={isZh ? "活动信息" : "Event details"}>
+                <div className={styles.detailsCard}>
+                  <div className={styles.meta}>
+                    <span className={styles.metaItem}>
+                      <FontAwesomeIcon icon={faCalendarDays} className={styles.metaIcon} />
+                      <span>
+                        {event.endDate
+                          ? formatDateRange(event.date, event.endDate, locale)
+                          : formatDate(event.date, locale)}
+                      </span>
+                    </span>
+                    <span className={styles.metaItem}>
+                      <FontAwesomeIcon icon={faLocationDot} className={styles.metaIcon} />
+                      <span>{pick(locale, event.location)}</span>
+                    </span>
+                    {event.startTime && (
+                      <span className={styles.metaItem}>
+                        <FontAwesomeIcon icon={faClock} className={styles.metaIcon} />
+                        <span>
+                          {event.startTime}
+                          {event.endTime ? ` - ${event.endTime}` : ""}
+                          {event.timeZone ? ` ${event.timeZone}` : ""}
+                        </span>
+                      </span>
+                    )}
+                    {event.room && (
+                      <span className={styles.metaItem}>
+                        <FontAwesomeIcon icon={faDoorOpen} className={styles.metaIcon} />
+                        <span>{event.room}</span>
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </aside>
+            </div>
           </div>
         </section>
 
