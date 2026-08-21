@@ -6,6 +6,8 @@ tags: ["KubeCon", "GPU", "Kubernetes", "AI"]
 authors: [hami_community]
 ---
 
+import ResponsiveImage from "@site/src/components/ResponsiveImage";
+
 下周，HAMi 将在 [KubeCon + CloudNativeCon Europe 2026](https://events.linuxfoundation.org/kubecon-cloudnativecon-europe/) 的多项活动中亮相，包括 Project Pavilion 展台、技术分享、主舞台 Demo，以及会后 AI 相关活动。
 
 作为 CNCF Sandbox 项目，HAMi 关注的 GPU 虚拟化、共享与调度问题，正在与 Kubernetes 生态中的 AI 基础设施议题发生越来越直接的交汇。KubeCon + CloudNativeCon Europe 2026 将于 3 月 23 日至 26 日在阿姆斯特丹举行，其中 3 月 23 日为 pre-event programming，3 月 24 日至 26 日为主会期。
@@ -28,7 +30,7 @@ KubeCon Europe 2026 的官方议程中，keynote、AI 相关 session、Project P
 
 ## 在 KubeCon 现场，如何找到 HAMi？
 
-![欢迎来到 HAMi 展台](/img/blog-hami-at-kubecon-eu-2026-booth.png)
+<ResponsiveImage src="/img/blog-hami-at-kubecon-eu-2026-booth.png" alt="欢迎来到 HAMi 展台" sizes="(max-width: 996px) calc(100vw - 2rem), 740px" />
 
 HAMi 将在 Project Pavilion 设置展台，方便与社区成员、用户和维护者进行现场交流。
 
