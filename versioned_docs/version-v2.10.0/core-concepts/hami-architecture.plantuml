@@ -1,0 +1,34 @@
+@startuml
+skinparam sequenceMessageAlign center
+skinparam responseMessageBelowArrow true
+
+participant "User" as user
+participant "MutatingWebhook\n[Cluster Control Layer]" as webhook #CCEEFF
+participant "Scheduler-Extender\n[Cluster Control Layer]" as sched #CCEEFF
+participant "Device Plugin\n[Node Agent Layer]" as dp #CCFFCC
+participant "HAMi-Core\n[Container Isolation Layer]" as core #FFFFCC
+database "Physical GPU" as gpu
+
+== Node Startup: Device Spec Reporting ==
+
+dp -> sched : Write Node Annotation\nhami.io/node-nvidia-register\n(UUID / VRAM / Compute / Model)
+
+== User Submits Pod ==
+
+user -> webhook : Submit Pod\n(nvidia.com/gpu + gpumem)
+webhook -> webhook : Rewrite schedulerName\n(force hami-scheduler)
+webhook -> sched : Hand off to hami-scheduler
+
+== Scheduling Decision ==
+
+sched -> sched : Read Node Annotation\nSelect target node and GPU UUID
+sched -> dp : Write Pod Annotation\nhami.io/vgpu-devices-allocated\n(UUID + VRAM quota + compute quota)
+
+== Device Allocation and Container Start ==
+
+dp -> dp : Read Pod Annotation\nGet GPU UUID and quotas
+dp -> gpu : Mount /dev/nvidia*
+note over dp : Allocate response injects:\n• hostPath mount libvgpu.so\n• hostPath mount ld.so.preload → /etc/ld.so.preload\n• CUDA_DEVICE_MEMORY_LIMIT_<index>\n• CUDA_DEVICE_SM_LIMIT
+core -> gpu : CUDA API call\n(OOM if quota exceeded)
+
+@enduml
