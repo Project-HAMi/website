@@ -1,10 +1,10 @@
 ---
-title: Default Kueue Usage Example
+title: 默认 Kueue 使用示例
 ---
 
-This example demonstrates how to use Kueue with HAMi vGPU resources. It includes a complete configuration that sets up ResourceFlavor, ClusterQueue, LocalQueue, and a sample Deployment that requests vGPU resources.
+本示例演示了如何将 Kueue 与 HAMi vGPU 资源配合使用。示例包含一套完整的配置，用于创建 ResourceFlavor、ClusterQueue、LocalQueue，以及一个请求 vGPU 资源的示例 Deployment。
 
-Before applying this example, ensure that HAMi and Kueue are installed, and Kueue is configured with ResourceTransformation enabled (see [How to use Kueue on HAMi](../how-to-use-kueue.md)).
+在应用此示例之前，确保已安装 HAMi 和 Kueue，并且已在 Kueue 中启用 ResourceTransformation 配置（参见 [如何在 HAMi 上使用 Kueue](../how-to-use-kueue-on-hami.md)）。
 
 ```yaml
 apiVersion: kueue.x-k8s.io/v1beta1
@@ -77,7 +77,7 @@ spec:
           name: main
           resources:
             limits:
-              nvidia.com/gpu: "2" # requesting 2 vGPU instances
-              nvidia.com/gpucores: "30" # 30 cores per vGPU
-              nvidia.com/gpumem: "1024" # 1024 MiB per vGPU
+              nvidia.com/gpu: "2" # 请求 2 个 vGPU 实例
+              nvidia.com/gpucores: "30" # 每个 vGPU 为 30 核
+              nvidia.com/gpumem: "1024" # 每个 vGPU 为 1024 MiB
 ```

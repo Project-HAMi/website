@@ -8,7 +8,7 @@ Huawei Ascend 设备插件为 HAMi 提供 NPU 切片支持，支持两种模式�
 
 ## 1. 基于模板的硬切片（vNPU）
 
-基于虚拟化模板支持显存切片，自动使用最小可用模板。有关详细信息，请查看[设备模板](./device-template.md)。
+基于虚拟化模板支持显存切片，自动使用最小可用模板。有关详细信息，请查看[设备模板](./ascend-device-template.md)。
 
 ## 2. 基于运行时拦截的软切片（hami-vnpu-core）
 
