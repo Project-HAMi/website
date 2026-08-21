@@ -124,10 +124,10 @@ graph TD
     VOL --> SCHD --> HOOK --> ENF
     HOOK -. "共享内存记账" .-> MON
 
-    style VOL fill:#d9f99d,stroke:#4f7d00,stroke-width:2px,color:#1f2937
-    style HOOK fill:#fef3c7,stroke:#b45309,stroke-width:2px,color:#1f2937
-    style ENF fill:#dcfce7,stroke:#0b6b3c,stroke-width:2px,color:#1f2937
-    style MON fill:#dbeafe,stroke:#1a5fb4,stroke-width:2px,color:#1f2937
+    class VOL accent
+    class HOOK run
+    class ENF ok
+    class MON info
 ```
 
 Pod 侧的契约很简洁：`schedulerName: volcano`、`runtimeClassName: ascend`、注解 `huawei.com/vnpu-mode: hami-core`，以及对两个扩展资源的 limits。少了这个注解，Pod 会退回模板路径，在纯软切分节点上可能一直 Pending。

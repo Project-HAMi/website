@@ -41,12 +41,10 @@ graph TD
     LIB -. "提供 libvgpu.so" .-> RUN
     RUN -. "写入节点本地缓存" .-> MON
 
-    style KAI fill:#d9f99d,stroke:#4f7d00,stroke-width:2px,color:#1f2937
-    style WEBHOOK fill:#dbeafe,stroke:#1a5fb4,stroke-width:2px,color:#1f2937
-    style LIB fill:#dbeafe,stroke:#1a5fb4,stroke-width:2px,color:#1f2937
-    style RUN fill:#fef3c7,stroke:#b45309,stroke-width:2px,color:#1f2937
-    style ENF fill:#dcfce7,stroke:#0b6b3c,stroke-width:2px,color:#1f2937
-    style MON fill:#dbeafe,stroke:#1a5fb4,stroke-width:2px,color:#1f2937
+    class KAI accent
+    class WEBHOOK,LIB,MON info
+    class RUN run
+    class ENF ok
 ```
 
 `CUDA_DEVICE_MEMORY_LIMIT` 是调度层与隔离层之间的契约。KAI 不需要知道 CUDA 调用如何被拦截，HAMi-core 也不需要知道配额如何计算。KAI 保留自己的调度逻辑；它集成的是 HAMi-core，而不是用完整的 HAMi 平台替换自身调度器。

@@ -290,6 +290,9 @@ module.exports = {
       defaultMode: "dark",
       respectPrefersColorScheme: false,
     },
+    mermaid: {
+      theme: { light: "default", dark: "dark" },
+    },
     announcementBar,
     navbar: {
       title: "HAMi",

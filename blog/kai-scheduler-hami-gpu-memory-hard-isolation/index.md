@@ -41,12 +41,10 @@ graph TD
     LIB -. "provides libvgpu.so" .-> RUN
     RUN -. "writes node-local cache" .-> MON
 
-    style KAI fill:#d9f99d,stroke:#4f7d00,stroke-width:2px,color:#1f2937
-    style WEBHOOK fill:#dbeafe,stroke:#1a5fb4,stroke-width:2px,color:#1f2937
-    style LIB fill:#dbeafe,stroke:#1a5fb4,stroke-width:2px,color:#1f2937
-    style RUN fill:#fef3c7,stroke:#b45309,stroke-width:2px,color:#1f2937
-    style ENF fill:#dcfce7,stroke:#0b6b3c,stroke-width:2px,color:#1f2937
-    style MON fill:#dbeafe,stroke:#1a5fb4,stroke-width:2px,color:#1f2937
+    class KAI accent
+    class WEBHOOK,LIB,MON info
+    class RUN run
+    class ENF ok
 ```
 
 `CUDA_DEVICE_MEMORY_LIMIT` is the contract between scheduling and enforcement. KAI does not need to know how CUDA calls are intercepted, and HAMi-core does not need to know how the quota was calculated. KAI retains its own scheduling logic; it integrates with HAMi-core rather than replacing its scheduler with the full HAMi platform.
