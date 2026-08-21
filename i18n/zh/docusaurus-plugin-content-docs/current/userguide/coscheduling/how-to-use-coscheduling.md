@@ -23,23 +23,23 @@ hami.io/mutex.lock: 2026-06-14T15:05:03Z,default,gang-pod-1
 
 这两个机制在 gang 释放时相遇。Coscheduling 会在同一毫秒内释放全部成员，因此当多个成员落在同一节点时，它们会争抢一把只持有几十毫秒的锁。抢锁失败的 Pod 绑定失败并回到 Pending，随后经由 kube-scheduler 的退避重试回来，而退避是以秒为单位的。5 个成员的 gang 最终会收敛，但需要经过多轮退避。
 
-为了消除这段空转，扩展器会为带有 Coscheduling 分组标签的 Pod 重试节点锁：
+为了消除这段空转，扩展器会为属于某个 PodGroup 的 Pod 重试节点锁：
 
-- 带有非空 `scheduling.x-k8s.io/pod-group` 标签的 Pod 每 100 毫秒轮询一次锁，直到 `--node-lock-retry-timeout` 超时。
+- 带有非空 `scheduling.x-k8s.io/pod-group` 标签，或设置了 `spec.schedulingGroup.podGroupName` 的 Pod，都算作分组成员。这类 Pod 每 100 毫秒轮询一次锁，直到 `--node-lock-retry-timeout` 超时。
 - 每次重试前会释放已部分获取的锁，因此同时申请多个厂商设备的 Pod 不会残留过期锁。
 - 非锁争抢类错误会立即返回，不做重试。
-- 未带该标签的 Pod 保持原有的快速失败行为。
+- 不属于任何分组的 Pod 保持原有的快速失败行为。
 
 :::note
 
-`--node-lock-retry-timeout` 在高于 v2.9.0 的版本中可用。
+`--node-lock-retry-timeout` 在高于 v2.9.0 的版本中可用。把它传给更早版本的扩展器会因无法识别该参数而退出，因此请在确认所用构建包含该参数后再添加。
 
 :::
 
 ## 前置条件
 
 - 一个已安装 HAMi 且具备 GPU 节点的 Kubernetes 集群。
-- 与集群 Kubernetes 次版本匹配的 [scheduler-plugins 版本](https://github.com/kubernetes-sigs/scheduler-plugins/releases)。下文示例使用 Kubernetes v1.35 与 v0.34.7。
+- 与集群 Kubernetes 次版本匹配的 [scheduler-plugins 版本](https://github.com/kubernetes-sigs/scheduler-plugins/releases)。scheduler-plugins 的次版本与其编译所用的 Kubernetes 客户端库版本一致，请对照[兼容性矩阵](https://github.com/kubernetes-sigs/scheduler-plugins#compatibility-matrix)选择与集群匹配的版本。下文示例使用 v0.34.7，该版本基于 Kubernetes v1.34 构建。
 - Helm 3。
 - 具备 cluster-admin 权限的 `kubectl`。
 
@@ -52,7 +52,7 @@ helm repo add hami-charts https://project-hami.github.io/HAMi/
 helm repo update
 
 helm install hami hami-charts/hami \
-  --namespace hami-system --create-namespace \
+  --namespace kube-system \
   --set scheduler.kubeScheduler.image.registry=registry.k8s.io \
   --set scheduler.kubeScheduler.image.repository=scheduler-plugins/kube-scheduler \
   --set scheduler.kubeScheduler.image.tag=v0.34.7 \
@@ -69,12 +69,30 @@ Coscheduling 读取 `PodGroup` 资源。从同一个 scheduler-plugins 版本安
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/scheduler-plugins/v0.34.7/config/crd/bases/scheduling.x-k8s.io_podgroups.yaml
 ```
 
-## 3. 在调度器配置中启用 Coscheduling
+## 3. 部署 scheduler-plugins 控制器
+
+gang 准入本身并不依赖该控制器：Coscheduling 插件依据 `PodGroup` 的 spec 以及自身的内存记账来判断。控制器提供的是 `PodGroup.status` —— 它负责协调 `phase`、`running`、`succeeded` 与 `failed`，这正是 `kubectl get podgroup` 展示的内容，也是跟踪一组 Pod 进度所需的信息。它以独立镜像随同一版本发布。
+
+从发布清单部署控制器：
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/scheduler-plugins/v0.34.7/manifests/install/all-in-one.yaml
+```
+
+该清单会创建 `scheduler-plugins` 命名空间、控制器 Deployment 以及控制器所需的 RBAC，**不会**安装第二个调度器，因此可以与 HAMi 调度器共存。清单中同时创建的 `system:kube-scheduler:plugins` ClusterRole 绑定的是 `system:kube-scheduler` 用户，并不覆盖 HAMi 调度器的 ServiceAccount，这部分由[第 5 步](#5-授予访问-podgroup-的权限)单独处理。
+
+确认控制器已就绪：
+
+```bash
+kubectl rollout status deploy/scheduler-plugins-controller -n scheduler-plugins
+```
+
+## 4. 在调度器配置中启用 Coscheduling
 
 chart 会把 KubeSchedulerConfiguration 渲染到 `hami-scheduler` ConfigMap 中。将插件加入 profile：
 
 ```bash
-kubectl edit configmap hami-scheduler -n hami-system
+kubectl edit configmap hami-scheduler -n kube-system
 ```
 
 `profiles` 条目应如下所示：
@@ -110,13 +128,13 @@ only one queue sort plugin required for profile with scheduler name "hami-schedu
 重启调度器使配置生效：
 
 ```bash
-kubectl rollout restart deploy/hami-scheduler -n hami-system
-kubectl rollout status deploy/hami-scheduler -n hami-system
+kubectl rollout restart deploy/hami-scheduler -n kube-system
+kubectl rollout status deploy/hami-scheduler -n kube-system
 ```
 
-## 4. 授予访问 PodGroup 的权限
+## 5. 授予访问 PodGroup 的权限
 
-chart 安装的调度器 ServiceAccount 无法读取 `PodGroup` 资源。补充权限：
+chart 安装的调度器 ServiceAccount 无法读取 `PodGroup` 资源。Coscheduling 插件只会读取它们——解析 Pod 所属的分组、统计同组成员数量，并与 `minMember` 比较——因此调度器只需要只读权限：
 
 ```yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -126,7 +144,7 @@ metadata:
 rules:
   - apiGroups: ["scheduling.x-k8s.io"]
     resources: ["podgroups"]
-    verbs: ["get", "list", "watch", "create", "update", "patch"]
+    verbs: ["get", "list", "watch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -139,12 +157,16 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: hami-scheduler
-    namespace: hami-system
+    namespace: kube-system
 ```
 
-缺少该权限时，每个成员的 `PreFilter` 都会失败，整组 Pod 会一直处于 Pending。
+该 ServiceAccount 以 Helm release 名称命名：release 名为 `hami` 时对应 `hami-scheduler`。若使用了其他 release 名称或命名空间，请相应调整 `name` 与 `namespace`。
 
-## 5. 提交一个 gang
+对 `PodGroup.status` 的写入来自[步骤 3](#3-部署-scheduler-plugins-控制器)部署的控制器，它拥有自己的 ServiceAccount 与 RBAC，因此调度器在这里不需要 `create`、`update` 或 `patch` 权限。
+
+缺少该 ClusterRole 时，调度器的 PodGroup lister 始终为空。`PreFilter` 仍会通过 —— 它把无法解析的分组当作没有分组处理 —— 但随后 `Permit` 会以 `PodGroup not found` 拒绝每个成员，整组 Pod 一直处于 Pending。
+
+## 6. 提交一个 gang
 
 创建 `PodGroup`，并给每个成员打上分组名标签。成员照常申请 vGPU 资源：
 
@@ -176,7 +198,7 @@ spec:
           nvidia.com/gpucores: "30"
 ```
 
-上面的清单只定义了一个成员。请用同一份模板创建 `minMember` 个名称不同的 Pod，否则该组永远达不到法定成员数，所有成员都会停留在 Pending。
+上面的清单定义的是该 gang 中的一个 Pod。请创建更多带有相同 `scheduling.x-k8s.io/pod-group` 标签的 Pod 以满足 `minMember`。每个 Pod 的名称必须不同，否则该组无法达到所需的成员数量，这些 Pod 会一直停留在 Pending。
 
 :::warning
 
@@ -199,17 +221,12 @@ current pods number: 3, minMember of group: 5
 
 ## 调整节点锁
 
-有两个相互独立的超时控制节点锁行为。
-
-| 参数 | 默认值 | 说明 |
-| --- | --- | --- |
-| `--node-lock-retry-timeout` | `28s` | 对带有 `scheduling.x-k8s.io/pod-group` 标签的 Pod，`Bind` 重试节点锁的时长。设为 `0` 关闭重试，恢复快速失败行为。轮询间隔为 100 毫秒。 |
-| `--node-lock-timeout` | `5m` | 一把锁在被其他 Pod 接管前的有效期。对所有 Pod 生效，不限于 gang 成员。 |
+有两个扩展器参数控制节点锁行为：`--node-lock-retry-timeout` 限定 `Bind` 为分组成员重试被占用的锁的时长，`--node-lock-timeout` 限定一把锁在被其他 Pod 接管前的有效期。两者的完整说明见[全局配置](../configure.md#调度器配置扩展器参数)。
 
 通过 chart 设置重试超时。`scheduler.extender.extraArgs` 会替换整个默认列表，因此需要保留已有条目：
 
 ```bash
-helm upgrade hami hami-charts/hami -n hami-system --reuse-values \
+helm upgrade hami hami-charts/hami -n kube-system --reuse-values \
   --set-json 'scheduler.extender.extraArgs=["--debug","-v=4","--node-lock-retry-timeout=28s"]'
 ```
 
@@ -229,11 +246,15 @@ helm upgrade hami hami-charts/hami -n hami-system --reuse-values \
 
 **调度器容器启动后反复崩溃**
 
-在 kube-scheduler 日志中查找 `only one queue sort plugin required`。这表示 `PrioritySort` 仍与 Coscheduling 同时启用，见[步骤 3](#3-在调度器配置中启用-coscheduling)。
+在 kube-scheduler 日志中查找 `only one queue sort plugin required`。这表示 `PrioritySort` 仍与 Coscheduling 同时启用，见[步骤 4](#4-在调度器配置中启用-coscheduling)。
 
 **整组 Pod 一直 Pending 且从未选中节点**
 
-要么创建的成员数少于 `minMember`，要么调度器读不到 `PodGroup` 资源。检查 kube-scheduler 日志中的 `PreFilter failed`，并确认[步骤 4](#4-授予访问-podgroup-的权限)的 RBAC 已应用。
+要么创建的成员数少于 `minMember`，要么调度器读不到 `PodGroup` 资源。两种情况的日志不同：成员不足会在 `PreFilter` 阶段以 `cannot find enough sibling pods` 被拒绝，而 RBAC 缺失则表现为 `Permit` 阶段的 `PodGroup not found`。属于后者时，请确认[步骤 5](#5-授予访问-podgroup-的权限)的 RBAC 已应用。
+
+**`kubectl get podgroup` 看不到 status**
+
+`scheduler-plugins-controller` 缺失或反复崩溃。gang 调度本身仍然可用，只是看不到状态。执行 `kubectl get deploy -n scheduler-plugins` 检查，并确认[步骤 3](#3-部署-scheduler-plugins-控制器)已应用。如果控制器日志中出现 `podgroups/status` 的 `forbidden` 报错，说明其自身的 RBAC 未被创建，请重新应用该步骤中的清单。
 
 **容器报错 `libdl.so.2: cannot open shared object file`**
 
@@ -244,5 +265,5 @@ HAMi 注入的 `LD_PRELOAD` 指向基于 glibc 构建的 `libvgpu.so`。基于 m
 - [Coscheduling 插件](https://github.com/kubernetes-sigs/scheduler-plugins/tree/master/pkg/coscheduling)
 - [scheduler-plugins 版本列表](https://github.com/kubernetes-sigs/scheduler-plugins/releases)
 - [全局配置](../configure.md)
-- [在 Kueue 中使用 HAMi](../kueue/how-to-use-kueue.md)
+- [如何在 HAMi 上使用 Kueue](../kueue/how-to-use-kueue.md)
 - [如何在 KAI Scheduler 中使用 HAMi](../kai-scheduler/how-to-use-kai-scheduler.md)

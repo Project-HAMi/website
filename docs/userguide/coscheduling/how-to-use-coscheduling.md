@@ -23,23 +23,23 @@ The lock serializes device allocation on that node. Without it, two Pods bound a
 
 These two mechanisms meet at gang release. Coscheduling releases every member in the same millisecond, so if several members target the same node, they contend on a lock that is held for only a few tens of milliseconds. The Pod that loses fails its bind, returns to Pending, and comes back through the default kube-scheduler backoff, which is measured in seconds. A five-member gang converges, but it takes several backoff rounds to do it.
 
-To close that gap, the extender retries the node lock for Pods that carry the Coscheduling group label:
+To close that gap, the extender retries the node lock for Pods that belong to a PodGroup:
 
-- A Pod with a non-empty `scheduling.x-k8s.io/pod-group` label polls the lock every 100 ms until `--node-lock-retry-timeout` expires.
+- A Pod counts as a group member if it carries a non-empty `scheduling.x-k8s.io/pod-group` label, or sets `spec.schedulingGroup.podGroupName`. Such a Pod polls the lock every 100 ms until `--node-lock-retry-timeout` expires.
 - Any partially acquired lock is released before each retry, so a Pod requesting devices from more than one vendor cannot leave a stale lock behind.
 - Errors that are not lock contention are returned immediately and are not retried.
-- Pods without the label keep the original fail-fast behavior.
+- Pods that belong to no group keep the original fail-fast behavior.
 
 :::note
 
-`--node-lock-retry-timeout` is available in builds newer than v2.9.0.
+`--node-lock-retry-timeout` is available in builds newer than v2.9.0. Passing it to an older extender makes the container exit on an unknown flag, so only add it once you are running a build that includes it.
 
 :::
 
 ## Prerequisites
 
 - A Kubernetes cluster with GPU nodes and HAMi installed.
-- A [scheduler-plugins release](https://github.com/kubernetes-sigs/scheduler-plugins/releases) built against your Kubernetes minor version. The examples below use v0.34.7 on Kubernetes v1.35.
+- A [scheduler-plugins release](https://github.com/kubernetes-sigs/scheduler-plugins/releases) built against your Kubernetes minor version. The minor version of scheduler-plugins matches the Kubernetes client packages it is compiled with, so pick the release that matches your cluster from the [compatibility matrix](https://github.com/kubernetes-sigs/scheduler-plugins#compatibility-matrix). The examples below use v0.34.7, which is built against Kubernetes v1.34.
 - Helm 3.
 - `kubectl` with cluster-admin rights.
 
@@ -52,7 +52,7 @@ helm repo add hami-charts https://project-hami.github.io/HAMi/
 helm repo update
 
 helm install hami hami-charts/hami \
-  --namespace hami-system --create-namespace \
+  --namespace kube-system \
   --set scheduler.kubeScheduler.image.registry=registry.k8s.io \
   --set scheduler.kubeScheduler.image.repository=scheduler-plugins/kube-scheduler \
   --set scheduler.kubeScheduler.image.tag=v0.34.7 \
@@ -69,12 +69,30 @@ Coscheduling reads `PodGroup` resources. Install the CRD from the same scheduler
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/scheduler-plugins/v0.34.7/config/crd/bases/scheduling.x-k8s.io_podgroups.yaml
 ```
 
-## 3. Enable Coscheduling in the scheduler config
+## 3. Deploy the scheduler-plugins controller
+
+Gang admission itself does not need the controller: the Coscheduling plugin decides on `PodGroup` spec and its own in-memory bookkeeping. What the controller adds is `PodGroup.status` — it reconciles `phase`, `running`, `succeeded`, and `failed`, which is what `kubectl get podgroup` reports and what you need to follow a group's progress. It ships as a separate image in the same release.
+
+Deploy the controller from the release manifest:
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/scheduler-plugins/v0.34.7/manifests/install/all-in-one.yaml
+```
+
+That manifest creates the `scheduler-plugins` namespace, the controller Deployment, and the controller RBAC. It does **not** install a second scheduler, so it is safe to apply alongside the HAMi scheduler. The `system:kube-scheduler:plugins` ClusterRole it also creates is bound to the `system:kube-scheduler` user and does not cover the HAMi scheduler ServiceAccount — [step 5](#5-grant-access-to-podgroups) handles that separately.
+
+Confirm the controller is up:
+
+```bash
+kubectl rollout status deploy/scheduler-plugins-controller -n scheduler-plugins
+```
+
+## 4. Enable Coscheduling in the scheduler config
 
 The chart renders the KubeSchedulerConfiguration into the `hami-scheduler` ConfigMap. Add the plugin to the profile:
 
 ```bash
-kubectl edit configmap hami-scheduler -n hami-system
+kubectl edit configmap hami-scheduler -n kube-system
 ```
 
 The `profiles` entry must look like this:
@@ -110,13 +128,13 @@ The ConfigMap is owned by the chart, so `helm upgrade` overwrites this edit. Re-
 Restart the scheduler to pick up the change:
 
 ```bash
-kubectl rollout restart deploy/hami-scheduler -n hami-system
-kubectl rollout status deploy/hami-scheduler -n hami-system
+kubectl rollout restart deploy/hami-scheduler -n kube-system
+kubectl rollout status deploy/hami-scheduler -n kube-system
 ```
 
-## 4. Grant access to PodGroups
+## 5. Grant access to PodGroups
 
-The scheduler ServiceAccount installed by the chart cannot read `PodGroup` resources. Add the permission:
+The scheduler ServiceAccount installed by the chart cannot read `PodGroup` resources. The Coscheduling plugin only reads them — it resolves a Pod's group, counts siblings, and compares the total against `minMember` — so read-only access is all the scheduler needs:
 
 ```yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -126,7 +144,7 @@ metadata:
 rules:
   - apiGroups: ["scheduling.x-k8s.io"]
     resources: ["podgroups"]
-    verbs: ["get", "list", "watch", "create", "update", "patch"]
+    verbs: ["get", "list", "watch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -139,12 +157,16 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: hami-scheduler
-    namespace: hami-system
+    namespace: kube-system
 ```
 
-Without it, `PreFilter` fails for every member and the whole group stays Pending.
+The ServiceAccount is named after the Helm release: a release named `hami` produces `hami-scheduler`. Adjust the `name` and `namespace` if you installed under a different release name or namespace.
 
-## 5. Submit a gang
+Writes to `PodGroup.status` come from the controller deployed in [step 3](#3-deploy-the-scheduler-plugins-controller), which carries its own ServiceAccount and RBAC, so the scheduler never needs `create`, `update`, or `patch` here.
+
+Without this ClusterRole the scheduler's PodGroup lister stays empty. `PreFilter` still passes — it treats a group it cannot resolve as no group at all — but `Permit` then rejects every member with `PodGroup not found`, and the group stays Pending.
+
+## 6. Submit a gang
 
 Create a `PodGroup` and label every member with its name. Each member requests vGPU resources as usual:
 
@@ -176,7 +198,7 @@ spec:
           nvidia.com/gpucores: "30"
 ```
 
-The manifest above defines one member. Create `minMember` Pods from the same template with distinct names, otherwise the group never reaches its quorum and every member stays Pending.
+The manifest above defines one Pod that belongs to the gang. Create additional Pods with the same `scheduling.x-k8s.io/pod-group` label to satisfy `minMember`. Each Pod should have a distinct name; otherwise, the group cannot reach the required number of members and the Pods will remain Pending.
 
 :::warning
 
@@ -199,17 +221,12 @@ current pods number: 3, minMember of group: 5
 
 ## Tune the node lock
 
-Two independent timeouts control node lock behavior.
-
-| Flag | Default | Description |
-| --- | --- | --- |
-| `--node-lock-retry-timeout` | `28s` | How long `Bind` retries the node lock for a Pod labeled with `scheduling.x-k8s.io/pod-group`. `0` disables retry and restores fail-fast behavior. Polling interval is 100 ms. |
-| `--node-lock-timeout` | `5m` | How long a lock stays valid before another Pod may take it over. Applies to every Pod, not only gang members. |
+Two extender flags control node lock behavior: `--node-lock-retry-timeout` bounds how long `Bind` retries a contended lock for a group member, and `--node-lock-timeout` bounds how long a lock stays valid before another Pod may take it over. Both are described in [Global Config](../configure.md#scheduler-configs-extender-arguments).
 
 Set the retry timeout through the chart. `scheduler.extender.extraArgs` replaces the default list, so keep the existing entries:
 
 ```bash
-helm upgrade hami hami-charts/hami -n hami-system --reuse-values \
+helm upgrade hami hami-charts/hami -n kube-system --reuse-values \
   --set-json 'scheduler.extender.extraArgs=["--debug","-v=4","--node-lock-retry-timeout=28s"]'
 ```
 
@@ -225,15 +242,19 @@ The default of `28s` leaves 2 seconds of headroom under that `30s` timeout.
 
 **Pods stay Pending with `BindingFailed: node <name> has been locked within 5m0s`**
 
-The retry is not active for these Pods. Check that the `scheduling.x-k8s.io/pod-group` label is on the Pod (not the PodGroup only, and not in annotations), and that `--node-lock-retry-timeout` is not set to `0`.
+The retry is not active for these Pods. Check that the `scheduling.x-k8s.io/pod-group` label is on the Pod itself (not on the PodGroup only, and not in annotations), and that `--node-lock-retry-timeout` is not set to `0`.
 
 **The scheduler container crash-loops on startup**
 
-Look for `only one queue sort plugin required` in the kube-scheduler logs. `PrioritySort` is still enabled alongside Coscheduling. See [step 3](#3-enable-coscheduling-in-the-scheduler-config).
+Look for `only one queue sort plugin required` in the kube-scheduler logs. `PrioritySort` is still enabled alongside Coscheduling. See [step 4](#4-enable-coscheduling-in-the-scheduler-config).
 
 **All members of a group stay Pending and no node is ever selected**
 
-Either fewer than `minMember` members were created, or the scheduler cannot read `PodGroup` resources. Check the kube-scheduler logs for `PreFilter failed` and confirm the RBAC from [step 4](#4-grant-access-to-podgroups) is applied.
+Either fewer than `minMember` members were created, or the scheduler cannot read `PodGroup` resources. The two cases log differently: a short group is rejected in `PreFilter` with `cannot find enough sibling pods`, while missing RBAC surfaces in `Permit` as `PodGroup not found`. For the latter, confirm the RBAC from [step 5](#5-grant-access-to-podgroups) is applied.
+
+**`kubectl get podgroup` reports no status**
+
+The `scheduler-plugins-controller` is missing or crash-looping. Gang scheduling still works, but the status view does not. Check `kubectl get deploy -n scheduler-plugins` and confirm [step 3](#3-deploy-the-scheduler-plugins-controller) was applied. A `forbidden` error on `podgroups/status` in the controller logs means its own RBAC was not created — re-apply the manifest from that step.
 
 **Containers fail with `libdl.so.2: cannot open shared object file`**
 
@@ -244,5 +265,5 @@ HAMi injects `LD_PRELOAD` pointing at a glibc build of `libvgpu.so`. Images base
 - [Coscheduling plugin](https://github.com/kubernetes-sigs/scheduler-plugins/tree/master/pkg/coscheduling)
 - [scheduler-plugins releases](https://github.com/kubernetes-sigs/scheduler-plugins/releases)
 - [Global Config](../configure.md)
-- [Using HAMi with Kueue](../kueue/how-to-use-kueue.md)
-- [Using HAMi with KAI Scheduler](../kai-scheduler/how-to-use-kai-scheduler.md)
+- [How to use kueue on HAMi](../kueue/how-to-use-kueue.md)
+- [How to use KAI Scheduler with HAMi](../kai-scheduler/how-to-use-kai-scheduler.md)

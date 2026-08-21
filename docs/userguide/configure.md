@@ -82,8 +82,8 @@ helm upgrade hami hami-charts/hami -n kube-system --reuse-values \
 
 | Argument | Type | Description | Default |
 | --- | --- | --- | --- |
-| `--node-lock-retry-timeout` | Duration | How long `Bind` retries the node lock when it is held by another member of the same PodGroup. Applies only to pods carrying the `scheduling.x-k8s.io/pod-group` label; other pods fail fast as before. `0` disables the retry. Keep this below the extender `httpTimeout` in the KubeSchedulerConfiguration, which the chart sets to `30s`. See [How to use Coscheduling with HAMi](coscheduling/how-to-use-coscheduling.md). | `28s` |
-| `--node-lock-timeout` | Duration | How long a node lock stays valid before another pod may take it over. Applies to every pod, not only PodGroup members. | `5m` |
+| `--node-lock-retry-timeout` | Duration | How long `Bind` retries the node lock when it is held by another member of the same PodGroup, polling every 100 ms. Applies only to pods in a PodGroup — those carrying a non-empty `scheduling.x-k8s.io/pod-group` label or setting `spec.schedulingGroup.podGroupName`; other pods fail fast as before. `0` disables the retry. Keep this below the extender `httpTimeout` in the KubeSchedulerConfiguration, which the chart sets to `30s`. Available in builds newer than v2.9.0. See [How to use Coscheduling with HAMi](coscheduling/how-to-use-coscheduling.md). | `28s` |
+| `--node-lock-timeout` | Duration | How long a node lock stays valid before another pod may take it over. Applies to every pod, not only PodGroup members. The chart also exposes `scheduler.nodeLockExpire`, which sets `HAMI_NODELOCK_EXPIRE`, but the scheduler applies this flag after reading that variable, so the flag is the effective setting. | `5m` |
 
 ## Pod Configs: Annotations
 

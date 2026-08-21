@@ -373,7 +373,7 @@ module.exports = {
             },
             {
               type: "category",
-              label: "Using HAMi with Coscheduling",
+              label: "Using Coscheduling with HAMi",
               items: ["userguide/coscheduling/how-to-use-coscheduling"],
             },
           ],

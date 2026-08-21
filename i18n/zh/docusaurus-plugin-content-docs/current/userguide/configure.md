@@ -84,8 +84,8 @@ helm upgrade hami hami-charts/hami -n kube-system --reuse-values \
 
 | 参数 | 类型 | 描述 | 默认值 |
 | --- | --- | --- | --- |
-| `--node-lock-retry-timeout` | 时长 | 当节点锁被同一个 PodGroup 的其他成员持有时，`Bind` 重试该锁的时长。仅对带有 `scheduling.x-k8s.io/pod-group` 标签的 Pod 生效，其他 Pod 保持原有的快速失败行为。设为 `0` 关闭重试。该值需小于 KubeSchedulerConfiguration 中扩展器的 `httpTimeout`（chart 设为 `30s`）。参见[如何在 HAMi 中使用 Coscheduling](coscheduling/how-to-use-coscheduling.md)。 | `28s` |
-| `--node-lock-timeout` | 时长 | 一把节点锁在被其他 Pod 接管前的有效期。对所有 Pod 生效，不限于 PodGroup 成员。 | `5m` |
+| `--node-lock-retry-timeout` | 时长 | 当节点锁被同一个 PodGroup 的其他成员持有时，`Bind` 重试该锁的时长，轮询间隔为 100 毫秒。仅对属于 PodGroup 的 Pod 生效，即带有非空 `scheduling.x-k8s.io/pod-group` 标签或设置了 `spec.schedulingGroup.podGroupName` 的 Pod，其他 Pod 保持原有的快速失败行为。设为 `0` 关闭重试。该值需小于 KubeSchedulerConfiguration 中扩展器的 `httpTimeout`（chart 设为 `30s`）。在高于 v2.9.0 的版本中可用。参见[如何在 HAMi 中使用 Coscheduling](coscheduling/how-to-use-coscheduling.md)。 | `28s` |
+| `--node-lock-timeout` | 时长 | 一把节点锁在被其他 Pod 接管前的有效期。对所有 Pod 生效，不限于 PodGroup 成员。chart 另有 `scheduler.nodeLockExpire`，用于设置 `HAMI_NODELOCK_EXPIRE`，但调度器会在读取该变量之后再应用本参数，因此实际生效的是本参数。 | `5m` |
 
 ## Pod 配置：注解
 

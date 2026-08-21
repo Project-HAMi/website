@@ -103,9 +103,9 @@
     "message": "在 Kueue 中使用 HAMi",
     "description": "The label for category 'Using HAMi with Kueue' in sidebar 'docs'"
   },
-  "sidebar.docs.category.Using HAMi with Coscheduling": {
+  "sidebar.docs.category.Using Coscheduling with HAMi": {
     "message": "在 HAMi 中使用 Coscheduling",
-    "description": "The label for category 'Using HAMi with Coscheduling' in sidebar 'docs'"
+    "description": "The label for category 'Using Coscheduling with HAMi' in sidebar 'docs'"
   },
   "sidebar.docs.category.nvidia-examples": {
     "message": "示例",
