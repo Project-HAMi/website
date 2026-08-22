@@ -1,6 +1,14 @@
 ---
 title: GPU Virtualization Principles
 sidebar_label: GPU Virtualization
+tags:
+  - gpu-partitioning
+  - isolation
+  - vllm
+  - inference
+  - alibaba-cloud
+  - resource-sharing
+  - hami
 ---
 
 In AI inference scenarios, a common dilemma is that GPUs are expensive, but mostly idle.

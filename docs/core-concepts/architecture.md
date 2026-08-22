@@ -1,5 +1,11 @@
 ---
-title: Architecture
+title: Architecture Overview
+sidebar_label: Architecture
+tags:
+  - installation
+  - nvidia
+  - hami
+  - local-setup
 ---
 
 The overall architecture of HAMi is shown as below:

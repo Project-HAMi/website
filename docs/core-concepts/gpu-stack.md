@@ -1,5 +1,11 @@
 ---
-title: "GPU Software Stack Overview"
+title: "The GPU Software Stack"
+sidebar_label: "GPU Stack"
+tags:
+  - installation
+  - nvidia
+  - simulation
+  - nvml-mock
 ---
 
 When you use a GPU on a server, you are not dealing with a single piece of software or hardware. Instead, you are working with an entire **software stack** built around NVIDIA GPUs. From the lowest-level physical hardware to the highest-level Kubernetes scheduling, it can be roughly divided into 5 layers:

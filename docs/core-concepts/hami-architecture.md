@@ -1,5 +1,12 @@
 ---
 title: "HAMi Cluster Architecture After Installation"
+sidebar_label: HAMi Architecture
+tags:
+  - simulation
+  - nvml-mock
+  - hami
+  - scheduling
+  - local-setup
 ---
 
 After completing the HAMi installation, the cluster is no longer an ordinary Kubernetes cluster, it becomes an AI infrastructure platform with GPU virtualization capabilities. This document breaks down the responsibilities and dependencies of every layer and every component in the cluster after installation.

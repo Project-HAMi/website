@@ -1,8 +1,11 @@
 /**
  * Custom swizzle of DocItem/Content.
- * Identical to the original except that the lab metadata row (LabMeta)
- * renders directly below the page title for docs that carry a `lab`
- * front matter block. Docs without it are unaffected.
+ *
+ * Additions on top of the Docusaurus default:
+ *   - LabMeta: renders a metadata row (level, duration, authors) directly
+ *     below the page title for docs that carry a `lab` front matter block.
+ *   - RelatedLabs: renders a tag-matched grid of related hands-on labs
+ *     at the bottom of any doc page that carries `tags` in its front matter.
  */
 import React from "react";
 import clsx from "clsx";
@@ -11,6 +14,7 @@ import { useDoc } from "@docusaurus/plugin-content-docs/client";
 import Heading from "@theme/Heading";
 import MDXContent from "@theme/MDXContent";
 import LabMeta from "@site/src/components/labs/LabMeta";
+import RelatedLabs from "@site/src/components/labs/RelatedLabs";
 
 /**
  Title can be declared inside md content or declared through
@@ -42,6 +46,7 @@ export default function DocItemContent({ children }) {
       )}
       <LabMeta />
       <MDXContent>{children}</MDXContent>
+      <RelatedLabs />
     </div>
   );
 }

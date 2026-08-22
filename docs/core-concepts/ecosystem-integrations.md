@@ -1,5 +1,10 @@
 ---
-title: Ecosystem Integrations
+title: Ecosystem Integration Partners
+sidebar_label: Ecosystem Integrations
+tags:
+  - volcano
+  - kueue
+  - kai-scheduler
 ---
 
 HAMi doesn't replace your Kubernetes scheduler. It extends it. HAMi handles GPU virtualization, sharing, and runtime isolation, and it slots into the wider Kubernetes scheduling world so you can pair **GPU sharing** with **batch scheduling, job queuing, and colocation**.

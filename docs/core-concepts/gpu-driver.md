@@ -1,5 +1,10 @@
 ---
-title: "Understanding GPU Drivers"
+title: "Understanding NVIDIA GPU Drivers in Kubernetes"
+sidebar_label: "GPU Driver"
+tags:
+  - nvidia
+  - simulation
+  - nvml-mock
 ---
 
 Before using a GPU, you first need to verify that the GPU driver is properly loaded into the kernel. This document explains how to check GPU driver status and understand the architecture of NVIDIA kernel modules.
