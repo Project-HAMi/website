@@ -6,6 +6,7 @@ image: ./meetup-banner.png
 tags:
   ["Meetup", "上海", "异构算力调度", "GPU 虚拟化", "Kubernetes", "国产算力", "AI 训练与推理优化"]
 authors: [hami_community]
+unlisted: true
 ---
 
 11 月 30 日，首场 HAMi Meetup 在上海圆满结束。本次活动以"不卷算力卷效率"为主题，近百位 AI 开发者、运维工程师、企业 IT 架构师齐聚现场，聚焦异构算力调度的核心命题。
