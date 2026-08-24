@@ -724,7 +724,7 @@ In a real environment, the HAMi device-plugin automatically writes the `hami.io/
 ```bash
 kubectl annotate node ${NODE_NAME} \
   hami.io/node-nvidia-register='[{"id":"GPU-3cef3724-8228-5a66-b391-b0901788f5d0","count":10,"devmem":11441,"devcore":100,"type":"NVIDIA-Tesla-K80","mode":"hami-core","health":true},{"id":"GPU-5127182e-f297-5a25-bb44-0444c3be540c","index":1,"count":10,"devmem":11441,"devcore":100,"type":"NVIDIA-Tesla-K80","mode":"hami-core","health":true}]' \
-  hami.io/node-handshake="Requesting_$(date '+%Y.%m.%d %H:%M:%S')"
+  hami.io/node-handshake="Requesting_$(date '+%Y-%m-%d %H:%M:%S')"
 ```
 
 > One JSON object per GPU. `id` is the device UUID, `count` is vGPU partitions per card (default 10), `devmem` is VRAM in MiB, `devcore` is compute capacity in %, `mode` is `hami-core` for software-level partitioning.

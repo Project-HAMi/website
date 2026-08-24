@@ -743,7 +743,7 @@ node/<NODE_NAME> labeled
 ```bash
 kubectl annotate node ${NODE_NAME} \
   hami.io/node-nvidia-register='[{"id":"GPU-3cef3724-8228-5a66-b391-b0901788f5d0","count":10,"devmem":11441,"devcore":100,"type":"NVIDIA-Tesla-K80","mode":"hami-core","health":true},{"id":"GPU-5127182e-f297-5a25-bb44-0444c3be540c","index":1,"count":10,"devmem":11441,"devcore":100,"type":"NVIDIA-Tesla-K80","mode":"hami-core","health":true}]' \
-  hami.io/node-handshake="Requesting_$(date '+%Y.%m.%d %H:%M:%S')"
+  hami.io/node-handshake="Requesting_$(date '+%Y-%m-%d %H:%M:%S')"
 ```
 
 > annotation 格式说明：每块 GPU 一个 JSON 对象，与 HAMi v2.9.0 device plugin 在真实 GPU 节点上写入的格式一致。`id` 是设备 UUID，`count` 是每张卡的 vGPU 切分数量（HAMi 默认 10），`devmem` 是显存（MiB），`devcore` 是算力容量（%），`mode` 为 `hami-core` 表示软件层切分。这里的 UUID 和显存值来自 fake-gpu-operator 的 dcgm-exporter 指标。
