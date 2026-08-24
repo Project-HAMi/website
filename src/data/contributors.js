@@ -27,6 +27,11 @@ const contributorsData = [
     href: "https://www.alibabagroup.com",
   },
   {
+    logo: "/img/contributors/yixincars.svg",
+    alt: "Yixin",
+    href: "https://www.yixincars.com",
+  },
+  {
     logo: "/img/contributors/huawei.svg",
     alt: "Huawei",
     href: "https://www.huawei.com",
