@@ -3,7 +3,7 @@ title: "Kubernetes DRA 会取代 HAMi 吗？"
 date: "2026-08-20"
 description: "DRA 吸收了 GPU 共享中请求与调度的那一半，HAMi 保留了运行时强制执行的那一半。本文解释两者如何配合、如今跑通 DRA 栈需要什么，以及 2026 年年中该如何选择。"
 authors: [mesut_oezdil]
-tags: ["HAMi", "DRA", "GPU Sharing", "Kubernetes", "Scheduling", "Cloud Native"]
+tags: ["HAMi", "DRA", "GPU 共享", "Kubernetes", "调度", "云原生"]
 ---
 
 :::note

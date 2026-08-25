@@ -183,6 +183,72 @@ const events = [
     externalUrl: "https://events.linuxfoundation.org/open-source-summit-korea/",
     talkUrl: "https://events.linuxfoundation.org/open-source-summit-korea/program/schedule/",
   },
+  {
+    slug: "hami-meetup-shanghai",
+    title: {
+      en: "HAMi Meetup Shanghai 2026: Incubating Special Event",
+      zh: "「不卷算力，卷效率」HAMi Meetup 上海站 · Incubating 特别活动",
+    },
+    date: "2026-09-06",
+    startTime: "14:00",
+    endTime: "17:50",
+    location: {
+      en: "Wujiaochang, Shanghai, China",
+      zh: "中国 上海 五角场",
+    },
+    address: {
+      addressLocality: "Shanghai",
+      addressCountry: "CN",
+    },
+    banner: "/img/events/2026-hami-meetup-shanghai/hami-meetup-shanghai-sept.jpg",
+    description: {
+      en: 'The first offline special event since HAMi was accepted as a CNCF Incubating project. On the afternoon of September 6, join us in Shanghai for technical talks, a community panel, and the Incubating milestone session under the theme "race efficiency, not compute", followed by a Community Night in the evening. Free registration, a warm-up ahead of KubeCon China 2026.',
+      zh: "HAMi 晋级 CNCF 孵化项目后的首场线下特别活动。9 月 6 日下午，主题演讲、社区圆桌与 Incubating 里程碑环节将围绕「不卷算力，卷效率」展开，晚间为 HAMi Community Night。活动免费报名，正值 KubeCon China 2026 开幕前夕，欢迎顺路相聚上海。",
+    },
+    price: 0,
+    priceCurrency: "CNY",
+    cta: {
+      discordUrl: "https://go.dynamia.ai/hami-chat",
+    },
+    externalUrl: "https://www.huodongxing.com/event/2874911381700",
+  },
+  {
+    slug: "kubecon-china",
+    title: {
+      en: "HAMi at KubeCon China 2026",
+      zh: "HAMi 亮相 KubeCon China 2026",
+    },
+    date: "2026-09-07",
+    endDate: "2026-09-09",
+    speaker: "Jifei Wang, Mengxuan Li, Walter Duan",
+    location: {
+      en: "Shanghai International Convention Center, Shanghai, China",
+      zh: "中国 上海 上海国际会议中心",
+    },
+    address: {
+      addressLocality: "Shanghai",
+      addressCountry: "CN",
+    },
+    banner: "/img/events/2026-kubecon-china/hami-at-kubecon-china-2026.png",
+    description: {
+      en: "HAMi's first KubeCon China appearance as a CNCF Incubating project. All HAMi activities are on September 8: a keynote on llm-d support for heterogeneous environments (09:12-09:22, Grand Ballroom II + III), a lightning talk on scheduling-driven dynamic MIG (11:14-11:19, 5B + C), and a session on Intsig's billion-document GPU virtualization at scale (14:30-15:00, Grand Ballroom II + III). Booth T-1 in Grand Ballroom I is staffed by maintainers from 10:30 to 19:00. Stop by to talk GPU sharing, scheduling, and multi-tenant GPU management.",
+      zh: "HAMi 晋级 CNCF 孵化项目后首次亮相 KubeCon China。全部活动集中在 9 月 8 日：上午 Keynote 介绍 llm-d 对异构环境的支持（09:12-09:22，Grand Ballroom II + III），午间闪电演讲分享调度驱动的动态 MIG 方案（11:14-11:19，5B + C），下午带来合合信息千卡规模 GPU 虚拟化生产实践（14:30-15:00，Grand Ballroom II + III）。展台 T-1（Grand Ballroom I）10:30 至 19:00 维护者现场值守，欢迎来聊 GPU 共享、调度与多租户管理。",
+    },
+    resources: {
+      communityFlyer: {
+        en: "Community Flyer",
+        zh: "社区宣传册",
+        url: "/resources/events/flyers/community-flyer.pdf",
+      },
+    },
+    cta: {
+      discordUrl: "https://go.dynamia.ai/hami-chat",
+    },
+    externalUrl:
+      "https://www.lfopensource.cn/kubecon-cloudnativecon-openinfra-summit-pytorch-conference-china/",
+    talkUrl:
+      "https://www.lfopensource.cn/kubecon-cloudnativecon-openinfra-summit-pytorch-conference-china/program/schedule/",
+  },
 ];
 
 export default events;

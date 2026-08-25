@@ -1,4 +1,5 @@
 {
   "community": "欢迎加入 HAMi 社区，在 <a href=\"https://discord.gg/Amhy7XmbNq\" style=\"text-decoration:underline;color:#66b2ff\">Discord</a> 上与我们交流",
+  "kubecon-china": "HAMi 将亮相 KubeCon China 2026（9月7-9日·上海）：<a href=\"/zh/blog/hami-at-kubecon-china-2026\" style=\"text-decoration:underline;color:#66b2ff\">Keynote、两场分享与 T-1 展台</a>",
   "theme.announcementBar.message": ""
 }
