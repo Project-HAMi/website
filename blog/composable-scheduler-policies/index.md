@@ -1,6 +1,6 @@
 ---
-title: "Composable GPU Scheduling Policies in HAMi v2.10: How mutex, binpack, spread, and numa Work Together"
-date: "2026-08-20"
+title: "Composable GPU Scheduling Policies: How mutex, binpack, spread, and numa Work Together"
+date: "2026-08-26"
 description: "HAMi v2.10.0 lets hami.io/gpu-scheduler-policy take an ordered, comma-separated policy list. This post explains the filter-then-sort evaluation model behind the feature, the semantics of each policy, common recipes, and the steps to adopt and verify it."
 authors: [rootsongjc]
 tags: ["HAMi", "Scheduling", "GPU", "Kubernetes", "Cloud Native"]
@@ -123,11 +123,8 @@ A note on `mutex` semantics: it guarantees the card is unused **at placement tim
 ```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/
 helm repo update
-helm search repo hami-charts/hami --version v2.10.0   # must return the chart
-helm upgrade hami hami-charts/hami -n kube-system --version v2.10.0
+helm upgrade hami hami-charts/hami -n kube-system --version 2.10.0
 ```
-
-If the `helm search` line returns nothing, the v2.10.0 artifacts are not published yet. [Lab 14](/tutorials/labs/composable-scheduler-policies-gke) documents a pre-release path pinned to the exact source revision used in its run.
 
 Cluster-wide defaults are still `binpack` for node selection and `spread` for card selection (`scheduler.defaultSchedulerPolicy.nodeSchedulerPolicy` / `gpuSchedulerPolicy` in the chart values). No defaults change during upgrade.
 

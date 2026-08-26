@@ -18,12 +18,6 @@ toc_max_heading_level: 2
 
 This lab deploys HAMi v2.10.0 on a single GKE node carrying four Tesla T4s, then exercises the composable `hami.io/gpu-scheduler-policy` feature end to end: the default `spread` behavior, `binpack` stacking, the `mutex` filter blocking and releasing, and the composed `mutex,binpack` chain in which a filter visibly overrides what `binpack` alone would choose. Every placement is verified through the allocation annotation the HAMi scheduler writes on each Pod, so the lab needs no CUDA execution inside the workload containers.
 
-:::note About this run
-
-The output blocks below are verbatim captures from a real run (GKE `1.35.7-gke.1150000`, COS, one `n1-standard-8` with four Tesla T4s). At that time the v2.10.0 Helm chart and images were not yet published to the Helm repository, so the run used the chart source and the per-commit `projecthami/hami:45b3d46` image, both from HAMi master commit `45b3d46769b44cfc1445728dfcb8e524939afba1`, which carries the v2.10.0 release-candidate code (Step 3 shows how to pin that exact revision). Once `v2.10.0` appears in `helm search`, install the published chart with `--version v2.10.0`; the behavior is identical.
-
-:::
-
 ## What You'll Learn
 
 - install HAMi v2.10.0 on GKE, pointing the device plugin at GKE's managed driver and writable paths;
@@ -130,19 +124,12 @@ Three GKE specifics drive the Helm flags, all observed during the run:
 - the plugin container needs `LD_LIBRARY_PATH=/driver-root/lib64` to load NVML from the GKE driver tree, otherwise it exits with `invalid device discovery strategy`;
 - `devicePlugin.extraEnvs` must be a list of `{name, value}` objects passed with `--set-json`; a plain `--set devicePlugin.extraEnvs.X=Y` renders invalid YAML and the whole install fails.
 
-First check that the v2.10.0 release artifacts are actually published:
-
-```bash
-helm search repo hami-charts/hami --version v2.10.0
-```
-
-If the chart is listed, install the released artifacts:
+Install the released chart:
 
 ```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/
 helm repo update
-helm install hami hami-charts/hami -n kube-system --version v2.10.0 \
-\
+helm install hami hami-charts/hami -n kube-system --version 2.10.0 \
   --set devicePlugin.nvidiaDriverRoot=/home/kubernetes/bin/nvidia \
   --set global.gpuHookPath=/home/kubernetes/bin/nvidia \
   --set devicePlugin.libPath=/home/kubernetes/bin/nvidia/vgpu \
@@ -153,22 +140,6 @@ kubectl -n kube-system rollout status deploy/hami-scheduler --timeout=300s
 kubectl -n kube-system get pods -l app.kubernetes.io/instance=hami
 ```
 
-Until the release is published, reproduce the lab with the exact revision used for the run: the chart comes from the HAMi source at commit `45b3d46769b44cfc1445728dfcb8e524939afba1` (master HEAD on 2026-08-17, the code that ships as v2.10.0), and `global.imageTag=45b3d46` selects the per-commit image that HAMi CI publishes for exactly that revision. Do not substitute `latest`: it is a moving tag, and within days of this run it had already drifted to a newer master commit.
-
-````bash
-curl -fsSL https://codeload.github.com/Project-HAMi/HAMi/tar.gz/45b3d46769b44cfc1445728dfcb8e524939afba1 \
-  -o hami-src.tar.gz
-tar xzf hami-src.tar.gz
-helm install hami \
-  HAMi-45b3d46769b44cfc1445728dfcb8e524939afba1/charts/hami \
-  -n kube-system --set global.imageTag=45b3d46 \
-\
-  --set devicePlugin.nvidiaDriverRoot=/home/kubernetes/bin/nvidia \
-  --set global.gpuHookPath=/home/kubernetes/bin/nvidia \
-  --set devicePlugin.libPath=/home/kubernetes/bin/nvidia/vgpu \
-  --set devicePlugin.monitor.ctrPath=/home/kubernetes/bin/nvidia/vgpu/containers \
-  --set-json 'devicePlugin.extraEnvs=[{"name":"LD_LIBRARY_PATH","value":"/driver-root/lib64"}]'
-
 After install, the plugin Pod runs but its second container, `vgpu-monitor`, stays in `CrashLoopBackOff`:
 
 ```plaintext
@@ -176,7 +147,7 @@ NAME                             READY   STATUS             RESTARTS        AGE
 hami-admission-patch-g9lws       0/1     Completed          0               28m
 hami-device-plugin-h4z6l         1/2     CrashLoopBackOff   10 (4m5s ago)   30m
 hami-scheduler-87f65f795-84l6d   2/2     Running            0               46m
-````
+```
 
 Its log ends with `failed to initialize NVML`: the monitor container is non-privileged and has no `/dev/nvidia*` or `/proc/driver/nvidia` visibility on COS, so it cannot talk to the kernel driver even with the library path fixed. The monitor only exports Prometheus metrics; this lab verifies scheduling decisions, not metrics, so remove that one container and let the DaemonSet settle:
 
@@ -399,12 +370,11 @@ These lines are from the `policy-binpack-solo` scheduling pass: the three cards 
 | Node shows both GKE and HAMi GPU capacity, or counts jump between `4` and `40` | GKE's default device plugin competing with HAMi's | Keep `gke-no-default-nvidia-gpu-device-plugin=true` on the node, then restart `hami-device-plugin` |
 | Pods stay Pending with `node(s) didn't match node selector` | GPU node lacks the `gpu=on` label | Apply the Step 2 label command |
 | `mutex` Pod Pending although a card "looks" free | The card still has an allocated Pod; `mutex` requires zero users | Check with `lab-card`; delete a tenant from the target card |
-| `helm search` cannot find chart `v2.10.0` | Release artifacts not yet published at the time of the run | Install from the HAMi repository's `charts/hami` at the release-candidate commit, with `--set global.imageTag=45b3d46` (the per-commit image tag) |
 | Intermittent `Unable to connect to the server` from `kubectl`/`gcloud`/`helm` | Transient TLS errors between the client and Google APIs, seen repeatedly during the run | Retry the command; the cluster itself is healthy |
 
 ## Cleanup
 
-Remove the lab workloads and HAMi (the Step 3 DaemonSet patch disappears with the release):
+Remove the lab workloads and HAMi (uninstalling also removes the Step 3 DaemonSet patch):
 
 ```bash
 kubectl delete pods -l hami.run/lab-14 --ignore-not-found
@@ -438,7 +408,7 @@ gcloud container clusters delete hami-policy-lab \
 
 ## Next Steps
 
-- Read [Composable GPU Scheduling Policies in HAMi v2.10](/blog/composable-scheduler-policies) for the filter-then-sort model and more policy recipes.
+- Read [Composable GPU Scheduling Policies](/blog/composable-scheduler-policies) for the filter-then-sort model and more policy recipes.
 - See the [scheduler policy design](/docs/developers/scheduling) for the scoring math behind `binpack` and `spread`.
 - Browse all per-Pod annotations in [Configure HAMi](/docs/userguide/configure).
 - Continue with [Lab 3: GPU Partitioning](./gpu-partitioning.md) for runtime VRAM isolation, or [Lab 12: KAI + HAMi on GKE](./kai-scheduler-hami-gke.md) for the memory hard-isolation companion lab.

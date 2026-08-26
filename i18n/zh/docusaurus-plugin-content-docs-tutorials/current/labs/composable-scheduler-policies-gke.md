@@ -18,12 +18,6 @@ toc_max_heading_level: 2
 
 本实验在单台挂载四块 Tesla T4 的 GKE 节点上部署 HAMi v2.10.0，然后端到端演练可组合的 `hami.io/gpu-scheduler-policy` 特性：默认 `spread` 行为、`binpack` 堆叠、`mutex` 过滤器的阻塞与释放，以及组合的 `mutex,binpack` 策略链。在这条链里，过滤器会明显改变纯 `binpack` 本会选择的结果。每个放置结果都通过 HAMi 调度器写在 Pod 上的分配注解验证，因此实验不要求工作负载容器内能执行 CUDA。
 
-:::note 关于本次运行
-
-下文的输出块均为一次真实运行的逐字捕获（GKE `1.35.7-gke.1150000`、COS、一台 `n1-standard-8` 挂四块 Tesla T4）。运行时 v2.10.0 的 Helm chart 与镜像尚未发布到 Helm 仓库，因此本次运行使用 HAMi master 分支 `45b3d46769b44cfc1445728dfcb8e524939afba1` 提交的 chart 源码与逐提交镜像 `projecthami/hami:45b3d46`（其中包含 v2.10.0 发布候选代码，步骤 3 给出了固定该版本的方法）。待 `helm search` 中出现 `v2.10.0` 后，请改用已发布的 chart 并指定 `--version v2.10.0`，行为完全一致。
-
-:::
-
 ## 你将学到什么
 
 - 在 GKE 上安装 HAMi v2.10.0，并将 device plugin 指向 GKE 托管驱动与其可写路径；
@@ -130,19 +124,12 @@ gke-hami-policy-lab-default-pool-0c191cbd-fnwq   0
 - 插件容器需要 `LD_LIBRARY_PATH=/driver-root/lib64` 才能从 GKE 驱动目录加载 NVML，否则以 `invalid device discovery strategy` 退出；
 - `devicePlugin.extraEnvs` 必须是以 `{name, value}` 对象组成的列表并用 `--set-json` 传入；直接 `--set devicePlugin.extraEnvs.X=Y` 会渲染出非法 YAML，导致整个安装失败。
 
-先确认 v2.10.0 的发布产物确实已经可用：
-
-```bash
-helm search repo hami-charts/hami --version v2.10.0
-```
-
-如果能查到该 chart，直接安装已发布的产物：
+安装已发布的 chart：
 
 ```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/
 helm repo update
-helm install hami hami-charts/hami -n kube-system --version v2.10.0 \
-\
+helm install hami hami-charts/hami -n kube-system --version 2.10.0 \
   --set devicePlugin.nvidiaDriverRoot=/home/kubernetes/bin/nvidia \
   --set global.gpuHookPath=/home/kubernetes/bin/nvidia \
   --set devicePlugin.libPath=/home/kubernetes/bin/nvidia/vgpu \
@@ -153,22 +140,6 @@ kubectl -n kube-system rollout status deploy/hami-scheduler --timeout=300s
 kubectl -n kube-system get pods -l app.kubernetes.io/instance=hami
 ```
 
-在发布产物可用之前，可以用本次运行使用的确切代码版本来复现实验：chart 取自 HAMi 源码的 `45b3d46769b44cfc1445728dfcb8e524939afba1` 提交（2026-08-17 时的 master HEAD，即 v2.10.0 对应的代码），镜像用 `global.imageTag=45b3d46` 选择 HAMi CI 为该提交发布的逐提交镜像。不要改用 `latest`：它是移动标签，本次运行后几天内就已经漂移到了更新的 master 提交。
-
-````bash
-curl -fsSL https://codeload.github.com/Project-HAMi/HAMi/tar.gz/45b3d46769b44cfc1445728dfcb8e524939afba1 \
-  -o hami-src.tar.gz
-tar xzf hami-src.tar.gz
-helm install hami \
-  HAMi-45b3d46769b44cfc1445728dfcb8e524939afba1/charts/hami \
-  -n kube-system --set global.imageTag=45b3d46 \
-\
-  --set devicePlugin.nvidiaDriverRoot=/home/kubernetes/bin/nvidia \
-  --set global.gpuHookPath=/home/kubernetes/bin/nvidia \
-  --set devicePlugin.libPath=/home/kubernetes/bin/nvidia/vgpu \
-  --set devicePlugin.monitor.ctrPath=/home/kubernetes/bin/nvidia/vgpu/containers \
-  --set-json 'devicePlugin.extraEnvs=[{"name":"LD_LIBRARY_PATH","value":"/driver-root/lib64"}]'
-
 安装后，插件 Pod 可以运行，但它的第二个容器 `vgpu-monitor` 会一直 `CrashLoopBackOff`：
 
 ```plaintext
@@ -176,7 +147,7 @@ NAME                             READY   STATUS             RESTARTS        AGE
 hami-admission-patch-g9lws       0/1     Completed          0               28m
 hami-device-plugin-h4z6l         1/2     CrashLoopBackOff   10 (4m5s ago)   30m
 hami-scheduler-87f65f795-84l6d   2/2     Running            0               46m
-````
+```
 
 其日志以 `failed to initialize NVML` 结尾：monitor 容器非特权，在 COS 上看不到 `/dev/nvidia*` 与 `/proc/driver/nvidia`，即使修好库路径也无法与内核驱动通信。monitor 只负责导出 Prometheus 指标；本实验验证的是调度决策而非指标，因此直接移除这个容器，让 DaemonSet 稳定下来：
 
@@ -399,12 +370,11 @@ I0818 11:39:13.896904       1 gpu_policy.go:221] device GPU-3c5f3637-e911-b226-7
 | 节点同时出现 GKE 与 HAMi 的 GPU 容量，或在 `4` 与 `40` 之间跳变 | GKE 默认 device plugin 与 HAMi 的注册互相竞争 | 保持节点上的 `gke-no-default-nvidia-gpu-device-plugin=true`，然后重启 `hami-device-plugin` |
 | Pod 一直 Pending，报 `node(s) didn't match node selector` | GPU 节点缺少 `gpu=on` 标签 | 执行步骤 2 的打标命令 |
 | `mutex` Pod Pending，但某张卡“看起来”空闲 | 那张卡仍有已分配的 Pod；`mutex` 要求零用户 | 用 `lab-card` 检查；删除目标卡上的一个租户 |
-| `helm search` 找不到 `v2.10.0` chart | 运行时发布产物尚未发布 | 从 HAMi 仓库的 `charts/hami`（发布候选提交）安装，并用 `--set global.imageTag=45b3d46`（逐提交镜像标签） |
 | `kubectl`/`gcloud`/`helm` 间歇性报 `Unable to connect to the server` | 客户端与 Google API 之间的瞬时 TLS 错误，本次运行中多次出现 | 重试命令即可，集群本身是健康的 |
 
 ## 清理
 
-删除实验负载与 HAMi（步骤 3 的 DaemonSet patch 会随 release 一起删除）：
+删除实验负载与 HAMi（卸载时会连同步骤 3 的 DaemonSet patch 一起删除）：
 
 ```bash
 kubectl delete pods -l hami.run/lab-14 --ignore-not-found
@@ -438,7 +408,7 @@ gcloud container clusters delete hami-policy-lab \
 
 ## 延伸阅读
 
-- 阅读[《HAMi v2.10 可组合调度策略》](/zh/blog/composable-scheduler-policies)了解“先过滤、后排序”模型与更多策略配方。
+- 阅读[《HAMi 可组合调度策略》](/zh/blog/composable-scheduler-policies)了解“先过滤、后排序”模型与更多策略配方。
 - 查看[调度策略设计文档](/zh/docs/developers/scheduling)了解 `binpack` 与 `spread` 背后的打分逻辑。
 - 在 [HAMi 配置参考](/zh/docs/userguide/configure)中浏览全部按 Pod 生效的注解。
 - 继续学习[实验 3: GPU 切分](./gpu-partitioning.md)（运行时显存隔离）或[实验 12: GKE 上的 KAI + HAMi](./kai-scheduler-hami-gke.md)（显存硬隔离姊妹实验）。

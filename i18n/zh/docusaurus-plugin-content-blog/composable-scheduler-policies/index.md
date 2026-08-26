@@ -1,6 +1,6 @@
 ---
-title: "HAMi v2.10 可组合调度策略：mutex、binpack、spread、numa 如何协同工作"
-date: "2026-08-20"
+title: "HAMi 可组合调度策略：mutex、binpack、spread、numa 如何协同工作"
+date: "2026-08-26"
 description: "HAMi v2.10.0 让 hami.io/gpu-scheduler-policy 接受有序的、逗号分隔的策略列表。本文解释该特性背后的“先过滤、后排序”求值模型、各策略的语义、常用组合配方，以及上手与验证步骤。"
 authors: [rootsongjc]
 tags: ["HAMi", "调度", "GPU", "Kubernetes", "云原生"]
@@ -123,11 +123,8 @@ flowchart TB
 ```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/
 helm repo update
-helm search repo hami-charts/hami --version v2.10.0   # 必须能查到该 chart
-helm upgrade hami hami-charts/hami -n kube-system --version v2.10.0
+helm upgrade hami hami-charts/hami -n kube-system --version 2.10.0
 ```
-
-如果 `helm search` 没有结果，说明 v2.10.0 的发布产物尚未发布。[实验 14](/zh/tutorials/labs/composable-scheduler-policies-gke) 中给出了固定到运行所用源码版本的预发布安装路径。
 
 集群级默认值仍是节点选择 `binpack`、卡选择 `spread`（chart values 中的 `scheduler.defaultSchedulerPolicy.nodeSchedulerPolicy` / `gpuSchedulerPolicy`），升级不会改变任何默认值。
 
