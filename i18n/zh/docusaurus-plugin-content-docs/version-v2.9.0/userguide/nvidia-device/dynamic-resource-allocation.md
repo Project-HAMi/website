@@ -7,7 +7,6 @@ import SupportedComponents, { Tag } from '@site/src/components/SupportedComponen
 
 <SupportedComponents>
   <Tag href="../../installation/how-to-use-hami-dra.md" type="hami-dra">HAMi-DRA</Tag>
-  <Tag href="../../get-started/deploy-with-helm.md" type="hami">HAMi</Tag>
   <Tag href="../../installation/configure-cdi.md" type="cdi">CDI 支持</Tag>
 </SupportedComponents>
 

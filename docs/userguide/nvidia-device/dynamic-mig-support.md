@@ -7,7 +7,6 @@ import SupportedComponents, { Tag } from '@site/src/components/SupportedComponen
 <SupportedComponents>
   <Tag href="../../get-started/deploy-with-helm.md" type="hami">HAMi</Tag>
   <Tag href="../volcano-vgpu/nvidia-gpu/how-to-use-volcano-vgpu.md" type="volcano">Volcano</Tag>
-  <Tag href="./dynamic-resource-allocation.md" type="hami-dra">HAMi-DRA</Tag>
 </SupportedComponents>
 
 HAMi v2.10 uses a reservation-first, topology-aware implementation of dynamic NVIDIA Multi-Instance GPU (MIG). It does not select and switch a predefined whole-GPU geometry. Instead:
