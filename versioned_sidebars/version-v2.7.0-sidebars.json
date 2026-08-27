@@ -138,7 +138,7 @@
         },
         {
           "type": "category",
-          "label": "Share Illuvatar GPU devices",
+          "label": "Share Iluvatar GPU devices",
           "items": [
             "userguide/iluvatar-device/enable-illuvatar-gpu-sharing",
             {

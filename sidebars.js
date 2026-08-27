@@ -73,6 +73,7 @@ module.exports = {
       items: [
         "userguide/configure",
         "userguide/device-supported",
+        "userguide/interactive-manifest-generator",
         "userguide/benchmark",
         "userguide/hami-webui-user-guide",
         {

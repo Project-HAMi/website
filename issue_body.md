@@ -1,0 +1,5 @@
+**Is your feature request related to a problem? Please describe.** Currently, HAMi supports an impressive array of hardware vendors (NVIDIA, Cambricon, Hygon, Iluvatar, Ascend). However, each vendor requires completely different Kubernetes resource annotations (e.g., `nvidia.com/gpumem` vs. `cambricon.com/mlu.smlu.vmemory`). Users must manually navigate various separate documentation pages to piece together the correct `resources.limits` YAML, which increases friction for new adopters.
+
+**Describe the solution you'd like** Build a native, interactive React component within Docusaurus (`<ManifestGenerator />`) where users can select their target hardware vendor, memory mode (absolute vs. percentage), and core requirements. The component should dynamically render a copy-pasteable, syntax-highlighted Kubernetes Pod/Deployment `resources.limits` configuration. This significantly lowers the barrier to entry and drives adoption.
+
+**Describe alternatives you've considered** Continuing to rely on static markdown tables across 10+ different documentation files.
