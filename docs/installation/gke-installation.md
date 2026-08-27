@@ -16,10 +16,11 @@ Validated on: GKE COS, NVIDIA T4, driver 580.126.20, HAMi 2.10.0.
 gcloud container node-pools create <POOL_NAME> \
   --project=<PROJECT_ID> \
   --cluster=<CLUSTER_NAME> \
-  --region=<REGION> \
+  --location=<LOCATION> \
+  --image-type=cos_containerd \
   --machine-type=n1-standard-8 \
   --accelerator=type=nvidia-tesla-t4,count=1,gpu-driver-version=disabled \
-  --node-labels=gke-no-default-nvidia-gpu-device-plugin=true,nvidia.com/gpu.present=true \
+  --node-labels=gke-no-default-nvidia-gpu-device-plugin=true,nvidia.com/gpu.present=true,gpu=on \
   --node-taints=nvidia.com/gpu=present:NoSchedule \
   --num-nodes=1 \
   --enable-autorepair \
@@ -30,16 +31,15 @@ Why each flag matters:
 
 | Flag | Reason |
 | --- | --- |
+| `--location` | Accepts either a zone (zonal pool) or a region (regional pool, one node per zone in that region) — use whichever matches your cluster. |
+| `--image-type=cos_containerd` | This guide is COS-specific; it doesn't cover Ubuntu-based node images. |
 | `gpu-driver-version=disabled` | Stops GKE from auto-installing its own driver via the bundled driver-installer + device-plugin DaemonSet. |
 | `node-labels=gke-no-default-nvidia-gpu-device-plugin=true` | Opts the node out of GKE's bundled GPU device-plugin DaemonSet so HAMi's device plugin can be the sole `nvidia.com/gpu` advertiser. On GKE versions where the driver-installer and device-plugin are bundled together, this label disables _both_ — which is why the driver has to be installed manually (step 2). |
 | `node-labels=nvidia.com/gpu.present=true` | Used as a `nodeSelector` for HAMi's scheduler pod and the setup jobs below. |
+| `node-labels=gpu=on` | The label HAMi's scheduler uses to manage a node (see [prerequisites](/docs/installation/prerequisites#label-your-nodes)). Setting it as a node-pool label, rather than with a one-off `kubectl label node`, means it's applied to every node in the pool, including ones added later by autoscaling or node replacement. |
 | `node-taints=nvidia.com/gpu=present:NoSchedule` | Keeps non-GPU workloads off this pool; every GPU pod (and every setup job below) needs to tolerate it. |
 
-After creation, label the node so HAMi's scheduler will manage it (see [prerequisites](/docs/installation/prerequisites#label-your-nodes)):
-
-```bash
-kubectl label node <NODE_NAME> gpu=on
-```
+> **Node lifecycle:** steps 2 and 3 below install the driver and CDI tooling directly on each node's disk. Because they're set up as one-shot Jobs, not DaemonSets, they only run once per node — a replaced, upgraded, or newly autoscaled node won't have the driver or CDI spec until these steps are run against it again. For a pool that only ever autorepairs/autoupgrades in place this is a minor gap; for a pool that scales up-and-down or replaces nodes often, convert steps 2 and 3 into DaemonSets using the same `nodeAffinity`/tolerations shown in step 2, so they self-heal on every new node.
 
 ## 2. Install the NVIDIA driver
 
@@ -49,8 +49,24 @@ Because `gpu-driver-version=disabled` was set, GKE's own driver-installer Daemon
 
 Run the following as privileged one-shot Jobs on the GPU node pool (tolerating the `nvidia.com/gpu=present:NoSchedule` taint and using `hostPID`/host mounts for `/`, matching the driver path from step 2):
 
-1. **Install the toolkit** — installs `nvidia-ctk`/`nvidia-cdi-hook` and registers containerd's CDI support. You do not need `nvidia-container-cli` to work for this step to succeed; only the toolkit's CDI-generation tooling is used afterward.
-2. **Generate the CDI spec** — copy `nvidia-ctk`/`nvidia-cdi-hook` onto the real host (e.g. `/home/kubernetes/bin/nvidia-toolkit/`), then run:
+1. **Install the toolkit** — run the toolkit installer against containerd, e.g.:
+
+   ```bash
+   nvidia-toolkit \
+     --runtime=containerd \
+     --runtime-class=nvidia \
+     --config=/etc/containerd/config.toml \
+     --socket=/run/containerd/containerd.sock \
+     --root=/home/kubernetes/bin/nvidia-toolkit \
+     --driver-root=/home/kubernetes/bin/nvidia \
+     --restart-mode=systemd \
+     --host-root=/host \
+     --no-daemon
+   ```
+
+   This installs `nvidia-ctk`/`nvidia-cdi-hook` under `--root` and registers containerd runtime handlers — as of toolkit v1.17.x this includes both the legacy `nvidia` handler and an `nvidia-cdi` handler, as a side effect of this one command. You do not need `nvidia-container-cli` to work for this step to succeed; only the toolkit's CDI-generation tooling is used afterward. Every hostPath mount for this Job must land at the identical path inside and outside the container — the flags above are written into containerd's generated config verbatim, with no path translation, so a mismatch breaks pod-sandbox creation node-wide.
+
+2. **Generate the CDI spec** — copy `nvidia-ctk`/`nvidia-cdi-hook` from the toolkit's `--root` onto the real host, then run:
 
    ```bash
    nvidia-ctk cdi generate \
@@ -72,7 +88,19 @@ Run the following as privileged one-shot Jobs on the GPU node pool (tolerating t
    handler: nvidia-cdi
    ```
 
-   Confirm containerd already has an `nvidia-cdi` handler registered (installing the toolkit typically registers this alongside the legacy `nvidia` handler) and that `enable_cdi = true` / `cdi_spec_dirs` are set in `/etc/containerd/config.toml` — the toolkit install normally handles this.
+   Confirm containerd already has the handler registered:
+
+   ```bash
+   grep -A2 'runtimes.nvidia-cdi' /etc/containerd/config.toml
+   grep -E 'enable_cdi|cdi_spec_dirs' /etc/containerd/config.toml
+   ```
+
+   Step 1's toolkit install normally registers the `nvidia-cdi` runtime and sets `enable_cdi = true` / `cdi_spec_dirs` as a side effect. If either is missing on your toolkit version, register it explicitly and restart containerd:
+
+   ```bash
+   nvidia-ctk runtime configure --runtime=containerd --config=/etc/containerd/config.toml --cdi.enabled
+   systemctl restart containerd
+   ```
 
 You do not need to make `nvidia-cdi` containerd's node-wide default runtime for HAMi itself (see step 4), but if any other GPU-image workload on the node needs GPU access outside HAMi's management, be aware that NVIDIA/CUDA-base images can crash-loop under the legacy default `nvidia` runtime even with no GPU fields in their pod spec, since these images often bake `NVIDIA_VISIBLE_DEVICES=all` into the image itself.
 
@@ -104,10 +132,13 @@ Notes specific to GKE COS:
 helm repo add hami-charts https://project-hami.github.io/HAMi/
 helm repo update
 helm install hami hami-charts/hami \
+  --version 2.10.0 \
   --namespace hami-system --create-namespace \
   --set scheduler.kubeScheduler.image.tag=<YOUR_K8S_VERSION> \
   -f values-gke.yaml
 ```
+
+Pin `--version` to the chart release matching the HAMi version you've validated against — this guide was tested against chart/app version 2.10.0. Omitting `--version` installs whatever is currently latest, which may behave differently from what's documented here.
 
 ### If installing outside `kube-system`
 
@@ -138,9 +169,11 @@ kubectl get pods -n hami-system
 Both `hami-device-plugin` and `hami-scheduler` should be `Running` with no restarts. Confirm the device plugin picked up the CDI runtime:
 
 ```bash
-kubectl get pod -n hami-system -l app.kubernetes.io/name=hami-device-plugin \
-  -o jsonpath='{.items[0].spec.runtimeClassName}{"\n"}'
-# expect: nvidia-cdi
+kubectl get pods -n hami-system \
+  -l app.kubernetes.io/name=hami-device-plugin \
+  -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.spec.runtimeClassName}{"\n"}{end}' \
+  | awk '{print} END {if (NR==0) {print "no hami-device-plugin pods found" > "/dev/stderr"; exit 1}}'
+# expect one line per node, each with runtimeClassName: nvidia-cdi
 ```
 
 Then run a GPU pod requesting a fractional slice (no `runtimeClassName` needed — HAMi's webhook injects it):
