@@ -194,7 +194,7 @@ HAMi vGPU is software-only with no hardware requirements. NVIDIA MIG is hardware
 | Dynamic reconfiguration | Yes, no node drain needed | Requires MIG profile reconfiguration |
 | Multi-tenant noise isolation | Best-effort | Strong |
 
-Use HAMi vGPU when the GPU does not support MIG, workloads need flexible memory sizes, or dynamic repacking without node drains is needed. Use MIG when hard hardware isolation is a compliance or SLA requirement. HAMi also supports dynamic MIG via `mig-parted`; see [Dynamic MIG Support](../userguide/nvidia-device/dynamic-mig-support).
+Use HAMi vGPU when the GPU does not support MIG, workloads need flexible memory sizes, or dynamic repacking without node drains is needed. Use MIG when hard hardware isolation is a compliance or SLA requirement. From v2.10.0, HAMi Dynamic MIG creates and reclaims hardware MIG instances per Pod without switching a whole-GPU geometry for routine profile changes; see [Dynamic MIG Support](../userguide/nvidia-device/dynamic-mig-support).
 
 ## Why does nvidia-smi inside my container show less memory than on the host?
 

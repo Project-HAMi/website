@@ -28,7 +28,6 @@ scheduler:
 ```shell
 cd /k8s-vgpu
 make tidy
-go install github.com/NVIDIA/mig-parted/cmd/nvidia-mig-parted@v0.10.0
 ```
 
 ### (Optional) Prepare a Profiling Image
@@ -37,7 +36,6 @@ go install github.com/NVIDIA/mig-parted/cmd/nvidia-mig-parted@v0.10.0
 FROM golang:1.24.4-bullseye
 ADD . /k8s-vgpu
 RUN cd /k8s-vgpu && make tidy
-RUN go install github.com/NVIDIA/mig-parted/cmd/nvidia-mig-parted@v0.10.0
 ```
 
 ## Profiling the Scheduler

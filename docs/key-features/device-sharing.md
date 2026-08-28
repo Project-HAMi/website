@@ -13,7 +13,7 @@ HAMi's device sharing enables:
 - **Use specific device:** Allows selecting specific types of heterogeneous AI devices or targeting a device using its UUID.
 - **In-container hard limits:** Imposes a hard limit on streaming multiprocessors.
 - **Non-intrusive control:** Requires zero changes to existing programs while managing resource allocation.
-- **Dynamic MIG support:** Supports on-the-fly MIG adjustments using mig-parted for dynamic-mig.
+- **Dynamic MIG support:** Creates and reclaims NVIDIA MIG instances on demand from NVML-discovered profiles, without draining the node to switch a whole-GPU layout.
 
 ![HAMi device sharing example showing multiple tasks sharing a single GPU](/img/docs/en/key-features/example.svg)
 

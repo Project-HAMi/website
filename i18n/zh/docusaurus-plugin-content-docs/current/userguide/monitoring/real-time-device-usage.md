@@ -29,6 +29,7 @@ curl {GPU 节点 IP}:31992/metrics
 | hami_vgpu_memory_buffer_bytes | 容器设备显存 buffer 大小（字节） | `{container="cuda",device_uuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",namespace="default",pod="vgpu-share",vdevice_index="0",zone="vGPU"}` 6.83935744e+08 |
 | hami_vgpu_memory_context_bytes | 容器设备显存 context 大小（字节） | `{container="cuda",device_uuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",namespace="default",pod="vgpu-share",vdevice_index="0",zone="vGPU"}` 0 |
 | hami_vgpu_memory_module_bytes | 容器设备显存 module 大小（字节） | `{container="cuda",device_uuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",namespace="default",pod="vgpu-share",vdevice_index="0",zone="vGPU"}` 0 |
+| hami_mig_device_info | 容器分配对应的 MIG 运行时身份 | `{namespace="default",pod="mig-job",container="ubuntu-container",vdevice_index="0",device_uuid="GPU-xxxxxxxx",mig_uuid="MIG-xxxxxxxx",profile="2g.10gb",gpu_instance_id="4",compute_instance_id="0"}` 1 |
 
 :::note
 

@@ -42,6 +42,12 @@ CDI 将这些设备相关的 OCI 配置集中写入 spec，主要解决以下问
 3. Device Plugin 通过 CDI annotation 返回分配到的设备名称。
 4. 支持 CDI 的容器运行时读取 annotation，查找对应的 CDI spec，并将设备配置加入容器的 OCI runtime spec。
 
+:::note
+
+v2.10.0 中 Dynamic MIG 尚不支持与 CDI 模式同时使用。MIG 节点请使用默认的 device-list 策略。参见[动态 MIG 支持](../userguide/nvidia-device/dynamic-mig-support)。
+
+:::
+
 HAMi 生成的 NVIDIA GPU CDI kind 为：
 
 ```text

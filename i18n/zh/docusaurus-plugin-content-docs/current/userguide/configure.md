@@ -29,6 +29,7 @@ translated: true
 | `nvidia.deviceMemoryScaling` | 浮点数 | NVIDIA 设备显存缩放比例，允许大于 1（启用虚拟设备显存，实验性功能）。对于一块拥有 _M_ 显存的 NVIDIA GPU，若设置为 _S_，则由该 GPU 拆分出的 vGPU 在 Kubernetes 中将获得 `S * M` 的显存。 | `1` |
 | `nvidia.deviceSplitCount` | 整数 | 单块 GPU 可分配的最大任务数。 | `10` |
 | `nvidia.migstrategy` | 字符串 | 设置为 `"none"` 表示忽略 MIG 功能，设置为 `"mixed"` 表示以独立资源方式分配 MIG 设备。 | `"none"` |
+| `nvidia.migProfileAllowlist` | 列表 | Dynamic MIG 按 GPU 型号允许的 MIG profile。device plugin 通过 NVML 发现显存、算力和合法 placement。 | Chart 默认为 A30、A100、H100、H20、H200、B200、RTX PRO 6000 提供 |
 | `nvidia.disablecorelimit` | 字符串 | 设置为 `"true"` 表示禁用算力限制，设置为 `"false"` 表示启用算力限制。 | `"false"` |
 | `nvidia.defaultMemory` | 整数 | 当前任务默认使用的设备显存（MB）。若为 `0`，则表示使用设备 100% 显存。 | `0` |
 | `nvidia.defaultCores` | 整数 | 当前任务默认预留的 GPU 算力百分比。`0` 表示只要显存够就可用任何 GPU；`100` 表示独占整块 GPU。 | `0` |

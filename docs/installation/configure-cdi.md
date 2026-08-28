@@ -41,6 +41,12 @@ With `cdi-annotations` enabled for the NVIDIA Device Plugin, HAMi uses the follo
 3. The Device Plugin returns the allocated device name through a CDI annotation.
 4. A CDI-aware container runtime resolves the annotation and applies the matching CDI specification to the container's OCI runtime specification.
 
+:::note
+
+CDI mode is not supported together with Dynamic MIG in v2.10.0. Use the default device-list strategy on MIG nodes. See [Dynamic MIG Support](../userguide/nvidia-device/dynamic-mig-support).
+
+:::
+
 HAMi uses the following CDI kind for NVIDIA GPUs:
 
 ```text

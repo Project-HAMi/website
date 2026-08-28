@@ -28,6 +28,7 @@ It also exposes per-container and per-vGPU metrics for each scheduled task:
 | hami_vgpu_memory_buffer_bytes | Container device memory buffer size in bytes | `{container="cuda",device_uuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",namespace="default",pod="vgpu-share",vdevice_index="0",zone="vGPU"}` 6.83935744e+08 |
 | hami_vgpu_memory_context_bytes | Container device memory context size in bytes | `{container="cuda",device_uuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",namespace="default",pod="vgpu-share",vdevice_index="0",zone="vGPU"}` 0 |
 | hami_vgpu_memory_module_bytes | Container device memory module size in bytes | `{container="cuda",device_uuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",namespace="default",pod="vgpu-share",vdevice_index="0",zone="vGPU"}` 0 |
+| hami_mig_device_info | MIG runtime identity for a container allocation | `{namespace="default",pod="mig-job",container="ubuntu-container",vdevice_index="0",device_uuid="GPU-xxxxxxxx",mig_uuid="MIG-xxxxxxxx",profile="2g.10gb",gpu_instance_id="4",compute_instance_id="0"}` 1 |
 
 :::note
 

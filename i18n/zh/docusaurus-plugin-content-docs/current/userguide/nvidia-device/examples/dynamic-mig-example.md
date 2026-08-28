@@ -3,7 +3,7 @@ title: 将任务分配给 MIG 实例
 translated: true
 ---
 
-此示例将为 A100-40GB-PCIE 设备分配 `2g.10gb * 2` 或为 A100-80GB-SXM 设备分配 `1g.10gb * 2`。
+此示例申请两个至少 8000 MiB 的 MIG 实例。调度器会选择满足显存请求的最小允许列表 profile，在 A100-40GB-PCIE 上通常为 `2g.10gb * 2`，在 A100-80GB-SXM 上通常为 `1g.10gb * 2`。
 
 ```yaml
 apiVersion: v1
@@ -16,7 +16,7 @@ metadata:
 spec:
   containers:
     - name: ubuntu-container
-      image: ubuntu:18.04
+      image: ubuntu:22.04
       command: ["bash", "-c", "sleep 86400"]
       resources:
         limits:

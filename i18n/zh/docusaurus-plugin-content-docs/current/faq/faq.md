@@ -191,7 +191,7 @@ HAMi vGPU 是纯软件方案，无硬件要求。NVIDIA MIG 是硬件分区，�
 | 动态重配置     | 支持，无需排空节点            | 需要重新配置 MIG 配置文件                  |
 | 多租户噪声隔离 | 尽力而为                      | 强隔离                                     |
 
-当 GPU 不支持 MIG、工作负载需要灵活的显存大小、或需要无需排空节点的动态重打包时，使用 HAMi vGPU。当硬隔离是合规或 SLA 要求时，使用 MIG。HAMi 也通过 `mig-parted` 支持动态 MIG；参见[动态 MIG 支持](../userguide/nvidia-device/dynamic-mig-support)。
+当 GPU 不支持 MIG、工作负载需要灵活的显存大小、或需要无需排空节点的动态重打包时，使用 HAMi vGPU。当硬隔离是合规或 SLA 要求时，使用 MIG。从 v2.10.0 起，HAMi Dynamic MIG 按 Pod 创建和回收硬件 MIG 实例，日常切换 profile 时不必更换整卡几何布局；参见[动态 MIG 支持](../userguide/nvidia-device/dynamic-mig-support)。
 
 ## 为什么容器内 nvidia-smi 显示的显存比宿主机少？
 

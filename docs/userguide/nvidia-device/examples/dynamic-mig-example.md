@@ -2,7 +2,7 @@
 title: Assign task to MIG instance
 ---
 
-This example will allocate `2g.10gb * 2` for A100-40GB-PCIE device or `1g.10gb * 2` for A100-80GB-SXM device.
+This example requests two MIG instances with at least 8000 MiB each. The scheduler selects the smallest allowlisted profile that satisfies the memory request, typically `2g.10gb * 2` on A100-40GB-PCIE or `1g.10gb * 2` on A100-80GB-SXM.
 
 ```yaml
 apiVersion: v1

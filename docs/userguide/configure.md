@@ -28,6 +28,7 @@ You can update these configurations using one of the following methods:
    | `nvidia.deviceMemoryScaling` | Float | The ratio for NVIDIA device memory scaling, can be greater than 1 (enables virtual device memory, experimental feature). For an NVIDIA GPU with _M_ memory, if set to _S_, vGPUs split from this GPU will get `S * M` memory in Kubernetes. | `1` |
    | `nvidia.deviceSplitCount` | Integer | Maximum jobs assigned to a single GPU device. | `10` |
    | `nvidia.migstrategy` | String | "none" for ignoring MIG features, "mixed" for allocating MIG devices by separate resources. | `"none"` |
+   | `nvidia.migProfileAllowlist` | List | Allowed MIG profiles per GPU model for Dynamic MIG. The device plugin discovers memory, compute, and legal placements through NVML. | Chart defaults for A30, A100, H100, H20, H200, B200, RTX PRO 6000 |
    | `nvidia.disablecorelimit` | String | "true" to disable core limit, "false" to enable core limit. | `"false"` |
    | `nvidia.defaultMemory` | Integer | The default device memory of the current job, in MB. '0' means using 100% of the device memory. | `0` |
    | `nvidia.defaultCores` | Integer | Percentage of GPU cores reserved for the current job. `0` allows any GPU with enough memory; `100` reserves the entire GPU exclusively. | `0` |
