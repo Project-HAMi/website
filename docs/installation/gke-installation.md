@@ -10,6 +10,13 @@ This guide covers installing HAMi on Google Kubernetes Engine (GKE) with **Conta
 
 Validated on: GKE COS, NVIDIA T4, driver 580.126.20, HAMi 2.10.0.
 
+## Prerequisites
+
+- A running GKE cluster you can create node pools on, plus `gcloud` and `kubectl` authenticated against it.
+- Completion of HAMi's standard [prerequisites](/docs/installation/prerequisites) guide (Helm installed, `gpu=on` node-labeling convention understood).
+- Permission to create privileged Jobs/DaemonSets in the target namespace — steps 2 and 3 below need `hostPID` and host-path mounts to install the driver and CDI tooling onto each node's disk.
+- No existing GPU device plugin (e.g. GKE's bundled one, or the NVIDIA GPU Operator) managing `nvidia.com/gpu` on the pool you create below — HAMi's device plugin must be the sole advertiser.
+
 ## 1. Create the GPU node pool
 
 ```bash
@@ -43,7 +50,7 @@ Why each flag matters:
 
 ## 2. Install the NVIDIA driver
 
-Because `gpu-driver-version=disabled` was set, GKE's own driver-installer DaemonSet (`nvidia-driver-installer`, namespace `kube-system`) never runs on this pool by default. Google's stock COS GPU-installer DaemonSet manifest can still be used — widen its `nodeAffinity` to include your new pool name (`cloud.google.com/gke-nodepool In [...]`) so it schedules there despite the label opt-out in step 1. It installs the driver into `/home/kubernetes/bin/nvidia` on the host — note this path, it's needed in step 4.
+Because `gpu-driver-version=disabled` was set, GKE's own driver-installer DaemonSet (`nvidia-driver-installer`, namespace `kube-system`) never runs on this pool by default. Google's stock COS GPU-installer DaemonSet manifest — [`daemonset-preloaded.yaml`](https://raw.githubusercontent.com/GoogleCloudPlatform/container-engine-accelerators/master/nvidia-driver-installer/cos/daemonset-preloaded.yaml) — can still be used: download it, widen its `nodeAffinity` to include your new pool name (`cloud.google.com/gke-nodepool In [...]`) so it schedules there despite the label opt-out in step 1, then apply it. It installs the driver into `/home/kubernetes/bin/nvidia` on the host — note this path, it's needed in step 4.
 
 ## 3. NVIDIA Container Toolkit + CDI setup
 
