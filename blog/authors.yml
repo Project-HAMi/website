@@ -8,8 +8,12 @@ hami_community:
 
 mesut_oezdil:
   name: Mesut Oezdil
-  title: Author
-  url: https://www.linkedin.com/in/mesut-oezdil/
+  title: DevOps Engineer, CNCF TAG Infrastructure Tech Lead, HAMi Contributor
+  url: https://github.com/mesutoezdil
+  image_url: https://github.com/mesutoezdil.png
+  socials:
+    github: mesutoezdil
+    linkedin: mesut-oezdil
 
 archlitchi:
   name: Li Mengxuan

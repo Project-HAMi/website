@@ -1,6 +1,9 @@
 "DRA":
   label: "DRA"
   permalink: "/dra"
+"ascend":
+  label: "Ascend"
+  permalink: "/ascend"
 "GPU 分区":
   label: "GPU 分区"
   permalink: "/gpu-partitioning"
@@ -55,6 +58,9 @@
 "topology":
   label: "topology"
   permalink: "/topology"
+"vnpu":
+  label: "vNPU"
+  permalink: "/vnpu"
 "vgpu":
   label: "vgpu"
   permalink: "/vgpu"
@@ -82,6 +88,9 @@
 "资源共享":
   label: "资源共享"
   permalink: "/resource-sharing"
+"soft-slicing":
+  label: "软切分"
+  permalink: "/soft-slicing"
 "隔离":
   label: "隔离"
   permalink: "/isolation"

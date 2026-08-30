@@ -1,0 +1,37 @@
+# Step 7: the contrast Pod. Plain binpack deliberately stacks onto the
+# used card, proving the composed Pods' different placement came from
+# the mutex filter, not from binpack itself.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: policy-binpack-solo
+  labels:
+    hami.run/lab-14: "true"
+  annotations:
+    hami.io/gpu-scheduler-policy: "binpack"
+spec:
+  containers:
+    - name: app
+      image: ubuntu:22.04
+      command: ["bash", "-c", "sleep infinity"]
+      resources:
+        limits:
+          nvidia.com/gpu: 1
+          nvidia.com/gpumem: 1000
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+      env:
+        - name: LD_LIBRARY_PATH
+          value: /host-nvidia/lib64
+      volumeMounts:
+        - name: host-nvidia-libs
+          mountPath: /host-nvidia/lib64
+          readOnly: true
+  volumes:
+    - name: host-nvidia-libs
+      hostPath:
+        path: /home/kubernetes/bin/nvidia/lib64
+        type: Directory

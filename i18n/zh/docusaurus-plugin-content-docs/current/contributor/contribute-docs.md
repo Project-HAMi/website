@@ -149,7 +149,7 @@ Docusaurus 会自动把这些解析为正确的 URL，包括版本和语言。
 用相对于站点根目录的绝对路径引用图片：
 
 ```md
-![Architecture diagram](/img/docs/common/architecture/hami-arch.png) ![WebUI Overview](/img/docs/en/userguide/webui-overview.png)
+![Architecture diagram](/img/docs/common/developers/hami-core-design/hami-arch.png) ![WebUI Overview](/img/docs/en/userguide/webui-overview.png)
 ```
 
 使用有意义的 alt 文本，不要链接外部图片，图片要托管在本仓库中。

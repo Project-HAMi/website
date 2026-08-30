@@ -1,0 +1,22 @@
+# Per-node HAMi device plugin configuration: enable hami-vnpu-core on one node.
+# Replace "aio-node74-arm" with your Ascend node name. vDeviceCount is the
+# per-card vNPU count, honored directly by the plugin (since v1.4.0); 7 matches
+# the 310P3 capacity verified in this lab.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/component: hami-scheduler
+    app.kubernetes.io/name: hami
+    app.kubernetes.io/instance: hami
+  name: hami-device-node-config
+  namespace: kube-system
+data:
+  node-config.yaml: |-
+    nodes:
+      - name: "aio-node74-arm"
+        hami-vnpu-core: true
+        vDeviceCount: 7
+        filterDevices:
+          index: []
+          uuid: []
