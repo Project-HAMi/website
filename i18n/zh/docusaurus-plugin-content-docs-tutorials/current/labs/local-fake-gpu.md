@@ -242,8 +242,6 @@ echo "NODE_NAME=${NODE_NAME}"
 | macOS | `orbstack`               |
 | Linux | `hami-lab-control-plane` |
 
----
-
 :::info[步骤 2–7 在两个平台上完全相同]
 
 从这里开始，所有命令在 macOS 和 Linux 上完全一致。你唯一会注意到的区别是示例输出中的节点名称。

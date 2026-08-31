@@ -295,17 +295,17 @@
 }
 
 .ctaList {
-  margin: 0 0 var(--hami-space-32);
+  margin: 0 auto var(--hami-space-32);
   padding: 0 0 0 2rem;
-  display: inline-flex;
+  display: flex;
   flex-direction: column;
   gap: var(--hami-space-8);
   color: var(--hami-color-muted);
   font-size: 0.96rem;
   line-height: 1.6;
   text-align: left;
+  max-width: fit-content;
 }
-
 /* ── dark mode ── */
 
 [data-theme="dark"] .dayCard {

@@ -69,7 +69,7 @@ HAMi 由四个核心组件构成：
 | `HAMi MutatingWebhook Server` | Deployment（内嵌于 hami-scheduler Pod） | 准入入口：扫描 Pod 资源字段，将需要 HAMi 调度的 Pod 的 `schedulerName` 改写为 `hami-scheduler`（可配置）；已显式指定其他 schedulerName 的 Pod 会被跳过 |
 | `HAMi Scheduler-Extender` | Deployment（内嵌于 hami-scheduler Pod） | 调度核心：感知全局 GPU 视图，在 Filter/Bind 阶段实现细粒度显存/算力感知调度，支持 binpack/spread 策略 |
 | `HAMi Device Plugin` | DaemonSet | 节点资源层：向 Kubelet 注册虚拟 GPU 资源；在 `Allocate` 中以 hostPath 方式将 `libvgpu.so` 和 `ld.so.preload` 挂载到容器，并注入 `CUDA_DEVICE_MEMORY_LIMIT_<index>`、`CUDA_DEVICE_SM_LIMIT` 等环境变量 |
-| `HAMi-Core`（`libvgpu.so`） | 动态库（Device Plugin Allocate 时注入） | 容器内软隔离：重写 `dlsym` 劫持以 `cu` / `nvml` 开头的 NVIDIA 库函数，实现显存上限拦截与算力限速 |
+| `HAMi-Core`（`libvgpu.so`） | 动态库（Device Plugin Allocate 时注入） | 容器内软隔离：重写 `dlsym` 劫持其 hook 表中登记的 NVIDIA 库函数（并非所有以 `cu` / `nvml` 开头的符号），实现显存上限拦截与算力限速 |
 
 实际部署后的 Pod 状态如下：
 
@@ -168,7 +168,7 @@ Pod 调度到目标节点后，Kubelet 调用 Device Plugin 的 `Allocate` 接�
    - `CUDA_DEVICE_MEMORY_LIMIT_<index>=<数字>m`：per-device 显存配额，`index` 为容器内设备索引（0、1、2...），值带单位后缀 `m`（如 `1024m`），来自 Pod 申请的 `nvidia.com/gpumem`
    - `CUDA_DEVICE_SM_LIMIT=<百分比>`：算力配额上限（来自 Pod 申请的 `nvidia.com/gpucores`）
 
-容器启动后，libvgpu.so 通过**重写 `dlsym` 函数**劫持 NVIDIA 动态库的符号解析，对所有以 `cu` 和 `nvml` 开头的函数调用进行拦截：
+容器启动后，libvgpu.so 通过**重写 `dlsym` 函数**劫持 NVIDIA 动态库的符号解析，对其 hook 表中登记的 `cu`/`nvml` 前缀函数调用进行拦截；未登记的 `cu`/`nvml` 函数会正常解析到真实驱动：
 
 **显存限制（Memory Limit）：**
 

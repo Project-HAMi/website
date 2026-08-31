@@ -1,21 +1,13 @@
 import Layout from "@theme/Layout";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
-import useBaseUrl from "@docusaurus/useBaseUrl";
+import { useBaseUrlUtils } from "@docusaurus/useBaseUrl";
 import caseStudies from "../data/caseStudies";
+import { formatShortDate } from "../utils/date";
 import styles from "./case-studies.module.css";
-
-function formatDate(date, locale) {
-  const language = locale === "zh" ? "zh-CN" : "en-US";
-  return new Date(date).toLocaleDateString(language, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    timeZone: "UTC",
-  });
-}
 
 export default function CaseStudiesPage() {
   const { i18n } = useDocusaurusContext();
+  const { withBaseUrl } = useBaseUrlUtils();
   const isZh = i18n.currentLocale === "zh";
   const t = (item) => (isZh ? item.zh : item.en);
 
@@ -48,14 +40,14 @@ export default function CaseStudiesPage() {
                   <div className={styles.logoBox}>
                     <img
                       className={styles.logo}
-                      src={useBaseUrl(logo)}
+                      src={withBaseUrl(logo)}
                       alt={displayName}
                       loading="lazy"
                     />
                   </div>
                   <span className={styles.meta}>
                     {isZh ? "发布日期" : "Published"}:{" "}
-                    {formatDate(item.publishedAt, i18n.currentLocale)}
+                    {formatShortDate(item.publishedAt, i18n.currentLocale)}
                   </span>
                 </div>
 

@@ -270,7 +270,10 @@ export default async (request, context) => {
   const response = await context.next();
   const contentType = response.headers.get("content-type") || "";
 
-  if (!response.ok || !contentType.toLowerCase().includes("text/html")) {
+  // Only a complete 200 is safe to rewrite. A 206 carries a Content-Range
+  // describing the HTML byte range, which stops matching once the body becomes
+  // Markdown, and a 204 can't take a body at all.
+  if (response.status !== 200 || !contentType.toLowerCase().includes("text/html")) {
     return response;
   }
 

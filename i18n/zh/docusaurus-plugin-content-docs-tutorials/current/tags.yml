@@ -1,6 +1,9 @@
 "DRA":
   label: "DRA"
   permalink: "/dra"
+"ascend":
+  label: "Ascend"
+  permalink: "/ascend"
 "GPU 分区":
   label: "GPU 分区"
   permalink: "/gpu-partitioning"
@@ -10,18 +13,33 @@
 "gang-scheduling":
   label: "gang-scheduling"
   permalink: "/gang-scheduling"
+"gke":
+  label: "GKE"
+  permalink: "/gke"
+"gpu-sharing":
+  label: "GPU 共享"
+  permalink: "/gpu-sharing"
 "hami":
   label: "hami"
   permalink: "/hami"
+"hami-core":
+  label: "HAMi-core"
+  permalink: "/hami-core"
 "inference":
   label: "inference"
   permalink: "/inference"
 "k3s":
   label: "k3s"
   permalink: "/k-3-s"
+"kai-scheduler":
+  label: "KAI Scheduler"
+  permalink: "/kai-scheduler"
 "kueue":
   label: "Kueue"
   permalink: "/kueue"
+"kserve":
+  label: "KServe"
+  permalink: "/kserve"
 "nvidia":
   label: "nvidia"
   permalink: "/nvidia"
@@ -34,6 +52,15 @@
 "quota":
   label: "配额"
   permalink: "/quota"
+"scheduler-internals":
+  label: "scheduler-internals"
+  permalink: "/scheduler-internals"
+"topology":
+  label: "topology"
+  permalink: "/topology"
+"vnpu":
+  label: "vNPU"
+  permalink: "/vnpu"
 "vgpu":
   label: "vgpu"
   permalink: "/vgpu"
@@ -61,6 +88,9 @@
 "资源共享":
   label: "资源共享"
   permalink: "/resource-sharing"
+"soft-slicing":
+  label: "软切分"
+  permalink: "/soft-slicing"
 "隔离":
   label: "隔离"
   permalink: "/isolation"

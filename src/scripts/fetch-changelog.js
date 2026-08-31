@@ -205,8 +205,11 @@ function fetchFromWebPage() {
 async function updateAuthorsJson(contributors) {
   const authorsPath = path.join(process.cwd(), "changelog", "source", "authors.json");
   try {
-    const authorsContent = fs.readFileSync(authorsPath, "utf8");
-    const authors = JSON.parse(authorsContent);
+    // changelog/source is gitignored and only generated at build time, so it may not exist yet
+    fs.mkdirSync(path.dirname(authorsPath), { recursive: true });
+    const authors = fs.existsSync(authorsPath)
+      ? JSON.parse(fs.readFileSync(authorsPath, "utf8"))
+      : {};
     let updated = false;
     for (const contributor of contributors) {
       if (!authors[contributor.username]) {

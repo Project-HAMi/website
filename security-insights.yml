@@ -1,7 +1,7 @@
 header:
   schema-version: 2.2.0
-  last-updated: "2026-07-22"
-  last-reviewed: "2026-07-22"
+  last-updated: "2026-07-30"
+  last-reviewed: "2026-07-30"
   url: https://raw.githubusercontent.com/Project-HAMi/website/master/security-insights.yml
   comment: Security insights for the HAMi documentation website repository.
 
@@ -39,10 +39,19 @@ project:
     - name: community
       url: https://github.com/Project-HAMi/community
       comment: Governance and community documents. The full list of subproject repositories is at https://github.com/orgs/Project-HAMi/repositories.
+  documentation:
+    detailed-guide: https://project-hami.io/docs
+    quickstart-guide: https://project-hami.io/docs/get-started/deploy-with-helm
+    code-of-conduct: https://github.com/Project-HAMi/HAMi/blob/master/CODE_OF_CONDUCT.md
   vulnerability-reporting:
     reports-accepted: true
     bug-bounty-available: false
     policy: https://github.com/Project-HAMi/HAMi/blob/master/SECURITY.md
+    contact:
+      name: archlitchi
+      affiliation: Project HAMi
+      social: https://github.com/archlitchi
+      primary: true
     comment: Report vulnerabilities privately through GitHub Security Advisories on the affected repository.
 
 repository:
@@ -72,3 +81,31 @@ repository:
     assessments:
       self:
         comment: Static documentation site built with Docusaurus and deployed via Netlify. No user data is collected or stored by this repository. Dependencies are updated through maintenance pull requests driven by npm audit.
+    champions:
+      - name: archlitchi
+        affiliation: Project HAMi
+        social: https://github.com/archlitchi
+        primary: true
+      - name: wawa0210
+        affiliation: Project HAMi
+        social: https://github.com/wawa0210
+        primary: false
+    tools:
+      - name: GitHub secret scanning
+        type: secret-scanning
+        rulesets:
+          - default
+        integration:
+          adhoc: true
+          ci: false
+          release: false
+        comment: Secret scanning and push protection are both enabled on the repository. Push protection blocks a push that contains a known secret pattern before it reaches the branch.
+      - name: Dependabot
+        type: SCA
+        rulesets:
+          - default
+        integration:
+          adhoc: true
+          ci: false
+          release: false
+        comment: Version updates are configured in .github/dependabot.yml and security updates are enabled, so advisories against the npm lockfile open a pull request automatically.

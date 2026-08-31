@@ -11,7 +11,7 @@ lab:
     - maishivamhoo123
   verified: "2026-07-20"
 tags:
-  - simulation
+  - 模拟
   - scheduler-internals
   - topology
 toc_max_heading_level: 2
@@ -202,8 +202,6 @@ Set kubectl context to "kind-topo-lab"
 NODE_NAME=$(kubectl get nodes -o jsonpath='{.items[0].metadata.name}')
 echo "NODE_NAME=${NODE_NAME}"
 ```
-
----
 
 :::info[后续大部分步骤在两个平台上是一致的]
 

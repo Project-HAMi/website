@@ -14,7 +14,7 @@ This guide covers:
 - [Helm](https://helm.sh/docs/) v3+
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) v1.23+
 - [CUDA](https://developer.nvidia.com/cuda-toolkit) v10.2+
-- [NVIDIA Driver](https://www.nvidia.cn/drivers/unix/) v440+
+- [NVIDIA Driver](https://www.nvidia.com/drivers/unix/) v440+
 
 ## Installation {#installation}
 

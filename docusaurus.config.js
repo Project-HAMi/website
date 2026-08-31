@@ -5,6 +5,22 @@ const defaultLocale = "en";
 const siteUrl = (process.env.DOCUSAURUS_SITE_URL || "https://project-hami.io").replace(/\/$/, "");
 const githubEditBaseUrl = "https://github.com/Project-HAMi/website/edit/master/";
 
+// Site-wide announcement bar switch. Flip to true to show it; keep `id` stable
+// so visitors who dismissed a previous announcement stay dismissed (bump `id`
+// only when you publish a genuinely new announcement you want everyone to see).
+const announcementBarEnabled = true;
+const announcementBar = announcementBarEnabled
+  ? {
+      id: "announcement-bar",
+      // `content` is a translation key resolved per-locale from
+      // i18n/<locale>/docusaurus-theme-classic/announcementBar.json
+      content: "kubecon-china",
+      backgroundColor: "#20232a",
+      textColor: "#ffffff",
+      isCloseable: true,
+    }
+  : undefined;
+
 function getDocEditUrl(versionDocsDirPath, docPath) {
   return `${githubEditBaseUrl}${[versionDocsDirPath, docPath].filter(Boolean).join("/")}`;
 }
@@ -64,7 +80,7 @@ module.exports = {
   },
   organizationName: "Project-HAMi",
   projectName: "website",
-  favicon: "img/logo.svg",
+  favicon: "favicon.ico",
   clientModules: [
     require.resolve("./src/client/imageFigureNumber.js"),
     require.resolve("./src/client/webmcp.js"),
@@ -141,9 +157,8 @@ module.exports = {
       tagName: "link",
       attributes: {
         rel: "icon",
-        type: "image/png",
-        sizes: "32x32",
-        href: "/favicons/favicon-32x32.png",
+        type: "image/svg+xml",
+        href: "/favicons/favicon.svg",
       },
     },
     {
@@ -151,16 +166,8 @@ module.exports = {
       attributes: {
         rel: "icon",
         type: "image/png",
-        sizes: "16x16",
-        href: "/favicons/favicon-16x16.png",
-      },
-    },
-    {
-      tagName: "link",
-      attributes: {
-        rel: "shortcut icon",
-        type: "image/png",
-        href: "/favicons/favicon-16x16.png",
+        sizes: "96x96",
+        href: "/favicons/favicon-96x96.png",
       },
     },
     {
@@ -171,25 +178,10 @@ module.exports = {
       },
     },
     {
-      tagName: "link",
-      attributes: {
-        rel: "mask-icon",
-        color: "#ffffff",
-        href: "/favicons/safari-pinned-tab.svg",
-      },
-    },
-    {
       tagName: "meta",
       attributes: {
         name: "theme-color",
         content: "#ffffff",
-      },
-    },
-    {
-      tagName: "meta",
-      attributes: {
-        name: "msapplication-config",
-        content: "/favicons/browserconfig.xml",
       },
     },
   ],
@@ -262,6 +254,11 @@ module.exports = {
             icsUrl:
               "https://calendar.google.com/calendar/ical/4eef0c8621ddcb873a7e4be9cf487db9d2278de173451abc78dfbc988c7cad45%40group.calendar.google.com/public/basic.ics",
           },
+          {
+            name: "Conferences",
+            icsUrl:
+              "https://calendar.google.com/calendar/ical/b04a8d52400e0a3a41c0bf1f3bd60653120bc745f6ea2551ea0907267282c8bb%40group.calendar.google.com/public/basic.ics",
+          },
         ],
       },
     ],
@@ -293,13 +290,7 @@ module.exports = {
       defaultMode: "dark",
       respectPrefersColorScheme: false,
     },
-    announcementBar: {
-      id: "kubecon_japan_2026",
-      content: "kubecon_japan_2026",
-      backgroundColor: "#20232a",
-      textColor: "#ffffff",
-      isCloseable: true,
-    },
+    announcementBar,
     navbar: {
       title: "HAMi",
       logo: {

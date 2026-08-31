@@ -54,8 +54,6 @@ flowchart LR
 
 > Cost note: the `n1-standard-4` + T4 VM costs about $0.55 per hour. [Lab 3](./gpu-partitioning.md) and [Lab 4](./hami-dra.md) continue on this same cluster, so one session covers all three labs. Delete the VM when you finish.
 
----
-
 ## Step 1: Create a GCP Virtual Machine
 
 ### Purpose
@@ -324,8 +322,6 @@ prometheus-prometheus-node-exporter-xxxxx              1/1     Running   0      
 
 > If the installation fails, uninstall first before retrying: `helm uninstall -n monitoring prometheus`
 
----
-
 ## Step 5: Install GPU Operator
 
 ### Purpose
@@ -395,8 +391,6 @@ The expected output includes GPU information (driver version, CUDA version, GPU 
 | N/A   64C    P8             17W /   70W |       1MiB /  15360MiB |      0%      Default |
 +-----------------------------------------------------------------------------------------+
 ```
-
----
 
 ## Step 6: Install HAMi
 

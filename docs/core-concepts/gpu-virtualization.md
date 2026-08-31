@@ -68,7 +68,7 @@ HAMi consists of four core components:
 | `HAMi MutatingWebhook Server` | Deployment (embedded in hami-scheduler Pod) | Admission entry point: scans Pod resource fields, rewrites `schedulerName` to `hami-scheduler` for Pods that need HAMi scheduling (configurable); Pods with explicitly specified schedulerName are skipped |
 | `HAMi Scheduler-Extender` | Deployment (embedded in hami-scheduler Pod) | Scheduling core: maintains a global GPU view, implements fine-grained VRAM/compute-aware scheduling during Filter/Bind phases, supports binpack/spread strategies |
 | `HAMi Device Plugin` | DaemonSet | Node resource layer: registers virtual GPU resources with Kubelet; mounts `libvgpu.so` and `ld.so.preload` into containers via hostPath during `Allocate`, and injects environment variables such as `CUDA_DEVICE_MEMORY_LIMIT_<index>` and `CUDA_DEVICE_SM_LIMIT` |
-| `HAMi-Core` (`libvgpu.so`) | Dynamic library (injected during Device Plugin Allocate) | In-container soft isolation: overrides `dlsym` to hijack NVIDIA library functions starting with `cu`/`nvml`, implementing VRAM limit interception and compute throttling |
+| `HAMi-Core` (`libvgpu.so`) | Dynamic library (injected during Device Plugin Allocate) | In-container soft isolation: overrides `dlsym` to hijack the specific NVIDIA library functions listed in its hook table (not every `cu`/`nvml`-prefixed symbol), implementing VRAM limit interception and compute throttling |
 
 After deployment, the Pod status looks like this:
 
@@ -167,7 +167,7 @@ After the Pod is scheduled to the target node, Kubelet calls the Device Plugin's
    - `CUDA_DEVICE_MEMORY_LIMIT_<index>=<number>m`: Per-device VRAM quota, where `index` is the container's device index (0, 1, 2...), with a unit suffix `m` (e.g., `1024m`), derived from the Pod's `nvidia.com/gpumem` request
    - `CUDA_DEVICE_SM_LIMIT=<percentage>`: Compute quota ceiling (from the Pod's `nvidia.com/gpucores` request)
 
-After the container starts, libvgpu.so hijacks NVIDIA dynamic library symbol resolution by **overriding the `dlsym` function**, intercepting all function calls starting with `cu` and `nvml`:
+After the container starts, libvgpu.so hijacks NVIDIA dynamic library symbol resolution by **overriding the `dlsym` function**, intercepting the specific `cu`/`nvml`-prefixed function calls listed in its hook table. Calls to `cu`/`nvml` functions outside that table resolve normally to the real driver:
 
 **VRAM Limit:**
 

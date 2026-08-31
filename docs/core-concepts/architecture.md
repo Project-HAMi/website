@@ -11,7 +11,7 @@ HAMi consists of the following components:
 - HAMi MutatingWebhook
 - HAMi scheduler-extender
 - Device-plugin (HAMi-device-plugin)
-- In container resource control (HAMi-Core)
+- In-container resource control (HAMi-Core)
 
 ## HAMi MutatingWebhook {#hami-mutatingwebhook}
 
@@ -27,4 +27,4 @@ The device-plugin layer obtains the scheduling result from the annotations field
 
 ## HAMi-Core {#hami-core}
 
-The In container resource control is responsible for monitoring the resource usage within the container and providing hard isolation capabilities.
+The in-container resource control is responsible for monitoring the resource usage within the container and providing hard isolation capabilities.

@@ -242,8 +242,6 @@ echo "NODE_NAME=${NODE_NAME}"
 | macOS    | `orbstack`               |
 | Linux    | `hami-lab-control-plane` |
 
----
-
 :::info[Steps 2–7 are identical on both platforms]
 
 From here on, all commands work the same on macOS and Linux. The only difference you will notice is your node name in example outputs.

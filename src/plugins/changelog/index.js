@@ -138,7 +138,7 @@ export default async function ChangelogPlugin(context, options) {
     ...blogPlugin,
     name: 'changelog-plugin',
     async loadContent() {
-      const fileContent = await fs.readFile(changelogPath, 'utf-8');
+      const fileContent = (await fs.readFile(changelogPath, 'utf-8')).replace(/\r\n/g, '\n');
       const sections = fileContent
         .split(/(?=\n## )/)
         .map(processSection)
