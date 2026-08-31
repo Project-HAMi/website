@@ -7,7 +7,7 @@ translated: true
 
 最初的 Dynamic MIG 功能在 @sailorvii 的帮助下实现。v2.10.0 的预留优先重构由 @FouoF 贡献。
 
-### 介绍
+## 介绍
 
 NVIDIA GPU 内置的共享方法包括：时间片、MPS 和 MIG。时间片共享的上下文切换会浪费一些时间，所以我们选择了 MPS 和 MIG。GPU 会暴露多种 MIG profile，但固定的整卡几何布局必须在工作负载到达前选定。切换该布局通常意味着排空 GPU。我们希望开发一个自动切片插件，并在用户需要时创建切片。
 
