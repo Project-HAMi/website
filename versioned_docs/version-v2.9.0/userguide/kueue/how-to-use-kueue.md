@@ -55,7 +55,7 @@ Starting from Kueue v0.15, you don't need to explicitly enable the `"pod"` integ
 After updating the configuration, restart the Kueue manager:
 
 ```bash
-kubectl rollout restart deployment kueue-manager -n kueue-system
+kubectl rollout restart deployment kueue-controller-manager -n kueue-system
 ```
 
 ## Configure ResourceTransformation
