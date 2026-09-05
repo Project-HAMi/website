@@ -2,6 +2,14 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.requiresContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   margin-bottom: 20px;
   flex-wrap: wrap;
 }

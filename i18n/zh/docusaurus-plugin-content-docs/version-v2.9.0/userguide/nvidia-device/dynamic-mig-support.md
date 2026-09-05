@@ -7,7 +7,6 @@ import SupportedComponents, { Tag } from '@site/src/components/SupportedComponen
 
 <SupportedComponents>
   <Tag href="../../get-started/deploy-with-helm.md" type="hami">HAMi</Tag>
-  <Tag href="../volcano-vgpu/nvidia-gpu/how-to-use-volcano-vgpu.md" type="volcano">Volcano</Tag>
 </SupportedComponents>
 
 ## 介绍

@@ -7,7 +7,6 @@ import SupportedComponents, { Tag } from '@site/src/components/SupportedComponen
 
 <SupportedComponents>
   <Tag href="../../get-started/deploy-with-helm.md" type="hami">HAMi</Tag>
-  <Tag href="../volcano-vgpu/nvidia-gpu/how-to-use-volcano-vgpu.md" type="volcano">Volcano</Tag>
 </SupportedComponents>
 
 HAMi v2.10 采用预留优先、拓扑感知的方式实现 NVIDIA 多实例 GPU（MIG）的动态切分。它不再选择并切换预定义的整卡几何配置，而是：

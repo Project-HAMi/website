@@ -3,12 +3,14 @@ title: Dynamic Resource Allocation
 translated: true
 ---
 
-import SupportedComponents, { Tag } from '@site/src/components/SupportedComponents';
+import SupportedComponents, { Tag, Requires } from '@site/src/components/SupportedComponents';
 
 <SupportedComponents>
   <Tag href="../../installation/how-to-use-hami-dra.md" type="hami-dra">HAMi-DRA</Tag>
-  <Tag href="../../installation/configure-cdi.md" type="cdi">CDI Support</Tag>
 </SupportedComponents>
+<Requires>
+  <Tag href="../../installation/configure-cdi.md" type="cdi">CDI Support</Tag>
+</Requires>
 
 ## Introduction
 

@@ -3,12 +3,14 @@ title: 动态资源分配
 translated: true
 ---
 
-import SupportedComponents, { Tag } from '@site/src/components/SupportedComponents';
+import SupportedComponents, { Tag, Requires } from '@site/src/components/SupportedComponents';
 
 <SupportedComponents>
   <Tag href="../../installation/how-to-use-hami-dra.md" type="hami-dra">HAMi-DRA</Tag>
-  <Tag href="../../installation/configure-cdi.md" type="cdi">CDI 支持</Tag>
 </SupportedComponents>
+<Requires>
+  <Tag href="../../installation/configure-cdi.md" type="cdi">CDI 支持</Tag>
+</Requires>
 
 ## 介绍
 

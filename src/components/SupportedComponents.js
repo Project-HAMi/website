@@ -23,6 +23,18 @@ export function Tag({ href, type, children }) {
   return <span className={className}>{children}</span>;
 }
 
+export function Requires({ children }) {
+  const { i18n } = useDocusaurusContext();
+  const label = i18n.currentLocale === "zh" ? "前置要求：" : "Requires:";
+
+  return (
+    <div className={styles.requiresContainer}>
+      <strong className={styles.label}>{label}</strong>
+      <div className={styles.tags}>{children}</div>
+    </div>
+  );
+}
+
 export default function SupportedComponents({ children }) {
   const { i18n } = useDocusaurusContext();
   const label = i18n.currentLocale === "zh" ? "支持组件/模式：" : "Supported Components:";
