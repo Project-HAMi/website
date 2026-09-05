@@ -3,7 +3,7 @@ title: PaddlePaddle thread_local 分配器导致 vGPU 环境 CoreDump
 ---
 
 ## 现象
-在 HAMi vGPU 环境运行 PaddlePaddle 推理任务，进程发生 core_dump 崩溃，没有输出标准 CUDA OOM 报错。
+在 HAMi vGPU 环境运行 PaddlePaddle 推理任务，进程发生 core dump 崩溃，没有输出标准 CUDA OOM 报错。
 该问题仅在 vGPU 显存配额隔离场景出现，**物理裸机 GPU 无法复现**。
 
 触发条件：业务侧显式设置环境变量 `FLAGS_allocator_strategy=thread_local`。
@@ -16,7 +16,7 @@ HAMi 会 hook `cuMemGetInfo`，向应用返回vGPU配额显存。
 
 1. 第一个线程预占用绝大部分 vGPU 配额；
 2. 后续线程同样尝试占用92%上报显存，迅速耗尽vGPU配额；
-3. Paddle 内部GPU状态校验失败，抛出 `SIGABRT` 生成 core_dump，而不是抛出常规OOM异常。
+3. Paddle 内部GPU状态校验失败，抛出 `SIGABRT` 生成 core dump，而不是抛出常规OOM异常。
 
 > [!NOTE]
 > 该问题是 PaddlePaddle thread‑local分配器与vGPU显存配额机制的兼容性问题，**并非HAMi本身缺陷**。

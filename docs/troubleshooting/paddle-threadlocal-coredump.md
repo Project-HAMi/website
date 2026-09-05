@@ -4,9 +4,9 @@ title: PaddlePaddle CoreDump Issue with thread_local Allocator on vGPU
 ---
 
 ## Symptoms
-PaddlePaddle inference process crashes with core_dump on HAMi virtual GPU.
+PaddlePaddle inference process crashes with core dump on HAMi virtual GPU.
 No standard CUDA OOM error is printed.
-This issue only occurs under vGPU memory quota limitation and **cannot be reproduced on bare‑metal physical GPU**.
+This issue only occurs under vGPU memory quota limitation and **cannot be reproduced on bare‑metal GPUs**.
 
 Trigger condition: environment variable `FLAGS_allocator_strategy=thread_local` is explicitly set by user workload.
 
@@ -21,7 +21,7 @@ Each thread will pre‑reserve `0.92` (default value of `FLAGS_fraction_of_gpu_m
 
 1. The first thread occupies most of the vGPU memory quota.
 2. Subsequent threads also try to reserve 92% of reported memory and quickly run out of vGPU quota.
-3. Internal Paddle GPU sanity check fails, raises `SIGABRT` and generates core_dump instead of throwing normal CUDA OOM exception.
+3. Internal Paddle GPU sanity check fails, raises `SIGABRT` and generates core dump instead of throwing normal CUDA OOM exception.
 
 > [!NOTE]
 > This is a compatibility issue between PaddlePaddle thread‑local allocator and vGPU memory quota mechanism, **not a HAMi bug**.
