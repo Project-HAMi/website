@@ -22,10 +22,9 @@ Each thread will pre‑reserve `0.92` (default value of `FLAGS_fraction_of_gpu_m
 1. The first thread occupies most of the vGPU memory quota.
 2. Subsequent threads also try to reserve 92% of reported memory and quickly run out of vGPU quota.
 3. Internal Paddle GPU sanity check fails, raises `SIGABRT` and generates core dump instead of throwing normal CUDA OOM exception.
-
-> [!NOTE]
-> This is a compatibility issue between PaddlePaddle thread‑local allocator and vGPU memory quota mechanism, **not a HAMi bug**.
-
+:::note
+This is a compatibility issue between PaddlePaddle thread‑local allocator and vGPU memory quota mechanism, **not a HAMi bug**.
+:::
 ## Troubleshooting Commands
 Check real runtime environment variable inside container:
 ```bash

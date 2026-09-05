@@ -17,10 +17,9 @@ HAMi 会 hook `cuMemGetInfo`，向应用返回vGPU配额显存。
 1. 第一个线程预占用绝大部分 vGPU 配额；
 2. 后续线程同样尝试占用92%上报显存，迅速耗尽vGPU配额；
 3. Paddle 内部GPU状态校验失败，抛出 `SIGABRT` 生成 core dump，而不是抛出常规OOM异常。
-
-> [!NOTE]
-> 该问题是 PaddlePaddle thread‑local分配器与vGPU显存配额机制的兼容性问题，**并非HAMi本身缺陷**。
-
+:::note
+该问题是 PaddlePaddle thread‑local分配器与vGPU显存配额机制的兼容性问题，**并非HAMi本身缺陷**。
+:::
 ## 排查命令
 检查容器内进程实际生效的环境变量：
 ```bash
