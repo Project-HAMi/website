@@ -13,7 +13,7 @@ sidebar_label: 快速开始
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) v1.23+
 - [CUDA](https://developer.nvidia.com/cuda-toolkit) v10.2+
 - [NVIDIA 驱动](https://www.nvidia.cn/drivers/unix/) v440+
-- [NVIDIA Container Toolkit](../installation/prerequisites) (需预先配置并将 `nvidia-container-runtime` 设为默认容器运行时)
+- [NVIDIA Container Toolkit](../installation/prerequisites.md) (需预先配置并将 `nvidia-container-runtime` 设为默认容器运行时)
 
 ---
 

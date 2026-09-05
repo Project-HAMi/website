@@ -1,6 +1,6 @@
 ---
 title: Quick Start
-sidebar_label: Get Started
+sidebar_label: Quick Start
 ---
 
 Get HAMi up and running in minutes by deploying the Helm chart and submitting your first shared GPU workload.
@@ -13,7 +13,7 @@ Before deploying HAMi, ensure your GPU nodes meet the following prerequisites:
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) v1.23+
 - [CUDA](https://developer.nvidia.com/cuda-toolkit) v10.2+
 - [NVIDIA Driver](https://www.nvidia.com/drivers/unix/) v440+
-- [NVIDIA Container Toolkit](../installation/prerequisites) (with `nvidia-container-runtime` set as default runtime)
+- [NVIDIA Container Toolkit](../installation/prerequisites.md) (with `nvidia-container-runtime` set as default runtime)
 
 ---
 
