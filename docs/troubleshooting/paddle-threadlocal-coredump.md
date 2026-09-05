@@ -36,7 +36,7 @@ Locate where this variable is injected in image or startup scripts:
 grep -rn "FLAGS_allocator_strategy" /app /workspace 2>/dev/null
 ```
 
-## Resolution (Recommended for Production)
+## Resolution (Recommended for production)
 
 Remove manual `FLAGS_allocator_strategy=thread_local` from Dockerfile, startup scripts or inference wrapper code.
 Use PaddlePaddle default shared‑pool allocator.
