@@ -41,14 +41,20 @@ The commands and outputs were captured on 2026-08-11 from the [original verified
 
 ```mermaid
 %% title: Dynamic MIG Lifecycle Lab Flow
-flowchart LR
-    S1["Step 1<br/>Inventory and handover"] --> S2["Step 2<br/>Build pinned source"]
-    S2 --> S3["Step 3<br/>Render and install"]
-    S3 --> S4["Step 4<br/>Create one 1g"]
-    S4 --> S5["Step 5<br/>Saturate four placements"]
-    S5 --> S6["Step 6<br/>Mix and reclaim"]
-    S6 --> S7["Step 7<br/>Restart and adopt"]
-    S7 --> S8["Step 8<br/>Spill to GPU 5"]
+flowchart TB
+    subgraph P1["Phase 1: Prepare the node"]
+        direction LR
+        S1["Step 1<br/>Inventory and handover"] --> S2["Step 2<br/>Build pinned source"] --> S3["Step 3<br/>Render and install"]
+    end
+    subgraph P2["Phase 2: Allocate MIG per Pod"]
+        direction LR
+        S4["Step 4<br/>Create one 1g instance"] --> S5["Step 5<br/>Saturate four placements"] --> S6["Step 6<br/>Mix profiles and reclaim one"]
+    end
+    subgraph P3["Phase 3: Prove recovery and spillover"]
+        direction LR
+        S7["Step 7<br/>Restart plugin, adopt live instance"] --> S8["Step 8<br/>Register GPU 5, spill fifth Pod"]
+    end
+    P1 --> P2 --> P3
 ```
 
 ## Prerequisites
