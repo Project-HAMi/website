@@ -220,7 +220,7 @@ const events = [
     },
     date: "2026-09-07",
     endDate: "2026-09-09",
-    speaker: "Jifei Wang, Mengxuan Li, Walter Duan",
+    speaker: "Xiao Zhang, Jifei Wang, Mengxuan Li, Walter Duan",
     location: {
       en: "Shanghai International Convention Center, Shanghai, China",
       zh: "中国 上海 上海国际会议中心",
@@ -231,8 +231,8 @@ const events = [
     },
     banner: "/img/events/2026-kubecon-china/hami-at-kubecon-china-2026.png",
     description: {
-      en: "HAMi's first KubeCon China appearance as a CNCF Incubating project. All HAMi activities are on September 8: a keynote on llm-d support for heterogeneous environments (09:12-09:22, Grand Ballroom II + III), a lightning talk on scheduling-driven dynamic MIG (11:14-11:19, 5B + C), and a session on Intsig's billion-document GPU virtualization at scale (14:30-15:00, Grand Ballroom II + III). Booth T-1 in Grand Ballroom I is staffed by maintainers from 10:30 to 19:00. Stop by to talk GPU sharing, scheduling, and multi-tenant GPU management.",
-      zh: "HAMi 晋级 CNCF 孵化项目后首次亮相 KubeCon China。全部活动集中在 9 月 8 日：上午 Keynote 介绍 llm-d 对异构环境的支持（09:12-09:22，Grand Ballroom II + III），午间闪电演讲分享调度驱动的动态 MIG 方案（11:14-11:19，5B + C），下午带来合合信息千卡规模 GPU 虚拟化生产实践（14:30-15:00，Grand Ballroom II + III）。展台 T-1（Grand Ballroom I）10:30 至 19:00 维护者现场值守，欢迎来聊 GPU 共享、调度与多租户管理。",
+      en: "HAMi's first KubeCon China appearance as a CNCF Incubating project. All HAMi activities are on September 8: the opening keynote \"Operating Frontier Intelligence at Scale\" (09:12-09:22, Grand Ballroom II + III), a keynote on PD-disaggregated vLLM deployment on alternative AI accelerators using llm-d (09:59-10:04, Grand Ballroom II + III), a lightning talk on scheduling-driven dynamic MIG (11:14-11:19, 5B + C), and a session on Intsig's billion-document GPU virtualization at scale (14:30-15:00, Grand Ballroom II + III). Booth T-1 in Grand Ballroom I is staffed by maintainers from 10:30 to 19:00. Stop by to talk GPU sharing, scheduling, and multi-tenant GPU management.",
+      zh: "HAMi 晋级 CNCF 孵化项目后首次亮相 KubeCon China。全部活动集中在 9 月 8 日：开幕 Keynote「Operating Frontier Intelligence at Scale」（09:12-09:22，Grand Ballroom II + III）、介绍 llm-d 异构加速器上 PD 分离 vLLM 部署的 Keynote（09:59-10:04，Grand Ballroom II + III）、调度驱动动态 MIG 闪电演讲（11:14-11:19，5B + C），以及合合信息千卡规模 GPU 虚拟化生产实践（14:30-15:00，Grand Ballroom II + III）。展台 T-1（Grand Ballroom I）10:30 至 19:00 维护者现场值守，欢迎来聊 GPU 共享、调度与多租户管理。",
     },
     resources: {
       communityFlyer: {
