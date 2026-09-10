@@ -1,12 +1,12 @@
 ---
-title: "KubeCon China 2026 回顾：两场 Keynote、一场闪电演讲，与一座案例大奖"
+title: "KubeCon China 2026 回顾：两场 Keynote、一场闪电演讲，与一项案例大奖"
 date: "2026-09-10"
 description: "HAMi 以 CNCF 孵化项目身份首次参加 KubeCon China：两场 Keynote、一场闪电演讲、一场万卡规模生产实践、全天值守的展台 T-1，招商银行采用 HAMi 的案例还斩获 Cloud Native China 2026 案例大奖。"
 tags: ["KubeCon", "GPU", "Kubernetes", "AI", "China"]
 authors: [hami_community]
 ---
 
-9 月 7-9 日，[KubeCon + CloudNativeCon + OpenInfra Summit + PyTorch Conference China 2026](https://www.lfopensource.cn/kubecon-cloudnativecon-openinfra-summit-pytorch-conference-china/)在上海国际会议中心落下帷幕。这是 HAMi[晋级 CNCF 孵化项目](/zh/blog/hami-cncf-incubating)后首次参加 KubeCon China：社区带来了两场 Keynote、一场闪电演讲、一场专场分享和一个全天值守的展台，外加 Keynote 舞台上揭晓的一座案例大奖。
+9 月 7-9 日，[KubeCon + CloudNativeCon + OpenInfra Summit + PyTorch Conference China 2026](https://www.lfopensource.cn/kubecon-cloudnativecon-openinfra-summit-pytorch-conference-china/)在上海国际会议中心落下帷幕。这是 HAMi[晋级 CNCF 孵化项目](/zh/blog/hami-cncf-incubating)后首次参加 KubeCon China：社区带来了两场 Keynote、一场闪电演讲、一场专场分享和一个全天值守的展台，外加 Keynote 舞台上揭晓的一项案例大奖。
 
 四场分享的幻灯片均可在 [KubeCon China 2026 活动页](/zh/landing/kubecon-china)下载。
 
@@ -26,7 +26,7 @@ authors: [hami_community]
 
 ![Keynote 幻灯片“HAMi in production”：单卡推理吞吐 +46.7%、驾驶仿真 GPU 工时 -30%、训推流水线 GPU -50%、90% 的 GPU 基础设施由 HAMi 管理](/img/kubecon-china-2026-recap/keynote-hami-production.png)
 
-## Keynote 2：基于 Llm-d 的多元 AI 加速器 PD 分离 vLLM 部署
+## Keynote 2：基于 llm-d 的多元 AI 加速器 PD 分离 vLLM 部署
 
 ![王纪飞与李孟轩在 Grand Ballroom II + III 进行 llm-d Keynote](/img/kubecon-china-2026-recap/llm-d-keynote.jpg)
 
@@ -52,7 +52,7 @@ authors: [hami_community]
 
 ![专场幻灯片“CaseStudy: IntSig 训推总览”：万卡集群、1000+ 在线推理服务、1000+ 离线训练任务、90%+ 24 小时利用率](/img/kubecon-china-2026-recap/intsig-cluster-overview.png)
 
-合合信息从腾讯 QGPU 迁移到 HAMi 后，一站式获得虚拟化、调度与监控能力。部署打法：小模型推理用切片、高负载与大模型保留整卡；Binpack 优先装箱减少碎片；高低调和混布；分配指标接入监控、从分配到使用形成闭环；配合 Karpenter 实现弹性扩容。实测收益：GPU 利用率提升 50%、综合成本降低 30%、推理性能下降控制在 10% 以内。
+合合信息从腾讯 QGPU 迁移到 HAMi 后，一站式获得虚拟化、调度与监控能力。部署打法：小模型推理用切片、高负载与大模型保留整卡；Binpack 优先装箱减少碎片；高负载与低负载混布；分配指标接入监控、从分配到使用形成闭环；配合 Karpenter 实现弹性扩容。实测收益：GPU 利用率提升 50%、综合成本降低 30%、推理性能下降控制在 10% 以内。
 
 ![专场幻灯片“IntSig HAMi 部署方式与收益”：五种部署模式与实测收益——GPU 利用率 +50%、成本 -30%、推理性能下降控制在 10% 以内](/img/kubecon-china-2026-recap/intsig-hami-results.png)
 

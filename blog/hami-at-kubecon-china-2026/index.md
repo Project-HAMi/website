@@ -31,7 +31,7 @@ All HAMi-related activities happen on September 8: two keynotes in the morning, 
 
 The opening keynote of the conference. Chris Aniszczyk, CTO of the Linux Foundation, shares the stage with Xiao Zhang: once models are built and AI moves into production, the challenge shifts to making every GPU deliver value, scaling dynamically with demand, staying reliable, and understanding increasingly complex systems — cloud native technology is becoming the operating system layer that supports it all. The talk also explores the growing role of observability as AI systems grow more complex, and why the next generation of AI infrastructure will depend on open technologies working together across the stack.
 
-## Keynote 2: PD Disaggregation vLLM Deployment on Alternative AI Accelerators Using Llm-d
+## Keynote 2: PD Disaggregation vLLM Deployment on Alternative AI Accelerators Using llm-d
 
 - **Time**: September 8, 09:59-10:04
 - **Location**: Grand Ballroom II + III

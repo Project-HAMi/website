@@ -32,9 +32,9 @@ HAMi 的全部活动集中在 9 月 8 日：上午两场 Keynote，午间一场 
 
 大会开幕首场 Keynote。Linux 基金会 CTO Chris Aniszczyk 将与张潇同台：当模型构建完成、AI 真正走向生产，挑战转向如何让每一块 GPU 发挥价值、随需求动态扩展、保持可靠性，并理解日益复杂的系统——云原生技术正在成为支撑这一切的操作系统层。演讲还将探讨可观测性在 AI 系统复杂化过程中与日俱增的作用，以及为什么下一代 AI 基础设施将依赖跨技术栈协同工作的开放技术。
 
-## Keynote 2：基于 Llm-d 的多元 AI 加速器 PD 分离 vLLM 部署
+## Keynote 2：基于 llm-d 的多元 AI 加速器 PD 分离 vLLM 部署
 
-- **原题**：PD Disaggregation vLLM Deployment on Alternative AI Accelerators Using Llm-d
+- **原题**：PD Disaggregation vLLM Deployment on Alternative AI Accelerators Using llm-d
 - **时间**：9 月 8 日 09:59-10:04
 - **地点**：Grand Ballroom II + III
 - **讲者**：王纪飞（HAMi Approver，密瓜智能）、李孟轩（密瓜智能联合创始人兼 CTO）
