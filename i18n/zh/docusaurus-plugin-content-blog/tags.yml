@@ -58,6 +58,9 @@
 "Japan":
   label: "Japan"
   permalink: "/japan"
+"China":
+  label: "China"
+  permalink: "/china"
 "KAI Scheduler":
   label: "KAI Scheduler"
   permalink: "/kai-scheduler"
