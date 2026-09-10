@@ -16,7 +16,7 @@ authors: [hami_community]
 
 ![张潇（密瓜智能联合创始人兼 CEO）在开幕 Keynote 舞台上，与 Linux 基金会 CTO Chris Aniszczyk 同台分享](/img/kubecon-china-2026-recap/xiao-zhang-keynote.jpg)
 
-9 月 8 日上午的开幕 Keynote 由 Chris Aniszczyk（CTO, Cloud and Infrastructure, The Linux Foundation）与张潇（密瓜智能联合创始人兼 CEO）共同带来：当模型构建完成、AI 真正走向生产，挑战转向如何让每一块 GPU 发挥价值——云原生技术正在成为 AI 基础设施的操作系统层。
+9 月 8 日上午的开幕 Keynote 由 Chris Aniszczyk（CTO, Cloud and Infrastructure, The Linux Foundation）与张潇（密瓜智能联合创始人兼 CEO）共同带来：当模型构建完成、AI 真正走向生产，挑战转向如何让每一块 GPU 发挥价值。云原生技术正在成为 AI 基础设施的操作系统层。
 
 张潇的分享把 GPU 共享放到了故事中心：借助 HAMi，一张 GPU 可以切分给多个 LLM 工作负载共享，同一套调度平面还能延伸到异构加速器：
 
@@ -30,13 +30,13 @@ authors: [hami_community]
 
 ![王纪飞与李孟轩在 Grand Ballroom II + III 进行 llm-d Keynote](/img/kubecon-china-2026-recap/llm-d-keynote.jpg)
 
-同日上午，王纪飞（HAMi Approver，密瓜智能）与李孟轩（密瓜智能联合创始人兼 CTO）登台带来 5 分钟 Keynote，介绍 [llm-d](https://github.com/llm-d/llm-d)——专注于在 Kubernetes 上构建分布式 LLM 推理的 CNCF 项目。当推理集群不再只有 NVIDIA 一种 GPU，PD 分离（Prefill/Decode Disaggregation）架构如何在多元加速器上高效部署 vLLM？他们的答案是：把 HAMi 的异构 GPU 共享与调度能力带入 llm-d 的推理拓扑，让切分、共享与调度跨硬件架构运转。
+同日上午，王纪飞（HAMi Approver，密瓜智能）与李孟轩（密瓜智能联合创始人兼 CTO）登台带来 5 分钟 Keynote，介绍专注于在 Kubernetes 上构建分布式 LLM 推理的 CNCF 项目 [llm-d](https://github.com/llm-d/llm-d)。当推理集群不再只有 NVIDIA 一种 GPU，PD 分离（Prefill/Decode Disaggregation）架构如何在多元加速器上高效部署 vLLM？他们的答案是：把 HAMi 的异构 GPU 共享与调度能力带入 llm-d 的推理拓扑，让切分、共享与调度跨硬件架构运转。
 
 ![Keynote 幻灯片“Optimize LLM-D inference”：请求经 llm-d router 进入 Prefill 与 Decode 实例，每个实例运行在 HAMi 通过 MIG/MPS 切分的 GPU 上，调度层可选用 HAMi、Volcano 或 KAI Scheduler](/img/kubecon-china-2026-recap/llm-d-architecture.png)
 
-## 闪电演讲：从静态切片到弹性 GPU——用 HAMi 实现动态 MIG
+## 闪电演讲：从静态切片到弹性 GPU，用 HAMi 实现动态 MIG
 
-午前的闪电演讲中，王纪飞再次聚焦 MIG 的老问题：静态预切分要求运维在工作负载到来之前猜好整卡分区布局。HAMi 给出的路线是调度驱动的动态 MIG——先由调度器完成 Pod 放置，再由 device plugin 在节点上重配 MIG 实例，负载在运行时拿到自己的 MIG UUID。
+午前的闪电演讲中，王纪飞再次聚焦 MIG 的老问题：静态预切分要求运维在工作负载到来之前猜好整卡分区布局。HAMi 给出的路线是调度驱动的动态 MIG：先由调度器完成 Pod 放置，再由 device plugin 在节点上重配 MIG 实例，负载在运行时拿到自己的 MIG UUID。
 
 > GPU partitioning should follow scheduling, not precede it.（GPU 分区应该跟随调度，而不是先于调度。）
 
@@ -54,15 +54,15 @@ authors: [hami_community]
 
 合合信息从腾讯 QGPU 迁移到 HAMi 后，一站式获得虚拟化、调度与监控能力。部署打法：小模型推理用切片、高负载与大模型保留整卡；Binpack 优先装箱减少碎片；高负载与低负载混布；分配指标接入监控、从分配到使用形成闭环；配合 Karpenter 实现弹性扩容。实测收益：GPU 利用率提升 50%、综合成本降低 30%、推理性能下降控制在 10% 以内。
 
-![专场幻灯片“IntSig HAMi 部署方式与收益”：五种部署模式与实测收益——GPU 利用率 +50%、成本 -30%、推理性能下降控制在 10% 以内](/img/kubecon-china-2026-recap/intsig-hami-results.png)
+![专场幻灯片“IntSig HAMi 部署方式与收益”：五种部署模式与实测收益：GPU 利用率 +50%、成本 -30%、推理性能下降控制在 10% 以内](/img/kubecon-china-2026-recap/intsig-hami-results.png)
 
-演讲还集中披露了 HAMi 的生产案例数据：顺丰 GPU 从 1400 张精简到 1000 张、业务不受影响；招商银行 10000+ GPU、利用率 20% → 80%；蔚来 CI 效率提升 10 倍；工商银行 GPU 利用率 20% → 70%。同时也有“烧钱的反模式”警示——GPU 切分低于 1/6 时反而适得其反。结尾现场演示了合合信息开源的 AI 终端 Chaterm，用自然语言直接操作 GPU 集群。
+演讲还集中披露了 HAMi 的生产案例数据：顺丰 GPU 从 1400 张精简到 1000 张、业务不受影响；招商银行 10000+ GPU、利用率 20% → 80%；蔚来 CI 效率提升 10 倍；工商银行 GPU 利用率 20% → 70%。同时也有“烧钱的反模式”警示：GPU 切分低于 1/6 时反而适得其反。结尾现场演示了合合信息开源的 AI 终端 Chaterm，用自然语言直接操作 GPU 集群。
 
 ## 招商银行斩获案例大奖
 
 ![Keynote 大屏揭晓招商银行为 Cloud Native China 2026 案例大奖得主，其参考架构基于 Kubernetes、Kueue、KEDA、Fluid、Prometheus 与 HAMi 构建](/img/kubecon-china-2026-recap/case-study-award.jpg)
 
-还有一个值得记住的 Keynote 瞬间：招商银行被评为 Cloud Native China 2026 案例大奖得主，其参考架构组合了 Kubernetes、Kueue、KEDA、Fluid 与 Prometheus，GPU 共享层正是 HAMi——也就是那家把 10000+ GPU 利用率从 20% 提升到 80% 的银行。
+还有一个值得记住的 Keynote 瞬间：招商银行被评为 Cloud Native China 2026 案例大奖得主，其参考架构组合了 Kubernetes、Kueue、KEDA、Fluid 与 Prometheus，GPU 共享层正是 HAMi，也就是那家把 10000+ GPU 利用率从 20% 提升到 80% 的银行。
 
 ## 展台 T-1
 
@@ -72,6 +72,6 @@ authors: [hami_community]
 
 ## 观看与下载
 
-所有 session 均有录制，会后将在 CNCF 官方频道上线。四场分享——两场 Keynote、一场闪电演讲与合合信息专场——的幻灯片均可从 [KubeCon China 2026 活动页](/zh/landing/kubecon-china)下载。
+所有 session 均有录制，会后将在 CNCF 官方频道上线。四场分享（两场 Keynote、一场闪电演讲与合合信息专场）的幻灯片均可从 [KubeCon China 2026 活动页](/zh/landing/kubecon-china)下载。
 
 欢迎加入 [HAMi 社区](/zh/community)参与讨论。

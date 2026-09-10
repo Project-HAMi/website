@@ -6,7 +6,7 @@ tags: ["KubeCon", "GPU", "Kubernetes", "AI", "China"]
 authors: [hami_community]
 ---
 
-[KubeCon + CloudNativeCon + OpenInfra Summit + PyTorch Conference China 2026](https://www.lfopensource.cn/kubecon-cloudnativecon-openinfra-summit-pytorch-conference-china/) wrapped up on September 9 at the Shanghai International Convention Center. It was HAMi's first KubeCon China since the project [moved to CNCF Incubating](/blog/hami-cncf-incubating), and the community brought two keynotes, a lightning talk, a production session, and a booth — plus a case study award for China Merchants Bank announced from the keynote stage.
+[KubeCon + CloudNativeCon + OpenInfra Summit + PyTorch Conference China 2026](https://www.lfopensource.cn/kubecon-cloudnativecon-openinfra-summit-pytorch-conference-china/) wrapped up on September 9 at the Shanghai International Convention Center. It was HAMi's first KubeCon China since the project [moved to CNCF Incubating](/blog/hami-cncf-incubating), and the community brought two keynotes, a lightning talk, a production session, a booth, and a case study award for China Merchants Bank announced from the keynote stage.
 
 Slides for all four talks are available on the [KubeCon China 2026 event page](/landing/kubecon-china).
 
@@ -16,7 +16,7 @@ Slides for all four talks are available on the [KubeCon China 2026 event page](/
 
 ![Xiao Zhang (Co-founder & CEO, Dynamia) on the opening keynote stage, co-presenting with Chris Aniszczyk (CTO, Cloud and Infrastructure, The Linux Foundation)](/img/kubecon-china-2026-recap/xiao-zhang-keynote.jpg)
 
-The opening keynote of September 8 was co-presented by Chris Aniszczyk (CTO, Cloud and Infrastructure, The Linux Foundation) and Xiao Zhang (Co-founder & CEO, Dynamia). Once models are built and AI moves into production, the challenge shifts to making every GPU deliver value — and cloud native technology is becoming the operating system layer of AI infrastructure.
+The opening keynote of September 8 was co-presented by Chris Aniszczyk (CTO, Cloud and Infrastructure, The Linux Foundation) and Xiao Zhang (Co-founder & CEO, Dynamia). Once models are built and AI moves into production, the challenge shifts to making every GPU deliver value, and cloud native technology is becoming the operating system layer of AI infrastructure.
 
 Xiao Zhang's segment put GPU sharing at the center of that story. With HAMi, one GPU can be partitioned and shared across multiple LLM workloads, and the same scheduling plane extends across heterogeneous accelerators:
 
@@ -34,9 +34,9 @@ Later that morning, Jifei Wang (HAMi Approver, Dynamia) and Mengxuan Li (Co-foun
 
 ![Keynote slide "Optimize LLM-D inference": requests flow through the llm-d router into Prefill and Decode instances, each running on GPU slices carved out by HAMi via MIG or MPS, scheduled by HAMi, Volcano, or the KAI Scheduler](/img/kubecon-china-2026-recap/llm-d-architecture.png)
 
-## Lightning Talk: From Static Slices to Elastic GPUs — Dynamic MIG with HAMi
+## Lightning Talk: From Static Slices to Elastic GPUs, Dynamic MIG with HAMi
 
-In the late-morning lightning talk, Jifei Wang returned to the MIG problem: static pre-partitioning forces operators to guess the partition layout before workloads arrive. HAMi's alternative is scheduling-driven dynamic MIG — the scheduler places the pod first, then the device plugin reconfigures MIG instances on the node, and the pod receives its MIG UUID at runtime.
+In the late-morning lightning talk, Jifei Wang returned to the MIG problem: static pre-partitioning forces operators to guess the partition layout before workloads arrive. HAMi's alternative is scheduling-driven dynamic MIG: the scheduler places the pod first, then the device plugin reconfigures MIG instances on the node, and the pod receives its MIG UUID at runtime.
 
 > GPU partitioning should follow scheduling, not precede it.
 
@@ -54,15 +54,15 @@ The afternoon session by Mengxuan Li and Walter Duan (Intsig) was a deep dive in
 
 After migrating from Tencent QGPU to HAMi, the team got virtualization, scheduling, and monitoring in one stack. Their deployment playbook: slices for small-model inference with whole cards reserved for heavy workloads, binpack-first packing, high/low-load colocation, a monitoring closed loop from allocation to usage, and Karpenter-based elastic scaling. The measured results: +50% GPU utilization, -30% overall cost, with inference performance overhead kept under 10%.
 
-![Session slide "IntSig HAMi deployment and returns": five deployment patterns and the measured results — +50% GPU utilization, -30% cost, under 10% inference performance overhead](/img/kubecon-china-2026-recap/intsig-hami-results.png)
+![Session slide "IntSig HAMi deployment and returns": five deployment patterns and the measured results: +50% GPU utilization, -30% cost, under 10% inference performance overhead](/img/kubecon-china-2026-recap/intsig-hami-results.png)
 
-The session also consolidated HAMi's broader production data — SF Express slimmed from 1,400 to 1,000 GPUs with no business impact; China Merchants Bank runs 10,000+ GPUs at utilization up from 20% to 80%; NIO sped up CI by 10x; ICBC lifted GPU utilization from 20% to 70% — plus a warning about anti-patterns (slicing below 1/6 of a card backfires), closing with a live demo of Chaterm, Intsig's open-source AI terminal that operates GPU clusters in natural language.
+The session also consolidated HAMi's broader production data: SF Express slimmed from 1,400 to 1,000 GPUs with no business impact; China Merchants Bank runs 10,000+ GPUs at utilization up from 20% to 80%; NIO sped up CI by 10x; ICBC lifted GPU utilization from 20% to 70%. The talk also included a warning about anti-patterns (slicing below 1/6 of a card backfires), and closed with a live demo of Chaterm, Intsig's open-source AI terminal that operates GPU clusters in natural language.
 
 ## A Case Study Award for China Merchants Bank
 
 ![The keynote screen announcing China Merchants Bank as the Cloud Native China 2026 case study winner; its reference architecture is built on Kubernetes, Kueue, KEDA, Fluid, Prometheus, and HAMi](/img/kubecon-china-2026-recap/case-study-award.jpg)
 
-One more keynote moment worth remembering: China Merchants Bank was announced as the winner of the Cloud Native China 2026 case study award, for a reference architecture that combines Kubernetes, Kueue, KEDA, Fluid, and Prometheus — with HAMi as the GPU-sharing layer. The same bank that runs 10,000+ GPUs at utilization up from 20% to 80%.
+One more keynote moment worth remembering: China Merchants Bank was announced as the winner of the Cloud Native China 2026 case study award, for a reference architecture that combines Kubernetes, Kueue, KEDA, Fluid, and Prometheus, with HAMi as the GPU-sharing layer. The same bank that runs 10,000+ GPUs at utilization up from 20% to 80%.
 
 ## At Booth T-1
 
@@ -72,6 +72,6 @@ Maintainers staffed booth T-1 from mid-morning until close. The recurring questi
 
 ## Watch and Read
 
-All sessions were recorded and will be published on the official CNCF channels. Meanwhile, the slides of all four talks — both keynotes, the lightning talk, and the Intsig session — are downloadable from the [KubeCon China 2026 event page](/landing/kubecon-china).
+All sessions were recorded and will be published on the official CNCF channels. Meanwhile, the slides of all four talks (both keynotes, the lightning talk, and the Intsig session) are downloadable from the [KubeCon China 2026 event page](/landing/kubecon-china).
 
 To join the discussion, visit the [HAMi community](/community).

@@ -30,7 +30,7 @@ HAMi 的全部活动集中在 9 月 8 日：上午两场 Keynote，午间一场 
 - **地点**：Grand Ballroom II + III
 - **讲者**：Chris Aniszczyk（CTO, Cloud and Infrastructure, The Linux Foundation）、张潇（密瓜智能联合创始人兼 CEO）
 
-大会开幕首场 Keynote。Linux 基金会 CTO Chris Aniszczyk 将与张潇同台：当模型构建完成、AI 真正走向生产，挑战转向如何让每一块 GPU 发挥价值、随需求动态扩展、保持可靠性，并理解日益复杂的系统——云原生技术正在成为支撑这一切的操作系统层。演讲还将探讨可观测性在 AI 系统复杂化过程中与日俱增的作用，以及为什么下一代 AI 基础设施将依赖跨技术栈协同工作的开放技术。
+大会开幕首场 Keynote。Linux 基金会 CTO Chris Aniszczyk 将与张潇同台：当模型构建完成、AI 真正走向生产，挑战转向如何让每一块 GPU 发挥价值、随需求动态扩展、保持可靠性，并理解日益复杂的系统。云原生技术正在成为支撑这一切的操作系统层。演讲还将探讨可观测性在 AI 系统复杂化过程中与日俱增的作用，以及为什么下一代 AI 基础设施将依赖跨技术栈协同工作的开放技术。
 
 ## Keynote 2：基于 llm-d 的多元 AI 加速器 PD 分离 vLLM 部署
 
@@ -41,7 +41,7 @@ HAMi 的全部活动集中在 9 月 8 日：上午两场 Keynote，午间一场 
 
 [llm-d](https://github.com/llm-d) 是专注于在 Kubernetes 上构建分布式 LLM 推理的 CNCF 项目。当推理集群里不再只有一种 GPU，PD 分离（Prefill/Decode Disaggregation）架构如何在非 NVIDIA 的多元加速器上高效部署 vLLM？这场 Keynote 将介绍 llm-d 对异构算力环境的支持：HAMi 将异构 GPU 共享与调度能力带入 llm-d 的推理拓扑，让切分、共享与调度跨硬件架构运转。5 分钟，干货密度拉满。
 
-## 闪电演讲：从静态切片到弹性 GPU——用 HAMi 实现动态 MIG
+## 闪电演讲：从静态切片到弹性 GPU，用 HAMi 实现动态 MIG
 
 - **原题**：From Static Slices to Elastic GPUs: Dynamic MIG with HAMi
 - **时间**：9 月 8 日 11:14-11:19
@@ -54,7 +54,7 @@ HAMi 的全部活动集中在 9 月 8 日：上午两场 Keynote，午间一场 
 
 > GPU partitioning should follow scheduling, not precede it.（GPU 分区应该跟随调度，而不是先于调度。）
 
-## 专场分享：合合信息如何支撑数十亿次文档扫描——基于 HAMi 的千卡规模 GPU 虚拟化
+## 专场分享：合合信息如何支撑数十亿次文档扫描，基于 HAMi 的千卡规模 GPU 虚拟化
 
 - **原题**：How Intsig Serves Billions of Document Scans: GPU Virtualization at Scale with HAMi
 - **时间**：9 月 8 日 14:30-15:00
