@@ -12,7 +12,7 @@ issue: https://github.com/Project-HAMi/HAMi/issues/2375
 `thread_local` 是 PaddlePaddle 非默认显存分配策略。开启后，**每一个CPU工作线程会创建独立的CUDA显存分配池**。
 
 HAMi 会 hook `cuMemGetInfo`，向应用返回vGPU配额显存。
-每个线程初始化时，会按照 `FLAGS_fraction_of_gpu_memory_to_use` 默认值 `0.92` 预申请显存：
+每个线程初始化时，会按照 `FLAGS_fraction_of_gpu_memory_to_use` (在issue 2375中该值为 0.92) 预申请显存：
 
 1. 第一个线程预占用绝大部分 vGPU 配额；
 2. 后续线程同样尝试占用92%上报显存，迅速耗尽vGPU配额；
@@ -29,7 +29,7 @@ cat /proc/$PID/environ | tr '\0' '\n' | grep FLAGS_allocator_strategy
 ```
 查找镜像或启动脚本中变量注入位置：
 
-```base
+```bash
 grep -rn "FLAGS_allocator_strategy" /app /workspace 2>/dev/null
 ```
 
@@ -37,7 +37,7 @@ grep -rn "FLAGS_allocator_strategy" /app /workspace 2>/dev/null
 
 从 Dockerfile、启动脚本、推理封装代码中移除手动设置的 `FLAGS_allocator_strategy=thread_local`，使用 PaddlePaddle 默认共享池分配器。
 
-```base 
+```bash 
 # 默认推荐
 export FLAGS_allocator_strategy=auto_growth
 
@@ -45,17 +45,17 @@ export FLAGS_allocator_strategy=auto_growth
 export FLAGS_allocator_strategy=naive_best_fit
 ```
 
-所有线程共用同一个 GPU 显存池，避免针对有限 vGPU 配额做线程独立预分配，可以彻底消除 core‑dump。
+所有线程共用同一个 GPU 显存池，避免针对有限 vGPU 配额做线程独立预分配，防止 thread_local 分配器的 vGPU 配额预分配失败。
 
 ## 兼容兜底方案（不推荐生产使用）
 
 如果业务强依赖 `thread_local` 多线程推理性能优化，需要降低单线程预分配比例，并且严格限制推理线程数量。
 
-```base
+```bash
 export FLAGS_allocator_strategy=thread_local
+# 设置下面两项中的一项.
+# FLAGS_initial_gpu_memory_in_mb 会覆盖掉 FLAGS_fraction_of_gpu_memory_to_use
 export FLAGS_fraction_of_gpu_memory_to_use=0.25
-# FLAGS_initial_gpu_memory_in_mb 会覆盖 FLAGS_fraction_of_gpu_memory_to_use
-# 仅设置其中一项即可
 # export FLAGS_initial_gpu_memory_in_mb=2048
 ```
 
