@@ -17,16 +17,20 @@ HAMi 会 hook `cuMemGetInfo`，向应用返回vGPU配额显存。
 1. 第一个线程预占用绝大部分 vGPU 配额；
 2. 后续线程同样尝试占用92%上报显存，迅速耗尽vGPU配额；
 3. Paddle 内部GPU状态校验失败，抛出 `SIGABRT` 生成 core dump，而不是抛出常规OOM异常。
+
 :::note
 该问题是 PaddlePaddle thread‑local分配器与vGPU显存配额机制的兼容性问题，**并非HAMi本身缺陷**。
 :::
+
 ## 排查命令
 检查容器内进程实际生效的环境变量：
+
 ```bash
 # paddle_infer 为示例名
 PID=$(pgrep -x paddle_infer | head -1)
 cat /proc/$PID/environ | tr '\0' '\n' | grep FLAGS_allocator_strategy
 ```
+
 查找镜像或启动脚本中变量注入位置：
 
 ```bash
@@ -37,7 +41,7 @@ grep -rn "FLAGS_allocator_strategy" /app /workspace 2>/dev/null
 
 从 Dockerfile、启动脚本、推理封装代码中移除手动设置的 `FLAGS_allocator_strategy=thread_local`，使用 PaddlePaddle 默认共享池分配器。
 
-```bash 
+```bash
 # 默认推荐
 export FLAGS_allocator_strategy=auto_growth
 
@@ -68,7 +72,6 @@ export FLAGS_initial_gpu_memory_in_mb=2048
 ```
 
 > **注意**：`FLAGS_initial_gpu_memory_in_mb` 会覆盖 `FLAGS_fraction_of_gpu_memory_to_use`，只需设置其中一个。
-
 >
 > 需要根据实际 vGPU 显存大小调参，线程建议控制 1‑2 个；线程数量较大时依然存在崩溃风险。
 
