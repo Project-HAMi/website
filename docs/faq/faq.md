@@ -229,6 +229,6 @@ If the HAMi Device Plugin or workloads fail after upgrading to GPU Operator 25.1
 
 The `hami-device-plugin` pod on each node exposes per-container vGPU metrics on port `31992` (configurable via `devicePlugin.service.httpPort`). See [Grafana Dashboard](./userguide/monitoring/grafana-dashboard) for the full setup including Prometheus scrape config and dashboard import.
 
-## PaddlePaddle crashes with core_dump on vGPU ?
+## PaddlePaddle crashes with core_dump on vGPU?
 
-This is caused by `thread_local` allocator. Please refer to [PaddlePaddle CoreDump Issue with thread_local Allocator on vGPU](./troubleshooting/paddle-threadlocal-coredump)
+This is caused by `thread_local` allocator. Refer to [PaddlePaddle CoreDump Issue with thread_local Allocator on vGPU](./troubleshooting/paddle-threadlocal-coredump).
