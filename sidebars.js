@@ -423,12 +423,18 @@ module.exports = {
       id: "troubleshooting/troubleshooting",
     },
     {
-      type: "doc",
-      id: "troubleshooting/paddle-threadlocal-coredump",
-    },
-    {
-      type: "doc",
-      id: "faq/faq",
+      type: "category",
+      label: "Troubleshooting",
+      items: [
+        {
+          type: "doc",
+          id: "troubleshooting/troubleshooting",
+        },
+        {
+          type: "doc",
+          id: "troubleshooting/paddle-threadlocal-coredump",
+        },
+      ],
     },
   ],
 };

@@ -228,4 +228,4 @@ DCGM Exporter 不受影响，继续正常上报物理级计数器。HAMi 的每�
 
 ## PaddlePaddle 在vGPU上出现core_dump崩溃？
 
-该问题由`thread_local`分配器触发，详情查看：[PaddlePaddle thread_local 分配器导致 vGPU 环境 CoreDump](../troubleshooting/paddle-threadlocal-coredump)
+该问题由`thread_local`分配器触发，详情查看：[PaddlePaddle thread_local 分配器导致 vGPU 环境 CoreDump](../troubleshooting#paddle-threadlocal-coredump)
