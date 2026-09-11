@@ -7,6 +7,7 @@ title: PaddlePaddle thread_local 分配器导致 vGPU 环境 CoreDump
 该问题仅在 vGPU 显存配额隔离场景出现，**物理裸机 GPU 无法复现**。
 
 触发条件：业务侧显式设置环境变量 `FLAGS_allocator_strategy=thread_local`。
+
 issue: https://github.com/Project-HAMi/HAMi/issues/2375
 ## 根因分析
 `thread_local` 是 PaddlePaddle 非默认显存分配策略。开启后，**每一个CPU工作线程会创建独立的CUDA显存分配池**。
