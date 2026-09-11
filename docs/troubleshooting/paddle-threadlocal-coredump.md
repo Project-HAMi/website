@@ -28,7 +28,9 @@ This is a compatibility issue between PaddlePaddle thread‑local allocator and 
 ## Troubleshooting Commands
 Check real runtime environment variable inside container:
 ```bash
-cat /proc/$(pgrep -f paddle_infer | head -1)/environ | tr '\0' '\n' | grep FLAGS_allocator_strategy
+# paddle_infer is a sample name
+PID=$(pgrep -x paddle_infer | head -1)
+cat /proc/$PID/environ | tr '\0' '\n' | grep FLAGS_allocator_strategy
 ```
 Locate where this variable is injected in image or startup scripts:
 ```base
@@ -57,11 +59,13 @@ If your business strongly depends on `thread_local` multi‑thread performance o
 ```base
 export FLAGS_allocator_strategy=thread_local
 export FLAGS_fraction_of_gpu_memory_to_use=0.25
-export FLAGS_initial_gpu_memory_in_mb=2048
+# FLAGS_initial_gpu_memory_in_mb takes precedence over FLAGS_fraction_of_gpu_memory_to_use
+# Only set one of them
+# export FLAGS_initial_gpu_memory_in_mb=2048
 ```
 
 >
-> ⚠️ Tune values according to your actual vGPU memory size. Keep worker thread count between 1‑2. Coredump risk still exists with large thread numbers.
+> Tune values according to your actual vGPU memory size. Keep worker thread count between 1‑2. Coredump risk still exists with large thread numbers.
 
 ## Notice
 

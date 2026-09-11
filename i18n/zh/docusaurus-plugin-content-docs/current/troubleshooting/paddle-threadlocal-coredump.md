@@ -23,7 +23,9 @@ HAMi 会 hook `cuMemGetInfo`，向应用返回vGPU配额显存。
 ## 排查命令
 检查容器内进程实际生效的环境变量：
 ```bash
-cat /proc/$(pgrep -f paddle_infer | head -1)/environ | tr '\0' '\n' | grep FLAGS_allocator_strategy
+# paddle_infer 为示例名
+PID=$(pgrep -x paddle_infer | head -1)
+cat /proc/$PID/environ | tr '\0' '\n' | grep FLAGS_allocator_strategy
 ```
 查找镜像或启动脚本中变量注入位置：
 
@@ -52,11 +54,13 @@ export FLAGS_allocator_strategy=naive_best_fit
 ```base
 export FLAGS_allocator_strategy=thread_local
 export FLAGS_fraction_of_gpu_memory_to_use=0.25
-export FLAGS_initial_gpu_memory_in_mb=2048
+# FLAGS_initial_gpu_memory_in_mb 会覆盖 FLAGS_fraction_of_gpu_memory_to_use
+# 仅设置其中一项即可
+# export FLAGS_initial_gpu_memory_in_mb=2048
 ```
 
 >
-> ⚠️ 需要根据实际 vGPU 显存大小调参，线程建议控制 1‑2 个；线程数量较大时依然存在崩溃风险。
+> 需要根据实际 vGPU 显存大小调参，线程建议控制 1‑2 个；线程数量较大时依然存在崩溃风险。
 
 ## 重要提示
 
