@@ -231,4 +231,4 @@ The `hami-device-plugin` pod on each node exposes per-container vGPU metrics on 
 
 ## PaddlePaddle crashes with core_dump on vGPU ?
 
-This is caused by `thread_local` allocator. Please refer to [PaddlePaddle CoreDump Issue with thread_local Allocator on vGPU](../troubleshooting#paddle-threadlocal-coredump)
+This is caused by `thread_local` allocator. Please refer to [PaddlePaddle CoreDump Issue with thread_local Allocator on vGPU](../troubleshooting/paddle-threadlocal-coredump)
