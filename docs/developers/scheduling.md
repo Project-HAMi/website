@@ -179,7 +179,7 @@ The annotation changes only the utilization score used to order candidate device
 
 #### Binpack
 
-Binpack prefers the card with the higher device-utilization score. The following default-weight example assumes each card has ten virtual-device slots and no slot is currently in use:
+Binpack prefers the card with the higher device-utilization score. The following default-weight example assumes each card has ten virtual-device slots and exactly one slot is currently in use:
 
 ```text
 score: ((request.slot + used.slot) / allocatable.slot +
@@ -190,13 +190,13 @@ score: ((request.slot + used.slot) / allocatable.slot +
 1. Binpack scoring information for GPU 1 is as follows
 
 ```text
-GPU1 Score: ((1+0)/10 + (20+10)/100 + (1000+2000)/8000) * 10 = 7.75
+GPU1 Score: ((1+1)/10 + (20+10)/100 + (1000+2000)/8000) * 10 = 8.75
 ```
 
 1. Binpack scoring information for GPU 2 is as follows
 
 ```text
-GPU2 Score: ((1+0)/10 + (20+70)/100 + (1000+6000)/8000) * 10 = 18.75
+GPU2 Score: ((1+1)/10 + (20+70)/100 + (1000+6000)/8000) * 10 = 19.75
 ```
 
 In `Binpack` policy, `GPU2` is selected.
@@ -214,13 +214,13 @@ score: ((request.slot + used.slot) / allocatable.slot +
 1. Spread scoring information for GPU 1 is as follows
 
 ```text
-GPU1 Score: ((1+0)/10 + (20+10)/100 + (1000+2000)/8000) * 10 = 7.75
+GPU1 Score: ((1+1)/10 + (20+10)/100 + (1000+2000)/8000) * 10 = 8.75
 ```
 
 1. Spread scoring information for GPU 2 is as follows
 
 ```text
-GPU2 Score: ((1+0)/10 + (20+70)/100 + (1000+6000)/8000) * 10 = 18.75
+GPU2 Score: ((1+1)/10 + (20+70)/100 + (1000+6000)/8000) * 10 = 19.75
 ```
 
 In `Spread` policy, `GPU1` is selected.
