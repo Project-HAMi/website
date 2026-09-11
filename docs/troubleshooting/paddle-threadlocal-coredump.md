@@ -58,11 +58,21 @@ If your business strongly depends on `thread_local` multi‑thread performance o
 
 ```bash
 export FLAGS_allocator_strategy=thread_local
-# Only set ONE of the following two flags.
-# FLAGS_initial_gpu_memory_in_mb takes precedence over FLAGS_fraction_of_gpu_memory_to_use
-export FLAGS_fraction_of_gpu_memory_to_use=0.25
-# export FLAGS_initial_gpu_memory_in_mb=2048
 ```
+
+Then choose **one** of the following:
+
+```bash
+export FLAGS_fraction_of_gpu_memory_to_use=0.25
+```
+
+**or**
+
+```bash
+export FLAGS_initial_gpu_memory_in_mb=2048
+```
+
+> **Note**: `FLAGS_initial_gpu_memory_in_mb` takes precedence over `FLAGS_fraction_of_gpu_memory_to_use`. Only set one of them.
 
 >
 > Tune values according to your actual vGPU memory size. Keep worker thread count between 1‑2. Coredump risk still exists with large thread numbers.

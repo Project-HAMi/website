@@ -53,11 +53,21 @@ export FLAGS_allocator_strategy=naive_best_fit
 
 ```bash
 export FLAGS_allocator_strategy=thread_local
-# 设置下面两项中的一项.
-# FLAGS_initial_gpu_memory_in_mb 会覆盖掉 FLAGS_fraction_of_gpu_memory_to_use
-export FLAGS_fraction_of_gpu_memory_to_use=0.25
-# export FLAGS_initial_gpu_memory_in_mb=2048
 ```
+
+然后从以下两个参数中**二选一**：
+
+```bash
+export FLAGS_fraction_of_gpu_memory_to_use=0.25
+```
+
+**或**
+
+```bash
+export FLAGS_initial_gpu_memory_in_mb=2048
+```
+
+> **注意**：`FLAGS_initial_gpu_memory_in_mb` 会覆盖 `FLAGS_fraction_of_gpu_memory_to_use`，只需设置其中一个。
 
 >
 > 需要根据实际 vGPU 显存大小调参，线程建议控制 1‑2 个；线程数量较大时依然存在崩溃风险。

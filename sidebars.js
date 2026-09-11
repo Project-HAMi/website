@@ -419,10 +419,6 @@ module.exports = {
       ],
     },
     {
-      type: "doc",
-      id: "troubleshooting/troubleshooting",
-    },
-    {
       type: "category",
       label: "Troubleshooting",
       items: [
@@ -435,6 +431,10 @@ module.exports = {
           id: "troubleshooting/paddle-threadlocal-coredump",
         },
       ],
+    },
+    {
+      type: "doc",
+      id: "faq/faq",
     },
   ],
 };
