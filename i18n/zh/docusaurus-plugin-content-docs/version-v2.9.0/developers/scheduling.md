@@ -149,7 +149,7 @@ score: ((request.slot + used.slot) / allocatable.slot +
 GPU1 Score: ((1+1)/10 + (20+10)/100 + (1000+2000)/8000) * 10 = 8.75
 ```
 
-1. GPU2 的 Binpack 评分信息如下
+2. GPU2 的 Binpack 评分信息如下
 
 ```text
 GPU2 Score: ((1+1)/10 + (20+70)/100 + (1000+6000)/8000) * 10 = 19.75
@@ -173,7 +173,7 @@ score: ((request.slot + used.slot) / allocatable.slot +
 GPU1 Score: ((1+1)/10 + (20+10)/100 + (1000+2000)/8000) * 10 = 8.75
 ```
 
-1. GPU2 的 Spread 评分信息如下
+2. GPU2 的 Spread 评分信息如下
 
 ```text
 GPU2 Score: ((1+1)/10 + (20+70)/100 + (1000+6000)/8000) * 10 = 19.75
