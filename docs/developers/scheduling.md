@@ -94,15 +94,15 @@ score: ((request + used) / allocatable) * 10
 
 1. Binpack scoring information for Node 1 is as follows
 
-```text
-Node1 score: ((1+3)/4) * 10= 10
-```
+   ```text
+   Node1 score: ((1+3)/4) * 10= 10
+   ```
 
 1. Binpack scoring information for Node 2 is as follows
 
-```text
-Node2 score: ((1+2)/4) * 10= 7.5
-```
+   ```text
+   Node2 score: ((1+2)/4) * 10= 7.5
+   ```
 
 In `Binpack` policy, `Node1` is selected.
 
@@ -116,15 +116,15 @@ score: ((request + used) / allocatable) * 10
 
 1. Spread scoring information for Node 1 is as follows
 
-```text
-Node1 score: ((1+3)/4) * 10= 10
-```
+   ```text
+   Node1 score: ((1+3)/4) * 10= 10
+   ```
 
 1. Spread scoring information for Node 2 is as follows
 
-```text
-Node2 score: ((1+2)/4) * 10= 7.5
-```
+   ```text
+   Node2 score: ((1+2)/4) * 10= 7.5
+   ```
 
 In `Spread` policy, `Node2` is selected.
 
