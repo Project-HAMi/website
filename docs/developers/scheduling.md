@@ -193,7 +193,7 @@ score: ((request.slot + used.slot) / allocatable.slot +
 GPU1 Score: ((1+1)/10 + (20+10)/100 + (1000+2000)/8000) * 10 = 8.75
 ```
 
-1. Binpack scoring information for GPU 2 is as follows
+2. Binpack scoring information for GPU 2 is as follows
 
 ```text
 GPU2 Score: ((1+1)/10 + (20+70)/100 + (1000+6000)/8000) * 10 = 19.75
@@ -217,7 +217,7 @@ score: ((request.slot + used.slot) / allocatable.slot +
 GPU1 Score: ((1+1)/10 + (20+10)/100 + (1000+2000)/8000) * 10 = 8.75
 ```
 
-1. Spread scoring information for GPU 2 is as follows
+2. Spread scoring information for GPU 2 is as follows
 
 ```text
 GPU2 Score: ((1+1)/10 + (20+70)/100 + (1000+6000)/8000) * 10 = 19.75
