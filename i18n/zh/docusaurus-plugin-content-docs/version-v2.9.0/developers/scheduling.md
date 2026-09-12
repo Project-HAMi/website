@@ -95,15 +95,15 @@ score: ((request + used) / allocatable) * 10
 
 1. 节点 1 的 Binpack 评分信息如下
 
-```text
-Node1 score: ((1+3)/4) * 10= 10
-```
+   ```text
+   Node1 score: ((1+3)/4) * 10= 10
+   ```
 
 1. 节点 2 的 Binpack 评分信息如下
 
-```text
-Node2 score: ((1+2)/4) * 10= 7.5
-```
+   ```text
+   Node2 score: ((1+2)/4) * 10= 7.5
+   ```
 
 因此，在 `Binpack` 策略中我们可以选择 `Node1`。
 
@@ -117,15 +117,15 @@ score: ((request + used) / allocatable) * 10
 
 1. 节点 1 的 Spread 评分信息如下
 
-```text
-Node1 score: ((1+3)/4) * 10= 10
-```
+   ```text
+   Node1 score: ((1+3)/4) * 10= 10
+   ```
 
 1. 节点 2 的 Spread 评分信息如下
 
-```text
-Node2 score: ((1+2)/4) * 10= 7.5
-```
+   ```text
+   Node2 score: ((1+2)/4) * 10= 7.5
+   ```
 
 因此，在 `Spread` 策略中我们可以选择 `Node2`。
 
