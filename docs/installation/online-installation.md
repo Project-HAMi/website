@@ -22,7 +22,11 @@ Deploy HAMi into the `kube-system` namespace using Helm:
 helm install hami hami-charts/hami -n kube-system
 ```
 
-:::note The Helm chart automatically detects your Kubernetes server version and pulls the matching `kubeScheduler` image. If you need to manually override the image tag (for example, in custom or air-gapped environments), you can pass `--set scheduler.kubeScheduler.image.tag=<version>`. :::
+:::note
+
+The Helm chart automatically detects your Kubernetes server version and pulls the matching `kubeScheduler` image. If you need to manually override the image tag (for example, in custom or air-gapped environments), you can pass `--set scheduler.kubeScheduler.image.tag=<version>`.
+
+:::
 
 ### Customizing Helm Configurations
 

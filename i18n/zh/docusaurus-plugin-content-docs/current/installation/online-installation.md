@@ -22,7 +22,11 @@ helm repo update
 helm install hami hami-charts/hami -n kube-system
 ```
 
-:::note Helm Chart 会自动检测您的 Kubernetes 服务端版本并拉取匹配的 `kubeScheduler` 镜像。如果您需要手动指定镜像版本（例如在自定义或离线环境中），可以使用 `--set scheduler.kubeScheduler.image.tag=<version>`。:::
+:::note
+
+Helm Chart 会自动检测您的 Kubernetes 服务端版本并拉取匹配的 `kubeScheduler` 镜像。如果您需要手动指定镜像版本（例如在自定义或离线环境中），可以使用 `--set scheduler.kubeScheduler.image.tag=<version>`。
+
+:::
 
 ### 自定义 Helm 配置
 
