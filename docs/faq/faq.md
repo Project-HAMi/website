@@ -145,7 +145,30 @@ Device Plugins can only report a single resource type. GPU memory and compute in
 - Example annotation:
 
   ```yaml
-  hami.io/node-nvidia-register: [{"id":"GPU-fc28df76-54d2-c387-e52e-5f0a9495968c","count":10,"devmem":49140,"devcore":100,"type":"NVIDIA-NVIDIA L40S","numa":1,"mode":"hami-core","health":true},{"id":"GPU-b97db201-0442-8531-56d4-367e0c7d6edd","index":1,"count":10,"devmem":49140,"devcore":100,"type":"NVIDIA-NVIDIA L40S","numa":1,"mode":"hami-core","health":true}]
+  hami.io/node-nvidia-register:
+    [
+      {
+        "id": "GPU-fc28df76-54d2-c387-e52e-5f0a9495968c",
+        "count": 10,
+        "devmem": 49140,
+        "devcore": 100,
+        "type": "NVIDIA-NVIDIA L40S",
+        "numa": 1,
+        "mode": "hami-core",
+        "health": true,
+      },
+      {
+        "id": "GPU-b97db201-0442-8531-56d4-367e0c7d6edd",
+        "index": 1,
+        "count": 10,
+        "devmem": 49140,
+        "devcore": 100,
+        "type": "NVIDIA-NVIDIA L40S",
+        "numa": 1,
+        "mode": "hami-core",
+        "health": true,
+      },
+    ]
   ```
 
 ### Follow-Up
