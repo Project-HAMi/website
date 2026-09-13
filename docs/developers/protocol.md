@@ -16,16 +16,16 @@ hami.io/node-{device-type}-register: {Device 1}:{Device2}:...:{Device N}
 The device registration format depends on the device plugin. For NVIDIA devices, the registration annotation uses JSON with fields such as:
 
 ```text
-{"id":"GPU-...","count":10,"devmem":32768,"devcore":100,"type":"NVIDIA-Tesla V100-PCIE-32GB","numa":0,"mode":"hami-core","health":true}
+{"id":"GPU-...","count":10,"devmem":32768,"devcore":100,"type":"NVIDIA-Tesla V100-PCIE-32GB","numa":1,"mode":"hami-core","health":true}
 ```
 
 An example is shown below:
 
 ```text
-hami.io/node-handshake: Reported 2024-01-23 04:30:04.434037031 +0000 UTC m=+1104711.777756895
+hami.io/node-handshake: Requesting_2024-01-23 04:30:04.434037031 +0000 UTC m=+1104711.777756895
 hami.io/node-handshake-mlu: Requesting_2024.01.10 04:06:57
 hami.io/node-mlu-register: MLU-45013011-2257-0000-0000-000000000000,10,23308,0,MLU-MLU370-X4,0,false:MLU-54043011-2257-0000-0000-000000000000,10,23308,0,
-hami.io/node-nvidia-register: [{"id":"GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec","count":10,"devmem":32768,"devcore":100,"type":"NVIDIA-Tesla V100-PCIE-32GB","numa":0,"mode":"hami-core","health":true},{"id":"GPU-0fc3eda5-e98b-a25b-5b0d-cf5c855d1448","index":1,"count":10,"devmem":32768,"devcore":100,"type":"NVIDIA-Tesla V100-PCIE-32GB","numa":0,"mode":"hami-core","health":true}]
+hami.io/node-nvidia-register: [{"id":"GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec","count":10,"devmem":32768,"devcore":100,"type":"NVIDIA-Tesla V100-PCIE-32GB","numa":1,"mode":"hami-core","health":true},{"id":"GPU-0fc3eda5-e98b-a25b-5b0d-cf5c855d1448","index":1,"count":10,"devmem":32768,"devcore":100,"type":"NVIDIA-Tesla V100-PCIE-32GB","numa":1,"mode":"hami-core","health":true}]
 
 ```
 
