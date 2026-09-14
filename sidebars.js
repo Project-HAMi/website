@@ -139,6 +139,7 @@ module.exports = {
           ],
         },
         "troubleshooting/troubleshooting",
+        "troubleshooting/paddle-threadlocal-coredump",
         "faq/faq",
       ],
     },
