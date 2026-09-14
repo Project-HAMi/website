@@ -15,8 +15,6 @@ sidebar_label: 快速开始
 - [NVIDIA 驱动](https://www.nvidia.cn/drivers/unix/) v440+
 - [NVIDIA Container Toolkit](../installation/prerequisites.md) (需预先配置并将 `nvidia-container-runtime` 设为默认容器运行时)
 
----
-
 ## 1. 标记节点 {#label-your-nodes}
 
 使用 `gpu=on` 标签标记目标 GPU 节点。未标记的节点将不会由 HAMi 管理：
@@ -24,8 +22,6 @@ sidebar_label: 快速开始
 ```bash
 kubectl label nodes <node-name> gpu=on
 ```
-
----
 
 ## 2. 使用 Helm 部署 HAMi {#deploy-hami-using-helm}
 
@@ -42,8 +38,6 @@ helm install hami hami-charts/hami -n kube-system
 ```bash
 kubectl get pods -n kube-system | grep hami
 ```
-
----
 
 ## 3. 提交 vGPU 工作负载 {#submit-a-vgpu-workload}
 
@@ -72,8 +66,6 @@ kubectl apply -f gpu-pod.yaml
 kubectl wait --for=condition=Ready pod/gpu-pod --timeout=120s
 ```
 
----
-
 ## 4. 验证 GPU 显存隔离 {#verify-gpu-memory-isolation}
 
 在运行的容器中执行 `nvidia-smi`：
@@ -97,8 +89,6 @@ kubectl exec -it gpu-pod -- nvidia-smi
 +-----------------------------------------------------------------------------------------+
 ```
 
----
-
 ## 清理资源 {#cleanup}
 
 删除测试 Pod：
@@ -106,8 +96,6 @@ kubectl exec -it gpu-pod -- nvidia-smi
 ```bash
 kubectl delete pod gpu-pod
 ```
-
----
 
 ## 下一步 {#next-steps}
 

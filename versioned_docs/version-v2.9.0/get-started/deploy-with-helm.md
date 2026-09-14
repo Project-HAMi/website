@@ -15,8 +15,6 @@ Before deploying HAMi, ensure your GPU nodes meet the following prerequisites:
 - [NVIDIA Driver](https://www.nvidia.com/drivers/unix/) v440+
 - [NVIDIA Container Toolkit](../installation/prerequisites.md) (with `nvidia-container-runtime` set as default runtime)
 
----
-
 ## 1. Label your nodes {#label-your-nodes}
 
 Label the target GPU nodes with `gpu=on`. Nodes without this label will not be managed by HAMi:
@@ -24,8 +22,6 @@ Label the target GPU nodes with `gpu=on`. Nodes without this label will not be m
 ```bash
 kubectl label nodes <node-name> gpu=on
 ```
-
----
 
 ## 2. Deploy HAMi using Helm {#deploy-hami-using-helm}
 
@@ -42,8 +38,6 @@ Verify that the `hami-scheduler` and `hami-device-plugin` pods are running:
 ```bash
 kubectl get pods -n kube-system | grep hami
 ```
-
----
 
 ## 3. Submit a vGPU Workload {#submit-a-vgpu-workload}
 
@@ -72,8 +66,6 @@ kubectl apply -f gpu-pod.yaml
 kubectl wait --for=condition=Ready pod/gpu-pod --timeout=120s
 ```
 
----
-
 ## 4. Verify GPU Memory Isolation {#verify-gpu-memory-isolation}
 
 Execute `nvidia-smi` inside the running container:
@@ -97,8 +89,6 @@ Expected output showing HAMi-core hard memory limit (`10240MiB`):
 +-----------------------------------------------------------------------------------------+
 ```
 
----
-
 ## Cleanup {#cleanup}
 
 Delete the test Pod:
@@ -106,8 +96,6 @@ Delete the test Pod:
 ```bash
 kubectl delete pod gpu-pod
 ```
-
----
 
 ## Next steps {#next-steps}
 
