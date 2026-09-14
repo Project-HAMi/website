@@ -1,71 +1,154 @@
 ---
 title: 前置条件
+sidebar_label: 前置条件
+translated: true
 ---
 
-在安装 HAMi 之前，请确保你的环境中已正确安装以下工具和依赖：
+安装 HAMi 前，按以下要求准备 Kubernetes 集群和设备节点。
 
-- NVIDIA 驱动版本 >= 440
-- nvidia-docker 版本 > 2.0
-- 默认运行时配置为 NVIDIA 运行时
-- Kubernetes 版本 >= 1.18
-- kernel 版本 >= 3.10
-- helm 版本 > 3.0
+## 集群要求
 
-## 准备 GPU 节点
+- Kubernetes 1.23 或更高版本，且容器运行时工作正常。
+- Helm 和 `kubectl`，并具备安装 HAMi 集群资源的权限。
+- 节点操作系统和内核满足设备驱动要求，驱动及运行时配置见下方设备指南。
 
-在所有 GPU 节点上执行以下步骤。
+## 按设备查找前置条件
 
-本 README 假设已预先安装 NVIDIA 驱动和 `nvidia-container-toolkit`。此外，还假设已将 `nvidia-container-runtime` 配置为默认底层运行时。
+选择设备类型，查看前置条件和安装步骤。
 
-参阅[安装 NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)。
+| 设备 | 前置条件与配置入口 |
+| --- | --- |
+| NVIDIA GPU | [准备 NVIDIA GPU 节点](#准备-nvidia-gpu-节点) |
+| 华为昇腾 NPU | [先决条件](../userguide/ascend-device/enable-ascend-sharing.md#先决条件) |
+| AMD GPU | [节点需求](../userguide/amd-device/enable-amd-gpu-sharing.md#节点需求) |
+| 寒武纪 MLU | [节点需求](../userguide/cambricon-device/enable-cambricon-mlu-sharing.md#节点需求) |
+| 海光 DCU | [节点需求](../userguide/hygon-device/enable-hygon-dcu-sharing.md#节点需求) |
+| 摩尔线程 GPU | [节点需求](../userguide/mthreads-device/enable-mthreads-gpu-sharing.md#节点需求) |
+| 天数智芯 GPU | [前置条件](../userguide/iluvatar-device/enable-iluvatar-gpu-sharing.md#前置条件) |
+| 燧原 GCU | [节点需求](../userguide/enflame-device/enable-enflame-gcu-sharing.md#节点需求) |
+| AWS Neuron | [前提条件](../userguide/awsneuron-device/enable-awsneuron-managing.md#前提条件) |
+| 昆仑芯 XPU | [整卡调度](../userguide/kunlunxin-device/enable-kunlunxin-schedule.md#前置条件) / [vXPU 共享](../userguide/kunlunxin-device/enable-kunlunxin-vxpu.md#前置条件) |
+| 沐曦 GPU | [整卡调度](../userguide/metax-device/metax-gpu/enable-metax-gpu-schedule.md#前提条件) / [sGPU 共享](../userguide/metax-device/metax-sgpu/enable-metax-gpu-sharing.md#需求) |
+| 壁仞 GPU | [设备配置](../userguide/biren-device/enable-biren-sharing.md#使用壁仞设备) |
+| 瀚博半导体 | [设备配置](../userguide/vastai/enable-vastai-sharing.md#使用瀚博半导体设备) |
 
-如需使用 CDI 注入 NVIDIA GPU，请在安装 HAMi 前参阅[为 HAMi 启用 NVIDIA CDI 支持](./configure-cdi.md)，确认容器运行时、驱动根目录和 NVIDIA Container Toolkit 路径。
+## 准备 NVIDIA GPU 节点
 
-### Debian 系统示例（Docker + containerd）
+NVIDIA GPU 节点需要与 GPU 型号及工作负载 CUDA 版本匹配的驱动，以及已针对 Kubernetes 容器运行时配置的 NVIDIA Container Toolkit。
 
-#### 安装 `nvidia-container-toolkit`
+### 使用 NVIDIA GPU Operator 准备节点
 
-```bash
-curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
-  && curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
-    sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
-    sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+[NVIDIA GPU Operator](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/26.3/getting-started.html) 可自动安装驱动和 Container Toolkit。按各组件的管理方式设置 Helm values：
 
-sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
+| 驱动管理方       | Toolkit 管理方 | GPU Operator Helm values                        |
+| ---------------- | -------------- | ----------------------------------------------- |
+| GPU Operator     | GPU Operator   | `driver.enabled=true`、`toolkit.enabled=true`   |
+| 宿主机或 VM 镜像 | GPU Operator   | `driver.enabled=false`、`toolkit.enabled=true`  |
+| 宿主机或 VM 镜像 | 宿主机         | `driver.enabled=false`、`toolkit.enabled=false` |
+
+驱动和 Toolkit 均由宿主机管理时，无需安装 GPU Operator。如果仍需用 Operator 管理其他组件，按上表关闭驱动和 Toolkit 安装。
+
+:::warning
+
+将 GPU Operator 的 `devicePlugin.enabled` 设为 `false`，保留 HAMi 的 NVIDIA Device Plugin。同一节点上已单独部署的 NVIDIA Device Plugin 也需停用，避免向 kubelet 重复注册 `nvidia.com/gpu`。
+
+:::
+
+以下示例使用 GPU Operator **v26.3.3**，配合 HAMi 默认的 `envvar` 设备分配策略。安装前，按 [Operator 支持矩阵](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/26.3/platform-support.html)核对操作系统、内核和 Kubernetes 版本，并按 Operator 安装指南满足 Pod Security Admission 要求。如果集群已有 Node Feature Discovery，还需设置 `nfd.enabled=false`。
+
+将以下 **GPU Operator values** 保存为 `gpu-operator-values.yaml`。驱动已由宿主机管理时，将 `driver.enabled` 改为 `false`：
+
+```yaml
+driver:
+  enabled: true
+toolkit:
+  enabled: true
+devicePlugin:
+  enabled: false
+cdi:
+  enabled: false
 ```
 
-#### 配置 Docker
-
-在 Kubernetes 使用 Docker 时，可以使用 `nvidia-ctk` 自动配置 Docker：
+安装 GPU Operator：
 
 ```bash
-sudo nvidia-ctk runtime configure --runtime=docker
+helm repo add nvidia https://helm.ngc.nvidia.com/nvidia
+helm repo update
+helm install gpu-operator nvidia/gpu-operator \
+  --namespace gpu-operator --create-namespace \
+  --version v26.3.3 \
+  --values gpu-operator-values.yaml \
+  --wait
 ```
 
-然后重启 Docker：
+集群已安装 GPU Operator 时，在原有 Helm values 中调整所需配置，保留其他集群设置。节点上已有 GPU 工作负载时，应先确定设备注入方式，再修改 `cdi.enabled`。
+
+:::note CDI 与运行时选择
+
+GPU Operator 26.3 默认启用 CDI。自 GPU Operator 25.10 起，`cdi.default` 已废弃且不再生效。本例显式设置 `cdi.enabled=false`，通过 NVIDIA runtime 配合 HAMi 的 `envvar` 策略。详见 [GPU Operator 26.3 发布说明](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/26.3/release-notes.html)。
+
+使用 CDI 时，按[为 HAMi 启用 NVIDIA CDI 支持](./configure-cdi.md)配置容器运行时和 HAMi 的 CDI 参数。
+
+:::
+
+使用 K3s 等内置 containerd 的发行版时，为 GPU Operator 配置该发行版的 containerd 配置文件和 socket 路径。详见 [Operator 的 containerd 配置选项](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/26.3/getting-started.html#specifying-configuration-options-for-containerd)及 [K3s 运行时配置](https://docs.k3s.io/advanced#nvidia-container-runtime)。
+
+确认 ClusterPolicy 状态为 `ready`，已启用的驱动和 Toolkit 组件就绪，且 Operator 未运行 NVIDIA Device Plugin DaemonSet 或 Pod：
 
 ```bash
-sudo systemctl daemon-reload && sudo systemctl restart docker
+kubectl get clusterpolicies
+kubectl get pods,daemonsets -n gpu-operator
 ```
 
-#### 配置 containerd
+新准备的节点在 HAMi 的 NVIDIA Device Plugin 启动前，通常还没有 `nvidia.com/gpu` 容量。
 
-在 Kubernetes 使用 containerd 时，可以使用 `nvidia-ctk` 自动配置 containerd：
+### 在宿主机安装驱动和 Toolkit
+
+在宿主机管理驱动和 Toolkit 时，为每个 NVIDIA GPU 节点安装合适的驱动，并按 [NVIDIA Container Toolkit 安装指南](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)安装和配置 Toolkit。
+
+使用 HAMi 默认的 `envvar` 策略时，将 NVIDIA runtime 设为默认运行时，或在安装 HAMi 时通过 RuntimeClass 选择该运行时。对于运行独立 containerd 服务的节点，执行：
 
 ```bash
-sudo nvidia-ctk runtime configure --runtime=containerd
+sudo nvidia-ctk runtime configure --runtime=containerd --set-as-default
+sudo systemctl restart containerd
 ```
 
-然后重启 containerd：
+对于通过 CRI 适配器使用 Docker 的 Kubernetes 集群，改为配置 Docker：
 
 ```bash
-sudo systemctl daemon-reload && sudo systemctl restart containerd
+sudo nvidia-ctk runtime configure --runtime=docker --set-as-default
+sudo systemctl restart docker
 ```
+
+CRI-O 或由发行版管理的运行时，应按 Toolkit 或发行版文档配置。K3s 会生成 containerd 配置文件，需使用 [K3s 配置选项或模板](https://docs.k3s.io/advanced#configuring-containerd)持久化修改。
+
+### 按节点环境配置 HAMi
+
+GPU Operator 同时管理驱动和 Toolkit 时，将以下 **HAMi values** 保存为 `hami-nvidia-values.yaml`：
+
+```yaml
+devicePlugin:
+  deviceListStrategy: envvar
+  nvidiaDriverRoot: /run/nvidia/driver
+  gpuOperatorToolkitReady:
+    enabled: true
+```
+
+- 驱动由宿主机管理时，将 `devicePlugin.nvidiaDriverRoot` 设为 `/`。路径必须与节点实际目录一致。
+- Toolkit 由宿主机管理时，保持 `devicePlugin.gpuOperatorToolkitReady.enabled=false`；该选项用于等待 Operator 的 Toolkit 就绪标记。
+- NVIDIA runtime 不是默认运行时时，先确认 `nvidia` 等 RuntimeClass 指向已配置的 NVIDIA runtime handler，再设置 `devicePlugin.runtimeClassName=nvidia`。HAMi 将该值用于 NVIDIA Device Plugin，并注入 NVIDIA GPU 工作负载 Pod。
+- 使用 CDI 时，按 [NVIDIA CDI 指南](./configure-cdi.md)设置参数，包括驱动根目录和实际的 `nvidia-ctk` hook 路径。
 
 ### 为节点打标签
 
-为了让 HAMi 调度器能够识别 GPU 节点，请为 GPU 节点添加标签 `gpu=on`。如果没有该标签，调度器将无法管理这些节点。
+HAMi 的 NVIDIA Device Plugin 默认通过 `devicePlugin.nvidiaNodeSelector: {gpu: "on"}` 选择节点。为 NVIDIA GPU 节点添加对应标签：
 
 ```bash
 kubectl label nodes <node-name> gpu=on
 ```
+
+自定义 `devicePlugin.nvidiaNodeSelector` 时，按选择器为节点设置标签。
+
+## 安装 HAMi
+
+继续阅读 [Helm 在线安装](./online-installation.md)或[离线安装](./offline-installation.md)。使用上述 NVIDIA 配置时，在 HAMi 安装命令中添加 `--values hami-nvidia-values.yaml`，并按安装指南使 `scheduler.kubeScheduler.image.tag` 与 Kubernetes 服务端版本匹配。
