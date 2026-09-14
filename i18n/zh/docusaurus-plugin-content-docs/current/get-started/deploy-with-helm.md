@@ -1,6 +1,6 @@
 ---
-title: 快速开始
-sidebar_label: 快速开始
+title: 快速部署
+sidebar_label: 快速部署
 ---
 
 只需几分钟，即可通过部署 Helm Chart 并提交您的第一个 GPU 共享工作负载快速上手 HAMi。

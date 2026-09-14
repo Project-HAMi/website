@@ -27,7 +27,7 @@ If any of them is missing, HAMi-DRA cannot run. See [HAMi DRA for Kubernetes](..
 
 Both run HAMi-core inside the container, so the memory and core limits behave the same either way. HAMi-DRA changes the allocation path, not the isolation.
 
-Start with [Deploy HAMi using Helm](./deploy-with-helm.md), or with [HAMi DRA for Kubernetes](../installation/how-to-use-hami-dra.md) if the list above is satisfied.
+Start with [Quick Start](./deploy-with-helm.md), or with [HAMi DRA for Kubernetes](../installation/how-to-use-hami-dra.md) if the list above is satisfied.
 
 ## HAMi, Volcano vGPU or KAI Scheduler
 
@@ -47,7 +47,7 @@ So the real choice is which scheduler you already run.
 | Gang scheduling and queues | no | yes | yes |
 | Non-NVIDIA devices | yes, see [Device supported by HAMi](../userguide/device-supported.md) | NVIDIA only, Ascend goes through the separate [Volcano vNPU](../installation/how-to-use-volcano-ascend.md) integration | NVIDIA |
 | Requires | HAMi v2.x | Volcano v1.9 or later | KAI v0.16.4 or later |
-| Guide | [Deploy HAMi using Helm](./deploy-with-helm.md) | [Use Volcano vGPU](../userguide/volcano-vgpu/nvidia-gpu/how-to-use-volcano-vgpu.md) | [Use KAI Scheduler with HAMi](../userguide/kai-scheduler/how-to-use-kai-scheduler.md) |
+| Guide | [Quick Start](./deploy-with-helm.md) | [Use Volcano vGPU](../userguide/volcano-vgpu/nvidia-gpu/how-to-use-volcano-vgpu.md) | [Use KAI Scheduler with HAMi](../userguide/kai-scheduler/how-to-use-kai-scheduler.md) |
 
 A short way to decide:
 
