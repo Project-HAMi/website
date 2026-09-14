@@ -1,7 +1,6 @@
 ---
 title: Install HAMi on Google Kubernetes Engine
 sidebar_label: HAMi on GKE
-translated: true
 ---
 
 This guide covers the GKE-specific configuration for installing HAMi with NVIDIA GPU Operator on **GKE Standard** nodes using the `UBUNTU_CONTAINERD` image. GPU Operator is not supported on GKE Autopilot.
