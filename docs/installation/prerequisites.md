@@ -11,7 +11,7 @@ Before installing HAMi, prepare the Kubernetes cluster and device nodes as descr
 - Helm and `kubectl` installed, and an account with permission to install HAMi's cluster resources.
 - Nodes that meet the device driver's operating system and kernel requirements. See the device guides below for driver and runtime setup.
 
-## Find your device's prerequisites
+## Find your device's prerequisites {#device-prerequisites}
 
 | Device | Prerequisites and setup |
 | --- | --- |
