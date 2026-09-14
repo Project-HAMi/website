@@ -29,12 +29,12 @@ _[Open the full dashboard screenshot.](/img/docs/common/userguide/monitoring/ham
 
 The dashboard reads metrics from two HAMi components:
 
-| Component             | Default NodePort | Metrics                                             |
-| --------------------- | ---------------- | --------------------------------------------------- |
-| `hami-scheduler`      | `31993`          | Capacity, allocation, sharing, and device inventory |
-| vGPU monitor on nodes | `31992`          | Physical GPU and per-container vGPU usage           |
+| Component | v2.10.0 default NodePort | Metrics |
+| --- | --- | --- |
+| `hami-scheduler` | `31993` | Capacity, allocation, sharing, and device inventory |
+| vGPU monitor on nodes | `31992` | Physical GPU and per-container vGPU usage |
 
-By default, both monitor Services use NodePort. Check that the scheduler and vGPU monitor endpoints are reachable:
+In HAMi v2.10.0, both monitor Services use NodePort by default. Check that the scheduler and vGPU monitor endpoints are reachable:
 
 ```bash
 curl http://<kubernetes-node-ip>:31993/metrics

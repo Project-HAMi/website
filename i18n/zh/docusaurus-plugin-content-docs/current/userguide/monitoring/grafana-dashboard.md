@@ -28,12 +28,12 @@ _[查看完整 Dashboard 截图。](/img/docs/common/userguide/monitoring/hami-g
 
 Dashboard 从两个 HAMi 组件读取指标：
 
-| 组件                    | 默认 NodePort | 指标                                |
-| ----------------------- | ------------- | ----------------------------------- |
-| `hami-scheduler`        | `31993`       | 容量、分配、共享情况和设备清单      |
-| 各节点上的 vGPU monitor | `31992`       | 物理 GPU 和每个容器的 vGPU 实时用量 |
+| 组件                    | v2.10.0 默认 NodePort | 指标                                |
+| ----------------------- | --------------------- | ----------------------------------- |
+| `hami-scheduler`        | `31993`               | 容量、分配、共享情况和设备清单      |
+| 各节点上的 vGPU monitor | `31992`               | 物理 GPU 和每个容器的 vGPU 实时用量 |
 
-默认配置下，两个监控 Service 均使用 NodePort。检查 scheduler 和 vGPU monitor 端点是否可访问：
+HAMi v2.10.0 默认将两个监控 Service 配置为 NodePort。检查 scheduler 和 vGPU monitor 端点是否可访问：
 
 ```bash
 curl http://<kubernetes-node-ip>:31993/metrics

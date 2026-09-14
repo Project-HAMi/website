@@ -222,3 +222,13 @@ test("table identifier columns are not formatted as bytes", () => {
     );
   }
 });
+
+test("tables hide the internal zone label", () => {
+  for (const title of ["GPU inventory and allocation", "Top 10 containers by vGPU memory"]) {
+    const panel = panelByTitle(title);
+    const organize = panel.transformations.find(
+      (transformation) => transformation.id === "organize",
+    );
+    assert.equal(organize.options.excludeByName.zone, true, title);
+  }
+});

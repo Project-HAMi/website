@@ -1012,7 +1012,8 @@
           "options": {
             "excludeByName": {
               "Time": true,
-              "__name__": true
+              "__name__": true,
+              "zone": true
             },
             "indexByName": {},
             "renameByName": {
@@ -1384,7 +1385,8 @@
             "excludeByName": {
               "Time": true,
               "__name__": true,
-              "device_uuid": false
+              "device_uuid": false,
+              "zone": true
             },
             "indexByName": {},
             "renameByName": {
