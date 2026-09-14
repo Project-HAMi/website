@@ -225,3 +225,7 @@ DCGM Exporter 不受影响，继续正常上报物理级计数器。HAMi 的每�
 ## 如何为 HAMi vGPU 指标设置 Prometheus 和 Grafana 监控？
 
 每个节点上的 `hami-device-plugin` Pod 在端口 `31992`（可通过 `devicePlugin.service.httpPort` 配置）上暴露每容器 vGPU 指标。完整的设置步骤（包括 Prometheus 采集配置和 Dashboard 导入）参见 [Grafana Dashboard](./userguide/monitoring/grafana-dashboard)。
+
+## PaddlePaddle 在vGPU上出现core_dump崩溃？
+
+该问题由`thread_local`分配器触发，详情查看：[PaddlePaddle thread_local 分配器导致 vGPU 环境 CoreDump](./troubleshooting/paddle-threadlocal-coredump)

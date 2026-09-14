@@ -424,8 +424,18 @@ module.exports = {
       ],
     },
     {
-      type: "doc",
-      id: "troubleshooting/troubleshooting",
+      type: "category",
+      label: "Troubleshooting",
+      items: [
+        {
+          type: "doc",
+          id: "troubleshooting/troubleshooting",
+        },
+        {
+          type: "doc",
+          id: "troubleshooting/paddle-threadlocal-coredump",
+        },
+      ],
     },
     {
       type: "doc",
