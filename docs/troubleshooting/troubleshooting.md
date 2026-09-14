@@ -161,8 +161,7 @@ devicePlugin:
 
 :::
 
-
 ### PaddlePaddle thread_local allocator causes CoreDump under vGPU
+
 PaddlePaddle inference process crashes with core_dump when `FLAGS_allocator_strategy=thread_local` is enabled on HAMi vGPU.
 See detailed troubleshooting: [PaddlePaddle CoreDump Issue with thread_local Allocator on vGPU](./troubleshooting/paddle-threadlocal-coredump)
-

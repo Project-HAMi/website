@@ -157,4 +157,3 @@ devicePlugin:
 
 当设置 `FLAGS_allocator_strategy=thread_local` 时，PaddlePaddle推理进程会发生core_dump崩溃。
 详细排查文档：[PaddlePaddle thread_local 分配器导致 vGPU 环境 CoreDump](./troubleshooting/paddle-threadlocal-coredump)
-

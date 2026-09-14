@@ -1,9 +1,9 @@
-
 ---
 title: PaddlePaddle CoreDump Issue with thread_local Allocator on vGPU
 ---
 
 ## Symptoms
+
 PaddlePaddle inference process crashes with core dump on HAMi virtual GPU.
 No standard CUDA OOM error is printed.
 This issue only occurs under vGPU memory quota limitation and **cannot be reproduced on bare‑metal GPUs**.
@@ -13,6 +13,7 @@ Trigger condition: environment variable `FLAGS_allocator_strategy=thread_local` 
 issue: https://github.com/Project-HAMi/HAMi/issues/2375
 
 ## Root Cause
+
 `thread_local` is a non‑default memory allocation strategy of PaddlePaddle.
 When enabled, **each CPU worker thread creates an independent CUDA memory allocator pool**.
 
@@ -28,6 +29,7 @@ This is a compatibility issue between PaddlePaddle thread‑local allocator and 
 :::
 
 ## Troubleshooting Commands
+
 Check real runtime environment variable inside container:
 
 ```bash
