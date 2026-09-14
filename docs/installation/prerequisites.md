@@ -181,4 +181,4 @@ If you customize `devicePlugin.nvidiaNodeSelector`, label the nodes to match tha
 
 Once the nodes are ready, install HAMi using [Online Installation from Helm](./online-installation.md) or [Offline Installation](./offline-installation.md).
 
-If using the NVIDIA settings above, add `--values hami-nvidia-values.yaml` to the installation command. Follow the installation guide to set `scheduler.kubeScheduler.image.tag` to match the Kubernetes server version.
+If using the NVIDIA settings above, add `--values hami-nvidia-values.yaml` to the installation command. The chart automatically selects a scheduler image that matches the Kubernetes server version. For manual overrides, see the [online installation guide](./online-installation.md#deploy-hami).

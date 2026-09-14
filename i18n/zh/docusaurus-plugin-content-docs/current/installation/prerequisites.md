@@ -182,4 +182,4 @@ kubectl label nodes <node-name> gpu=on
 
 节点准备完成后，按 [Helm 在线安装](./online-installation.md)或[离线安装](./offline-installation.md)指南安装 HAMi。
 
-使用上述 NVIDIA 配置时，在安装命令中添加 `--values hami-nvidia-values.yaml`。按安装指南设置 `scheduler.kubeScheduler.image.tag`，使其与 Kubernetes 服务端版本匹配。
+使用上述 NVIDIA 配置时，在安装命令中添加 `--values hami-nvidia-values.yaml`。Chart 会自动选择与 Kubernetes 服务端版本匹配的 scheduler 镜像；需要手动覆盖时，参阅[在线安装指南](./online-installation.md#deploy-hami)。

@@ -9,20 +9,10 @@ translated: true
 ## 先决条件 {#prerequisites}
 
 - 满足[集群要求](../installation/prerequisites.md#集群要求)，包括 Kubernetes、Helm、`kubectl` 和安装权限。
-- NVIDIA GPU：按下方步骤准备节点。驱动需支持 GPU 型号和工作负载使用的 CUDA 版本。
+- NVIDIA GPU：按[节点准备指南](../installation/prerequisites.md#准备-nvidia-gpu-节点)完成环境配置，并将适用的 HAMi values 保存为 `hami-nvidia-values.yaml`，供安装时使用。
 - 其他设备：从[设备前置条件目录](../installation/prerequisites.md#device-prerequisites)进入对应文档，完成驱动、容器运行时、节点标签等环境配置，再回到本文的[使用 Helm 部署 HAMi](#deploy-hami-using-helm)章节继续安装。安装时需使用设备文档要求的 Helm 参数。
 
-## 安装步骤 {#installation}
-
-### 准备 NVIDIA GPU 节点 {#configure-nvidia-container-toolkit}
-
-按照[前置条件中的节点准备步骤](../installation/prerequisites.md#准备-nvidia-gpu-节点)，通过 GPU Operator 或在宿主机上安装 NVIDIA 驱动和 Container Toolkit，并配置容器运行时。
-
-根据驱动和 Toolkit 的管理方式、RuntimeClass 及设备分配策略，调整该文档中的 HAMi values，并保存为 `hami-nvidia-values.yaml`。后续 Helm 安装命令会使用这个文件。
-
-使用 GPU Operator 时，关闭其 NVIDIA Device Plugin，并在安装 HAMi 前完成 RuntimeClass 和 Toolkit 就绪检查。GPU Operator 25.10+ 配合 HAMi 的 `envvar` 策略时，使用指南中的 `devicePlugin.runtimeClassName=nvidia` 配置。使用 CDI 时，按[为 HAMi 启用 NVIDIA CDI 支持](../installation/configure-cdi.md)完成配置。
-
-### 为 NVIDIA GPU 节点打标签 {#label-your-nodes}
+## 为 NVIDIA GPU 节点打标签 {#label-your-nodes}
 
 HAMi 的 NVIDIA Device Plugin 默认使用 `gpu=on` 节点标签。为需要由 HAMi 管理的节点添加标签：
 
@@ -32,13 +22,7 @@ kubectl label nodes <node-name> gpu=on
 
 如果自定义了 `devicePlugin.nvidiaNodeSelector`，使用与选择器匹配的标签。
 
-### 使用 Helm 部署 HAMi {#deploy-hami-using-helm}
-
-检查 Kubernetes 服务端版本：
-
-```bash
-kubectl version
-```
+## 使用 Helm 部署 HAMi {#deploy-hami-using-helm}
 
 添加 Helm 仓库：
 
@@ -47,15 +31,16 @@ helm repo add hami-charts https://project-hami.github.io/HAMi/
 helm repo update
 ```
 
-将 `scheduler.kubeScheduler.image.tag` 设为与服务端匹配的版本。下方示例使用 Kubernetes v1.29.0，执行前需按设备补充安装参数：
+按设备补充安装参数，然后执行安装命令：
 
 - NVIDIA GPU：在下方命令中添加 `--values hami-nvidia-values.yaml`，使用前面准备的配置文件。
 - 其他设备：在下方命令中添加对应设备文档要求的 `--values` 或 `--set` 参数。
 
 ```bash
-helm install hami hami-charts/hami -n kube-system \
-  --set scheduler.kubeScheduler.image.tag=v1.29.0
+helm install hami hami-charts/hami -n kube-system
 ```
+
+Chart 会自动选择与 Kubernetes 服务端版本匹配的 scheduler 镜像。需要手动覆盖时，参阅[在线安装指南](../installation/online-installation.md#deploy-hami)。
 
 检查 `hami-scheduler` 和所用设备的 Device Plugin Pod 是否处于 `Running` 和 `Ready` 状态。NVIDIA Device Plugin 的 Pod 名称包含 `hami-device-plugin`：
 
@@ -145,6 +130,6 @@ kubectl delete pod gpu-pod
 
 ## 后续步骤 {#next-steps}
 
-- [验证 HAMi](./verify-hami) - 进一步验证原生 GPU 环境和 HAMi
-- [配置 HAMi](../userguide/configure) - 资源限制、调度策略等配置
-- [设备共享](../key-features/device-sharing) - 了解 GPU 共享机制
+- [验证 HAMi](./verify-hami.md) - 进一步验证原生 GPU 环境和 HAMi
+- [配置 HAMi](../userguide/configure.md) - 资源限制、调度策略等配置
+- [设备共享](../key-features/device-sharing.md) - 了解 GPU 共享机制

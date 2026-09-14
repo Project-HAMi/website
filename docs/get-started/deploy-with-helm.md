@@ -8,20 +8,10 @@ This guide explains how to install HAMi with Helm, then uses an NVIDIA GPU examp
 ## Prerequisites {#prerequisites}
 
 - Meet the [cluster requirements](../installation/prerequisites.md#cluster-requirements), including Kubernetes, Helm, `kubectl`, and installation permissions.
-- NVIDIA GPUs: prepare the nodes as described below. The driver must support the GPU model and the workload's CUDA version.
+- NVIDIA GPUs: follow the [node preparation guide](../installation/prerequisites.md#preparing-your-gpu-nodes) to configure the environment and save the applicable HAMi values as `hami-nvidia-values.yaml` for installation.
 - Other devices: open the corresponding guide from the [device prerequisites directory](../installation/prerequisites.md#device-prerequisites) and configure the driver, container runtime, node labels, and other environment requirements. Then return to [Deploy HAMi using Helm](#deploy-hami-using-helm) below and install with the Helm parameters required by that device guide.
 
-## Installation {#installation}
-
-### Prepare NVIDIA GPU nodes {#configure-nvidia-container-toolkit}
-
-Follow the [node preparation steps in Prerequisites](../installation/prerequisites.md#preparing-your-gpu-nodes) to install the NVIDIA driver and Container Toolkit through GPU Operator or on the host, and configure the container runtime.
-
-Adjust the HAMi values from that page to match how the driver and Toolkit are managed, the RuntimeClass, and the device allocation strategy. Save them as `hami-nvidia-values.yaml` for the Helm installation command below.
-
-When using GPU Operator, disable its NVIDIA Device Plugin and complete the RuntimeClass and Toolkit readiness checks before installing HAMi. With GPU Operator 25.10+ and HAMi's `envvar` strategy, use the guide's `devicePlugin.runtimeClassName=nvidia` setting. For CDI, follow [Enable NVIDIA CDI support for HAMi](../installation/configure-cdi.md).
-
-### Label NVIDIA GPU nodes {#label-your-nodes}
+## Label NVIDIA GPU nodes {#label-your-nodes}
 
 HAMi's NVIDIA Device Plugin uses the `gpu=on` node label by default. Add it to the nodes HAMi should manage:
 
@@ -31,13 +21,7 @@ kubectl label nodes <node-name> gpu=on
 
 If `devicePlugin.nvidiaNodeSelector` is customized, use labels that match that selector.
 
-### Deploy HAMi using Helm {#deploy-hami-using-helm}
-
-Check the Kubernetes server version:
-
-```bash
-kubectl version
-```
+## Deploy HAMi using Helm {#deploy-hami-using-helm}
 
 Add the Helm repository:
 
@@ -46,15 +30,16 @@ helm repo add hami-charts https://project-hami.github.io/HAMi/
 helm repo update
 ```
 
-Set `scheduler.kubeScheduler.image.tag` to match the server version. The example below uses Kubernetes v1.29.0. Add the parameters for your devices before running it:
+Add the parameters for your devices, then run the installation command:
 
 - NVIDIA GPUs: add `--values hami-nvidia-values.yaml` to the command below to use the configuration file prepared earlier.
 - Other devices: add the `--values` or `--set` parameters required by the corresponding device guide.
 
 ```bash
-helm install hami hami-charts/hami -n kube-system \
-  --set scheduler.kubeScheduler.image.tag=v1.29.0
+helm install hami hami-charts/hami -n kube-system
 ```
+
+The chart automatically selects a scheduler image that matches the Kubernetes server version. For manual overrides, see the [online installation guide](../installation/online-installation.md#deploy-hami).
 
 Check that the `hami-scheduler` and the device plugin Pods for your devices are `Running` and `Ready`. NVIDIA Device Plugin Pod names contain `hami-device-plugin`:
 
@@ -144,6 +129,6 @@ kubectl delete pod gpu-pod
 
 ## Next steps {#next-steps}
 
-- [Validate HAMi](./verify-hami) - deeper validation including native GPU stack checks
-- [Configure HAMi](../userguide/configure) - resource limits, scheduling policies, and more
-- [Device Sharing](../key-features/device-sharing) - how GPU sharing works under the hood
+- [Validate HAMi](./verify-hami.md) - deeper validation including native GPU stack checks
+- [Configure HAMi](../userguide/configure.md) - resource limits, scheduling policies, and more
+- [Device Sharing](../key-features/device-sharing.md) - how GPU sharing works under the hood
