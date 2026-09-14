@@ -4,12 +4,12 @@ sidebar_label: HAMi on K3s
 translated: true
 ---
 
-This guide explains how to configure K3s's embedded containerd for HAMi. Use these steps in place of the runtime configuration and containerd restart steps in the [generic prerequisites](./prerequisites.md).
+This guide describes how to configure K3s's embedded containerd for HAMi. When configuring the runtime or restarting containerd, use these steps in place of the corresponding steps in the [generic prerequisites](./prerequisites.md).
 
 ## Prerequisites
 
 - A K3s cluster using embedded containerd, with GPU nodes in the `Ready` state. For a new cluster, follow the [K3s installation guide](https://docs.k3s.io/installation) first.
-- Cluster access through `kubectl` and Helm, permission to install HAMi and label nodes, and `sudo` access on GPU nodes to inspect configuration and manage systemd services.
+- Access to the cluster through `kubectl` and Helm, with permission to install HAMi and label nodes. On GPU nodes, `sudo` access to inspect configuration and manage systemd services.
 - A decision on whether the host or GPU Operator manages the NVIDIA driver and Container Toolkit. Follow the [generic prerequisites](./prerequisites.md) for package installation and the [NVIDIA CDI guide](./configure-cdi.md) for CDI settings.
 - Only HAMi's NVIDIA Device Plugin registers GPUs on nodes managed by HAMi. With GPU Operator, set `devicePlugin.enabled=false` in the Operator values. Disable other existing Device Plugins through their original deployment mechanism to avoid duplicate registration.
 
@@ -17,11 +17,11 @@ The commands assume systemd and the [default K3s data directory](https://docs.k3
 
 ## Configure the K3s container runtime
 
-Complete these steps on each GPU node. Choose the Toolkit branch that matches the deployment, then persist the configuration and restart the K3s service.
+Complete these steps on each GPU node. Choose the configuration steps for either a host-managed or GPU Operator-managed Toolkit, then persist the configuration and restart the K3s service.
 
 ### Check the containerd paths
 
-K3s [generates its containerd configuration](https://docs.k3s.io/advanced#configuring-containerd) for each node. Configuration tools must target that containerd instance:
+K3s [generates its containerd configuration](https://docs.k3s.io/advanced#configuring-containerd) for each node. Configuration tools must use the configuration file and socket for K3s's embedded containerd. The default paths are:
 
 | Purpose | Path |
 | --- | --- |
@@ -51,7 +51,7 @@ A **drop-in configuration file** is a separate TOML file loaded by the main conf
 
 At startup, K3s looks for runtime executables in the service process's `PATH`. If K3s is already running when the runtime is installed, restart K3s so it can detect it. See [K3s alternative container runtime support](https://docs.k3s.io/advanced#alternative-container-runtime-support).
 
-Locate the executable on the GPU node:
+Find the runtime executable on the GPU node:
 
 ```bash
 command -v nvidia-container-runtime
@@ -85,9 +85,9 @@ toolkit:
       value: /var/lib/rancher/k3s/agent/etc/containerd/config-v3.toml.d/99-nvidia.toml
 ```
 
-This fragment directs Toolkit to read the K3s main configuration, connect to its socket, and write runtime configuration into a directory already imported by K3s. See [GPU Operator containerd configuration options](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/25.10/getting-started.html#specifying-configuration-options-for-containerd) for the parameters.
+With these settings, Toolkit reads the K3s main configuration, connects to the K3s containerd socket, and writes the runtime configuration into a directory imported by the main configuration. See [GPU Operator containerd configuration options](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/25.10/getting-started.html#specifying-configuration-options-for-containerd) for the parameters.
 
-Merge this fragment into the full Operator values file. Preserve other required entries in `toolkit.env` when updating the list.
+Merge these settings into the full Operator values file. Preserve other required entries in `toolkit.env` when updating the list.
 
 After deployment, inspect the imports and the generated file:
 
@@ -102,7 +102,7 @@ Confirm that the import rule includes `99-nvidia.toml` and that the runtime exec
 
 ### Persist the configuration
 
-K3s generates `config.toml`. Direct edits to that file are not a persistent configuration method.
+K3s generates `config.toml`, so direct edits to this file may not survive a restart.
 
 Prefer K3s configuration options, automatic runtime detection, or imported drop-ins. If a template extension is necessary, use `config-v3.toml.tmpl` for v3 or `config.toml.tmpl` for v2 in the same directory. Extend the [K3s base template](https://docs.k3s.io/advanced#base-template) instead of copying the entire generated configuration into a template.
 
@@ -116,7 +116,7 @@ Preserve the other settings and restart the appropriate K3s service. This option
 
 ### Restart K3s and check the configuration
 
-Check runtime configuration on every node that runs GPU workloads. Restarting the service affects node services; the Kubernetes API will be briefly unavailable while a single-node server restarts.
+Check runtime configuration on every node that runs GPU workloads. Restarting K3s affects node services. In a single-node cluster, the Kubernetes API will be briefly unavailable while the server node restarts.
 
 Follow the [K3s service restart instructions](https://docs.k3s.io/upgrades/manual#upgrade-k3s-using-the-binary) and run one of the following on the GPU node, according to its role:
 
@@ -137,13 +137,15 @@ kubectl get nodes
 kubectl get runtimeclass nvidia -o yaml
 ```
 
-K3s [provides RuntimeClass definitions](https://docs.k3s.io/advanced#nvidia-container-runtime) for supported runtimes. The existence of `RuntimeClass/nvidia` alone does not prove that the NVIDIA runtime is configured on a node. Recheck the main configuration and imported files to confirm that the runtime registration and executable paths persist.
+K3s [provides RuntimeClass definitions](https://docs.k3s.io/advanced#nvidia-container-runtime) for supported runtimes. The existence of `RuntimeClass/nvidia` alone does not prove that the NVIDIA runtime is configured on a node. After the restart, check the main configuration and imported files to confirm that the runtime is still registered and its executable exists.
 
 Once the node is `Ready` and the runtime configuration is present, continue with HAMi installation.
 
 ## Install HAMi
 
-Label GPU nodes with `gpu=on` as described in the [prerequisites](./prerequisites.md), then follow [online installation](./online-installation.md). Retain the Helm values for your chosen NVIDIA deployment. K3s reports a Kubernetes version with a distribution suffix, such as `v1.35.8+k3s1`; the corresponding upstream kube-scheduler image tag is `v1.35.8`. Do not include `+k3s1` in the image tag.
+Label GPU nodes with `gpu=on` as described in the [prerequisites](./prerequisites.md), then follow [online installation](./online-installation.md). Retain the Helm values for your chosen NVIDIA deployment.
+
+K3s reports a Kubernetes version with a distribution suffix, such as `v1.35.8+k3s1`; the corresponding upstream kube-scheduler image tag is `v1.35.8`. Do not include `+k3s1` in the image tag.
 
 If following the generic Helm guide's default NVIDIA runtime approach, first configure and verify `default-runtime: nvidia` as described above. For explicit RuntimeClass selection, set `devicePlugin.runtimeClassName=nvidia` in HAMi values and use `runtimeClassName: nvidia` for GPU workloads. When K3s already provides `RuntimeClass/nvidia`, keep `devicePlugin.createRuntimeClass=false` to reuse it.
 
@@ -177,7 +179,7 @@ kubectl wait --for=condition=Ready pod/hami-k3s-smoke --timeout=180s
 kubectl exec hami-k3s-smoke -- nvidia-smi
 ```
 
-Expect HAMi-core initialization messages and a total GPU memory of 1024 MiB inside the container. This checks GPU visibility and the reported memory limit; validating computation and allocation limits requires GPU workload tests. See the [HAMi validation guide](../get-started/verify-hami.md) for additional checks, continuing to use this page's runtime configuration steps.
+Expect HAMi-core initialization messages and a total GPU memory of 1024 MiB inside the container. This step checks whether the container can access the GPU and whether the reported memory limit is correct. Computation and resource allocation limits still require GPU workload tests. See the [HAMi validation guide](../get-started/verify-hami.md) for additional checks, continuing to use this page's runtime configuration steps.
 
 During a maintenance window, [restart K3s](#restart-k3s-and-check-the-configuration) and wait for the node to recover. Delete and recreate the test Pod to verify that new containers use the persisted runtime configuration:
 
@@ -195,7 +197,7 @@ kubectl delete pod hami-k3s-smoke --wait=true
 | --- | --- |
 | RuntimeClass exists, but a new Pod reports that its runtime is not configured | Inspect the K3s main configuration and drop-ins on the Pod's node. For host-installed runtimes, also check the service `PATH` and whether K3s was restarted after installation. |
 | Configuration works initially but disappears after a restart | Check whether only the generated `config.toml` was edited and whether the regenerated `imports` still includes the drop-in. |
-| The K3s API briefly becomes unavailable while Toolkit updates runtime configuration | Correlate Toolkit and K3s service logs to determine whether containerd exited, K3s restarted, and the services recovered. |
+| The K3s API briefly becomes unavailable while Toolkit updates runtime configuration | Compare the timestamps in the Toolkit and K3s service logs to check whether containerd exited, K3s restarted, and the services subsequently recovered. |
 
 Inspect the [K3s systemd logs](https://docs.k3s.io/faq#where-are-the-k3s-logs) and service state on a server node:
 
