@@ -101,4 +101,4 @@ kubectl delete pod gpu-pod
 
 - Verify your setup in detail with [Verify HAMi Installation](./verify-hami.md).
 - Learn how to customize your deployment parameters in the [Configuration Guide](../userguide/configure.md).
-
+- Understand how GPU sharing works under the hood in [Device Sharing](../key-features/device-sharing.md).

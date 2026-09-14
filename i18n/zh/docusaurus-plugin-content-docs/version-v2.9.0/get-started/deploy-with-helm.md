@@ -101,3 +101,4 @@ kubectl delete pod gpu-pod
 
 - 参阅 [验证 HAMi 安装](./verify-hami.md) 查看详细验证步骤。
 - 参阅 [配置指南](../userguide/configure.md) 了解如何自定义部署参数与设备配置。
+- 参阅 [设备共享](../key-features/device-sharing.md) 了解 GPU 共享的底层原理。
