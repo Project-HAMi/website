@@ -4,7 +4,7 @@ sidebar_label: K3s 上的 HAMi
 translated: true
 ---
 
-本文介绍如何为 HAMi 配置 K3s 内置的 containerd。配置运行时和重启 containerd 时，使用本文步骤替代[通用前置条件](./prerequisites.md)中的对应步骤。
+[K3s](https://k3s-io.github.io/) 能帮助你更快地实现 MVP 和 PoC，本文介绍在 K3s 上使用 HAMi 的注意事项。
 
 ## 前置条件
 
@@ -148,48 +148,6 @@ K3s [预置受支持运行时的 RuntimeClass 定义](https://docs.k3s.io/advanc
 K3s 的 Kubernetes 版本带有发行版后缀，例如 `v1.35.8+k3s1`；对应的上游 kube-scheduler 镜像标签为 `v1.35.8`，不要将 `+k3s1` 后缀用于镜像标签。
 
 如果沿用通用 Helm 指南中的默认 NVIDIA 运行时方案，先按前文设置 `default-runtime: nvidia` 并验证其生效。使用显式 RuntimeClass 的方案时，在 HAMi values 中设置 `devicePlugin.runtimeClassName=nvidia`，GPU 工作负载使用 `runtimeClassName: nvidia`。K3s 已有 `RuntimeClass/nvidia` 时，保留 `devicePlugin.createRuntimeClass=false` 以复用该资源。
-
-## 验证安装
-
-确认 `hami-scheduler` 和 GPU 节点上的 `hami-device-plugin` 均为 `Running`、`Ready`。然后将以下共享 vGPU 测试保存为 `hami-k3s-smoke.yaml`。示例显式使用 `nvidia` 运行时，并申请 1024 MiB 显存：
-
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: hami-k3s-smoke
-spec:
-  runtimeClassName: nvidia
-  restartPolicy: Never
-  containers:
-    - name: cuda
-      image: nvcr.io/nvidia/cuda:12.2.0-base-ubuntu22.04
-      command: ["bash", "-c", "sleep 86400"]
-      resources:
-        limits:
-          nvidia.com/gpu: 1
-          nvidia.com/gpumem: 1024
-```
-
-在有集群访问权限的终端执行：
-
-```bash
-kubectl apply -f hami-k3s-smoke.yaml
-kubectl wait --for=condition=Ready pod/hami-k3s-smoke --timeout=180s
-kubectl exec hami-k3s-smoke -- nvidia-smi
-```
-
-应看到 HAMi-core 初始化信息，容器内 GPU 总显存应为请求的 1024 MiB。此步骤检查容器能否访问 GPU，以及显示的显存限额是否正确。计算和资源分配限制仍需通过 GPU 工作负载验证。更多检查见 [HAMi 验证指南](../get-started/verify-hami.md)，其中的容器运行时配置仍使用本文步骤。
-
-在维护窗口[重启 K3s](#重启-k3s-并检查配置)，确认节点恢复后，删除并重新创建测试 Pod，验证新容器使用的运行时配置已持久保存：
-
-```bash
-kubectl delete pod hami-k3s-smoke --wait=true
-kubectl apply -f hami-k3s-smoke.yaml
-kubectl wait --for=condition=Ready pod/hami-k3s-smoke --timeout=180s
-kubectl exec hami-k3s-smoke -- nvidia-smi
-kubectl delete pod hami-k3s-smoke --wait=true
-```
 
 ## 故障排查
 

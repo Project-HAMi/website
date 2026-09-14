@@ -4,7 +4,7 @@ sidebar_label: HAMi on K3s
 translated: true
 ---
 
-This guide describes how to configure K3s's embedded containerd for HAMi. When configuring the runtime or restarting containerd, use these steps in place of the corresponding steps in the [generic prerequisites](./prerequisites.md).
+[K3s](https://k3s-io.github.io/) helps you build MVPs and run PoCs faster. This guide covers considerations for using HAMi on K3s.
 
 ## Prerequisites
 
@@ -148,48 +148,6 @@ Label GPU nodes with `gpu=on` as described in the [prerequisites](./prerequisite
 K3s reports a Kubernetes version with a distribution suffix, such as `v1.35.8+k3s1`; the corresponding upstream kube-scheduler image tag is `v1.35.8`. Do not include `+k3s1` in the image tag.
 
 If following the generic Helm guide's default NVIDIA runtime approach, first configure and verify `default-runtime: nvidia` as described above. For explicit RuntimeClass selection, set `devicePlugin.runtimeClassName=nvidia` in HAMi values and use `runtimeClassName: nvidia` for GPU workloads. When K3s already provides `RuntimeClass/nvidia`, keep `devicePlugin.createRuntimeClass=false` to reuse it.
-
-## Verify the installation
-
-Confirm that `hami-scheduler` and `hami-device-plugin` on GPU nodes are both `Running` and `Ready`. Save this shared vGPU smoke test as `hami-k3s-smoke.yaml`. It explicitly selects the `nvidia` runtime and requests 1024 MiB of GPU memory:
-
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: hami-k3s-smoke
-spec:
-  runtimeClassName: nvidia
-  restartPolicy: Never
-  containers:
-    - name: cuda
-      image: nvcr.io/nvidia/cuda:12.2.0-base-ubuntu22.04
-      command: ["bash", "-c", "sleep 86400"]
-      resources:
-        limits:
-          nvidia.com/gpu: 1
-          nvidia.com/gpumem: 1024
-```
-
-Run from a terminal with cluster access:
-
-```bash
-kubectl apply -f hami-k3s-smoke.yaml
-kubectl wait --for=condition=Ready pod/hami-k3s-smoke --timeout=180s
-kubectl exec hami-k3s-smoke -- nvidia-smi
-```
-
-Expect HAMi-core initialization messages and a total GPU memory of 1024 MiB inside the container. This step checks whether the container can access the GPU and whether the reported memory limit is correct. Computation and resource allocation limits still require GPU workload tests. See the [HAMi validation guide](../get-started/verify-hami.md) for additional checks, continuing to use this page's runtime configuration steps.
-
-During a maintenance window, [restart K3s](#restart-k3s-and-check-the-configuration) and wait for the node to recover. Delete and recreate the test Pod to verify that new containers use the persisted runtime configuration:
-
-```bash
-kubectl delete pod hami-k3s-smoke --wait=true
-kubectl apply -f hami-k3s-smoke.yaml
-kubectl wait --for=condition=Ready pod/hami-k3s-smoke --timeout=180s
-kubectl exec hami-k3s-smoke -- nvidia-smi
-kubectl delete pod hami-k3s-smoke --wait=true
-```
 
 ## Troubleshooting
 
