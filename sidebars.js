@@ -51,6 +51,7 @@ module.exports = {
             "installation/uninstall",
             "installation/webui-installation",
             "installation/aws-installation",
+            "installation/k3s-installation",
           ],
         },
         {
