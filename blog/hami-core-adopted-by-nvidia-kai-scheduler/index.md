@@ -68,7 +68,7 @@ graph TD
     POD --> SCHED --> INJECT --> WEBHOOK --> CONTAINER --> ENFORCE
     DAEMON -. "loads libvgpu.so" .-> CONTAINER
 
-    class SCHED,INJECT kai
+    class SCHED,INJECT accent
     class WEBHOOK,DAEMON info
     class CONTAINER run
     class ENFORCE ok
