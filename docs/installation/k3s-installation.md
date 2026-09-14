@@ -1,6 +1,7 @@
 ---
 title: Install HAMi on K3s
 sidebar_label: HAMi on K3s
+translated: true
 ---
 
 This guide explains how to configure K3s's embedded containerd for HAMi. Use these steps in place of the runtime configuration and containerd restart steps in the [generic prerequisites](./prerequisites.md).
@@ -8,7 +9,7 @@ This guide explains how to configure K3s's embedded containerd for HAMi. Use the
 ## Prerequisites
 
 - A K3s cluster using embedded containerd, with GPU nodes in the `Ready` state. For a new cluster, follow the [K3s installation guide](https://docs.k3s.io/installation) first.
-- Cluster access through `kubectl` and Helm 3, permission to install HAMi and label nodes, and `sudo` access on GPU nodes to inspect configuration and manage systemd services.
+- Cluster access through `kubectl` and Helm, permission to install HAMi and label nodes, and `sudo` access on GPU nodes to inspect configuration and manage systemd services.
 - A decision on whether the host or GPU Operator manages the NVIDIA driver and Container Toolkit. Follow the [generic prerequisites](./prerequisites.md) for package installation and the [NVIDIA CDI guide](./configure-cdi.md) for CDI settings.
 - Only HAMi's NVIDIA Device Plugin registers GPUs on nodes managed by HAMi. With GPU Operator, set `devicePlugin.enabled=false` in the Operator values. Disable other existing Device Plugins through their original deployment mechanism to avoid duplicate registration.
 

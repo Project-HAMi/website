@@ -1,6 +1,7 @@
 ---
 title: 在 K3s 上安装 HAMi
-sidebar_label: HAMi on K3s
+sidebar_label: K3s 上的 HAMi
+translated: true
 ---
 
 本文说明如何为 HAMi 配置 K3s 内置 containerd。[通用前置条件](./prerequisites.md)中的运行时配置和 containerd 重启步骤使用本文步骤替代。
@@ -8,7 +9,7 @@ sidebar_label: HAMi on K3s
 ## 前置条件
 
 - 已有使用内置 containerd 的 K3s 集群，GPU 节点处于 `Ready` 状态。尚未安装 K3s 时，先按 [K3s 安装说明](https://docs.k3s.io/installation)创建集群。
-- 可以通过 `kubectl` 和 Helm 3 访问集群，并具有安装 HAMi、标记节点的权限；可以在 GPU 节点上使用 `sudo` 检查配置和管理 systemd 服务。
+- 可以通过 `kubectl` 和 Helm 访问集群，并具有安装 HAMi、标记节点的权限；可以在 GPU 节点上使用 `sudo` 检查配置和管理 systemd 服务。
 - 已确定 NVIDIA Driver 和 Container Toolkit 由宿主机还是 GPU Operator 管理。软件包安装见[通用前置条件](./prerequisites.md)，CDI 参数见 [NVIDIA CDI 配置](./configure-cdi.md)。
 - 在交给 HAMi 管理的 GPU 节点上，只保留 HAMi 的 NVIDIA Device Plugin 注册 GPU。使用 GPU Operator 时，在其 values 中设置 `devicePlugin.enabled=false`；其他已有 Device Plugin 应通过原有部署方式停用，避免重复注册。
 
