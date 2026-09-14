@@ -15,9 +15,9 @@ helm repo add hami-charts https://project-hami.github.io/HAMi/
 helm repo update
 ```
 
-## 获取你的 Kubernetes 版本
+## 检查 Kubernetes 版本
 
-安装时需要 Kubernetes 版本。你可以使用以下命令获取此信息：
+安装前，请先使用以下命令查看 Kubernetes 服务端版本：
 
 ```bash
 kubectl version
@@ -25,7 +25,7 @@ kubectl version
 
 ## 安装
 
-确保 `scheduler.kubeScheduler.image.tag` 与你的 Kubernetes 服务器版本匹配。例如，如果你的集群服务器版本是 v1.29.0，请使用以下命令进行部署：
+请确保 `scheduler.kubeScheduler.image.tag` 与 Kubernetes 服务端版本一致。例如，若集群运行的是 Kubernetes v1.29.0，可执行以下命令进行部署：
 
 ```bash
 helm install hami hami-charts/hami --set scheduler.kubeScheduler.image.tag=v1.29.0 -n kube-system
@@ -41,4 +41,4 @@ helm install hami hami-charts/hami --set scheduler.kubeScheduler.image.tag=v1.29
 kubectl get pods -n kube-system
 ```
 
-如果 hami-device-plugin 和 hami-scheduler 这两个 Pod 都处于 Running 状态，则说明你的安装成功。
+当 hami-device-plugin 和 hami-scheduler Pod 均处于 `Running` 状态，且 `READY` 列显示所有容器已就绪时，即表示安装成功。
