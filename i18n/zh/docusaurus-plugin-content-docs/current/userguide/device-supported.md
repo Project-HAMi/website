@@ -60,3 +60,114 @@ HAMi 只是使用这些设备的四种方式之一。另外三种自行完成调
 | 太初元碁（Teco）          | - | - | - | - |
 
 每份指南都包含该设备的具体搭建步骤、配置说明以及已知限制，部署该设备前请先查阅。
+
+## 每个厂商的全部页面
+
+下面按厂商列出所有页面，方便从本页直达。
+
+### 英伟达（NVIDIA）
+
+- [为容器分配设备显存](nvidia-device/specify-device-memory-usage.md)
+- [动态资源分配](nvidia-device/dynamic-resource-allocation.md)
+- [启用动态 MIG 功能](nvidia-device/dynamic-mig-support.md)
+- [调度策略](nvidia-device/scheduling-policy.md)
+- [分配设备核心给容器](nvidia-device/specify-device-core-usage.md)
+- [分配到特定设备类型](nvidia-device/specify-device-type-to-use.md)
+- [分配到特定设备](nvidia-device/specify-device-uuid-to-use.md)
+- [为 NVIDIA 设备使用扩展的 resourcequota](nvidia-device/using-resourcequota.md)
+- [使用独占 GPU](nvidia-device/examples/use-exclusive-card.md)
+- [为容器分配特定设备显存](nvidia-device/examples/allocate-device-memory.md)
+- [按百分比分配设备显存给容器](nvidia-device/examples/allocate-device-memory2.md)
+- [为容器分配设备核心资源](nvidia-device/examples/allocate-device-core.md)
+- [分配任务到特定类型](nvidia-device/examples/specify-card-type-to-use.md)
+- [将任务分配给特定的 GPU](nvidia-device/examples/specify-certain-card.md)
+- [将任务分配给 MIG 实例](nvidia-device/examples/dynamic-mig-example.md)
+
+### 寒武纪（Cambricon）
+
+- [启用寒武纪 MLU 共享](cambricon-device/enable-cambricon-mlu-sharing.md)
+- [为容器分配设备显存](cambricon-device/specify-device-memory-usage.md)
+- [分配设备核心给容器](cambricon-device/specify-device-core-usage.md)
+- [分配到特定设备类型](cambricon-device/specify-device-type-to-use.md)
+- [为容器分配设备核心和显存资源](cambricon-device/examples/allocate-core-and-memory.md)
+- [分配独占设备](cambricon-device/examples/allocate-exclusive.md)
+
+### 海光（Hygon）
+
+- [启用 Hygon DCU 共享](hygon-device/enable-hygon-dcu-sharing.md)
+- [为容器分配设备显存](hygon-device/specify-device-memory-usage.md)
+- [分配设备核心给容器](hygon-device/specify-device-core-usage.md)
+- [分配到特定设备](hygon-device/specify-device-uuid-to-use.md)
+- [为容器分配设备核心和显存资源](hygon-device/examples/allocate-core-and-memory.md)
+- [分配独占设备](hygon-device/examples/allocate-exclusive.md)
+- [将任务分配给特定的 DCU](hygon-device/examples/specify-certain-cards.md)
+
+### 摩尔线程（Mthreads）
+
+- [启用 Mthreads GPU 共享](mthreads-device/enable-mthreads-gpu-sharing.md)
+- [为容器分配设备显存](mthreads-device/specify-device-memory-usage.md)
+- [分配设备核心给容器](mthreads-device/specify-device-core-usage.md)
+- [为容器分配设备核心和显存资源](mthreads-device/examples/allocate-core-and-memory.md)
+- [分配独占设备](mthreads-device/examples/allocate-exclusive.md)
+
+### 天数智芯（Iluvatar）
+
+- [启用天数智芯 GPU 共享](iluvatar-device/enable-iluvatar-gpu-sharing.md)
+- [为容器分配 BI-V150 切片](iluvatar-device/examples/allocate-bi-v150.md)
+- [为容器分配 MR-V100 切片](iluvatar-device/examples/allocate-mr-v100.md)
+- [分配多个独占 BI-V150 设备](iluvatar-device/examples/allocate-exclusive-bi-v150.md)
+- [分配多个独占 MR-V100 设备](iluvatar-device/examples/allocate-exclusive-mr-v100.md)
+
+### 燧原科技（Enflame）
+
+- [启用燧原 GPU 共享](enflame-device/enable-enflame-gcu-sharing.md)
+
+### AMD
+
+- [启用 AMD GPU 共享](amd-device/enable-amd-gpu-sharing.md)
+- [分配设备核心和显存资源](amd-device/examples/allocate-core-and-memory.md)
+
+### AWS Neuron
+
+- [启用 AWS-Neuron 设备共享](awsneuron-device/enable-awsneuron-managing.md)
+- [分配 AWS Neuron 核心资源](awsneuron-device/examples/allocate-neuron-core.md)
+- [分配 AWS Neuron 设备](awsneuron-device/examples/allocate-neuron-device.md)
+
+### 瀚博（Vastai）
+
+- [启用瀚博半导体设备共享](vastai/enable-vastai-sharing.md)
+- [申请瀚博半导体的设备](vastai/examples/default-use.md)
+
+### 壁仞（Biren）
+
+- [启用壁仞设备共享](biren-device/enable-biren-sharing.md)
+- [申请壁仞设备](biren-device/examples/default-use.md)
+
+### 昆仑芯（Kunlunxin）
+
+- [启用昆仑芯 GPU 拓扑感知调度](kunlunxin-device/enable-kunlunxin-schedule.md)
+- [启用昆仑芯 VXPU](kunlunxin-device/enable-kunlunxin-vxpu.md)
+- [分配整个 xpu 卡](kunlunxin-device/examples/allocate-whole-xpu.md)
+- [分配 vxpu 设备](kunlunxin-device/examples/allocate-vxpu.md)
+
+### 沐曦（MetaX）
+
+- [启用沐曦 GPU 共享](metax-device/metax-sgpu/enable-metax-gpu-sharing.md)
+- [为容器分配设备核心和显存资源](metax-device/metax-sgpu/examples/default-use.md)
+- [分配独占设备](metax-device/metax-sgpu/examples/allocate-exclusive.md)
+- [分配特定 Qos Policy 的设备](metax-device/metax-sgpu/examples/allocate-qos-policy.md)
+- [启用沐曦 GPU 拓扑感知调度](metax-device/metax-gpu/enable-metax-gpu-schedule.md)
+- [Binpack 调度策略](metax-device/metax-gpu/specify-binpack-task.md)
+- [扩展调度策略](metax-device/metax-gpu/specify-spread-task.md)
+- [分配沐曦设备](metax-device/metax-gpu/examples/default-use.md)
+- [使用 binpack 调度策略分配沐曦设备](metax-device/metax-gpu/examples/allocate-binpack.md)
+- [使用扩展调度策略分配沐曦设备](metax-device/metax-gpu/examples/allocate-spread.md)
+
+### 华为昇腾（Huawei Ascend）
+
+- [启用 Huawei Ascend 共享](ascend-device/enable-ascend-sharing.md)
+- [Huawei Ascend 设备模板](ascend-device/device-template.md)
+- [为容器分配 Huawei Ascend-310P 切片](ascend-device/examples/allocate-310p.md)
+- [为容器分配 Huawei Ascend-910B 切片](ascend-device/examples/allocate-910b.md)
+- [分配独占设备](ascend-device/examples/allocate-exclusive.md)
+- [软切片（hami-vnpu-core）](ascend-device/examples/allocate-soft-slicing.md)
