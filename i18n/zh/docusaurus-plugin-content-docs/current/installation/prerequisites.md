@@ -9,12 +9,10 @@ translated: true
 ## 集群要求
 
 - Kubernetes 1.23 或更高版本，且容器运行时工作正常。
-- Helm 和 `kubectl`，并具备安装 HAMi 集群资源的权限。
-- 节点操作系统和内核满足设备驱动要求，驱动及运行时配置见下方设备指南。
+- 已安装 Helm 和 `kubectl`，且当前账号有权限安装 HAMi 的集群资源。
+- 节点操作系统和内核满足设备驱动要求。驱动及运行时配置见下方设备指南。
 
 ## 按设备查找前置条件
-
-选择设备类型，查看前置条件和安装步骤。
 
 | 设备 | 前置条件与配置入口 |
 | --- | --- |
@@ -34,11 +32,11 @@ translated: true
 
 ## 准备 NVIDIA GPU 节点
 
-NVIDIA GPU 节点需要与 GPU 型号及工作负载 CUDA 版本匹配的驱动，以及已针对 Kubernetes 容器运行时配置的 NVIDIA Container Toolkit。
+为 NVIDIA GPU 节点安装与 GPU 型号、工作负载 CUDA 版本兼容的驱动，并为 Kubernetes 使用的容器运行时配置 NVIDIA Container Toolkit。
 
 ### 使用 NVIDIA GPU Operator 准备节点
 
-[NVIDIA GPU Operator](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/26.3/getting-started.html) 可自动安装驱动和 Container Toolkit。按各组件的管理方式设置 Helm values：
+[NVIDIA GPU Operator](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/26.3/getting-started.html) 可自动安装驱动和 Container Toolkit。根据驱动和 Toolkit 的管理方式，选择对应的 Helm values：
 
 | 驱动管理方       | Toolkit 管理方 | GPU Operator Helm values                        |
 | ---------------- | -------------- | ----------------------------------------------- |
@@ -54,9 +52,25 @@ NVIDIA GPU 节点需要与 GPU 型号及工作负载 CUDA 版本匹配的驱动�
 
 :::
 
-以下示例使用 GPU Operator **v26.3.3**，配合 HAMi 默认的 `envvar` 设备分配策略。安装前，按 [Operator 支持矩阵](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/26.3/platform-support.html)核对操作系统、内核和 Kubernetes 版本，并按 Operator 安装指南满足 Pod Security Admission 要求。如果集群已有 Node Feature Discovery，还需设置 `nfd.enabled=false`。
+以下示例使用 GPU Operator **v26.3.3** 和 HAMi 默认的 `envvar` 设备分配策略。安装前，完成以下检查：
 
-将以下 **GPU Operator values** 保存为 `gpu-operator-values.yaml`。驱动已由宿主机管理时，将 `driver.enabled` 改为 `false`：
+- 按 [Operator 支持矩阵](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/26.3/platform-support.html)核对操作系统、内核和 Kubernetes 版本。
+- 确认集群满足 Operator 安装指南中的 Pod Security Admission 要求。
+- 如果集群已有 Node Feature Discovery，设置 `nfd.enabled=false`。
+
+集群已安装 GPU Operator 时，修改现有 Helm values 中的对应配置，并保留其他设置。如果节点上已有 GPU 工作负载，先确认设备注入方式，再修改 `cdi.enabled`。
+
+:::note CDI 与运行时选择
+
+GPU Operator 26.3 默认启用 CDI。自 GPU Operator 25.10 起，`cdi.default` 已废弃且不再生效。本例设置 `cdi.enabled=false`，使用 NVIDIA runtime 和 HAMi 的 `envvar` 策略。详见 [GPU Operator 26.3 发布说明](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/26.3/release-notes.html)。
+
+使用 CDI 时，按[为 HAMi 启用 NVIDIA CDI 支持](./configure-cdi.md)配置容器运行时和 HAMi 的 CDI 参数。
+
+:::
+
+使用 K3s 等内置 containerd 的发行版时，需在 GPU Operator 中指定该发行版的 containerd 配置文件和 socket 路径。详见 [Operator 的 containerd 配置选项](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/26.3/getting-started.html#specifying-configuration-options-for-containerd)及 [K3s 运行时配置](https://docs.k3s.io/advanced#nvidia-container-runtime)。
+
+将以下 GPU Operator values 保存为 `gpu-operator-values.yaml`。如果驱动已由宿主机管理，将 `driver.enabled` 改为 `false`：
 
 ```yaml
 driver:
@@ -81,30 +95,24 @@ helm install gpu-operator nvidia/gpu-operator \
   --wait
 ```
 
-集群已安装 GPU Operator 时，在原有 Helm values 中调整所需配置，保留其他集群设置。节点上已有 GPU 工作负载时，应先确定设备注入方式，再修改 `cdi.enabled`。
-
-:::note CDI 与运行时选择
-
-GPU Operator 26.3 默认启用 CDI。自 GPU Operator 25.10 起，`cdi.default` 已废弃且不再生效。本例显式设置 `cdi.enabled=false`，通过 NVIDIA runtime 配合 HAMi 的 `envvar` 策略。详见 [GPU Operator 26.3 发布说明](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/26.3/release-notes.html)。
-
-使用 CDI 时，按[为 HAMi 启用 NVIDIA CDI 支持](./configure-cdi.md)配置容器运行时和 HAMi 的 CDI 参数。
-
-:::
-
-使用 K3s 等内置 containerd 的发行版时，为 GPU Operator 配置该发行版的 containerd 配置文件和 socket 路径。详见 [Operator 的 containerd 配置选项](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/26.3/getting-started.html#specifying-configuration-options-for-containerd)及 [K3s 运行时配置](https://docs.k3s.io/advanced#nvidia-container-runtime)。
-
-确认 ClusterPolicy 状态为 `ready`，已启用的驱动和 Toolkit 组件就绪，且 Operator 未运行 NVIDIA Device Plugin DaemonSet 或 Pod：
+安装后，检查 GPU Operator 的状态：
 
 ```bash
 kubectl get clusterpolicies
 kubectl get pods,daemonsets -n gpu-operator
 ```
 
+确认以下结果：
+
+- ClusterPolicy 状态为 `ready`。
+- 已启用的驱动和 Toolkit 组件就绪。
+- GPU Operator 未运行 NVIDIA Device Plugin DaemonSet 或 Pod。
+
 新准备的节点在 HAMi 的 NVIDIA Device Plugin 启动前，通常还没有 `nvidia.com/gpu` 容量。
 
 ### 在宿主机安装驱动和 Toolkit
 
-在宿主机管理驱动和 Toolkit 时，为每个 NVIDIA GPU 节点安装合适的驱动，并按 [NVIDIA Container Toolkit 安装指南](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)安装和配置 Toolkit。
+为每个 NVIDIA GPU 节点安装合适的驱动，并按 [NVIDIA Container Toolkit 安装指南](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)安装和配置 Toolkit。
 
 使用 HAMi 默认的 `envvar` 策略时，将 NVIDIA runtime 设为默认运行时，或在安装 HAMi 时通过 RuntimeClass 选择该运行时。对于运行独立 containerd 服务的节点，执行：
 
@@ -124,7 +132,7 @@ CRI-O 或由发行版管理的运行时，应按 Toolkit 或发行版文档配�
 
 ### 按节点环境配置 HAMi
 
-GPU Operator 同时管理驱动和 Toolkit 时，将以下 **HAMi values** 保存为 `hami-nvidia-values.yaml`：
+GPU Operator 同时管理驱动和 Toolkit 时，将以下 HAMi values 保存为 `hami-nvidia-values.yaml`：
 
 ```yaml
 devicePlugin:
@@ -135,8 +143,8 @@ devicePlugin:
 ```
 
 - 驱动由宿主机管理时，将 `devicePlugin.nvidiaDriverRoot` 设为 `/`。路径必须与节点实际目录一致。
-- Toolkit 由宿主机管理时，保持 `devicePlugin.gpuOperatorToolkitReady.enabled=false`；该选项用于等待 Operator 的 Toolkit 就绪标记。
-- NVIDIA runtime 不是默认运行时时，先确认 `nvidia` 等 RuntimeClass 指向已配置的 NVIDIA runtime handler，再设置 `devicePlugin.runtimeClassName=nvidia`。HAMi 将该值用于 NVIDIA Device Plugin，并注入 NVIDIA GPU 工作负载 Pod。
+- Toolkit 由宿主机管理时，设置 `devicePlugin.gpuOperatorToolkitReady.enabled=false`。启用该选项会等待 Operator 的 Toolkit 就绪标记。
+- NVIDIA runtime 不是默认运行时时，通过 RuntimeClass 选择该运行时。以 `nvidia` 为例，先确认它指向已配置的 NVIDIA runtime handler，再设置 `devicePlugin.runtimeClassName=nvidia`。HAMi 将该值用于 NVIDIA Device Plugin，并注入 NVIDIA GPU 工作负载 Pod。
 - 使用 CDI 时，按 [NVIDIA CDI 指南](./configure-cdi.md)设置参数，包括驱动根目录和实际的 `nvidia-ctk` hook 路径。
 
 ### 为节点打标签
@@ -151,4 +159,6 @@ kubectl label nodes <node-name> gpu=on
 
 ## 安装 HAMi
 
-继续阅读 [Helm 在线安装](./online-installation.md)或[离线安装](./offline-installation.md)。使用上述 NVIDIA 配置时，在 HAMi 安装命令中添加 `--values hami-nvidia-values.yaml`，并按安装指南使 `scheduler.kubeScheduler.image.tag` 与 Kubernetes 服务端版本匹配。
+节点准备完成后，按 [Helm 在线安装](./online-installation.md)或[离线安装](./offline-installation.md)指南安装 HAMi。
+
+使用上述 NVIDIA 配置时，在安装命令中添加 `--values hami-nvidia-values.yaml`。按安装指南设置 `scheduler.kubeScheduler.image.tag`，使其与 Kubernetes 服务端版本匹配。
