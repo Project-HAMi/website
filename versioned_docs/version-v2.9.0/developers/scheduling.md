@@ -94,15 +94,15 @@ score: ((request + used) / allocatable) * 10
 
 1. Binpack scoring information for Node 1 is as follows
 
-```text
-Node1 score: ((1+3)/4) * 10= 10
-```
+   ```text
+   Node1 score: ((1+3)/4) * 10= 10
+   ```
 
 1. Binpack scoring information for Node 2 is as follows
 
-```text
-Node2 score: ((1+2)/4) * 10= 7.5
-```
+   ```text
+   Node2 score: ((1+2)/4) * 10= 7.5
+   ```
 
 In `Binpack` policy, `Node1` is selected.
 
@@ -116,15 +116,15 @@ score: ((request + used) / allocatable) * 10
 
 1. Spread scoring information for Node 1 is as follows
 
-```text
-Node1 score: ((1+3)/4) * 10= 10
-```
+   ```text
+   Node1 score: ((1+3)/4) * 10= 10
+   ```
 
 1. Spread scoring information for Node 2 is as follows
 
-```text
-Node2 score: ((1+2)/4) * 10= 7.5
-```
+   ```text
+   Node2 score: ((1+2)/4) * 10= 7.5
+   ```
 
 In `Spread` policy, `Node2` is selected.
 
@@ -134,44 +134,48 @@ In `Spread` policy, `Node2` is selected.
 
 #### Binpack
 
-Binpack mainly focuses on the computing power and video memory usage of each card. The more it is used, the higher the score.
+Binpack prefers the card with the higher device-utilization score. The following example assumes each card has ten virtual-device slots and exactly one slot is currently in use:
 
 ```text
-score: ((request.core + used.core) / allocatable.core + (request.mem + used.mem) / allocatable.mem)) * 10
+score: ((request.slot + used.slot) / allocatable.slot +
+        (request.core + used.core) / allocatable.core +
+        (request.mem + used.mem) / allocatable.mem) * 10
 ```
 
 1. Binpack scoring information for GPU 1 is as follows
 
 ```text
-GPU1 Score: ((20+10)/100 + (1000+2000)/8000)) * 10 = 6.75
+GPU1 Score: ((1+1)/10 + (20+10)/100 + (1000+2000)/8000) * 10 = 8.75
 ```
 
-1. Binpack scoring information for GPU 2 is as follows
+2. Binpack scoring information for GPU 2 is as follows
 
 ```text
-GPU2 Score: ((20+70)/100 + (1000+6000)/8000)) * 10 = 17.75
+GPU2 Score: ((1+1)/10 + (20+70)/100 + (1000+6000)/8000) * 10 = 19.75
 ```
 
 In `Binpack` policy, `GPU2` is selected.
 
 #### Spread
 
-Spread mainly focuses on the computing power and video memory usage of each card. The less it is used, the higher the score.
+Spread prefers the card with the lower device-utilization score. Using the same example:
 
 ```text
-score: ((request.core + used.core) / allocatable.core + (request.mem + used.mem) / allocatable.mem)) * 10
+score: ((request.slot + used.slot) / allocatable.slot +
+        (request.core + used.core) / allocatable.core +
+        (request.mem + used.mem) / allocatable.mem) * 10
 ```
 
 1. Spread scoring information for GPU 1 is as follows
 
 ```text
-GPU1 Score: ((20+10)/100 + (1000+2000)/8000)) * 10 = 6.75
+GPU1 Score: ((1+1)/10 + (20+10)/100 + (1000+2000)/8000) * 10 = 8.75
 ```
 
-1. Spread scoring information for GPU 2 is as follows
+2. Spread scoring information for GPU 2 is as follows
 
 ```text
-GPU2 Score: ((20+70)/100 + (1000+6000)/8000)) * 10 = 17.75
+GPU2 Score: ((1+1)/10 + (20+70)/100 + (1000+6000)/8000) * 10 = 19.75
 ```
 
 In `Spread` policy, `GPU1` is selected.
