@@ -62,7 +62,7 @@ translated: true
 
 :::note CDI 与运行时选择
 
-GPU Operator 26.3 默认启用 CDI。自 GPU Operator 25.10 起，`cdi.default` 已废弃且不再生效。本例设置 `cdi.enabled=false`，使用 NVIDIA runtime 和 HAMi 的 `envvar` 策略。详见 [GPU Operator 26.3 发布说明](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/26.3/release-notes.html)。
+自 GPU Operator 25.10 起，CDI 默认启用，`cdi.default` 已废弃且不再生效。本例设置 `cdi.enabled=false`，使用 NVIDIA runtime 和 HAMi 的 `envvar` 策略。详见 [GPU Operator 25.10 发布说明](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/25.10/release-notes.html)。
 
 使用 CDI 时，按[为 HAMi 启用 NVIDIA CDI 支持](./configure-cdi.md)配置容器运行时和 HAMi 的 CDI 参数。
 

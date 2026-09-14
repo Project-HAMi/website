@@ -62,7 +62,7 @@ If GPU Operator is already installed, update the relevant settings in its existi
 
 :::note CDI and runtime selection
 
-GPU Operator 26.3 enables CDI by default. Since GPU Operator 25.10, `cdi.default` has been deprecated and ignored. This example sets `cdi.enabled=false` to use the NVIDIA runtime with HAMi's `envvar` strategy. See the [GPU Operator 26.3 release notes](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/26.3/release-notes.html).
+Starting with GPU Operator 25.10, CDI is enabled by default, and `cdi.default` is deprecated and ignored. This example sets `cdi.enabled=false` to use the NVIDIA runtime with HAMi's `envvar` strategy. See the [GPU Operator 25.10 release notes](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/25.10/release-notes.html).
 
 To use CDI, configure the container runtime and HAMi's CDI settings as described in [Enable NVIDIA CDI support for HAMi](./configure-cdi.md).
 
