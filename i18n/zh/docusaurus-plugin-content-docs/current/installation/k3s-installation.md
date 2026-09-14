@@ -85,7 +85,7 @@ toolkit:
       value: /var/lib/rancher/k3s/agent/etc/containerd/config-v3.toml.d/99-nvidia.toml
 ```
 
-使用上述配置后，Toolkit 会读取 K3s 主配置、连接 K3s 的 containerd socket，并将运行时配置写入主配置已导入的目录。参数含义见 [GPU Operator 的 containerd 配置说明](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/25.10/getting-started.html#specifying-configuration-options-for-containerd)。
+使用上述配置后，Toolkit 会读取 K3s 主配置、连接 K3s 的 containerd socket，并将运行时配置写入主配置已导入的目录。参数含义见 [GPU Operator 的 containerd 配置说明](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/26.3/getting-started.html#specifying-configuration-options-for-containerd)。
 
 将上述配置合并到完整的 Operator values 文件中。更新 `toolkit.env` 列表时，保留其他仍需使用的项。
 
@@ -147,7 +147,9 @@ K3s [预置受支持运行时的 RuntimeClass 定义](https://docs.k3s.io/advanc
 
 K3s 的 Kubernetes 版本带有发行版后缀，例如 `v1.35.8+k3s1`；对应的上游 kube-scheduler 镜像标签为 `v1.35.8`，不要将 `+k3s1` 后缀用于镜像标签。
 
-如果沿用通用 Helm 指南中的默认 NVIDIA 运行时方案，先按前文设置 `default-runtime: nvidia` 并验证其生效。使用显式 RuntimeClass 的方案时，在 HAMi values 中设置 `devicePlugin.runtimeClassName=nvidia`，GPU 工作负载使用 `runtimeClassName: nvidia`。K3s 已有 `RuntimeClass/nvidia` 时，保留 `devicePlugin.createRuntimeClass=false` 以复用该资源。
+GPU Operator v25.10.0 及后续版本默认启用 CDI。启用 CDI 时，Operator 不再将 `nvidia` 配置为默认运行时。参见 [GPU Operator CDI 说明](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/26.3/cdi.html#cdi-and-gpu-management-containers)。
+
+使用 HAMi 默认的 `envvar` 设备注入方式和 NVIDIA 容器运行时时，必须在 HAMi values 中设置 `devicePlugin.runtimeClassName=nvidia`，并为 GPU 工作负载设置 `runtimeClassName: nvidia`；只有已按前文设置 `default-runtime: nvidia` 并验证其生效时，才可省略这些设置。K3s 已有 `RuntimeClass/nvidia` 时，保留 `devicePlugin.createRuntimeClass=false` 以复用该资源。
 
 ## 故障排查
 

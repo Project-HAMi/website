@@ -1,7 +1,6 @@
 ---
 title: Install HAMi on K3s
 sidebar_label: HAMi on K3s
-translated: true
 ---
 
 [K3s](https://k3s-io.github.io/) helps you build MVPs and run PoCs faster. This guide covers considerations for using HAMi on K3s.
@@ -85,7 +84,7 @@ toolkit:
       value: /var/lib/rancher/k3s/agent/etc/containerd/config-v3.toml.d/99-nvidia.toml
 ```
 
-With these settings, Toolkit reads the K3s main configuration, connects to the K3s containerd socket, and writes the runtime configuration into a directory imported by the main configuration. See [GPU Operator containerd configuration options](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/25.10/getting-started.html#specifying-configuration-options-for-containerd) for the parameters.
+With these settings, Toolkit reads the K3s main configuration, connects to the K3s containerd socket, and writes the runtime configuration into a directory imported by the main configuration. See [GPU Operator containerd configuration options](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/26.3/getting-started.html#specifying-configuration-options-for-containerd) for the parameters.
 
 Merge these settings into the full Operator values file. Preserve other required entries in `toolkit.env` when updating the list.
 
@@ -147,7 +146,9 @@ Label GPU nodes with `gpu=on` as described in the [prerequisites](./prerequisite
 
 K3s reports a Kubernetes version with a distribution suffix, such as `v1.35.8+k3s1`; the corresponding upstream kube-scheduler image tag is `v1.35.8`. Do not include `+k3s1` in the image tag.
 
-If following the generic Helm guide's default NVIDIA runtime approach, first configure and verify `default-runtime: nvidia` as described above. For explicit RuntimeClass selection, set `devicePlugin.runtimeClassName=nvidia` in HAMi values and use `runtimeClassName: nvidia` for GPU workloads. When K3s already provides `RuntimeClass/nvidia`, keep `devicePlugin.createRuntimeClass=false` to reuse it.
+GPU Operator v25.10.0 and later enable CDI by default. While CDI is enabled, the Operator no longer configures `nvidia` as the default runtime. See [GPU Operator CDI support](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/26.3/cdi.html#cdi-and-gpu-management-containers).
+
+For HAMi's default `envvar` device injection with the NVIDIA container runtime, you must set `devicePlugin.runtimeClassName=nvidia` in HAMi values and use `runtimeClassName: nvidia` for GPU workloads, unless you have configured and verified `default-runtime: nvidia` as described above. When K3s already provides `RuntimeClass/nvidia`, keep `devicePlugin.createRuntimeClass=false` to reuse it.
 
 ## Troubleshooting
 
