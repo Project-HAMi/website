@@ -3,7 +3,7 @@ title: HAMi on AWS
 translated: true
 ---
 
-HAMi is now available on the AWS Marketplace, and you can quickly install it via Helm or AWS add-on.
+HAMi is now available on the AWS Marketplace and can be installed via Helm or the AWS add-on.
 
 ## Prerequisites
 
@@ -13,6 +13,8 @@ Before installation, please ensure you have:
 - Created a Kubernetes cluster
 
 ## Install with Helm
+
+The installation below uses version `2.6.1-community`. To install a newer version, replace `2.6.1-community` in the Helm command with the latest version available on the [AWS Marketplace listing](https://aws.amazon.com/marketplace/pp/prodview-x237accxbpuwa).
 
 You can use the following commands to pull HAMi’s Helm chart and install it:
 
