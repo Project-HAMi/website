@@ -1,6 +1,6 @@
 ---
-title: Deploy HAMi using Helm
-sidebar_label: Deploy HAMi using Helm
+title: Quick Start
+sidebar_label: Quick Start
 ---
 
 This guide explains how to install HAMi with Helm, then uses an NVIDIA GPU example to run a Pod and check the GPU memory visible to the container.
@@ -134,7 +134,7 @@ Wed Apr 10 09:28:58 2024
 [HAMI-core Msg(28:140561996502848:multiprocess_memory_limit.c:434)]: Calling exit handler 28
 ```
 
-## Cleanup
+## Cleanup {#cleanup}
 
 Delete the sample Pod after verification:
 
@@ -142,7 +142,7 @@ Delete the sample Pod after verification:
 kubectl delete pod gpu-pod
 ```
 
-## Next steps
+## Next steps {#next-steps}
 
 - [Validate HAMi](./verify-hami) - deeper validation including native GPU stack checks
 - [Configure HAMi](../userguide/configure) - resource limits, scheduling policies, and more

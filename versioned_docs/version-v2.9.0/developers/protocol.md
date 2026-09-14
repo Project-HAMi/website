@@ -13,20 +13,27 @@ hami.io/node-handshake-{device-type}: Reported_{device_node_current_timestamp}
 hami.io/node-{device-type}-register: {Device 1}:{Device2}:...:{Device N}
 ```
 
-The definition of each device is in the following format:
+Most device plugins register each device in the following comma-separated format:
 
 ```text
 {Device UUID},{device split count},{device memory limit},{device core limit},{device type},{device numa},{healthy}
 ```
 
-An example is shown below:
+The NVIDIA device plugin registers a JSON array instead, with one object per device:
 
 ```text
-hami.io/node-handshake-nvidia: Reported 2024-01-23 04:30:04.434037031 +0000 UTC m=+1104711.777756895
+{"id":"GPU-...","index":1,"count":10,"devmem":32768,"devcore":100,"type":"NVIDIA-Tesla V100-PCIE-32GB","numa":1,"mode":"hami-core","health":true}
+```
+
+Fields are omitted when they hold their zero value, so `index` is absent for the first device and `numa` is absent for devices on NUMA node 0.
+
+An example is shown below. Note that NVIDIA uses `hami.io/node-handshake` without the device-type suffix:
+
+```text
+hami.io/node-handshake: Requesting_2024-01-23 04:30:04
 hami.io/node-handshake-mlu: Requesting_2024.01.10 04:06:57
 hami.io/node-mlu-register: MLU-45013011-2257-0000-0000-000000000000,10,23308,0,MLU-MLU370-X4,0,false:MLU-54043011-2257-0000-0000-000000000000,10,23308,0,MLU-MLU370-X4,0,false:
-hami.io/node-nvidia-register: GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec,10,32768,100,NVIDIA-Tesla V100-PCIE-32GB,0,true:GPU-0fc3eda5-e98b-a25b-5b0d-cf5c855d1448,10,32768,100,NVIDIA-Tesla V100-PCIE-32GB,0,true:
-
+hami.io/node-nvidia-register: [{"id":"GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec","count":10,"devmem":32768,"devcore":100,"type":"NVIDIA-Tesla V100-PCIE-32GB","numa":1,"mode":"hami-core","health":true},{"id":"GPU-0fc3eda5-e98b-a25b-5b0d-cf5c855d1448","index":1,"count":10,"devmem":32768,"devcore":100,"type":"NVIDIA-Tesla V100-PCIE-32GB","numa":1,"mode":"hami-core","health":true}]
 ```
 
 In this example, this node has two different AI devices, 2 NVIDIA-V100 GPUs, and 2 Cambricon 370-X4 MLUs

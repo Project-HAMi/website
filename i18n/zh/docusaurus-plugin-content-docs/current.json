@@ -3,21 +3,9 @@
     "message": "下一个",
     "description": "The label for version current"
   },
-  "sidebar.docs.category.Core Concepts": {
-    "message": "核心概念",
-    "description": "The label for category 'Core Concepts' in sidebar 'docs'"
-  },
   "sidebar.docs.category.Get Started": {
     "message": "快速开始",
     "description": "The label for category 'Get Started' in sidebar 'docs'"
-  },
-  "sidebar.docs.category.Installation": {
-    "message": "安装",
-    "description": "The label for category 'Installation' in sidebar 'docs'"
-  },
-  "sidebar.docs.category.User Guide": {
-    "message": "用户指南",
-    "description": "The label for category 'User Guide' in sidebar 'docs'"
   },
   "sidebar.docs.category.Monitoring": {
     "message": "监控",
@@ -34,14 +22,6 @@
   "sidebar.docs.category.Contributor Guide": {
     "message": "贡献者指南",
     "description": "The label for category 'Contributor Guide' in sidebar 'docs'"
-  },
-  "sidebar.docs.category.Developer Guide": {
-    "message": "开发者指南",
-    "description": "The label for category 'Developer Guide' in sidebar 'docs'"
-  },
-  "sidebar.docs.category.Key Features": {
-    "message": "核心功能",
-    "description": "The label for category 'Key Features' in sidebar 'docs'"
   },
   "sidebar.docs.category.Share Hygon DCU devices": {
     "message": "共享海光 DCU 设备",
@@ -90,6 +70,10 @@
   "sidebar.docs.category.Managing AWS Neuron devices": {
     "message": "管理 AWS Neuron 设备",
     "description": "The label for category 'Managing AWS Neuron devices' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Managing Biren devices": {
+    "message": "管理壁仞设备",
+    "description": "The label for category 'Managing Biren devices' in sidebar 'docs'"
   },
   "sidebar.docs.category.Managing Vastai devices": {
     "message": "管理 Vastai 设备",
@@ -155,22 +139,6 @@
     "message": "示例",
     "description": "The label for category 'Examples' in sidebar 'docs'"
   },
-  "sidebar.docs.category.Core Concepts.link.generated-index.title": {
-    "message": "核心概念",
-    "description": "The generated-index page title for category 'Core Concepts' in sidebar 'docs'"
-  },
-  "sidebar.docs.category.Core Concepts.link.generated-index.description": {
-    "message": "了解 HAMi 是什么，以及核心架构如何工作。",
-    "description": "The generated-index page description for category 'Core Concepts' in sidebar 'docs'"
-  },
-  "sidebar.docs.category.Key Features.link.generated-index.title": {
-    "message": "核心功能",
-    "description": "The generated-index page title for category 'Key Features' in sidebar 'docs'"
-  },
-  "sidebar.docs.category.Key Features.link.generated-index.description": {
-    "message": "了解 HAMi 最重要的能力。",
-    "description": "The generated-index page description for category 'Key Features' in sidebar 'docs'"
-  },
   "sidebar.docs.category.Get Started.link.generated-index.title": {
     "message": "快速开始",
     "description": "The generated-index page title for category 'Get Started' in sidebar 'docs'"
@@ -178,22 +146,6 @@
   "sidebar.docs.category.Get Started.link.generated-index.description": {
     "message": "按照引导路径快速安装并运行 HAMi。",
     "description": "The generated-index page description for category 'Get Started' in sidebar 'docs'"
-  },
-  "sidebar.docs.category.Installation.link.generated-index.title": {
-    "message": "安装",
-    "description": "The generated-index page title for category 'Installation' in sidebar 'docs'"
-  },
-  "sidebar.docs.category.Installation.link.generated-index.description": {
-    "message": "安装方式、环境要求、升级流程和集成指南。",
-    "description": "The generated-index page description for category 'Installation' in sidebar 'docs'"
-  },
-  "sidebar.docs.category.User Guide.link.generated-index.title": {
-    "message": "用户指南",
-    "description": "The generated-index page title for category 'User Guide' in sidebar 'docs'"
-  },
-  "sidebar.docs.category.User Guide.link.generated-index.description": {
-    "message": "配置设备、申请资源、监控工作负载并排查使用问题。",
-    "description": "The generated-index page description for category 'User Guide' in sidebar 'docs'"
   },
   "sidebar.docs.category.Volcano vGPU": {
     "message": "Volcano vGPU",
@@ -203,14 +155,6 @@
     "message": "NVIDIA GPU",
     "description": "The label for category 'NVIDIA GPU' in sidebar 'docs'"
   },
-  "sidebar.docs.category.Developer Guide.link.generated-index.title": {
-    "message": "开发者指南",
-    "description": "The generated-index page title for category 'Developer Guide' in sidebar 'docs'"
-  },
-  "sidebar.docs.category.Developer Guide.link.generated-index.description": {
-    "message": "深入了解架构、构建流程和调度器内部机制。",
-    "description": "The generated-index page description for category 'Developer Guide' in sidebar 'docs'"
-  },
   "sidebar.docs.category.Contributor Guide.link.generated-index.title": {
     "message": "贡献者指南",
     "description": "The generated-index page title for category 'Contributor Guide' in sidebar 'docs'"
@@ -218,5 +162,93 @@
   "sidebar.docs.category.Contributor Guide.link.generated-index.description": {
     "message": "贡献流程、社区治理和维护者晋升机制。",
     "description": "The generated-index page description for category 'Contributor Guide' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Get started": {
+    "message": "快速开始",
+    "description": "The label for category 'Get started' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Get started.link.generated-index.title": {
+    "message": "快速开始",
+    "description": "The generated-index page title for category Get started in sidebar docs"
+  },
+  "sidebar.docs.category.Get started.link.generated-index.description": {
+    "message": "选择方案、安装 HAMi，并运行第一个共享 GPU 工作负载。",
+    "description": "The generated-index page description for category Get started in sidebar docs"
+  },
+  "sidebar.docs.category.Install": {
+    "message": "安装",
+    "description": "The label for category 'Install' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Install.link.generated-index.title": {
+    "message": "安装",
+    "description": "The generated-index page title for category Install in sidebar docs"
+  },
+  "sidebar.docs.category.Install.link.generated-index.description": {
+    "message": "安装 HAMi，或基于它的某一种方案。",
+    "description": "The generated-index page description for category Install in sidebar docs"
+  },
+  "sidebar.docs.category.Vendor guides": {
+    "message": "厂商指南",
+    "description": "The label for category 'Vendor guides' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Vendor guides.link.generated-index.title": {
+    "message": "厂商指南",
+    "description": "The generated-index page title for category Vendor guides in sidebar docs"
+  },
+  "sidebar.docs.category.Vendor guides.link.generated-index.description": {
+    "message": "先看受支持设备矩阵，再按厂商查看对应指南。",
+    "description": "The generated-index page description for category Vendor guides in sidebar docs"
+  },
+  "sidebar.docs.category.Operate": {
+    "message": "运维",
+    "description": "The label for category 'Operate' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Operate.link.generated-index.title": {
+    "message": "运维",
+    "description": "The generated-index page title for category Operate in sidebar docs"
+  },
+  "sidebar.docs.category.Operate.link.generated-index.description": {
+    "message": "配置、监控、排队并排查运行中的集群。",
+    "description": "The generated-index page description for category Operate in sidebar docs"
+  },
+  "sidebar.docs.category.Introduction": {
+    "message": "简介",
+    "description": "The label for category 'Introduction' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Introduction.link.generated-index.title": {
+    "message": "简介",
+    "description": "The generated-index page title for category Introduction in sidebar docs"
+  },
+  "sidebar.docs.category.Introduction.link.generated-index.description": {
+    "message": "HAMi 是什么，能为你做什么。",
+    "description": "The generated-index page description for category Introduction in sidebar docs"
+  },
+  "sidebar.docs.category.Design and develop": {
+    "message": "设计与开发",
+    "description": "The label for category 'Design and develop' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Design and develop.link.generated-index.title": {
+    "message": "设计与开发",
+    "description": "The generated-index page title for category Design and develop in sidebar docs"
+  },
+  "sidebar.docs.category.Design and develop.link.generated-index.description": {
+    "message": "架构、GPU 内部机制、构建与调度器设计。",
+    "description": "The generated-index page description for category Design and develop in sidebar docs"
+  },
+  "sidebar.docs.category.HAMi": {
+    "message": "HAMi",
+    "description": "The label for category 'HAMi' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.HAMi-DRA": {
+    "message": "HAMi-DRA",
+    "description": "The label for category 'HAMi-DRA' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Volcano-HAMi": {
+    "message": "Volcano-HAMi",
+    "description": "The label for category 'Volcano-HAMi' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.KAI-scheduler-HAMi": {
+    "message": "KAI-scheduler-HAMi",
+    "description": "The label for category 'KAI-scheduler-HAMi' in sidebar 'docs'"
   }
 }

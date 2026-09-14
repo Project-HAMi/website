@@ -2,6 +2,12 @@
 title: Enable dynamic MIG feature
 ---
 
+import SupportedComponents, { Tag } from '@site/src/components/SupportedComponents';
+
+<SupportedComponents>
+  <Tag href="../../get-started/deploy-with-helm.md" type="hami">HAMi</Tag>
+</SupportedComponents>
+
 HAMi v2.10 uses a reservation-first, topology-aware implementation of dynamic NVIDIA Multi-Instance GPU (MIG). It does not select and switch a predefined whole-GPU geometry. Instead:
 
 1. The device plugin discovers the MIG profiles and legal placements supported by each physical GPU through NVML.

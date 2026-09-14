@@ -139,8 +139,8 @@ Kubernetes 的 Device Plugin 每次只能上报一种资源类型。HAMi 将核�
 - HAMi 将 GPU 详细信息（如算力、显存、型号）存储为 **节点注解**，供调度器解析；
 - 示例：
 
-  ```yaml
-  hami.io/node-nvidia-register: GPU-fc28df76-54d2-c387-e52e-5f0a9495968c,10,49140,100,NVIDIA-NVIDIA L40S,0,true:GPU-b97db201-0442-8531-56d4-367e0c7d6edd,10,49140,100,...
+  ```text
+  hami.io/node-nvidia-register: [{"id":"GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec","count":10,"devmem":32768,"devcore":100,"type":"NVIDIA-Tesla V100-PCIE-32GB","numa":1,"mode":"hami-core","health":true},{"id":"GPU-0fc3eda5-e98b-a25b-5b0d-cf5c855d1448","index":1,"count":10,"devmem":32768,"devcore":100,"type":"NVIDIA-Tesla V100-PCIE-32GB","numa":1,"mode":"hami-core","health":true}]
   ```
 
 ### 后续问题说明
@@ -225,3 +225,7 @@ DCGM Exporter 不受影响，继续正常上报物理级计数器。HAMi 的每�
 ## 如何为 HAMi vGPU 指标设置 Prometheus 和 Grafana 监控？
 
 每个节点上的 `hami-device-plugin` Pod 在端口 `31992`（可通过 `devicePlugin.service.httpPort` 配置）上暴露每容器 vGPU 指标。完整的设置步骤（包括 Prometheus 采集配置和 Dashboard 导入）参见 [Grafana Dashboard](./userguide/monitoring/grafana-dashboard)。
+
+## PaddlePaddle 在vGPU上出现core_dump崩溃？
+
+该问题由`thread_local`分配器触发，详情查看：[PaddlePaddle thread_local 分配器导致 vGPU 环境 CoreDump](./troubleshooting/paddle-threadlocal-coredump)

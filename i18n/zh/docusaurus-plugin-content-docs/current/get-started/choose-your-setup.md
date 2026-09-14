@@ -28,7 +28,7 @@ HAMi 有不止一种形态，旁边还有另外两个项目。本页回答大家
 
 两者都在容器内运行 HAMi-core，因此显存和算力限制的行为完全一致。HAMi-DRA 改变的是分配路径，不是隔离方式。
 
-从 [使用 Helm 部署 HAMi](./deploy-with-helm.md) 开始；若上面的条件都已满足，也可以直接看 [HAMi DRA for Kubernetes](../installation/how-to-use-hami-dra.md)。
+从 [快速部署](./deploy-with-helm.md) 开始；若上面的条件都已满足，也可以直接看 [HAMi DRA for Kubernetes](../installation/how-to-use-hami-dra.md)。
 
 ## HAMi、Volcano vGPU 还是 KAI Scheduler
 
@@ -48,7 +48,7 @@ HAMi 有不止一种形态，旁边还有另外两个项目。本页回答大家
 | Gang 调度与队列 | 否 | 是 | 是 |
 | 非 NVIDIA 设备 | 支持，见 [HAMi 支持的设备](../userguide/device-supported.md) | 仅 NVIDIA，Ascend 走独立的 [Volcano vNPU](../installation/how-to-use-volcano-ascend.md) 集成 | NVIDIA |
 | 版本要求 | HAMi v2.x | Volcano v1.9 或更高 | KAI v0.16.4 或更高 |
-| 指南 | [使用 Helm 部署 HAMi](./deploy-with-helm.md) | [使用 Volcano vGPU](../userguide/volcano-vgpu/nvidia-gpu/how-to-use-volcano-vgpu.md) | [配合 HAMi 使用 KAI Scheduler](../userguide/kai-scheduler/how-to-use-kai-scheduler.md) |
+| 指南 | [快速部署](./deploy-with-helm.md) | [使用 Volcano vGPU](../userguide/volcano-vgpu/nvidia-gpu/how-to-use-volcano-vgpu.md) | [配合 HAMi 使用 KAI Scheduler](../userguide/kai-scheduler/how-to-use-kai-scheduler.md) |
 
 简单的判断方式：
 

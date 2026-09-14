@@ -1,6 +1,6 @@
 ---
-title: 使用 Helm 部署 HAMi
-sidebar_label: 使用 Helm 部署 HAMi
+title: 快速部署
+sidebar_label: 快速部署
 translated: true
 ---
 
@@ -135,7 +135,7 @@ Wed Apr 10 09:28:58 2024
 [HAMI-core Msg(28:140561996502848:multiprocess_memory_limit.c:434)]: Calling exit handler 28
 ```
 
-## 清理
+## 清理 {#cleanup}
 
 验证完成后，删除示例 Pod：
 
@@ -143,7 +143,7 @@ Wed Apr 10 09:28:58 2024
 kubectl delete pod gpu-pod
 ```
 
-## 后续步骤
+## 后续步骤 {#next-steps}
 
 - [验证 HAMi](./verify-hami) - 进一步验证原生 GPU 环境和 HAMi
 - [配置 HAMi](../userguide/configure) - 资源限制、调度策略等配置
