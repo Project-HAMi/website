@@ -45,7 +45,7 @@ version = 3
 imports = ["/var/lib/rancher/k3s/agent/etc/containerd/config-v3.toml.d/*.toml"]
 ```
 
-**补充配置文件（drop-in）**是由主配置通过 `imports` 加载的独立 TOML 文件。上例会加载 `config-v3.toml.d` 目录下的所有 `.toml` 文件。添加补充配置文件时，应确认实际 `imports` 包含其路径。
+**补充配置文件**（drop-in）是由主配置通过 `imports` 加载的独立 TOML 文件。上例会加载 `config-v3.toml.d` 目录下的所有 `.toml` 文件。添加补充配置文件时，应确认实际 `imports` 包含其路径。
 
 ### 宿主机管理 Toolkit
 
