@@ -30,10 +30,10 @@ The Helm chart automatically detects your Kubernetes server version and pulls th
 
 ### Customizing Helm Configurations
 
-You can customize your deployment by passing parameters with `--set` or providing a custom `values.yaml` file:
+To customize or update an existing deployment, you can pass parameters with `--set` or provide a custom `values.yaml` file using `helm upgrade`:
 
 ```bash
-helm install hami hami-charts/hami -n kube-system -f custom-values.yaml
+helm upgrade hami hami-charts/hami -n kube-system -f custom-values.yaml
 ```
 
 For a detailed breakdown of available chart options and configuration keys, see the [Configuration Guide](../userguide/configure.md).

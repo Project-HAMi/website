@@ -30,10 +30,10 @@ Helm Chart 会自动检测您的 Kubernetes 服务端版本并拉取匹配的 `k
 
 ### 自定义 Helm 配置
 
-您可以通过 `--set` 参数或指定自定义 `values.yaml` 文件来自定义部署配置：
+若需修改或自定义现有部署的配置，可以通过 `--set` 参数或指定自定义 `values.yaml` 文件执行 `helm upgrade`：
 
 ```bash
-helm install hami hami-charts/hami -n kube-system -f custom-values.yaml
+helm upgrade hami hami-charts/hami -n kube-system -f custom-values.yaml
 ```
 
 详细的配置项说明请参阅 [配置指南](../userguide/configure.md)。
