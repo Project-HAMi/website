@@ -4,9 +4,7 @@ title: PaddlePaddle CoreDump Issue with thread_local Allocator on vGPU
 
 ## Symptoms
 
-PaddlePaddle inference process crashes with core dump on HAMi virtual GPU.
-No standard CUDA OOM error is printed.
-This issue only occurs under vGPU memory quota limitation and **cannot be reproduced on bare‑metal GPUs**.
+PaddlePaddle inference process crashes with core dump on HAMi virtual GPU. No standard CUDA OOM error is printed. This issue only occurs under vGPU memory quota limitation and **cannot be reproduced on bare‑metal GPUs**.
 
 Trigger condition: environment variable `FLAGS_allocator_strategy=thread_local` is explicitly set by user workload.
 
@@ -14,19 +12,15 @@ issue: https://github.com/Project-HAMi/HAMi/issues/2375
 
 ## Root Cause
 
-`thread_local` is a non‑default memory allocation strategy of PaddlePaddle.
-When enabled, **each CPU worker thread creates an independent CUDA memory allocator pool**.
+`thread_local` is a non‑default memory allocation strategy of PaddlePaddle. When enabled, **each CPU worker thread creates an independent CUDA memory allocator pool**.
 
-HAMi hooks `cuMemGetInfo` and returns vGPU memory quota to applications.
-Each thread will pre‑reserve `0.92` (value of `FLAGS_fraction_of_gpu_memory_to_use` in issue 2375) of the reported GPU memory.
+HAMi hooks `cuMemGetInfo` and returns vGPU memory quota to applications. Each thread will pre‑reserve `0.92` (value of `FLAGS_fraction_of_gpu_memory_to_use` in issue 2375) of the reported GPU memory.
 
 1. The first thread occupies most of the vGPU memory quota.
 2. Subsequent threads also try to reserve 92% of reported memory and quickly run out of vGPU quota.
 3. Internal Paddle GPU sanity check fails, raises `SIGABRT` and generates core dump instead of throwing normal CUDA OOM exception.
 
-:::note
-This is a compatibility issue between PaddlePaddle thread‑local allocator and vGPU memory quota mechanism, **not a HAMi bug**.
-:::
+:::note This is a compatibility issue between PaddlePaddle thread‑local allocator and vGPU memory quota mechanism, **not a HAMi bug**. :::
 
 ## Troubleshooting Commands
 
@@ -46,8 +40,7 @@ grep -rn "FLAGS_allocator_strategy" /app /workspace 2>/dev/null
 
 ## Resolution (Recommended for production)
 
-Remove manual `FLAGS_allocator_strategy=thread_local` from Dockerfile, startup scripts or inference wrapper code.
-Use PaddlePaddle default shared‑pool allocator.
+Remove manual `FLAGS_allocator_strategy=thread_local` from Dockerfile, startup scripts or inference wrapper code. Use PaddlePaddle default shared‑pool allocator.
 
 ```bash
 # Default recommended
