@@ -53,6 +53,7 @@ module.exports = {
             "installation/aws-installation",
             "installation/k3s-installation",
             "installation/gke-installation",
+            "installation/openshift-installation",
           ],
         },
         {
