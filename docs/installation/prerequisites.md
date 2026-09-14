@@ -1,7 +1,6 @@
 ---
 title: Prerequisites
 sidebar_label: Prerequisites
-translated: true
 ---
 
 Before installing HAMi, prepare the Kubernetes cluster and device nodes as described below.
@@ -132,10 +131,31 @@ For CRI-O or distribution-managed runtimes, use the runtime-specific instruction
 
 ### Match HAMi settings to the node environment
 
+For the GPU Operator setup below, verify that the `nvidia` RuntimeClass exists and uses the NVIDIA runtime handler configured on the nodes:
+
+```bash
+kubectl get runtimeclass nvidia -o yaml
+```
+
+The example below explicitly selects this RuntimeClass for the HAMi NVIDIA Device Plugin and `envvar` workloads. With the default CDI configuration in GPU Operator 25.10+, containers using `NVIDIA_VISIBLE_DEVICES` need the NVIDIA runtime. See [GPU Operator 25.10+ troubleshooting](../troubleshooting/troubleshooting.md#nvidia-toolkit-gpu-operator-25-10).
+
+:::warning Toolkit readiness check
+
+Enable `devicePlugin.gpuOperatorToolkitReady.enabled` only when GPU Operator manages Toolkit and its validator creates `/run/nvidia/validations/toolkit-ready`. Before installing HAMi, check that the file exists on each target NVIDIA GPU node:
+
+```bash
+sudo ls -l /run/nvidia/validations/toolkit-ready
+```
+
+If the file is missing, inspect the Toolkit and validator Pods on that node and fix the validation failure before continuing. If the Operator uses a different validation directory, set `devicePlugin.gpuOperatorToolkitReady.hostPath` to that directory. The `toolkit-validation` init container has no timeout: HAMi's NVIDIA Device Plugin stays in `Init` while the file is absent. For host-managed Toolkit, disable this check after verifying the runtime configuration.
+
+:::
+
 When GPU Operator manages both the driver and Toolkit, save the following HAMi values as `hami-nvidia-values.yaml`:
 
 ```yaml
 devicePlugin:
+  runtimeClassName: nvidia
   deviceListStrategy: envvar
   nvidiaDriverRoot: /run/nvidia/driver
   gpuOperatorToolkitReady:
@@ -144,7 +164,7 @@ devicePlugin:
 
 - If the host manages the driver, set `devicePlugin.nvidiaDriverRoot` to `/`. The path must match the actual node layout.
 - If the host manages Toolkit, set `devicePlugin.gpuOperatorToolkitReady.enabled=false`. Enabling this option makes HAMi wait for the Operator's Toolkit readiness marker.
-- If the NVIDIA runtime is not the default, select it through a RuntimeClass. For example, verify that RuntimeClass `nvidia` maps to the configured NVIDIA runtime handler, then set `devicePlugin.runtimeClassName=nvidia`. HAMi uses this value for its NVIDIA Device Plugin and injects it into NVIDIA GPU workload Pods.
+- If the RuntimeClass has a different name, set `devicePlugin.runtimeClassName` to that name. For host-managed runtimes that already use NVIDIA as the default, this value can be omitted.
 - For CDI, use the values in the [NVIDIA CDI guide](./configure-cdi.md), including the driver root and the actual `nvidia-ctk` hook path.
 
 ### Label NVIDIA GPU nodes {#label-your-nodes}

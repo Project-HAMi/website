@@ -132,10 +132,31 @@ CRI-O 或由发行版管理的运行时，应按 Toolkit 或发行版文档配�
 
 ### 按节点环境配置 HAMi
 
+使用下方 GPU Operator 配置前，确认 `nvidia` RuntimeClass 存在，且指向节点上已配置的 NVIDIA runtime handler：
+
+```bash
+kubectl get runtimeclass nvidia -o yaml
+```
+
+以下示例为 HAMi 的 NVIDIA Device Plugin 和 `envvar` 工作负载明确指定该 RuntimeClass。GPU Operator 25.10+ 默认启用 CDI，使用 `NVIDIA_VISIBLE_DEVICES` 的容器需要 NVIDIA runtime。详见 [GPU Operator 25.10+ 故障排查](../troubleshooting/troubleshooting.md#nvidia-toolkit-gpu-operator-25-10)。
+
+:::warning Toolkit 就绪检查
+
+仅当 GPU Operator 管理 Toolkit，且其 validator 会生成 `/run/nvidia/validations/toolkit-ready` 时，启用 `devicePlugin.gpuOperatorToolkitReady.enabled`。安装 HAMi 前，在每个目标 NVIDIA GPU 节点上确认文件存在：
+
+```bash
+sudo ls -l /run/nvidia/validations/toolkit-ready
+```
+
+文件缺失时，检查该节点上的 Toolkit 和 validator Pod，修复验证失败后再继续。如果 Operator 使用其他验证目录，将 `devicePlugin.gpuOperatorToolkitReady.hostPath` 设为该目录。`toolkit-validation` init 容器没有超时机制：文件一直缺失时，HAMi 的 NVIDIA Device Plugin 会停留在 `Init` 状态。Toolkit 由宿主机管理时，验证运行时配置后关闭这项检查。
+
+:::
+
 GPU Operator 同时管理驱动和 Toolkit 时，将以下 HAMi values 保存为 `hami-nvidia-values.yaml`：
 
 ```yaml
 devicePlugin:
+  runtimeClassName: nvidia
   deviceListStrategy: envvar
   nvidiaDriverRoot: /run/nvidia/driver
   gpuOperatorToolkitReady:
@@ -144,7 +165,7 @@ devicePlugin:
 
 - 驱动由宿主机管理时，将 `devicePlugin.nvidiaDriverRoot` 设为 `/`。路径必须与节点实际目录一致。
 - Toolkit 由宿主机管理时，设置 `devicePlugin.gpuOperatorToolkitReady.enabled=false`。启用该选项会等待 Operator 的 Toolkit 就绪标记。
-- NVIDIA runtime 不是默认运行时时，通过 RuntimeClass 选择该运行时。以 `nvidia` 为例，先确认它指向已配置的 NVIDIA runtime handler，再设置 `devicePlugin.runtimeClassName=nvidia`。HAMi 将该值用于 NVIDIA Device Plugin，并注入 NVIDIA GPU 工作负载 Pod。
+- RuntimeClass 使用其他名称时，将 `devicePlugin.runtimeClassName` 设为对应名称。运行时由宿主机管理且已将 NVIDIA 设为默认运行时时，可省略此配置。
 - 使用 CDI 时，按 [NVIDIA CDI 指南](./configure-cdi.md)设置参数，包括驱动根目录和实际的 `nvidia-ctk` hook 路径。
 
 ### 为节点打标签

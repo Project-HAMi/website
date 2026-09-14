@@ -1,104 +1,36 @@
 ---
 title: Deploy HAMi using Helm
+sidebar_label: Deploy HAMi using Helm
 ---
 
-This guide covers:
-
-- Configuring NVIDIA container runtime on each GPU node
-- Deploying HAMi using Helm
-- Launching a vGPU task
-- Verifying container resource limits
+This guide prepares NVIDIA GPU nodes, installs HAMi with Helm, and verifies GPU memory limits with a sample Pod. For other devices, follow the corresponding [device guide](../installation/prerequisites.md#find-your-devices-prerequisites).
 
 ## Prerequisites {#prerequisites}
 
-- [Helm](https://helm.sh/docs/) v3+
-- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) v1.23+
-- [CUDA](https://developer.nvidia.com/cuda-toolkit) v10.2+
-- [NVIDIA Driver](https://www.nvidia.com/drivers/unix/) v440+
+- Meet the [cluster requirements](../installation/prerequisites.md#cluster-requirements), including Kubernetes, Helm, `kubectl`, and installation permissions.
+- Prepare the NVIDIA driver and Container Toolkit using [GPU Operator or host installation](../installation/prerequisites.md#preparing-your-gpu-nodes). The driver must support the GPU model and the workload's CUDA version.
 
 ## Installation {#installation}
 
-### 1. Configure nvidia-container-toolkit {#configure-nvidia-container-toolkit}
+### Prepare NVIDIA GPU nodes {#configure-nvidia-container-toolkit}
 
-Perform the following steps on all GPU nodes.
+Follow [Prepare NVIDIA GPU nodes](../installation/prerequisites.md#preparing-your-gpu-nodes) to configure the driver, Toolkit, and container runtime. Choose the HAMi values for the driver and Toolkit management methods, RuntimeClass, and device allocation strategy in that guide. Save them as `hami-nvidia-values.yaml` for the Helm command below.
 
-This guide assumes that NVIDIA drivers and the `nvidia-container-toolkit` are already installed, and that `nvidia-container-runtime` is set as the default low-level runtime.
+When using GPU Operator, disable its NVIDIA Device Plugin and complete the RuntimeClass and Toolkit readiness checks before installing HAMi. With GPU Operator 25.10+ and HAMi's `envvar` strategy, use the guide's `devicePlugin.runtimeClassName=nvidia` setting. For CDI, follow [Enable NVIDIA CDI support for HAMi](../installation/configure-cdi.md).
 
-See [nvidia-container-toolkit installation guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html).
+### Label NVIDIA GPU nodes {#label-your-nodes}
 
-The following example applies to Debian-based systems using Docker or containerd:
-
-#### Install the `nvidia-container-toolkit` {#install-the-nvidia-container-toolkit}
-
-```bash
-curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
-  && curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
-    sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
-    sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
-
-sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
-```
-
-#### Configure Docker {#configure-docker}
-
-When running Kubernetes with Docker, edit the configuration file (usually `/etc/docker/daemon.json`) to set `nvidia-container-runtime` as the default runtime:
-
-```json
-{
-  "default-runtime": "nvidia",
-  "runtimes": {
-    "nvidia": {
-      "path": "/usr/bin/nvidia-container-runtime",
-      "runtimeArgs": []
-    }
-  }
-}
-```
-
-Restart Docker:
-
-```bash
-sudo systemctl daemon-reload && sudo systemctl restart docker
-```
-
-#### Configure containerd {#configure-containerd}
-
-When using Kubernetes with containerd, modify the configuration file (usually `/etc/containerd/config.toml`) to set `nvidia-container-runtime` as the default runtime:
-
-```toml
-version = 2
-[plugins]
-  [plugins."io.containerd.grpc.v1.cri"]
-    [plugins."io.containerd.grpc.v1.cri".containerd]
-      default_runtime_name = "nvidia"
-
-      [plugins."io.containerd.grpc.v1.cri".containerd.runtimes]
-        [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia]
-          privileged_without_host_devices = false
-          runtime_engine = ""
-          runtime_root = ""
-          runtime_type = "io.containerd.runc.v2"
-          [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia.options]
-            BinaryName = "/usr/bin/nvidia-container-runtime"
-```
-
-Restart containerd:
-
-```bash
-sudo systemctl daemon-reload && sudo systemctl restart containerd
-```
-
-### 2. Label your nodes {#label-your-nodes}
-
-Label your GPU nodes for HAMi scheduling with `gpu=on`. Nodes without this label cannot be managed by the scheduler.
+HAMi's NVIDIA Device Plugin uses the `gpu=on` node label by default. Add it to the nodes HAMi should manage:
 
 ```bash
 kubectl label nodes <node-name> gpu=on
 ```
 
-### 3. Deploy HAMi using Helm {#deploy-hami-using-helm}
+If `devicePlugin.nvidiaNodeSelector` is customized, use labels that match that selector.
 
-Check your Kubernetes version:
+### Deploy HAMi using Helm {#deploy-hami-using-helm}
+
+Check the Kubernetes server version:
 
 ```bash
 kubectl version
@@ -109,14 +41,25 @@ Add the Helm repository:
 ```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/
 helm repo update
-helm install hami hami-charts/hami -n kube-system
 ```
 
-If successful, both `hami-device-plugin` and `hami-scheduler` pods should be in the `Running` state.
+Set `scheduler.kubeScheduler.image.tag` to match the server version. For example, for Kubernetes v1.29.0:
+
+```bash
+helm install hami hami-charts/hami -n kube-system \
+  --values hami-nvidia-values.yaml \
+  --set scheduler.kubeScheduler.image.tag=v1.29.0
+```
+
+Check that the `hami-device-plugin` and `hami-scheduler` Pods are `Running` and `Ready`:
+
+```bash
+kubectl get pods -n kube-system
+```
 
 ## Demo {#demo}
 
-### 1. Submit demo task {#submit-demo-task}
+### Submit demo task {#submit-demo-task}
 
 Containers can now request NVIDIA vGPUs using the `nvidia.com/gpu` resource type.
 
@@ -142,7 +85,7 @@ Wait for the pod to be ready:
 kubectl wait --for=condition=Ready pod/gpu-pod --timeout=120s
 ```
 
-### 2. Verify container resource limits {#verify-in-container-resource-control}
+### Verify container resource limits {#verify-in-container-resource-control}
 
 Run the following command:
 
