@@ -519,9 +519,16 @@ body.hami-lightbox-open {
   --hami-mermaid-node-text: var(--hami-mermaid-bad-text);
 }
 
+/* Most shapes put their outline directly under the classed <g>, but mermaid
+   wraps others (stadium, asymmetric, doc, delay, ...) in an extra <g>, so match
+   both depths. `:not(.label)` keeps the node label's own background rect out. */
 .docusaurus-mermaid-container
   :is(.accent, .info, .run, .ok, .bad)
-  > :is(rect, polygon, circle, ellipse, path) {
+  > :is(rect, polygon, circle, ellipse, path),
+.docusaurus-mermaid-container
+  :is(.accent, .info, .run, .ok, .bad)
+  > g:not(.label)
+  :is(rect, polygon, circle, ellipse, path) {
   fill: var(--hami-mermaid-node-fill) !important;
   stroke: var(--hami-mermaid-node-stroke) !important;
   stroke-width: 2px !important;
