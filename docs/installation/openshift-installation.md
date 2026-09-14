@@ -1,7 +1,6 @@
 ---
 title: Install HAMi on Red Hat OpenShift
 sidebar_label: HAMi on OpenShift
-translated: true
 ---
 
 This guide covers installing HAMi on OpenShift clusters that use NVIDIA GPU Operator to manage GPU drivers and NVIDIA Container Toolkit.
@@ -101,6 +100,8 @@ devicePlugin:
 Enable `devicePlugin.gpuOperatorToolkitReady.enabled` only if GPU Operator creates the `toolkit-ready` file. Check that the file exists under `devicePlugin.gpuOperatorToolkitReady.hostPath`, normally `/run/nvidia/validations`. If the file is missing, the init container waits indefinitely.
 
 ## Install HAMi
+
+OpenShift support requires HAMi Helm Chart v2.11.0 or later.
 
 ```bash
 helm upgrade --install hami hami-charts/hami \

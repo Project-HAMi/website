@@ -102,6 +102,8 @@ devicePlugin:
 
 ## 安装 HAMi
 
+OpenShift 支持需要 HAMi Helm Chart v2.11.0 或更高版本。
+
 ```bash
 helm upgrade --install hami hami-charts/hami \
   --namespace hami-system \
