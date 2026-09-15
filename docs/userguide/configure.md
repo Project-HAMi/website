@@ -70,6 +70,7 @@ helm install hami hami-charts/hami --set devicePlugin.deviceMemoryScaling=5 -n k
 | `devicePlugin.service.schedulerPort` | Integer | Scheduler webhook service nodePort. | `31998` |
 | `scheduler.defaultSchedulerPolicy.nodeSchedulerPolicy` | String | GPU node scheduling policy: `"binpack"` allocates jobs to the same GPU node as much as possible. `"spread"` allocates jobs to different GPU nodes as much as possible. | `"binpack"` |
 | `scheduler.defaultSchedulerPolicy.gpuSchedulerPolicy` | String | GPU scheduling policy: `"binpack"` allocates jobs to the same GPU as much as possible. `"spread"` allocates jobs to different GPUs as much as possible. `"mutex"` allocates jobs only to GPUs with no other workloads. | `"spread"` |
+| `devicePlugin.deviceListStrategy` | String | Controls how the device plugin advertises allocated GPU devices to the container runtime: `"envvar"` (via `NVIDIA_VISIBLE_DEVICES`), `"volume-mounts"` (via mounted files, avoids env-var override risk in multi-tenant clusters), or `"cdi-annotations"` (via CDI annotations). | `"envvar"` |
 
 ## Pod Configs: Annotations
 
