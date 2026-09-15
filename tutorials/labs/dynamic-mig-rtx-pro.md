@@ -109,6 +109,14 @@ Steps 6 and 7 restart the `hami-device-plugin` DaemonSet. The chart schedules it
 kubectl get nodes -l gpu=on -o name
 ```
 
+The verified single-node cluster returned exactly one device-plugin target:
+
+```plaintext
+node/utho-gpu-rtxpro6000-8-62383
+```
+
+If this command returns more than one node, the later DaemonSet restarts affect all of them; do not continue with this single-node procedure.
+
 If a release named `hami` already exists in `hami-system`, save both Helm's stored state and the live objects; they can differ.
 
 ```bash
@@ -169,7 +177,11 @@ sed "s/__NODE_NAME__/${NODE}/g" "$EXAMPLES/mig-small-pack.yaml" \
 grep -n '"index"' "$LAB/hami-values-one-gpu.yaml"
 ```
 
-In the verified run the `grep` output showed `[0, 1, 2, 3, 5, 6]`, which registers only GPU 4.
+The rendered exclusion list registered only GPU 4:
+
+```plaintext
+32:              "index": [0, 1, 2, 3, 5, 6]
+```
 
 Two similarly named settings have separate responsibilities:
 
@@ -229,18 +241,33 @@ The device plugin, monitor, and scheduler extender must all use the v2.10.0 rele
 
 ```plaintext
 POD                               CONTAINERS                               IMAGES
-hami-device-plugin-fpw2j          device-plugin,vgpu-monitor               docker.io/projecthami/hami:v2.10.0,docker.io/projecthami/hami:v2.10.0
+hami-device-plugin-kjj75          device-plugin,vgpu-monitor               docker.io/projecthami/hami:v2.10.0,docker.io/projecthami/hami:v2.10.0
 hami-scheduler-7f4f4d866c-tmjss   kube-scheduler,vgpu-scheduler-extender   registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:v1.35.6,docker.io/projecthami/hami:v2.10.0
 ```
 
-Both plugin containers became ready without a restart in the v2.10.0 verification. If you see a restart, inspect the previous state before continuing:
+Confirm that both containers in each HAMi Pod are ready and that no container restarted:
 
 ```bash
 kubectl get pods -n hami-system
+```
+
+The fresh v2.10.0 installation reported:
+
+```plaintext
+NAME                              READY   STATUS    RESTARTS   AGE
+hami-device-plugin-kjj75          2/2     Running   0          29s
+hami-scheduler-7f4f4d866c-tmjss   2/2     Running   0          29s
+```
+
+The Pod names and ages vary. The required result is `2/2`, `Running`, and `0` restarts for both rows. Because neither Pod restarted, there was no previous container log in the verified run. Only if a restart count is nonzero, inspect the terminated containers before continuing:
+
+```bash
 kubectl logs -n hami-system \
   -l app.kubernetes.io/component=hami-device-plugin \
   --all-containers=true --previous --tail=100
 ```
+
+That troubleshooting output is failure-specific, so it is intentionally not presented as expected output.
 
 ## Step 3: Discover Placements and Create One `1g.24gb`
 
@@ -569,7 +596,17 @@ sed -e "s/__NODE_NAME__/${NODE}/g" \
   -e "s/__EXCLUDED_GPU_INDICES__/${TWO_GPU_EXCLUDES}/" \
   "$EXAMPLES/hami-values.yaml" > "$LAB/hami-values-two-gpus.yaml"
 grep -n '"index"' "$LAB/hami-values-two-gpus.yaml"
+```
 
+The second rendered exclusion list registered GPUs 4 and 5:
+
+```plaintext
+32:              "index": [0, 1, 2, 3, 6]
+```
+
+Apply the updated values:
+
+```bash
 helm upgrade hami hami-charts/hami \
   --version 2.10.0 \
   -n hami-system \
