@@ -75,6 +75,8 @@ You also need:
 
 The supplied values target the verified seven-GPU node and initially register only GPU index 4. If your topology differs, choose your own primary and spillover GPU indices in Step 1; Steps 2 and 7 derive the `filterdevices.index` exclusion lists from those choices and the node's GPU inventory. You need at least two compatible GPUs to reproduce Step 7.
 
+Pod names, physical and MIG UUIDs, GI/CI IDs, placement order, and progress counters in the output blocks are captured evidence from the verified server. Your values will differ; verify the same relationships and invariants rather than matching those identifiers literally.
+
 :::danger[Assign one MIG hardware owner]
 
 NVIDIA GPU Operator MIG Manager and HAMi Dynamic MIG both create and destroy GI/CI state. They **must not control the same physical GPU at the same time**. GPU Operator may continue providing the driver, Container Toolkit, and monitoring, but stop MIG Manager reconciliation on the target node before this handover. Deleting one MIG Manager Pod is insufficient if its controller recreates it. HAMi must also be the only device plugin registering the parent `nvidia.com/gpu` resource on the target node.
@@ -223,10 +225,12 @@ kubectl get pods -n hami-system \
   -o custom-columns='POD:.metadata.name,CONTAINERS:.spec.containers[*].name,IMAGES:.spec.containers[*].image'
 ```
 
-Verify that all three HAMi containers show:
+The device plugin, monitor, and scheduler extender must all use the v2.10.0 release image. The separate `kube-scheduler` sidecar keeps its Kubernetes-matching image:
 
 ```plaintext
-docker.io/projecthami/hami:v2.10.0
+POD                               CONTAINERS                               IMAGES
+hami-device-plugin-fpw2j          device-plugin,vgpu-monitor               docker.io/projecthami/hami:v2.10.0,docker.io/projecthami/hami:v2.10.0
+hami-scheduler-7f4f4d866c-tmjss   kube-scheduler,vgpu-scheduler-extender   registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:v1.35.6,docker.io/projecthami/hami:v2.10.0
 ```
 
 Both plugin containers became ready without a restart in the v2.10.0 verification. If you see a restart, inspect the previous state before continuing:
@@ -694,7 +698,7 @@ The verified final state was:
 Registered GPU indices: 4
 MIG state: PASS - no instances remain
 NAME                              READY   STATUS    RESTARTS
-hami-device-plugin-kjj75          2/2     Running   0
+hami-device-plugin-fpw2j          2/2     Running   0
 hami-scheduler-7f4f4d866c-tmjss   2/2     Running   0
 ```
 
