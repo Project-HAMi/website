@@ -124,10 +124,10 @@ graph TD
     VOL --> SCHD --> HOOK --> ENF
     HOOK -. "shared-memory accounting" .-> MON
 
-    style VOL fill:#d9f99d,stroke:#4f7d00,stroke-width:2px,color:#1f2937
-    style HOOK fill:#fef3c7,stroke:#b45309,stroke-width:2px,color:#1f2937
-    style ENF fill:#dcfce7,stroke:#0b6b3c,stroke-width:2px,color:#1f2937
-    style MON fill:#dbeafe,stroke:#1a5fb4,stroke-width:2px,color:#1f2937
+    class VOL accent
+    class HOOK run
+    class ENF ok
+    class MON info
 ```
 
 The Pod contract is minimal: `schedulerName: volcano`, `runtimeClassName: ascend`, the annotation `huawei.com/vnpu-mode: hami-core`, and limits on the two extended resources. Without the annotation, the Pod falls back to the template-based path and can stay Pending on a soft-slicing node.
