@@ -6,8 +6,7 @@ title: Init Container GPU Resource Accounting
 
 When a pod has both init containers and app containers requesting GPU resources, HAMi allocates the resources simultaneously/parallelly. But Kubernetes runs the init container sequentially to completion before any app container starts, so init and app containers never execute at the same time.
 
-Note : This design covers init and app containers only. Sidecar containers are out of scope here and will be handled in a separate PR.
-  
+Note: This design covers init and app containers only. Sidecar containers are out of scope here and will be handled in a separate PR.
 
 ## The Problem in HAMi Today
 
@@ -74,7 +73,6 @@ So the correct formula for a pod's GPU footprint at any instant is:
 ```
 effective = max( sum(app container requests), max(single init container request) )
 ```
-**Assumption:**  The resources requested by the init container will always be the same as one of the app containers.
 
 ## Proposal
 
@@ -190,6 +188,7 @@ Passed to `PodManager.AddPod` / `QuotaManager.AddUsage`, never the raw
 structure.
 
 **On every pod update:**
+
 1. Decode annotations to recover each container's device UUID.
 2. Classify each container init/app using `pod.Spec`.
 3. Re-apply `CollapseInitContainerUsage` (or `AppContainersOnly` once
@@ -257,27 +256,41 @@ Only ever runs **after** `pod.Status` confirms completion.
 `initContainerResourceReleased` (default `false`), guarding only the
 init-container shrink step:
 
+```
 if all initContainers terminated with ExitCode == 0 and !initContainerResourceReleased:
     shrink usage to app-containers-only
     initContainerResourceReleased = true
+```
+
+**Known gap:** nothing clears `initContainerResourceReleased` back to
+`false`. If the kubelet reruns a pod's init containers after a sandbox
+restart while the same Pod UID stays cached, usage remains shrunk to
+app-only for the duration of that new init cycle, under-accounting the
+init container's GPU usage. Fixing this needs the flag to reset, and
+init-inclusive usage to be restored, at the start of a new regular-init
+cycle, not on an ordinary app-container or sidecar restart. This is not
+yet implemented.
 
 The terminal-phase release is not persisted as a separate state, it's
 recomputed on every reconcile directly from `pod.Status.Phase`:
 
-    if pod.Status.Phase in (Succeeded, Failed):
-        usage = 0
+```
+if pod.Status.Phase in (Succeeded, Failed):
+    usage = 0
+```
 
 ## Interaction with Kubernetes ResourceQuota
 
 If the namespace has a `ResourceQuota` (like `requests.nvidia.com/gpumem`), the
-kube-apiserver checks it first, before the pod reaches HAMi. The apiserver uses the
-same formula `max(sum(app), max(init))`, but it charges this value only once, when
-the pod is created, and it keeps the charge while the pod is non-terminal (released
-once the pod reaches `Succeeded`/`Failed` or is deleted). It does not react when
-init containers finish, so the shrink in this design only frees capacity inside
-HAMi. The apiserver quota is not released at that point.
+built-in `ResourceQuota` validating admission controller evaluates it after HAMi's
+mutating webhook has already run and mutated or rejected the pod, and before any
+scheduler sees it. It uses the same formula `max(sum(app), max(init))`, but it
+charges this value only once, when the pod is created, and it keeps the charge
+while the pod is non-terminal (released once the pod reaches
+`Succeeded`/`Failed` or is deleted). It does not react when init containers
+finish, so the shrink in this design only frees capacity inside HAMi. The
+`ResourceQuota` charge is not released at that point.
 
 Because of this, the same pods can run fine without a quota but fail when a quota is
 set. Example: quota is 10000. Pod A (init 8000, app 5000) is charged 8000 for as
 long as it stays non-terminal, even after its init container exits. Pod B (effective 5000) gets rejected with `exceeded quota: ... used: 8k` before HAMi even sees it. This is normal Kubernetes behavior and HAMi cannot change it.
-

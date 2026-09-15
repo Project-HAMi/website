@@ -54,8 +54,9 @@ effective[uuid] = sidecar_sum[uuid] + max( init_peak[uuid], app_sum[uuid] )
 where `init_peak` is the max over non-sidecar init containers. If there are
 none, `init_peak` is 0, and a missing per-UUID entry also counts as 0
 before the `max()` and addition. Sidecars are just a floor on top of the
-existing formula. It can only over-reserve, and only during the init phase
-in an ordering corner case.
+existing formula. It can only over-reserve in an ordering corner case, and
+that over-reservation can persist until shrink or reconciliation completes,
+not only during the init phase itself.
 
 **Classification:**
 
