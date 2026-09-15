@@ -52,6 +52,7 @@ module.exports = {
             "installation/webui-installation",
             "installation/aws-installation",
             "installation/k3s-installation",
+            "installation/gke-installation",
           ],
         },
         {
