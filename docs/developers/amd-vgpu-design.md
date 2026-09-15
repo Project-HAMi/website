@@ -77,7 +77,7 @@ HSA_CU_MASK=0:0-75;1:0-75
 
 Each `CU_list` uses HSA's CU ID-list grammar, for example `0-3,8,10-12`.
 
-Exclusivity of CU ranges across pods on a device is enforced under the AMD node lock (`AMDDevices.LockNode` and `ReleaseNodeLock` which are unimplemented now).
+Exclusivity of CU ranges across pods on a device is enforced under the AMD node lock, `AMDDevices.LockNode` and `ReleaseNodeLock`, which take `hami.io/mutex.lock` on the node.
 
 ## 5. Resource model and core_limit -> CU mask
 
@@ -112,6 +112,7 @@ The scheduler records this `cuCount` in `hami.io/amd-devices-allocated`. The dev
 ## 6. Known limitations
 
 - **No `amd-smi` / `rocm-smi` virtualization.** These read sysfs/drm, not HIP, so LD_AUDIT cannot intercept them; in-container tools may report physical resources.
+- **The CU mask is cooperative, not a security boundary.** `HSA_CU_MASK` is an environment variable read by ROCr at initialization, so a process that clears it before ROCr starts regains the full device. Unlike the memory limit, which the LD_AUDIT layer enforces at the HIP API boundary, CU partitioning holds only for workloads that leave the injected environment alone.
 - **Mixed GPU types are not supported on one node.** The device plugin derives the GPU type from `amd.com/gpu.product-name`, but this label cannot describe multiple GPU types.
 - **WGP-aware CU allocation is phased.** First ship CU partitioning on non-WGP devices (CDNA / Instinct). RDNA (GFX10+) devices need WGP pair alignment when building `HSA_CU_MASK` ([setting CUs](https://rocm.docs.amd.com/en/latest/reference/system-optimization/gpu-isolation.html)) and land in a follow-up.
 

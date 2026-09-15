@@ -243,7 +243,7 @@ This example validates resource allocation and device injection only. A producti
 
 ### Preferring a MIG profile
 
-Profile selection is memory-only: the scheduler picks the smallest allowlisted profile whose memory covers the request. Because MIG couples memory and compute, two profiles can cover the same request with different compute shares; on an A100-40GB a 20 GB request always resolves to `3g.20gb` even when `4g.20gb` is allowed. A Pod that wants the extra compute can set the `nvidia.com/mig-profile-preference` annotation to an ordered, comma-separated list of profiles:
+Profile selection is memory-only: the scheduler picks the smallest allowlisted profile whose memory covers the request. Because MIG couples memory and compute, two profiles can cover the same request with different compute shares; on an A100-40GB a 20 GB request resolves to `3g.20gb` by default, even when `4g.20gb` is allowed. A Pod that wants the extra compute can set the `nvidia.com/mig-profile-preference` annotation to an ordered, comma-separated list of profiles:
 
 ```yaml
 apiVersion: v1
