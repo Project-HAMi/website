@@ -4,7 +4,7 @@ title: Sidecar Container GPU Resource Accounting
 
 ## Problem Summary
 
-Native sidecar containers are declared in `spec.initContainers` with `restartPolicy: Always`, but unlike regular init containers they run for the whole pod lifetime, next to the app containers. HAMi ([Init Container GPU Resource Accounting](./initcontainer-design.md)) classifies only by which list a container appears in. There is no `RestartPolicy` check anywhere, so a sidecar gets run-to-completion semantics it doesn't have.
+Native sidecar containers are declared in `spec.initContainers` with `restartPolicy: Always`, but unlike regular init containers they run for the whole pod lifetime, next to the app containers. HAMi ([Init Container GPU Resource Accounting](./init-container-design.md)) classifies only by which list a container appears in. There is no `RestartPolicy` check anywhere, so a sidecar gets run-to-completion semantics it doesn't have.
 
 This design adds sidecars as a third container class.
 
