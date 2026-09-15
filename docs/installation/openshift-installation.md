@@ -97,6 +97,8 @@ devicePlugin:
 - `nvidiaDriverRoot` must point to the host driver installation root, not the directory of an individual library. For host-installed drivers, use `/`. `nvidiaHookPath` must point to the host `nvidia-ctk` executable. See [CDI configuration](./configure-cdi.md).
 - If the existing environment uses HAMi's `envvar` injection, set `deviceListStrategy: envvar` and omit `nvidiaHookPath`. Verify the NVIDIA runtime handles `NVIDIA_VISIBLE_DEVICES` for both the device plugin and workloads. Follow the [GPU Operator runtime troubleshooting guide](../troubleshooting/troubleshooting.md#nvidia-toolkit-gpu-operator-25-10) for that path.
 
+  To disable CDI in an existing GPU Operator installation on CRI-O, follow NVIDIA's [Disabling CDI procedure](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/26.3/cdi.html#disabling-cdi): set the GPU nodes' `nvidia.com/gpu.deploy.operator-validator` label to `false`, set `cdi.enabled=false` in the ClusterPolicy, then restore the label to `true`. This sequence applies to an existing CDI-to-legacy transition; it is not needed when CDI remains enabled or is disabled from the initial GPU Operator installation.
+
 Enable `devicePlugin.gpuOperatorToolkitReady.enabled` only if GPU Operator creates the `toolkit-ready` file. Check that the file exists under `devicePlugin.gpuOperatorToolkitReady.hostPath`, normally `/run/nvidia/validations`. If the file is missing, the init container waits indefinitely.
 
 ## Install HAMi
