@@ -19,6 +19,8 @@ curl {scheduler node ip}:31993/metrics
 | hami_gpu_core_allocated_ratio | 分配给某个 GPU 的设备核心 | `{device_index="0",device_uuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",node="aio-node67",zone="vGPU"}` 45 |
 | hami_gpu_memory_allocated_bytes | 分配给某个 GPU 的设备显存 | `{device_cores="0",device_index="0",device_uuid="aio-node74-arm-Ascend310P-0",node="aio-node74-arm",zone="vGPU"}` 3.221225472e+09 |
 | hami_gpu_shared_count | 共享此 GPU 的容器数量 | `{device_index="0",device_uuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",node="aio-node67",zone="vGPU"}` 1 |
+| hami_node_gpu_memory_allocated_ratio | GPU 已分配显存占总显存的比例（0-1） | `{device_index="0",device_type="NVIDIA-Tesla V100-PCIE-32GB",device_uuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",node="aio-node67",zone="vGPU"}` 0.3125 |
+| hami_node_gpu_overview | 单个 GPU 的汇总信息。标签包含容量和设备信息，指标值为已分配显存（字节） | `{device_cores="100",device_index="0",device_memory_limit="32768",device_type="NVIDIA-Tesla V100-PCIE-32GB",device_uuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",node="aio-node67",zone="vGPU"}` 1.073741824e+10 |
 | hami_vgpu_core_allocated_ratio | 分配给某个容器的 vGPU 核心数量 | `{container_index="Ascend310P",device_uuid="aio-node74-arm-Ascend310P-0",node="aio-node74-arm",pod="ascend310p-pod",namespace="default",zone="vGPU"}` 50 |
 | hami_vgpu_memory_allocated_bytes | 分配给某个容器的 vGPU 显存 | `{container_index="Ascend310P",device_uuid="aio-node74-arm-Ascend310P-0",node="aio-node74-arm",pod="ascend310p-pod",namespace="default",zone="vGPU"}` 3.221225472e+09 |
 | hami_resource_quota_used | resourcequota 的使用情况 | `{quota_name="nvidia.com/gpucores", namespace="default",limit="200",zone="vGPU"}` 100 |
