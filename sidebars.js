@@ -173,6 +173,10 @@ module.exports = {
         "developers/gpu-utilization-metrics",
         "developers/hami-vnpu-core-integration",
         "developers/hami-webui-development-guide",
+        "developers/dry-run-filter-design",
+        "developers/hostpid-broker",
+        "developers/initcontainer-design",
+        "developers/sidecarscontainer-design",
       ],
     },
     {
