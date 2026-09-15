@@ -40,25 +40,9 @@ toolkit:
 
 GKE uses `/home/kubernetes/bin/nvidia` for driver files and Toolkit installation. When merging these values, preserve the other Toolkit settings, including `toolkit.env` from the next section.
 
-On Ubuntu nodes where GKE provides `nvidia-smi` at `/home/kubernetes/bin/nvidia/bin/nvidia-smi`, GPU Operator also needs `/usr/bin/nvidia-smi` to recognize the host-installed driver. If that path is missing, apply the [driver-path DaemonSet](/examples/gke-nvidia-driver-path.yaml) **before installing GPU Operator**:
+Set HAMi's `devicePlugin.nvidiaDriverRoot=/` to use the host filesystem, where GPU device nodes are under `/dev`. For CDI, use `/home/kubernetes/bin/nvidia/toolkit/nvidia-ctk` as `devicePlugin.nvidiaHookPath` in the [CDI configuration](./configure-cdi.md#configure-the-helm-chart).
 
-```bash
-kubectl apply -f https://project-hami.io/examples/gke-nvidia-driver-path.yaml
-kubectl rollout status -n kube-system daemonset/gke-nvidia-driver-path
-```
-
-The DaemonSet selects Ubuntu nodes labeled `gpu=on` and creates the symlink without replacing an existing file. Keep it alongside the driver installer to prepare replacement nodes.
-
-Set HAMi's `devicePlugin.nvidiaDriverRoot=/`. Although the driver files are under `/home/kubernetes/bin/nvidia`, device nodes remain under `/dev`; the installation directory is not the runtime driver root. For CDI, use `/home/kubernetes/bin/nvidia/toolkit/nvidia-ctk` as `devicePlugin.nvidiaHookPath` in the [CDI configuration](./configure-cdi.md#configure-the-helm-chart).
-
-After installing GPU Operator, check that it recognizes the host driver:
-
-```bash
-kubectl exec -n gpu-operator daemonset/nvidia-container-toolkit-daemonset \
-  -c nvidia-container-toolkit-ctr -- cat /run/nvidia/validations/driver-ready
-```
-
-The output should include `IS_HOST_DRIVER=true`, `NVIDIA_DRIVER_ROOT=/`, and `NVIDIA_DEV_ROOT=/`.
+With CDI enabled, the Google driver installer layout works without an additional `nvidia-smi` symlink. If containers cannot access GPU devices after disabling Operator CDI, see [GPU devices missing with CDI disabled](#missing-gpu-devices-with-cdi-disabled).
 
 ## Set the containerd configuration source
 
@@ -75,9 +59,9 @@ This makes Toolkit read the containerd configuration file directly. It avoids a 
 
 ## Allow critical-priority Pods
 
-GKE requires a ResourceQuota to allow Pods with `system-node-critical` or `system-cluster-critical` priority in namespaces other than `kube-system`.
+If you install the HAMi chart in `kube-system`, no additional ResourceQuota is needed for HAMi. GKE requires this quota only for Pods with `system-node-critical` or `system-cluster-critical` priority in other namespaces.
 
-Before installing GPU Operator, create its namespace if it does not already exist:
+GPU Operator still needs the quota if installed outside `kube-system`. For example, when installing it in `gpu-operator`, first create the namespace if it does not already exist:
 
 ```bash
 kubectl create namespace gpu-operator
@@ -110,8 +94,33 @@ kubectl apply -n gpu-operator -f critical-pods-quota.yaml
 
 If installing HAMi outside `kube-system`, create its namespace and apply the same quota there before installation.
 
+## Troubleshooting
+
+### GPU devices missing with CDI disabled {#missing-gpu-devices-with-cdi-disabled}
+
+When using Google-installed drivers on GKE Ubuntu nodes, disabling GPU Operator CDI can leave containers without GPU devices and cause HAMi monitor to report `NVML: Driver Not Loaded`. Apply the following driver-path patch to resolve this issue.
+
+Apply the [driver-path DaemonSet](/examples/gke-nvidia-driver-path.yaml). It creates the `/usr/bin/nvidia-smi` symlink on Ubuntu nodes labeled `gpu=on`, so GPU Operator can recognize the host driver:
+
+```bash
+kubectl apply -f https://project-hami.io/examples/gke-nvidia-driver-path.yaml
+kubectl rollout status -n kube-system daemonset/gke-nvidia-driver-path
+```
+
+If GPU Operator and HAMi are already installed, restart their components to apply the fix. Replace `hami-system` with your HAMi namespace:
+
+```bash
+kubectl rollout restart -n gpu-operator daemonset/nvidia-container-toolkit-daemonset
+kubectl rollout status -n gpu-operator daemonset/nvidia-container-toolkit-daemonset
+kubectl rollout restart -n gpu-operator daemonset/nvidia-operator-validator
+kubectl rollout restart -n hami-system daemonset/hami-device-plugin
+kubectl rollout status -n hami-system daemonset/hami-device-plugin
+```
+
+Create a new GPU workload to verify device access and confirm that HAMi monitor starts normally. Keep the DaemonSet to apply the same fix to replacement nodes.
+
 ## Next steps
 
-1. Follow the [GPU Operator installation guide](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/26.3/getting-started.html), using the values prepared above, and confirm that its components are ready.
+1. Follow the [GPU Operator installation guide for GKE](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/26.3/google-gke.html), using the values prepared above, and confirm that its components are ready.
 2. If using CDI, complete the [NVIDIA CDI configuration](./configure-cdi.md) with the driver root and Toolkit path for your nodes.
 3. Follow [Online Installation from Helm](./online-installation.md) to install HAMi with your values file and verify the installation.

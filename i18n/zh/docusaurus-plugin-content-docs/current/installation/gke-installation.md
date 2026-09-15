@@ -41,25 +41,9 @@ toolkit:
 
 GKE 使用 `/home/kubernetes/bin/nvidia` 存放驱动文件和安装 Toolkit。合并配置时，保留其他 Toolkit 设置，包括下一节的 `toolkit.env`。
 
-在 GKE 将 `nvidia-smi` 安装到 `/home/kubernetes/bin/nvidia/bin/nvidia-smi` 的 Ubuntu 节点上，GPU Operator 还需要通过 `/usr/bin/nvidia-smi` 识别宿主机驱动。如果该路径不存在，在**安装 GPU Operator 前**应用[驱动路径 DaemonSet](/examples/gke-nvidia-driver-path.yaml)：
+将 HAMi 的 `devicePlugin.nvidiaDriverRoot` 设置为 `/`，使用宿主机文件系统，其中 GPU 设备节点位于 `/dev`。使用 CDI 时，将 [CDI 配置](./configure-cdi.md#配置-helm-chart)中的 `devicePlugin.nvidiaHookPath` 设置为 `/home/kubernetes/bin/nvidia/toolkit/nvidia-ctk`。
 
-```bash
-kubectl apply -f https://project-hami.io/examples/gke-nvidia-driver-path.yaml
-kubectl rollout status -n kube-system daemonset/gke-nvidia-driver-path
-```
-
-此 DaemonSet 选择带有 `gpu=on` 标签的 Ubuntu 节点，创建符号链接，不替换已有文件。保留此 DaemonSet 和驱动安装器，以便准备替换节点。
-
-将 HAMi 的 `devicePlugin.nvidiaDriverRoot` 设置为 `/`。驱动文件虽然位于 `/home/kubernetes/bin/nvidia`，设备节点仍位于 `/dev`，因此安装目录不能用作运行时的驱动根目录。使用 CDI 时，将 [CDI 配置](./configure-cdi.md#配置-helm-chart)中的 `devicePlugin.nvidiaHookPath` 设置为 `/home/kubernetes/bin/nvidia/toolkit/nvidia-ctk`。
-
-安装 GPU Operator 后，检查宿主机驱动的识别结果：
-
-```bash
-kubectl exec -n gpu-operator daemonset/nvidia-container-toolkit-daemonset \
-  -c nvidia-container-toolkit-ctr -- cat /run/nvidia/validations/driver-ready
-```
-
-输出应包含 `IS_HOST_DRIVER=true`、`NVIDIA_DRIVER_ROOT=/` 和 `NVIDIA_DEV_ROOT=/`。
+启用 CDI 时，Google 驱动安装器提供的目录布局无需额外创建 `nvidia-smi` 符号链接。如果关闭 Operator CDI 后容器无法访问 GPU 设备，参见[关闭 CDI 后容器缺少 GPU 设备](#missing-gpu-devices-with-cdi-disabled)。
 
 ## 指定 containerd 配置来源
 
@@ -76,9 +60,9 @@ toolkit:
 
 ## 允许关键优先级 Pod
 
-在 `kube-system` 之外的命名空间中，GKE 要求通过 ResourceQuota 允许优先级为 `system-node-critical` 或 `system-cluster-critical` 的 Pod。
+如果将 HAMi Chart 安装到 `kube-system`，无需为 HAMi 额外配置 ResourceQuota。只有在其他命名空间中，GKE 才要求通过此配额允许优先级为 `system-node-critical` 或 `system-cluster-critical` 的 Pod。
 
-安装 GPU Operator 前，如果目标命名空间尚不存在，先创建命名空间：
+如果 GPU Operator 安装在 `kube-system` 之外的命名空间，仍需为它配置配额。例如，安装到 `gpu-operator` 时，如果该命名空间尚不存在，先创建命名空间：
 
 ```bash
 kubectl create namespace gpu-operator
@@ -111,8 +95,33 @@ kubectl apply -n gpu-operator -f critical-pods-quota.yaml
 
 如果将 HAMi 安装到 `kube-system` 之外的命名空间，也需要在安装前创建目标命名空间并应用相同配额。
 
+## 故障排查
+
+### 关闭 CDI 后容器缺少 GPU 设备 {#missing-gpu-devices-with-cdi-disabled}
+
+在 GKE Ubuntu 节点上使用 Google 安装的驱动时，关闭 GPU Operator 的 CDI 后，容器可能缺少 GPU 设备，HAMi monitor 报 `NVML: Driver Not Loaded`。应用以下驱动路径补丁即可修复此问题。
+
+应用[驱动路径 DaemonSet](/examples/gke-nvidia-driver-path.yaml)。它会在带有 `gpu=on` 标签的 Ubuntu 节点上创建 `/usr/bin/nvidia-smi` 符号链接，让 GPU Operator 正确识别宿主机驱动：
+
+```bash
+kubectl apply -f https://project-hami.io/examples/gke-nvidia-driver-path.yaml
+kubectl rollout status -n kube-system daemonset/gke-nvidia-driver-path
+```
+
+如果已经安装 GPU Operator 和 HAMi，重启相关组件使修复生效。将 `hami-system` 替换为 HAMi 所在的命名空间：
+
+```bash
+kubectl rollout restart -n gpu-operator daemonset/nvidia-container-toolkit-daemonset
+kubectl rollout status -n gpu-operator daemonset/nvidia-container-toolkit-daemonset
+kubectl rollout restart -n gpu-operator daemonset/nvidia-operator-validator
+kubectl rollout restart -n hami-system daemonset/hami-device-plugin
+kubectl rollout status -n hami-system daemonset/hami-device-plugin
+```
+
+新建 GPU 工作负载，验证设备访问，并确认 HAMi monitor 正常启动。保留该 DaemonSet，以便为替换节点应用相同修复。
+
 ## 下一步
 
-1. 按 [GPU Operator 安装指南](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/26.3/getting-started.html)，使用上述配置准备的 values 文件安装 Operator，并确认组件就绪。
+1. 按 [GPU Operator 的 GKE 安装指南](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/26.3/google-gke.html)，使用上述配置准备的 values 文件安装 Operator，并确认组件就绪。
 2. 如果使用 CDI，按节点的驱动根目录和 Toolkit 路径完成 [NVIDIA CDI 配置](./configure-cdi.md)。
 3. 按[通过 Helm 在线安装](./online-installation.md)，传入准备好的 HAMi values 文件，安装 HAMi 并验证安装结果。
