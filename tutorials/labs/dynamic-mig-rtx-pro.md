@@ -1,16 +1,16 @@
 ---
 title: "Lab 17: Dynamic MIG Lifecycle on RTX PRO 6000"
-description: "Build a pinned HAMi snapshot and verify per-Pod MIG placement, mixed profiles, selective reclamation, restart recovery, and multi-GPU spillover."
+description: "Install HAMi v2.10.0 and verify per-Pod MIG placement, mixed profiles, selective reclamation, restart recovery, and multi-GPU spillover."
 sidebar_label: "Lab 17: Dynamic MIG Lifecycle"
 lab:
   level: Advanced
   duration: about 90 minutes
-  environment: single-node Kubernetes server with 8 NVIDIA RTX PRO 6000 Blackwell GPUs
+  environment: single-node Kubernetes server with 7 NVIDIA RTX PRO 6000 Blackwell GPUs
   cost: requires access to billable multi-GPU hardware
   authors:
     - shkatara
     - saiyam1814
-  verified: "2026-08-11"
+  verified: "2026-09-15"
 tags:
   - gpu-partitioning
   - nvidia
@@ -18,19 +18,13 @@ tags:
 toc_max_heading_level: 2
 ---
 
-This lab builds HAMi from the source snapshot that first contained the merged per-Pod Dynamic MIG implementation, then follows one MIG allocation through creation, saturation, mixed-profile placement, selective reclamation, device-plugin adoption, and spillover to a second GPU. A Pod asks for memory through HAMi's usual resource API; HAMi chooses the smallest allowed NVIDIA MIG profile with enough memory and a legal free placement, then creates and later reclaims that Pod's GPU Instance (GI) and Compute Instance (CI).
+This lab installs the official HAMi v2.10.0 chart, then follows one MIG allocation through creation, saturation, mixed-profile placement, selective reclamation, device-plugin adoption, and spillover to a second GPU. A Pod asks for memory through HAMi's usual resource API; HAMi chooses the smallest allowed NVIDIA MIG profile with enough memory and a legal free placement, then creates and later reclaims that Pod's GPU Instance (GI) and Compute Instance (CI).
 
-The commands and outputs were captured on 2026-08-11 from the [original verified test](https://blog.kubesimplify.com/dynamic-mig-in-kubernetes-with-hami), which [Shubham Katara](https://github.com/shkatara) and [Saiyam Pathak](https://github.com/saiyam1814) wrote together on the kubesimplify blog. This tutorial removes the surrounding narrative and retains the reproducible procedure and evidence.
-
-:::caution[Experimental source snapshot]
-
-[HAMi PR #2378](https://github.com/Project-HAMi/HAMi/pull/2378) was merged at the tested commit, but HAMi v2.9.0 predates this implementation. This lab therefore builds commit [`634bf2b32e68`](https://github.com/Project-HAMi/HAMi/commit/634bf2b32e68e07d3fbcbd6da1ee079392fc07c1). When an official HAMi release includes PR #2378, prefer that release's matching chart and images.
-
-:::
+The procedure originated in the [first verified test](https://blog.kubesimplify.com/dynamic-mig-in-kubernetes-with-hami), which [Shubham Katara](https://github.com/shkatara) and [Saiyam Pathak](https://github.com/saiyam1814) wrote together on the kubesimplify blog. The complete Dynamic MIG lifecycle and the outputs below were re-verified on 2026-09-15 after upgrading the test cluster with the official v2.10.0 chart and `projecthami/hami:v2.10.0` release image. HAMi v2.10.0 includes [HAMi PR #2378](https://github.com/Project-HAMi/HAMi/pull/2378), which introduced this per-Pod Dynamic MIG implementation.
 
 ## What You'll Learn
 
-- Pin the HAMi chart and all three HAMi runtime containers to one source commit.
+- Pin the official HAMi chart and all three HAMi runtime containers to v2.10.0.
 - Distinguish HAMi's per-node `operatingmode: "mig"` from NVIDIA's static `migStrategy`.
 - Verify one 8,000 MiB request, four-placement saturation, and mixed `1g.24gb` plus `2g.48gb` placement.
 - Prove that deleting one Pod reclaims only its GI/CI while a neighboring CUDA loop progresses.
@@ -44,15 +38,15 @@ The commands and outputs were captured on 2026-08-11 from the [original verified
 flowchart TB
     subgraph P1["Phase 1: Prepare the node"]
         direction LR
-        S1["Step 1<br/>Inventory and handover"] --> S2["Step 2<br/>Build pinned source"] --> S3["Step 3<br/>Render and install"]
+        S1["Step 1<br/>Inventory and handover"] --> S2["Step 2<br/>Render and install v2.10.0"]
     end
     subgraph P2["Phase 2: Allocate MIG per Pod"]
         direction LR
-        S4["Step 4<br/>Create one 1g instance"] --> S5["Step 5<br/>Saturate four placements"] --> S6["Step 6<br/>Mix profiles and reclaim one"]
+        S3["Step 3<br/>Create one 1g instance"] --> S4["Step 4<br/>Saturate four placements"] --> S5["Step 5<br/>Mix profiles and reclaim one"]
     end
     subgraph P3["Phase 3: Prove recovery and spillover"]
         direction LR
-        S7["Step 7<br/>Restart plugin, adopt live instance"] --> S8["Step 8<br/>Register GPU 5, spill fifth Pod"]
+        S6["Step 6<br/>Restart plugin, adopt live instance"] --> S7["Step 7<br/>Register GPU 5, spill fifth Pod"]
     end
     P1 --> P2 --> P3
 ```
@@ -63,51 +57,51 @@ The verified environment was:
 
 | Component         | Tested value                                     |
 | ----------------- | ------------------------------------------------ |
-| GPUs              | 8 × NVIDIA RTX PRO 6000 Blackwell Server Edition |
+| GPUs              | 7 × NVIDIA RTX PRO 6000 Blackwell Server Edition |
 | GPU memory        | 97,887 MiB per physical GPU                      |
 | NVIDIA driver     | `610.43.02`                                      |
 | Kubernetes        | `v1.35.6`                                        |
-| Operating system  | Ubuntu 24.04.4 LTS, kernel `6.8.0-100-generic`   |
+| Operating system  | Ubuntu 24.04.4 LTS, kernel `6.8.0-138-generic`   |
 | Container runtime | containerd `2.2.1`                               |
-| HAMi source       | `634bf2b32e68e07d3fbcbd6da1ee079392fc07c1`       |
+| HAMi chart/image  | `2.10.0` / `projecthami/hami:v2.10.0`            |
 
 You also need:
 
-- root access to the GPU node, working `nvidia-smi`, MIG mode enabled, and no unmanaged CUDA processes;
-- `git`, GNU Make, Docker, `ctr`, Helm, `kubectl`, and `jq`;
+- root access to the GPU node, working `nvidia-smi`, MIG-capable GPUs, and no unmanaged CUDA processes;
+- Helm, `kubectl`, and `jq`;
 - cluster-admin access and permission to replace the existing HAMi installation;
 - a local checkout of this website repository for the files under [`tutorials/labs/examples/17-dynamic-mig-rtx-pro/`](https://github.com/Project-HAMi/website/tree/master/tutorials/labs/examples/17-dynamic-mig-rtx-pro); and
 - an explicit maintenance window for the **whole GPU node**, not only the GPUs that HAMi will register.
 
-The supplied values target the verified eight-GPU node and initially register only GPU index 4. If your topology differs, choose your own primary and spillover GPU indices in Step 1; Steps 3 and 8 derive the `filterdevices.index` exclusion lists from those choices and the node's GPU inventory. You need at least two compatible GPUs to reproduce Step 8.
+The supplied values target the verified seven-GPU node and initially register only GPU index 4. If your topology differs, choose your own primary and spillover GPU indices in Step 1; Steps 2 and 7 derive the `filterdevices.index` exclusion lists from those choices and the node's GPU inventory. You need at least two compatible GPUs to reproduce Step 7.
 
 :::danger[Assign one MIG hardware owner]
 
 NVIDIA GPU Operator MIG Manager and HAMi Dynamic MIG both create and destroy GI/CI state. They **must not control the same physical GPU at the same time**. GPU Operator may continue providing the driver, Container Toolkit, and monitoring, but stop MIG Manager reconciliation on the target node before this handover. Deleting one MIG Manager Pod is insufficient if its controller recreates it. HAMi must also be the only device plugin registering the parent `nvidia.com/gpu` resource on the target node.
 
-Existing MIG Manager or legacy `knownMigGeometries` users must follow the pinned [Dynamic MIG migration guide](https://github.com/Project-HAMi/HAMi/blob/634bf2b32e68e07d3fbcbd6da1ee079392fc07c1/docs/develop/dynamic-mig-migration.md): inventory, cordon, drain legacy GPU Pods, transfer mutation ownership, then validate one node at a time.
+Existing MIG Manager or legacy `knownMigGeometries` users must follow the pinned [Dynamic MIG migration guide](https://github.com/Project-HAMi/HAMi/blob/v2.10.0/docs/develop/dynamic-mig-migration.md): inventory, cordon, drain legacy GPU Pods, transfer mutation ownership, then validate one node at a time.
 
 :::
 
-Host-level `nvidia-smi`, Docker, and `ctr` commands run on the GPU node. `kubectl` and Helm may run anywhere with the intended kubeconfig; the verified single-node run executed everything on that node.
+Host-level `nvidia-smi` commands run on the GPU node. `kubectl` and Helm may run anywhere with the intended kubeconfig; the verified single-node run executed everything on that node.
 
 ## Step 1: Back Up and Establish an Idle Handover
 
-Select the single Kubernetes node, choose the two GPU indices this lab uses, and set a durable working directory. If your cluster has other nodes, set `NODE` explicitly to the eight-GPU node instead.
+Select the single Kubernetes node, choose the two GPU indices this lab uses, and set a durable working directory. If your cluster has other nodes, set `NODE` explicitly to the multi-GPU node instead.
 
 ```bash
 export NODE=$(kubectl get nodes -o jsonpath='{.items[0].metadata.name}')
-export PRIMARY_GPU=4   # the only GPU registered with HAMi until Step 8
-export SECONDARY_GPU=5 # the spillover GPU added in Step 8
-export LAB=/root/hami-dynamic-mig-rerun-2026-08-11
+export PRIMARY_GPU=4   # the only GPU registered with HAMi until Step 7
+export SECONDARY_GPU=5 # the spillover GPU added in Step 7
+export LAB=/root/hami-dynamic-mig-v2.10.0
 export EXAMPLES=tutorials/labs/examples/17-dynamic-mig-rtx-pro
 
 mkdir -p "$LAB"
 ```
 
-The verified run used GPU 4 and GPU 5. Every later command that touches those GPUs reads these two variables, and Steps 3 and 8 derive the `filterdevices.index` exclusion lists from them.
+The verified run used GPU 4 and GPU 5. Every later command that touches those GPUs reads these two variables, and Steps 2 and 7 derive the `filterdevices.index` exclusion lists from them.
 
-Steps 7 and 8 restart the `hami-device-plugin` DaemonSet. The chart schedules it on every node labeled `gpu=on`, so confirm that `$NODE` is the only such node before continuing:
+Steps 6 and 7 restart the `hami-device-plugin` DaemonSet. The chart schedules it on every node labeled `gpu=on`, so confirm that `$NODE` is the only such node before continuing:
 
 ```bash
 kubectl get nodes -l gpu=on -o name
@@ -141,11 +135,11 @@ nvidia-smi \
   --format=csv
 ```
 
-The eight cards reported MIG mode enabled. These are the two rows used later:
+The seven cards reported MIG mode disabled before the handover. These are the two rows used later; HAMi enabled MIG mode during the controlled plugin startup:
 
 ```plaintext
-4, NVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-4c395b7a-a7e6-d90f-1ced-d96e8dd68288, 610.43.02, 97887 MiB, Enabled
-5, NVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-04dc48d7-7048-aef5-ad36-f5db716e7668, 610.43.02, 97887 MiB, Enabled
+4, NVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-4c395b7a-a7e6-d90f-1ced-d96e8dd68288, 610.43.02, 97887 MiB, Disabled
+5, NVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-f4f5db98-143f-0a8d-47ce-956fab39a736, 610.43.02, 97887 MiB, Disabled
 ```
 
 The process query returned only its header:
@@ -156,53 +150,7 @@ gpu_uuid, pid, process_name, used_gpu_memory [MiB]
 
 Stop or migrate every GPU workload that the handover must not disrupt, disable MIG Manager reconciliation, and repeat the process query. Do not continue until the node has an explicitly empty baseline. Enabling MIG mode, clearing old layouts, and the initial plugin startup can reset GPUs.
 
-## Step 2: Build the Pinned HAMi Source
-
-Clone the repository, detach at the full tested SHA, and build one immutable image for all HAMi components:
-
-```bash
-export HAMI_SHA=634bf2b32e68e07d3fbcbd6da1ee079392fc07c1
-export HAMI_TAG=master-634bf2b32e68
-export HAMI_IMAGE=localhost/hami-dynamic-mig:$HAMI_TAG
-
-git clone --recurse-submodules \
-  https://github.com/Project-HAMi/HAMi.git "$LAB/HAMi"
-git -C "$LAB/HAMi" checkout --detach "$HAMI_SHA"
-git -C "$LAB/HAMi" submodule update --init --recursive
-
-make -C "$LAB/HAMi" docker \
-  IMG_NAME=localhost/hami-dynamic-mig \
-  IMG_TAG="$HAMI_TAG" \
-  VERSION="$HAMI_TAG" \
-  TARGET_PLATFORMS=linux/amd64
-
-docker image inspect "$HAMI_IMAGE" \
-  --format='ID={{.Id}} Architecture={{.Architecture}} SizeBytes={{.Size}}'
-```
-
-:::note
-
-HAMi v2.10.0 (released 2026-08-21) includes commit `634bf2b`, so the released chart and images ship everything this lab builds from source. The lab keeps the pinned build it was verified with; a future revision will re-verify against the v2.10.0 release artifacts and drop the source build.
-
-:::
-
-The pinned build produced:
-
-```plaintext
-ID=sha256:0ddda56e333ff74e52d9908e00b85e7860cf4694fc09951aaa178e8c8e6dde76 Architecture=amd64 SizeBytes=411671341
-```
-
-The verified cluster was single-node, so it imported the local image into Kubernetes' containerd namespace:
-
-```bash
-docker save --output "$LAB/hami-$HAMI_TAG.tar" "$HAMI_IMAGE"
-sudo ctr --namespace k8s.io images import "$LAB/hami-$HAMI_TAG.tar"
-sudo ctr --namespace k8s.io images list | grep -F "$HAMI_IMAGE"
-```
-
-`localhost/...` works only when every HAMi component runs on a node containing that imported image. In a multi-node cluster, push the immutable tag to a registry reachable by every scheduler and GPU node, then update the registry and pull policy in the supplied values.
-
-## Step 3: Render and Perform the Controlled Install
+## Step 2: Render and Perform the Controlled Install
 
 Create node-specific copies of the supplied values and workload manifest. The exclusion list is every GPU index that `nvidia-smi` reports except `$PRIMARY_GPU`, so run this on the GPU node:
 
@@ -219,36 +167,37 @@ sed "s/__NODE_NAME__/${NODE}/g" "$EXAMPLES/mig-small-pack.yaml" \
 grep -n '"index"' "$LAB/hami-values-one-gpu.yaml"
 ```
 
-In the verified run the `grep` output showed `[0, 1, 2, 3, 5, 6, 7]`, which registers only GPU 4.
+In the verified run the `grep` output showed `[0, 1, 2, 3, 5, 6]`, which registers only GPU 4.
 
 Two similarly named settings have separate responsibilities:
 
 - `devicePlugin.nodeConfiguration.config` sets `operatingmode: "mig"`, activating HAMi Dynamic MIG for this node.
 - Top-level `devicePlugin.migStrategy: none` prevents the NVIDIA device-plugin path from publishing pre-created MIG resources such as `nvidia.com/mig-1g.24gb`. Workloads still request `nvidia.com/gpu`; HAMi creates their MIG instances dynamically.
 
-The `filterdevices.index` field is an **exclusion** list; the rendered `[0, 1, 2, 3, 5, 6, 7]` registers only GPU 4. It is not a startup safety boundary; Step 7 demonstrates that the plugin still reconciles filtered GPUs.
+The `filterdevices.index` field is an **exclusion** list; the rendered `[0, 1, 2, 3, 5, 6]` registers only GPU 4. It is not a startup safety boundary; Step 6 demonstrates that the plugin still reconciles filtered GPUs.
 
-Render before changing the cluster:
+Add the official chart repository and render v2.10.0 before changing the cluster:
 
 ```bash
-helm lint "$LAB/HAMi/charts/hami" \
-  -f "$LAB/hami-values-one-gpu.yaml"
+helm repo add hami-charts https://project-hami.github.io/HAMi/
+helm repo update hami-charts
 
-helm template hami "$LAB/HAMi/charts/hami" \
+helm template hami hami-charts/hami \
+  --version 2.10.0 \
   --namespace hami-system \
   --kube-version 1.35.6 \
   -f "$LAB/hami-values-one-gpu.yaml" \
-  > "$LAB/rendered-current-hami.yaml"
+  > "$LAB/rendered-hami-v2.10.0.yaml"
 
 grep -n -A 25 'migProfileAllowlist' \
-  "$LAB/rendered-current-hami.yaml"
+  "$LAB/rendered-hami-v2.10.0.yaml"
 grep -n -E 'image:|imagePullPolicy:' \
-  "$LAB/rendered-current-hami.yaml"
+  "$LAB/rendered-hami-v2.10.0.yaml"
 ! grep -q 'projecthami/hami:v2.9.0' \
-  "$LAB/rendered-current-hami.yaml"
+  "$LAB/rendered-hami-v2.10.0.yaml"
 ```
 
-Confirm the rendered allowlist includes `1g.24gb`, `2g.48gb`, and `4g.96gb` for `RTX PRO 6000 Blackwell Server Edition`, and that the scheduler extender, device plugin, and monitor all use `localhost/hami-dynamic-mig:master-634bf2b32e68`. The chart's `appVersion` still says `2.9.0` at this commit; live image references, not chart metadata, prove the runtime version.
+Confirm the rendered allowlist includes `1g.24gb`, `2g.48gb`, and `4g.96gb` for `RTX PRO 6000 Blackwell Server Edition`, and that the scheduler extender, device plugin, and monitor all use `projecthami/hami:v2.10.0`.
 
 :::warning[Destructive handover]
 
@@ -261,7 +210,8 @@ if helm status hami -n hami-system >/dev/null 2>&1; then
   helm uninstall hami -n hami-system --wait --timeout 5m
 fi
 
-helm upgrade --install hami "$LAB/HAMi/charts/hami" \
+helm upgrade --install hami hami-charts/hami \
+  --version 2.10.0 \
   -n hami-system \
   --create-namespace \
   --reset-values \
@@ -276,10 +226,10 @@ kubectl get pods -n hami-system \
 Verify that all three HAMi containers show:
 
 ```plaintext
-localhost/hami-dynamic-mig:master-634bf2b32e68
+docker.io/projecthami/hami:v2.10.0
 ```
 
-A stale MIG UUID caused one transient monitor CDI `StartError` during the verified handover. Kubernetes retried it and both plugin containers became ready. If you see a restart, inspect the previous state instead of assuming it was harmless:
+Both plugin containers became ready without a restart in the v2.10.0 verification. If you see a restart, inspect the previous state before continuing:
 
 ```bash
 kubectl get pods -n hami-system
@@ -288,7 +238,7 @@ kubectl logs -n hami-system \
   --all-containers=true --previous --tail=100
 ```
 
-## Step 4: Discover Placements and Create One `1g.24gb`
+## Step 3: Discover Placements and Create One `1g.24gb`
 
 Inspect what the plugin learned from NVML:
 
@@ -365,12 +315,12 @@ test "$after" -gt "$before"
 ```
 
 ```plaintext
-before=75 after=77
+before=2 after=13
 ```
 
 The first placement need not start at 0; the verified first allocation legally started at 9.
 
-## Step 5: Fill All Four Legal Placements
+## Step 4: Fill All Four Legal Placements
 
 Scale the same Deployment to four Pods:
 
@@ -431,7 +381,7 @@ kubectl scale deployment/mig-small-pack \
   -n hami-mig-retest --replicas=4
 ```
 
-## Step 6: Mix Profiles and Reclaim Only One Instance
+## Step 5: Mix Profiles and Reclaim Only One Instance
 
 Remove the packing Pods, derive the primary GPU's UUID on this host, and run the supplied script. It creates an 8,000 MiB Pod and a 30,000 MiB Pod with the same CUDA progress loop and pins both to the same physical card.
 
@@ -493,8 +443,8 @@ test "$large_after" -gt "$large_before"
 ```
 
 ```plaintext
-small: 64 -> 67
-large: 37 -> 39
+small: 23 -> 30
+large: 14 -> 21
 ```
 
 Now capture the small instance identity, delete only its Pod, and poll the host because reclamation is asynchronous:
@@ -530,15 +480,15 @@ test "$large_after" -gt "$large_before" \
 ```
 
 ```plaintext
-large: 61 -> 94
+large: 37 -> 101
 PASS: 2g workload survived 1g reclamation
 ```
 
 On this GPU and driver, recreating the freed placement later produced the same `MIG-a5fa...` UUID. A MIG UUID is not a generation counter: observed disappearance proves reclamation, while a different UUID is not required for recreation.
 
-## Step 7: Restart the Device Plugin and Verify UUID Stability
+## Step 6: Restart the Device Plugin and Verify UUID Stability
 
-This is a disruptive controller test. Keep only the valid, HAMi-managed `mixed-large` allocation active. Every other GPU on the node must remain free of unmanaged work, because plugin startup has node-wide hardware scope at this commit.
+This is a disruptive controller test. Keep only the valid, HAMi-managed `mixed-large` allocation active. Every other GPU on the node must remain free of unmanaged work, because plugin startup has node-wide hardware scope in v2.10.0.
 
 Record the allocation's UUID and progress, replace the device-plugin Pod running on `$NODE`, and wait for the DaemonSet:
 
@@ -567,7 +517,7 @@ kubectl logs "$NEW_DP_POD" -n hami-system --all-containers=true |
 The replacement plugin classified GPU 4 as in use and all other GPUs as reset candidates:
 
 ```plaintext
-mig init: resolved startup layout inUseGPUs=[4] resetGPUs=[0,1,2,3,5,6,7]
+mig init: resolved startup layout inUseGPUs=[4] resetGPUs=[0,1,2,3,5,6]
 ```
 
 It verified the complete Pod annotation against NVML and adopted the live allocation. Confirm the exact UUID still exists and the CUDA loop advanced:
@@ -583,17 +533,17 @@ test "$progress_after" -gt "$progress_before" \
 ```
 
 ```plaintext
-progress: 115 -> 187
+progress: 133 -> 151
 PASS: MIG UUID and CUDA workload survived device-plugin restart
 ```
 
 :::danger[Filtering does not constrain startup mutation]
 
-The log proves that `filterdevices` limits registration and scheduling but not Dynamic MIG startup cleanup at this commit. The plugin reconciled all eight physical GPUs, including filtered ones. Treat the first install and every plugin restart as whole-node maintenance. This happy-path recovery also assumes a complete, valid allocation annotation; it does not promise adoption of malformed state.
+The log proves that `filterdevices` limits registration and scheduling but not Dynamic MIG startup cleanup in v2.10.0. The plugin reconciled all seven physical GPUs, including filtered ones. Treat the first install and every plugin restart as whole-node maintenance. This happy-path recovery also assumes a complete, valid allocation annotation; it does not promise adoption of malformed state.
 
 :::
 
-## Step 8: Expose GPU 5 and Verify Fifth-Pod Spillover
+## Step 7: Expose GPU 5 and Verify Fifth-Pod Spillover
 
 Delete the mixed-profile workload and wait until no test MIG instance remains:
 
@@ -605,7 +555,7 @@ until ! nvidia-smi -L | grep -q '^  MIG '; do
 done
 ```
 
-Render a second values file whose exclusion list omits both `$PRIMARY_GPU` and `$SECONDARY_GPU`. In the verified run this changed the list from `[0, 1, 2, 3, 5, 6, 7]` to `[0, 1, 2, 3, 6, 7]`, registering GPUs 4 and 5.
+Render a second values file whose exclusion list omits both `$PRIMARY_GPU` and `$SECONDARY_GPU`. In the verified run this changed the list from `[0, 1, 2, 3, 5, 6]` to `[0, 1, 2, 3, 6]`, registering GPUs 4 and 5.
 
 ```bash
 TWO_GPU_EXCLUDES=$(nvidia-smi --query-gpu=index --format=csv,noheader | tr -d ' ' |
@@ -616,7 +566,8 @@ sed -e "s/__NODE_NAME__/${NODE}/g" \
   "$EXAMPLES/hami-values.yaml" > "$LAB/hami-values-two-gpus.yaml"
 grep -n '"index"' "$LAB/hami-values-two-gpus.yaml"
 
-helm upgrade hami "$LAB/HAMi/charts/hami" \
+helm upgrade hami hami-charts/hami \
+  --version 2.10.0 \
   -n hami-system \
   --reset-values \
   -f "$LAB/hami-values-two-gpus.yaml" \
@@ -677,11 +628,11 @@ The verified bin-packing result filled all four placements on GPU 4, then placed
 
 ```plaintext
 POD                               PARENT_GPU                                   PROFILE    START
-mig-small-pack-6f5b7bd7b-dwld2    GPU-4c395b7a-a7e6-d90f-1ced-d96e8dd68288   1g.24gb   3
-mig-small-pack-6f5b7bd7b-g72fd    GPU-4c395b7a-a7e6-d90f-1ced-d96e8dd68288   1g.24gb   0
-mig-small-pack-6f5b7bd7b-jgql2    GPU-04dc48d7-7048-aef5-ad36-f5db716e7668   1g.24gb   9
-mig-small-pack-6f5b7bd7b-rlxbn    GPU-4c395b7a-a7e6-d90f-1ced-d96e8dd68288   1g.24gb   9
-mig-small-pack-6f5b7bd7b-vjfv9    GPU-4c395b7a-a7e6-d90f-1ced-d96e8dd68288   1g.24gb   6
+mig-small-pack-6784898ddb-5pwjh    GPU-4c395b7a-a7e6-d90f-1ced-d96e8dd68288   1g.24gb   6
+mig-small-pack-6784898ddb-65tvf    GPU-4c395b7a-a7e6-d90f-1ced-d96e8dd68288   1g.24gb   0
+mig-small-pack-6784898ddb-jgq6k    GPU-4c395b7a-a7e6-d90f-1ced-d96e8dd68288   1g.24gb   9
+mig-small-pack-6784898ddb-vhw7l    GPU-f4f5db98-143f-0a8d-47ce-956fab39a736   1g.24gb   9
+mig-small-pack-6784898ddb-zjldp    GPU-4c395b7a-a7e6-d90f-1ced-d96e8dd68288   1g.24gb   3
 ```
 
 Placement starts are legal choices, not an allocation sequence; GPU 5's first allocation may start at 9.
@@ -709,7 +660,8 @@ PASS: no MIG instances remain
 Restore the original exclusion list, then deliberately restart the plugin while the whole node is idle:
 
 ```bash
-helm upgrade hami "$LAB/HAMi/charts/hami" \
+helm upgrade hami hami-charts/hami \
+  --version 2.10.0 \
   -n hami-system \
   --reset-values \
   -f "$LAB/hami-values-one-gpu.yaml" \
@@ -742,15 +694,15 @@ The verified final state was:
 Registered GPU indices: 4
 MIG state: PASS - no instances remain
 NAME                              READY   STATUS    RESTARTS
-hami-device-plugin-6snlc          2/2     Running   0
-hami-scheduler-74fbfcfbb5-qxftm   2/2     Running   0
+hami-device-plugin-cmkvj          2/2     Running   0
+hami-scheduler-7f4f4d866c-k8gmf   2/2     Running   0
 ```
 
-This leaves the pinned HAMi installation running with only GPU 4 registered. Preserve the Step 1 backups until you have either accepted this installation or restored the previous deployment through its documented migration or rollback procedure. Do not directly roll binaries back to a legacy Dynamic MIG implementation while new-format allocations are active.
+This leaves HAMi v2.10.0 running with only GPU 4 registered. Preserve the Step 1 backups until you have either accepted this installation or restored the previous deployment through its documented migration or rollback procedure. Do not directly roll binaries back to a legacy Dynamic MIG implementation while new-format allocations are active.
 
 ## Operational Traps
 
-- **Chart metadata is not runtime identity.** At this commit the chart defaults to v2.9.0. Pin and inspect the extender, plugin, and monitor images; do not use `latest` or rely on `appVersion`.
+- **Pin both chart and runtime version.** Use `--version 2.10.0` and inspect the extender, plugin, and monitor images; do not use an unversioned chart or `latest` image.
 - **`operatingmode` is not `migStrategy`.** The node JSON selects HAMi Dynamic MIG; the top-level Helm value controls NVIDIA's static resource exposure path.
 - **MIG Manager and HAMi cannot share mutation ownership.** Stop reconciliation, not just one Pod, before HAMi starts managing GI/CI state.
 - **`filterdevices` is not a hardware protection boundary.** It excludes registration, while startup reconciliation can still touch every GPU on the node.
@@ -758,7 +710,7 @@ This leaves the pinned HAMi installation running with only GPU 4 registered. Pre
 - **Scheduler reasons can use inherited language.** `CardTimeSlicingExhausted` represented exhausted MIG placements here, not a switch to time slicing.
 - **Reclamation is eventual and UUIDs may be reused.** Poll host state after deletion. Disappearance and later reappearance is stronger evidence than expecting a new UUID.
 - **Dynamic placement is still constrained.** Profiles coexist only when NVML reports non-overlapping legal intervals; HAMi does not move or destroy a live neighbor to satisfy a new request.
-- **A homogeneous test is not a heterogeneous-node guarantee.** The verified node had eight identical supported GPUs. Validate mixed-model nodes separately.
+- **A homogeneous test is not a heterogeneous-node guarantee.** The verified node had seven identical supported GPUs. Validate mixed-model nodes separately.
 
 ## What This Lab Proved
 
@@ -767,12 +719,12 @@ This leaves the pinned HAMi installation running with only GPU 4 registered. Pre
 | 8,000 MiB selects real hardware isolation | The Pod received one `1g.24gb` GI/CI and the same MIG UUID appeared on host and in container |
 | One RTX PRO 6000 has four small-profile placements | Starts 0, 3, 6, and 9 were occupied; a fifth Pod stayed `Pending` while only GPU 4 was registered |
 | Different profiles can coexist | `2g.48gb` at `[0,6)` and `1g.24gb` at `[9,12)` ran CUDA together |
-| Reclamation is selective | Deleting `mixed-small` removed only its GI/CI while `mixed-large` advanced from 61 to 94 |
-| Valid allocation state is recoverable | Plugin restart retained the `2g.48gb` UUID and CUDA progress advanced from 115 to 187 |
+| Reclamation is selective | Deleting `mixed-small` removed only its GI/CI while `mixed-large` advanced from 37 to 101 |
+| Valid allocation state is recoverable | Plugin restart retained the `2g.48gb` UUID and CUDA progress advanced from 133 to 151 |
 | Capacity spills across GPUs | With GPUs 4 and 5 registered, four Pods packed onto GPU 4 and the fifth used GPU 5 |
 
 ## Next Steps
 
-- Read the pinned [migration guide](https://github.com/Project-HAMi/HAMi/blob/634bf2b32e68e07d3fbcbd6da1ee079392fc07c1/docs/develop/dynamic-mig-migration.md) before moving a production node from fixed geometries or MIG Manager.
+- Read the pinned [migration guide](https://github.com/Project-HAMi/HAMi/blob/v2.10.0/docs/develop/dynamic-mig-migration.md) before moving a production node from fixed geometries or MIG Manager.
 - Compare this hardware-isolated path with [Lab 7: GPU Isolation on k3s Without the GPU Operator](./hami-isolation-k3s.md), which verifies HAMi-core software isolation.
 - Validate the [NVIDIA supported MIG profiles](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/latest/supported-mig-profiles.html) for every GPU model and driver in your fleet.
