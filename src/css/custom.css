@@ -305,6 +305,16 @@ body,
   .theme-announcement-bar ~ .main-wrapper {
     padding-top: calc(var(--ifm-navbar-height) + var(--docusaurus-announcement-bar-height, 0px));
   }
+
+  .theme-announcement-bar ~ .main-wrapper .theme-doc-sidebar-container > div {
+    top: var(--docusaurus-announcement-bar-height, var(--hami-announcement-offset, 30px));
+    height: calc(
+      100vh - var(--docusaurus-announcement-bar-height, var(--hami-announcement-offset, 30px))
+    );
+    max-height: calc(
+      100vh - var(--docusaurus-announcement-bar-height, var(--hami-announcement-offset, 30px))
+    );
+  }
 }
 
 html[data-theme="dark"] body,
@@ -770,12 +780,9 @@ html[data-theme="dark"] .cncf-logo {
 }
 
 /* Docs/tutorials TOC: Docusaurus's default sticky top only accounts for the
-   navbar height, so the TOC overlaps the announcement bar when one is shown.
-   We can't use the --docusaurus-announcement-bar-height CSS variable here,
-   because it stays at 30px even after the user dismisses the bar. Instead,
-   key off the data attribute Docusaurus sets on <html> (before hydration,
-   from localStorage) to distinguish shown vs dismissed. */
-html:not([data-announcement-bar-initially-dismissed="true"]) .tableOfContents_bqdL {
+   navbar height, so use the live announcement bar element to apply and remove
+   its offset as the bar is shown or dismissed. */
+.theme-announcement-bar ~ .main-wrapper .tableOfContents_bqdL {
   top: calc(var(--ifm-navbar-height) + var(--hami-announcement-offset, 30px) + 1rem);
   max-height: calc(100vh - var(--ifm-navbar-height) - var(--hami-announcement-offset, 30px) - 2rem);
 }
@@ -1554,10 +1561,8 @@ html[data-theme="dark"] .casestudies-wrapper .casestudy-card-link:hover {
   padding-right: 0.35rem;
 }
 
-/* When the announcement bar is shown (not dismissed), push the blog TOC
-   down so it clears the bar. Key off the html data attribute (see the
-   docs TOC rule above for why the CSS variable can't be used). */
-html:not([data-announcement-bar-initially-dismissed="true"]) .blog-post-page .tableOfContents_bqdL {
+/* Keep the blog TOC offset in sync with the live announcement bar. */
+html.blog-post-page .theme-announcement-bar ~ .main-wrapper .tableOfContents_bqdL {
   top: calc(var(--ifm-navbar-height) + var(--hami-announcement-offset, 30px) + 1rem);
   max-height: calc(
     100vh - var(--ifm-navbar-height) - var(--hami-announcement-offset, 30px) - 1.5rem
