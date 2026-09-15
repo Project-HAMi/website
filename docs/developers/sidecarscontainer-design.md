@@ -21,17 +21,18 @@ This design adds sidecars as a third container class.
 The upstream formula (what the apiserver itself charges):
 
 ```text
-effective = max( max over non-sidecar init_i ( init_i + sum(sidecars started before init_i) ),
+effective = max( max over non-sidecar init_i ( init_i + sum(sidecars declared before init_i) ),
                  sum(apps) + sum(all sidecars) )
 ```
 
-**Simplification** (same spirit as the init design's assumption): use `sum(all sidecars)` instead of the ordering-aware term. Per device UUID and resource (count, mem, cores):
+A flat `sidecar_sum + max(init_peak, app_sum)` (same spirit as the init design's assumption, using `sum(all sidecars)` instead of the ordering-aware term) was considered as a cheaper approximation. It turned out no harder to walk `spec.initContainers` in declaration order and fold each sidecar's usage into the running peak as it's seen, so the shipped code computes the ordering-aware term above directly, matching the apiserver exactly rather than only bounding it from above. Per device UUID and resource (count, mem, cores):
 
 ```text
-effective[uuid] = sidecar_sum[uuid] + max( init_peak[uuid], app_sum[uuid] )
+effective[uuid] = max( max over non-sidecar init_i ( init_i[uuid] + sidecar_sum_so_far[uuid] ),
+                        app_sum[uuid] + sidecar_sum[uuid] )
 ```
 
-where `init_peak` is the max over non-sidecar init containers. If there are none, `init_peak` is 0, and a missing per-UUID entry also counts as 0 before the `max()` and addition. Sidecars are just a floor on top of the existing formula. It can only over-reserve in an ordering corner case, and that over-reservation can persist until shrink or reconciliation completes, not only during the init phase itself.
+where `sidecar_sum_so_far` accumulates only the sidecars declared earlier in `spec.initContainers`, and `sidecar_sum` in the second term is the total across all sidecars. If there are no non-sidecar init containers, the first term is 0, and a missing per-UUID entry also counts as 0 before the `max()` and addition.
 
 **Classification:**
 
@@ -44,8 +45,8 @@ The nil check makes this safe everywhere: absent field means no sidecars, behavi
 
 ## Proposal
 
-- **Admission quota check:** `effectiveReq = sidecarReq + max(initReq, appReq)`; memory factor applied once to the result.
-- **Scheduler fit & scoring:** a steady-state pass fits sidecars plus app containers cumulatively against a fresh node copy; the init pass fits each non-sidecar init against a fresh copy pre-charged with the sidecar usage; merge per UUID via `max()`.
+- **Admission quota check:** walk `spec.initContainers` in order, accumulating a running sidecar sum and folding it into each non-sidecar init container's peak (`pkg/scheduler/webhook.go`'s `fitResourceQuota`); the final `effectiveReq` is that peak compared against the total sidecar sum plus the app sum; memory factor applied once to the result.
+- **Scheduler fit & scoring:** a steady-state pass fits sidecars plus app containers cumulatively against a shared node copy; each non-sidecar init container gets its own fresh copy, deep-copied from that shared one at the point it's reached, so it's pre-charged with only the sidecars declared before it; merge per UUID via `max()`.
 - **Usage recording:** `CollapseInitContainerUsage` routes sidecars into the app-sum bucket and adds their sum to the init peak. The same split applies to the per-entry slot count (PR 2623): sidecar slots add like app containers, non-sidecar inits keep their peak of 1. `getNodesUsage` only consumes the stored output, so it needs no change of its own. Add/update/delete symmetry stays as it is.
 
 Annotations don't change, but a sidecar keeps its position in the init range of `hami.io/vgpu-devices-allocated`, and the annotation itself carries no sidecar identity. Position `i` maps to `pod.Spec.InitContainers[i]` when `i < len(InitContainers)`, otherwise to `pod.Spec.Containers[i - len(InitContainers)]`; readers (`CollapseInitContainerUsage`, device plugin `Allocate`, WebUI, which already holds the Pod object) then check that container's `restartPolicy`, never the position alone.
@@ -53,7 +54,7 @@ Annotations don't change, but a sidecar keeps its position in the init range of 
 ### Cases (one node, single 24Gi GPU)
 
 - **Oversubscription prevented:** sidecar 10Gi + app 10Gi. Before: accounted `max(10,10) = 10Gi`, so a later 12Gi pod schedules → real demand 32Gi. After: accounted 20Gi → the 12Gi pod is rejected.
-- **Shrink restored:** init 20Gi + sidecar 2Gi + app 10Gi. Before: gate never opens, 20Gi held forever. After: admission `2 + max(20,10) = 22Gi`; once the init exits 0, usage shrinks to 12Gi.
+- **Shrink restored:** init 20Gi + sidecar 2Gi + app 10Gi. Before: gate never opens, 20Gi held forever. After, admission depends on declaration order: sidecar declared before the init container charges `max(2+20, 2+10) = 22Gi`; init container declared first charges `max(20, 2+10) = 20Gi`. Either way, once the init container exits 0, usage shrinks to the steady state `2+10 = 12Gi`.
 - No sidecars, or terminal phase: identical to the init design.
 
 ## Shrink Rules
@@ -62,4 +63,4 @@ Same three rules as the init design, with non-sidecar inserted: shrink to steady
 
 ## Interaction with Kubernetes ResourceQuota
 
-The apiserver charges the ordering-aware upstream formula, so HAMi's simplified value is equal or slightly higher. In the shrink-restored case above, if the sidecar is declared after the init container, the apiserver charges 20Gi while HAMi accounts 22Gi, a pod near the quota limit can pass the apiserver and still be rejected by HAMi, only in that ordering corner case. As before, the shrink only frees capacity inside HAMi, fine, since the sidecar's share has to be held until the pod ends anyway.
+The apiserver charges the same ordering-aware upstream formula against the container-level resource requests HAMi's mutating webhook writes into the pod spec, on the same `spec.initContainers` order HAMi itself walks. Because admission computes that formula directly instead of the flat simplification, the two stay in agreement regardless of whether the sidecar is declared before or after the init container, avoiding the mismatch a flat sum would have caused. As before, the shrink only frees capacity inside HAMi; the apiserver's quota charge is unaffected, since the sidecar's share has to be held until the pod ends anyway.

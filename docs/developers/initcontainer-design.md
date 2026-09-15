@@ -59,6 +59,8 @@ So the correct formula for a pod's GPU footprint at any instant is:
 effective = max( sum(app container requests), max(single init container request) )
 ```
 
+**Assumption:** the resources requested by the init container will always be the same as one of the app containers.
+
 ## Proposal
 
 Applying this formula consistently for all resource dimensions (GPU count, memory, cores, and per-device UUID; a multi-GPU pod where init and app containers land on different physical devices must not have usage on those devices merged):
