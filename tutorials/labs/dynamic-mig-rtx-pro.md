@@ -286,10 +286,10 @@ jq '
 GPU 4 registered these capabilities:
 
 | Profile   | `memoryMB` | Core | `sliceCount` | Legal NVML placements (`start`, `size`) |
-| --------- | ---------: | ---: | -----------: | --------------------------------------- |
-| `1g.24gb` |     24,192 |   25 |            1 | `(0,3)`, `(3,3)`, `(6,3)`, `(9,3)`      |
-| `2g.48gb` |     48,512 |   50 |            2 | `(0,6)`, `(6,6)`                        |
-| `4g.96gb` |     97,408 |  100 |            4 | `(0,12)`                                |
+| --------- | ---------- | ---- | ------------ | --------------------------------------- |
+| `1g.24gb` | 24,192     | 25   | 1            | `(0,3)`, `(3,3)`, `(6,3)`, `(9,3)`      |
+| `2g.48gb` | 48,512     | 50   | 2            | `(0,6)`, `(6,6)`                        |
+| `4g.96gb` | 97,408     | 100  | 4            | `(0,12)`                                |
 
 `start` and `size` describe a half-open slice interval `[start, start + size)`; they are not GiB. The registered `count: 4` is only a coarse maximum. Actual capacity depends on non-overlapping legal placements.
 
