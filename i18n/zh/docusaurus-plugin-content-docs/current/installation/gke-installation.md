@@ -1,6 +1,6 @@
 ---
 title: 在 Google Kubernetes Engine 上安装 HAMi
-sidebar_label: HAMi on GKE
+sidebar_label: GKE 上的 HAMi
 translated: true
 ---
 
