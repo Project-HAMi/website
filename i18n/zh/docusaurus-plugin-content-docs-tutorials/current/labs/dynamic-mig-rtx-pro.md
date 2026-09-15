@@ -20,7 +20,7 @@ toc_max_heading_level: 2
 
 本实验安装官方 HAMi v2.10.0 Chart，并跟踪一次 MIG 分配的完整生命周期：创建、容量饱和、混合规格放置、选择性回收、设备插件接管，以及溢出到第二张 GPU。Pod 通过 HAMi 的标准资源 API 请求显存；HAMi 选择显存足够且存在合法空闲位置的最小 NVIDIA MIG 规格，随后创建该 Pod 的 GPU Instance（GI）和 Compute Instance（CI），并在 Pod 结束后将其回收。
 
-该流程起源于[首次验证测试](https://blog.kubesimplify.com/dynamic-mig-in-kubernetes-with-hami)，由[Shubham Katara](https://github.com/shkatara)和[Saiyam Pathak](https://github.com/saiyam1814)共同撰写发布在kubesimplify博客上。完整的Dynamic MIG生命周期及下方输出在2026-09-15使用官方v2.10.0图表和`projecthami/hami:v2.10.0`发布镜像重新验证，文档中记录的全新安装路径在生命周期运行后重复执行并达到了相同的单GPU健康基线。HAMi v2.10.0包含[HAMi PR #2378](https://github.com/Project-HAMi/HAMi/pull/2378)，引入了此Per-Pod Dynamic MIG实现。
+本流程源自 [Shubham Katara](https://github.com/shkatara) 和 [Saiyam Pathak](https://github.com/saiyam1814) 共同发表于 kubesimplify 博客的[首次验证测试](https://blog.kubesimplify.com/dynamic-mig-in-kubernetes-with-hami)。完整的 Dynamic MIG 生命周期及下方输出已于 2026-09-15 使用官方 v2.10.0 Chart 和 `projecthami/hami:v2.10.0` 发布镜像重新验证；生命周期测试结束后还重复执行了文档中的全新安装流程，并恢复到相同的健康单 GPU 基线。HAMi v2.10.0 包含引入 Per-Pod Dynamic MIG 实现的 [HAMi PR #2378](https://github.com/Project-HAMi/HAMi/pull/2378)。
 
 ## 你将学习的内容
 
