@@ -59,12 +59,12 @@ No value other than the exact string `1` enables the server or client.
 
 The protocol uses one request and one response on a Unix stream connection. Every integer is unsigned and encoded in network byte order.
 
-| Field | Request bytes | Response bytes |
-| --- | ---: | ---: |
-| Magic `HPID` | 4 | 4 |
-| Version | 2 | 2 |
-| Command or status | 2 | 2 |
-| Host PID | 0 | 4 |
+| Field             | Request bytes | Response bytes |
+| ----------------- | ------------: | -------------: |
+| Magic `HPID`      |             4 |              4 |
+| Version           |             2 |              2 |
+| Command or status |             2 |              2 |
+| Host PID          |             0 |              4 |
 
 Protocol version 1 supports command 1, which means get the caller's host PID. Status 0 is success. Status 1 means the request was invalid.
 

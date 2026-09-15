@@ -56,7 +56,7 @@ The current Helm configuration sets the extender's `nodeCacheCapable` field to `
 
 ```json
 {
-  "pod": {"metadata": {"name": "gpu-workload"}},
+  "pod": { "metadata": { "name": "gpu-workload" } },
   "nodeNames": ["node-a", "node-b"]
 }
 ```
