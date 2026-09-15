@@ -189,7 +189,7 @@ delta[uuid] = new_usage[uuid] - old_usage[uuid]
 apply delta[uuid] to QuotaManager and PodManager
 ```
 
-Requests stay the basis for admission and scheduling decisions above; once a pod is running, the recorded/shrunk value, the number quota and node-capacity accounting compare against, is always derived from the same usage fields `AddUsage`/`getNodesUsage` already track, so it can never drift from what `CollapseInitContainerUsage` produced when the pod started.
+Requests stay the basis for admission and scheduling decisions above; once a pod is running, the recorded value, the number quota and node-capacity accounting compare against, is always derived from the same usage fields `AddUsage`/`getNodesUsage` already track. `CollapseInitContainerUsage` only establishes that value when the pod is added, and the shrink then replaces it, so the stored value is deliberately not the one the pod started with. What holds instead is that add and remove stay symmetric: an update applies only the delta between the new and the current stored value, and deletion subtracts exactly the value stored at that moment, shrunk or not.
 
 Only ever runs **after** `pod.Status` confirms completion.
 
