@@ -86,6 +86,11 @@ module.exports = {
           id: "labs/hami-sglang",
           customProps: { level: "Intermediate", duration: "about 45 minutes" },
         },
+        {
+          type: "doc",
+          id: "labs/dynamic-mig-rtx-pro",
+          customProps: { level: "Advanced", duration: "about 90 minutes" },
+        },
       ],
     },
   ],
