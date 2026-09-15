@@ -1,0 +1,19 @@
+---
+title: Allocate device core to container
+sidebar_label: Allocate device core usage
+---
+
+Allocate a percentage of device core resources by specifying resource `nvidia.com/gpucores`. Optional, each unit of `nvidia.com/gpucores` equals 1% of device cores.
+
+```yaml
+resources:
+  limits:
+    nvidia.com/gpu: 1 # requesting 1 GPU
+    nvidia.com/gpucores: 50 # Each GPU allocates 50% device cores.
+```
+
+:::note
+
+HAMi-core uses time-slice to limit device core usage. Therefore, there will be fluctuations when looking at GPU utilization through nvidia-smi
+
+:::
