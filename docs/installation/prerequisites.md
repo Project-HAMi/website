@@ -59,6 +59,8 @@ The following example uses GPU Operator **v26.3.3** and HAMi's default `envvar` 
 
 If GPU Operator is already installed, update the relevant settings in its existing Helm values and preserve the other settings. If the nodes have running GPU workloads, confirm the device injection mode before changing `cdi.enabled`.
 
+If an existing installation has CDI enabled on CRI-O nodes, temporarily disable the GPU Operator validator by setting the `nvidia.com/gpu.deploy.operator-validator` label to `false` on those nodes before disabling CDI. After disabling CDI, restore the label to `true` to re-enable the validator. Follow the [GPU Operator 26.3 procedure for disabling CDI](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/26.3/cdi.html#disabling-cdi).
+
 :::note CDI and runtime selection
 
 Starting with GPU Operator 25.10, CDI is enabled by default, and `cdi.default` is deprecated and ignored. This example sets `cdi.enabled=false` to use the NVIDIA runtime with HAMi's `envvar` strategy. See the [GPU Operator 25.10 release notes](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/25.10/release-notes.html).

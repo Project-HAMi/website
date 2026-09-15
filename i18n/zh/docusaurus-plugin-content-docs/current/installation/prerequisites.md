@@ -60,6 +60,8 @@ translated: true
 
 集群已安装 GPU Operator 时，修改现有 Helm values 中的对应配置，并保留其他设置。如果节点上已有 GPU 工作负载，先确认设备注入方式，再修改 `cdi.enabled`。
 
+如果已有安装在 CRI-O 节点上启用了 CDI，关闭 CDI 前，先将这些节点的 `nvidia.com/gpu.deploy.operator-validator` 标签设为 `false`，临时停用 GPU Operator validator。关闭 CDI 后，将标签恢复为 `true`，重新启用 validator。具体步骤见 [GPU Operator 26.3 关闭 CDI 指南](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/26.3/cdi.html#disabling-cdi)。
+
 :::note CDI 与运行时选择
 
 自 GPU Operator 25.10 起，CDI 默认启用，`cdi.default` 已废弃且不再生效。本例设置 `cdi.enabled=false`，使用 NVIDIA runtime 和 HAMi 的 `envvar` 策略。详见 [GPU Operator 25.10 发布说明](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/25.10/release-notes.html)。
