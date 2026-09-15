@@ -108,7 +108,7 @@ kubectl apply -f https://project-hami.io/examples/gke-nvidia-driver-path.yaml
 kubectl rollout status -n kube-system daemonset/gke-nvidia-driver-path
 ```
 
-如果已经安装 GPU Operator 和 HAMi，重启相关组件使修复生效。将 `hami-system` 替换为 HAMi 所在的命名空间：
+如果已经安装 GPU Operator 和 HAMi，重启相关组件使修复生效。将以下命令中的 `gpu-operator` 和 `hami-system` 分别替换为 GPU Operator 和 HAMi 实际所在的命名空间：
 
 ```bash
 kubectl rollout restart -n gpu-operator daemonset/nvidia-container-toolkit-daemonset
