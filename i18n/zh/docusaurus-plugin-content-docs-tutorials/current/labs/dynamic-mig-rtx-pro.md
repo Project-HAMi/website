@@ -12,7 +12,7 @@ lab:
     - saiyam1814
   verified: "2026-09-15"
 tags:
-  - gpu-partitioning
+  - GPU 分区
   - nvidia
   - hami
 toc_max_heading_level: 2
@@ -22,7 +22,7 @@ toc_max_heading_level: 2
 
 本实验的完整中文翻译尚未完成。为避免命令、版本、安全警告和实测输出在翻译期间产生偏差，请暂时使用[英文版实验](/tutorials/labs/dynamic-mig-rtx-pro)。
 
-英文版包含完整的端到端操作：安装官方 HAMi v2.10.0 Chart 和镜像、备份与受控交接、MIG Manager 所有权警告、`operatingmode` 与 `migStrategy` 的区别、单个 `1g.24gb` 请求、四个位置饱和、`1g.24gb` 与 `2g.48gb` 混合部署、相邻 CUDA 工作负载持续运行时的选择性回收、设备插件重启后的 UUID 稳定性、第五个 Pod 溢出到第二张 GPU，以及清理和运维陷阱。完整的 Dynamic MIG 生命周期和以下输出已于 2026-09-15 在使用官方 Chart 升级测试集群后，通过 v2.10.0 发布产物重新验证。
+英文版包含完整的端到端操作：安装官方 HAMi v2.10.0 Chart 和镜像、备份与受控交接、MIG Manager 所有权警告、`operatingmode` 与 `migStrategy` 的区别、单个 `1g.24gb` 请求、四个位置饱和、`1g.24gb` 与 `2g.48gb` 混合部署、相邻 CUDA 工作负载持续运行时的选择性回收、设备插件重启后的 UUID 稳定性、第五个 Pod 溢出到第二张 GPU，以及清理和运维陷阱。完整的 Dynamic MIG 生命周期和以下输出已于 2026-09-15 通过 v2.10.0 官方 Chart 与镜像重新验证；随后也重新执行了文档中的全新安装流程，并恢复到相同的健康单 GPU 基线。
 
 :::
 

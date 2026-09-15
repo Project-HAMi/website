@@ -20,7 +20,7 @@ toc_max_heading_level: 2
 
 This lab installs the official HAMi v2.10.0 chart, then follows one MIG allocation through creation, saturation, mixed-profile placement, selective reclamation, device-plugin adoption, and spillover to a second GPU. A Pod asks for memory through HAMi's usual resource API; HAMi chooses the smallest allowed NVIDIA MIG profile with enough memory and a legal free placement, then creates and later reclaims that Pod's GPU Instance (GI) and Compute Instance (CI).
 
-The procedure originated in the [first verified test](https://blog.kubesimplify.com/dynamic-mig-in-kubernetes-with-hami), which [Shubham Katara](https://github.com/shkatara) and [Saiyam Pathak](https://github.com/saiyam1814) wrote together on the kubesimplify blog. The complete Dynamic MIG lifecycle and the outputs below were re-verified on 2026-09-15 after upgrading the test cluster with the official v2.10.0 chart and `projecthami/hami:v2.10.0` release image. HAMi v2.10.0 includes [HAMi PR #2378](https://github.com/Project-HAMi/HAMi/pull/2378), which introduced this per-Pod Dynamic MIG implementation.
+The procedure originated in the [first verified test](https://blog.kubesimplify.com/dynamic-mig-in-kubernetes-with-hami), which [Shubham Katara](https://github.com/shkatara) and [Saiyam Pathak](https://github.com/saiyam1814) wrote together on the kubesimplify blog. The complete Dynamic MIG lifecycle and the outputs below were re-verified on 2026-09-15 with the official v2.10.0 chart and `projecthami/hami:v2.10.0` release image. The documented fresh-install path was repeated after the lifecycle run and reached the same healthy one-GPU baseline. HAMi v2.10.0 includes [HAMi PR #2378](https://github.com/Project-HAMi/HAMi/pull/2378), which introduced this per-Pod Dynamic MIG implementation.
 
 ## What You'll Learn
 
@@ -262,7 +262,7 @@ GPU 4 registered these capabilities:
 
 `start` and `size` describe a half-open slice interval `[start, start + size)`; they are not GiB. The registered `count: 4` is only a coarse maximum. Actual capacity depends on non-overlapping legal placements.
 
-Create the namespace and one repeatable CUDA workload. It runs NVIDIA's `vectorAdd` sample continuously and increments `/tmp/gpu-progress` after every successful iteration.
+Create the namespace and one repeatable CUDA workload. It runs NVIDIA's `vectorAdd` sample continuously as non-root UID/GID 65532 with privilege escalation and Linux capabilities disabled, and increments `/tmp/gpu-progress` after every successful iteration.
 
 ```bash
 kubectl create namespace hami-mig-retest
@@ -694,8 +694,8 @@ The verified final state was:
 Registered GPU indices: 4
 MIG state: PASS - no instances remain
 NAME                              READY   STATUS    RESTARTS
-hami-device-plugin-cmkvj          2/2     Running   0
-hami-scheduler-7f4f4d866c-k8gmf   2/2     Running   0
+hami-device-plugin-kjj75          2/2     Running   0
+hami-scheduler-7f4f4d866c-tmjss   2/2     Running   0
 ```
 
 This leaves HAMi v2.10.0 running with only GPU 4 registered. Preserve the Step 1 backups until you have either accepted this installation or restored the previous deployment through its documented migration or rollback procedure. Do not directly roll binaries back to a legacy Dynamic MIG implementation while new-format allocations are active.
