@@ -1,14 +1,14 @@
 ---
-title: "HAMi at KubeCon China 2026: A Keynote, Two Talks, and a Booth in Shanghai"
+title: "HAMi at KubeCon China 2026: Two Keynotes, Two Talks, and a Booth in Shanghai"
 date: "2026-08-25"
-description: "HAMi will appear at KubeCon + CloudNativeCon + OpenInfra Summit + PyTorch Conference China 2026 with a keynote appearance, two technical sessions, and a project booth. It is HAMi's first KubeCon China since being accepted as a CNCF Incubating project."
+description: "HAMi will appear at KubeCon + CloudNativeCon + OpenInfra Summit + PyTorch Conference China 2026 with two keynotes, a lightning talk, a technical session, and a project booth. It is HAMi's first KubeCon China since being accepted as a CNCF Incubating project."
 tags: ["KubeCon", "GPU", "Kubernetes", "AI"]
 authors: [hami_community]
 ---
 
 From September 7 to 9, [KubeCon + CloudNativeCon + OpenInfra Summit + PyTorch Conference China 2026](https://www.lfopensource.cn/kubecon-cloudnativecon-openinfra-summit-pytorch-conference-china/) will take place at the Shanghai International Convention Center. This will be HAMi's first KubeCon China appearance since the project was accepted as a [CNCF Incubating project](/blog/hami-cncf-incubating) in July.
 
-The HAMi community is bringing a keynote appearance, two technical sessions, and a project booth to the show: from a 5-minute lightning talk on dynamic MIG partitioning, to a production story of GPU virtualization at thousand-GPU scale. If you are attending, come say hi.
+The HAMi community is bringing two keynotes, a lightning talk, a technical session, and a project booth to the show: from PD-disaggregated heterogeneous inference deployment, to dynamic MIG partitioning in five minutes, to a production story of GPU virtualization at thousand-GPU scale. If you are attending, come say hi.
 
 <!-- truncate -->
 
@@ -21,23 +21,29 @@ The HAMi community is bringing a keynote appearance, two technical sessions, and
 - **Registration**: [Official website](https://www.lfopensource.cn/kubecon-cloudnativecon-openinfra-summit-pytorch-conference-china/)
 - **Full schedule**: [Program schedule](https://www.lfopensource.cn/kubecon-cloudnativecon-openinfra-summit-pytorch-conference-china/program/schedule/)
 
-All HAMi-related activities happen on September 8: a keynote appearance in the morning, a lightning talk, a production session in the afternoon, and a booth staffed all day. The full keynote lineup is subject to the official schedule. All sessions will be recorded and published on CNCF channels after the event.
+All HAMi-related activities happen on September 8: two keynotes in the morning, a lightning talk, a production session in the afternoon, and a booth staffed all day. The full keynote lineup is subject to the official schedule. All sessions will be recorded and published on CNCF channels after the event.
 
-## Keynote: llm-d Support for Heterogeneous Environments
+## Keynote 1: Operating Frontier Intelligence at Scale
 
 - **Time**: September 8, 09:12-09:22
 - **Location**: Grand Ballroom II + III
-- **Speaker**: Jifei Wang (HAMi Approver)
+- **Speakers**: Chris Aniszczyk (CTO, Cloud and Infrastructure, The Linux Foundation) and Xiao Zhang (Co-founder & CEO, Dynamia)
 
-In the morning keynote session "Operating Frontier Intelligence at Scale", Jifei Wang will present llm-d's support for heterogeneous computing environments.
+The opening keynote of the conference. Chris Aniszczyk, CTO of the Linux Foundation, shares the stage with Xiao Zhang: once models are built and AI moves into production, the challenge shifts to making every GPU deliver value, scaling dynamically with demand, staying reliable, and understanding increasingly complex systems. Cloud native technology is becoming the operating system layer that supports it all. The talk also explores the growing role of observability as AI systems grow more complex, and why the next generation of AI infrastructure will depend on open technologies working together across the stack.
 
-[llm-d](https://github.com/llm-d) is a CNCF project building distributed LLM inference on Kubernetes. When an inference cluster no longer runs a single kind of accelerator, how do partitioning, sharing, and scheduling work across hardware architectures? HAMi brings heterogeneous GPU sharing and scheduling capabilities into llm-d's inference topology. Ten minutes, worth getting up early for.
+## Keynote 2: PD Disaggregation vLLM Deployment on Alternative AI Accelerators Using llm-d
+
+- **Time**: September 8, 09:59-10:04
+- **Location**: Grand Ballroom II + III
+- **Speakers**: Jifei Wang (HAMi Approver, Dynamia) and Mengxuan Li (Co-founder & CTO, Dynamia)
+
+[llm-d](https://github.com/llm-d) is a CNCF project building distributed LLM inference on Kubernetes. When an inference cluster no longer runs a single kind of GPU, how does the PD disaggregation (Prefill/Decode Disaggregation) architecture deploy vLLM efficiently on non-NVIDIA accelerators? This keynote presents llm-d's support for heterogeneous computing environments: HAMi brings heterogeneous GPU sharing and scheduling capabilities into llm-d's inference topology, letting partitioning, sharing, and scheduling work across hardware architectures. Five minutes, maximum density.
 
 ## Lightning Talk: From Static Slices to Elastic GPUs: Dynamic MIG with HAMi
 
 - **Time**: September 8, 11:14-11:19
 - **Location**: 5B + C
-- **Speaker**: Jifei Wang (HAMi Approver)
+- **Speaker**: Jifei Wang (HAMi Approver, Dynamia)
 
 Using NVIDIA MIG in Kubernetes usually means static pre-partitioning: operators must decide the partition layout of an entire card before workloads arrive. Partition too coarse and you waste capacity; partition too fine and you fragment the pool. By the time real workloads show up, the layout is often wrong.
 

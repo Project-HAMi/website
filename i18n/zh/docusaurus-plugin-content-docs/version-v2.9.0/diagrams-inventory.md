@@ -72,10 +72,10 @@ translated: true
 | 图片路径 | Format | 引用位置 | Source file | Status | Control/data plane |
 | --- | --- | --- | --- | --- | --- |
 | `static/img/docs/common/developers/protocol/protocol-register.png` | PNG | `docs/developers/protocol.md`（英文）、`i18n/zh/.../developers/protocol.md`（中文） | none | unknown | not separated |
-| `static/img/docs/common/developers/protocol/task-dispatch.png` | PNG | 历史 v1.3.0 和 v2.4.1–v2.5.1 快照；当前/v2.9.0 中文版；英文版待 [#811](https://github.com/Project-HAMi/website/pull/811) 合入 | none | unknown | not separated |
+| `static/img/docs/common/developers/protocol/task-dispatch.png` | PNG | 历史 v1.3.0 和 v2.4.1–v2.5.1 快照；`docs/developers/protocol.md`（英文）、`i18n/zh/.../developers/protocol.md`（中文） | none | unknown | not separated |
 | `static/img/docs/common/developers/protocol/device-registration.png` | PNG | 历史 v1.3.0 和 v2.4.1–v2.5.1 协议快照 | none | unknown | not separated |
 
-**说明：** 当前/v2.9.0 英文和中文协议页面使用 `protocol-register.png`；历史快照仍保留 `device-registration.png` 和 `task-dispatch.png` 的引用。当前/v2.9.0 中文页面使用 `task-dispatch.png`，[#811](https://github.com/Project-HAMi/website/pull/811) 提议将其添加到英文页面。
+**说明：** 当前/v2.9.0 英文和中文协议页面使用 `protocol-register.png` 与 `task-dispatch.png`；历史快照仍保留 `device-registration.png` 及旧版 `task-dispatch.png` 的引用。
 
 ---
 
@@ -242,9 +242,9 @@ translated: true
 
 这是一个损坏的链接，会导致渲染页面中图片缺失。
 
-### 协议图不一致（英文 vs. 中文）— 已部分解决
+### 协议图不一致（英文 vs. 中文）— 已解决
 
-当前/v2.9.0 英文和中文协议页面使用 `protocol-register.png`；历史快照仍保留 `device-registration.png` 和 `task-dispatch.png` 的引用。当前/v2.9.0 中文页面使用 `task-dispatch.png`，[#811](https://github.com/Project-HAMi/website/pull/811) 提议将其添加到英文页面。
+当前/v2.9.0 英文和中文协议页面使用 `protocol-register.png` 与 `task-dispatch.png`；历史快照仍保留 `device-registration.png` 及旧版 `task-dispatch.png` 的引用。
 
 ---
 
@@ -263,7 +263,7 @@ translated: true
 | Medium | `static/img/docs/common/developers/scheduling/node-scheduler-policy-demo.png` | PNG | 无源文件 |
 | Medium | `static/img/docs/common/developers/scheduling/gpu-scheduler-policy-demo.png` | PNG | 无源文件 |
 | Medium | `static/img/docs/common/developers/protocol/protocol-register.png` | PNG | 无源文件；英文和中文共用 |
-| Medium | `static/img/docs/common/developers/protocol/task-dispatch.png` | PNG | 无源文件；历史中英文版及当前中文版引用，当前英文版待 [#811](https://github.com/Project-HAMi/website/pull/811) 合入 |
+| Medium | `static/img/docs/common/developers/protocol/task-dispatch.png` | PNG | 无源文件；历史中英文版引用，当前英文和中文共用 |
 | Medium | `static/img/docs/common/developers/protocol/device-registration.png` | PNG | 无源文件；由历史协议快照保留 |
 | Medium | `static/img/docs/en/dynamic-mig/hami-dynamic-mig-structure.png` | PNG | 无源文件 |
 | Medium | `static/img/docs/en/dynamic-mig/hami-dynamic-mig-procedure.png` | PNG | 无源文件 |

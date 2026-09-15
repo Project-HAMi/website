@@ -71,10 +71,10 @@ This page catalogs every diagram across the repository: `docs/`, `blog/`, `i18n/
 | Image path | Format | Referenced in | Source file | Status | Control/data plane |
 | --- | --- | --- | --- | --- | --- |
 | `static/img/docs/common/developers/protocol/protocol-register.png` | PNG | `docs/developers/protocol.md` (EN), `i18n/zh/.../developers/protocol.md` (ZH) | none | unknown | not separated |
-| `static/img/docs/common/developers/protocol/task-dispatch.png` | PNG | historical v1.3.0 and v2.4.1–v2.5.1 snapshots; current/v2.9.0 ZH; EN pending [#811](https://github.com/Project-HAMi/website/pull/811) | none | unknown | not separated |
+| `static/img/docs/common/developers/protocol/task-dispatch.png` | PNG | historical v1.3.0 and v2.4.1–v2.5.1 snapshots; `docs/developers/protocol.md` (EN), `i18n/zh/.../developers/protocol.md` (ZH) | none | unknown | not separated |
 | `static/img/docs/common/developers/protocol/device-registration.png` | PNG | historical v1.3.0 and v2.4.1–v2.5.1 protocol snapshots | none | unknown | not separated |
 
-**Note:** Current/v2.9.0 English and Chinese protocol pages use `protocol-register.png`; historical snapshots retain the older `device-registration.png` and `task-dispatch.png` references. Current/v2.9.0 Chinese pages use `task-dispatch.png`, and [#811](https://github.com/Project-HAMi/website/pull/811) proposes adding it to English.
+**Note:** Current/v2.9.0 English and Chinese protocol pages use `protocol-register.png` and `task-dispatch.png`; historical snapshots retain the older `device-registration.png` and legacy `task-dispatch.png` references.
 
 ---
 
@@ -241,9 +241,9 @@ The directory `static/img/docs/common/architecture/` does not exist. The file at
 
 This is a broken link that will cause a missing image in the rendered page.
 
-### Protocol diagram inconsistency (EN vs. ZH) — partially resolved
+### Protocol diagram inconsistency (EN vs. ZH) — resolved
 
-Current/v2.9.0 English and Chinese protocol pages use `protocol-register.png`; historical snapshots retain the older `device-registration.png` and `task-dispatch.png` references. Current/v2.9.0 Chinese pages use `task-dispatch.png`, and [#811](https://github.com/Project-HAMi/website/pull/811) proposes adding it to English.
+Current/v2.9.0 English and Chinese protocol pages use `protocol-register.png` and `task-dispatch.png`; historical snapshots retain the older `device-registration.png` and legacy `task-dispatch.png` references.
 
 ---
 
@@ -262,7 +262,7 @@ Priority list for the redraw work in [#421](https://github.com/Project-HAMi/webs
 | Medium | `static/img/docs/common/developers/scheduling/node-scheduler-policy-demo.png` | PNG | No source |
 | Medium | `static/img/docs/common/developers/scheduling/gpu-scheduler-policy-demo.png` | PNG | No source |
 | Medium | `static/img/docs/common/developers/protocol/protocol-register.png` | PNG | No source; shared by EN and ZH |
-| Medium | `static/img/docs/common/developers/protocol/task-dispatch.png` | PNG | No source; historical EN/ZH and current ZH, current EN pending [#811](https://github.com/Project-HAMi/website/pull/811) |
+| Medium | `static/img/docs/common/developers/protocol/task-dispatch.png` | PNG | No source; historical EN/ZH, shared by current EN and ZH |
 | Medium | `static/img/docs/common/developers/protocol/device-registration.png` | PNG | No source; retained by historical protocol snapshots |
 | Medium | `static/img/docs/en/dynamic-mig/hami-dynamic-mig-structure.png` | PNG | No source |
 | Medium | `static/img/docs/en/dynamic-mig/hami-dynamic-mig-procedure.png` | PNG | No source |

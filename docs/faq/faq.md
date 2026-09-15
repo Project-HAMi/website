@@ -144,8 +144,8 @@ Device Plugins can only report a single resource type. GPU memory and compute in
 - HAMi stores detailed GPU resource information (e.g., compute power, memory, model) as **node annotations** for use by the scheduler.
 - Example annotation:
 
-  ```yaml
-  hami.io/node-nvidia-register: GPU-fc28df76-54d2-c387-e52e-5f0a9495968c,10,49140,100,NVIDIA-NVIDIA L40S,0,true:GPU-b97db201-0442-8531-56d4-367e0c7d6edd,10,49140,100,...
+  ```text
+  hami.io/node-nvidia-register: [{"id":"GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec","count":10,"devmem":32768,"devcore":100,"type":"NVIDIA-Tesla V100-PCIE-32GB","numa":1,"mode":"hami-core","health":true},{"id":"GPU-0fc3eda5-e98b-a25b-5b0d-cf5c855d1448","index":1,"count":10,"devmem":32768,"devcore":100,"type":"NVIDIA-Tesla V100-PCIE-32GB","numa":1,"mode":"hami-core","health":true}]
   ```
 
 ### Follow-Up
@@ -228,3 +228,7 @@ If the HAMi Device Plugin or workloads fail after upgrading to GPU Operator 25.1
 ## How do I set up Prometheus and Grafana monitoring for HAMi vGPU metrics?
 
 The `hami-device-plugin` pod on each node exposes per-container vGPU metrics on port `31992` (configurable via `devicePlugin.service.httpPort`). See [Grafana Dashboard](./userguide/monitoring/grafana-dashboard) for the full setup including Prometheus scrape config and dashboard import.
+
+## PaddlePaddle crashes with core_dump on vGPU?
+
+This is caused by `thread_local` allocator. Refer to [PaddlePaddle CoreDump Issue with thread_local Allocator on vGPU](./troubleshooting/paddle-threadlocal-coredump).

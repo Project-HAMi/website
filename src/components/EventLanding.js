@@ -100,6 +100,21 @@ export default function EventLanding({ slug }) {
       : {}),
   };
 
+  const talkSlideItems = Array.isArray(event.resources?.talkSlides)
+    ? event.resources.talkSlides
+    : event.resources?.talkSlides
+      ? [event.resources.talkSlides]
+      : [];
+  const resourceItems = [
+    ...(event.resources?.communityFlyer?.url
+      ? [{ icon: faFilePdf, ...event.resources.communityFlyer }]
+      : []),
+    ...talkSlideItems.filter((s) => s?.url).map((s) => ({ icon: faFilePdf, ...s })),
+    ...(event.resources?.speakerReel?.url
+      ? [{ icon: faVideo, ...event.resources.speakerReel }]
+      : []),
+  ];
+
   return (
     <Layout title={pick(locale, event.title)} description={pick(locale, event.description)}>
       {bannerUrl && (
@@ -207,30 +222,24 @@ export default function EventLanding({ slug }) {
           </section>
         )}
 
-        {event.resources && Object.values(event.resources).some((r) => r?.url) && (
+        {resourceItems.length > 0 && (
           <section className={styles.resources}>
             <div className="container">
               <div className={`hami-section-card ${styles.resourcesCard}`}>
                 <h2 className={styles.sectionTitle}>{isZh ? "会议资料" : "Event Resources"}</h2>
                 <div className={styles.resourceList}>
-                  {[
-                    { key: "communityFlyer", icon: faFilePdf },
-                    { key: "talkSlides", icon: faFilePdf },
-                    { key: "speakerReel", icon: faVideo },
-                  ]
-                    .filter((r) => event.resources[r.key]?.url)
-                    .map((r) => (
-                      <a
-                        key={r.key}
-                        href={event.resources[r.key].url}
-                        className={styles.resourceLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <FontAwesomeIcon icon={r.icon} className={styles.resourceIcon} />
-                        <span>{pick(locale, event.resources[r.key])}</span>
-                      </a>
-                    ))}
+                  {resourceItems.map((item) => (
+                    <a
+                      key={item.url}
+                      href={item.url}
+                      className={styles.resourceLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <FontAwesomeIcon icon={item.icon} className={styles.resourceIcon} />
+                      <span>{pick(locale, item)}</span>
+                    </a>
+                  ))}
                 </div>
               </div>
             </div>
