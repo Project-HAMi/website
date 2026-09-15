@@ -169,6 +169,14 @@ Startup recovery uses both Kubernetes allocation state and NVML activity:
 
 If allocation state cannot be read reliably during startup, the plugin preserves GPUs instead of applying destructive idle-GPU cleanup. Legacy `GPU-UUID[template-slot]` identifiers cannot be adopted because they do not prove a physical placement and complete runtime identity.
 
+## NVML session ownership
+
+Each Dynamic MIG plugin start cycle owns one NVML session through its `MigInstanceManager`. Construction does not initialize NVML. The session is acquired before the startup scan, and MIG discovery, registration, topology scoring, allocation, adoption, and release all borrow that configured instance.
+
+Shutdown cancels the cycle's registration and reconciliation loops, stops gRPC and waits for handlers including allocation cleanup, then drains background workers before shutting the manager down. The manager rejects new operations while closing and waits for admitted ones to finish. Startup failures use the same cleanup path, so a failed initialization is never paired with a shutdown, and repeating a shutdown is safe. A new start acquires a new session and rebuilds the in-memory allocation index from Pod annotations; shutting down does not by itself destroy running instances.
+
+Initial resource discovery, health checking, non-MIG operation, and the separate monitor keep their own independent sessions. The one-init and one-shutdown invariant applies to the Dynamic MIG manager's session, not to every NVML caller in the process. Forced process termination cannot run graceful cleanup.
+
 ## Metrics and observability
 
 The scheduler exports realized instances through the current metric:
@@ -214,7 +222,11 @@ MIG Manager applies node- or GPU-level geometries, while HAMi Dynamic MIG create
 
 GPU Operator may continue to provide the NVIDIA driver, Container Toolkit, DCGM, and other infrastructure. Before HAMi assumes mutation ownership, stop MIG Manager reconciliation and ensure a controller cannot recreate it or reapply `nvidia.com/mig.config`. Deleting one MIG Manager Pod without changing its controller policy does not establish that boundary.
 
-See the [Dynamic MIG user guide](../userguide/nvidia-device/dynamic-mig-support.md) for the current Chart allowlist, migration checklist, workload example, and validation commands.
+See the [Dynamic MIG user guide](../userguide/nvidia-device/dynamic-mig-support.md) for the current Chart allowlist, migration checklist, workload example, and validation commands. For the operator-facing upgrade path from the legacy geometry implementation or from NVIDIA MIG Manager, including the staged rollback and the validation checklist, see [Migrating to HAMi Dynamic MIG](./dynamic-mig-migration.md).
+
+## Evolution direction
+
+The capability contract, the reservation contract, and the hardware ownership boundary are the parts intended to stay stable. They leave room for pluggable placement policies, node-level fragmentation scoring, placement-aware scheduler metrics, event-driven lifecycle acceleration, CDI synchronization for dynamic MIG identities, and broader multi-GPU and heterogeneous-node validation.
 
 ## Special thanks
 

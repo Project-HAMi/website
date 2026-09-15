@@ -62,6 +62,15 @@ During this process, the following annotations are managed on the Pod:
 - `hami.io/vgpu-devices-allocated`: The devices and specifications allocated by the scheduler.
 - `hami.io/vgpu-devices-to-allocate`: The devices pending allocation. When the scheduler prepares the Pod for binding, this annotation contains the target devices. During container setup, the device plugin allocates devices and incrementally removes them. Once all devices are allocated, this annotation becomes empty.
 
+`hami.io/vgpu-devices-to-allocate` is the NVIDIA key. Each device backend registers its own key, and the names do not follow a single `{device-type}` pattern:
+
+| Backend       | Pending-allocation key                      |
+| ------------- | ------------------------------------------- |
+| NVIDIA        | `hami.io/vgpu-devices-to-allocate`          |
+| Cambricon MLU | `hami.io/cambricon-mlu-devices-to-allocate` |
+| Moore Threads | `hami.io/mthreads-vgpu-devices-to-allocate` |
+| Hygon HCU     | `hami.io/hcu-devices-to-allocate`           |
+
 For example, when a GPU task requesting 3000 MiB of device memory is dispatched, the scheduler sets the annotations to:
 
 ```yaml
