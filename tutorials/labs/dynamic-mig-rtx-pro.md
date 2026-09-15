@@ -377,11 +377,11 @@ jq -r '
 All four legal `1g.24gb` starts were occupied:
 
 ```plaintext
-PARENT_GPU                                   PROFILE    START  SIZE
-GPU-4c395b7a-a7e6-d90f-1ced-d96e8dd68288   1g.24gb   0      3
-GPU-4c395b7a-a7e6-d90f-1ced-d96e8dd68288   1g.24gb   3      3
-GPU-4c395b7a-a7e6-d90f-1ced-d96e8dd68288   1g.24gb   6      3
-GPU-4c395b7a-a7e6-d90f-1ced-d96e8dd68288   1g.24gb   9      3
+PARENT_GPU                                PROFILE  START  SIZE
+GPU-4c395b7a-a7e6-d90f-1ced-d96e8dd68288  1g.24gb  0      3
+GPU-4c395b7a-a7e6-d90f-1ced-d96e8dd68288  1g.24gb  3      3
+GPU-4c395b7a-a7e6-d90f-1ced-d96e8dd68288  1g.24gb  6      3
+GPU-4c395b7a-a7e6-d90f-1ced-d96e8dd68288  1g.24gb  9      3
 ```
 
 With only GPU 4 registered, a fifth replica remained unbound instead of overcommitting the card:
@@ -668,7 +668,7 @@ jq -r '
 The verified bin-packing result filled all four placements on GPU 4, then placed the fifth Pod on GPU 5:
 
 ```plaintext
-POD                               PARENT_GPU                                   PROFILE    START
+POD                                PARENT_GPU                                 PROFILE   START
 mig-small-pack-6784898ddb-5pwjh    GPU-4c395b7a-a7e6-d90f-1ced-d96e8dd68288   1g.24gb   6
 mig-small-pack-6784898ddb-65tvf    GPU-4c395b7a-a7e6-d90f-1ced-d96e8dd68288   1g.24gb   0
 mig-small-pack-6784898ddb-jgq6k    GPU-4c395b7a-a7e6-d90f-1ced-d96e8dd68288   1g.24gb   9
