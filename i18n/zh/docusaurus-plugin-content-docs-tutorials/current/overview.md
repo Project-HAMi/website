@@ -30,4 +30,4 @@ import LabCardGridAuto from '@site/src/components/labs/LabCardGridAuto';
 - **实验 12** 在 GKE 1.35/COS/CDI 上部署 KAI Scheduler 与 HAMi-core，并通过 CUDA 分配验证显存上限。
 - **实验 13** 在昇腾 310P3 ARM 服务器上源码编译 Volcano 与 ascend-device-plugin，验证 hami-vnpu-core 软切分、binpack 共卡与容器级监控指标。
 - **实验 14** 在挂载四块 T4 的 GKE 节点上安装 HAMi v2.10.0，并通过分配注解与调度器日志观察可组合的 `gpu-scheduler-policy` 策略链（`spread`、`binpack`、`mutex`、`mutex,binpack`）。
-- **实验 17** 在配备 8 张 RTX PRO 6000 的服务器上构建固定提交版本的 HAMi，并验证完整的 Dynamic MIG 生命周期：按 Pod 创建 MIG、混合规格、选择性回收、device plugin 重启恢复以及跨 GPU 调度。
+- **实验 16** 在配备 7 张 RTX PRO 6000 的服务器上安装 HAMi v2.10.0，并验证完整的 Dynamic MIG 生命周期：按 Pod 创建 MIG、混合规格、选择性回收、device plugin 重启恢复以及跨 GPU 调度。

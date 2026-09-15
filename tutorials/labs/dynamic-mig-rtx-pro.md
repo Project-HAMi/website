@@ -1,7 +1,7 @@
 ---
-title: "Lab 17: Dynamic MIG Lifecycle on RTX PRO 6000"
+title: "Lab 16: Dynamic MIG Lifecycle on RTX PRO 6000"
 description: "Install HAMi v2.10.0 and verify per-Pod MIG placement, mixed profiles, selective reclamation, restart recovery, and multi-GPU spillover."
-sidebar_label: "Lab 17: Dynamic MIG Lifecycle"
+sidebar_label: "Lab 16: Dynamic MIG Lifecycle"
 lab:
   level: Advanced
   duration: about 90 minutes
@@ -70,7 +70,7 @@ You also need:
 - root access to the GPU node, working `nvidia-smi`, MIG-capable GPUs, and no unmanaged CUDA processes;
 - Helm, `kubectl`, and `jq`;
 - cluster-admin access and permission to replace the existing HAMi installation;
-- a local checkout of this website repository for the files under [`tutorials/labs/examples/17-dynamic-mig-rtx-pro/`](https://github.com/Project-HAMi/website/tree/master/tutorials/labs/examples/17-dynamic-mig-rtx-pro); and
+- a local checkout of this website repository for the files under [`tutorials/labs/examples/16-dynamic-mig-rtx-pro/`](https://github.com/Project-HAMi/website/tree/master/tutorials/labs/examples/16-dynamic-mig-rtx-pro); and
 - an explicit maintenance window for the **whole GPU node**, not only the GPUs that HAMi will register.
 
 The supplied values target the verified seven-GPU node and initially register only GPU index 4. If your topology differs, choose your own primary and spillover GPU indices in Step 1; Steps 2 and 7 derive the `filterdevices.index` exclusion lists from those choices and the node's GPU inventory. You need at least two compatible GPUs to reproduce Step 7.
@@ -94,7 +94,7 @@ export NODE=$(kubectl get nodes -o jsonpath='{.items[0].metadata.name}')
 export PRIMARY_GPU=4   # the only GPU registered with HAMi until Step 7
 export SECONDARY_GPU=5 # the spillover GPU added in Step 7
 export LAB=/root/hami-dynamic-mig-v2.10.0
-export EXAMPLES=tutorials/labs/examples/17-dynamic-mig-rtx-pro
+export EXAMPLES=tutorials/labs/examples/16-dynamic-mig-rtx-pro
 
 mkdir -p "$LAB"
 ```
