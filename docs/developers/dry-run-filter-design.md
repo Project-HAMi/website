@@ -377,7 +377,7 @@ The following issues must be addressed before the integration can be released.
 
 The current implementation uses `args.Nodes != nil` to distinguish simulation from live scheduling, even though `Nodes` in Kubernetes only means that the extender does not cache Node objects. A regular kube-scheduler configured with `nodeCacheCapable: false` also sends `Nodes`. HAMi then mistakes real scheduling for simulation and skips Pod annotations, quota usage, and allocation reservation.
 
-The shared path has other problems. A request with no device resources can still write an Event. `PredicateRoute` does not validate `ExtenderArgs.Pod` or enforce that `Nodes` and `NodeNames` are mutually exclusive. Simulation depends only on the Nodes in the request, but it still inherits the leader and live-cache `synced` requirements.
+The shared path has other problems. `PredicateRoute` rejects a request with no Pod, but it does not enforce that `Nodes` and `NodeNames` are mutually exclusive. Simulation depends only on the Nodes in the request, but it still inherits the leader and live-cache `synced` requirements.
 
 HAMi should expose a separate `/filter-simulation` endpoint, validate the request before entering scheduler logic, keep every path free of side effects, and define readiness from the state simulation actually uses. A separate path establishes call semantics; it does not provide authentication or traffic isolation.
 

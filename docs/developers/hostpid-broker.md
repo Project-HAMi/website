@@ -129,7 +129,7 @@ Existing workloads do not gain a new mount when the device plugin changes. They 
 
 4. A newer HAMi-core with no broker available uses the existing fallback, so the library does not need to be rolled back first.
 
-This rollout contract applies to the broker feature. The separate PR 248 lock migration still requires its own mixed binary policy.
+This rollout contract applies to the broker feature. The separate lock migration in [HAMi-core#248](https://github.com/Project-HAMi/HAMi-core/pull/248) still requires its own mixed binary policy.
 
 ## Validation required before release
 
