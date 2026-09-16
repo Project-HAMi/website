@@ -509,7 +509,7 @@ kubectl get node "$GPU_NODE" \
   --output=jsonpath='{.metadata.annotations.hami\.io/node-nvidia-register}{"\n"}'
 ```
 
-The annotation must contain a JSON object for each GPU, including its UUID, memory, core capacity, mode, and health.
+The annotation value is a JSON array with one registration object per GPU. Each object includes the GPU UUID, memory, core capacity, mode, and health.
 
 Check the logical GPU slots advertised by HAMi:
 
@@ -713,30 +713,49 @@ kubectl delete job hami-memory-limit-test
 
 Do not install packages or edit containerd manually over SSH. AKS replaces nodes during scale-out, reimage, repair, and node-image upgrades.
 
-After any node-pool lifecycle operation, repeat these checks:
+After any node-pool lifecycle operation completes, repeat these checks:
 
 ```bash
-check_replacement_node() {
-  GPU_NODE=""
-  for _ in {1..90}; do
-    GPU_NODE="$(
-      kubectl get nodes \
-        --selector="kubernetes.azure.com/agentpool=$GPU_NODE_POOL" \
-        --output=jsonpath='{.items[0].metadata.name}' \
-        2>/dev/null || true
-    )"
-    [ -n "$GPU_NODE" ] && break
-    sleep 10
-  done
+check_gpu_pool_nodes() {
+  local expected_count current_count gpu_nodes gpu_node registration
 
-  if [ -z "$GPU_NODE" ]; then
-    echo "No node from pool $GPU_NODE_POOL registered within 15 minutes." >&2
+  if ! expected_count="$(
+    az aks nodepool show \
+      --resource-group "$RESOURCE_GROUP" \
+      --cluster-name "$AKS_CLUSTER" \
+      --name "$GPU_NODE_POOL" \
+      --query count \
+      --output tsv
+  )"; then
     return 1
   fi
 
-  export GPU_NODE
-  if ! kubectl wait --for=condition=Ready "node/$GPU_NODE" --timeout=15m; then
+  unset GPU_NODE
+  for _ in {1..90}; do
+    gpu_nodes="$(
+      kubectl get nodes \
+        --selector="kubernetes.azure.com/agentpool=$GPU_NODE_POOL" \
+        --output=jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' \
+        2>/dev/null || true
+    )"
+    current_count="$(
+      printf '%s\n' "$gpu_nodes" \
+        | sed '/^$/d' \
+        | wc -l \
+        | tr -d ' '
+    )"
+    [ "$current_count" -eq "$expected_count" ] && break
+    sleep 10
+  done
+
+  if [ "$current_count" -ne "$expected_count" ]; then
+    echo "Expected $expected_count nodes, but found $current_count." >&2
     return 1
+  fi
+
+  if [ "$expected_count" -eq 0 ]; then
+    echo "The GPU pool is scaled to zero; there are no nodes to validate."
+    return 0
   fi
 
   kubectl get nodes \
@@ -748,14 +767,30 @@ check_replacement_node() {
     --selector='app.kubernetes.io/component=hami-device-plugin' \
     --output=wide
 
-  kubectl get node "$GPU_NODE" \
-    --output=jsonpath='{.metadata.annotations.hami\.io/node-nvidia-register}{"\n"}'
+  for gpu_node in $gpu_nodes; do
+    if ! kubectl wait --for=condition=Ready "node/$gpu_node" --timeout=15m; then
+      return 1
+    fi
+
+    registration="$(
+      kubectl get node "$gpu_node" \
+        --output=jsonpath='{.metadata.annotations.hami\.io/node-nvidia-register}'
+    )"
+    if [ -z "$registration" ]; then
+      echo "HAMi registration is empty on $gpu_node." >&2
+      return 1
+    fi
+    printf '%s: %s\n' "$gpu_node" "$registration"
+  done
+
+  GPU_NODE="$(printf '%s\n' "$gpu_nodes" | sed -n '1p')"
+  export GPU_NODE
 }
 
-check_replacement_node
+check_gpu_pool_nodes
 ```
 
-Every replacement node must remain in the expected agent pool, run a ready HAMi device-plugin Pod, and publish a nonempty `hami.io/node-nvidia-register` annotation before accepting workloads. The custom `gpu=on` label should also remain because it is part of the node-pool configuration.
+The node count must match the node-pool profile. Every current node must be Ready, run a HAMi device-plugin Pod, and publish a nonempty `hami.io/node-nvidia-register` annotation before accepting workloads. The custom `gpu=on` label should also remain because it is part of the node-pool configuration.
 
 ## Autoscaling
 
