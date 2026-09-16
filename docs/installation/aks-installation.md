@@ -786,7 +786,7 @@ devicePlugin:
 
 The AKS `sku=gpu:NoSchedule` taint must also be tolerated by GPU Operator operands and Node Feature Discovery. Do not install the Operator until all of its GPU-node DaemonSets can tolerate the pool.
 
-GPU Operator 25.10 enables CDI by default. GPU management containers, including HAMi's device plugin and monitor, need the `nvidia` RuntimeClass. Follow [Enable NVIDIA CDI support for HAMi](./configure-cdi.md) and verify the driver root and `nvidia-ctk` path on the actual node before installing HAMi.
+GPU Operator 25.10 enables CDI by default. GPU management containers, including HAMi's device plugin and monitor, need the `nvidia` RuntimeClass. Follow [Enable NVIDIA CDI support for HAMi](./configure-cdi) and verify the driver root and `nvidia-ctk` path on the actual node before installing HAMi.
 
 For the default GPU Operator driver and toolkit layout, add these settings to the HAMi values from this guide:
 
@@ -807,7 +807,7 @@ Do not assume every virtualized GPU SKU can use the Operator's default datacente
 
 AKS-managed MIG configures the MIG profile and NVIDIA resource publication at node-pool creation. HAMi also has its own MIG scheduling modes. Do not combine AKS-managed MIG/device-plugin ownership with HAMi dynamic MIG unless the exact combination has been validated.
 
-HAMi-DRA is a separate installation and scheduling model. Do not install classic HAMi and HAMi-DRA as competing owners of the same GPUs. Start with [HAMi-DRA installation](./how-to-use-hami-dra.md) and validate the required Kubernetes DRA APIs and CDI support on the selected AKS version.
+HAMi-DRA is a separate installation and scheduling model. Do not install classic HAMi and HAMi-DRA as competing owners of the same GPUs. Start with [HAMi-DRA installation](./how-to-use-hami-dra) and validate the required Kubernetes DRA APIs and CDI support on the selected AKS version.
 
 ## Troubleshooting
 
@@ -911,7 +911,7 @@ Remove HAMi:
 helm uninstall hami --namespace kube-system
 ```
 
-Uninstalling HAMi does not stop running GPU workloads. Delete or safely drain those workloads before uninstalling. Pods that explicitly set `schedulerName: hami-scheduler` remain Pending after the scheduler is removed. See the full [uninstall guide](./uninstall.md).
+Uninstalling HAMi does not stop running GPU workloads. Delete or safely drain those workloads before uninstalling. Pods that explicitly set `schedulerName: hami-scheduler` remain Pending after the scheduler is removed. See the full [uninstall guide](./uninstall).
 
 After uninstalling HAMi, the driver-only node pool no longer has a Kubernetes device plugin. Before running GPU workloads on a retained pool, install the standard NVIDIA device plugin or GPU Operator.
 
