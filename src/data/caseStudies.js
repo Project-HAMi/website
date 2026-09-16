@@ -1,5 +1,65 @@
 const caseStudiesData = [
   {
+    name: "CETC Cloud",
+    nameZh: "电科云",
+    logo: "/img/adopters/cetc.png",
+    logoZh: "/img/adopters/cetc-zh.png",
+    publishedAt: "2026-09-08",
+    metric: {
+      en: "15× dev capacity per appliance with 87.5% VRAM reclaimed",
+      zh: "单台一体机开发环境容量提升 15 倍，显存回收 87.5%",
+    },
+    summary: {
+      en: "Delivering an intelligent knowledge base appliance to project sites, sharing heterogeneous GPUs across text generation, embedding, and rerank models with HAMi on Kubernetes.",
+      zh: "将智能知识库一体机交付至项目现场独立运行，基于 Kubernetes 与 HAMi 实现文本生成、Embedding、Rerank 等模型的 GPU 共享混部。",
+    },
+    highlights: [
+      {
+        en: "Concurrent dev Pods on the same 8-GPU appliance grew from 2 to 30 (15×).",
+        zh: "同一台 8 卡一体机可承载的并发开发 Pod 由 2 个增至 30 个（15 倍）。",
+      },
+      {
+        en: "Embedding moved from a dedicated 64 GB GPU to an 8 GB / 20% compute slice with negligible performance impact.",
+        zh: "Embedding 服务由独占一整张 64 GB GPU 改为 8 GB 显存 / 20% 算力切片，性能几乎无损。",
+      },
+      {
+        en: "Online services, batch jobs, and dev debugging share one unified Kubernetes scheduling process.",
+        zh: "在线服务、批处理任务与研发调试统一纳入同一 Kubernetes 调度体系。",
+      },
+    ],
+    url: "https://www.cncf.io/case-studies/cetc-cloud/",
+  },
+  {
+    name: "Sangfor",
+    nameZh: "深信服",
+    logo: "/img/adopters/sangfor.jpg",
+    website: "https://www.sangfor.com",
+    publishedAt: "2026-09-08",
+    metric: {
+      en: "3×+ GPU utilization and 50% lower external model costs",
+      zh: "GPU 利用率提升 3 倍以上，外部模型调用成本降低 50%",
+    },
+    summary: {
+      en: "Building a production-grade shared GPU platform on Kubernetes, Volcano, and HAMi for 2,000+ R&D engineers.",
+      zh: "基于 Kubernetes、Volcano 与 HAMi 构建生产级 GPU 共享平台，支撑 2000+ 研发工程师日常使用。",
+    },
+    highlights: [
+      {
+        en: "Models co-located per GPU grew from 1 to 8+, lifting GPU utilization more than 3×.",
+        zh: "单卡混部模型数从 1 个增至 8 个以上，GPU 利用率提升 3 倍以上。",
+      },
+      {
+        en: "External model invocation cost halved, from 400K to 200K RMB per month.",
+        zh: "外部模型调用成本减半，从每月 40 万元降至 20 万元。",
+      },
+      {
+        en: "Model failure recovery dropped from ~1 hour to under 10 minutes, sustaining 95%+ success under 3× peak traffic.",
+        zh: "模型故障恢复时间从约 1 小时缩短至 10 分钟以内，3 倍峰值流量下成功率保持 95% 以上。",
+      },
+    ],
+    url: "https://www.cncf.io/case-studies/sangfor/",
+  },
+  {
     name: "China Merchants Bank",
     nameZh: "招商银行",
     logo: "/img/adopters/china-merchants-bank.png",
