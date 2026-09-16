@@ -124,7 +124,7 @@ kubectl get node <node-name> -o jsonpath='{.metadata.annotations.hami\.io/node-a
 
 - `amd.com/gpu`：Pod 需要的 AMD GPU 数量
 - `amd.com/gpumem`：每张 GPU 的显存配额，单位为 MiB
-- `amd.com/gpucores`：每张 GPU 的 CU 配额百分比，范围为 0-100；例如 `25` 在 304 CU 的设备上约分配 76 CU
+- `amd.com/gpucores`：每张 GPU 的 CU 配额百分比，范围为 1-100；例如 `25` 在 304 CU 的设备上约分配 76 CU
 
 请使用满足上述 `GLIBC_2.34` 要求的 glibc 工作负载镜像（例如较新的 `rocm/pytorch` 标签）：
 

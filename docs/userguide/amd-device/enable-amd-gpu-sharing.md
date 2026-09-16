@@ -123,7 +123,7 @@ Request AMD GPUs with `amd.com/gpu`, `amd.com/gpumem`, and `amd.com/gpucores`:
 
 - `amd.com/gpu`: number of AMD GPUs
 - `amd.com/gpumem`: device memory quota per GPU, in MiB
-- `amd.com/gpucores`: CU quota percentage per GPU, range 0-100; for example `25` allocates about 76 CUs on a 304-CU device
+- `amd.com/gpucores`: CU quota percentage per GPU, range 1-100; for example `25` allocates about 76 CUs on a 304-CU device
 
 Use a glibc workload image that meets the `GLIBC_2.34` requirement above (for example a recent `rocm/pytorch` tag):
 
