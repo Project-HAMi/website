@@ -1,0 +1,48 @@
+import React from "react";
+import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
+import Link from "@docusaurus/Link";
+import styles from "./SupportedComponents.module.css";
+
+const TYPE_CLASSES = {
+  hami: styles.tagHami,
+  volcano: styles.tagVolcano,
+  "hami-dra": styles.tagHamiDra,
+  cdi: styles.tagCdi,
+};
+
+export function Tag({ href, type, children }) {
+  const className = `${styles.tag} ${TYPE_CLASSES[type] || styles.tagDefault}`;
+  if (href) {
+    const to = href.replace(/\.mdx?(#.*)?$/, "$1");
+    return (
+      <Link to={to} className={className}>
+        {children}
+      </Link>
+    );
+  }
+  return <span className={className}>{children}</span>;
+}
+
+export function Requires({ children }) {
+  const { i18n } = useDocusaurusContext();
+  const label = i18n.currentLocale === "zh" ? "前置要求：" : "Requires:";
+
+  return (
+    <div className={styles.requiresContainer}>
+      <strong className={styles.label}>{label}</strong>
+      <div className={styles.tags}>{children}</div>
+    </div>
+  );
+}
+
+export default function SupportedComponents({ children }) {
+  const { i18n } = useDocusaurusContext();
+  const label = i18n.currentLocale === "zh" ? "支持组件/模式：" : "Supported Components:";
+
+  return (
+    <div className={styles.container}>
+      <strong className={styles.label}>{label}</strong>
+      <div className={styles.tags}>{children}</div>
+    </div>
+  );
+}

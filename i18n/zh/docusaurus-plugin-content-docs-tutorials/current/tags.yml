@@ -55,6 +55,9 @@
 "scheduler-internals":
   label: "scheduler-internals"
   permalink: "/scheduler-internals"
+"sglang":
+  label: "SGLang"
+  permalink: "/sglang"
 "topology":
   label: "topology"
   permalink: "/topology"

@@ -281,7 +281,7 @@ For step-by-step squash instructions, see the [GitHub Workflow guide](github-wor
 ### Review Process
 
 1. After the PR is opened, a maintainer or reviewer is assigned.
-2. Address all review comments. If you disagree with feedback, explain why in the thread.
+2. Address all review comments. If you disagree with feedback, explain why in the thread. Write the reply yourself and engage the specific point raised - a verbatim or canned AI reply that doesn't address the comment will get the PR closed.
 3. Update the PR by pushing to the same branch - do not close and reopen.
 4. CI must pass before merge.
 5. Once an approver marks the PR approved, it will be merged.
@@ -298,11 +298,15 @@ When reviewing others' PRs:
 
 ## AI Usage
 
-AI tools may be used to assist with writing code, documentation, or commit messages. One hard rule applies:
+AI tools may be used to assist with writing code, documentation, or commit messages. Two hard rules apply:
+
+**If you use any kind of AI assistance, disclose it in the PR description, along with how much was used (docs only vs. code generation).** A one-line disclosure is enough, for example "This PR was written primarily with Claude Code" or "I used ChatGPT to understand the codebase, but the change was authored manually." This is separate from the rule below: even a PR you wrote yourself, with AI only used to check grammar, benefits from a short note so reviewers can calibrate.
 
 **Do not submit AI-generated text directly as your PR description, issue body, or commit message.**
 
 Maintainers need to communicate with the person behind the contribution - not with a language model. Write in your own words, even if AI helped you draft a starting point. Text that is clearly AI-generated (verbose summaries, excessive lists, filler phrases, "In conclusion") will be flagged and the author asked to rewrite.
+
+For AI-assisted work beyond a small fix, open an issue first and split the change into reviewable commits; large AI-generated PRs submitted without that step are not accepted. Never add an AI tool as a commit co-author or trailer (no `assisted-by`, `co-developed-by`, or similar); disclosure belongs in the PR description only.
 
 What is acceptable:
 
@@ -316,8 +320,6 @@ What is not acceptable:
 - Pasting an AI-generated PR description without reading and rewriting it
 - Submitting code you cannot explain if asked during review
 - Using AI-generated text as issue comments or discussion posts
-
-If AI played a significant role beyond autocomplete, mention it briefly in the PR description. This helps reviewers calibrate their review depth.
 
 ## Documentation Contributions
 
@@ -337,7 +339,7 @@ For a complete guide covering frontmatter, sidebar registration, image paths, lo
 HAMi supports multiple GPU and accelerator vendors. If you are adding support for a new device or fixing vendor-specific behavior:
 
 - Follow the existing structure in `pkg/device/` (one directory per vendor).
-- Test on real hardware where possible. Simulated tests are acceptable for CI, but hardware validation is expected for new backends before merge.
+- Test on real hardware where possible. Simulated tests are acceptable for CI, but hardware validation is expected for new backends before merge. Record in the PR or lab what was tested, the device type, and the driver version.
 - Follow the documentation pattern under `docs/userguide/<vendor>-device/`.
 - Include working YAML examples under `docs/userguide/<vendor>-device/examples/`.
 
@@ -386,6 +388,10 @@ When filing a bug, include:
 - Steps to reproduce
 - Actual vs. expected behavior
 - Relevant logs or error output
+
+## Issue and PR Lifecycle
+
+If a maintainer or contributor leaves a comment or review requesting a response, the author has one week to reply. With no response in that time, the issue or PR is closed. Closing is not permanent, if the work is still needed it can be reopened or resubmitted at any time. This keeps the backlog focused and avoids letting stale work block active contributors.
 
 ## License
 

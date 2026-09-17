@@ -1,130 +1,60 @@
 ---
-title: 使用 Helm 部署 HAMi
+title: 快速部署
+sidebar_label: 快速部署
+translated: true
 ---
 
-本指南将涵盖：
-
-- 为每个 GPU 节点配置 NVIDIA 容器运行时
-- 使用 Helm 部署 HAMi
-- 启动 vGPU 任务
-- 验证容器内设备资源是否受限
+本指南介绍如何使用 Helm 安装 HAMi，并以 NVIDIA GPU 为例运行 Pod、检查容器可见的显存容量。
 
 ## 先决条件 {#prerequisites}
 
-- [Helm](https://helm.sh/zh/docs/) v3+
-- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) v1.23+
-- [CUDA](https://developer.nvidia.com/cuda-toolkit) v10.2+
-- [NVIDIA 驱动](https://www.nvidia.cn/drivers/unix/) v440+
+- 满足[集群要求](../installation/prerequisites.md#集群要求)，包括 Kubernetes、Helm、`kubectl` 和安装权限。
+- NVIDIA GPU：按[节点准备指南](../installation/prerequisites.md#准备-nvidia-gpu-节点)完成环境配置，并将适用的 HAMi values 保存为 `hami-nvidia-values.yaml`，供安装时使用。
+- 其他设备：从[设备前置条件目录](../installation/prerequisites.md#device-prerequisites)进入对应文档，完成驱动、容器运行时、节点标签等环境配置，再回到本文的[使用 Helm 部署 HAMi](#deploy-hami-using-helm)章节继续安装。安装时需使用设备文档要求的 Helm 参数。
 
-## 安装步骤 {#installation}
+## 为 NVIDIA GPU 节点打标签 {#label-your-nodes}
 
-### 1. 配置 nvidia-container-toolkit {#configure-nvidia-container-toolkit}
-
-在所有 GPU 节点执行此操作。
-
-本文假设已预装 NVIDIA 驱动和 `nvidia-container-toolkit`，并已将 `nvidia-container-runtime` 配置为默认底层运行时。
-
-参考：[nvidia-container-toolkit 安装指南](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)
-
-以下是基于 Debian 系统（使用 Docker 和 containerd）的示例：
-
-#### 安装 `nvidia-container-toolkit` {#install-the-nvidia-container-toolkit}
-
-```bash
-curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
-  && curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
-    sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
-    sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
-
-sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
-```
-
-#### 配置 Docker {#configure-docker}
-
-当使用 Docker 运行 Kubernetes 时，编辑配置文件（通常位于 `/etc/docker/daemon.json`），将 `nvidia-container-runtime` 设为默认底层运行时：
-
-```json
-{
-  "default-runtime": "nvidia",
-  "runtimes": {
-    "nvidia": {
-      "path": "/usr/bin/nvidia-container-runtime",
-      "runtimeArgs": []
-    }
-  }
-}
-```
-
-然后重启 Docker：
-
-```bash
-sudo systemctl daemon-reload && sudo systemctl restart docker
-```
-
-#### 配置 containerd {#configure-containerd}
-
-当使用 containerd 运行 Kubernetes 时，修改配置文件（通常位于 `/etc/containerd/config.toml`），将 `nvidia-container-runtime` 设为默认底层运行时：
-
-```toml
-version = 2
-[plugins]
-  [plugins."io.containerd.grpc.v1.cri"]
-    [plugins."io.containerd.grpc.v1.cri".containerd]
-      default_runtime_name = "nvidia"
-
-      [plugins."io.containerd.grpc.v1.cri".containerd.runtimes]
-        [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia]
-          privileged_without_host_devices = false
-          runtime_engine = ""
-          runtime_root = ""
-          runtime_type = "io.containerd.runc.v2"
-          [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia.options]
-            BinaryName = "/usr/bin/nvidia-container-runtime"
-```
-
-然后重启 containerd：
-
-```bash
-sudo systemctl daemon-reload && sudo systemctl restart containerd
-```
-
-### 2. 标记节点 {#label-your-nodes}
-
-通过添加 "gpu=on" 标签将 GPU 节点标记为可调度 HAMi 任务。未标记的节点将无法被调度器管理。
+HAMi 的 NVIDIA Device Plugin 默认使用 `gpu=on` 节点标签。为需要由 HAMi 管理的节点添加标签：
 
 ```bash
 kubectl label nodes <node-name> gpu=on
 ```
 
-### 3. 使用 Helm 部署 HAMi {#deploy-hami-using-helm}
+如果自定义了 `devicePlugin.nvidiaNodeSelector`，使用与选择器匹配的标签。
 
-首先通过以下命令确认 Kubernetes 版本：
+## 使用 Helm 部署 HAMi {#deploy-hami-using-helm}
 
-```bash
-kubectl version
-```
-
-然后添加 Helm 仓库：
+添加 Helm 仓库：
 
 ```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/
+helm repo update
 ```
 
-安装时需设置 Kubernetes 调度器镜像版本与集群版本匹配。例如集群版本为 1.16.8 时，使用以下命令部署：
+按设备补充安装参数，然后执行安装命令：
+
+- NVIDIA GPU：在下方命令中添加 `--values hami-nvidia-values.yaml`，使用前面准备的配置文件。
+- 其他设备：在下方命令中添加对应设备文档要求的 `--values` 或 `--set` 参数。
 
 ```bash
-helm install hami hami-charts/hami \
-  --set scheduler.kubeScheduler.image.tag=v1.16.8 \
-  -n kube-system
+helm install hami hami-charts/hami -n kube-system
 ```
 
-若一切正常，可见 vgpu-device-plugin 和 vgpu-scheduler 的 Pod 均处于 Running 状态。
+Chart 会自动选择与 Kubernetes 服务端版本匹配的 scheduler 镜像。需要手动覆盖时，参阅[在线安装指南](../installation/online-installation.md#deploy-hami)。
 
-## 演示 {#demo}
+检查 `hami-scheduler` 和所用设备的 Device Plugin Pod 是否处于 `Running` 和 `Ready` 状态。NVIDIA Device Plugin 的 Pod 名称包含 `hami-device-plugin`：
 
-### 1. 提交演示任务 {#submit-demo-task}
+```bash
+kubectl get pods -n kube-system
+```
 
-容器现在可通过 `nvidia.com/gpu` 资源类型申请 NVIDIA vGPU：
+## NVIDIA GPU 示例 {#demo}
+
+其他设备的资源名称和验证方式请参阅[对应设备文档](../installation/prerequisites.md#device-prerequisites)。
+
+### 提交演示任务 {#submit-demo-task}
+
+以下 Pod 通过 `nvidia.com/gpu` 申请 1 个 vGPU，并通过 `nvidia.com/gpumem` 将显存设为 10240 MiB。将配置保存为 `gpu-pod.yaml`：
 
 ```yaml
 apiVersion: v1
@@ -134,23 +64,36 @@ metadata:
 spec:
   containers:
     - name: ubuntu-container
-      image: ubuntu:18.04
+      image: ubuntu:22.04
       command: ["bash", "-c", "sleep 86400"]
       resources:
         limits:
           nvidia.com/gpu: 1 # 申请 1 个 vGPU
-          nvidia.com/gpumem: 10240 # 每个 vGPU 包含 10240m 设备显存（可选，整型）
+          nvidia.com/gpumem: 10240 # 每个 vGPU 的显存为 10240 MiB（可选）
 ```
 
-### 2. 验证容器内资源限制 {#verify-in-container-resource-control}
+创建 Pod 并等待就绪：
 
-执行查询命令：
+```bash
+kubectl apply -f gpu-pod.yaml
+kubectl wait --for=condition=Ready pod/gpu-pod --timeout=120s
+```
+
+如果等待超时，查看 Pod 状态和 `Events` 中的错误信息，排查调度或容器启动问题。Pod 就绪后再执行下一步。
+
+```bash
+kubectl describe pod gpu-pod
+```
+
+### 检查容器可见的显存容量 {#verify-in-container-resource-control}
+
+在容器中运行 `nvidia-smi`：
 
 ```bash
 kubectl exec -it gpu-pod -- nvidia-smi
 ```
 
-预期输出：
+检查输出中 `Memory-Usage` 一栏的总显存是否为配置的 `10240MiB`。以下是输出示例，GPU 型号、驱动版本和时间以实际环境为准：
 
 ```text
 [HAMI-core Msg(28:140561996502848:libvgpu.c:836)]: Initializing.....
@@ -176,3 +119,17 @@ Wed Apr 10 09:28:58 2024
 +-----------------------------------------------------------------------------------------+
 [HAMI-core Msg(28:140561996502848:multiprocess_memory_limit.c:434)]: Calling exit handler 28
 ```
+
+## 清理 {#cleanup}
+
+验证完成后，删除示例 Pod：
+
+```bash
+kubectl delete pod gpu-pod
+```
+
+## 后续步骤 {#next-steps}
+
+- [验证 HAMi](./verify-hami.md) - 进一步验证原生 GPU 环境和 HAMi
+- [配置 HAMi](../userguide/configure.md) - 资源限制、调度策略等配置
+- [设备共享](../key-features/device-sharing.md) - 了解 GPU 共享机制

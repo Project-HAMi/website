@@ -83,6 +83,7 @@ helm install hami hami-charts/hami --set devicePlugin.deviceMemoryScaling=5 -n k
 | `nvidia.com/use-gputype` | 字符串 | 如果设置了此字段，则该 Pod 分配的设备**必须**是此字符串中定义的 GPU 类型之一。 | `"Tesla V100-PCIE-32GB, NVIDIA A10"` |
 | `hami.io/node-scheduler-policy` | 字符串 | GPU 节点调度策略：`"binpack"` 表示将 Pod 分配到已有负载的 GPU 节点上执行，`"spread"` 表示分配到不同的 GPU 节点上执行。 | `"binpack"` 或 `"spread"` |
 | `hami.io/gpu-scheduler-policy` | 字符串 | GPU 卡调度策略：`"binpack"` 表示将 Pod 分配到同一块 GPU 卡上执行，`"spread"` 表示分配到不同的 GPU 卡上执行。 | `"binpack"` 或 `"spread"` |
+| `hami.io/device-scoring-weights` | 字符串 | 物理设备评分中虚拟设备槽位、设备核心和设备显存利用率的相对权重。必须提供全部三个权重，值必须为非负整数，并且至少有一个权重大于零。 | `"slot=1,core=1,memory=3"` |
 | `nvidia.com/vgpu-mode` | 字符串 | 指定该 Pod 希望使用的 vGPU 实例类型。 | `"hami-core"` 或 `"mig"` |
 
 ## 容器配置：环境变量

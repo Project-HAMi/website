@@ -1,124 +1,59 @@
 ---
-title: Deploy HAMi using Helm
+title: Quick Start
+sidebar_label: Quick Start
 ---
 
-This guide covers:
-
-- Configuring NVIDIA container runtime on each GPU node
-- Deploying HAMi using Helm
-- Launching a vGPU task
-- Verifying container resource limits
+This guide explains how to install HAMi with Helm, then uses an NVIDIA GPU example to run a Pod and check the GPU memory visible to the container.
 
 ## Prerequisites {#prerequisites}
 
-- [Helm](https://helm.sh/docs/) v3+
-- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) v1.23+
-- [CUDA](https://developer.nvidia.com/cuda-toolkit) v10.2+
-- [NVIDIA Driver](https://www.nvidia.com/drivers/unix/) v440+
+- Meet the [cluster requirements](../installation/prerequisites.md#cluster-requirements), including Kubernetes, Helm, `kubectl`, and installation permissions.
+- NVIDIA GPUs: follow the [node preparation guide](../installation/prerequisites.md#preparing-your-gpu-nodes) to configure the environment and save the applicable HAMi values as `hami-nvidia-values.yaml` for installation.
+- Other devices: open the corresponding guide from the [device prerequisites directory](../installation/prerequisites.md#device-prerequisites) and configure the driver, container runtime, node labels, and other environment requirements. Then return to [Deploy HAMi using Helm](#deploy-hami-using-helm) below and install with the Helm parameters required by that device guide.
 
-## Installation {#installation}
+## Label NVIDIA GPU nodes {#label-your-nodes}
 
-### 1. Configure nvidia-container-toolkit {#configure-nvidia-container-toolkit}
-
-Perform the following steps on all GPU nodes.
-
-This guide assumes that NVIDIA drivers and the `nvidia-container-toolkit` are already installed, and that `nvidia-container-runtime` is set as the default low-level runtime.
-
-See [nvidia-container-toolkit installation guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html).
-
-The following example applies to Debian-based systems using Docker or containerd:
-
-#### Install the `nvidia-container-toolkit` {#install-the-nvidia-container-toolkit}
-
-```bash
-curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
-  && curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
-    sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
-    sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
-
-sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
-```
-
-#### Configure Docker {#configure-docker}
-
-When running Kubernetes with Docker, edit the configuration file (usually `/etc/docker/daemon.json`) to set `nvidia-container-runtime` as the default runtime:
-
-```json
-{
-  "default-runtime": "nvidia",
-  "runtimes": {
-    "nvidia": {
-      "path": "/usr/bin/nvidia-container-runtime",
-      "runtimeArgs": []
-    }
-  }
-}
-```
-
-Restart Docker:
-
-```bash
-sudo systemctl daemon-reload && sudo systemctl restart docker
-```
-
-#### Configure containerd {#configure-containerd}
-
-When using Kubernetes with containerd, modify the configuration file (usually `/etc/containerd/config.toml`) to set `nvidia-container-runtime` as the default runtime:
-
-```toml
-version = 2
-[plugins]
-  [plugins."io.containerd.grpc.v1.cri"]
-    [plugins."io.containerd.grpc.v1.cri".containerd]
-      default_runtime_name = "nvidia"
-
-      [plugins."io.containerd.grpc.v1.cri".containerd.runtimes]
-        [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia]
-          privileged_without_host_devices = false
-          runtime_engine = ""
-          runtime_root = ""
-          runtime_type = "io.containerd.runc.v2"
-          [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia.options]
-            BinaryName = "/usr/bin/nvidia-container-runtime"
-```
-
-Restart containerd:
-
-```bash
-sudo systemctl daemon-reload && sudo systemctl restart containerd
-```
-
-### 2. Label your nodes {#label-your-nodes}
-
-Label your GPU nodes for HAMi scheduling with `gpu=on`. Nodes without this label cannot be managed by the scheduler.
+HAMi's NVIDIA Device Plugin uses the `gpu=on` node label by default. Add it to the nodes HAMi should manage:
 
 ```bash
 kubectl label nodes <node-name> gpu=on
 ```
 
-### 3. Deploy HAMi using Helm {#deploy-hami-using-helm}
+If `devicePlugin.nvidiaNodeSelector` is customized, use labels that match that selector.
 
-Check your Kubernetes version:
-
-```bash
-kubectl version
-```
+## Deploy HAMi using Helm {#deploy-hami-using-helm}
 
 Add the Helm repository:
 
 ```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/
 helm repo update
+```
+
+Add the parameters for your devices, then run the installation command:
+
+- NVIDIA GPUs: add `--values hami-nvidia-values.yaml` to the command below to use the configuration file prepared earlier.
+- Other devices: add the `--values` or `--set` parameters required by the corresponding device guide.
+
+```bash
 helm install hami hami-charts/hami -n kube-system
 ```
 
-If successful, both `hami-device-plugin` and `hami-scheduler` pods should be in the `Running` state.
+The chart automatically selects a scheduler image that matches the Kubernetes server version. For manual overrides, see the [online installation guide](../installation/online-installation.md#deploy-hami).
 
-## Demo {#demo}
+Check that the `hami-scheduler` and the device plugin Pods for your devices are `Running` and `Ready`. NVIDIA Device Plugin Pod names contain `hami-device-plugin`:
 
-### 1. Submit demo task {#submit-demo-task}
+```bash
+kubectl get pods -n kube-system
+```
 
-Containers can now request NVIDIA vGPUs using the `nvidia.com/gpu` resource type.
+## NVIDIA GPU example {#demo}
+
+For other devices, see the [corresponding device guide](../installation/prerequisites.md#device-prerequisites) for resource names and verification steps.
+
+### Submit demo task {#submit-demo-task}
+
+The following Pod requests one vGPU with `nvidia.com/gpu` and sets its memory to 10240 MiB with `nvidia.com/gpumem`. Save the configuration as `gpu-pod.yaml`:
 
 ```yaml
 apiVersion: v1
@@ -133,24 +68,31 @@ spec:
       resources:
         limits:
           nvidia.com/gpu: 1 # Request 1 vGPU
-          nvidia.com/gpumem: 10240 # Each vGPU provides 10240 MiB device memory (optional)
+          nvidia.com/gpumem: 10240 # GPU memory per vGPU, in MiB (optional)
 ```
 
-Wait for the pod to be ready:
+Create the Pod and wait for it to be ready:
 
 ```bash
+kubectl apply -f gpu-pod.yaml
 kubectl wait --for=condition=Ready pod/gpu-pod --timeout=120s
 ```
 
-### 2. Verify container resource limits {#verify-in-container-resource-control}
+If the wait times out, check the Pod status and errors in `Events` to troubleshoot scheduling or container startup. Continue once the Pod is ready.
 
-Run the following command:
+```bash
+kubectl describe pod gpu-pod
+```
+
+### Check the GPU memory visible to the container {#verify-in-container-resource-control}
+
+Run `nvidia-smi` in the container:
 
 ```bash
 kubectl exec -it gpu-pod -- nvidia-smi
 ```
 
-Expected output:
+Check that the total memory in the `Memory-Usage` column matches the configured `10240MiB`. Example output is shown below; the GPU model, driver version, and timestamp depend on the environment:
 
 ```text
 [HAMI-core Msg(28:140561996502848:libvgpu.c:836)]: Initializing.....
@@ -177,14 +119,16 @@ Wed Apr 10 09:28:58 2024
 [HAMI-core Msg(28:140561996502848:multiprocess_memory_limit.c:434)]: Calling exit handler 28
 ```
 
-## Cleanup
+## Cleanup {#cleanup}
+
+Delete the sample Pod after verification:
 
 ```bash
 kubectl delete pod gpu-pod
 ```
 
-## Next steps
+## Next steps {#next-steps}
 
-- [Validate HAMi](./verify-hami) - deeper validation including native GPU stack checks
-- [Configure HAMi](../userguide/configure) - resource limits, scheduling policies, and more
-- [Device Sharing](../key-features/device-sharing) - how GPU sharing works under the hood
+- [Validate HAMi](./verify-hami.md) - deeper validation including native GPU stack checks
+- [Configure HAMi](../userguide/configure.md) - resource limits, scheduling policies, and more
+- [Device Sharing](../key-features/device-sharing.md) - how GPU sharing works under the hood

@@ -1,7 +1,7 @@
 ---
-title: "实验 16：在 HAMi 上使用 KitOps ModelKit 提供模型服务"
+title: "实验 17：在 HAMi 上使用 KitOps ModelKit 提供模型服务"
 description: "将模型打包为 KitOps ModelKit，通过 initContainer 从 Jozu Hub 拉取，并使用 SGLang（可选 vLLM）在 HAMi GPU 共享资源上从本地提供服务。"
-sidebar_label: "实验 16：KitOps ModelKit 推理"
+sidebar_label: "实验 17：KitOps ModelKit 推理"
 lab:
   level: Advanced
   duration: 约 60 分钟

@@ -70,6 +70,7 @@ helm install hami hami-charts/hami --set devicePlugin.deviceMemoryScaling=5 -n k
 | `devicePlugin.service.schedulerPort` | Integer | Scheduler webhook service nodePort. | `31998` |
 | `scheduler.defaultSchedulerPolicy.nodeSchedulerPolicy` | String | GPU node scheduling policy: `"binpack"` allocates jobs to the same GPU node as much as possible. `"spread"` allocates jobs to different GPU nodes as much as possible. | `"binpack"` |
 | `scheduler.defaultSchedulerPolicy.gpuSchedulerPolicy` | String | GPU scheduling policy: `"binpack"` allocates jobs to the same GPU as much as possible. `"spread"` allocates jobs to different GPUs as much as possible. `"mutex"` allocates jobs only to GPUs with no other workloads. | `"spread"` |
+| `devicePlugin.deviceListStrategy` | String | Controls how the device plugin advertises allocated GPU devices to the container runtime: `"envvar"` (via `NVIDIA_VISIBLE_DEVICES`), `"volume-mounts"` (via mounted files, avoids env-var override risk in multi-tenant clusters), or `"cdi-annotations"` (via CDI annotations). | `"envvar"` |
 
 ## Pod Configs: Annotations
 
@@ -81,6 +82,7 @@ helm install hami hami-charts/hami --set devicePlugin.deviceMemoryScaling=5 -n k
 | `nvidia.com/use-gputype` | String | If set, devices allocated by this pod MUST be one of the types defined in this string. | `"Tesla V100-PCIE-32GB, NVIDIA A10"` |
 | `hami.io/node-scheduler-policy` | String | GPU node scheduling policy: `"binpack"` allocates the pod to used GPU nodes for execution. `"spread"` allocates the pod to different GPU nodes for execution. | `"binpack"` or `"spread"` |
 | `hami.io/gpu-scheduler-policy` | String | GPU scheduling policy: `"binpack"` allocates the pod to the same GPU card for execution. `"spread"` allocates the pod to different GPU cards for execution. `"mutex"` allocates the pod only to a GPU card with no other workloads, giving it exclusive use of that card. | `"binpack"`, `"spread"` or `"mutex"` |
+| `hami.io/device-scoring-weights` | String | Relative weights of virtual-device slot, device-core, and device-memory utilization in physical-device scoring. All three weights are required, must be non-negative integers, and at least one must be positive. | `"slot=1,core=1,memory=3"` |
 | `nvidia.com/vgpu-mode` | String | The type of vGPU instance this pod wishes to use. | `"hami-core"` or `"mig"` |
 
 ## Container Configs: Env

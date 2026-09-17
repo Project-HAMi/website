@@ -8,7 +8,7 @@ const githubEditBaseUrl = "https://github.com/Project-HAMi/website/edit/master/"
 // Site-wide announcement bar switch. Flip to true to show it; keep `id` stable
 // so visitors who dismissed a previous announcement stay dismissed (bump `id`
 // only when you publish a genuinely new announcement you want everyone to see).
-const announcementBarEnabled = true;
+const announcementBarEnabled = false;
 const announcementBar = announcementBarEnabled
   ? {
       id: "announcement-bar",
@@ -289,6 +289,9 @@ module.exports = {
     colorMode: {
       defaultMode: "dark",
       respectPrefersColorScheme: false,
+    },
+    mermaid: {
+      theme: { light: "default", dark: "dark" },
     },
     announcementBar,
     navbar: {

@@ -248,8 +248,8 @@ helm install hami ./charts/hami \
   -n kube-system \
   --set devicePlugin.image.repository=hami \
   --set devicePlugin.image.tag=local \
-  --set scheduler.image.repository=hami \
-  --set scheduler.image.tag=local \
+  --set scheduler.extender.image.repository=hami \
+  --set scheduler.extender.image.tag=local \
   --set devicePlugin.nvidiaDriverRoot=/var/lib/nvml-mock/driver \
   --set scheduler.kubeScheduler.imageTag=v1.35.0
 ```

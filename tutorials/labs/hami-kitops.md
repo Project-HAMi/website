@@ -1,7 +1,7 @@
 ---
-title: "Lab 16: Serve Models from a KitOps ModelKit on HAMi"
+title: "Lab 17: Serve Models from a KitOps ModelKit on HAMi"
 description: "Package a model as a KitOps ModelKit, pull it from Jozu Hub with an initContainer, and serve it locally with SGLang (and optionally vLLM) on HAMi GPU shares."
-sidebar_label: "Lab 16: KitOps ModelKit Inference"
+sidebar_label: "Lab 17: KitOps ModelKit Inference"
 lab:
   level: Advanced
   duration: about 60 minutes

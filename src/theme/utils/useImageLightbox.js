@@ -116,13 +116,21 @@ function ensureLightbox() {
     const clone = svg.cloneNode(true);
     // Mermaid caps the inline SVG at its rendered size; lift the cap and let
     // it scale to fit the lightbox box in both dimensions (the viewBox keeps
-    // the aspect ratio), so the whole diagram is visible without scrolling.
+    // the aspect ratio), so the whole diagram is always visible without scrolling.
     clone.style.maxWidth = "none";
     clone.style.width = "100%";
     clone.style.height = "100%";
     clone.removeAttribute("height");
     clone.removeAttribute("width");
-    svgHost.replaceChildren(clone);
+
+    // Node colors are CSS under .docusaurus-mermaid-container. Keep the clone
+    // in that same host so the zoomed view matches the page.
+    const wrap = document.createElement("div");
+    const source = svg.closest(MERMAID_CONTAINER);
+    wrap.className = source?.className || "docusaurus-mermaid-container";
+    wrap.appendChild(clone);
+
+    svgHost.replaceChildren(wrap);
     svgHost.hidden = false;
     lightboxImage.hidden = true;
     lightboxImage.removeAttribute("src");
