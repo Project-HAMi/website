@@ -47,8 +47,8 @@
     "clsx": "^2.1.1",
     "node-ical": "^0.27.2",
     "prism-react-renderer": "^2.4.0",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
   },
   "browserslist": {
     "production": [
