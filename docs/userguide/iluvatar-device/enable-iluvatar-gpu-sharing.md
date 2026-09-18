@@ -65,11 +65,11 @@ iluvatars:
 
 ## Device Granularity
 
-HAMi divides each Iluvatar GPU into 100 units for resource allocation. Requesting a portion of a GPU corresponds to requesting a specific number of these units.
+HAMi allocates Iluvatar GPU compute cores in percentage points and device memory in fixed-size units.
 
 ### Memory Allocation
 
-- Each unit of `iluvatar.ai/<card-type>.vMem` represents 256MB of device memory
+- Each unit of `iluvatar.ai/<card-type>.vMem` represents 256 MiB of device memory
 - If no memory request is specified, the system defaults to using 100% of the available memory
 - Memory allocation is enforced with hard limits to ensure tasks do not exceed their allocated memory
 
@@ -117,7 +117,7 @@ spec:
 
 :::note
 
-Each unit of `iluvatar.ai/<card-type>.vMem` represents 256 MB of device memory.
+Each unit of `iluvatar.ai/<card-type>.vMem` represents 256 MiB of device memory. Use a plain integer without memory suffixes such as `Mi`, `Gi`, or `G`. In the example, `64` units allocate 16 GiB per GPU.
 
 :::
 

@@ -69,6 +69,6 @@ spec:
 
 :::note
 
-Each unit of `sgpu-memory` represents 512 MB of device memory. More examples are available in the [examples/mthreads folder](https://github.com/Project-HAMi/HAMi/tree/master/examples/mthreads/).
+Each unit of `mthreads.com/sgpu-memory` represents 512 MiB of device memory. The example requests 32 units, or 16 GiB. For a shared GPU, supported values are `2`, `4`, `8`, `16`, `32`, `64`, and `96`. More examples are available in the [examples/mthreads folder](https://github.com/Project-HAMi/HAMi/tree/master/examples/mthreads/).
 
 :::

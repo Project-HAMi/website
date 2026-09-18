@@ -35,7 +35,7 @@ kubectl label node {mlu-node} mlu=on
 
 `mode=dynamic-smlu`, `min-dsmlu-unit=256`
 
-它们分别代表开启 MLU 复用功能，与设置最小可分配的显存单元为 256M，你可以参考设备提供方的文档来获取更多的配置信息。
+它们分别代表开启 MLU 复用功能，与设置最小可分配的显存单元为 256 MiB，你可以参考设备提供方的文档来获取更多的配置信息。
 
 - 部署配置后的`cambricon-device-plugin`
 

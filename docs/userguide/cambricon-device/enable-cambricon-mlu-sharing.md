@@ -36,7 +36,7 @@ title: Enable Cambricon MLU Sharing
    Get the `cambricon-device-plugin` from your device provider, and configure it with the following parameters:
 
    - `mode=dynamic-smlu`: Enables dynamic SMLU support.
-   - `min-dsmlu-unit=256`: Sets the minimum allocatable memory unit to 256 MB.
+   - `min-dsmlu-unit=256`: Sets the minimum allocatable memory unit to 256 MiB.
 
    Refer to your provider’s documentation for additional details.
 

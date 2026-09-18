@@ -4,11 +4,13 @@ sidebar_label: 指定显存
 translated: true
 ---
 
-通过指定诸如 `hygon.com/dcumem` 之类的资源来分配设备显存的百分比大小。可选项，每个 `hygon.com/dcumem` 单位等于 1M 设备显存。
+通过可选资源 `hygon.com/dcumem` 分配固定大小的设备显存。在默认配置 `memoryFactor: 1` 下，每个单位等于 1 MiB。
+
+请使用纯整数，不要添加 `Mi`、`Gi` 或 `G` 等后缀。例如，在默认显存系数下，申请 16 GiB 应填写 `16384`。该值表示显存单位数，不是百分比。
 
 ```yaml
 resources:
   limits:
     hygon.com/dcunum: 1 # 请求 1 个 DCU
-    hygon.com/dcumem: 2000 # 每个 DCU 包含 2000M 设备显存
+    hygon.com/dcumem: 2000 # 每个 DCU 分配 2000 MiB 显存
 ```
