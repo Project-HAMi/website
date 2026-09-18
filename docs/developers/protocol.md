@@ -6,45 +6,35 @@ title: Protocol design
 
 <img src="/img/docs/common/developers/protocol/protocol-register.png" width="600px" alt="HAMi device registration protocol diagram showing node annotation process" />
 
-HAMi needs to know the spec of each AI device in the cluster to schedule properly. During device registration, device-plugin needs to keep patching the spec of each device into node annotations every 30 seconds, in the format of the following:
+HAMi needs each AI device's specifications to schedule workloads. Device discovery depends on the backend: NVIDIA uses node annotations, while Cambricon reads device resources from the node's `Capacity`.
+
+### NVIDIA Device Inventory
+
+The NVIDIA device plugin normally checks device information every 30 seconds. It compares the serialized inventory with its local cache and updates `hami.io/node-nvidia-register` only when that inventory changes. It does not refresh a `Reported_...` handshake timestamp every 30 seconds.
+
+The annotation contains a JSON array with one object per device. This example describes two NVIDIA V100 GPUs:
 
 ```text
-hami.io/node-handshake-{device-type}: Reported_{device_node_current_timestamp}
-hami.io/node-{device-type}-register: {Device 1}:{Device2}:...:{Device N}
+hami.io/node-nvidia-register: [{"id":"GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec","count":10,"devmem":32768,"devcore":100,"type":"NVIDIA-Tesla V100-PCIE-32GB","numa":1,"mode":"hami-core","health":true},{"id":"GPU-0fc3eda5-e98b-a25b-5b0d-cf5c855d1448","index":1,"count":10,"devmem":32768,"devcore":100,"type":"NVIDIA-Tesla V100-PCIE-32GB","numa":1,"mode":"hami-core","health":true}]
 ```
 
-Most device plugins register each device in the following comma-separated format:
+Fields are omitted when they hold their zero value, so `index` is absent for the first device and `numa` is absent for devices on NUMA node 0.
+
+Backends that use the legacy annotation encoding separate device entries with colons. Each entry has this format:
 
 ```text
 {Device UUID},{device split count},{device memory limit},{device core limit},{device type},{device numa},{healthy}
 ```
 
-The NVIDIA device plugin registers a JSON array instead, with one object per device:
+### Health Checks
 
-```text
-{"id":"GPU-...","index":1,"count":10,"devmem":32768,"devcore":100,"type":"NVIDIA-Tesla V100-PCIE-32GB","numa":1,"mode":"hami-core","health":true}
-```
-
-Fields are omitted when they hold their zero value, so `index` is absent for the first device and `numa` is absent for devices on NUMA node 0.
-
-An example is shown below. Note that NVIDIA uses `hami.io/node-handshake` without the device-type suffix:
+The scheduler normally checks node devices every 15 seconds. For backends that use the shared handshake check, it writes a request with the scheduler's current time when no `Requesting` value is pending. NVIDIA uses `hami.io/node-handshake` without a device-type suffix:
 
 ```text
 hami.io/node-handshake: Requesting_2024-01-23 04:30:04
-hami.io/node-handshake-mlu: Requesting_2024.01.10 04:06:57
-hami.io/node-mlu-register: MLU-45013011-2257-0000-0000-000000000000,10,23308,0,MLU-MLU370-X4,0,false:MLU-54043011-2257-0000-0000-000000000000,10,23308,0,MLU-MLU370-X4,0,false:
-hami.io/node-nvidia-register: [{"id":"GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec","count":10,"devmem":32768,"devcore":100,"type":"NVIDIA-Tesla V100-PCIE-32GB","numa":1,"mode":"hami-core","health":true},{"id":"GPU-0fc3eda5-e98b-a25b-5b0d-cf5c855d1448","index":1,"count":10,"devmem":32768,"devcore":100,"type":"NVIDIA-Tesla V100-PCIE-32GB","numa":1,"mode":"hami-core","health":true}]
 ```
 
-In this example, this node has two different AI devices, 2 NVIDIA-V100 GPUs, and 2 Cambricon 370-X4 MLUs
-
-A device node may become unavailable due to hardware or network failure. If a node hasn't registered in the last 60 seconds, the scheduler marks it as 'unavailable'.
-
-Since system clock on scheduler node and 'device' node may not align properly, scheduler node will patch the following device node annotations every 15s
-
-```text
-hami.io/node-handshake-{device-type}: Requesting_{scheduler_node_current_timestamp}
-```
+Timestamps use `YYYY-MM-DD HH:MM:SS`. The shared check allows 60 seconds for a response, but expiry alone does not make a device unavailable. If the corresponding device count in the node's `Allocatable` is still positive, an expired handshake does not trigger cleanup. The NVIDIA backend also checks device-count and inventory changes. These handshake rules do not apply to every backend.
 
 ## Task Dispatch & Scheduling Decisions
 
