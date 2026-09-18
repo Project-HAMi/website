@@ -2,13 +2,15 @@
 title: Init 容器 GPU 资源核算
 ---
 
+本文描述的普通 init 容器改动已在 [HAMi PR #1773](https://github.com/Project-HAMi/HAMi/pull/1773) 中实现，并包含在 v2.10.0 中。问题描述和“修改前”示例说明的是更早的行为。下文的 20Gi 等数值表示容量，不是 HAMi 扩展资源字段应填写的字面值。
+
 ## 问题概述
 
-当一个 Pod 中的 init 容器和应用容器都申请了 GPU 资源时，HAMi 会同时为它们分配资源。但 Kubernetes 会按顺序运行 init 容器，并等它们全部完成后才启动应用容器，所以 init 容器和应用容器从来不会同时运行。
+在 PR #1773 之前，HAMi 会把普通 init 容器和应用容器的 GPU 请求按并发运行来核算。但 Kubernetes 会按顺序运行 init 容器，并等它们全部完成后才启动应用容器，所以 init 容器和应用容器从来不会同时运行。
 
-注意：本设计只涉及 init 容器和应用容器。Sidecar 容器不在本文讨论范围内，会在单独的 PR 中处理。
+本设计只涉及普通 init 容器和应用容器。原生 sidecar 的核算由 [PR #2723](https://github.com/Project-HAMi/HAMi/pull/2723) 单独处理，该改动不包含在 v2.10.0 中。
 
-## HAMi 当前存在的问题
+## PR #1773 之前的问题
 
 `device.Resourcereqs()` 为每个容器生成一个请求条目，顺序是**先 init 容器，再应用容器**。
 
@@ -59,7 +61,7 @@ for _, ctrdevice := range ctrdevices {
 effective = max( sum(app container requests), max(single init container request) )
 ```
 
-## 方案
+## PR #1773 实现的设计
 
 在所有资源维度上统一应用这个公式，包括 GPU 数量、显存、算力，并且按设备 UUID 分别计算（对于多 GPU 的 Pod，如果 init 容器和应用容器落在不同的物理设备上，不能把这些设备上的用量合并计算）：
 
@@ -71,7 +73,7 @@ Pod 注解保持不变，因为 device plugin 仍然需要完整的逐容器设�
 
 ### 场景示例
 
-假设 GPU 集群中只有一个节点 `node1`，节点上有一块 24Gi 的 GPU，命名空间配额为 `nvidia.com/gpumem: 24Gi`。
+假设 GPU 集群中只有一个节点 `node1`，节点上有一块 24Gi 的 GPU，命名空间配额为 `requests.nvidia.com/gpumem: 24576`（使用 NVIDIA 默认显存系数时为 24 GiB）。
 
 #### 场景 1：准入阶段拦截永远无法满足的 init 容器请求
 
@@ -212,4 +214,4 @@ if pod.Status.Phase in (Succeeded, Failed):
 
 如果命名空间配置了 `ResourceQuota`（例如 `requests.nvidia.com/gpumem`），内置的 `ResourceQuota` 校验准入控制器会在 HAMi 的 mutating webhook 运行完毕（已修改或拒绝 Pod）之后、任何调度器看到 Pod 之前对其进行检查。它使用同样的公式 `max(sum(app), max(init))`，但只在 Pod 创建时计费一次，并在 Pod 处于非终止状态期间一直保留这笔计费（Pod 进入 `Succeeded`/`Failed` 或被删除后才释放）。它不会在 init 容器结束时做出反应，因此本设计中的收缩只会释放 HAMi 内部的容量，`ResourceQuota` 的计费并不会在那时释放。
 
-因此会出现这种情况：同样的 Pod 在没有配额时运行正常，设置配额后却无法创建。例如配额为 10000，Pod A（init 8000，应用 5000）只要处于非终止状态，就会一直被计为 8000，即使它的 init 容器已经退出。此时 Pod B（有效值 5000）在 HAMi 看到它之前就会被拒绝，报错 `exceeded quota: ... used: 8k`。这是 Kubernetes 的正常行为，HAMi 无法改变。
+因此会出现这种情况：同样的 Pod 在没有配额时运行正常，设置配额后却无法创建。例如配额为 10000，Pod A（init 8000，应用 5000）只要处于非终止状态，就会一直被计为 8000，即使它的 init 容器已经退出。此时 Pod B（有效值 5000）会在 HAMi 调度器的过滤逻辑看到它之前因超出配额而被拒绝。HAMi 的 mutating webhook 此时已经运行。这是 Kubernetes 的正常行为，HAMi 无法改变。

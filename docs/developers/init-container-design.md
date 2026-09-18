@@ -2,13 +2,15 @@
 title: Init Container GPU Resource Accounting
 ---
 
+The regular init-container changes described here were implemented in [HAMi PR #1773](https://github.com/Project-HAMi/HAMi/pull/1773) and are included in v2.10.0. The problem descriptions and Before examples describe the earlier behavior. Memory amounts such as 20Gi below describe capacity, not literal values for HAMi extended-resource fields.
+
 ## Problem Summary
 
-When a pod has both init containers and app containers requesting GPU resources, HAMi allocates the resources simultaneously/parallelly. But Kubernetes runs the init container sequentially to completion before any app container starts, so init and app containers never execute at the same time.
+Before PR #1773, HAMi accounted for regular init containers and app containers as if they ran concurrently. But Kubernetes runs the init container sequentially to completion before any app container starts, so init and app containers never execute at the same time.
 
-Note: This design covers init and app containers only. Sidecar containers are out of scope here and will be handled in a separate PR.
+Note: This design covers init and app containers only. Native sidecar accounting is covered separately by [PR #2723](https://github.com/Project-HAMi/HAMi/pull/2723), which is not included in v2.10.0.
 
-## The Problem in HAMi Today
+## Problems Before PR #1773
 
 `device.Resourcereqs()` this is built for one request entry per container, **init containers first, then app containers**, in this order.
 
@@ -59,7 +61,7 @@ So the correct formula for a pod's GPU footprint at any instant is:
 effective = max( sum(app container requests), max(single init container request) )
 ```
 
-## Proposal
+## Design Implemented by PR #1773
 
 Applying this formula consistently for all resource dimensions (GPU count, memory, cores, and per-device UUID; a multi-GPU pod where init and app containers land on different physical devices must not have usage on those devices merged):
 
@@ -71,7 +73,7 @@ Pod annotations are untouched, the device plugin still needs the full per-contai
 
 ### Different cases
 
-Assume a GPU cluster with one node, `node1`, with a single 24Gi GPU, and a namespace quota of `nvidia.com/gpumem: 24Gi`.
+Assume a GPU cluster with one node, `node1`, with a single 24Gi GPU, and a namespace quota of `requests.nvidia.com/gpumem: 24576` (24 GiB with the default NVIDIA memory factor).
 
 #### Case 1, Admission catches an init container request that could never fit
 
@@ -212,4 +214,4 @@ if pod.Status.Phase in (Succeeded, Failed):
 
 If the namespace has a `ResourceQuota` (like `requests.nvidia.com/gpumem`), the built-in `ResourceQuota` validating admission controller evaluates it after HAMi's mutating webhook has already run and mutated or rejected the pod, and before any scheduler sees it. It uses the same formula `max(sum(app), max(init))`, but it charges this value only once, when the pod is created, and it keeps the charge while the pod is non-terminal (released once the pod reaches `Succeeded`/`Failed` or is deleted). It does not react when init containers finish, so the shrink in this design only frees capacity inside HAMi. The `ResourceQuota` charge is not released at that point.
 
-Because of this, the same pods can run fine without a quota but fail when a quota is set. Example: quota is 10000. Pod A (init 8000, app 5000) is charged 8000 for as long as it stays non-terminal, even after its init container exits. Pod B (effective 5000) gets rejected with `exceeded quota: ... used: 8k` before HAMi even sees it. This is normal Kubernetes behavior and HAMi cannot change it.
+Because of this, the same pods can run fine without a quota but fail when a quota is set. Example: quota is 10000. Pod A (init 8000, app 5000) is charged 8000 for as long as it stays non-terminal, even after its init container exits. Pod B (effective 5000) gets rejected for exceeding the quota before the HAMi scheduler filter sees it. The HAMi mutating webhook has already run. This is normal Kubernetes behavior and HAMi cannot change it.

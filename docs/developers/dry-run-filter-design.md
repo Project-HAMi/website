@@ -237,7 +237,7 @@ The live filter retains its existing cache, quota, annotation, and bind protocol
 
 - deep-copy the Node;
 - iterate over the registered HAMi device backends;
-- call each backend's `GetNodeDevices()` to parse its `hami.io/node-*-register` annotation;
+- call each backend's `GetNodeDevices()` to read its registration data, using annotations or Node capacity according to the backend;
 - organize the resulting `DeviceInfo` values by vendor; and
 - return `node unregistered` if no backend can provide devices.
 
@@ -282,7 +282,7 @@ The simulation path must not:
 - create real device-allocation annotations; or
 - retain mutable references to temporary Nodes, `DeviceInfo`, or `DeviceUsage` values.
 
-Existing tests verify that Pod annotations, the pod manager, and the quota manager are not modified. Shared-entry behavior, such as writing an Event for a request with no device resources, still needs separate work.
+Existing tests verify that Pod annotations, the pod manager, and the quota manager are not modified. The shared no-resource path returns before event recording. The request and response contract still needs the work described below.
 
 ### Results and errors
 
@@ -318,7 +318,7 @@ Whether CA ignores that error depends on `ignorable`. The example explicitly set
 
 Template-node simulation on the HAMi side was merged in [HAMi PR #2046](https://github.com/Project-HAMi/HAMi/pull/2046). The current code includes `filterSimulation()`, a temporary device inventory, zero-usage `NodeUsage`, detailed failure reasons, and the related deep-copy fixes.
 
-Extender support on the CA side has not entered an official release. [kubernetes/autoscaler#9786](https://github.com/kubernetes/autoscaler/pull/9786) remains open in the old repository and cannot be merged directly into the new upstream repository. The migrated experimental branch is [spencercjh/cluster-autoscaler:feat/extender-managed-resources](https://github.com/spencercjh/cluster-autoscaler/tree/feat/extender-managed-resources). There is no corresponding upstream PR in [kubernetes-sigs/cluster-autoscaler](https://github.com/kubernetes-sigs/cluster-autoscaler) yet.
+The integration discussed here uses the experimental CA changes in PR #9786. [kubernetes/autoscaler#9786](https://github.com/kubernetes/autoscaler/pull/9786) remains open in the old repository and cannot be merged directly into the new upstream repository. The migrated experimental branch is [spencercjh/cluster-autoscaler:feat/extender-managed-resources](https://github.com/spencercjh/cluster-autoscaler/tree/feat/extender-managed-resources). Check [kubernetes-sigs/cluster-autoscaler](https://github.com/kubernetes-sigs/cluster-autoscaler) for the current upstream status before choosing a CA build.
 
 HAMi therefore has a simulation entry point, but a standard CA binary will not call it automatically. Running the complete flow still requires a CA build with the extender patch, matching scheduler configuration, and a reachable HAMi HTTPS endpoint.
 
@@ -337,7 +337,7 @@ These tests cover the main state boundaries for one request. They do not yet cov
 
 ### Manual `/filter` validation
 
-After deploying the HAMi implementation to an AKS cluster, three request types were tested against the real HTTPS `/filter` endpoint:
+In the [manual integration report for PR #2046](https://github.com/Project-HAMi/HAMi/pull/2046#issuecomment-4926630599), spencercjh reported testing three request types against the real HTTPS `/filter` endpoint on an AKS cluster:
 
 | Case | Request | Result |
 | --- | --- | --- |
@@ -349,11 +349,11 @@ The test annotation registered two mock K80 `DeviceInfo` entries, each with `cou
 
 ### Warm node group end-to-end validation
 
-The AKS user pool started with one node. Two Pods consumed the mock HAMi device memory on that node, and the live filter rejected a third identical Pod with `CardInsufficientMemory`. CA with extender support then:
+In the [warm node group report for PR #2046](https://github.com/Project-HAMi/HAMi/pull/2046#issuecomment-4932660081), spencercjh reported that two Pods consumed the mock HAMi device memory on the original node and the live filter rejected a third identical Pod with `CardInsufficientMemory`. The reported CA run then:
 
 - recognized the third Pod as unschedulable;
 - used the warm node group template and HAMi simulation filter to determine that a new node would fit;
-- scaled the VMSS from 1 node to 2 nodes; and
+- scaled the VMSS to add a node; and
 - waited for the new Node to join.
 
 The Pod was still unschedulable when the new Node had only reached `Ready`. The HAMi live filter completed the real allocation and bind only after mock-device-plugin registered `nvidia.com/gpu`, `nvidia.com/gpucores`, and `nvidia.com/gpumem`.
@@ -366,7 +366,7 @@ The current implementation evaluates fresh-node feasibility for one Pod in a war
 
 | Scenario | Source of device information | State required by simulation | Current status |
 | --- | --- | --- | --- |
-| Warm node group, one Pod | Registration annotation from an existing Node | Empty-node device usage | Validated once on AKS. |
+| Warm node group, one Pod | Registration annotation from an existing Node | Empty-node device usage | Reported on AKS with mock devices in PR #2046. |
 | Warm node group, multiple Pods | Registration annotation from an existing Node | Hypothetical allocations from earlier Pods | Unsupported; every request still starts from zero usage. |
 | Cold-zero node group, one Pod | Provider or separate device profile | Empty-node device usage | Unsupported; a missing annotation returns `node unregistered`. |
 | Cold-zero node group, multiple Pods | Provider or separate device profile | Device profile and hypothetical allocations from earlier Pods | Unsupported. |

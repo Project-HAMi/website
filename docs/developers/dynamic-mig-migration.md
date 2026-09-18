@@ -5,7 +5,7 @@ sidebar_label: Dynamic MIG Migration
 
 This guide is intended for two groups of users:
 
-- users of the MIG Geometry/Template implementation on the HAMi `master` branch; and
+- users of HAMi's legacy MIG Geometry/Template implementation; and
 - users of NVIDIA GPU Operator MIG Manager who manage fixed MIG geometries.
 
 The goal of this migration is not to promise that nodes will never need to be drained again. It is to remove draining from the routine profile-switching path. The scheduler reserves a specific MIG profile and physical placement for each Pod, the device plugin creates the corresponding GI/CI on demand, and the instance is reclaimed when the Pod terminates.
@@ -18,7 +18,7 @@ Operating a fixed geometry typically starts by selecting a whole-GPU layout such
 
 NVIDIA MIG Manager can trigger reconfiguration by changing `nvidia.com/mig.config`, but NVIDIA still requires that no user workloads are running on GPUs being reconfigured. Enabling or disabling MIG mode can also require a GPU reset or node reboot in some environments. Production procedures therefore commonly cordon or drain the node first. See the [NVIDIA GPU Operator MIG documentation](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/gpu-operator-mig.html).
 
-The implementation on the HAMi `master` branch is also centered on predefined geometries. When a request cannot fit the current geometry, the whole GPU must be switched to another template. This model works well for stable, long-lived resource pools, but mixed inference workloads, bursty profile demand, and frequently created short-lived jobs expose several costs:
+The legacy HAMi implementation is also centered on predefined geometries. When a request cannot fit the current geometry, the whole GPU must be switched to another template. This model works well for stable, long-lived resource pools, but mixed inference workloads, bursty profile demand, and frequently created short-lived jobs expose several costs:
 
 - operators must maintain memory, compute, instance counts, and geometry combinations for every GPU model;
 - changing the layout affects the entire GPU, not just the instance required by a new request;
@@ -59,7 +59,7 @@ Dynamic MIG does not remove MIG hardware constraints. A slice occupied by a GI c
 
 ### Configuration changes from geometries to a profile allowlist
 
-HAMi `master` configures complete geometries:
+The legacy HAMi configuration defines complete geometries:
 
 ```yaml
 nvidia:
@@ -156,7 +156,7 @@ Legacy Pods do not contain this complete identity. A legacy template/slot index 
 - satisfying a new layout that would require moving a running GI/CI; and
 - repairing a state in which HAMi Pod annotations cannot be correlated with NVML hardware state.
 
-## Migrating from HAMi master
+## Migrating from Legacy HAMi Geometries
 
 ### Migration principle
 
@@ -242,6 +242,8 @@ spec:
 This example validates resource allocation and device injection only. A production canary should use a trusted image with CUDA or NVML tools and run an actual GPU workload.
 
 ### Preferring a MIG profile
+
+This annotation was added after v2.10.0 in [HAMi PR #3014](https://github.com/Project-HAMi/HAMi/pull/3014).
 
 Profile selection is memory-only: the scheduler picks the smallest allowlisted profile whose memory covers the request. Because MIG couples memory and compute, two profiles can cover the same request with different compute shares; on an A100-40GB a 20 GB request resolves to `3g.20gb` by default, even when `4g.20gb` is allowed. A Pod that wants the extra compute can set the `nvidia.com/mig-profile-preference` annotation to an ordered, comma-separated list of profiles:
 

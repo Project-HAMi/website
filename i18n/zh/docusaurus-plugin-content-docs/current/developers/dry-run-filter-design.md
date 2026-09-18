@@ -237,7 +237,7 @@ args.Nodes == nil      -> existing live filter
 
 - 深拷贝 Node；
 - 遍历已注册的 HAMi 设备后端；
-- 调用各后端的 `GetNodeDevices()`，解析其 `hami.io/node-*-register` 注解；
+- 调用各后端的 `GetNodeDevices()` 读取注册数据，根据后端使用注解或 Node capacity；
 - 按厂商整理得到的 `DeviceInfo`；
 - 如果没有任何后端能提供设备，返回 `node unregistered`。
 
@@ -282,7 +282,7 @@ PodInfos  = []
 - 生成真实的设备分配注解；
 - 持有临时 Node、`DeviceInfo` 或 `DeviceUsage` 的可变引用。
 
-现有测试已经验证 Pod 注解、pod manager 和 quota manager 不会被修改。共享入口上的行为，例如对不含设备资源的请求写 Event，还需要单独处理。
+现有测试已经验证 Pod 注解、pod manager 和 quota manager 不会被修改。不含设备资源的共享路径会在记录 Event 之前返回。请求与响应约定仍需完成下文描述的工作。
 
 ### 结果与错误
 
@@ -318,7 +318,7 @@ CA 是否忽略该错误取决于 `ignorable`。示例中显式设置了 `ignora
 
 HAMi 侧的模板节点模拟已在 [HAMi PR #2046](https://github.com/Project-HAMi/HAMi/pull/2046) 中合入。当前代码包含 `filterSimulation()`、临时设备清单、零用量的 `NodeUsage`、详细的失败原因以及相关的深拷贝修复。
 
-CA 侧的 extender 支持还没有进入正式版本。[kubernetes/autoscaler#9786](https://github.com/kubernetes/autoscaler/pull/9786) 在旧仓库中仍处于打开状态，无法直接合入新的上游仓库。迁移后的实验分支是 [spencercjh/cluster-autoscaler:feat/extender-managed-resources](https://github.com/spencercjh/cluster-autoscaler/tree/feat/extender-managed-resources)，目前在 [kubernetes-sigs/cluster-autoscaler](https://github.com/kubernetes-sigs/cluster-autoscaler) 中还没有对应的上游 PR。
+本文讨论的集成使用 PR #9786 中实验性的 CA 改动。[kubernetes/autoscaler#9786](https://github.com/kubernetes/autoscaler/pull/9786) 在旧仓库中仍处于打开状态，无法直接合入新的上游仓库。迁移后的实验分支是 [spencercjh/cluster-autoscaler:feat/extender-managed-resources](https://github.com/spencercjh/cluster-autoscaler/tree/feat/extender-managed-resources)。选择 CA 构建之前，请在 [kubernetes-sigs/cluster-autoscaler](https://github.com/kubernetes-sigs/cluster-autoscaler) 中检查当前的上游状态。
 
 也就是说，HAMi 已经有了模拟入口，但标准的 CA 二进制并不会自动调用它。要跑通完整流程，仍然需要带 extender 补丁的 CA 构建、匹配的调度器配置，以及一个可以访问的 HAMi HTTPS 接口。
 
@@ -337,7 +337,7 @@ CA 侧的 extender 支持还没有进入正式版本。[kubernetes/autoscaler#97
 
 ### 手动验证 `/filter`
 
-把 HAMi 的实现部署到 AKS 集群后，我们针对真实的 HTTPS `/filter` 接口测试了三类请求：
+在 [PR #2046 的手动集成报告](https://github.com/Project-HAMi/HAMi/pull/2046#issuecomment-4926630599) 中，spencercjh 报告了在 AKS 集群上针对真实 HTTPS `/filter` 接口测试的三类请求：
 
 | 场景   | 请求                                             | 结果                                |
 | ------ | ------------------------------------------------ | ----------------------------------- |
@@ -349,11 +349,11 @@ CA 侧的 extender 支持还没有进入正式版本。[kubernetes/autoscaler#97
 
 ### warm 节点组端到端验证
 
-AKS 用户节点池一开始只有一个节点。两个 Pod 占满了该节点上模拟的 HAMi 设备显存，实时过滤器以 `CardInsufficientMemory` 拒绝了第三个相同的 Pod。随后，带 extender 支持的 CA：
+在 [PR #2046 的 warm 节点组报告](https://github.com/Project-HAMi/HAMi/pull/2046#issuecomment-4932660081) 中，spencercjh 报告两个 Pod 占满了原节点上模拟的 HAMi 设备显存，实时过滤器以 `CardInsufficientMemory` 拒绝了第三个相同的 Pod。报告中的 CA 运行随后：
 
 - 识别出第三个 Pod 不可调度；
 - 利用 warm 节点组模板和 HAMi 模拟过滤器，判断新节点能放下该 Pod；
-- 把 VMSS 从 1 个节点扩到 2 个节点；
+- 通过扩容 VMSS 增加一个节点；
 - 等待新 Node 加入集群。
 
 新 Node 刚进入 `Ready` 状态时，Pod 仍然不可调度。直到 mock-device-plugin 注册了 `nvidia.com/gpu`、`nvidia.com/gpucores` 和 `nvidia.com/gpumem` 之后，HAMi 实时过滤器才完成真实的分配和绑定。
@@ -366,7 +366,7 @@ AKS 用户节点池一开始只有一个节点。两个 Pod 占满了该节点�
 
 | 场景 | 设备信息来源 | 模拟所需状态 | 当前状态 |
 | --- | --- | --- | --- |
-| warm 节点组，单个 Pod | 现有 Node 的注册注解 | 空节点的设备用量 | 已在 AKS 上验证过一次。 |
+| warm 节点组，单个 Pod | 现有 Node 的注册注解 | 空节点的设备用量 | PR #2046 报告了使用模拟设备的 AKS 验证。 |
 | warm 节点组，多个 Pod | 现有 Node 的注册注解 | 前面 Pod 的假设性分配 | 不支持；每个请求仍从零用量开始。 |
 | cold-zero 节点组，单个 Pod | provider 或独立的设备描述 | 空节点的设备用量 | 不支持；缺少注解时返回 `node unregistered`。 |
 | cold-zero 节点组，多个 Pod | provider 或独立的设备描述 | 设备描述以及前面 Pod 的假设性分配 | 不支持。 |
