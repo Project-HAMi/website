@@ -1,0 +1,40 @@
+# Two hard-slice Pods with identical requests: both land on the same physical
+# NPU as separate vir05_1c_8g vNPU slices (same device UUID in the allocation
+# annotations). Delete both before enabling device-share / hami-vnpu-core.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hami-ascend910b4-hard-slice-a
+  labels:
+    hami.run/lab-18: "true"
+spec:
+  schedulerName: hami-scheduler
+  runtimeClassName: ascend
+  restartPolicy: Never
+  containers:
+    - name: npu
+      image: quay.io/ascend/torch-npu:2.10.0-910b-ubuntu22.04-py3.11
+      command: ["bash", "-c", "sleep 86400"]
+      resources:
+        limits:
+          huawei.com/Ascend910B4: "1"
+          huawei.com/Ascend910B4-memory: "8192"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hami-ascend910b4-hard-slice-b
+  labels:
+    hami.run/lab-18: "true"
+spec:
+  schedulerName: hami-scheduler
+  runtimeClassName: ascend
+  restartPolicy: Never
+  containers:
+    - name: npu
+      image: quay.io/ascend/torch-npu:2.10.0-910b-ubuntu22.04-py3.11
+      command: ["bash", "-c", "sleep 86400"]
+      resources:
+        limits:
+          huawei.com/Ascend910B4: "1"
+          huawei.com/Ascend910B4-memory: "8192"

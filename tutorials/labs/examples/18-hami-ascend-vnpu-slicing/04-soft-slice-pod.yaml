@@ -1,0 +1,26 @@
+# hami-vnpu-core soft slicing: the hami-core annotation selects the runtime
+# interception path, and the Pod gets explicit quotas instead of a template —
+# 8192 MiB of memory and 40% of the AI Cores (8 of 20 on a 910B4).
+# Requires: driver >= 25.5, device-share enabled on the NPU, ARM platform,
+# and vnpus.hamiVnpuCore: true (global) or a node-level hami-vnpu-core entry.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hami-ascend910b4-soft-slice
+  labels:
+    hami.run/lab-18: "true"
+  annotations:
+    huawei.com/vnpu-mode: "hami-core"
+spec:
+  schedulerName: hami-scheduler
+  runtimeClassName: ascend
+  restartPolicy: Never
+  containers:
+    - name: npu
+      image: quay.io/ascend/torch-npu:2.10.0-910b-ubuntu22.04-py3.11
+      command: ["bash", "-c", "sleep 86400"]
+      resources:
+        limits:
+          huawei.com/Ascend910B4: "1"
+          huawei.com/Ascend910B4-memory: "8192"  # memory quota in MiB
+          huawei.com/Ascend910B4-core: "40"      # optional: 40% of the AI Cores

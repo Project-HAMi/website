@@ -1,0 +1,21 @@
+# Template-based hard slicing: the 8192 MiB request makes HAMi select the
+# smallest matching 910B4 template, vir05_1c_8g (8192 MiB, 5 AI Core, 1 AI CPU).
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hami-ascend910b4-hard-slice
+  labels:
+    hami.run/lab-18: "true"
+spec:
+  schedulerName: hami-scheduler
+  runtimeClassName: ascend
+  restartPolicy: Never
+  containers:
+    - name: npu
+      # Use an image that matches the host driver and your node architecture.
+      image: quay.io/ascend/torch-npu:2.10.0-910b-ubuntu22.04-py3.11
+      command: ["bash", "-c", "sleep 86400"]
+      resources:
+        limits:
+          huawei.com/Ascend910B4: "1"
+          huawei.com/Ascend910B4-memory: "8192"

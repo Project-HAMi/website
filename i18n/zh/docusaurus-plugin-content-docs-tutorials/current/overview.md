@@ -31,3 +31,4 @@ import LabCardGridAuto from '@site/src/components/labs/LabCardGridAuto';
 - **实验 13** 在昇腾 310P3 ARM 服务器上源码编译 Volcano 与 ascend-device-plugin，验证 hami-vnpu-core 软切分、binpack 共卡与容器级监控指标。
 - **实验 14** 在挂载四块 T4 的 GKE 节点上安装 HAMi v2.10.0，并通过分配注解与调度器日志观察可组合的 `gpu-scheduler-policy` 策略链（`spread`、`binpack`、`mutex`、`mutex,binpack`）。
 - **实验 16** 在配备 7 张 RTX PRO 6000 的服务器上安装 HAMi v2.10.0，并验证完整的 Dynamic MIG 生命周期：按 Pod 创建 MIG、混合规格、选择性回收、device plugin 重启恢复以及跨 GPU 调度。
+- **实验 18** 在 910B4 节点上安装 HAMi 与昇腾设备插件，先用模板硬切共享一张 NPU（`vir05_1c_8g`，两 Pod 共卡），再切换到 `hami-vnpu-core` 软切并指定显存与算力配额。
