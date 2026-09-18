@@ -61,6 +61,15 @@ hami.io/node-handshake-{device-type}: Requesting_{scheduler_node_current_timesta
 - `hami.io/vgpu-devices-allocated`：调度器分配的设备及其规格。
 - `hami.io/vgpu-devices-to-allocate`：待分配的设备。调度器创建 Pod 注解时，`hami.io/vgpu-devices-to-allocate` 包含目标设备。device-plugin 根据此注解确定分配方案，分配完成后移除已分配的设备。任务成功运行后，`hami.io/vgpu-devices-to-allocate` 序列化为 `;`（表示空列表），而不是空字符串或省略该注解。
 
+`hami.io/vgpu-devices-to-allocate` 是 NVIDIA 使用的键。每种设备后端会注册自己的键，名称并不统一遵循 `{device-type}` 的格式：
+
+| 后端       | 待分配注解键                                |
+| ---------- | ------------------------------------------- |
+| NVIDIA     | `hami.io/vgpu-devices-to-allocate`          |
+| 寒武纪 MLU | `hami.io/cambricon-mlu-devices-to-allocate` |
+| 摩尔线程   | `hami.io/mthreads-vgpu-devices-to-allocate` |
+| 海光 HCU   | `hami.io/hcu-devices-to-allocate`           |
+
 以下是一个请求 3000 MiB 设备显存的 GPU 任务在 Pod 上生成的注解示例：
 
 ```yaml
