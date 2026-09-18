@@ -58,10 +58,7 @@
         {
           "type": "category",
           "label": "HAMi-DRA",
-          "items": [
-            "installation/configure-cdi",
-            "installation/how-to-use-hami-dra"
-          ]
+          "items": ["installation/configure-cdi", "installation/how-to-use-hami-dra"]
         },
         {
           "type": "category",
@@ -91,9 +88,7 @@
         {
           "type": "category",
           "label": "KAI-scheduler-HAMi",
-          "items": [
-            "userguide/kai-scheduler/how-to-use-kai-scheduler"
-          ]
+          "items": ["userguide/kai-scheduler/how-to-use-kai-scheduler"]
         }
       ]
     },
@@ -106,9 +101,7 @@
         "title": "Vendor guides",
         "description": "Start from the supported devices matrix, then follow the guide for your vendor."
       },
-      "items": [
-        "userguide/device-supported"
-      ]
+      "items": ["userguide/device-supported"]
     },
     {
       "type": "category",
@@ -142,9 +135,7 @@
               "type": "category",
               "label": "Examples",
               "key": "kueue-examples",
-              "items": [
-                "userguide/kueue/examples/default-use"
-              ]
+              "items": ["userguide/kueue/examples/default-use"]
             }
           ]
         },
@@ -184,9 +175,7 @@
         "developers/hami-webui-development-guide",
         "developers/amd-vgpu-design",
         "developers/dry-run-filter-design",
-        "developers/hostpid-broker",
-        "developers/init-container-design",
-        "developers/sidecar-container-design"
+        "developers/init-container-design"
       ]
     },
     {

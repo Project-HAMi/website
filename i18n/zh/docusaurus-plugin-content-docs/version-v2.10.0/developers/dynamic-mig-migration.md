@@ -243,36 +243,7 @@ spec:
 
 ### 优先选择某个 MIG profile {#preferring-a-mig-profile}
 
-此注解由 v2.10.0 之后的 [HAMi PR #3014](https://github.com/Project-HAMi/HAMi/pull/3014) 添加。
-
-profile 选择只看显存：调度器会从允许列表中挑选能满足显存请求的最小 profile。由于 MIG 的显存和算力是绑定的，两个 profile 可能都能满足同一个请求，但算力份额不同。例如在 A100-40GB 上，即使允许使用 `4g.20gb`，20 GB 的请求默认也会落到 `3g.20gb`。需要更多算力的 Pod 可以设置 `nvidia.com/mig-profile-preference` 注解，值为按优先级排序、以逗号分隔的 profile 列表：
-
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: mig-prefer-4g
-  annotations:
-    nvidia.com/vgpu-mode: "mig"
-    nvidia.com/mig-profile-preference: "4g"
-spec:
-  containers:
-    - name: workload
-      image: ubuntu:22.04
-      command: ["bash", "-c", "sleep 3600"]
-      resources:
-        limits:
-          nvidia.com/gpu: 1
-          nvidia.com/gpumem: 20000
-```
-
-每一项既可以写完整的 profile 名称（`4g.20gb`），也可以只写切片规格（`4g`）；后者会匹配所有 GPU 型号上的同规格 profile，因此一个值就能同时覆盖 A100 和 H100 节点。调度器会先按列出的顺序尝试偏好的 profile，再回到默认的从小到大顺序。偏好只是倾向，而不是强制要求：
-
-- 永远不会选择小于显存请求的 profile；
-- 只对 GPU 的 `migProfileAllowlist` 中的 profile 生效；某一项在某块 GPU 上匹配不到任何 profile 时，在这块 GPU 上会被忽略；
-- 如果偏好的 profile 没有空闲 placement，或者偏好的布局在该 GPU 上放不下容器所需的切片，调度器会回退到默认顺序，而不是直接排除这块 GPU。
-
-如果某个值在所有 `migProfileAllowlist` 条目中都匹配不到 profile，准入 webhook 会拒绝它，这样拼写错误在创建 Pod 时就能发现。
+v2.10.0 不支持 `nvidia.com/mig-profile-preference` 注解。该注解由后续的 [HAMi PR #3014](https://github.com/Project-HAMi/HAMi/pull/3014) 添加。v2.10.0 应通过 `migProfileAllowlist` 配置允许的 profile，不要依赖 Pod 偏好注解。
 
 ### 回收与恢复
 
@@ -327,7 +298,7 @@ spec:
 
 ### 用户需要修改工作负载 YAML 吗？
 
-通常不需要。用户继续申请 `nvidia.com/gpu` 和 `nvidia.com/gpumem`，并设置 `nvidia.com/vgpu-mode: "mig"` 即可。如果希望在满足请求的多个 profile 中指定某一个，可以加上 `nvidia.com/mig-profile-preference`，参见[优先选择某个 MIG profile](#preferring-a-mig-profile)。`hami.io/vgpu-mig-allocations` 由调度器和 device plugin 管理，不是面向用户的 API。
+通常不需要。用户继续申请 `nvidia.com/gpu` 和 `nvidia.com/gpumem`，并设置 `nvidia.com/vgpu-mode: "mig"` 即可。v2.10.0 不支持 Pod 级别的 `nvidia.com/mig-profile-preference` 注解，参见[优先选择某个 MIG profile](#preferring-a-mig-profile)。`hami.io/vgpu-mig-allocations` 由调度器和 device plugin 管理，不是面向用户的 API。
 
 ## 总结
 

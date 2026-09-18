@@ -171,13 +171,9 @@ If allocation state cannot be read reliably during startup, the plugin preserves
 
 ## NVML session ownership
 
-The per-start-cycle lifecycle described here was added after v2.10.0 in [HAMi PR #2989](https://github.com/Project-HAMi/HAMi/pull/2989).
+In v2.10.0, the device plugin initializes `MigInstanceManager` during plugin construction and schedules its shutdown when the plugin context ends. This plugin-lifetime ownership was introduced in [HAMi PR #2610](https://github.com/Project-HAMi/HAMi/pull/2610).
 
-Each Dynamic MIG plugin start cycle owns one NVML session through its `MigInstanceManager`. Construction does not initialize NVML. The session is acquired before the startup scan, and MIG discovery, registration, topology scoring, allocation, adoption, and release all borrow that configured instance.
-
-Shutdown cancels the cycle's registration and reconciliation loops, stops gRPC and waits for handlers including allocation cleanup, then drains background workers before shutting the manager down. The manager rejects new operations while closing and waits for admitted ones to finish. Startup failures use the same cleanup path, so a failed initialization is never paired with a shutdown, and repeating a shutdown is safe. A new start acquires a new session and rebuilds the in-memory allocation index from Pod annotations; shutting down does not by itself destroy running instances.
-
-Initial resource discovery, health checking, non-MIG operation, and the separate monitor keep their own independent sessions. The one-init and one-shutdown invariant applies to the Dynamic MIG manager's session, not to every NVML caller in the process. Forced process termination cannot run graceful cleanup.
+Per-start-cycle initialization, draining of admitted operations, and safe repeated shutdown were added later in [HAMi PR #2989](https://github.com/Project-HAMi/HAMi/pull/2989). These later lifecycle guarantees do not apply to v2.10.0.
 
 ## Metrics and observability
 
