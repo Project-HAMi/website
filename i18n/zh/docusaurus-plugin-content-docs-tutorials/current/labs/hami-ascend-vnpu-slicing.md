@@ -21,12 +21,6 @@ toc_max_heading_level: 2
 
 本实验在单张 Ascend 910B4 上安装 HAMi 2.9.0 和固定版本的 `ascend-device-plugin` v1.4.0，然后依次体验 HAMi 提供的两种 NPU 共享路径：**模板硬切**，由 HAMi 根据显存请求匹配 `vir05_1c_8g` 这类固定 AVI 模板；**hami-vnpu-core 软切**，由运行时为 Pod 下发并强制执行显存与 AI Core 配额。实验过程中，两个硬切 Pod 会共享同一张物理卡，软切 Pod 的配额还可以通过设备插件的监控指标观测。
 
-:::note 关于输出示例
-
-下文输出来自 2026-09-17 的实测记录。节点名、Pod 名和设备 UUID 与环境相关；请对比组件名称、就绪状态、模板取值和实测数值。
-
-:::
-
 ## 你将学到什么
 
 - HAMi 为 910B4 暴露哪些昇腾资源键，以及节点上报的可调度数量如何由最小模板推导；
@@ -53,7 +47,7 @@ flowchart LR
 - 一个可正常访问的单节点 Kubernetes 集群，配备空闲的 Ascend 910B4，宿主机 `npu-smi info` 可见设备，节点允许普通 Pod 运行。软切（`hami-vnpu-core`）仅支持 ARM 平台且要求驱动 ≥ 25.5；实测环境为 ARM 节点、驱动 25.5.1。
 - 已配置为 `ascend` containerd runtime handler 的 [Ascend Docker Runtime](https://gitcode.com/Ascend/mind-cluster/tree/master/component/ascend-docker-runtime)。工作负载使用 `runtimeClassName: ascend`。
 - `kubectl`、Helm 3、集群管理员权限，以及创建 `RuntimeClass`、ConfigMap、DaemonSet 和工作负载 Pod 的权限。
-- 一个与宿主机驱动及节点架构兼容的 CANN/torch-npu 镜像。示例使用 `quay.io/ascend/torch-npu:2.10.0-910b-ubuntu22.04-py3.11`。Ascend Docker Runtime 会注入宿主机的 `npu-smi` 和驱动库，镜像无需自带 `npu-smi`。
+- 一个与宿主机驱动及节点架构兼容的 CANN/torch-npu 镜像，示例使用 `quay.io/ascend/torch-npu:2.10.0-910b-ubuntu22.04-py3.11`。
 - 本 website 仓库的本地检出；下方命令会引用 [`tutorials/labs/examples/18-hami-ascend-vnpu-slicing/`](https://github.com/Project-HAMi/website/tree/master/tutorials/labs/examples/18-hami-ascend-vnpu-slicing) 下的文件。
 
 ## 步骤 1：安装带昇腾支持的 HAMi
@@ -111,8 +105,6 @@ npu-smi info -t template-info
 
 ## 步骤 2：部署昇腾设备插件
 
-按[昇腾共享官方指南](/zh/docs/userguide/ascend-device/enable-ascend-sharing)的顺序部署，插件清单固定为 v1.4.0。
-
 ### 标记节点
 
 设备插件通过 `ascend=on` 标签选择节点。将 `YOUR_ASCEND_NODE` 替换为昇腾节点名：
@@ -125,21 +117,13 @@ kubectl label node "$NODE" ascend=on --overwrite
 
 ### 部署 RuntimeClass
 
-确认节点上已安装 Ascend Docker Runtime 并注册了 `ascend` handler，然后创建 `RuntimeClass` 对象：
+> 确认节点上已安装 Ascend Docker Runtime 并注册了 `ascend` handler。
+
+创建 `RuntimeClass` 对象：
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/Project-HAMi/ascend-device-plugin/refs/tags/v1.4.0/ascend-runtimeclass.yaml
 ```
-
-### 创建节点 ConfigMap
-
-创建 v1.4.0 插件清单所要求的 `hami-device-node-config`：
-
-```bash
-kubectl apply -f tutorials/labs/examples/18-hami-ascend-vnpu-slicing/01-ascend-node-config.yaml
-```
-
-示例中 `nodes` 列表为空，表示所有节点都跟随全局模式开关。节点级 `hami-vnpu-core: true` 条目的优先级高于全局开关，步骤 5 会说明何时需要它。
 
 ### 部署 ascend-device-plugin
 
@@ -165,7 +149,7 @@ kubectl -n kube-system get pods -l app.kubernetes.io/component=hami-ascend-devic
 提交单 Pod 硬切工作负载：
 
 ```bash
-kubectl apply -f tutorials/labs/examples/18-hami-ascend-vnpu-slicing/02-hard-slice-pod.yaml
+kubectl apply -f tutorials/labs/examples/18-hami-ascend-vnpu-slicing/01-hard-slice-pod.yaml
 kubectl wait --for=condition=Ready pod/hami-ascend910b4-hard-slice --timeout=5m
 kubectl get pod hami-ascend910b4-hard-slice -o wide
 ```
@@ -235,7 +219,7 @@ NPU 2  910B4vir05_1c_8g
 提交双 Pod 示例，两个 Pod 申请相同的 8192 MiB：
 
 ```bash
-kubectl apply -f tutorials/labs/examples/18-hami-ascend-vnpu-slicing/03-hard-slice-two-pods.yaml
+kubectl apply -f tutorials/labs/examples/18-hami-ascend-vnpu-slicing/02-hard-slice-two-pods.yaml
 kubectl wait --for=condition=Ready pod/hami-ascend910b4-hard-slice-a pod/hami-ascend910b4-hard-slice-b --timeout=5m
 for pod in hami-ascend910b4-hard-slice-a hami-ascend910b4-hard-slice-b; do
   echo "--- $pod ---"
@@ -266,8 +250,8 @@ done
 软切有额外前提：启用 `device-share` 模式。NPU 必须没有正在运行的容器，因此先删除步骤 3 和步骤 4 的 Pod：
 
 ```bash
-kubectl delete -f tutorials/labs/examples/18-hami-ascend-vnpu-slicing/03-hard-slice-two-pods.yaml --ignore-not-found
-kubectl delete -f tutorials/labs/examples/18-hami-ascend-vnpu-slicing/02-hard-slice-pod.yaml --ignore-not-found
+kubectl delete -f tutorials/labs/examples/18-hami-ascend-vnpu-slicing/02-hard-slice-two-pods.yaml --ignore-not-found
+kubectl delete -f tutorials/labs/examples/18-hami-ascend-vnpu-slicing/01-hard-slice-pod.yaml --ignore-not-found
 ```
 
 查询 NPU ID 并在其上启用 `device-share`（要求驱动 ≥ 25.5）：
@@ -300,7 +284,7 @@ kubectl -n kube-system get cm hami-scheduler-device \
 hamiVnpuCore: true
 ```
 
-这会对所有没有节点级覆盖的节点启用 `hami-vnpu-core`。如果只想在部分节点启用软切，可以在 `hami-device-node-config` 中为每个目标节点添加 `hami-vnpu-core: true` 条目；节点级设置优先于全局开关：
+这会对所有节点启用 `hami-vnpu-core`。如果集群中还需要保留纯硬切节点，可以只给部分节点开启：在 `hami-device-node-config` 中为每个目标节点设置 `hami-vnpu-core: true`（格式参考官方 [ascend-device-node-configmap.yaml](https://github.com/Project-HAMi/ascend-device-plugin/blob/v1.4.0/ascend-device-node-configmap.yaml)），节点级设置优先于全局开关：
 
 ```yaml
 nodes:
@@ -317,7 +301,7 @@ HAMi 会自动加载 ConfigMap 的变更。如果下一步的 Pod 一直 Pending
 - 注解 `huawei.com/vnpu-mode: hami-core` 选择软切路径；
 - 资源 limits 中显式携带 `-memory` 和 `-core` 配额，而不依赖模板匹配。
 
-完整工作负载见 [`04-soft-slice-pod.yaml`](https://github.com/Project-HAMi/website/blob/master/tutorials/labs/examples/18-hami-ascend-vnpu-slicing/04-soft-slice-pod.yaml)：
+完整工作负载见 [`03-soft-slice-pod.yaml`](https://github.com/Project-HAMi/website/blob/master/tutorials/labs/examples/18-hami-ascend-vnpu-slicing/03-soft-slice-pod.yaml)：
 
 ```yaml
 apiVersion: v1
@@ -346,7 +330,7 @@ spec:
 提交并读取模式注解与分配注解：
 
 ```bash
-kubectl apply -f tutorials/labs/examples/18-hami-ascend-vnpu-slicing/04-soft-slice-pod.yaml
+kubectl apply -f tutorials/labs/examples/18-hami-ascend-vnpu-slicing/03-soft-slice-pod.yaml
 kubectl wait --for=condition=Ready pod/hami-ascend910b4-soft-slice --timeout=5m
 kubectl get pod hami-ascend910b4-soft-slice -o wide
 kubectl get pod hami-ascend910b4-soft-slice \
@@ -391,7 +375,15 @@ kubectl -n kube-system get pods -l app.kubernetes.io/component=hami-ascend-devic
 kubectl -n kube-system logs ds/hami-ascend-device-plugin --tail=100
 ```
 
-插件还需要 `hami-scheduler-device` 和 `hami-device-node-config` 两个 ConfigMap；缺少节点 ConfigMap 会导致 v1.4.0 清单无法启动。
+同时确认 `hami-scheduler-device` ConfigMap 存在，它由 HAMi 安装时自动创建。
+
+### 设备插件 Pod 一直 CreateContainerConfigError
+
+v1.4.0 清单会把 `hami-device-node-config` ConfigMap 挂载为 `/node-config.yaml`，全新集群上可能还没有它。部署官方的节点配置 ConfigMap（按需调整 `nodes` 条目）后插件即可启动：
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/Project-HAMi/ascend-device-plugin/refs/tags/v1.4.0/ascend-device-node-configmap.yaml
+```
 
 ### Pod 一直 Pending
 
@@ -423,7 +415,6 @@ kubectl -n kube-system logs deploy/hami-scheduler --tail=100
 ```bash
 kubectl delete pod -l hami.run/lab-18=true --ignore-not-found
 kubectl delete -f https://raw.githubusercontent.com/Project-HAMi/ascend-device-plugin/refs/tags/v1.4.0/ascend-device-plugin.yaml --ignore-not-found
-kubectl delete -f tutorials/labs/examples/18-hami-ascend-vnpu-slicing/01-ascend-node-config.yaml --ignore-not-found
 kubectl delete runtimeclass ascend --ignore-not-found
 helm uninstall hami --namespace kube-system
 kubectl label node "$NODE" ascend-

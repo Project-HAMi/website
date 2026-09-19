@@ -21,12 +21,6 @@ toc_max_heading_level: 2
 
 This lab installs HAMi 2.9.0 and the pinned `ascend-device-plugin` v1.4.0 on a single Ascend 910B4, then walks one NPU through both sharing paths that HAMi offers: **template-based hard slicing**, where HAMi matches a memory request to a fixed AVI template such as `vir05_1c_8g`, and **hami-vnpu-core soft slicing**, where a Pod receives runtime-enforced memory and AI Core quotas. Along the way, two hard-slice Pods end up sharing one physical card, and a soft-slice Pod's quota becomes observable through the device plugin metrics.
 
-:::note About the output blocks
-
-The outputs below were captured from the verified run on 2026-09-17. Node names, Pod names, and device UUIDs are environment-specific; compare the component names, readiness, template values, and measured values.
-
-:::
-
 ## What You'll Learn
 
 - which Ascend resource keys HAMi exposes for the 910B4 and how the node's reported allocatable count is derived from the smallest template;
@@ -53,7 +47,7 @@ flowchart LR
 - A working single-node Kubernetes cluster with an idle Ascend 910B4, visible in host `npu-smi info`, and a node that accepts ordinary Pods. Soft slicing (`hami-vnpu-core`) is ARM-only and requires driver ≥ 25.5; the verified run used an ARM node with driver 25.5.1.
 - [Ascend Docker Runtime](https://gitcode.com/Ascend/mind-cluster/tree/master/component/ascend-docker-runtime) configured as the `ascend` containerd runtime handler. The workloads use `runtimeClassName: ascend`.
 - `kubectl`, Helm 3, cluster-admin access, and permission to create a `RuntimeClass`, ConfigMaps, a DaemonSet, and workload Pods.
-- A CANN/torch-npu image compatible with the host driver and node architecture. The examples use `quay.io/ascend/torch-npu:2.10.0-910b-ubuntu22.04-py3.11`. Ascend Docker Runtime injects the host `npu-smi` and driver libraries; the image does not need to bundle `npu-smi`.
+- A CANN/torch-npu image compatible with the host driver and node architecture, for example `quay.io/ascend/torch-npu:2.10.0-910b-ubuntu22.04-py3.11`.
 - A checkout of this website repository; the commands refer to files under [`tutorials/labs/examples/18-hami-ascend-vnpu-slicing/`](https://github.com/Project-HAMi/website/tree/master/tutorials/labs/examples/18-hami-ascend-vnpu-slicing).
 
 ## Step 1: Install HAMi with Ascend Support
@@ -111,8 +105,6 @@ npu-smi info -t template-info
 
 ## Step 2: Deploy the Ascend Device Plugin
 
-Follow the deployment order in the [official Ascend sharing guide](/docs/userguide/ascend-device/enable-ascend-sharing). The plugin manifests are pinned to v1.4.0.
-
 ### Label the Node
 
 The device plugin selects nodes through the `ascend=on` label. Replace `YOUR_ASCEND_NODE` with the Ascend node name:
@@ -125,21 +117,13 @@ kubectl label node "$NODE" ascend=on --overwrite
 
 ### Deploy the RuntimeClass
 
-Make sure Ascend Docker Runtime is installed and registered as the `ascend` handler on the node, then create the `RuntimeClass` object:
+> Make sure Ascend Docker Runtime is installed and registered as the `ascend` handler on the node.
+
+Create the `RuntimeClass` object:
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/Project-HAMi/ascend-device-plugin/refs/tags/v1.4.0/ascend-runtimeclass.yaml
 ```
-
-### Create the Node ConfigMap
-
-Create the `hami-device-node-config` required by the v1.4.0 plugin manifest:
-
-```bash
-kubectl apply -f tutorials/labs/examples/18-hami-ascend-vnpu-slicing/01-ascend-node-config.yaml
-```
-
-The example leaves the `nodes` list empty, so every node follows the global mode switch. A node-level `hami-vnpu-core: true` entry takes priority over the global switch; Step 5 shows when that matters.
 
 ### Deploy ascend-device-plugin
 
@@ -165,7 +149,7 @@ For one 910B4 with the default configuration, `huawei.com/Ascend910B4` reports `
 Apply the single hard-slice workload:
 
 ```bash
-kubectl apply -f tutorials/labs/examples/18-hami-ascend-vnpu-slicing/02-hard-slice-pod.yaml
+kubectl apply -f tutorials/labs/examples/18-hami-ascend-vnpu-slicing/01-hard-slice-pod.yaml
 kubectl wait --for=condition=Ready pod/hami-ascend910b4-hard-slice --timeout=5m
 kubectl get pod hami-ascend910b4-hard-slice -o wide
 ```
@@ -235,7 +219,7 @@ The full `npu-smi` table is host-specific; the invariants are `ASCEND_VNPU_SPECS
 Apply the two-Pod example. Both Pods request the same 8192 MiB:
 
 ```bash
-kubectl apply -f tutorials/labs/examples/18-hami-ascend-vnpu-slicing/03-hard-slice-two-pods.yaml
+kubectl apply -f tutorials/labs/examples/18-hami-ascend-vnpu-slicing/02-hard-slice-two-pods.yaml
 kubectl wait --for=condition=Ready pod/hami-ascend910b4-hard-slice-a pod/hami-ascend910b4-hard-slice-b --timeout=5m
 for pod in hami-ascend910b4-hard-slice-a hami-ascend910b4-hard-slice-b; do
   echo "--- $pod ---"
@@ -266,8 +250,8 @@ Template hard slicing allocates fixed AVI templates; its granularity is bounded 
 `device-share` mode is an additional requirement for soft slicing. The NPU must be free of running containers, so delete the Step 3 and 4 Pods first:
 
 ```bash
-kubectl delete -f tutorials/labs/examples/18-hami-ascend-vnpu-slicing/03-hard-slice-two-pods.yaml --ignore-not-found
-kubectl delete -f tutorials/labs/examples/18-hami-ascend-vnpu-slicing/02-hard-slice-pod.yaml --ignore-not-found
+kubectl delete -f tutorials/labs/examples/18-hami-ascend-vnpu-slicing/02-hard-slice-two-pods.yaml --ignore-not-found
+kubectl delete -f tutorials/labs/examples/18-hami-ascend-vnpu-slicing/01-hard-slice-pod.yaml --ignore-not-found
 ```
 
 Find the NPU ID and enable `device-share` on it (requires driver ≥ 25.5):
@@ -300,7 +284,7 @@ kubectl -n kube-system get cm hami-scheduler-device \
 hamiVnpuCore: true
 ```
 
-This enables `hami-vnpu-core` on every node that has no node-level override. To enable soft slicing only on selected nodes instead, add a `hami-vnpu-core: true` entry for each target node in `hami-device-node-config`; node-level settings take priority over the global switch:
+This enables `hami-vnpu-core` on every node. To keep some nodes on template hard slicing and enable soft slicing only on selected ones, set `hami-vnpu-core: true` for each target node in `hami-device-node-config` (see the official [ascend-device-node-configmap.yaml](https://github.com/Project-HAMi/ascend-device-plugin/blob/v1.4.0/ascend-device-node-configmap.yaml) for the format); node-level settings take priority over the global switch:
 
 ```yaml
 nodes:
@@ -317,7 +301,7 @@ A soft-slice Pod differs from a hard-slice Pod in two ways:
 - the annotation `huawei.com/vnpu-mode: hami-core` selects the soft-slicing path;
 - the resource limits carry explicit `-memory` and `-core` quotas instead of relying on a template match.
 
-The full workload is [`04-soft-slice-pod.yaml`](https://github.com/Project-HAMi/website/blob/master/tutorials/labs/examples/18-hami-ascend-vnpu-slicing/04-soft-slice-pod.yaml):
+The full workload is [`03-soft-slice-pod.yaml`](https://github.com/Project-HAMi/website/blob/master/tutorials/labs/examples/18-hami-ascend-vnpu-slicing/03-soft-slice-pod.yaml):
 
 ```yaml
 apiVersion: v1
@@ -346,7 +330,7 @@ spec:
 Apply it and read the mode and allocation annotations:
 
 ```bash
-kubectl apply -f tutorials/labs/examples/18-hami-ascend-vnpu-slicing/04-soft-slice-pod.yaml
+kubectl apply -f tutorials/labs/examples/18-hami-ascend-vnpu-slicing/03-soft-slice-pod.yaml
 kubectl wait --for=condition=Ready pod/hami-ascend910b4-soft-slice --timeout=5m
 kubectl get pod hami-ascend910b4-soft-slice -o wide
 kubectl get pod hami-ascend910b4-soft-slice \
@@ -391,7 +375,15 @@ kubectl -n kube-system get pods -l app.kubernetes.io/component=hami-ascend-devic
 kubectl -n kube-system logs ds/hami-ascend-device-plugin --tail=100
 ```
 
-The plugin also needs the `hami-scheduler-device` and `hami-device-node-config` ConfigMaps; a missing node ConfigMap prevents the v1.4.0 manifest from starting.
+Also confirm the `hami-scheduler-device` ConfigMap exists; the HAMi chart creates it during installation.
+
+### The device-plugin Pod is stuck in CreateContainerConfigError
+
+The v1.4.0 manifest mounts a `hami-device-node-config` ConfigMap at `/node-config.yaml`, which may not exist on a fresh cluster. Deploy the official node-config ConfigMap (adjust the `nodes` entries for your environment) and the plugin starts:
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/Project-HAMi/ascend-device-plugin/refs/tags/v1.4.0/ascend-device-node-configmap.yaml
+```
 
 ### The Pod stays Pending
 
@@ -423,7 +415,6 @@ Run this if you are responsible for the HAMi and Ascend plugin installation. On 
 ```bash
 kubectl delete pod -l hami.run/lab-18=true --ignore-not-found
 kubectl delete -f https://raw.githubusercontent.com/Project-HAMi/ascend-device-plugin/refs/tags/v1.4.0/ascend-device-plugin.yaml --ignore-not-found
-kubectl delete -f tutorials/labs/examples/18-hami-ascend-vnpu-slicing/01-ascend-node-config.yaml --ignore-not-found
 kubectl delete runtimeclass ascend --ignore-not-found
 helm uninstall hami --namespace kube-system
 kubectl label node "$NODE" ascend-
