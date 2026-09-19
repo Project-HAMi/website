@@ -5,8 +5,7 @@ sidebar_label: "Lab 18: Ascend 910B4 vNPU Slicing"
 lab:
   level: Intermediate
   duration: about 60 minutes
-  environment: single-node Kubernetes cluster on an ARM Ascend 910B4 server (driver 25.5.1, containerd)
-  cost: requires dedicated Ascend 910B4 hardware; soft slicing is ARM-only
+  environment: single-node Kubernetes 1.34 cluster with an Ascend 910B4 (ARM)
   authors:
     - lixd
   verified: "2026-09-17"
@@ -19,7 +18,7 @@ tags:
 toc_max_heading_level: 2
 ---
 
-This lab installs HAMi 2.9.0 and the pinned `ascend-device-plugin` v1.4.0 on a single Ascend 910B4, then walks one NPU through both sharing paths that HAMi offers: **template-based hard slicing**, where HAMi matches a memory request to a fixed AVI template such as `vir05_1c_8g`, and **hami-vnpu-core soft slicing**, where a Pod receives runtime-enforced memory and AI Core quotas. Along the way, two hard-slice Pods end up sharing one physical card, and a soft-slice Pod's quota becomes observable through the device plugin metrics.
+This lab installs HAMi 2.9.0 and the pinned `ascend-device-plugin` v1.4.0 on a single Ascend 910B4, then walks one NPU through both sharing paths that HAMi offers: **hard slicing**, where HAMi matches a memory request to a fixed AVI template such as `vir05_1c_8g`, and **hami-vnpu-core soft slicing**, where the runtime's `libvnpu.so` provides fine-grained memory and compute quotas.
 
 ## What You'll Learn
 
@@ -194,9 +193,7 @@ The `temp: vir05_1c_8g` entry proves this is template-based hard slicing rather 
 | :-- | :-- | :-- | :-- |
 | `huawei.com/Ascend910B4: 1` + `huawei.com/Ascend910B4-memory: 8192` | `vir05_1c_8g` | 8192 MiB, 5 AI Core, 1 AI CPU | The smallest matching template for this 910B4 |
 
-Template names and capacities are chip- and version-specific — re-read the `hami-scheduler-device` ConfigMap whenever the plugin or HAMi version changes.
-
-Verify what the container actually sees. The device plugin turns the allocation into `ASCEND_VISIBLE_DEVICES` and `ASCEND_VNPU_SPECS`, and the Ascend runtime makes the vNPU visible:
+The device plugin turns the allocation into `ASCEND_VISIBLE_DEVICES` and `ASCEND_VNPU_SPECS`, and the Ascend runtime makes the vNPU visible:
 
 ```bash
 kubectl exec hami-ascend910b4-hard-slice -- bash -c '
@@ -211,8 +208,6 @@ ASCEND_VISIBLE_DEVICES=0
 ASCEND_VNPU_SPECS=vir05_1c_8g
 NPU 2  910B4vir05_1c_8g
 ```
-
-The full `npu-smi` table is host-specific; the invariants are `ASCEND_VNPU_SPECS=vir05_1c_8g` and the device name `910B4vir05_1c_8g`. Together they show that scheduling, device allocation, vNPU configuration, and container visibility all work end to end.
 
 ## Step 4: Share One Physical NPU Between Two Pods
 
@@ -244,6 +239,11 @@ The identical device UUID shows that both Pods run as vNPU slices on one physica
 ## Step 5: Switch the Node to hami-vnpu-core Soft Slicing
 
 Template hard slicing allocates fixed AVI templates; its granularity is bounded by the chip's template set. Starting with HAMi 2.9.0, the `hami-vnpu-core` mode adds runtime soft slicing: `libvnpu.so` interception and `limiter` token scheduling enforce per-Pod memory and compute quotas at a finer granularity than any template.
+
+Additional requirements for soft slicing (hami-vnpu-core):
+
+- **Huawei Ascend driver version**: ≥ 25.5
+- **Chip mode**: enable the `device-share` mode on the Huawei Ascend chip to support virtualization
 
 ### Free the NPU and Enable device-share
 
@@ -344,7 +344,7 @@ hami-core
 C43DA66C-012042DB-63088372-CC500485-104301E3,Ascend910B4,8192,0:;
 ```
 
-The Pod is Running, the mode annotation reads `hami-core`, and the allocation record lists the device and the 8192 MiB quota — the same bookkeeping format as the hard-slice Pods, but backed by a runtime-enforced quota instead of an AVI template. The Pod requested 40% of the AI Cores, which the limiter enforces as 8 of the chip's 20 AI Cores through `libvnpu.so`, alongside the 8192 MiB memory quota.
+The Pod is Running, the mode annotation reads `hami-core`, and the allocation record lists the device and the 8192 MiB quota — the same bookkeeping format as the hard-slice Pods, but backed by a runtime quota instead of an AVI template.
 
 ## Step 7: Verify Quotas Through Metrics
 
@@ -399,10 +399,6 @@ If this happens right after enabling `hamiVnpuCore`, restart the `hami-scheduler
 ### `npu-smi set -t device-share` fails
 
 The target NPU is still in use. Delete every Pod that holds a slice or whole card on that device, wait for the containers to exit, and run the command again.
-
-### The Pod fails with an unknown RuntimeClass or runtime-handler error
-
-Check that `kubectl get runtimeclass ascend` succeeds and that Ascend Docker Runtime was installed and configured on the target node. The `RuntimeClass` object selects an existing runtime handler; it does not install the runtime.
 
 ### The soft-slice Pod received a template instead of hami-core quotas
 

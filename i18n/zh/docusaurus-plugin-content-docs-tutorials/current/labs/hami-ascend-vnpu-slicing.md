@@ -5,8 +5,7 @@ sidebar_label: "实验 18：昇腾 910B4 vNPU 切分"
 lab:
   level: Intermediate
   duration: 约 60 分钟
-  environment: ARM 架构 Ascend 910B4 服务器上的单节点 Kubernetes 集群（驱动 25.5.1，containerd）
-  cost: 需要专用的 Ascend 910B4 硬件；软切仅支持 ARM 平台
+  environment: 单节点 Kubernetes 1.34 集群，Ascend 910B4（ARM）
   authors:
     - lixd
   verified: "2026-09-17"
@@ -19,7 +18,7 @@ tags:
 toc_max_heading_level: 2
 ---
 
-本实验在单张 Ascend 910B4 上安装 HAMi 2.9.0 和固定版本的 `ascend-device-plugin` v1.4.0，然后依次体验 HAMi 提供的两种 NPU 共享路径：**模板硬切**，由 HAMi 根据显存请求匹配 `vir05_1c_8g` 这类固定 AVI 模板；**hami-vnpu-core 软切**，由运行时为 Pod 下发并强制执行显存与 AI Core 配额。实验过程中，两个硬切 Pod 会共享同一张物理卡，软切 Pod 的配额还可以通过设备插件的监控指标观测。
+本实验在单张 Ascend 910B4 上安装 HAMi 2.9.0 和固定版本的 `ascend-device-plugin` v1.4.0，然后依次体验 HAMi 提供的两种 NPU 共享路径：**硬切**，由 HAMi 根据显存请求匹配 `vir05_1c_8g` 这类固定 AVI 模板；**hami-vnpu-core 软切**，由运行时 `libvnpu.so` 实现细粒度的显存与算力配额。
 
 ## 你将学到什么
 
@@ -194,9 +193,7 @@ C43DA66C-012042DB-63088372-CC500485-104301E3,Ascend910B4,8192,0:;
 | :-- | :-- | :-- | :-- |
 | `huawei.com/Ascend910B4: 1` + `huawei.com/Ascend910B4-memory: 8192` | `vir05_1c_8g` | 8192 MiB、5 AI Core、1 AI CPU | 这张 910B4 上满足请求的最小模板 |
 
-模板名称与容量因芯片型号和版本而异——插件或 HAMi 版本变化后，应重新读取 `hami-scheduler-device` ConfigMap。
-
-验证容器内实际可见的设备。设备插件把分配结果转换为 `ASCEND_VISIBLE_DEVICES` 和 `ASCEND_VNPU_SPECS`，Ascend 运行时让 vNPU 对容器可见：
+设备插件把分配结果转换为 `ASCEND_VISIBLE_DEVICES` 和 `ASCEND_VNPU_SPECS`，Ascend 运行时让 vNPU 对容器可见：
 
 ```bash
 kubectl exec hami-ascend910b4-hard-slice -- bash -c '
@@ -211,8 +208,6 @@ ASCEND_VISIBLE_DEVICES=0
 ASCEND_VNPU_SPECS=vir05_1c_8g
 NPU 2  910B4vir05_1c_8g
 ```
-
-`npu-smi` 的完整表格与主机环境相关；不变的是 `ASCEND_VNPU_SPECS=vir05_1c_8g` 和设备名 `910B4vir05_1c_8g`。两者同时出现，说明调度、设备分配、vNPU 配置和容器可见性整条链路已经打通。
 
 ## 步骤 4：让两个 Pod 共享一张物理 NPU
 
@@ -244,6 +239,11 @@ done
 ## 步骤 5：把节点切换到 hami-vnpu-core 软切
 
 模板硬切分配固定的 AVI 模板，资源粒度受芯片模板集合限制。从 HAMi 2.9.0 开始，`hami-vnpu-core` 模式引入了运行时软切：通过 `libvnpu.so` 拦截和 `limiter` 令牌调度，以比任何模板都细的粒度强制执行每个 Pod 的显存与算力配额。
+
+软切片（hami-vnpu-core）的额外要求：
+
+- **Huawei Ascend 驱动版本**：≥ 25.5
+- **芯片模式**：需在 Huawei Ascend 芯片上启用 device-share 模式以支持虚拟化
 
 ### 释放 NPU 并启用 device-share
 
@@ -344,7 +344,7 @@ hami-core
 C43DA66C-012042DB-63088372-CC500485-104301E3,Ascend910B4,8192,0:;
 ```
 
-Pod 处于 Running 状态，模式注解为 `hami-core`，分配记录包含设备和 8192 MiB 配额——记账格式与硬切 Pod 相同，但背后的保障来自运行时强制的配额而不是 AVI 模板。Pod 申请了 40% 的算力，limiter 通过 `libvnpu.so` 把它强制执行为芯片 20 个 AI Core 中的 8 个，同时还有 8192 MiB 的显存配额。
+Pod 处于 Running 状态，模式注解为 `hami-core`，分配记录包含设备和 8192 MiB 配额——记账格式与硬切 Pod 相同，但背后的保障来自运行时的配额而不是 AVI 模板。
 
 ## 步骤 7：通过指标验证配额
 
@@ -399,10 +399,6 @@ kubectl -n kube-system logs deploy/hami-scheduler --tail=100
 ### `npu-smi set -t device-share` 执行失败
 
 目标 NPU 仍被占用。删除所有持有该设备切片或整卡的 Pod，等容器退出后重试。
-
-### Pod 报 unknown RuntimeClass 或 runtime-handler 错误
-
-确认 `kubectl get runtimeclass ascend` 成功，且目标节点已安装并配置 Ascend Docker Runtime。`RuntimeClass` 对象只是选择已存在的 runtime handler，不会安装运行时。
 
 ### 软切 Pod 拿到的是模板而不是 hami-core 配额
 
