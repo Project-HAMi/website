@@ -91,6 +91,11 @@ module.exports = {
           id: "labs/dynamic-mig-rtx-pro",
           customProps: { level: "Advanced", duration: "about 90 minutes" },
         },
+        {
+          type: "doc",
+          id: "labs/ascend-hami-dra",
+          customProps: { level: "Advanced", duration: "about 120 minutes" },
+        },
       ],
     },
   ],
