@@ -108,7 +108,7 @@ In `Binpack` policy, `Node1` is selected.
 
 #### Spread
 
-Spread mainly considers node resource usage. The less it is used, the lower the score. Spread selects the node with the lowest score.
+Spread mainly considers node resource usage. The less it is used, the higher the score.
 
 ```text
 score: ((request + used) / allocatable) * 10
