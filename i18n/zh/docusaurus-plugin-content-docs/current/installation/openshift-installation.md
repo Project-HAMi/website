@@ -8,11 +8,10 @@ translated: true
 
 ## 前置条件
 
-- OpenShift 集群中有 NVIDIA GPU 工作节点。按照 NVIDIA 的 [OpenShift 前置条件](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/prerequisites.html)选择受支持的 OpenShift、GPU Operator、驱动和 GPU 组合。
-- 管理端已安装 `oc` 和 Helm，且 `oc` 已连接到目标集群。
-- 操作人员有权创建项目、安全上下文约束（SecurityContextConstraints，SCC）和集群级 RBAC 资源。
-- 已按照 NVIDIA 的 [OpenShift 安装指南](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/install-gpu-ocp.html)安装 GPU Operator 和 Node Feature Discovery。所有目标 GPU 节点上的驱动和 NVIDIA Container Toolkit 均已就绪。
-- CRI-O 已启用 CDI，集群可拉取所需容器镜像。按照 [NVIDIA CDI 支持](./configure-cdi.md)检查驱动和 Toolkit 路径。
+通用环境要求参阅[前置条件](./prerequisites.md)。OpenShift 还需满足以下条件：
+
+- 已通过 `oc` 连接集群，且有权创建项目、安全上下文约束（SecurityContextConstraints，SCC）和集群级 RBAC 资源。
+- 已按照 NVIDIA 的 [OpenShift 安装指南](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/install-gpu-ocp.html)安装 GPU Operator 和 Node Feature Discovery，并在 CRI-O 中启用 CDI。
 
 检查集群状态，并将以下变量设为实际的 ClusterPolicy 名称、GPU Operator 命名空间和 GPU 节点名称：
 
