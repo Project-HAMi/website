@@ -98,6 +98,8 @@ devicePlugin:
 - `nvidiaDriverRoot` 指向宿主机上的驱动安装根目录，不能填写单个库文件所在的目录。驱动直接安装在宿主机上时，使用 `/`。`nvidiaHookPath` 指向宿主机上的 `nvidia-ctk` 可执行文件。详见 [CDI 配置](./configure-cdi.md)。
 - 如果现有环境使用 HAMi 的 `envvar` 注入，设置 `deviceListStrategy: envvar` 并省略 `nvidiaHookPath`。确认 NVIDIA 运行时能为 device plugin 和工作负载处理 `NVIDIA_VISIBLE_DEVICES`。排查方法见 [GPU Operator 运行时故障排查](../troubleshooting/troubleshooting.md#nvidia-toolkit-gpu-operator-25-10)。
 
+  在 CRI-O 上关闭已有 GPU Operator 的 CDI 时，按 NVIDIA 的[关闭 CDI 步骤](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/26.3/cdi.html#disabling-cdi)操作：先将 GPU 节点的 `nvidia.com/gpu.deploy.operator-validator` 标签设为 `false`，再将 ClusterPolicy 的 `cdi.enabled` 设为 `false`，完成后将节点标签恢复为 `true`。保持 CDI 启用，或首次安装 GPU Operator 时就禁用 CDI，均无需执行此切换流程。
+
 仅当 GPU Operator 会创建 `toolkit-ready` 文件时，才启用 `devicePlugin.gpuOperatorToolkitReady.enabled`。启用前，确认文件位于 `devicePlugin.gpuOperatorToolkitReady.hostPath` 指定的目录下，通常是 `/run/nvidia/validations`。文件缺失时，初始化容器会一直等待。
 
 ## 安装 HAMi
