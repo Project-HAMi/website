@@ -8,11 +8,10 @@ This guide covers installing HAMi on OpenShift clusters that use NVIDIA GPU Oper
 
 ## Prerequisites
 
-- An OpenShift cluster with NVIDIA GPU worker nodes. Select an OpenShift, GPU Operator, driver, and GPU combination supported by NVIDIA's [OpenShift prerequisites](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/prerequisites.html).
-- `oc` and Helm on the administration host, with `oc` connected to the target cluster.
-- Permission to create projects, SecurityContextConstraints (SCCs), and cluster-scoped RBAC resources.
-- NVIDIA GPU Operator and Node Feature Discovery installed according to NVIDIA's [OpenShift installation guide](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/install-gpu-ocp.html). Drivers and NVIDIA Container Toolkit must be ready on every target GPU node.
-- CDI enabled in CRI-O and access to the required container images. Follow [NVIDIA CDI support](./configure-cdi.md) to check driver and Toolkit paths.
+For general environment requirements, see [Prerequisites](./prerequisites.md). OpenShift also requires:
+
+- `oc` connected to the cluster, with permission to create projects, SecurityContextConstraints (SCCs), and cluster-scoped RBAC resources.
+- GPU Operator and Node Feature Discovery installed according to NVIDIA's [OpenShift installation guide](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/install-gpu-ocp.html), with CDI enabled in CRI-O.
 
 Check the cluster status and set the variables to the actual ClusterPolicy name, GPU Operator namespace, and GPU node name:
 
