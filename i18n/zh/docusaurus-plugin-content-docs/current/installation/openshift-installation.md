@@ -1,6 +1,6 @@
 ---
 title: 在 Red Hat OpenShift 上安装 HAMi
-sidebar_label: 在 OpenShift 上安装 HAMi
+sidebar_label: OpenShift 上的 HAMi
 translated: true
 ---
 
