@@ -115,110 +115,11 @@ kubectl get node <node-name> -o jsonpath='{.status.allocatable.nvidia\.com/gpu}{
 10
 ```
 
-## 示例：两个 Pod 共享一张 T4
-
-以下 Deployment 在同一张 T4 上运行两个 PyTorch Pod，每个 Pod 限制使用 4000 MiB 显存，并尝试申请超出限制的 5 GiB 显存：
-
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: hami-vgpu-demo
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: hami-vgpu-demo
-  template:
-    metadata:
-      labels:
-        app: hami-vgpu-demo
-    spec:
-      containers:
-        - name: pytorch
-          image: pytorch/pytorch:2.5.1-cuda12.4-cudnn9-runtime
-          command:
-            - python
-            - -c
-            - |
-              import time, torch
-              free, total = torch.cuda.mem_get_info()
-              print(f"visible GPU memory: {total / 2**20:.0f} MiB", flush=True)
-              try:
-                  torch.empty(5 * 2**30, dtype=torch.uint8, device="cuda")
-              except torch.OutOfMemoryError:
-                  print("allocating 5 GiB failed: CUDA out of memory", flush=True)
-              time.sleep(86400)
-          resources:
-            limits:
-              nvidia.com/gpu: 1
-              nvidia.com/gpumem: 4000
-              nvidia.com/gpucores: 30
-```
-
-两个 Pod 都由 `hami-scheduler` 调度到同一张 GPU：
-
-```bash
-kubectl get pods -l app=hami-vgpu-demo -o custom-columns='NAME:.metadata.name,SCHEDULER:.spec.schedulerName,NODE:.spec.nodeName,ALLOCATED:.metadata.annotations.hami\.io/vgpu-devices-allocated'
-```
-
-```text
-NAME                              SCHEDULER        NODE          ALLOCATED
-hami-vgpu-demo-5c5c874fbd-cxnwt   hami-scheduler   10.100.0.13   GPU-c2efdf84-256c-6bc6-ac1c-a9452325fbce,NVIDIA,4000,30:;
-hami-vgpu-demo-5c5c874fbd-ncvth   hami-scheduler   10.100.0.13   GPU-c2efdf84-256c-6bc6-ac1c-a9452325fbce,NVIDIA,4000,30:;
-```
-
-每个 Pod 只能看到 4000 MiB 显存，申请 5 GiB 被拒绝：
-
-```bash
-kubectl logs <pod-name>
-```
-
-```text
-visible GPU memory: 4000 MiB
-[HAMI-core ERROR (pid:1 thread=139712753207104 allocator.c:52)]: Device 0 OOM 5475663872 / 4194304000
-[HAMI-core ERROR (pid:1 thread=139712753207104 allocator.c:52)]: Device 0 OOM 5475663872 / 4194304000
-allocating 5 GiB failed: CUDA out of memory
-```
-
-容器内的 `nvidia-smi` 同样显示显存上限：
-
-```bash
-kubectl exec <pod-name> -- nvidia-smi
-```
-
-```text
-Wed Sep 16 16:29:58 2026
-+-----------------------------------------------------------------------------------------+
-| NVIDIA-SMI 580.126.20             Driver Version: 580.126.20     CUDA Version: 13.0     |
-+-----------------------------------------+------------------------+----------------------+
-| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
-| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
-|                                         |                        |               MIG M. |
-|=========================================+========================+======================|
-|   0  Tesla T4                       On  |   00000000:00:08.0 Off |                    0 |
-| N/A   61C    P0             27W /   70W |     102MiB /   4000MiB |      0%      Default |
-|                                         |                        |                  N/A |
-+-----------------------------------------+------------------------+----------------------+
-
-+-----------------------------------------------------------------------------------------+
-| Processes:                                                                              |
-|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
-|        ID   ID                                                               Usage      |
-|=========================================================================================|
-|    0   N/A  N/A               1      C   python                                  102MiB |
-+-----------------------------------------------------------------------------------------+
-```
-
 ## 故障排查
 
 ### Pod 能看到整张 GPU {#pods-see-the-whole-gpu}
 
-如果节点上 TKE 自带的 Device Plugin 与 HAMi 同时运行，最后注册的插件会接管 `nvidia.com/gpu`。当 TKE 的插件接管后，节点的 `nvidia.com/gpu` allocatable 会从 HAMi 上报的值（例如 `10`）降为物理 GPU 数量。新建的 Pod 可以正常启动，不会报错，但 HAMi 的限制不再生效。在验证环境中，申请 `nvidia.com/gpumem: 4000` 的 Pod 看到了整张卡，并成功申请了 5 GiB 显存：
-
-```text
-visible GPU memory: 14912 MiB
-```
+如果节点上 TKE 自带的 Device Plugin 与 HAMi 同时运行，最后注册的插件会接管 `nvidia.com/gpu`。当 TKE 的插件接管后，节点的 `nvidia.com/gpu` allocatable 会从 HAMi 上报的值（例如 `10`）降为物理 GPU 数量。新建的 Pod 可以正常启动，不会报错，但 HAMi 的限制不再生效。
 
 恢复步骤：
 
@@ -245,11 +146,13 @@ I0916 16:14:55.021480   83601 register.go:204] Registered device id=0, memory=15
 HAMi 从 `/sys/bus/pci/devices/<bus-id>/numa_node` 读取 GPU 所属的 NUMA 节点。当固件没有为该设备提供邻近域信息（ACPI `_PXM`）时，内核会把这个文件写成 `-1`，本文使用的这类单 NUMA 节点虚拟机实例正属于这种情况。HAMi 无法确定节点，于是输出这条错误并回退为 `numa=0`。可在 GPU 节点上运行以下命令查看：
 
 ```bash
-cat /sys/bus/pci/devices/$(nvidia-smi --query-gpu=pci.bus_id --format=csv,noheader | tr 'A-F' 'a-f' | sed 's/^0000//')/numa_node
+nvidia-smi --query-gpu=pci.bus_id --format=csv,noheader |
+  tr 'A-F' 'a-f' | sed 's/^0000//' |
+  while read -r id; do echo "$id $(cat /sys/bus/pci/devices/$id/numa_node)"; done
 ```
 
 ```text
--1
+0000:00:08.0 -1
 ```
 
-该实例只有一个 NUMA 节点 `node0`，回退值与实际拓扑一致。设备仍以 `health=true` 注册成功，上文示例负载运行正常。在单 NUMA 节点的实例上可以忽略这条错误。
+该实例只有一个 NUMA 节点 `node0`，回退值与实际拓扑一致。设备仍以 `health=true` 注册成功，GPU 负载运行正常。在单 NUMA 节点的实例上可以忽略这条错误。

@@ -114,110 +114,11 @@ kubectl get node <node-name> -o jsonpath='{.status.allocatable.nvidia\.com/gpu}{
 10
 ```
 
-## Example: share one T4 between two Pods
-
-The following Deployment runs two PyTorch Pods on the same T4, each limited to 4000 MiB of GPU memory. Each Pod tries to allocate 5 GiB, which exceeds its limit:
-
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: hami-vgpu-demo
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: hami-vgpu-demo
-  template:
-    metadata:
-      labels:
-        app: hami-vgpu-demo
-    spec:
-      containers:
-        - name: pytorch
-          image: pytorch/pytorch:2.5.1-cuda12.4-cudnn9-runtime
-          command:
-            - python
-            - -c
-            - |
-              import time, torch
-              free, total = torch.cuda.mem_get_info()
-              print(f"visible GPU memory: {total / 2**20:.0f} MiB", flush=True)
-              try:
-                  torch.empty(5 * 2**30, dtype=torch.uint8, device="cuda")
-              except torch.OutOfMemoryError:
-                  print("allocating 5 GiB failed: CUDA out of memory", flush=True)
-              time.sleep(86400)
-          resources:
-            limits:
-              nvidia.com/gpu: 1
-              nvidia.com/gpumem: 4000
-              nvidia.com/gpucores: 30
-```
-
-Both Pods are scheduled by `hami-scheduler` to the same GPU:
-
-```bash
-kubectl get pods -l app=hami-vgpu-demo -o custom-columns='NAME:.metadata.name,SCHEDULER:.spec.schedulerName,NODE:.spec.nodeName,ALLOCATED:.metadata.annotations.hami\.io/vgpu-devices-allocated'
-```
-
-```text
-NAME                              SCHEDULER        NODE          ALLOCATED
-hami-vgpu-demo-5c5c874fbd-cxnwt   hami-scheduler   10.100.0.13   GPU-c2efdf84-256c-6bc6-ac1c-a9452325fbce,NVIDIA,4000,30:;
-hami-vgpu-demo-5c5c874fbd-ncvth   hami-scheduler   10.100.0.13   GPU-c2efdf84-256c-6bc6-ac1c-a9452325fbce,NVIDIA,4000,30:;
-```
-
-Each Pod sees 4000 MiB, and the 5 GiB allocation is rejected:
-
-```bash
-kubectl logs <pod-name>
-```
-
-```text
-visible GPU memory: 4000 MiB
-[HAMI-core ERROR (pid:1 thread=139712753207104 allocator.c:52)]: Device 0 OOM 5475663872 / 4194304000
-[HAMI-core ERROR (pid:1 thread=139712753207104 allocator.c:52)]: Device 0 OOM 5475663872 / 4194304000
-allocating 5 GiB failed: CUDA out of memory
-```
-
-`nvidia-smi` in the container also reports the limit:
-
-```bash
-kubectl exec <pod-name> -- nvidia-smi
-```
-
-```text
-Wed Sep 16 16:29:58 2026
-+-----------------------------------------------------------------------------------------+
-| NVIDIA-SMI 580.126.20             Driver Version: 580.126.20     CUDA Version: 13.0     |
-+-----------------------------------------+------------------------+----------------------+
-| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
-| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
-|                                         |                        |               MIG M. |
-|=========================================+========================+======================|
-|   0  Tesla T4                       On  |   00000000:00:08.0 Off |                    0 |
-| N/A   61C    P0             27W /   70W |     102MiB /   4000MiB |      0%      Default |
-|                                         |                        |                  N/A |
-+-----------------------------------------+------------------------+----------------------+
-
-+-----------------------------------------------------------------------------------------+
-| Processes:                                                                              |
-|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
-|        ID   ID                                                               Usage      |
-|=========================================================================================|
-|    0   N/A  N/A               1      C   python                                  102MiB |
-+-----------------------------------------------------------------------------------------+
-```
-
 ## Troubleshooting
 
 ### Pods see the whole GPU {#pods-see-the-whole-gpu}
 
-If TKE's Device Plugin runs on a node alongside HAMi, the last plugin to register takes over `nvidia.com/gpu`. When TKE's plugin wins, the node's `nvidia.com/gpu` allocatable drops from the HAMi value (for example, `10`) to the physical GPU count. New Pods start without errors, but HAMi's limits no longer apply. In the verification environment, a Pod requesting `nvidia.com/gpumem: 4000` reported the whole card and allocated 5 GiB successfully:
-
-```text
-visible GPU memory: 14912 MiB
-```
+If TKE's Device Plugin runs on a node alongside HAMi, the last plugin to register takes over `nvidia.com/gpu`. When TKE's plugin wins, the node's `nvidia.com/gpu` allocatable drops from the HAMi value (for example, `10`) to the physical GPU count. New Pods start without errors, but HAMi's limits no longer apply.
 
 To recover:
 
@@ -244,11 +145,13 @@ I0916 16:14:55.021480   83601 register.go:204] Registered device id=0, memory=15
 HAMi reads the GPU's NUMA node from `/sys/bus/pci/devices/<bus-id>/numa_node`. The kernel writes `-1` there when the firmware exposes no proximity domain (ACPI `_PXM`) for the device, which is the normal case on a single-NUMA virtual machine such as this instance type. HAMi cannot determine a node, logs the error, and falls back to `numa=0`. Check the value on the GPU node:
 
 ```bash
-cat /sys/bus/pci/devices/$(nvidia-smi --query-gpu=pci.bus_id --format=csv,noheader | tr 'A-F' 'a-f' | sed 's/^0000//')/numa_node
+nvidia-smi --query-gpu=pci.bus_id --format=csv,noheader |
+  tr 'A-F' 'a-f' | sed 's/^0000//' |
+  while read -r id; do echo "$id $(cat /sys/bus/pci/devices/$id/numa_node)"; done
 ```
 
 ```text
--1
+0000:00:08.0 -1
 ```
 
-The instance has only one NUMA node, `node0`, so the fallback matches the actual topology. The device still registers with `health=true`, and the example workloads run normally. You can ignore this error on single-NUMA instances.
+The instance has only one NUMA node, `node0`, so the fallback matches the actual topology. The device still registers with `health=true`, and GPU workloads run normally. You can ignore this error on single-NUMA instances.
