@@ -5,7 +5,7 @@ sidebar_label: 动态 MIG 迁移
 
 本指南面向两类用户：
 
-- 使用 HAMi `master` 分支上 MIG Geometry/Template 实现的用户；
+- 使用 HAMi 旧版 MIG Geometry/Template 实现的用户；
 - 使用 NVIDIA GPU Operator MIG Manager 管理固定 MIG 几何配置的用户。
 
 这次迁移并不是承诺以后再也不需要 drain 节点，而是让日常切换 profile 不再需要 drain。调度器为每个 Pod 预留具体的 MIG profile 和物理 placement，device plugin 按需创建对应的 GI/CI，Pod 结束后再回收实例。
@@ -18,7 +18,7 @@ sidebar_label: 动态 MIG 迁移
 
 NVIDIA MIG Manager 可以通过修改 `nvidia.com/mig.config` 触发重新配置，但 NVIDIA 仍然要求被重新配置的 GPU 上不能有用户工作负载在运行。在某些环境中，开启或关闭 MIG 模式还可能需要重置 GPU 或重启节点。因此生产环境的操作流程通常会先 cordon 或 drain 节点。详见 [NVIDIA GPU Operator MIG 文档](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/gpu-operator-mig.html)。
 
-HAMi `master` 分支上的实现同样以预定义的几何配置为核心。当请求无法放进当前几何配置时，必须把整块 GPU 切换到另一个模板。这种模式适合稳定、长期运行的资源池，但面对混合推理负载、突发的 profile 需求以及频繁创建的短时任务时，会暴露出一些问题：
+HAMi 旧版实现同样以预定义的几何配置为核心。当请求无法放进当前几何配置时，必须把整块 GPU 切换到另一个模板。这种模式适合稳定、长期运行的资源池，但面对混合推理负载、突发的 profile 需求以及频繁创建的短时任务时，会暴露出一些问题：
 
 - 运维人员需要为每种 GPU 型号维护显存、算力、实例数量以及几何组合；
 - 调整布局会影响整块 GPU，而不仅仅是新请求所需的那个实例；
@@ -59,7 +59,7 @@ Pod 结束时精确销毁对应的 CI/GI
 
 ### 配置从几何配置改为 profile 允许列表
 
-HAMi `master` 配置的是完整的几何组合：
+HAMi 旧版配置定义完整的几何组合：
 
 ```yaml
 nvidia:
@@ -156,7 +156,7 @@ GPU-xxxxxxxx[1-2]
 - 满足需要移动正在运行的 GI/CI 才能实现的新布局；
 - 修复 HAMi Pod 注解与 NVML 硬件状态无法对应的情况。
 
-## 从 HAMi master 迁移
+## 从旧版 HAMi 几何配置迁移
 
 ### 迁移原则
 
@@ -242,6 +242,8 @@ spec:
 这个示例只验证资源分配和设备注入。生产环境的金丝雀应使用带有 CUDA 或 NVML 工具的可信镜像，并运行真实的 GPU 工作负载。
 
 ### 优先选择某个 MIG profile {#preferring-a-mig-profile}
+
+此注解由 v2.10.0 之后的 [HAMi PR #3014](https://github.com/Project-HAMi/HAMi/pull/3014) 添加。
 
 profile 选择只看显存：调度器会从允许列表中挑选能满足显存请求的最小 profile。由于 MIG 的显存和算力是绑定的，两个 profile 可能都能满足同一个请求，但算力份额不同。例如在 A100-40GB 上，即使允许使用 `4g.20gb`，20 GB 的请求默认也会落到 `3g.20gb`。需要更多算力的 Pod 可以设置 `nvidia.com/mig-profile-preference` 注解，值为按优先级排序、以逗号分隔的 profile 列表：
 

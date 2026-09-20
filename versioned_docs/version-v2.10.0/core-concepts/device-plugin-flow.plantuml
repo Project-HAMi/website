@@ -1,0 +1,55 @@
+@startuml
+skinparam sequenceMessageAlign center
+skinparam responseMessageBelowArrow true
+
+participant "Kubelet" as K
+participant "Device Plugin\n(DaemonSet Pod)" as DP
+participant "API Server" as API
+participant "kube-scheduler" as SCH
+actor "User" as U
+
+== Node Startup: Kubelet Prepares Registration Service ==
+
+note over K
+  ① Start Registration gRPC service
+  Create kubelet.sock (Unix Socket)
+  Path: /var/lib/kubelet/device-plugins/kubelet.sock
+end note
+
+== Device Plugin Starts and Registers ==
+
+note over DP
+  ② Device Plugin Pod starts
+  Mount host kubelet.sock into container
+end note
+
+DP -> K : ③ Register(endpoint, version, resourceName)\nvia kubelet.sock
+K --> DP : Registration successful
+
+== Device Discovery and Resource Reporting ==
+
+K -> DP : ④ ListAndWatch()\nvia Device Plugin's Unix Socket
+DP --> K : Return device list [{ID, Health}, ...]\n(continuously listen for device add/remove events)
+
+K -> API : ⑤ Update Node status\nNode.status.capacity[nvidia.com/gpu] = 1
+
+== User Submits Pod ==
+
+U -> API : ⑥ Create Pod\n(resources.limits: nvidia.com/gpu: 1)
+API -> SCH : Notify pending Pod
+SCH -> SCH : ⑦ Filter nodes meeting resource requirements
+SCH -> API : Bind result (write Pod.spec.nodeName)
+
+== Device Allocation and Container Start ==
+
+API -> K : Notify pending Pod on this node
+K -> DP : ⑧ Allocate(deviceIDs)
+DP --> K : Return allocation result\n(device file paths, env vars, etc.)
+
+note over K
+  ⑨ Start container, inject device info
+  Mount /dev/nvidia0
+  Inject NVIDIA_VISIBLE_DEVICES
+end note
+
+@enduml

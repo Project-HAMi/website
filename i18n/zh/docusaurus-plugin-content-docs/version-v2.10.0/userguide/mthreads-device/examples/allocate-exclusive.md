@@ -1,0 +1,25 @@
+---
+title: 分配独占设备
+sidebar_label: 独占设备
+translated: true
+---
+
+要分配整个摩尔线程设备，你只需分配 `mthreads.com/vgpu` 而无需其他字段。你可以为一个容器分配多个 GPU。
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: gpushare-pod-multi-cards
+spec:
+  restartPolicy: OnFailure
+  containers:
+    - image: core.harbor.zlidc.mthreads.com:30003/mt-ai/lm-qy2:v17-mpc
+      imagePullPolicy: IfNotPresent
+      name: gpushare-pod-1
+      command: ["sleep"]
+      args: ["100000"]
+      resources:
+        limits:
+          mthreads.com/vgpu: 2
+```

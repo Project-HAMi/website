@@ -1,0 +1,34 @@
+@startuml
+skinparam sequenceMessageAlign center
+skinparam responseMessageBelowArrow true
+
+participant "用户" as user
+participant "MutatingWebhook\n[集群控制层]" as webhook #CCEEFF
+participant "Scheduler-Extender\n[集群控制层]" as sched #CCEEFF
+participant "Device Plugin\n[节点代理层]" as dp #CCFFCC
+participant "HAMi-Core\n[容器内隔离层]" as core #FFFFCC
+database "物理 GPU" as gpu
+
+== 节点启动：设备规格上报 ==
+
+dp -> sched : 写入 Node Annotation\nhami.io/node-nvidia-register\n（UUID / 显存 / 算力 / 型号）
+
+== 用户提交 Pod ==
+
+user -> webhook : 提交 Pod\n(nvidia.com/gpu + gpumem)
+webhook -> webhook : 改写 schedulerName\n（强制使用 hami-scheduler）
+webhook -> sched : 交由 hami-scheduler 调度
+
+== 调度决策 ==
+
+sched -> sched : 读取 Node Annotation\n选定目标节点与 GPU UUID
+sched -> dp : 写入 Pod Annotation\nhami.io/vgpu-devices-allocated\n（UUID + 显存配额 + 算力配额）
+
+== 设备分配与容器启动 ==
+
+dp -> dp : 读取 Pod Annotation\n获取 GPU UUID 与配额
+dp -> gpu : 挂载 /dev/nvidia*
+note over dp : Allocate 响应中注入：\n• hostPath 挂载 libvgpu.so\n• hostPath 挂载 ld.so.preload → /etc/ld.so.preload\n• CUDA_DEVICE_MEMORY_LIMIT_<index>\n• CUDA_DEVICE_SM_LIMIT
+core -> gpu : CUDA API 调用\n（超出配额返回 OOM）
+
+@enduml

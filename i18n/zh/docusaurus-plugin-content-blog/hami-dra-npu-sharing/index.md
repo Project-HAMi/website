@@ -8,7 +8,7 @@ tags: ["HAMi", "DRA", "Ascend", "NPU 共享", "Kubernetes"]
 
 Kubernetes 1.34 将 DRA（Dynamic Resource Allocation）核心 API 推进至 GA，配合 Consumable Capacity（可消费容量）模型，加速器第一次成为 Kubernetes 原生资源模型里的“一等公民”：有属性、有容量、允许多个 Pod 共享。这对 HAMi 这类基于 Device Plugin 的共享方案提出了一个现实问题：设备的申请和调度可以交给 Kubernetes 原生完成，但容器内的资源隔离，Kubernetes 并不负责。
 
-[HAMi DRA](https://github.com/Project-HAMi/HAMi-DRA) 是 HAMi 社区交出的答案：一个迁移层，把存量 workload 里的 HAMi 风格资源请求自动转换成原生 ResourceClaim，调度与记账交还 kube-scheduler，运行时隔离继续由 HAMi-core 完成，业务侧一行代码不用改。当前 0.2.3 版本覆盖 NVIDIA GPU；随着[昇腾 DRA Driver](https://github.com/4pdOss/hami-dra-driver) 进入预览，这条链路已在真实的 310P3 集群上完成端到端验证，社区同步发布了配套的 [实验 17：用 HAMi DRA 共享昇腾 NPU](/zh/tutorials/labs/ascend-hami-dra)，提供每一步的命令与真实输出。本文系统介绍 HAMi DRA 的动机、设计、使用方式与当前边界。
+[HAMi DRA](https://github.com/Project-HAMi/HAMi-DRA) 是 HAMi 社区交出的答案：一个迁移层，把存量 workload 里的 HAMi 风格资源请求自动转换成原生 ResourceClaim，调度与记账交还 kube-scheduler，运行时隔离继续由 HAMi-core 完成，业务侧一行代码不用改。当前 0.2.3 版本覆盖 NVIDIA GPU；随着[昇腾 DRA Driver](https://github.com/4pdOss/hami-dra-driver) 进入预览，这条链路已在真实的 310P3 集群上完成端到端验证，社区同步发布了配套的 [实验 18：用 HAMi DRA 共享昇腾 NPU](/zh/tutorials/labs/ascend-hami-dra)，提供每一步的命令与真实输出。本文系统介绍 HAMi DRA 的动机、设计、使用方式与当前边界。
 
 <!-- truncate -->
 
@@ -104,7 +104,7 @@ spec:
 | `capacity.requests.cores: "50"` | `-core: 50` | 百分比直传 |
 | CEL 选择器 | `use-Ascend310P-uuid` 注解 | `uuid in ["..."]`，值来自 ResourceSlice |
 
-两个 Pod 各请求 8192 MiB 显存加 50 算力、指向同一块卡时，两个 claim 落到同一个 device 上，各自带独立 shareID，调度器在分配第二个之前已把第一个的消费记账。容量记满后新请求被调度器直接拒绝（claim 停在 pending），Pod 删除后 claim 自动回收、记账恢复。容器内的强制执行依旧是 HAMi-core：`libvnpu.so` 拦截超限的显存申请并转为容器内 OOM，容器视角的设备被虚拟化为申请的 8 GiB 而非整卡 21 GiB。完整过程见[实验 17](/zh/tutorials/labs/ascend-hami-dra)。
+两个 Pod 各请求 8192 MiB 显存加 50 算力、指向同一块卡时，两个 claim 落到同一个 device 上，各自带独立 shareID，调度器在分配第二个之前已把第一个的消费记账。容量记满后新请求被调度器直接拒绝（claim 停在 pending），Pod 删除后 claim 自动回收、记账恢复。容器内的强制执行依旧是 HAMi-core：`libvnpu.so` 拦截超限的显存申请并转为容器内 OOM，容器视角的设备被虚拟化为申请的 8 GiB 而非整卡 21 GiB。完整过程见[实验 18](/zh/tutorials/labs/ascend-hami-dra)。
 
 ## 设备支持的时间线，与“为什么是现在”
 
@@ -115,7 +115,7 @@ HAMi DRA 的能力边界很大程度上取决于各厂商 DRA driver 的适配�
 - 2026.04：Enflame（燧原）DRA Driver 集成推进中
 - 2026.08：**Ascend DRA Driver 进入开发与预览**（[4pdOss/hami-dra-driver](https://github.com/4pdOss/hami-dra-driver)，即范式的开源仓库）
 
-昇腾链路进入预览，意味着 HAMi DRA 的能力边界刚刚扩展到 NPU：[实验 17](/zh/tutorials/labs/ascend-hami-dra) 已在一台 310P3 服务器上把 HAMi 请求到 NPU 共享的完整链路跑通，昇腾 DRA driver 当前为 chart 0.1.1（实验所用镜像为修复 uuid 生成问题的开发构建，正式发布前行为可能变化）。HAMi 2.9 版本直播中提到 NPU 的 DRA 支持计划随 2.10 发布，在那之前会先放出测试版本供社区试用，现在正是尝鲜与反馈的窗口。
+昇腾链路进入预览，意味着 HAMi DRA 的能力边界刚刚扩展到 NPU：[实验 18](/zh/tutorials/labs/ascend-hami-dra) 已在一台 310P3 服务器上把 HAMi 请求到 NPU 共享的完整链路跑通，昇腾 DRA driver 当前为 chart 0.1.1（实验所用镜像为修复 uuid 生成问题的开发构建，正式发布前行为可能变化）。HAMi 2.9 版本直播中提到 NPU 的 DRA 支持计划随 2.10 发布，在那之前会先放出测试版本供社区试用，现在正是尝鲜与反馈的窗口。
 
 ## 落地前的现实约束
 
@@ -141,5 +141,5 @@ HAMi-DRA 的 roadmap 上排着：更多异构设备（MetaX、天数智芯 Iluva
 - HAMi 2.9 版本直播回顾（李孟轩）：[HAMi 2.9 昇腾软切分与 DRA 实战详解](https://dynamia.ai/zh/blog/hami-2.9-webinar-recap)
 - 社区上手指南：[HAMi 正式接入 Kubernetes DRA：下一代 GPU 资源模型实践指南](https://dynamia.ai/zh/blog/hami-dra-quickstart)
 - Mesut Oezdil：[Kubernetes DRA 会取代 HAMi 吗？](/zh/blog/does-kubernetes-dra-replace-hami)（[英文原文](https://www.cncf.io/blog/2026/08/07/does-kubernetes-dra-replace-hami/)，CNCF 博客）
-- 用户指南：[如何使用 HAMi DRA](/zh/docs/installation/how-to-use-hami-dra)；动手实验：[实验 17：用 HAMi DRA 共享昇腾 NPU](/zh/tutorials/labs/ascend-hami-dra)、[实验 4：用 DRA 切分 GPU](/zh/tutorials/labs/hami-dra)
+- 用户指南：[如何使用 HAMi DRA](/zh/docs/installation/how-to-use-hami-dra)；动手实验：[实验 18：用 HAMi DRA 共享昇腾 NPU](/zh/tutorials/labs/ascend-hami-dra)、[实验 4：用 DRA 切分 GPU](/zh/tutorials/labs/hami-dra)
 - 相关组件：[Project-HAMi/HAMi-DRA](https://github.com/Project-HAMi/HAMi-DRA) · [4pdOss/hami-dra-driver](https://github.com/4pdOss/hami-dra-driver) · [Project-HAMi/hami-vnpu-core](https://github.com/Project-HAMi/hami-vnpu-core)

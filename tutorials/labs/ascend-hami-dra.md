@@ -1,7 +1,7 @@
 ---
-title: "Lab 17: Ascend NPU Sharing with HAMi DRA"
+title: "Lab 18: Ascend NPU Sharing with HAMi DRA"
 description: "Install HAMi DRA 0.2.3 and the Ascend DRA driver on an Ascend 310P3 node, watch the webhook turn huawei.com/Ascend310P requests into ResourceClaims, and verify two-Pod NPU sharing, memory quota enforcement, and scheduler capacity accounting."
-sidebar_label: "Lab 17: Ascend + HAMi DRA"
+sidebar_label: "Lab 18: Ascend + HAMi DRA"
 lab:
   level: Advanced
   duration: about 120 minutes

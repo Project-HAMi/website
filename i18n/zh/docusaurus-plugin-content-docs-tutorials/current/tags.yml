@@ -97,3 +97,9 @@
 "隔离":
   label: "隔离"
   permalink: "/isolation"
+"kitops":
+  label: "KitOps"
+  permalink: "/kitops"
+"modelkit":
+  label: "ModelKit"
+  permalink: "/modelkit"

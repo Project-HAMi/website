@@ -31,4 +31,5 @@ Each lab lists its own prerequisites.
 - **Lab 13** builds Volcano and the ascend-device-plugin from source on an Ascend 310P3 ARM server and verifies hami-vnpu-core soft slicing, binpack card sharing, and per-container metrics.
 - **Lab 14** installs HAMi v2.10.0 on a four-T4 GKE node and observes the composable `gpu-scheduler-policy` chains (`spread`, `binpack`, `mutex`, `mutex,binpack`) through allocation annotations and scheduler logs.
 - **Lab 16** installs HAMi v2.10.0 on a seven-GPU RTX PRO 6000 server and verifies the complete Dynamic MIG lifecycle: per-Pod placement, mixed profiles, selective reclamation, device-plugin restart recovery, and spillover to a second GPU.
-- **Lab 17** installs HAMi DRA 0.2.3 and the Ascend DRA driver on an Ascend 310P3 node and verifies the request-to-ResourceClaim conversion, two-Pod NPU sharing, memory quota enforcement, and scheduler capacity accounting.
+- **Lab 17** packages a model as a KitOps ModelKit, pulls it from Jozu Hub through an initContainer, and serves it with SGLang and optionally vLLM on HAMi GPU shares.
+- **Lab 18** installs HAMi DRA 0.2.3 and the Ascend DRA driver on an Ascend 310P3 node and verifies the request-to-ResourceClaim conversion, two-Pod NPU sharing, memory quota enforcement, and scheduler capacity accounting.
