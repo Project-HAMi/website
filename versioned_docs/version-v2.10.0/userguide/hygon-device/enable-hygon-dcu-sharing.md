@@ -2,6 +2,12 @@
 title: Enable Hygon DCU sharing
 ---
 
+:::caution
+
+The community [dcu-vgpu-device-plugin](https://github.com/Project-HAMi/dcu-vgpu-device-plugin) repository is archived and will no longer be updated. Future device-plugin releases are provided by **Hygon**. See the official documentation: [4.1 HAMi](https://developer.sourcefind.cn/document/9169ef18-c10d-11f0-b077-0242ac150003?id=9231c60e-c10f-11f0-b077-0242ac150003&title=4.1+HAMi&version=9169ef18-c10d-11f0-b077-0242ac150003).
+
+:::
+
 ## Introduction
 
 **HAMi now supports hygon.com/dcu by implementing most device-sharing features as NVIDIA GPUs**, including:
@@ -21,7 +27,7 @@ title: Enable Hygon DCU sharing
 
 ## Enabling DCU-sharing Support
 
-- Deploy the [dcu-vgpu-device-plugin](https://github.com/Project-HAMi/dcu-vgpu-device-plugin)
+- Deploy the device-plugin provided by Hygon. Follow the official guide: [4.1 HAMi](https://developer.sourcefind.cn/document/9169ef18-c10d-11f0-b077-0242ac150003?id=9231c60e-c10f-11f0-b077-0242ac150003&title=4.1+HAMi&version=9169ef18-c10d-11f0-b077-0242ac150003)
 
 ## Running DCU jobs
 
