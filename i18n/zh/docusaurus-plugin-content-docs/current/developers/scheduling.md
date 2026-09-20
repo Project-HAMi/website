@@ -109,7 +109,7 @@ score: ((request + used) / allocatable) * 10
 
 #### Spread
 
-Spread 主要考虑节点资源使用情况。使用越少，得分越低。Spread 选择得分最低的节点。
+Spread 主要考虑节点资源使用情况。使用越少，得分越低，但优先级越高。
 
 ```text
 score: ((request + used) / allocatable) * 10
