@@ -4,6 +4,12 @@ sidebar_label: DCU 共享
 translated: true
 ---
 
+:::caution
+
+社区仓库 [dcu-vgpu-device-plugin](https://github.com/Project-HAMi/dcu-vgpu-device-plugin) 已归档，不再更新。后续 device-plugin 由 **Hygon** 官方提供，请参阅海光开发者文档：[4.1 HAMi](https://developer.sourcefind.cn/document/9169ef18-c10d-11f0-b077-0242ac150003?id=9231c60e-c10f-11f0-b077-0242ac150003&title=4.1+HAMi&version=9169ef18-c10d-11f0-b077-0242ac150003)。
+
+:::
+
 ## 简介
 
 本组件支持复用海光 DCU 设备，并为此提供以下几种与 vGPU 类似的复用功能，包括：
@@ -23,7 +29,7 @@ translated: true
 
 ## 开启 DCU 复用
 
-- 部署[dcu-vgpu-device-plugin](https://github.com/Project-HAMi/dcu-vgpu-device-plugin)
+- 部署 Hygon 官方提供的 device-plugin，参见 [4.1 HAMi](https://developer.sourcefind.cn/document/9169ef18-c10d-11f0-b077-0242ac150003?id=9231c60e-c10f-11f0-b077-0242ac150003&title=4.1+HAMi&version=9169ef18-c10d-11f0-b077-0242ac150003)
 
 ## 运行 DCU 任务
 
