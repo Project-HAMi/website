@@ -55,6 +55,22 @@ helm repo update
 
 ## Configure HAMi
 
+:::warning Unreleased Chart values
+
+The published Helm repository currently provides HAMi Chart v2.10.0. It does not include the `platform.openshift` and `selinux.enabled` values used in this guide. HAMi Chart v2.11.0, which includes these values, has not been released yet.
+
+Until v2.11.0 is released, install HAMi from the source repository rather than `hami-charts/hami`:
+
+```bash
+git clone https://github.com/Project-HAMi/HAMi.git
+cd HAMi
+helm dependency build charts/hami
+```
+
+Use the local `./charts/hami` path in the installation command below. Do not use the published v2.10.0 Chart for this OpenShift configuration.
+
+:::
+
 Create a dedicated project:
 
 ```bash
@@ -103,10 +119,10 @@ Enable `devicePlugin.gpuOperatorToolkitReady.enabled` only if GPU Operator creat
 
 ## Install HAMi
 
-OpenShift support requires HAMi Helm Chart v2.11.0 or later.
+OpenShift support requires HAMi Helm Chart v2.11.0 or later. Until that version is released, run this command from the source checkout prepared above.
 
 ```bash
-helm upgrade --install hami hami-charts/hami \
+helm upgrade --install hami ./charts/hami \
   --namespace hami-system \
   -f values-openshift.yaml \
   --wait --timeout 10m

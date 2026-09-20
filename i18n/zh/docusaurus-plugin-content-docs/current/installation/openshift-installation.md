@@ -56,6 +56,22 @@ helm repo update
 
 ## 配置 HAMi
 
+:::warning 尚未发布的 Chart values
+
+当前已发布的 Helm 仓库提供 HAMi Chart v2.10.0，其中不包含本指南使用的 `platform.openshift` 和 `selinux.enabled` values。包含这些 values 的 HAMi Chart v2.11.0 尚未发布。
+
+在 v2.11.0 发布前，必须从源码仓库安装 HAMi，不能使用 `hami-charts/hami`：
+
+```bash
+git clone https://github.com/Project-HAMi/HAMi.git
+cd HAMi
+helm dependency build charts/hami
+```
+
+在下方安装命令中使用本地 `./charts/hami` 路径。此 OpenShift 配置不能使用已发布的 v2.10.0 Chart。
+
+:::
+
 创建独立项目：
 
 ```bash
@@ -104,10 +120,10 @@ devicePlugin:
 
 ## 安装 HAMi
 
-OpenShift 支持需要 HAMi Helm Chart v2.11.0 或更高版本。
+OpenShift 支持需要 HAMi Helm Chart v2.11.0 或更高版本。在该版本发布前，在前面准备的源码目录中执行以下命令。
 
 ```bash
-helm upgrade --install hami hami-charts/hami \
+helm upgrade --install hami ./charts/hami \
   --namespace hami-system \
   -f values-openshift.yaml \
   --wait --timeout 10m
