@@ -3,13 +3,13 @@ title: Allocate device memory to container
 sidebar_label: Allocate device memory
 ---
 
-Allocate a part of device memory by specifying resource `mthreads.com/sgpu-memory`. Optional, each unit of `mthreads.com/sgpu-memory` equals 512 MiB of device memory.
+Allocate a part of device memory by specifying resource `mthreads.com/sgpu-memory`. Optional. Each unit equals 512 MiB. Use a plain integer without suffixes such as `Mi`, `Gi`, or `G`; the value is a count of memory units, not a percentage.
 
 ```yaml
 resources:
   limits:
     mthreads.com/vgpu: 1 # requesting 1 GPU
-    mthreads.com/sgpu-memory: 32 # 32 x 512 MiB = 16 GiB device memory
+    mthreads.com/sgpu-memory: 32 # Allocate 32 x 512 MiB = 16 GiB
 ```
 
 The maximum and the valid values depend on the card model:

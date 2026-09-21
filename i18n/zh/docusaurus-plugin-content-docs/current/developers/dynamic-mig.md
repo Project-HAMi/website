@@ -170,6 +170,16 @@ device plugin 会定期列出分配到其节点的 Pod。拥有有效预留、�
 
 如果启动时无法可靠读取分配状态，插件会保留 GPU，而不是执行破坏性的空闲 GPU 清理。旧的 `GPU-UUID[template-slot]` 标识无法被接管，因为它们不能证明物理 placement 和完整的运行时身份。
 
+## NVML 会话归属
+
+这里描述的每个启动周期持有会话的生命周期由 v2.10.0 之后的 [HAMi PR #2989](https://github.com/Project-HAMi/HAMi/pull/2989) 添加。
+
+动态 MIG 插件的每个启动周期通过自己的 `MigInstanceManager` 持有一个 NVML 会话。构造管理器时不会初始化 NVML，而是在启动扫描之前获取会话；之后的 MIG 发现、注册、拓扑打分、分配、接管和释放都复用这个已配置好的实例。
+
+关闭时，插件先取消本周期的注册循环和协调循环，再停止 gRPC 并等待包括分配清理在内的处理函数返回，然后等后台 worker 全部退出，最后才关闭管理器。管理器进入关闭状态后会拒绝新的操作，并等待已经接受的操作执行完毕。启动失败也走同一条清理路径，因此不会出现初始化失败后又调用一次关闭的情况，重复关闭也是安全的。重新启动时会获取新的会话，并根据 Pod 注解重建内存中的分配索引；关闭插件本身不会销毁正在运行的实例。
+
+初始资源发现、健康检查、非 MIG 模式以及独立的 monitor 各自使用独立的会话。“只初始化一次、只关闭一次”的约束针对的是动态 MIG 管理器的会话，而不是进程中所有调用 NVML 的地方。进程被强制终止时无法执行优雅清理。
+
 ## 指标与可观测性
 
 调度器通过当前指标导出已创建的实例：
@@ -215,7 +225,11 @@ MIG Manager 应用节点级或 GPU 级的几何配置，而 HAMi 动态 MIG 根�
 
 GPU Operator 可以继续提供 NVIDIA 驱动、Container Toolkit、DCGM 及其他基础设施。在 HAMi 接管变更所有权之前，先停止 MIG Manager 的协调，并确保没有控制器会重新创建它或重新应用 `nvidia.com/mig.config`。只删除一个 MIG Manager Pod 而不改变其控制器策略，并不能建立这一边界。
 
-当前 Chart 允许列表、迁移检查清单、工作负载示例和验证命令，请参阅[动态 MIG 用户指南](../userguide/nvidia-device/dynamic-mig-support.md)。
+当前 Chart 允许列表、迁移检查清单、工作负载示例和验证命令，请参阅[动态 MIG 用户指南](../userguide/nvidia-device/dynamic-mig-support.md)。如果要从旧版几何配置实现或 NVIDIA MIG Manager 升级，分阶段回滚方案和验证检查清单等面向运维的迁移步骤请参阅[迁移到 HAMi 动态 MIG](./dynamic-mig-migration.md)。
+
+## 演进方向
+
+能力契约、预留契约和硬件所有权边界是设计上希望长期保持稳定的部分。在此基础上，后续可以扩展可插拔的 placement 策略、节点级碎片打分、感知 placement 的调度器指标、事件驱动的生命周期加速、动态 MIG 身份的 CDI 同步，以及更广泛的多 GPU 和异构节点验证。
 
 ## 特别感谢
 

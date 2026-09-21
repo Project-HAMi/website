@@ -97,6 +97,6 @@ spec:
 
 :::note
 
-Each unit of `sgpu-memory` represents 512 MiB of device memory. Valid values per card model are listed in [Card specifications](#card-specifications). More examples are available in the [examples/mthreads folder](https://github.com/Project-HAMi/HAMi/tree/master/examples/mthreads/).
+Each unit of `mthreads.com/sgpu-memory` represents 512 MiB of device memory. Valid values per card model are listed in [Card specifications](#card-specifications). More examples are available in the [examples/mthreads folder](https://github.com/Project-HAMi/HAMi/tree/master/examples/mthreads/).
 
 :::
