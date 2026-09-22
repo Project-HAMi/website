@@ -6,7 +6,7 @@ translated: true
 
 :::caution
 
-社区仓库 [dcu-vgpu-device-plugin](https://github.com/Project-HAMi/dcu-vgpu-device-plugin) 已归档，不再更新。后续 device-plugin 由 **Hygon** 官方提供，请参阅海光开发者文档：[4.1 HAMi](https://developer.sourcefind.cn/document/9169ef18-c10d-11f0-b077-0242ac150003?id=9231c60e-c10f-11f0-b077-0242ac150003&title=4.1+HAMi&version=9169ef18-c10d-11f0-b077-0242ac150003)。
+社区仓库 [dcu-vgpu-device-plugin](https://github.com/Project-HAMi/dcu-vgpu-device-plugin) 已归档，不再更新。请使用 **Hygon** 官方提供的 [k8s-hcu-device-plugin](https://github.com/HYGON-AI/k8s-hcu-device-plugin)。
 
 :::
 
@@ -29,7 +29,7 @@ translated: true
 
 ## 开启 HCU 复用
 
-- 部署 Hygon 官方提供的 device-plugin，参见 [4.1 HAMi](https://developer.sourcefind.cn/document/9169ef18-c10d-11f0-b077-0242ac150003?id=9231c60e-c10f-11f0-b077-0242ac150003&title=4.1+HAMi&version=9169ef18-c10d-11f0-b077-0242ac150003)
+- 部署 Hygon 官方提供的 [k8s-hcu-device-plugin](https://github.com/HYGON-AI/k8s-hcu-device-plugin)，部署步骤参见该仓库的 README。
 
 ## 运行 HCU 任务
 
