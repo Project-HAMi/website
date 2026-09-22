@@ -47,7 +47,7 @@ HAMi exposes three roles that partners can mix and match:
 
 - **hami-scheduler** registers as a `kube-scheduler` extender and owns vGPU allocation decisions, like memory partitioning, compute limits, and binpack or spread strategies.
 - **hami-device-plugin** registers vGPU resources with `kubelet` and mounts the devices when a Pod is created.
-- **HAMi-core (`libvgpu.so`)** intercepts CUDA, DCU, and similar calls inside the container to enforce hard isolation and resource limits at runtime.
+- **HAMi-core (`libvgpu.so`)** intercepts CUDA, HCU, and similar calls inside the container to enforce hard isolation and resource limits at runtime.
 
 Which path a partner takes depends on the layer it owns. Some call into the scheduler extender, others reuse HAMi-core directly for node-side isolation.
 

@@ -23,9 +23,9 @@
     "message": "贡献者指南",
     "description": "The label for category 'Contributor Guide' in sidebar 'docs'"
   },
-  "sidebar.docs.category.Share Hygon DCU devices": {
-    "message": "共享海光 DCU 设备",
-    "description": "The label for category 'Share Hygon DCU devices' in sidebar 'docs'"
+  "sidebar.docs.category.Share Hygon HCU devices": {
+    "message": "共享海光 HCU 设备",
+    "description": "The label for category 'Share Hygon HCU devices' in sidebar 'docs'"
   },
   "sidebar.docs.category.Share Mthreads GPU devices": {
     "message": "共享摩尔线程 GPU 设备",
