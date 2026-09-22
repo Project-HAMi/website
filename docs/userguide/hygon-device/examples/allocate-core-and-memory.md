@@ -2,7 +2,7 @@
 title: Allocate device core and memory resource
 ---
 
-To allocate a certain part of device core resource, you need only to assign the `hygon.com/dcucores` and `hygon.com/dcumem` along with the number of hygon DCUs you requested in the container using `hygon.com/dcunum`
+To allocate a certain part of device core resource, you need only to assign the `hygon.com/hcucores` and `hygon.com/hcumem` along with the number of hygon HCUs you requested in the container using `hygon.com/hcunum`
 
 ```yaml
 apiVersion: v1
@@ -14,12 +14,12 @@ metadata:
 spec:
   containers:
     - name: alexnet-tf-gpu-container
-      image: image.sourcefind.cn:5000/dcu/admin/base/pytorch:2.1.0-centos7.6-dtk24.04-py310
+      image: image.sourcefind.cn:5000/hcu/admin/base/pytorch:2.1.0-ubuntu22.04-dtk24.04.2-py3.10
       workingDir: /root
       command: ["sleep", "infinity"]
       resources:
         limits:
-          hygon.com/dcunum: 1 # requesting a GPU
-          hygon.com/dcumem: 2000 # each dcu require 2000 MiB device memory
-          hygon.com/dcucores: 15 # each dcu use 15% device cores
+          hygon.com/hcunum: 1 # requesting an HCU
+          hygon.com/hcumem: 2000 # each hcu require 2000 MiB device memory
+          hygon.com/hcucores: 15 # each hcu use 15% device cores
 ```

@@ -343,7 +343,7 @@ HAMi 支持多个 GPU 和加速器厂商。如果你要新增某个设备的支�
 - 遵循 `docs/userguide/<vendor>-device/` 下已有的文档模式。
 - 在 `docs/userguide/<vendor>-device/examples/` 下提供可运行的 YAML 示例。
 
-已支持的厂商：NVIDIA、寒武纪（MLU）、海光（DCU）、Mthreads、天数智芯、燧原（GCU）、AWS Neuron、昆仑芯（XPU）、沐曦、华为昇腾。
+已支持的厂商：NVIDIA、寒武纪（MLU）、海光（HCU）、Mthreads、天数智芯、燧原（GCU）、AWS Neuron、昆仑芯（XPU）、沐曦、华为昇腾。
 
 ## 翻译
 

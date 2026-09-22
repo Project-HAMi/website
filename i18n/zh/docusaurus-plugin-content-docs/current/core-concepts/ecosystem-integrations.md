@@ -47,7 +47,7 @@ HAMi 对外暴露三个角色，伙伴可以按需组合使用：
 
 - **hami-scheduler** 作为 `kube-scheduler` 的扩展器（extender）注册进来，负责 vGPU 的分配决策，比如显存切分、算力限额、binpack 或 spread 策略。
 - **hami-device-plugin** 负责向 `kubelet` 注册 vGPU 资源，并在 Pod 创建时完成设备挂载。
-- **HAMi-core（`libvgpu.so`）** 在容器里拦截 CUDA、DCU 之类的调用，在运行时强制实现硬隔离和资源限额。
+- **HAMi-core（`libvgpu.so`）** 在容器里拦截 CUDA、HCU 之类的调用，在运行时强制实现硬隔离和资源限额。
 
 一个伙伴到底走哪条路，取决于它自己负责哪一层：要么走调度器扩展这条路，要么直接复用节点上的 HAMi-core 来做隔离。
 
