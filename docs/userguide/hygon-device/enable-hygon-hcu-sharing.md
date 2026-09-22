@@ -4,7 +4,7 @@ title: Enable Hygon HCU sharing
 
 :::caution
 
-The community [dcu-vgpu-device-plugin](https://github.com/Project-HAMi/dcu-vgpu-device-plugin) repository is archived and will no longer be updated. Future device-plugin releases are provided by **Hygon**. See the official documentation: [4.1 HAMi](https://developer.sourcefind.cn/document/9169ef18-c10d-11f0-b077-0242ac150003?id=9231c60e-c10f-11f0-b077-0242ac150003&title=4.1+HAMi&version=9169ef18-c10d-11f0-b077-0242ac150003).
+The community [dcu-vgpu-device-plugin](https://github.com/Project-HAMi/dcu-vgpu-device-plugin) repository is archived and will no longer be updated. Use the [k8s-hcu-device-plugin](https://github.com/HYGON-AI/k8s-hcu-device-plugin) provided by **Hygon**.
 
 :::
 
@@ -27,7 +27,7 @@ The community [dcu-vgpu-device-plugin](https://github.com/Project-HAMi/dcu-vgpu-
 
 ## Enabling HCU-sharing Support
 
-- Deploy the device-plugin provided by Hygon. Follow the official guide: [4.1 HAMi](https://developer.sourcefind.cn/document/9169ef18-c10d-11f0-b077-0242ac150003?id=9231c60e-c10f-11f0-b077-0242ac150003&title=4.1+HAMi&version=9169ef18-c10d-11f0-b077-0242ac150003)
+- Deploy the [k8s-hcu-device-plugin](https://github.com/HYGON-AI/k8s-hcu-device-plugin) provided by Hygon. Follow the deployment instructions in its README.
 
 ## Running HCU jobs
 
