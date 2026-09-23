@@ -13,7 +13,7 @@ import ManifestGenerator from '@site/src/components/ManifestGenerator';
 
 ## 高级选项
 
-- **特定设备类型 (Specific Device Type)**: 如果您有一个异构集群（例如 A100 和 V100 混合），您可以指定您的 Pod 应该调度到哪种设备型号上。
-- **特定设备 UUID (Specific Device UUID)**: 如果您出于性能分析或调试目的，需要将 Pod 绑定到特定的物理设备，您可以提供其 UUID。
+- **指定设备型号**：如果您有一个异构集群（例如 A100 和 V100 混合），您可以指定您的 Pod 应该调度到哪种设备型号上。
+- **指定设备 UUID**：如果您出于性能分析或调试目的，需要将 Pod 绑定到特定的物理设备，您可以提供其 UUID。
 
 > **注意**: 并非所有供应商都支持核心百分比或内存百分比分配。生成器会根据所选设备供应商支持的功能，自动调整其选项。
