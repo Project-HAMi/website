@@ -726,5 +726,59 @@
   "tutorials.lab.verified": {
     "message": "验证于：",
     "description": "Lab verified date label"
+  },
+  "manifest.generator.title": {
+    "message": "资源请求配置"
+  },
+  "manifest.generator.vendor": {
+    "message": "设备厂商"
+  },
+  "manifest.generator.deviceCount": {
+    "message": "请求设备数量"
+  },
+  "manifest.generator.memMode": {
+    "message": "显存分配方式"
+  },
+  "manifest.generator.memMode.absolute": {
+    "message": "绝对值"
+  },
+  "manifest.generator.memMode.percentage": {
+    "message": "百分比 (%)"
+  },
+  "manifest.generator.memValue": {
+    "message": "显存数值"
+  },
+  "manifest.generator.coreMode": {
+    "message": "算力核心分配"
+  },
+  "manifest.generator.coreMode.none": {
+    "message": "无（默认）"
+  },
+  "manifest.generator.coreMode.absolute": {
+    "message": "绝对核心数"
+  },
+  "manifest.generator.coreMode.percentage": {
+    "message": "百分比 (%)"
+  },
+  "manifest.generator.coreValue": {
+    "message": "核心数值"
+  },
+  "manifest.generator.advanced": {
+    "message": "高级配置（设备型号 / UUID）"
+  },
+  "manifest.generator.deviceType": {
+    "message": "指定设备型号（例如 NVIDIA-A100）"
+  },
+  "manifest.generator.emptyPlaceholder": {
+    "message": "留空表示任意"
+  },
+  "manifest.generator.deviceUuid": {
+    "message": "指定设备 UUID（例如 GPU-fef808...）"
+  },
+  "manifest.generator.previewTitle": {
+    "message": "生成的 YAML 配置清单"
+  },
+  "manifest.generator.previewDesc": {
+    "message": "将此配置集成到您的 Kubernetes Pod 或 Deployment 规范中。"
   }
 }
