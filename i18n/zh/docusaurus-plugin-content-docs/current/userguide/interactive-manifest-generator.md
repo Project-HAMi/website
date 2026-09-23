@@ -3,7 +3,7 @@ title: 交互式 Manifest 生成器
 sidebar_label: Manifest 生成器
 ---
 
-Project HAMi 支持跨多个硬件制造商的 GPU 虚拟化，包括 NVIDIA、寒武纪 (Cambricon)、海光 (Hygon)、天数智芯 (Iluvatar) 和华为昇腾 (Huawei Ascend)。在容器的 `resources.limits` 中使用特定于供应商的键来请求受支持的设备资源。对于支持设备类型或 UUID 约束的供应商，生成器在配置后会将这些值添加到 `metadata.annotations`。
+Project HAMi 支持跨多个硬件制造商的 GPU 虚拟化：NVIDIA、AMD、壁仞、寒武纪、海光、天数智芯、摩尔线程、沐曦、燧原、AWS Neuron、昆仑芯和华为昇腾。在容器的 `resources.limits` 中使用特定于供应商的键来请求受支持的设备资源。对于支持设备类型或 UUID 约束的供应商，生成器在配置后会将这些值添加到 `metadata.annotations`。
 
 使用下方的交互式工具，为您的用例生成准确的 YAML 配置。您可以将生成的配置直接集成到您的部署规范中（例如将资源添加到您的 `spec.template.spec.containers` 部分）。
 
