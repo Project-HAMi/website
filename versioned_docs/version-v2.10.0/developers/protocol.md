@@ -10,7 +10,7 @@ HAMi needs each AI device's specifications to schedule workloads. Device discove
 
 ### NVIDIA Device Inventory
 
-The NVIDIA device plugin normally checks device information every 30 seconds. It compares the serialized inventory with its local cache and updates `hami.io/node-nvidia-register` only when that inventory changes. It does not refresh a `Reported_...` handshake timestamp every 30 seconds.
+The NVIDIA device plugin normally checks device information every 30 seconds. It compares the serialized inventory with its local cache and updates `hami.io/node-nvidia-register` only when that inventory changes. This loop is separate from the handshake annotation described below: it never writes to `hami.io/node-handshake`.
 
 The annotation contains a JSON array with one object per device. This example describes two NVIDIA V100 GPUs:
 

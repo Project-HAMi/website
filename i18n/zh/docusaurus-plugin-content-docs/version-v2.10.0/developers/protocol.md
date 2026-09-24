@@ -11,7 +11,7 @@ HAMi 需要了解集群中每个 AI 设备的规格信息以进行调度。设�
 
 ### NVIDIA 设备清单
 
-NVIDIA device-plugin 通常每 30 秒检查一次设备信息。它将序列化后的设备清单与本地缓存比较，只有清单发生变化时才更新 `hami.io/node-nvidia-register`。它不会每 30 秒刷新 `Reported_...` 握手时间戳。
+NVIDIA device-plugin 通常每 30 秒检查一次设备信息。它将序列化后的设备清单与本地缓存比较，只有清单发生变化时才更新 `hami.io/node-nvidia-register`。这个循环与下文描述的握手注解是两套独立的机制：它从不写入 `hami.io/node-handshake`。
 
 该注解包含一个 JSON 数组，每个设备对应一个对象。下面的示例表示两张 NVIDIA V100 GPU：
 
