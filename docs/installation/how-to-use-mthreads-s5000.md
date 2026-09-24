@@ -38,7 +38,7 @@ Full mode containerizes the entire software stack (driver, container toolkit, de
 2. Enable sGPU and choose which cards to slice. The sGPU capability comes from the vendor's `sgpu_km` kernel module: cards bound to the module join the slice resource pool, and the remaining cards stay in the whole-card pool. The module takes one of two mutually exclusive binding parameters:
 
    - `total_gpu_num=<N>` binds N cards starting from GPU 0.
-   - `gpu_ids=0,2,3` binds exactly the listed cards. Use this for a precise layout; its count takes precedence over `total_gpu_num`.
+   - `gpu_ids=0,2,3` binds exactly the listed cards. Use this for a precise layout. Set either `gpu_ids` or `total_gpu_num`, not both.
 
    With the GPU Operator in Full mode, the operator installs the module and manages the binding for you. For a persistent host-level setup, keep the parameters in `/etc/modprobe.d/sgpu-km.conf`, for example `options sgpu_km total_gpu_num=1` slices only GPU 0 on each node. On clusters without the operator, load the module manually as described in the [MT sGPU install guide](https://docs.mthreads.com/cloud-native/cloud-native-doc-online/install_guide/sgpu_install).
 
