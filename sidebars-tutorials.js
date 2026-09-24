@@ -96,6 +96,11 @@ module.exports = {
           id: "labs/hami-kitops",
           customProps: { level: "Advanced", duration: "about 60 minutes" },
         },
+        {
+          type: "doc",
+          id: "labs/hami-ascend-vnpu-slicing",
+          customProps: { level: "Intermediate", duration: "about 60 minutes" },
+        },
       ],
     },
   ],

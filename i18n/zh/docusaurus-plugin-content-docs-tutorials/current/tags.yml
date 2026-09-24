@@ -19,6 +19,9 @@
 "gpu-sharing":
   label: "GPU 共享"
   permalink: "/gpu-sharing"
+"hard-slicing":
+  label: "硬切分"
+  permalink: "/hard-slicing"
 "hami":
   label: "hami"
   permalink: "/hami"
