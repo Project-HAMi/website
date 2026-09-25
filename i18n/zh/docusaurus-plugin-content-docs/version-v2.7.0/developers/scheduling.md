@@ -157,7 +157,7 @@ GPU2 Score: ((20+70)/100 + (1000+6000)/8000)) * 10 = 17.75
 
 #### Spread
 
-Spread 主要关注每张卡的计算能力和显存使用情况。使用越少，得分越高。
+Spread 优先选择设备利用率得分较低的卡。使用相同的默认权重示例：
 
 ```text
 score: ((request.core + used.core) / allocatable.core + (request.mem + used.mem) / allocatable.mem)) * 10

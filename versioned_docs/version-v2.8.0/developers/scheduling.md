@@ -157,7 +157,7 @@ In `Binpack` policy, `GPU2` is selected.
 
 #### Spread
 
-Spread mainly focuses on the computing power and video memory usage of each card. The less it is used, the higher the score.
+Spread prefers the card with the lower device-utilization score. Using the same example:
 
 ```text
 score: ((request.core + used.core) / allocatable.core + (request.mem + used.mem) / allocatable.mem)) * 10
