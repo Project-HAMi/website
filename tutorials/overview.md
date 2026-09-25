@@ -32,3 +32,4 @@ Each lab lists its own prerequisites.
 - **Lab 14** installs HAMi v2.10.0 on a four-T4 GKE node and observes the composable `gpu-scheduler-policy` chains (`spread`, `binpack`, `mutex`, `mutex,binpack`) through allocation annotations and scheduler logs.
 - **Lab 16** installs HAMi v2.10.0 on a seven-GPU RTX PRO 6000 server and verifies the complete Dynamic MIG lifecycle: per-Pod placement, mixed profiles, selective reclamation, device-plugin restart recovery, and spillover to a second GPU.
 - **Lab 17** packages a model as a KitOps ModelKit, pulls it from Jozu Hub through an initContainer, and serves it with SGLang and optionally vLLM on HAMi GPU shares.
+- **Lab 18** installs HAMi 2.10.0 and the Ascend device plugin on a 310P3 node, then verifies template-based hard slicing (`vir01`, `vir02`, and `vir04`), multi-Pod sharing, capacity exhaustion, whole-card exclusion, and allocation metrics.
