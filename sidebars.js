@@ -54,6 +54,7 @@ module.exports = {
             "installation/k3s-installation",
             "installation/gke-installation",
             "installation/tke-installation",
+            "installation/how-to-use-mthreads-s5000",
           ],
         },
         {
