@@ -59,8 +59,11 @@
   ansible.builtin.assert:
     that:
       - >-
-        (cni_calico_existing_configs.stdout | trim == "") or
-        ('calico' in (cni_calico_existing_configs.stdout | lower))
+        cni_calico_existing_configs.stdout_lines
+        | map('lower')
+        | reject('search', 'calico')
+        | list
+        | length == 0
     fail_msg: A non-Calico CNI configuration already exists in /etc/cni/net.d.
 
 - name: Check Calico CRDs
@@ -338,7 +341,13 @@
 - name: Validate Calico CNI configuration exists
   ansible.builtin.assert:
     that:
-      - "'calico' in (cni_calico_installed_configs.stdout | lower)"
+      - cni_calico_installed_configs.stdout_lines | length > 0
+      - >-
+        cni_calico_installed_configs.stdout_lines
+        | map('lower')
+        | reject('search', 'calico')
+        | list
+        | length == 0
     fail_msg: Node is Ready but expected Calico CNI config was not found.
 
 - name: Recheck containerd remains active after CNI installation
