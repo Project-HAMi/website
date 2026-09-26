@@ -1,0 +1,288 @@
+---
+- name: Ensure this role runs only on Ubuntu 24.04 hami-lab guest
+  ansible.builtin.assert:
+    that:
+      - ansible_facts['distribution'] == "Ubuntu"
+      - ansible_facts['distribution_version'] is version('24.04', '>=')
+      - ansible_facts['hostname'] == "hami-lab"
+      - ansible_facts['virtualization_role'] == "guest"
+    fail_msg: >-
+      Refusing to initialize Kubernetes outside the isolated Ubuntu
+      hami-lab VM.
+
+- name: Verify swap remains disabled before kubeadm init
+  ansible.builtin.command: swapon --show --noheadings
+  register: kubeadm_control_plane_swap
+  changed_when: false
+  failed_when: kubeadm_control_plane_swap.stdout | trim != ""
+
+- name: Verify containerd is active before kubeadm init
+  ansible.builtin.command: systemctl is-active containerd
+  register: kubeadm_control_plane_containerd
+  changed_when: false
+  failed_when: kubeadm_control_plane_containerd.stdout != "active"
+
+- name: Check protected containerd configuration exists
+  ansible.builtin.stat:
+    path: "{{ hami_lab_containerd_config }}"
+  register: kubeadm_control_plane_containerd_config
+
+- name: Check protected NVIDIA runtime fragment exists
+  ansible.builtin.stat:
+    path: "{{ hami_lab_nvidia_containerd_config }}"
+  register: kubeadm_control_plane_nvidia_config
+
+- name: Read protected containerd configuration
+  ansible.builtin.slurp:
+    path: "{{ hami_lab_containerd_config }}"
+  register: kubeadm_control_plane_containerd_config_raw
+  when: kubeadm_control_plane_containerd_config.stat.exists
+
+- name: Read protected NVIDIA runtime fragment
+  ansible.builtin.slurp:
+    path: "{{ hami_lab_nvidia_containerd_config }}"
+  register: kubeadm_control_plane_nvidia_config_raw
+  when: kubeadm_control_plane_nvidia_config.stat.exists
+
+- name: Validate protected runtime configuration before kubeadm init
+  ansible.builtin.assert:
+    that:
+      - kubeadm_control_plane_containerd_config.stat.exists
+      - kubeadm_control_plane_nvidia_config.stat.exists
+      - "'SystemdCgroup = true' in (kubeadm_control_plane_containerd_config_raw.content | b64decode)"
+      - '''BinaryName = "/usr/bin/nvidia-container-runtime"'' in (kubeadm_control_plane_nvidia_config_raw.content | b64decode)'
+    fail_msg: >-
+      Validated container containerd/NVIDIA runtime configuration drifted.
+      Stop before kubeadm init.
+
+- name: Verify pinned Kubernetes package versions before kubeadm init
+  ansible.builtin.command: "dpkg-query -W -f=${Version} {{ item }}"
+  loop: "{{ k8s_packages_names }}"
+  register: kubeadm_control_plane_package_versions
+  changed_when: false
+
+- name: Validate pinned Kubernetes package versions before kubeadm init
+  ansible.builtin.assert:
+    that:
+      - item.stdout == k8s_packages_version
+  loop: "{{ kubeadm_control_plane_package_versions.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+
+- name: Check for pre-existing CNI network configuration
+  ansible.builtin.shell: |
+    set -o pipefail
+    if [ -d /etc/cni/net.d ]; then
+      find /etc/cni/net.d -maxdepth 1 -type f \
+        \( -name '*.conf' -o -name '*.conflist' -o -name '*.json' \) \
+        -print | sort
+    fi
+  args:
+    executable: /bin/bash
+  register: kubeadm_control_plane_existing_cni
+  changed_when: false
+
+- name: Check kubeadm initialization markers
+  ansible.builtin.stat:
+    path: "{{ item }}"
+  loop:
+    - /etc/kubernetes/admin.conf
+    - /etc/kubernetes/manifests/kube-apiserver.yaml
+    - /var/lib/kubelet/config.yaml
+  register: kubeadm_control_plane_markers
+
+- name: Count kubeadm initialization markers
+  ansible.builtin.set_fact:
+    kubeadm_control_plane_marker_count: >-
+      {{
+        kubeadm_control_plane_markers.results
+        | map(attribute='stat.exists')
+        | select('equalto', true)
+        | list
+        | length
+      }}
+
+- name: Fail closed on partial kubeadm initialization
+  ansible.builtin.assert:
+    that:
+      - kubeadm_control_plane_marker_count | int in [0, 3]
+    fail_msg: >-
+      Partial kubeadm state detected. Do not rerun kubeadm init blindly.
+      Inspect /etc/kubernetes and /var/lib/kubelet before deciding whether
+      kubeadm reset is appropriate.
+
+- name: Record whether control plane is already initialized
+  ansible.builtin.set_fact:
+    kubeadm_control_plane_initialized: "{{ kubeadm_control_plane_marker_count | int == 3 }}"
+
+- name: Enforce clean CNI boundary before first kubeadm initialization
+  ansible.builtin.assert:
+    that:
+      - kubeadm_control_plane_existing_cni.stdout | trim == ""
+    fail_msg: >-
+      Unexpected CNI configuration already exists in /etc/cni/net.d before
+      first kubeadm initialization. Stop and inspect it before continuing.
+  when: not kubeadm_control_plane_initialized | bool
+
+- name: Render kubeadm configuration
+  ansible.builtin.copy:
+    dest: "{{ kubeadm_control_plane_config_path }}"
+    owner: root
+    group: root
+    mode: "0600"
+    content: |
+      apiVersion: kubeadm.k8s.io/v1beta4
+      kind: InitConfiguration
+      dryRun: false
+      localAPIEndpoint:
+        advertiseAddress: "{{ kubeadm_control_plane_advertise_address }}"
+        bindPort: 6443
+      nodeRegistration:
+        name: "{{ kubeadm_control_plane_node_name }}"
+        criSocket: "{{ kubeadm_control_plane_cri_socket }}"
+        imagePullPolicy: IfNotPresent
+        imagePullSerial: true
+      ---
+      apiVersion: kubeadm.k8s.io/v1beta4
+      kind: ClusterConfiguration
+      clusterName: "{{ kubeadm_control_plane_cluster_name }}"
+      kubernetesVersion: "{{ kubeadm_control_plane_kubernetes_version }}"
+      networking:
+        dnsDomain: "{{ kubeadm_control_plane_dns_domain }}"
+        serviceSubnet: "{{ kubeadm_control_plane_service_subnet }}"
+      ---
+      apiVersion: kubelet.config.k8s.io/v1beta1
+      kind: KubeletConfiguration
+      cgroupDriver: systemd
+
+- name: Validate kubeadm configuration schema
+  ansible.builtin.command:
+    cmd: "kubeadm config validate --config {{ kubeadm_control_plane_config_path }}"
+  changed_when: false
+
+- name: Run kubeadm preflight checks before first initialization
+  ansible.builtin.command:
+    cmd: "kubeadm init phase preflight --config {{ kubeadm_control_plane_config_path }}"
+  changed_when: false
+  when: not kubeadm_control_plane_initialized | bool
+
+- name: Initialize single-node Kubernetes control plane
+  ansible.builtin.command:
+    cmd: "kubeadm init --config {{ kubeadm_control_plane_config_path }}"
+  register: kubeadm_control_plane_init
+  when: not kubeadm_control_plane_initialized | bool
+  changed_when: kubeadm_control_plane_init.rc == 0
+
+- name: Wait for Kubernetes API server
+  ansible.builtin.wait_for:
+    host: "{{ kubeadm_control_plane_advertise_address }}"
+    port: 6443
+    state: started
+    timeout: 120
+
+- name: Ensure kubectl directory exists for the guest SSH user
+  ansible.builtin.file:
+    path: "{{ lab_guest_home }}/.kube"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ lab_guest_group }}"
+    mode: "0700"
+
+- name: Install kubeconfig for the guest SSH user
+  ansible.builtin.copy:
+    src: /etc/kubernetes/admin.conf
+    dest: "{{ lab_guest_home }}/.kube/config"
+    remote_src: true
+    owner: "{{ ansible_user }}"
+    group: "{{ lab_guest_group }}"
+    mode: "0600"
+
+- name: Verify Kubernetes API ready endpoint
+  ansible.builtin.command:
+    cmd: kubectl --kubeconfig /etc/kubernetes/admin.conf get --raw=/readyz
+  register: kubeadm_control_plane_readyz
+  changed_when: false
+  retries: 12
+  delay: 5
+  until: kubeadm_control_plane_readyz.rc == 0 and (kubeadm_control_plane_readyz.stdout | trim) == "ok"
+
+- name: Verify hami-lab node registered
+  ansible.builtin.command:
+    cmd: >-
+      kubectl --kubeconfig /etc/kubernetes/admin.conf
+      get node {{ kubeadm_control_plane_node_name }}
+      -o jsonpath={.metadata.name}
+  register: kubeadm_control_plane_node_name_check
+  changed_when: false
+  retries: 12
+  delay: 5
+  until: kubeadm_control_plane_node_name_check.rc == 0 and kubeadm_control_plane_node_name_check.stdout == kubeadm_control_plane_node_name
+
+- name: Read control-plane taint keys
+  ansible.builtin.command:
+    cmd: >-
+      kubectl --kubeconfig /etc/kubernetes/admin.conf
+      get node {{ kubeadm_control_plane_node_name }}
+      -o jsonpath={.spec.taints[*].key}
+  register: kubeadm_control_plane_taints
+  changed_when: false
+
+- name: Remove control-plane scheduling taint for single-node lab
+  ansible.builtin.command:
+    cmd: >-
+      kubectl --kubeconfig /etc/kubernetes/admin.conf
+      taint node {{ kubeadm_control_plane_node_name }}
+      node-role.kubernetes.io/control-plane:NoSchedule-
+  when: "'node-role.kubernetes.io/control-plane' in kubeadm_control_plane_taints.stdout"
+  register: kubeadm_control_plane_untaint
+  changed_when: kubeadm_control_plane_untaint.rc == 0
+
+- name: Read node object before CNI
+  ansible.builtin.command:
+    cmd: >-
+      kubectl --kubeconfig /etc/kubernetes/admin.conf
+      get node {{ kubeadm_control_plane_node_name }}
+      -o json
+  register: kubeadm_control_plane_node_json
+  changed_when: false
+  retries: 12
+  delay: 5
+  until: kubeadm_control_plane_node_json.rc == 0
+
+- name: Extract node Ready condition before CNI
+  ansible.builtin.set_fact:
+    kubeadm_control_plane_ready_condition: >-
+      {{
+        (
+          (kubeadm_control_plane_node_json.stdout | from_json).status.conditions
+          | selectattr('type', 'equalto', 'Ready')
+          | map(attribute='status')
+          | first
+        )
+      }}
+
+- name: Validate expected pre-CNI node state
+  ansible.builtin.assert:
+    that:
+      - kubeadm_control_plane_ready_condition in ["False", "Unknown"]
+    fail_msg: >-
+      Expected the single node to remain NotReady while no CNI network
+      configuration exists.
+  when: kubeadm_control_plane_existing_cni.stdout | trim == ""
+
+- name: Recheck containerd remains active after kubeadm init
+  ansible.builtin.command: systemctl is-active containerd
+  register: kubeadm_control_plane_post_containerd
+  changed_when: false
+  failed_when: kubeadm_control_plane_post_containerd.stdout != "active"
+
+- name: Recheck NVIDIA driver remains visible after kubeadm init
+  ansible.builtin.command: nvidia-smi --query-gpu=driver_version,name,memory.total --format=csv,noheader
+  register: kubeadm_control_plane_post_nvidia
+  changed_when: false
+
+- name: Validate protected GPU baseline after kubeadm init
+  ansible.builtin.assert:
+    that:
+      - hami_lab_expected_nvidia_driver_version in kubeadm_control_plane_post_nvidia.stdout
+      - "hami_lab_expected_gpu_name in kubeadm_control_plane_post_nvidia.stdout"

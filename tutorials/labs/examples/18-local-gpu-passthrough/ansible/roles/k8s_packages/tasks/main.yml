@@ -1,0 +1,137 @@
+---
+- name: Ensure this role runs only on Ubuntu 24.04 hami-lab guest
+  ansible.builtin.assert:
+    that:
+      - ansible_facts['distribution'] == "Ubuntu"
+      - ansible_facts['distribution_version'] is version('24.04', '>=')
+      - ansible_facts['hostname'] == "hami-lab"
+      - ansible_facts['virtualization_role'] == "guest"
+    fail_msg: >-
+      Refusing to install Kubernetes packages outside the isolated Ubuntu
+      hami-lab VM.
+
+- name: Recheck containerd is still active before Kubernetes packages
+  ansible.builtin.command: systemctl is-active containerd
+  register: k8s_packages_containerd_state
+  changed_when: false
+  failed_when: k8s_packages_containerd_state.stdout != "active"
+
+- name: Recheck NVIDIA driver is still visible before Kubernetes packages
+  ansible.builtin.command: nvidia-smi --query-gpu=driver_version,name,memory.total --format=csv,noheader
+  register: k8s_packages_nvidia_smi_state
+  changed_when: false
+
+- name: Validate protected GPU/container runtime baseline before package install
+  ansible.builtin.assert:
+    that:
+      - hami_lab_expected_nvidia_driver_version in k8s_packages_nvidia_smi_state.stdout
+      - "hami_lab_expected_gpu_name in k8s_packages_nvidia_smi_state.stdout"
+      - k8s_packages_containerd_state.stdout == "active"
+    fail_msg: >-
+      Validated container runtime baseline drifted. Stop before installing
+      Kubernetes packages.
+
+- name: Install apt HTTPS/keyring prerequisites
+  ansible.builtin.apt:
+    name:
+      - ca-certificates
+      - curl
+      - gpg
+    state: present
+    update_cache: true
+
+- name: Ensure apt keyring directory exists
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Download Kubernetes apt repository key
+  ansible.builtin.get_url:
+    url: "{{ k8s_packages_key_url }}"
+    dest: "{{ k8s_packages_keyring_asc }}"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Dearmor Kubernetes apt repository key
+  ansible.builtin.command:
+    cmd: "gpg --dearmor -o {{ k8s_packages_keyring_gpg }} {{ k8s_packages_keyring_asc }}"
+    creates: "{{ k8s_packages_keyring_gpg }}"
+
+- name: Install Kubernetes apt source
+  ansible.builtin.copy:
+    dest: "{{ k8s_packages_source_file }}"
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      deb [signed-by={{ k8s_packages_keyring_gpg }}] {{ k8s_packages_repo_url }} /
+  register: k8s_packages_source
+
+- name: Refresh apt cache for Kubernetes repository
+  ansible.builtin.apt:
+    update_cache: true
+  when: k8s_packages_source.changed
+
+- name: Install pinned Kubernetes packages
+  ansible.builtin.apt:
+    name: "{{ item }}={{ k8s_packages_version }}"
+    state: present
+    update_cache: true
+    allow_change_held_packages: true
+  loop: "{{ k8s_packages_names }}"
+
+- name: Hold Kubernetes packages at the pinned version
+  ansible.builtin.dpkg_selections:
+    name: "{{ item }}"
+    selection: hold
+  loop: "{{ k8s_packages_names }}"
+
+- name: Read installed Kubernetes package versions
+  ansible.builtin.command: "dpkg-query -W -f=${Version} {{ item }}"
+  loop: "{{ k8s_packages_names }}"
+  register: k8s_packages_installed_versions
+  changed_when: false
+
+- name: Validate Kubernetes packages are pinned to the selected official version
+  ansible.builtin.assert:
+    that:
+      - item.stdout == k8s_packages_version
+    fail_msg: >-
+      A Kubernetes package is not installed at the selected official
+      pkgs.k8s.io version {{ k8s_packages_version }}.
+  loop: "{{ k8s_packages_installed_versions.results }}"
+
+- name: Read kubeadm version
+  ansible.builtin.command: kubeadm version -o short
+  register: k8s_packages_kubeadm_version
+  changed_when: false
+
+- name: Read kubelet version
+  ansible.builtin.command: kubelet --version
+  register: k8s_packages_kubelet_version
+  changed_when: false
+
+- name: Read kubectl client version
+  ansible.builtin.command: kubectl version --client=true --output=yaml
+  register: k8s_packages_kubectl_version
+  changed_when: false
+
+- name: Validate Kubernetes CLI versions
+  ansible.builtin.assert:
+    that:
+      - "'v1.36.4' in k8s_packages_kubeadm_version.stdout"
+      - "'v1.36.4' in k8s_packages_kubelet_version.stdout"
+      - "'gitVersion: v1.36.4' in k8s_packages_kubectl_version.stdout"
+    fail_msg: >-
+      Installed Kubernetes command versions do not match the selected
+      Kubernetes 1.36.4 package set.
+
+- name: Recheck containerd remains active after Kubernetes package install
+  ansible.builtin.command: systemctl is-active containerd
+  register: k8s_packages_post_containerd_state
+  changed_when: false
+  failed_when: k8s_packages_post_containerd_state.stdout != "active"
