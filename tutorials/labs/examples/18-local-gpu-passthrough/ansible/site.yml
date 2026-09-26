@@ -1,0 +1,14 @@
+---
+- name: Prepare hami-lab for single-node Kubernetes bootstrap
+  hosts: hami_lab
+  gather_facts: true
+  pre_tasks:
+    - name: Read the guest SSH user's home and primary group
+      ansible.builtin.getent:
+        database: passwd
+        key: "{{ ansible_user }}"
+  roles:
+    - k8s_prereqs
+    - k8s_packages
+    - kubeadm_control_plane
+    - cni_calico

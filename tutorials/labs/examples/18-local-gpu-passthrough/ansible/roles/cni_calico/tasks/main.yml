@@ -1,0 +1,359 @@
+---
+- name: Ensure this role runs only on Ubuntu 24.04 hami-lab guest
+  ansible.builtin.assert:
+    that:
+      - ansible_facts['distribution'] == "Ubuntu"
+      - ansible_facts['distribution_version'] is version('24.04', '>=')
+      - ansible_facts['hostname'] == "hami-lab"
+      - ansible_facts['virtualization_role'] == "guest"
+    fail_msg: Refusing to install Calico outside the isolated Ubuntu hami-lab VM.
+
+- name: Verify Kubernetes API is ready before CNI installation
+  ansible.builtin.command:
+    cmd: kubectl --kubeconfig /etc/kubernetes/admin.conf get --raw=/readyz
+  register: cni_calico_api_ready
+  changed_when: false
+  failed_when: cni_calico_api_ready.stdout | trim != "ok"
+
+- name: Verify control-plane initialization markers exist
+  ansible.builtin.stat:
+    path: "{{ item }}"
+  loop:
+    - /etc/kubernetes/admin.conf
+    - /etc/kubernetes/manifests/kube-apiserver.yaml
+    - /var/lib/kubelet/config.yaml
+  register: cni_calico_kubeadm_markers
+
+- name: Validate control plane is initialized before installing CNI
+  ansible.builtin.assert:
+    that:
+      - cni_calico_kubeadm_markers.results | map(attribute='stat.exists') | min
+    fail_msg: kubeadm control plane is not fully initialized.
+
+- name: Check NetworkManager state
+  ansible.builtin.command: systemctl is-active NetworkManager
+  register: cni_calico_networkmanager
+  changed_when: false
+  failed_when: false
+
+- name: Refuse unmanaged NetworkManager interaction
+  ansible.builtin.assert:
+    that:
+      - cni_calico_networkmanager.stdout != "active"
+    fail_msg: NetworkManager is active; inspect guest networking before installing Calico.
+
+- name: Find existing CNI network definitions
+  ansible.builtin.shell: |
+    set -o pipefail
+    if [ -d /etc/cni/net.d ]; then
+      find /etc/cni/net.d -maxdepth 1 -type f \
+        \( -name '*.conf' -o -name '*.conflist' -o -name '*.json' \) \
+        -print | sort
+    fi
+  args:
+    executable: /bin/bash
+  register: cni_calico_existing_configs
+  changed_when: false
+
+- name: Fail on a non-Calico pre-existing CNI
+  ansible.builtin.assert:
+    that:
+      - >-
+        (cni_calico_existing_configs.stdout | trim == "") or
+        ('calico' in (cni_calico_existing_configs.stdout | lower))
+    fail_msg: A non-Calico CNI configuration already exists in /etc/cni/net.d.
+
+- name: Check Calico CRDs
+  ansible.builtin.command:
+    cmd: kubectl --kubeconfig /etc/kubernetes/admin.conf get crd ippools.crd.projectcalico.org
+  register: cni_calico_crd_check
+  changed_when: false
+  failed_when: false
+
+- name: Install pinned Calico CRDs
+  ansible.builtin.command:
+    cmd: >-
+      kubectl --kubeconfig /etc/kubernetes/admin.conf create
+      -f {{ cni_calico_crd_manifest_url }}
+  register: cni_calico_crd_install
+  when: cni_calico_crd_check.rc != 0
+  changed_when: cni_calico_crd_install.rc == 0
+
+- name: Download pristine pinned Calico manifest
+  ansible.builtin.get_url:
+    url: "{{ cni_calico_manifest_url }}"
+    dest: "{{ cni_calico_source_manifest_path }}"
+    owner: root
+    group: root
+    mode: "0600"
+
+- name: Check whether rendered Calico manifest already has desired settings
+  ansible.builtin.shell: |
+    set -o pipefail
+    test -f "{{ cni_calico_manifest_path }}" &&
+    grep -F 'calico_backend: "vxlan"' "{{ cni_calico_manifest_path }}" &&
+    ! grep -F -- '-bird-live' "{{ cni_calico_manifest_path }}" &&
+    ! grep -F -- '-bird-ready' "{{ cni_calico_manifest_path }}" &&
+    grep -A1 -F 'name: CALICO_IPV4POOL_IPIP' "{{ cni_calico_manifest_path }}" | grep -F 'value: "Never"' &&
+    grep -A1 -F 'name: CALICO_IPV4POOL_VXLAN' "{{ cni_calico_manifest_path }}" | grep -F 'value: "Always"' &&
+    grep -A1 -F 'name: CALICO_IPV4POOL_CIDR' "{{ cni_calico_manifest_path }}" | grep -F 'value: "{{ cni_calico_pod_cidr }}"'
+  args:
+    executable: /bin/bash
+  register: cni_calico_rendered_manifest_state
+  changed_when: false
+  failed_when: false
+
+- name: Seed rendered Calico manifest from pristine source when needed
+  ansible.builtin.copy:
+    src: "{{ cni_calico_source_manifest_path }}"
+    dest: "{{ cni_calico_manifest_path }}"
+    remote_src: true
+    owner: root
+    group: root
+    mode: "0600"
+  when: cni_calico_rendered_manifest_state.rc != 0
+
+- name: Configure Calico VXLAN backend
+  ansible.builtin.replace:
+    path: "{{ cni_calico_manifest_path }}"
+    regexp: 'calico_backend: "bird"'
+    replace: 'calico_backend: "vxlan"'
+
+- name: Remove BIRD health probes for VXLAN backend
+  ansible.builtin.shell: |
+    python3 - <<'PY'
+    from pathlib import Path
+
+    path = Path("{{ cni_calico_manifest_path }}")
+    text = path.read_text()
+
+    targets = [
+        "                - -bird-live\n",
+        "                - -bird-ready\n",
+    ]
+
+    changed = False
+    for target in targets:
+        if target in text:
+            text = text.replace(target, "", 1)
+            changed = True
+
+    path.write_text(text)
+    print("configured" if changed else "already configured")
+    PY
+  args:
+    executable: /bin/bash
+  register: cni_calico_bird_probe_render
+  changed_when: cni_calico_bird_probe_render.stdout | trim == "configured"
+
+- name: Disable default Calico IPIP pool encapsulation
+  ansible.builtin.replace:
+    path: "{{ cni_calico_manifest_path }}"
+    regexp: '(?m)(- name: CALICO_IPV4POOL_IPIP\n\s+value:) "Always"'
+    replace: '\1 "Never"'
+
+- name: Enable default Calico VXLAN pool encapsulation
+  ansible.builtin.replace:
+    path: "{{ cni_calico_manifest_path }}"
+    regexp: '(?m)(- name: CALICO_IPV4POOL_VXLAN\n\s+value:) "Never"'
+    replace: '\1 "Always"'
+
+- name: Configure explicit Calico IPv4 pool CIDR
+  ansible.builtin.shell: |
+    python3 - <<'PY'
+    from pathlib import Path
+
+    path = Path("{{ cni_calico_manifest_path }}")
+    text = path.read_text()
+    old = '''            # - name: CALICO_IPV4POOL_CIDR
+                #   value: "192.168.0.0/16"'''
+    new = '''            - name: CALICO_IPV4POOL_CIDR
+                  value: "{{ cni_calico_pod_cidr }}"'''
+
+    if new in text:
+        print("already configured")
+    elif old in text:
+        path.write_text(text.replace(old, new, 1))
+        print("configured")
+    else:
+        raise SystemExit("expected pinned Calico CIDR block not found")
+    PY
+  args:
+    executable: /bin/bash
+  register: cni_calico_cidr_render
+  changed_when: cni_calico_cidr_render.stdout | trim == "configured"
+
+- name: Verify rendered Calico manifest settings
+  ansible.builtin.shell: |
+    set -o pipefail
+    grep -F 'calico_backend: "vxlan"' "{{ cni_calico_manifest_path }}"
+    ! grep -F -- '-bird-live' "{{ cni_calico_manifest_path }}"
+    ! grep -F -- '-bird-ready' "{{ cni_calico_manifest_path }}"
+    grep -F -- '-felix-live' "{{ cni_calico_manifest_path }}"
+    grep -F -- '-felix-ready' "{{ cni_calico_manifest_path }}"
+    grep -A1 -F 'name: CALICO_IPV4POOL_IPIP' "{{ cni_calico_manifest_path }}" | grep -F 'value: "Never"'
+    grep -A1 -F 'name: CALICO_IPV4POOL_VXLAN' "{{ cni_calico_manifest_path }}" | grep -F 'value: "Always"'
+    grep -A1 -F 'name: CALICO_IPV4POOL_CIDR' "{{ cni_calico_manifest_path }}" | grep -F 'value: "{{ cni_calico_pod_cidr }}"'
+  args:
+    executable: /bin/bash
+  changed_when: false
+
+- name: Render Calico runtime manifest without CRDs
+  ansible.builtin.shell: |
+    python3 - <<'PY'
+    from pathlib import Path
+    import re
+
+    source = Path("{{ cni_calico_manifest_path }}")
+    target = Path("{{ cni_calico_runtime_manifest_path }}")
+    documents = re.split(r'(?m)^---\s*$', source.read_text())
+    runtime_documents = []
+
+    for document in documents:
+        if not document.strip():
+            continue
+        if re.search(r'(?m)^kind:\s*CustomResourceDefinition\s*$', document):
+            continue
+        runtime_documents.append(document.strip("\n"))
+
+    if not runtime_documents:
+        raise SystemExit("no non-CRD Calico resources found")
+
+    rendered = "---\n" + "\n---\n".join(runtime_documents) + "\n"
+    previous = target.read_text() if target.exists() else None
+    target.write_text(rendered)
+    print("unchanged" if previous == rendered else "rendered")
+    PY
+  args:
+    executable: /bin/bash
+  register: cni_calico_runtime_render
+  changed_when: cni_calico_runtime_render.stdout | trim == "rendered"
+
+- name: Verify Calico runtime manifest excludes CRDs
+  ansible.builtin.shell: |
+    set -o pipefail
+    if grep -Eq '^kind:[[:space:]]*CustomResourceDefinition[[:space:]]*$' "{{ cni_calico_runtime_manifest_path }}"; then
+      echo "CRD unexpectedly present in runtime manifest" >&2
+      exit 1
+    fi
+    grep -F 'kind: DaemonSet' "{{ cni_calico_runtime_manifest_path }}"
+    grep -F 'name: calico-node' "{{ cni_calico_runtime_manifest_path }}"
+    grep -F 'name: calico-kube-controllers' "{{ cni_calico_runtime_manifest_path }}"
+  args:
+    executable: /bin/bash
+  changed_when: false
+
+- name: Validate rendered Calico runtime manifest before apply
+  ansible.builtin.command:
+    cmd: >-
+      kubectl --kubeconfig /etc/kubernetes/admin.conf
+      create --dry-run=client --validate=false
+      -f {{ cni_calico_runtime_manifest_path }}
+  changed_when: false
+
+- name: Check whether Calico runtime resources differ from desired state
+  ansible.builtin.command:
+    cmd: >-
+      kubectl --kubeconfig /etc/kubernetes/admin.conf
+      diff -f {{ cni_calico_runtime_manifest_path }}
+  register: cni_calico_manifest_diff
+  changed_when: false
+  failed_when: cni_calico_manifest_diff.rc not in [0, 1]
+
+- name: Apply pinned Calico runtime manifest only when drift exists
+  ansible.builtin.command:
+    cmd: >-
+      kubectl --kubeconfig /etc/kubernetes/admin.conf
+      apply -f {{ cni_calico_runtime_manifest_path }}
+  when: cni_calico_manifest_diff.rc == 1
+  changed_when: true
+
+- name: Wait for calico-node DaemonSet rollout
+  ansible.builtin.command:
+    cmd: >-
+      kubectl --kubeconfig /etc/kubernetes/admin.conf
+      rollout status daemonset/calico-node -n kube-system
+      --timeout={{ cni_calico_rollout_timeout }}
+  changed_when: false
+
+- name: Wait for Calico kube-controllers rollout
+  ansible.builtin.command:
+    cmd: >-
+      kubectl --kubeconfig /etc/kubernetes/admin.conf
+      rollout status deployment/calico-kube-controllers -n kube-system
+      --timeout={{ cni_calico_rollout_timeout }}
+  changed_when: false
+
+- name: Wait for hami-lab node to become Ready
+  ansible.builtin.command:
+    cmd: >-
+      kubectl --kubeconfig /etc/kubernetes/admin.conf
+      wait --for=condition=Ready node/{{ kubeadm_control_plane_node_name }}
+      --timeout={{ cni_calico_rollout_timeout }}
+  changed_when: false
+
+- name: Wait for CoreDNS rollout
+  ansible.builtin.command:
+    cmd: >-
+      kubectl --kubeconfig /etc/kubernetes/admin.conf
+      rollout status deployment/coredns -n kube-system
+      --timeout={{ cni_calico_rollout_timeout }}
+  changed_when: false
+
+- name: Read node object after Calico installation
+  ansible.builtin.command:
+    cmd: kubectl --kubeconfig /etc/kubernetes/admin.conf get node {{ kubeadm_control_plane_node_name }} -o json
+  register: cni_calico_node_json
+  changed_when: false
+
+- name: Extract node Ready condition after Calico installation
+  ansible.builtin.set_fact:
+    cni_calico_ready_condition: >-
+      {{
+        (
+          (cni_calico_node_json.stdout | from_json).status.conditions
+          | selectattr('type', 'equalto', 'Ready')
+          | map(attribute='status')
+          | first
+        )
+      }}
+
+- name: Validate node is Ready after Calico installation
+  ansible.builtin.assert:
+    that:
+      - cni_calico_ready_condition == "True"
+    fail_msg: Node did not become Ready after Calico installation.
+
+- name: Find installed CNI network definitions
+  ansible.builtin.shell: |
+    set -o pipefail
+    find /etc/cni/net.d -maxdepth 1 -type f \
+      \( -name '*.conf' -o -name '*.conflist' -o -name '*.json' \) \
+      -print | sort
+  args:
+    executable: /bin/bash
+  register: cni_calico_installed_configs
+  changed_when: false
+
+- name: Validate Calico CNI configuration exists
+  ansible.builtin.assert:
+    that:
+      - "'calico' in (cni_calico_installed_configs.stdout | lower)"
+    fail_msg: Node is Ready but expected Calico CNI config was not found.
+
+- name: Recheck containerd remains active after CNI installation
+  ansible.builtin.command: systemctl is-active containerd
+  register: cni_calico_containerd_state
+  changed_when: false
+  failed_when: cni_calico_containerd_state.stdout != "active"
+
+- name: Recheck NVIDIA driver remains visible after CNI installation
+  ansible.builtin.command: nvidia-smi --query-gpu=driver_version,name,memory.total --format=csv,noheader
+  register: cni_calico_nvidia_state
+  changed_when: false
+
+- name: Validate protected GPU baseline after CNI installation
+  ansible.builtin.assert:
+    that:
+      - hami_lab_expected_nvidia_driver_version in cni_calico_nvidia_state.stdout
+      - "hami_lab_expected_gpu_name in cni_calico_nvidia_state.stdout"

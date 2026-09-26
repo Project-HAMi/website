@@ -1,0 +1,53 @@
+---
+# Validate the existing guest runtime before installing Kubernetes.
+hami_lab_expected_containerd_version: "2.2.1"
+hami_lab_expected_runc_version: "1.3.4"
+hami_lab_expected_nvidia_toolkit_version: "1.20.0"
+hami_lab_expected_nvidia_driver_version: "595.84"
+hami_lab_expected_gpu_name: "NVIDIA GeForce RTX 3050"
+lab_guest_home: "{{ ansible_facts['getent_passwd'][ansible_user][4] }}"
+lab_guest_group: "{{ ansible_facts['getent_passwd'][ansible_user][2] }}"
+
+hami_lab_containerd_config: /etc/containerd/config.toml
+hami_lab_nvidia_containerd_config: /etc/containerd/conf.d/99-nvidia.toml
+hami_lab_nvidia_runtime_binary: /usr/bin/nvidia-container-runtime
+
+k8s_prereqs_modules:
+  - overlay
+  - br_netfilter
+
+k8s_prereqs_sysctls:
+  net.bridge.bridge-nf-call-iptables: "1"
+  net.bridge.bridge-nf-call-ip6tables: "1"
+  net.ipv4.ip_forward: "1"
+
+k8s_packages_minor: "1.36"
+k8s_packages_version: "1.36.4-1.1"
+k8s_packages_repo_url: "https://pkgs.k8s.io/core:/stable:/v{{ k8s_packages_minor }}/deb/"
+k8s_packages_key_url: "{{ k8s_packages_repo_url }}Release.key"
+k8s_packages_keyring_asc: /etc/apt/keyrings/kubernetes-apt-keyring.asc
+k8s_packages_keyring_gpg: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+k8s_packages_source_file: /etc/apt/sources.list.d/kubernetes.list
+k8s_packages_names:
+  - kubelet
+  - kubeadm
+  - kubectl
+
+kubeadm_control_plane_config_path: /etc/kubernetes/kubeadm-hami-lab.yaml
+kubeadm_control_plane_node_name: hami-lab
+kubeadm_control_plane_cluster_name: hami-lab
+kubeadm_control_plane_advertise_address: "{{ ansible_host }}"
+kubeadm_control_plane_cri_socket: "unix:///run/containerd/containerd.sock"
+kubeadm_control_plane_kubernetes_version: "v1.36.4"
+kubeadm_control_plane_dns_domain: cluster.local
+kubeadm_control_plane_service_subnet: "10.96.0.0/12"
+
+# Calico VXLAN networking
+cni_calico_version: "v3.32.2"
+cni_calico_crd_manifest_url: "https://raw.githubusercontent.com/projectcalico/calico/{{ cni_calico_version }}/manifests/v1_crd_projectcalico_org.yaml"
+cni_calico_manifest_url: "https://raw.githubusercontent.com/projectcalico/calico/{{ cni_calico_version }}/manifests/calico.yaml"
+cni_calico_source_manifest_path: /etc/kubernetes/calico-v3.32.2-upstream.yaml
+cni_calico_manifest_path: /etc/kubernetes/calico-v3.32.2.yaml
+cni_calico_runtime_manifest_path: /etc/kubernetes/calico-v3.32.2-runtime.yaml
+cni_calico_pod_cidr: "10.244.0.0/16"
+cni_calico_rollout_timeout: 300s
