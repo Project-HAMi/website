@@ -198,36 +198,85 @@ Gate before continuing: the CPU-only VM must boot, accept SSH, reboot, and shut 
 
 ## Phase 3: Add the Disposable Rollback Layer
 
-The tested rollback model used a base qcow2 and a disposable active overlay:
+The tested rollback model keeps the installed guest qcow2 as the backing base and boots the domain from a separate disposable overlay:
 
 ```plaintext
-hami-lab-ubuntu-base.qcow2
+hami-lab-ubuntu-base.qcow2  (installed guest disk, preserved)
         |
         v
-hami-lab.qcow2
+hami-lab.qcow2              (disposable active overlay)
 ```
 
-Create the active overlay while the VM is shut off. Adapt only the paths to your libvirt storage location:
+First identify the shut-off domain's disk target and choose distinct paths for the preserved base and the active overlay. Adapt only the paths to your libvirt storage location:
+
+```bash
+VM=hami-lab
+DISK_TARGET=vda
+INSTALLED_BASE=/var/lib/libvirt/images/hami-lab-ubuntu-base.qcow2
+ACTIVE_OVERLAY=/var/lib/libvirt/images/hami-lab.qcow2
+DOMAIN_XML_BACKUP="$HOME/hami-lab-before-overlay.xml"
+
+test "$(virsh -c qemu:///system domstate "$VM")" = "shut off"
+virsh -c qemu:///system domblklist --details "$VM"
+test "$INSTALLED_BASE" != "$ACTIVE_OVERLAY"
+test -f "$INSTALLED_BASE"
+test ! -e "$ACTIVE_OVERLAY"
+```
+
+Create the overlay while the VM is shut off. The `test` commands above are intentional: they stop the procedure if the overlay path is the same as the backing image or already exists.
 
 ```bash
 qemu-img create -f qcow2 \
   -F qcow2 \
-  -b <base-image>.qcow2 \
-  <active-overlay>.qcow2
+  -b "$INSTALLED_BASE" \
+  "$ACTIVE_OVERLAY"
 
-qemu-img info <active-overlay>.qcow2
+qemu-img info --backing-chain "$ACTIVE_OVERLAY"
 ```
 
-Run a write/discard test before using the VM for GPU work:
+Point the persistent libvirt domain at the overlay before starting it. Back up the domain XML first, then replace the shut-off domain's disk source and verify the new persistent source:
+
+```bash
+virsh -c qemu:///system dumpxml "$VM" >"$DOMAIN_XML_BACKUP"
+virsh -c qemu:///system detach-disk "$VM" "$DISK_TARGET" --config
+virsh -c qemu:///system attach-disk "$VM" "$ACTIVE_OVERLAY" "$DISK_TARGET" \
+  --config \
+  --type disk \
+  --driver qemu \
+  --subdriver qcow2 \
+  --targetbus virtio
+
+virsh -c qemu:///system domblklist --details "$VM"
+virsh -c qemu:///system dumpxml "$VM" | grep -F "$ACTIVE_OVERLAY"
+virsh -c qemu:///system start "$VM"
+```
+
+After SSH is available again, run a write/discard test before using the VM for GPU work:
 
 ```bash
 ssh <guest-user>@<guest-ip> \
   'sudo touch /root/phase2-rollback-test.txt; touch ~/phase2-marker.txt'
 
-virsh -c qemu:///system shutdown hami-lab
+virsh -c qemu:///system shutdown "$VM"
+for _ in $(seq 1 60); do
+  test "$(virsh -c qemu:///system domstate "$VM")" = "shut off" && break
+  sleep 2
+done
+test "$(virsh -c qemu:///system domstate "$VM")" = "shut off"
 ```
 
-Then delete only the active overlay, recreate it from the same base image, boot the VM again, and check that the marker files are gone.
+Then delete only the active overlay, recreate it from the same base image, boot the VM again, and check that the marker files are gone. The persistent domain already points to `"$ACTIVE_OVERLAY"`, so recreating the overlay at the same path is enough:
+
+```bash
+test "$ACTIVE_OVERLAY" != "$INSTALLED_BASE"
+rm -f -- "$ACTIVE_OVERLAY"
+qemu-img create -f qcow2 \
+  -F qcow2 \
+  -b "$INSTALLED_BASE" \
+  "$ACTIVE_OVERLAY"
+
+virsh -c qemu:///system start "$VM"
+```
 
 Captured output:
 
