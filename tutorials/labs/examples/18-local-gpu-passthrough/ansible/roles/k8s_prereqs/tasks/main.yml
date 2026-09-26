@@ -1,0 +1,149 @@
+---
+- name: Ensure this role runs only on Ubuntu 24.04 hami-lab guest
+  ansible.builtin.assert:
+    that:
+      - ansible_facts['distribution'] == "Ubuntu"
+      - ansible_facts['distribution_version'] is version('24.04', '>=')
+      - ansible_facts['hostname'] == "hami-lab"
+      - ansible_facts['virtualization_role'] == "guest"
+    fail_msg: >-
+      Refusing to apply Kubernetes guest prerequisites outside the isolated
+      Ubuntu hami-lab VM.
+
+- name: Read containerd version
+  ansible.builtin.command: containerd --version
+  register: containerd_version
+  changed_when: false
+
+- name: Read runc version
+  ansible.builtin.command: runc --version
+  register: runc_version
+  changed_when: false
+
+- name: Read NVIDIA runtime version
+  ansible.builtin.command: "{{ hami_lab_nvidia_runtime_binary }} --version"
+  register: nvidia_runtime_version
+  changed_when: false
+
+- name: Read NVIDIA driver state
+  ansible.builtin.command: nvidia-smi --query-gpu=driver_version,name,memory.total --format=csv,noheader
+  register: nvidia_smi_state
+  changed_when: false
+
+- name: Validate protected containerd and NVIDIA runtime baseline
+  ansible.builtin.assert:
+    that:
+      - hami_lab_expected_containerd_version in containerd_version.stdout
+      - hami_lab_expected_runc_version in runc_version.stdout
+      - hami_lab_expected_nvidia_toolkit_version in nvidia_runtime_version.stdout
+      - hami_lab_expected_nvidia_driver_version in nvidia_smi_state.stdout
+      - "hami_lab_expected_gpu_name in nvidia_smi_state.stdout"
+    fail_msg: >-
+      Validated container runtime baseline drifted. Stop and inspect before
+      applying Kubernetes prerequisites.
+
+- name: Check explicit containerd configuration exists
+  ansible.builtin.stat:
+    path: "{{ hami_lab_containerd_config }}"
+  register: containerd_config
+
+- name: Check NVIDIA containerd runtime fragment exists
+  ansible.builtin.stat:
+    path: "{{ hami_lab_nvidia_containerd_config }}"
+  register: nvidia_containerd_config
+
+- name: Read containerd configuration
+  ansible.builtin.slurp:
+    src: "{{ hami_lab_containerd_config }}"
+  register: containerd_config_content
+  when: containerd_config.stat.exists
+
+- name: Read NVIDIA containerd runtime fragment
+  ansible.builtin.slurp:
+    src: "{{ hami_lab_nvidia_containerd_config }}"
+  register: nvidia_containerd_config_content
+  when: nvidia_containerd_config.stat.exists
+
+- name: Validate protected containerd configuration files
+  ansible.builtin.assert:
+    that:
+      - containerd_config.stat.exists
+      - nvidia_containerd_config.stat.exists
+      - "'SystemdCgroup = true' in (containerd_config_content.content | b64decode)"
+      - '''BinaryName = "/usr/bin/nvidia-container-runtime"'' in (nvidia_containerd_config_content.content | b64decode)'
+    fail_msg: >-
+      containerd/NVIDIA runtime configuration is not in the validated container
+      shape. Do not regenerate it blindly; inspect the guest state first.
+
+- name: Disable swap for current boot
+  ansible.builtin.command: swapoff -a
+  when: ansible_facts['swaptotal_mb'] | int > 0
+  changed_when: true
+
+- name: Persistently disable swap entries in fstab
+  ansible.builtin.replace:
+    path: /etc/fstab
+    regexp: '^(?!#)(\S+\s+\S+\s+swap\s+.*)$'
+    replace: '# \1'
+    backup: true
+
+- name: Persist Kubernetes kernel modules
+  ansible.builtin.copy:
+    dest: /etc/modules-load.d/k8s.conf
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      {% for module in k8s_prereqs_modules %}
+      {{ module }}
+      {% endfor %}
+
+- name: Load Kubernetes kernel modules now
+  community.general.modprobe:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ k8s_prereqs_modules }}"
+
+- name: Persist and apply Kubernetes sysctls
+  ansible.posix.sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    state: present
+    sysctl_set: true
+    sysctl_file: /etc/sysctl.d/99-kubernetes-cri.conf
+    reload: true
+  loop: "{{ k8s_prereqs_sysctls | dict2items }}"
+
+- name: Recheck swap state
+  ansible.builtin.command: swapon --show --noheadings
+  register: swap_state
+  changed_when: false
+  failed_when: swap_state.stdout | length > 0
+
+- name: Recheck required kernel modules
+  ansible.builtin.command: "lsmod"
+  register: lsmod_state
+  changed_when: false
+
+- name: Recheck sysctl values
+  ansible.builtin.command: "sysctl -n {{ item.key }}"
+  loop: "{{ k8s_prereqs_sysctls | dict2items }}"
+  register: sysctl_state
+  changed_when: false
+  failed_when: sysctl_state.stdout != item.value
+
+- name: Recheck containerd remains active
+  ansible.builtin.command: systemctl is-active containerd
+  register: containerd_service_state
+  changed_when: false
+  failed_when: containerd_service_state.stdout != "active"
+
+- name: Validate loaded modules and containerd health
+  ansible.builtin.assert:
+    that:
+      - "'overlay' in lsmod_state.stdout"
+      - "'br_netfilter' in lsmod_state.stdout"
+      - containerd_service_state.stdout == "active"
+    fail_msg: >-
+      Kubernetes prerequisites did not settle cleanly, or containerd health
+      changed unexpectedly.

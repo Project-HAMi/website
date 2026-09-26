@@ -1,0 +1,10 @@
+devicePlugin:
+  runtimeClassName: nvidia
+  createRuntimeClass: false
+  nvidiaDriverRoot: /
+  nvidiaNodeSelector:
+    gpu: "on"
+scheduler:
+  kubeScheduler:
+    image:
+      tag: v1.36.4
