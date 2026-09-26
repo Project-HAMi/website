@@ -171,7 +171,7 @@
     old = '''            # - name: CALICO_IPV4POOL_CIDR
                 #   value: "192.168.0.0/16"'''
     new = '''            - name: CALICO_IPV4POOL_CIDR
-                  value: "{{ cni_calico_pod_cidr }}"'''
+              value: "{{ cni_calico_pod_cidr }}"'''
 
     if new in text:
         print("already configured")
