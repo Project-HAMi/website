@@ -19,6 +19,9 @@
 "gpu-sharing":
   label: "GPU 共享"
   permalink: "/gpu-sharing"
+"gpu-passthrough":
+  label: "GPU 直通"
+  permalink: "/gpu-passthrough"
 "hami":
   label: "hami"
   permalink: "/hami"
@@ -73,13 +76,19 @@
 "volcano":
   label: "volcano"
   permalink: "/volcano"
+"cuda":
+  label: "CUDA"
+  permalink: "/cuda"
+"fractional-gpu":
+  label: "分数 GPU"
+  permalink: "/fractional-gpu"
 "安装":
   label: "安装"
   permalink: "/installation"
 "实验性":
   label: "实验性"
   permalink: "/experimental"
-"本地安装":
+"local-setup":
   label: "本地安装"
   permalink: "/local-setup"
 "模拟":
