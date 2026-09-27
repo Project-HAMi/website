@@ -20,9 +20,9 @@
   register: runc_version
   changed_when: false
 
-- name: Read NVIDIA runtime version
-  ansible.builtin.command: "{{ hami_lab_nvidia_runtime_binary }} --version"
-  register: nvidia_runtime_version
+- name: Read NVIDIA Container Toolkit version
+  ansible.builtin.command: nvidia-ctk --version
+  register: nvidia_toolkit_version
   changed_when: false
 
 - name: Read NVIDIA driver state
@@ -35,7 +35,7 @@
     that:
       - hami_lab_expected_containerd_version in containerd_version.stdout
       - hami_lab_expected_runc_version in runc_version.stdout
-      - hami_lab_expected_nvidia_toolkit_version in nvidia_runtime_version.stdout
+      - hami_lab_expected_nvidia_toolkit_version in nvidia_toolkit_version.stdout
       - hami_lab_expected_nvidia_driver_version in nvidia_smi_state.stdout
       - "hami_lab_expected_gpu_name in nvidia_smi_state.stdout"
     fail_msg: >-
