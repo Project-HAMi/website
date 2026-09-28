@@ -29,7 +29,8 @@ nvidia-smi | grep "Driver Version"
 
 ```bash
 # 备份当前 values
-helm get values hami -n kube-system > hami-backup-values.yaml
+helm get values hami -n kube-system -o yaml > hami-backup-values.yaml
+cp hami-backup-values.yaml current-values.yaml
 
 # 备份 ConfigMap
 kubectl get configmap hami-scheduler-device -n kube-system -o yaml > hami-configmap-backup.yaml
@@ -37,6 +38,14 @@ kubectl get configmap hami-scheduler-device -n kube-system -o yaml > hami-config
 # 备份当前状态
 kubectl get all -n kube-system -l app.kubernetes.io/instance=hami -o yaml > hami-state-backup.yaml
 ```
+
+如果使用节点配置，也应备份对应的 ConfigMap。使用外部 ConfigMap 时，将 `hami-device-plugin` 替换为实际名称：
+
+```bash
+kubectl get configmap hami-device-plugin -n kube-system -o yaml > node-config-backup.yaml
+```
+
+Helm 升级可能覆盖手工修改过的、由 Chart 管理的 ConfigMap。只将需要保留的设置转入 `current-values.yaml` 或自行管理的节点 ConfigMap。恢复整个旧 ConfigMap 可能覆盖新 Chart 的默认值。当前字段名称见[配置参数](../userguide/configure.md)。
 
 ### 3. 清理运行中的工作负载
 
@@ -72,6 +81,47 @@ kubectl logs -n kube-system -l app.kubernetes.io/component=hami-scheduler --tail
 kubectl logs -n kube-system -l app.kubernetes.io/component=hami-device-plugin --tail=50
 ```
 
+## 迁移设备 values {#device-values-migration}
+
+如果保存的 values 包含顶层设备字段或下表中 `devicePlugin` 下的 NVIDIA 字段，升级前在 `current-values.yaml` 中将其移到当前路径。移动字段值后，删除旧字段。Chart 会拒绝旧字段，即使字段值为 `0`、`false` 或空值。
+
+| 旧 Helm 字段                             | 当前 Helm 字段                                |
+| ---------------------------------------- | --------------------------------------------- |
+| `resourceName`                           | `devices.nvidia.resourceCountName`            |
+| `resourceMem`                            | `devices.nvidia.resourceMemoryName`           |
+| `resourceMemPercentage`                  | `devices.nvidia.resourceMemoryPercentageName` |
+| `resourceCores`                          | `devices.nvidia.resourceCoreName`             |
+| `resourcePriority`                       | `devices.nvidia.resourcePriorityName`         |
+| `mluResourceName`                        | `devices.cambricon.resourceCountName`         |
+| `mluResourceMem`                         | `devices.cambricon.resourceMemoryName`        |
+| `mluResourceCores`                       | `devices.cambricon.resourceCoreName`          |
+| `hcuResourceName`                        | `devices.hygon.resourceCountName`             |
+| `hcuResourceMem`                         | `devices.hygon.resourceMemoryName`            |
+| `hcuResourceCores`                       | `devices.hygon.resourceCoreName`              |
+| `metaxResourceName`                      | `devices.metax.resourceVCountName`            |
+| `metaxResourceCore`                      | `devices.metax.resourceVCoreName`             |
+| `metaxResourceMem`                       | `devices.metax.resourceVMemoryName`           |
+| `metaxsGPUTopologyAware`                 | `devices.metax.sgpuTopologyAware`             |
+| `enflameResourceNameDRSGCU`              | `devices.enflame.resourceNameDRSGCU`          |
+| `enflameResourceNameGCUMemory`           | `devices.enflame.resourceNameGCUMemory`       |
+| `enflameResourceNameGCUCore`             | `devices.enflame.resourceNameGCUCore`         |
+| `kunlunResourceName`                     | `devices.kunlun.resourceCountName`            |
+| `kunlunResourceVCountName`               | `devices.kunlun.resourceVCountName`           |
+| `kunlunResourceVMemoryName`              | `devices.kunlun.resourceVMemoryName`          |
+| `vastaiResourceName`                     | `devices.vastai.resourceCountName`            |
+| `birenResourceName`                      | `devices.biren.resourceCountName`             |
+| `devicePlugin.deviceSplitCount`          | `devices.nvidia.deviceSplitCount`             |
+| `devicePlugin.deviceMemoryScaling`       | `devices.nvidia.deviceMemoryScaling`          |
+| `devicePlugin.deviceCoreScaling`         | `devices.nvidia.deviceCoreScaling`            |
+| `devicePlugin.preConfiguredDeviceMemory` | `devices.nvidia.preConfiguredDeviceMemory`    |
+| `devicePlugin.enableNumaTopology`        | `devices.nvidia.enableNumaTopology`           |
+| `devicePlugin.runtimeClassName`          | `devices.nvidia.runtimeClassName`             |
+| `devicePlugin.createRuntimeClass`        | `devices.nvidia.createRuntimeClass`           |
+
+其他设置，包括 `scheduler.overwriteEnv`、`devicePlugin.enabled`、镜像、`devicePlugin.deviceListStrategy`、`devicePlugin.migStrategy`、`devicePlugin.disablecorelimit` 和 `devicePlugin.nodeConfiguration`，保留原路径。
+
+在 `current-values.yaml` 中保留安装环境所需的全部自定义设置。下方升级命令使用 `--reset-values`，会丢弃 release 之前保存的 values，使用新 Chart 默认值和文件中的设置。迁移旧字段时，避免使用 `--reuse-values` 和 `--reset-then-reuse-values`，它们可能再次向新 Chart 传入旧字段。
+
 ## 升级流程
 
 ### 标准升级（推荐）
@@ -85,16 +135,13 @@ helm repo update hami-charts
 # 查看可用版本
 helm search repo hami-charts/hami --versions
 
-# 获取当前配置（保留自定义配置）
-helm get values hami -n kube-system > current-values.yaml
-
-# 执行升级
-helm upgrade hami hami-charts/hami -n kube-system -f current-values.yaml
+# 使用前面准备的 values 文件
+helm upgrade hami hami-charts/hami -n kube-system --reset-values -f current-values.yaml
 ```
 
 ### 原地升级（使用现有安装）
 
-如果没有自定义 values 文件，可以直接升级：
+如果 release 没有需要保留的自定义 values 或手工 ConfigMap 改动，可以直接升级。否则，使用前面准备的 values 文件：
 
 ```bash
 helm repo update hami-charts
@@ -115,6 +162,41 @@ helm repo update
 # 安装新版本
 helm install hami hami-charts/hami -n kube-system
 ```
+
+## ConfigMap 变更 {#configmap-changes}
+
+通过 Helm 修改设备配置，会触发 scheduler 和 Chart 管理的 NVIDIA 设备插件滚动更新。独立部署的设备插件按照各自的更新和重启流程处理。
+
+仅修改 `devicePlugin.nodeConfiguration.config` 或外部节点 ConfigMap 的内容，不会触发设备插件滚动更新。重启 NVIDIA 设备插件以加载改动：
+
+```bash
+kubectl rollout restart daemonset/hami-device-plugin -n kube-system
+kubectl rollout status daemonset/hami-device-plugin -n kube-system
+```
+
+手工编辑由 Helm 管理的 ConfigMap 只适合临时修改。编辑前先备份。设备配置的操作如下：
+
+```bash
+kubectl get configmap hami-scheduler-device -n kube-system -o yaml > device-config-backup.yaml
+kubectl edit configmap hami-scheduler-device -n kube-system
+```
+
+编辑后，重启 scheduler 和读取已修改设置的设备插件。以下命令适用于 Chart 管理的 NVIDIA 组件：
+
+```bash
+kubectl rollout restart deployment/hami-scheduler -n kube-system
+kubectl rollout restart daemonset/hami-device-plugin -n kube-system
+```
+
+修改节点配置时，备份并编辑节点 ConfigMap，然后重启 NVIDIA 设备插件：
+
+```bash
+kubectl get configmap hami-device-plugin -n kube-system -o yaml > node-config-backup.yaml
+kubectl edit configmap hami-device-plugin -n kube-system
+kubectl rollout restart daemonset/hami-device-plugin -n kube-system
+```
+
+使用外部节点 ConfigMap 时，替换为实际名称。手工编辑不会更新 Helm values。下次升级前，将需要保留的设置写入 values 文件或自行管理的节点 ConfigMap。
 
 ## 升级后验证
 
