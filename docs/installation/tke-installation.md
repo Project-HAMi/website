@@ -104,7 +104,7 @@ Follow [Online Installation from Helm](./online-installation.md) and add the val
 helm install hami hami-charts/hami -n kube-system -f hami-tke-values.yaml
 ```
 
-After `hami-device-plugin` and `hami-scheduler` are running, confirm that HAMi registered the GPU. With the default `devicePlugin.deviceSplitCount` of 10, a single T4 is reported as 10 `nvidia.com/gpu` resources:
+After `hami-device-plugin` and `hami-scheduler` are running, confirm that HAMi registered the GPU. With the default `devices.nvidia.deviceSplitCount` of 10, a single T4 is reported as 10 `nvidia.com/gpu` resources:
 
 ```bash
 kubectl get node <node-name> -o jsonpath='{.status.allocatable.nvidia\.com/gpu}{"\n"}'
