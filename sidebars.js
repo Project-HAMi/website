@@ -117,6 +117,7 @@ module.exports = {
       },
       items: [
         "userguide/configure",
+        "userguide/interactive-manifest-generator",
         {
           type: "category",
           label: "Monitoring",
