@@ -157,7 +157,7 @@ GPU2 Score: ((20+70)/100 + (1000+6000)/8000)) * 10 = 17.75
 
 #### Spread
 
-Spread 优先选择设备利用率得分较低的卡。使用相同的默认权重示例：
+Spread 优先选择设备利用率得分较低的卡。使用相同的示例：
 
 ```text
 score: ((request.core + used.core) / allocatable.core + (request.mem + used.mem) / allocatable.mem)) * 10
