@@ -107,6 +107,12 @@ devices:
 
 HAMi 按每卡显存容量来建模摩尔线程显卡。默认值 96 个单位对应 MTT S4000（48 GiB）。MTT S5000 显存为 80 GiB，因此需将 `memoryPerCard` 设置为 `[160]`。若不设置，独占分配只能获得 48 GiB，较大的切片（例如 128 个单位）会被拒绝。该参数为集群级配置；S4000 与 S5000 混布的集群需要按卡型号划分独立节点池。
 
+:::note
+
+`devices.mthreads.memoryPerCard` 需要包含 mthreads 单卡显存特性的 HAMi 版本（该特性于 v2.10.0 之后随 [Project-HAMi/HAMi#2988](https://github.com/Project-HAMi/HAMi/pull/2988) 合入）。在 v2.10.0 及更早版本上该值会被静默忽略：所有摩尔线程卡均按 96 个单位建模，大于 96 的切片值会被拒绝。
+
+:::
+
 安装 HAMi：
 
 ```bash
