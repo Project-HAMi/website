@@ -35,7 +35,7 @@ Device settings are grouped under `devices.<vendor>`. The chart generates `devic
 | `devices.nvidia.resourcePriorityName` | string | `"nvidia.com/priority"` | Kubernetes extended-resource name for NVIDIA allocation priority. |
 | `devices.nvidia.runtimeClassName` | string | `""` | RuntimeClass used by the NVIDIA device-plugin Pod and injected into NVIDIA workload Pods. |
 
-For example, set NVIDIA sharing limits and default requests, together with the MThreads memory model list:
+For example, set NVIDIA sharing limits and default requests:
 
 ```yaml
 devices:
@@ -43,8 +43,6 @@ devices:
     deviceSplitCount: 20
     defaultMemory: 4096
     defaultCores: 50
-  mthreads:
-    memoryPerCard: [96, 160]
 ```
 
 `deviceCoreScaling` and `deviceMemoryScaling` accept fractional values. `defaultMemory` is in MiB and `defaultCores` is a percentage.
@@ -107,6 +105,14 @@ devices:
 | `devices.mthreads.resourceCoreName` | string | `"mthreads.com/sgpu-core"` | Kubernetes extended-resource name for device cores. |
 | `devices.mthreads.resourceCountName` | string | `"mthreads.com/vgpu"` | Kubernetes extended-resource name for device count. |
 | `devices.mthreads.resourceMemoryName` | string | `"mthreads.com/sgpu-memory"` | Kubernetes extended-resource name for device memory. |
+
+For MThreads cards with 48 GiB and 80 GiB of memory, list both memory sizes in units of 512 MiB:
+
+```yaml
+devices:
+  mthreads:
+    memoryPerCard: [96, 160]
+```
 
 ### Kunlunxin
 
