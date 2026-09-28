@@ -106,6 +106,12 @@ devices:
 
 HAMi models each Mthreads card with a per-card memory capacity. The default of 96 units matches the MTT S4000 (48 GiB). The MTT S5000 has 80 GiB, so set `memoryPerCard` to `[160]`. Without this, exclusive allocations only get 48 GiB and larger slices (for example 128 units) are rejected. This parameter is cluster-level; clusters mixing S4000 and S5000 need separate node pools per card model.
 
+:::note
+
+`devices.mthreads.memoryPerCard` requires a HAMi release that includes the mthreads per-card memory feature ([Project-HAMi/HAMi#2988](https://github.com/Project-HAMi/HAMi/pull/2988), merged after v2.10.0). On v2.10.0 and earlier the value is silently ignored: every Mthreads card is modeled as 96 units, and slice values above 96 are rejected.
+
+:::
+
 Install HAMi:
 
 ```bash

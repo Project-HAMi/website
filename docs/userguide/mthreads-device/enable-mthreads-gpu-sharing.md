@@ -31,7 +31,7 @@ Both card models expose 16 core groups per card. Device memory is requested in 5
 | MTT S4000  | 48 GiB        | 96                        | 2, 4, 8, 16, 32, 64, 96       |
 | MTT S5000  | 80 GiB        | 160                       | 2, 4, 8, 16, 32, 64, 128, 160 |
 
-Requests with values outside the valid list are rejected by the admission webhook. The per-card capacity is controlled by the cluster-level `devices.mthreads.memoryPerCard` chart value, so clusters mixing both card models need separate node pools per model.
+Requests with values outside the valid list are rejected by the admission webhook. The per-card capacity is controlled by the cluster-level `devices.mthreads.memoryPerCard` chart value, so clusters mixing both card models need separate node pools per model. Values above 96 per card additionally require a HAMi release with the `memoryPerCard` feature, see [Use HAMi with Mthreads MTT S5000](../../installation/how-to-use-mthreads-s5000.md).
 
 ## Prerequisites
 
