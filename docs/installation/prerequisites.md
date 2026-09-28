@@ -156,8 +156,10 @@ If the file is missing, inspect the Toolkit and validator Pods on that node and 
 When GPU Operator manages both the driver and Toolkit, save the following HAMi values as `hami-nvidia-values.yaml`:
 
 ```yaml
+devices:
+  nvidia:
+    runtimeClassName: nvidia
 devicePlugin:
-  runtimeClassName: nvidia
   deviceListStrategy: envvar
   nvidiaDriverRoot: /run/nvidia/driver
   gpuOperatorToolkitReady:
@@ -166,7 +168,7 @@ devicePlugin:
 
 - If the host manages the driver, set `devicePlugin.nvidiaDriverRoot` to `/`. The path must match the actual node layout.
 - If the host manages Toolkit, set `devicePlugin.gpuOperatorToolkitReady.enabled=false`. Enabling this option makes HAMi wait for the Operator's Toolkit readiness marker.
-- If the RuntimeClass has a different name, set `devicePlugin.runtimeClassName` to that name. For host-managed runtimes that already use NVIDIA as the default, this value can be omitted.
+- If the RuntimeClass has a different name, set `devices.nvidia.runtimeClassName` to that name. For host-managed runtimes that already use NVIDIA as the default, this value can be omitted.
 - For CDI, use the values in the [NVIDIA CDI guide](./configure-cdi.md), including the driver root and the actual `nvidia-ctk` hook path.
 
 ### Label NVIDIA GPU nodes {#label-your-nodes}

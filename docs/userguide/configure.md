@@ -3,74 +3,172 @@ title: Global Config
 sidebar_label: Configuration
 ---
 
+Use Helm values to configure device sharing, scheduling policies, and node settings. Save your settings in `my-values.yaml` and pass this file to Helm when installing or upgrading HAMi.
+
+The examples use release `hami` in namespace `kube-system`. Replace these names with those used by your installation. Manual edits to Helm-managed ConfigMaps may be overwritten during an upgrade; use them only for temporary troubleshooting.
+
 ## Device Configs: ConfigMap
 
-:::note
+Set device parameters under `devices.<vendor>` in your values file, such as `devices.nvidia` or `devices.mthreads`. Helm uses these values to generate `device-config.yaml` in the `hami-scheduler-device` ConfigMap.
 
-All the configurations listed below are managed within the hami-scheduler-device ConfigMap.
+### Configure device sharing
 
-:::
+The following example allows up to 20 tasks to share each NVIDIA GPU. It sets the default memory request to 4096 MiB and the default core request to 50% when a workload does not specify them. It also sets the MThreads card memory sizes:
 
-You can update these configurations using one of the following methods:
+```yaml
+devices:
+  nvidia:
+    deviceSplitCount: 20
+    defaultMemory: 4096
+    defaultCores: 50
+  mthreads:
+    memoryPerCard: [96, 160]
+```
 
-1. Directly edit the ConfigMap: If HAMi has already been successfully installed, you can manually update the hami-scheduler-device ConfigMap using the kubectl edit command.
+Apply the file with Helm:
 
-   ```bash
-   kubectl edit configmap hami-scheduler-device -n <namespace>
-   ```
+```bash
+helm upgrade --install hami hami-charts/hami \
+  --namespace kube-system \
+  --values my-values.yaml
+```
 
-   After making changes, restart the related HAMi components to apply the updated configurations.
+Keep all settings needed by your installation in the values files you pass to Helm. Fields you omit use the chart defaults. A list in your values file replaces the entire default list. For example, setting `devices.ascend.configs` replaces the complete Ascend chip list.
 
-2. Modify Helm Chart: Update the corresponding values in the [ConfigMap](https://raw.githubusercontent.com/Project-HAMi/HAMi/refs/heads/master/charts/hami/templates/scheduler/device-configmap.yaml), then reapply the Helm Chart to regenerate the ConfigMap.
+`devices.mthreads.memoryPerCard` is an integer array with default `[96]`. Each entry gives the memory size of a card model in units of 512 MiB: `96` means 48 GiB and `160` means 80 GiB. Use an array even for one model.
 
-   | Argument | Type | Description | Default |
-   | --- | --- | --- | --- |
-   | `nvidia.deviceMemoryScaling` | Float | The ratio for NVIDIA device memory scaling, can be greater than 1 (enables virtual device memory, experimental feature). For an NVIDIA GPU with _M_ memory, if set to _S_, vGPUs split from this GPU will get `S * M` memory in Kubernetes. | `1` |
-   | `nvidia.deviceSplitCount` | Integer | Maximum jobs assigned to a single GPU device. | `10` |
-   | `nvidia.migstrategy` | String | "none" for ignoring MIG features, "mixed" for allocating MIG devices by separate resources. | `"none"` |
-   | `nvidia.disablecorelimit` | String | "true" to disable core limit, "false" to enable core limit. | `"false"` |
-   | `nvidia.defaultMemory` | Integer | The default device memory of the current job, in MB. '0' means using 100% of the device memory. | `0` |
-   | `nvidia.defaultCores` | Integer | Percentage of GPU cores reserved for the current job. `0` allows any GPU with enough memory; `100` reserves the entire GPU exclusively. | `0` |
-   | `nvidia.defaultGPUNum` | Integer | Default number of GPUs. If set to `0`, it will be filtered out. If `nvidia.com/gpu` is not set in the pod resource, the webhook checks `nvidia.com/gpumem`, `resource-mem-percentage`, and `nvidia.com/gpucores`, adding `nvidia.com/gpu` with this default value if any of them are set. | `1` |
-   | `nvidia.memoryFactor` | Integer | During resource requests, the actual value of `nvidia.com/gpumem` will be multiplied by this factor. If `mock-device-plugin` is deployed, the actual value `nvidia.com/gpumem` in `node.status.capacity` will also be amplified by the corresponding multiple. | `1` |
-   | `nvidia.resourceCountName` | String | vGPU number resource name. | `"nvidia.com/gpu"` |
-   | `nvidia.resourceMemoryName` | String | vGPU memory size resource name. | `"nvidia.com/gpumem"` |
-   | `nvidia.resourceMemoryPercentageName` | String | vGPU memory fraction resource name. | `"nvidia.com/gpumem-percentage"` |
-   | `nvidia.resourceCoreName` | String | vGPU core resource name. | `"nvidia.com/gpucores"` |
-   | `nvidia.resourcePriorityName` | String | vGPU job priority name. | `"nvidia.com/priority"` |
+### Set the MIG profile allowlist
+
+Add the following settings to the existing `devices.nvidia` section in `my-values.yaml`:
+
+```yaml
+devices:
+  nvidia:
+    migProfileAllowlist:
+      - models: ["A100-SXM4-80GB"]
+        profiles: ["1g.10gb", "2g.20gb"]
+```
+
+This replaces the entire allowlist. Include entries for any other GPU models you need to support. When combining examples, keep one `devices` key and one `nvidia` key in the file.
+
+See the [chart parameter reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md) for available fields and defaults. You can also export the chart's default values:
+
+```bash
+helm show values hami-charts/hami > chart-defaults.yaml
+```
+
+If a vendor uses `devices.<vendor>.customresources`, keep this list consistent with the resource names in its device settings and chip definitions.
+
+### Use a complete device configuration file
+
+To supply your own `device-config.yaml`, set `device-config.content` to the complete file content. This replaces the whole file, including all vendor sections; it does not merge with `devices.*`. Use `devices.<vendor>` to change individual settings.
+
+The chart chooses the file in this order:
+
+1. Non-empty `device-config.content`.
+2. `files/device-config.yaml`, if bundled in the chart.
+3. The file generated from `devices.*` values.
+
+When either of the first two sources is used, changes to `devices.*` do not change the device configuration file. Keep a complete replacement file under version control along with the other installation settings.
+
+When a Helm upgrade changes the device configuration, the scheduler and the chart-managed NVIDIA device plugin roll out automatically. For device plugins deployed separately, follow their own update and restart procedures.
 
 ## Node Configs: ConfigMap
 
-HAMi allows configuring per-node behavior for device plugin. Edit the ConfigMap:
+Use node configuration to override NVIDIA device settings on specific nodes. A matching node entry takes priority over the corresponding global device settings. The `hami-device-plugin` ConfigMap stores this configuration in `config.json`.
 
-```sh
-kubectl -n <namespace> edit cm hami-device-plugin
+You can store the JSON in Helm values or use a ConfigMap that you manage separately. If both are set, `devicePlugin.nodeConfiguration.externalConfigName` takes priority over `devicePlugin.nodeConfiguration.config`. Without either setting, the chart uses its default node configuration.
+
+### Store node configuration in values
+
+Add this to `my-values.yaml`:
+
+```yaml
+devicePlugin:
+  nodeConfiguration:
+    config: |
+      {
+        "nodeconfig": [
+          {
+            "name": "gpu-node-1",
+            "operatingmode": "hami-core",
+            "devicememoryscaling": 1,
+            "devicesplitcount": 20,
+            "filterdevices": {
+              "uuid": [],
+              "index": []
+            }
+          }
+        ]
+      }
 ```
 
-- `name`: Name of the node.
-- `operatingmode`: Operating mode of the node, can be "hami-core" or "mig", default: "hami-core".
-- `devicememoryscaling`: Overcommit ratio of device memory.
-- `devicecorescaling`: Overcommit ratio of device core.
-- `devicesplitcount`: Allowed number of tasks sharing a device.
-- `filterdevices`: Devices that are not registered to HAMi.
-  - `uuid`: UUIDs of devices to ignore
-  - `index`: Indexes of devices to ignore.
-  - A device is ignored by HAMi if it is in the `uuid` or `index` list.
+Replace `gpu-node-1` with the Kubernetes node name. The JSON string replaces the complete `config.json`, so include all node entries you need.
+
+Apply the file with Helm. Changing only the node JSON does not trigger an automatic rollout. Restart the NVIDIA device plugin to load the change:
+
+```bash
+kubectl rollout restart daemonset/hami-device-plugin -n kube-system
+kubectl rollout status daemonset/hami-device-plugin -n kube-system
+```
+
+### Use a separately managed node ConfigMap
+
+Save the complete JSON document as `node-config.json`. Create the ConfigMap in the same namespace as HAMi:
+
+```bash
+kubectl create configmap hami-node-config \
+  --namespace kube-system \
+  --from-file=config.json=node-config.json
+```
+
+Add its name to `my-values.yaml`:
+
+```yaml
+devicePlugin:
+  nodeConfiguration:
+    externalConfigName: hami-node-config
+```
+
+The chart uses this ConfigMap and skips creating its own node ConfigMap. Manage and back it up separately from the Helm release. After changing its content, restart the NVIDIA device plugin with the commands above.
+
+### Node configuration fields
+
+| JSON field            | Meaning                                      |
+| --------------------- | -------------------------------------------- |
+| `name`                | Kubernetes node name.                        |
+| `operatingmode`       | `hami-core` or `mig`.                        |
+| `devicememoryscaling` | Device memory overcommit ratio.              |
+| `devicecorescaling`   | Device core overcommit ratio.                |
+| `devicesplitcount`    | Maximum number of tasks sharing one device.  |
+| `filterdevices.uuid`  | Device UUIDs to exclude from registration.   |
+| `filterdevices.index` | Device indexes to exclude from registration. |
+
+A device is excluded when either its UUID or index matches a filter entry.
 
 ## Chart Configs: arguments
 
-You can customize your vGPU support by setting the following arguments using `--set`, for example
+Set deployment and scheduler options in the same values file. You can also use `--set` to override a field for a Helm command. This example sets the NVIDIA memory overcommit ratio to 5:
 
 ```bash
-helm install hami hami-charts/hami --set devicePlugin.deviceMemoryScaling=5 -n kube-system
+helm upgrade --install hami hami-charts/hami \
+  --namespace kube-system \
+  --values my-values.yaml \
+  --set devices.nvidia.deviceMemoryScaling=5
 ```
+
+Save settings you need to retain in the values file. Common chart options are:
 
 | Argument | Type | Description | Default |
 | --- | --- | --- | --- |
-| `devicePlugin.service.schedulerPort` | Integer | Scheduler webhook service nodePort. | `31998` |
-| `scheduler.defaultSchedulerPolicy.nodeSchedulerPolicy` | String | GPU node scheduling policy: `"binpack"` allocates jobs to the same GPU node as much as possible. `"spread"` allocates jobs to different GPU nodes as much as possible. | `"binpack"` |
-| `scheduler.defaultSchedulerPolicy.gpuSchedulerPolicy` | String | GPU scheduling policy: `"binpack"` allocates jobs to the same GPU as much as possible. `"spread"` allocates jobs to different GPUs as much as possible. `"mutex"` allocates jobs only to GPUs with no other workloads. | `"spread"` |
-| `devicePlugin.deviceListStrategy` | String | Controls how the device plugin advertises allocated GPU devices to the container runtime: `"envvar"` (via `NVIDIA_VISIBLE_DEVICES`), `"volume-mounts"` (via mounted files, avoids env-var override risk in multi-tenant clusters), or `"cdi-annotations"` (via CDI annotations). | `"envvar"` |
+| `scheduler.service.schedulerPort` | Integer | Scheduler webhook service NodePort. | `31998` |
+| `scheduler.defaultSchedulerPolicy.nodeSchedulerPolicy` | String | `binpack` places jobs on the same GPU node where possible; `spread` distributes them across GPU nodes. | `"binpack"` |
+| `scheduler.defaultSchedulerPolicy.gpuSchedulerPolicy` | String | `binpack` packs jobs onto the same GPU; `spread` distributes them; `mutex` selects GPUs without other workloads. | `"spread"` |
+| `devicePlugin.deviceListStrategy` | String | Device advertisement strategy: `envvar`, `volume-mounts`, or `cdi-annotations`. | `"envvar"` |
+| `devicePlugin.migStrategy` | String | NVIDIA device-plugin MIG strategy: `none` or `mixed`. | `"none"` |
+| `devicePlugin.disablecorelimit` | String | Whether to disable the NVIDIA device-plugin core limit. | `"false"` |
+
+`devices.nvidia.runtimeClassName` sets the RuntimeClass for the NVIDIA device-plugin Pod and NVIDIA workload Pods. Set `devices.nvidia.createRuntimeClass` to `true` if the chart should create that RuntimeClass. Ascend uses `devices.ascend.runtimeClassName`; create its RuntimeClass separately.
 
 ## Pod Configs: Annotations
 
@@ -91,3 +189,105 @@ helm install hami hami-charts/hami --set devicePlugin.deviceMemoryScaling=5 -n k
 | --- | --- | --- | --- |
 | `GPU_CORE_UTILIZATION_POLICY` | String | Defines GPU core utilization policy: <ul><li>`"default"`: Default utilization policy.</li><li>`"force"`: Limits core utilization below `"nvidia.com/gpucores"`.</li><li>`"disable"`: Ignores the utilization limitation set by `"nvidia.com/gpucores"` during job execution.</li></ul> | `"default"` |
 | `CUDA_DISABLE_CONTROL` | Boolean | If `"true"`, HAMi-core will not be used inside the container, leading to no resource isolation and limitation (for debugging purposes). | `false` |
+
+## Upgrade an existing installation
+
+A Helm upgrade may overwrite manual edits to the chart-managed ConfigMaps. Before upgrading, back up your values and ConfigMaps, then move the settings you need to keep into your values file.
+
+### Back up the current configuration
+
+Export the release's user-supplied values and device ConfigMap:
+
+```bash
+helm get values hami -n kube-system -o yaml > previous-values.yaml
+kubectl get configmap hami-scheduler-device -n kube-system -o yaml > device-config-backup.yaml
+```
+
+If you use node configuration, back up its ConfigMap too. Replace `hami-device-plugin` with the external ConfigMap name when applicable:
+
+```bash
+kubectl get configmap hami-device-plugin -n kube-system -o yaml > node-config-backup.yaml
+```
+
+### Update the values file
+
+Use the saved values to prepare `my-values.yaml`. Keep the settings required by your installation and move old device fields to their current paths using the table below. Remove each old field after moving its value.
+
+The chart rejects these old fields even when their value is `0`, `false`, or empty:
+
+| Old Helm value                           | Current Helm value                            |
+| ---------------------------------------- | --------------------------------------------- |
+| `resourceName`                           | `devices.nvidia.resourceCountName`            |
+| `resourceMem`                            | `devices.nvidia.resourceMemoryName`           |
+| `resourceMemPercentage`                  | `devices.nvidia.resourceMemoryPercentageName` |
+| `resourceCores`                          | `devices.nvidia.resourceCoreName`             |
+| `resourcePriority`                       | `devices.nvidia.resourcePriorityName`         |
+| `mluResourceName`                        | `devices.cambricon.resourceCountName`         |
+| `mluResourceMem`                         | `devices.cambricon.resourceMemoryName`        |
+| `mluResourceCores`                       | `devices.cambricon.resourceCoreName`          |
+| `hcuResourceName`                        | `devices.hygon.resourceCountName`             |
+| `hcuResourceMem`                         | `devices.hygon.resourceMemoryName`            |
+| `hcuResourceCores`                       | `devices.hygon.resourceCoreName`              |
+| `metaxResourceName`                      | `devices.metax.resourceVCountName`            |
+| `metaxResourceCore`                      | `devices.metax.resourceVCoreName`             |
+| `metaxResourceMem`                       | `devices.metax.resourceVMemoryName`           |
+| `metaxsGPUTopologyAware`                 | `devices.metax.sgpuTopologyAware`             |
+| `enflameResourceNameDRSGCU`              | `devices.enflame.resourceNameDRSGCU`          |
+| `enflameResourceNameGCUMemory`           | `devices.enflame.resourceNameGCUMemory`       |
+| `enflameResourceNameGCUCore`             | `devices.enflame.resourceNameGCUCore`         |
+| `kunlunResourceName`                     | `devices.kunlun.resourceCountName`            |
+| `kunlunResourceVCountName`               | `devices.kunlun.resourceVCountName`           |
+| `kunlunResourceVMemoryName`              | `devices.kunlun.resourceVMemoryName`          |
+| `vastaiResourceName`                     | `devices.vastai.resourceCountName`            |
+| `birenResourceName`                      | `devices.biren.resourceCountName`             |
+| `devicePlugin.deviceSplitCount`          | `devices.nvidia.deviceSplitCount`             |
+| `devicePlugin.deviceMemoryScaling`       | `devices.nvidia.deviceMemoryScaling`          |
+| `devicePlugin.deviceCoreScaling`         | `devices.nvidia.deviceCoreScaling`            |
+| `devicePlugin.preConfiguredDeviceMemory` | `devices.nvidia.preConfiguredDeviceMemory`    |
+| `devicePlugin.enableNumaTopology`        | `devices.nvidia.enableNumaTopology`           |
+| `devicePlugin.runtimeClassName`          | `devices.nvidia.runtimeClassName`             |
+| `devicePlugin.createRuntimeClass`        | `devices.nvidia.createRuntimeClass`           |
+
+Other settings, such as `scheduler.overwriteEnv`, `devicePlugin.enabled`, images, `devicePlugin.deviceListStrategy`, `devicePlugin.migStrategy`, `devicePlugin.disablecorelimit`, and `devicePlugin.nodeConfiguration`, keep their existing paths.
+
+If you edited a ConfigMap manually, transfer only the fields you need into the corresponding Helm values. For node settings, use `devicePlugin.nodeConfiguration.config` or the separately managed ConfigMap. Restoring the entire old ConfigMap can overwrite new chart defaults.
+
+### Apply the configuration
+
+Upgrade with the chart defaults and your complete set of installation overrides:
+
+```bash
+helm upgrade hami hami-charts/hami \
+  --namespace kube-system \
+  --reset-values \
+  --values my-values.yaml
+```
+
+`--reset-values` discards the release's previous values. Include every override you need to keep in `my-values.yaml` or the other values files passed to this command. Avoid `--reuse-values` and `--reset-then-reuse-values` when migrating old fields, because they can pass those fields to the new chart again.
+
+After upgrading, check the ConfigMaps and Pod rollout status. Restart the NVIDIA device plugin if you changed only its node configuration.
+
+## Edit ConfigMaps for troubleshooting
+
+For a temporary device configuration change, back up and edit the ConfigMap:
+
+```bash
+kubectl get configmap hami-scheduler-device -n kube-system -o yaml > device-config-backup.yaml
+kubectl edit configmap hami-scheduler-device -n kube-system
+```
+
+Restart the scheduler and device plugins that read the changed configuration. For the chart-managed NVIDIA components:
+
+```bash
+kubectl rollout restart deployment/hami-scheduler -n kube-system
+kubectl rollout restart daemonset/hami-device-plugin -n kube-system
+```
+
+For a temporary node configuration change, edit the node ConfigMap and restart the NVIDIA device plugin:
+
+```bash
+kubectl edit configmap hami-device-plugin -n kube-system
+kubectl rollout restart daemonset/hami-device-plugin -n kube-system
+```
+
+Use the external ConfigMap name if you configured one. Manual edits do not update Helm values. Save any changes you need to retain in your values file, or in the separately managed node ConfigMap, before the next upgrade.

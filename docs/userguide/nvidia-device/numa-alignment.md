@@ -35,9 +35,11 @@ topologyManagerPolicyOptions:
 All pieces are off by default. In the Helm values:
 
 ```yaml
+devices:
+  nvidia:
+    # Advertise each replica's NUMA node to kubelet.
+    enableNumaTopology: true
 devicePlugin:
-  # Advertise each replica's NUMA node to kubelet.
-  enableNumaTopology: true
   # Let the device plugin call the scheduler's refit endpoint.
   numaRefit:
     enabled: true
