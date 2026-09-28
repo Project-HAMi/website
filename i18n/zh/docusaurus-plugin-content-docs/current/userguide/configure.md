@@ -36,7 +36,7 @@ translated: true
 | `devices.nvidia.resourcePriorityName` | string | `"nvidia.com/priority"` | NVIDIA 分配优先级的 Kubernetes 扩展资源名称。 |
 | `devices.nvidia.runtimeClassName` | string | `""` | NVIDIA 设备插件 Pod 使用的 RuntimeClass，也会注入 NVIDIA 工作负载 Pod。 |
 
-例如，设置每张 NVIDIA GPU 的共享数量、默认显存和算力，同时配置 MThreads 显存型号列表：
+例如，设置每张 NVIDIA GPU 的共享数量、默认显存和算力：
 
 ```yaml
 devices:
@@ -44,8 +44,6 @@ devices:
     deviceSplitCount: 20
     defaultMemory: 4096
     defaultCores: 50
-  mthreads:
-    memoryPerCard: [96, 160]
 ```
 
 `deviceCoreScaling` 和 `deviceMemoryScaling` 支持小数。`defaultMemory` 的单位为 MiB，`defaultCores` 为百分比。
@@ -108,6 +106,14 @@ devices:
 | `devices.mthreads.resourceCoreName` | string | `"mthreads.com/sgpu-core"` | 设备算力的 Kubernetes 扩展资源名称。 |
 | `devices.mthreads.resourceCountName` | string | `"mthreads.com/vgpu"` | 设备数量的 Kubernetes 扩展资源名称。 |
 | `devices.mthreads.resourceMemoryName` | string | `"mthreads.com/sgpu-memory"` | 设备显存的 Kubernetes 扩展资源名称。 |
+
+对于同时使用 48 GiB 和 80 GiB 显存的 MThreads 显卡，按 512 MiB 为单位列出两种显存大小：
+
+```yaml
+devices:
+  mthreads:
+    memoryPerCard: [96, 160]
+```
 
 ### Kunlunxin
 
