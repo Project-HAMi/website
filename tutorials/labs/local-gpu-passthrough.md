@@ -503,6 +503,25 @@ Gate: `nvidia-smi` must work in the guest before container runtime work begins.
 
 Install containerd, runc, and the NVIDIA Container Toolkit inside the guest. The tested package versions were containerd `2.2.1-0ubuntu1~24.04.3`, runc `1.3.4-0ubuntu1~24.04.1`, and NVIDIA Container Toolkit `1.20.1-1`.
 
+Install the packages before configuring the runtime:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y ca-certificates curl gpg
+
+curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey |
+  sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
+curl -fsSL https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list |
+  sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' |
+  sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+
+sudo apt-get update
+sudo apt-get install -y \
+  containerd=2.2.1-0ubuntu1~24.04.3 \
+  runc=1.3.4-0ubuntu1~24.04.1 \
+  nvidia-container-toolkit=1.20.1-1
+```
+
 Configure containerd to import drop-in configs, enable systemd cgroups for both `runc` and the `nvidia` runtime handler, then configure the NVIDIA runtime:
 
 ```bash
@@ -590,6 +609,14 @@ net.ipv4.ip_forward = 1
 Install Kubernetes packages from the v1.36 repository and hold them:
 
 ```bash
+sudo apt-get update
+sudo apt-get install -y ca-certificates curl gpg apt-transport-https
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.36/deb/Release.key |
+  sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.36/deb/ /' |
+  sudo tee /etc/apt/sources.list.d/kubernetes.list
+sudo apt-get update
 sudo apt-get install -y kubeadm=1.36.5-1.1 kubelet=1.36.5-1.1 kubectl=1.36.5-1.1 cri-tools=1.36.0-1.1
 sudo apt-mark hold kubeadm kubelet kubectl
 kubeadm version -o short
@@ -932,6 +959,14 @@ gpu-label=on
 Install Helm and add the HAMi repo:
 
 ```bash
+sudo apt-get update
+sudo apt-get install -y apt-transport-https ca-certificates curl gpg
+curl -fsSL https://baltocdn.com/helm/signing.asc |
+  sudo gpg --dearmor -o /usr/share/keyrings/helm.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" |
+  sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+sudo apt-get update
+sudo apt-get install -y helm
 helm version --short
 helm repo add hami https://project-hami.github.io/HAMi
 helm repo update
