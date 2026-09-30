@@ -198,10 +198,10 @@ sudo virt-install \
   --graphics spice \
   --video virtio \
   --console pty,target_type=serial \
-  --noautoconsole
+  --autoconsole spice
 ```
 
-After installing Ubuntu Server 24.04.5 LTS and OpenSSH, validate the guest:
+Complete the Ubuntu Server 24.04.5 LTS installer in the SPICE console that opens, including OpenSSH. Then validate the guest:
 
 ```bash
 ssh "${GUEST_USER}@${GUEST_IP}" \
@@ -927,6 +927,8 @@ Remove the stock plugin before installing HAMi:
 
 ```bash
 kubectl -n kube-system delete ds nvidia-device-plugin-daemonset --ignore-not-found
+kubectl -n kube-system wait --for=delete pod \
+  -l name=nvidia-device-plugin-ds --timeout=5m >/dev/null
 kubectl get runtimeclass nvidia
 ```
 
@@ -1292,9 +1294,10 @@ Kernel driver in use: nvidia
 Kernel driver in use: snd_hda_intel
 ```
 
-Restart the user audio services:
+Restart the services that were stopped before passthrough:
 
 ```bash
+sudo systemctl restart nvidia-persistenced nbfc_service || true
 systemctl --user restart pipewire.socket pipewire.service pipewire-pulse.socket pipewire-pulse.service wireplumber.service
 systemctl --user is-active pipewire.socket pipewire.service pipewire-pulse.socket pipewire-pulse.service wireplumber.service
 ```
