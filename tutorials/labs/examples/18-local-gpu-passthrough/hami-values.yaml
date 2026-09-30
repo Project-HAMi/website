@@ -4,7 +4,20 @@ devicePlugin:
   nvidiaDriverRoot: /
   nvidiaNodeSelector:
     gpu: "on"
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      operator: Exists
+      effect: NoSchedule
 scheduler:
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      operator: Exists
+      effect: NoSchedule
+  patch:
+    tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
   kubeScheduler:
     image:
-      tag: v1.36.4
+      tag: v1.36.5

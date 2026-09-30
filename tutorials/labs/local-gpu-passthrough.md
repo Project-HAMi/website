@@ -5,11 +5,11 @@ sidebar_label: "Lab 18: Local GPU Passthrough"
 lab:
   level: Advanced
   duration: about 120 minutes
-  environment: Linux host · QEMU/KVM/libvirt · Ubuntu VM · NVIDIA GPU passthrough
+  environment: Linux host / QEMU-KVM-libvirt / Ubuntu VM / NVIDIA GPU passthrough
   cost: local machine only
   authors:
     - Utkarsh56016
-  verified: "2026-09-24"
+  verified: "2026-09-30"
 tags:
   - local-setup
   - gpu-passthrough
@@ -18,617 +18,758 @@ tags:
 toc_max_heading_level: 2
 ---
 
-This lab builds and validates the tested local HAMi GPU lab used for a real passthrough run. The host is a Linux workstation running QEMU/KVM and system libvirt. A real NVIDIA GPU is temporarily moved from the host driver to an Ubuntu VM, and the guest owns the NVIDIA driver, container runtime, Kubernetes, CNI, and HAMi stack.
+This lab builds the tested local HAMi GPU passthrough environment from a Linux workstation, a QEMU/KVM/libvirt Ubuntu VM, and one NVIDIA GPU assigned to that VM. The Kubernetes, container runtime, Calico, Helm, and HAMi layers all live inside the guest. The host keeps its desktop on another display path and gets the NVIDIA device back when the VM shuts down.
 
-The lab is phase-gated. Each layer is checked before the next one is added: host virtualization and IOMMU, CPU-only VM, disposable rollback, VFIO detach/recovery, managed libvirt passthrough, guest NVIDIA driver, NVIDIA/containerd runtime, Kubernetes and CNI, pre-HAMi GPU runtime, HAMi v2.10.0, and finally a fractional CUDA workload. A clean VM shutdown returns the GPU to the host driver.
+The lab is phase-gated. Validate each layer before adding the next one: host feasibility, CPU-only VM, qcow2 rollback, managed PCI passthrough, guest NVIDIA driver, container runtime GPU access, kubeadm, Calico, plain CUDA, HAMi, fractional workload, and host recovery.
 
 :::note
 
-This is the tested architecture from one local lab. It is not a complete VFIO/libvirt troubleshooting guide for every laptop or workstation topology.
+This is a reproducible local lab path for one tested workstation and GPU. It is not a universal VFIO/libvirt troubleshooting guide for every laptop, workstation, firmware, or IOMMU topology.
 
 :::
 
-## What You'll Learn
+## Purpose and Tested Environment
 
-- How to check host virtualization, KVM, IOMMU, GPU topology, and device ownership
-- How to identify the NVIDIA GPU, companion audio function, and IOMMU group
-- How to build and validate a CPU-only Ubuntu VM before adding passthrough
-- How to use a disposable qcow2 overlay as the rollback boundary
-- How to validate VFIO detach and host driver recovery before starting the VM
-- How to attach the NVIDIA GPU and HDA function through libvirt managed host devices
-- How to validate guest NVIDIA driver and NVIDIA/containerd runtime layers
-- How to bootstrap Kubernetes and Calico CNI inside the Ubuntu guest
-- How to validate the pre-HAMi GPU runtime path before installing HAMi
-- How to install and verify HAMi v2.10.0 with `RuntimeClass` `nvidia`
-- How to run a fractional CUDA workload and inspect HAMi allocation metadata
-- How to clean up and recover the GPU on the host after VM shutdown
+Use this lab when you want a local, resettable place to test HAMi fractional GPU allocation against a real NVIDIA GPU without installing Kubernetes or HAMi on the host operating system.
 
-## Lab Overview
+| Component           | Tested value                        |
+| ------------------- | ----------------------------------- |
+| Host VM stack       | QEMU/KVM, system libvirt, OVMF/UEFI |
+| VM/domain name      | `hami-lab-v2`                       |
+| Guest OS            | Ubuntu 24.04.5 LTS                  |
+| Guest kernel        | `6.8.0-142-generic`                 |
+| GPU                 | NVIDIA GeForce RTX 3050 Laptop GPU  |
+| GPU memory          | 4096 MiB                            |
+| Guest NVIDIA driver | 595.91.07                           |
+| containerd          | 2.2.1                               |
+| NVIDIA Toolkit      | 1.20.1                              |
+| Kubernetes          | v1.36.5                             |
+| Calico              | v3.32.2                             |
+| Helm                | v3.22.0                             |
+| HAMi chart/app      | 2.10.0                              |
+| RuntimeClass        | `nvidia`                            |
+| GPU node label      | `gpu=on`                            |
 
-The tested architecture follows this path:
+The VM/GPU boundary matters because it keeps host state recoverable. The host runs libvirt and owns the base qcow2 files. The Ubuntu guest owns the NVIDIA driver, container runtime, Kubernetes, Calico, and HAMi stack. If a guest-layer experiment goes wrong, the active qcow2 overlay can be discarded without rewriting the preserved base disk.
 
-```plaintext
-Linux host
--> virtualization and IOMMU checks
--> CPU-only Ubuntu VM
--> disposable qcow2 rollback layer
--> VFIO detach and recovery gate
--> libvirt managed GPU passthrough
--> guest NVIDIA driver
--> NVIDIA/containerd runtime
--> Kubernetes and Calico CNI
--> pre-HAMi GPU runtime validation
--> HAMi v2.10.0
--> fractional CUDA workload
--> cleanup and host GPU recovery
+```mermaid
+flowchart LR
+  Host["Linux host"] --> Libvirt["QEMU/KVM/libvirt"]
+  Libvirt --> VM["Ubuntu VM: hami-lab-v2"]
+  VM --> Runtime["containerd + NVIDIA runtime"]
+  Runtime --> K8s["Kubernetes + Calico"]
+  K8s --> Hami["HAMi 2.10.0"]
+  Hami --> Workload["fractional CUDA workload"]
 ```
 
-The VM boundary keeps the host cleaner. Kubernetes, CNI, HAMi, containerd changes, and NVIDIA runtime configuration live inside the guest. The host display stays on the integrated GPU or another non-passed-through GPU. In this run, the passed-through RTX 3050 was compute-only inside the guest, while the guest console stayed on a virtual display.
+## Set Local Variables
 
-## Environment Used for This Run
+Set these values once on the host and reuse them through the lab. The commands below use variables so they are easier to copy, while the output blocks show the values from the tested environment.
 
-Every captured output below comes from one local passthrough lab.
+```bash
+export DOMAIN=hami-lab-v2
+export GUEST_USER=ubuntu # replace with your VM user
+export GUEST_IP=192.168.122.242 # replace with your VM IP
+export ISO="$HOME/Downloads/ubuntu-24.04.5-live-server-amd64.iso"
+export BASE=/var/lib/libvirt/images/hami-lab-v2-base.qcow2
+export WORK=/var/lib/libvirt/images/hami-lab-v2-work.qcow2
+```
 
-| Component           | Value                               |
-| ------------------- | ----------------------------------- |
-| Host type           | Arch/Archcraft Linux workstation    |
-| VM stack            | QEMU/KVM, system libvirt, OVMF/UEFI |
-| Guest OS            | Ubuntu Server 24.04.5               |
-| VM name             | `hami-lab`                          |
-| Kubernetes node     | `hami-lab`                          |
-| Kubernetes version  | `v1.36.4`                           |
-| Container runtime   | `containerd://2.2.1`                |
-| CNI                 | Calico v3.32.2, VXLAN, no BGP       |
-| GPU                 | NVIDIA GeForce RTX 3050 Laptop GPU  |
-| Physical GPU memory | 4096 MiB                            |
-| Guest NVIDIA driver | 595.84                              |
-| HAMi version        | v2.10.0                             |
+## Host Feasibility Checks
 
-:::tip
-
-Your GPU, driver, package manager, and PCI addresses can differ. Keep the same verification pattern: validate one layer, stop at the failed gate, and continue only after that layer is understood.
-
-:::
-
-## Prerequisites
-
-Before starting, you need:
-
-- A Linux host with QEMU/KVM, system libvirt, OVMF, and `qemu-img`
-- A CPU, firmware, and kernel configuration that expose virtualization and IOMMU support
-- A host display path that does not depend on the NVIDIA GPU being passed through
-- An NVIDIA GPU whose complete IOMMU group can move to the VM
-- Permission to manage system libvirt, host services, and guest packages
-- Network access from the guest for Ubuntu, Kubernetes, Calico, NVIDIA, CUDA sample, and HAMi artifacts
-- Enough disk space for the VM, container images, Kubernetes images, and rollback overlays
-
-This run started from an Arch/Archcraft host where QEMU, libvirt, OVMF, and the default libvirt NAT network were already present. No host package-install command was preserved for those tools, so this lab begins by verifying them rather than publishing a generic host package recipe.
-
-## Phase 1: Verify Host Virtualization and IOMMU
-
-This phase confirms the host can run a KVM guest and exposes IOMMU groups before any VM or GPU mutation.
+Start with read-only host checks. Do not detach the GPU yet.
 
 Run on the host:
 
 ```bash
 lscpu | grep -E 'Virtualization|Model name'
-test -e /dev/kvm && echo "/dev/kvm is present"
-ls /sys/kernel/iommu_groups/ >/dev/null && echo "IOMMU groups are visible"
-find /sys/kernel/iommu_groups -maxdepth 3 -type l | sort
+test -e /dev/kvm && echo "/dev/kvm present"
+virsh -c qemu:///system dominfo "$DOMAIN" >/dev/null 2>&1 || \
+  echo "$DOMAIN domain name is free"
 ```
 
-Captured output:
+Output from the tested host:
 
-```plaintext
-CPU: AMD Ryzen 5 5600H with Radeon Graphics
-Virtualization: AMD-V
-/dev/kvm: present
-kvm_amd: loaded
-kvm: loaded
-AMD-Vi: active
-IOMMU default domain: Translated
-IOMMU groups: populated
-Root filesystem: 276G total, 121G used, 141G available (47%)
+```text
+CPU virtualization: AMD-V
+/dev/kvm present
+hami-lab-v2 domain name is free
 ```
 
-Run on the host to identify the NVIDIA functions:
+Check the VM tooling and install media:
 
 ```bash
-lspci -nn | grep -Ei 'nvidia|vga|3d|audio'
-lspci -nnk -d 10de:
+qemu-system-x86_64 --version
+qemu-img --version
+virt-install --version
+ls /usr/share/edk2/x64/OVMF_CODE.4m.fd
+test -f "$ISO" && echo "Ubuntu ISO is present"
 ```
 
-Captured output:
+Output from the tested host:
 
-```plaintext
+```text
+QEMU emulator version 11.1.1
+qemu-img version 11.1.1
+virt-install version 5.1.0
+/usr/share/edk2/x64/OVMF_CODE.4m.fd
+Ubuntu ISO is present
+```
+
+Identify the GPU, its audio function, and their IOMMU group:
+
+```bash
+lspci -nnk -s 01:00.0
+lspci -nnk -s 01:00.1
+readlink /sys/bus/pci/devices/0000:01:00.0/iommu_group
+readlink /sys/bus/pci/devices/0000:01:00.1/iommu_group
+```
+
+Output from the tested host:
+
+```text
 01:00.0 NVIDIA GA107M GeForce RTX 3050 Mobile [10de:25a2]
-  current driver: nvidia
-01:00.1 NVIDIA GA107 High Definition Audio [10de:2291]
-  current driver: snd_hda_intel
-
-IOMMU group 11 contains exactly:
-  0000:01:00.0 NVIDIA RTX 3050
-  0000:01:00.1 NVIDIA HDA audio
-
-AMD Cezanne/Vega iGPU:
-  06:00.0
-  current driver: amdgpu
-  separate PCI/root-port branch from the RTX
+  Kernel driver in use: nvidia
+01:00.1 NVIDIA GA107 High Definition Audio Controller [10de:2291]
+  Kernel driver in use: snd_hda_intel
+0000:01:00.0 -> group 11
+0000:01:00.1 -> group 11
 ```
 
-Gate before continuing: the NVIDIA GPU and its companion audio function must be in a group that can move together, without essential host devices in the same group.
-
-## Phase 2: Build and Validate the CPU-only Ubuntu VM
-
-Create the VM before assigning the GPU. The tested VM was created through libvirt as a CPU-only Ubuntu Server 24.04.5 guest with:
-
-- VM name: `hami-lab`
-- Machine type: Q35
-- Firmware: OVMF/UEFI
-- vCPU: 4
-- RAM: 8 GiB
-- Disk: 50 GiB qcow2
-- Disk and NIC: VirtIO
-- Network: libvirt default NAT
-- Display: virtual display
-- SSH server: installed during Ubuntu setup
-- Physical GPU: not assigned yet
-
-No exact original VM creation command was captured, so this lab documents the tested libvirt settings rather than publishing a reconstructed `virt-install` command. Create the VM with equivalent libvirt settings, complete the Ubuntu install, then validate the resulting CPU-only guest.
-
-Run on the host:
+Verify that the host display does not depend on the NVIDIA GPU:
 
 ```bash
-virsh -c qemu:///system domstate hami-lab
-ssh <guest-user>@<guest-ip> \
-  'hostname; uptime; lsb_release -ds; systemctl is-active ssh'
+echo "$XDG_SESSION_TYPE"
+echo "$XDG_CURRENT_DESKTOP"
+for node in /sys/class/drm/card*-*; do
+  printf '%s ' "$(basename "$node")"
+  cat "$node/status"
+done
+glxinfo -B | grep -E 'OpenGL vendor|OpenGL renderer'
 ```
 
-Captured output:
+Output from the tested host:
 
-```plaintext
-hami-lab booted successfully from installed qcow2
-Guest address: 192.168.122.250/24
-SSH login from Arch host succeeded as utkarsh
-Guest banner: Ubuntu 24.04.5 LTS
-Kernel: 6.8.0-139-generic x86_64
+```text
+wayland
+niri
+card0-HDMI-A-1 disconnected
+card2-DP-1 disconnected
+card2-eDP-1 connected
+OpenGL vendor: AMD
+OpenGL renderer: AMD Radeon Graphics
 ```
 
-Gate before continuing: the CPU-only VM must boot, accept SSH, reboot, and shut down cleanly before any GPU passthrough work begins.
+Gate: continue only if the NVIDIA VGA and HDA functions can move together and the host has a separate working display path.
 
-## Phase 3: Add the Disposable Rollback Layer
+## Fresh VM Creation and qcow2 Rollback Boundary
 
-The tested rollback model keeps the installed guest qcow2 as the backing base and boots the domain from a separate disposable overlay:
+Create the VM without the GPU first. This proves the guest can boot, accept SSH, and shut down before passthrough adds complexity.
 
-```plaintext
-hami-lab-ubuntu-base.qcow2  (installed guest disk, preserved)
-        |
-        v
-hami-lab.qcow2              (disposable active overlay)
-```
-
-First identify the shut-off domain's disk target and choose distinct paths for the preserved base and the active overlay. Adapt only the paths to your libvirt storage location:
+Create a fresh base disk:
 
 ```bash
-VM=hami-lab
-DISK_TARGET=vda
-INSTALLED_BASE=/var/lib/libvirt/images/hami-lab-ubuntu-base.qcow2
-ACTIVE_OVERLAY=/var/lib/libvirt/images/hami-lab.qcow2
-DOMAIN_XML_BACKUP="$HOME/hami-lab-before-overlay.xml"
-
-test "$(virsh -c qemu:///system domstate "$VM")" = "shut off"
-virsh -c qemu:///system domblklist --details "$VM"
-test "$INSTALLED_BASE" != "$ACTIVE_OVERLAY"
-test -f "$INSTALLED_BASE"
-test ! -e "$ACTIVE_OVERLAY"
+sudo qemu-img create -f qcow2 \
+  "$BASE" \
+  50G
 ```
 
-Create the overlay while the VM is shut off. The `test` commands above are intentional: they stop the procedure if the overlay path is the same as the backing image or already exists.
+Output:
 
-```bash
-qemu-img create -f qcow2 \
-  -F qcow2 \
-  -b "$INSTALLED_BASE" \
-  "$ACTIVE_OVERLAY"
-
-qemu-img info --backing-chain "$ACTIVE_OVERLAY"
+```text
+Formatting '/var/lib/libvirt/images/hami-lab-v2-base.qcow2', fmt=qcow2 cluster_size=65536 extended_l2=off compression_type=zlib size=53687091200 lazy_refcounts=off refcount_bits=16
 ```
 
-Point the persistent libvirt domain at the overlay before starting it. Back up the domain XML first, then replace the shut-off domain's disk source and verify the new persistent source:
+Create the CPU-only Ubuntu VM:
 
 ```bash
-virsh -c qemu:///system dumpxml "$VM" >"$DOMAIN_XML_BACKUP"
-virsh -c qemu:///system detach-disk "$VM" "$DISK_TARGET" --config
-virsh -c qemu:///system attach-disk "$VM" "$ACTIVE_OVERLAY" "$DISK_TARGET" \
+sudo virt-install \
+  --connect qemu:///system \
+  --name "$DOMAIN" \
+  --memory 8192 \
+  --vcpus 4 \
+  --cpu host-passthrough \
+  --machine q35 \
+  --boot uefi \
+  --disk path="$BASE",format=qcow2,bus=virtio \
+  --cdrom "$ISO" \
+  --os-variant ubuntu24.04 \
+  --network network=default,model=virtio \
+  --graphics spice \
+  --video virtio \
+  --console pty,target_type=serial \
+  --noautoconsole
+```
+
+After installing Ubuntu Server 24.04.5 LTS and OpenSSH, validate the guest:
+
+```bash
+ssh "${GUEST_USER}@${GUEST_IP}" \
+  'hostnamectl --static; lsb_release -ds; uname -r; systemctl is-active ssh'
+```
+
+Output:
+
+```text
+hami-lab-v2
+Ubuntu 24.04.5 LTS
+6.8.0-142-generic
+active
+```
+
+Shut the VM down before changing its disk chain:
+
+```bash
+ssh "${GUEST_USER}@${GUEST_IP}" 'sudo poweroff'
+virsh -c qemu:///system domstate "$DOMAIN"
+```
+
+Output:
+
+```text
+shut off
+```
+
+Create a disposable work overlay from the installed base disk:
+
+```bash
+sudo qemu-img create -f qcow2 -F qcow2 -b "$BASE" "$WORK"
+qemu-img info --backing-chain "$WORK"
+```
+
+Output:
+
+```text
+Formatting '/var/lib/libvirt/images/hami-lab-v2-work.qcow2', fmt=qcow2 cluster_size=65536 extended_l2=off compression_type=zlib size=53687091200 backing_file=/var/lib/libvirt/images/hami-lab-v2-base.qcow2 backing_fmt=qcow2 lazy_refcounts=off refcount_bits=16
+backing file: /var/lib/libvirt/images/hami-lab-v2-base.qcow2
+backing file format: qcow2
+corrupt: false
+```
+
+Switch the shut-off domain from the base disk to the overlay:
+
+```bash
+virsh -c qemu:///system domstate "$DOMAIN"
+virsh -c qemu:///system dumpxml "$DOMAIN" > hami-lab-v2-before-overlay.xml
+virsh -c qemu:///system detach-disk "$DOMAIN" vda --config
+virsh -c qemu:///system attach-disk "$DOMAIN" "$WORK" vda \
   --config \
   --type disk \
   --driver qemu \
   --subdriver qcow2 \
   --targetbus virtio
-
-virsh -c qemu:///system domblklist --details "$VM"
-virsh -c qemu:///system dumpxml "$VM" | grep -F "$ACTIVE_OVERLAY"
-virsh -c qemu:///system start "$VM"
+virsh -c qemu:///system domblklist "$DOMAIN"
 ```
 
-After SSH is available again, run a write/discard test before using the VM for GPU work:
+Output:
+
+```text
+shut off
+Device detached successfully
+Device attached successfully
+Target   Source
+vda      /var/lib/libvirt/images/hami-lab-v2-work.qcow2
+sda      -
+```
+
+Boot from the active overlay:
 
 ```bash
-ssh <guest-user>@<guest-ip> \
-  'sudo touch /root/phase2-rollback-test.txt; touch ~/phase2-marker.txt'
+virsh -c qemu:///system start "$DOMAIN"
+virsh -c qemu:///system domstate "$DOMAIN"
+virsh -c qemu:///system domblklist "$DOMAIN"
+```
 
-virsh -c qemu:///system shutdown "$VM"
-for _ in $(seq 1 60); do
-  test "$(virsh -c qemu:///system domstate "$VM")" = "shut off" && break
+Output:
+
+```text
+Domain 'hami-lab-v2' started
+running
+vda      /var/lib/libvirt/images/hami-lab-v2-work.qcow2
+sda      -
+```
+
+Create a marker inside the overlay-backed guest:
+
+```bash
+ssh "${GUEST_USER}@${GUEST_IP}" \
+  'cat > ~/v2-rollback-marker.txt <<EOF
+V2 rollback marker
+created_utc=2026-09-30T11:35:18Z
+hostname=hami-lab-v2
+disk_expected=hami-lab-v2-work.qcow2
+EOF
+cat ~/v2-rollback-marker.txt'
+```
+
+Output:
+
+```text
+V2 rollback marker
+created_utc=2026-09-30T11:35:18Z
+hostname=hami-lab-v2
+disk_expected=hami-lab-v2-work.qcow2
+```
+
+Shut the VM down and wait until libvirt reports `shut off` before touching the overlay:
+
+```bash
+ssh "${GUEST_USER}@${GUEST_IP}" 'sudo poweroff'
+until [ "$(virsh -c qemu:///system domstate "$DOMAIN")" = "shut off" ]; do
   sleep 2
 done
-test "$(virsh -c qemu:///system domstate "$VM")" = "shut off"
+virsh -c qemu:///system domstate "$DOMAIN"
 ```
 
-Then delete only the active overlay, recreate it from the same base image, boot the VM again, and check that the marker files are gone. The persistent domain already points to `"$ACTIVE_OVERLAY"`, so recreating the overlay at the same path is enough:
+Output:
+
+```text
+shut off
+```
+
+Move the old overlay aside and recreate a clean one at the same active path:
 
 ```bash
-test "$ACTIVE_OVERLAY" != "$INSTALLED_BASE"
-rm -f -- "$ACTIVE_OVERLAY"
-qemu-img create -f qcow2 \
-  -F qcow2 \
-  -b "$INSTALLED_BASE" \
-  "$ACTIVE_OVERLAY"
-
-virsh -c qemu:///system start "$VM"
+sudo mv "$WORK" /var/lib/libvirt/images/hami-lab-v2-work-with-marker.qcow2
+sudo qemu-img create -f qcow2 -F qcow2 -b "$BASE" "$WORK"
+qemu-img info --backing-chain "$WORK"
+virsh -c qemu:///system domblklist "$DOMAIN"
 ```
 
-Captured output:
+Output:
 
-```plaintext
-marker files created inside guest:
-  /root/phase2-rollback-test.txt
-  /home/utkarsh/phase2-marker.txt
-guest shut down cleanly
-active overlay deleted
-fresh overlay recreated from hami-lab-ubuntu-base.qcow2
-VM booted normally
-SSH worked normally
-root marker: absent
-user marker: absent
-hostname: hami-lab
-root filesystem healthy
-ssh service: active
+```text
+Formatting '/var/lib/libvirt/images/hami-lab-v2-work.qcow2', fmt=qcow2 cluster_size=65536 extended_l2=off compression_type=zlib size=53687091200 backing_file=/var/lib/libvirt/images/hami-lab-v2-base.qcow2 backing_fmt=qcow2 lazy_refcounts=off refcount_bits=16
+backing file: /var/lib/libvirt/images/hami-lab-v2-base.qcow2
+vda      /var/lib/libvirt/images/hami-lab-v2-work.qcow2
 ```
 
-Gate before continuing: you must be able to discard the active overlay and return to the known-good guest.
+Boot the clean overlay and prove the marker is gone:
 
-## Phase 4: Validate VFIO Detach and Host Recovery
+```bash
+virsh -c qemu:///system start "$DOMAIN"
+ssh "${GUEST_USER}@${GUEST_IP}" \
+  'test ! -e ~/v2-rollback-marker.txt && echo "PASS: marker is absent after overlay reset"'
+```
 
-PCI passthrough changes which driver owns the GPU. In normal host mode, the host NVIDIA and audio drivers own the two NVIDIA functions. For VM mode, libvirt moves both functions to `vfio-pci`, and QEMU assigns them to the guest through the IOMMU.
+Output:
+
+```text
+Domain 'hami-lab-v2' started
+PASS: marker is absent after overlay reset
+```
+
+Gate: continue only after rollback works. This boundary is what makes later Kubernetes and HAMi changes easy to discard.
+
+## Managed RTX VGA/HDA Passthrough Using virsh
+
+The tested passthrough pair is the RTX VGA function `0000:01:00.0` and its HDA audio function `0000:01:00.1`. They stay in the host drivers while the VM is shut off. With `managed='yes'`, libvirt moves them to `vfio-pci` when the VM starts and returns them to host drivers when the VM shuts down.
 
 ```mermaid
-%% title: GPU Passthrough Lifecycle
 flowchart LR
-    HostDriver["Host NVIDIA driver"] --> VfioBind["vfio-pci"]
-    VfioBind --> VM["VM"]
-    VM --> GuestDriver["Guest NVIDIA driver"]
-    GuestDriver --> Shutdown["VM shutdown"]
-    Shutdown --> HostRecovery["Host NVIDIA driver"]
+  HostDriver["host nvidia/snd_hda_intel"] --> LibvirtStart["libvirt VM start"]
+  LibvirtStart --> Vfio["vfio-pci"]
+  Vfio --> Guest["guest NVIDIA driver"]
+  Guest --> Shutdown["VM shutdown"]
+  Shutdown --> HostRecovered["host nvidia/snd_hda_intel"]
 ```
 
-On this host, the AMD display path had to be active, and the host services that actually held or probed the NVIDIA devices had to be stopped before detach. Device users vary by host; inspect yours instead of stopping random services.
-
-Run on the host:
+Stop the observed host holders before starting the passthrough VM:
 
 ```bash
-sudo fuser -v /dev/nvidia* 2>/dev/null || true
-sudo fuser -v /dev/snd/* 2>/dev/null || true
+systemctl --user stop pipewire-pulse.service pipewire-pulse.socket pipewire.service pipewire.socket wireplumber.service
+sudo systemctl stop nvidia-persistenced
+sudo systemctl stop nbfc_service
 ```
 
-In this run, the lifecycle stopped these observed holders before passthrough:
+Output:
+
+```text
+pipewire.socket inactive
+pipewire.service inactive
+pipewire-pulse.socket inactive
+pipewire-pulse.service inactive
+wireplumber.service inactive
+nbfc_service inactive
+nvidia-persistenced inactive
+```
+
+Attach the GPU and audio XML to the shut-off VM. The XML files are in [`examples/18-local-gpu-passthrough/libvirt/rtx-gpu.xml`](./examples/18-local-gpu-passthrough/libvirt/rtx-gpu.xml) and [`examples/18-local-gpu-passthrough/libvirt/rtx-audio.xml`](./examples/18-local-gpu-passthrough/libvirt/rtx-audio.xml).
 
 ```bash
-systemctl --user stop pipewire-pulse.socket pipewire-pulse.service 2>/dev/null || true
-systemctl --user stop wireplumber.service 2>/dev/null || true
-systemctl --user stop pipewire.socket pipewire.service 2>/dev/null || true
-
-sudo systemctl stop nbfc_service.service 2>/dev/null || true
-sudo systemctl stop nvidia-persistenced.service 2>/dev/null || true
+virsh -c qemu:///system domstate "$DOMAIN"
+virsh -c qemu:///system attach-device "$DOMAIN" \
+  tutorials/labs/examples/18-local-gpu-passthrough/libvirt/rtx-gpu.xml \
+  --config
+virsh -c qemu:///system attach-device "$DOMAIN" \
+  tutorials/labs/examples/18-local-gpu-passthrough/libvirt/rtx-audio.xml \
+  --config
 ```
 
-Run on the host:
+Output:
+
+```text
+shut off
+Device attached successfully
+Device attached successfully
+```
+
+Start the VM and inspect host ownership:
 
 ```bash
-sudo modprobe vfio-pci
-sudo virsh -c qemu:///system nodedev-detach pci_0000_01_00_1
-sudo virsh -c qemu:///system nodedev-detach pci_0000_01_00_0
-lspci -nnk -s 01:00.0
-lspci -nnk -s 01:00.1
-```
-
-Captured output:
-
-```plaintext
-01:00.0 RTX 3050:
-  Kernel driver in use: vfio-pci
-
-01:00.1 NVIDIA HDA:
-  Kernel driver in use: vfio-pci
-```
-
-Reattach both functions before configuring persistent VM passthrough:
-
-```bash
-sudo virsh -c qemu:///system nodedev-reattach pci_0000_01_00_0
-sudo virsh -c qemu:///system nodedev-reattach pci_0000_01_00_1
-lspci -nnk -s 01:00.0
-lspci -nnk -s 01:00.1
+virsh -c qemu:///system start "$DOMAIN"
+lspci -nnk -s 01:00.0 | grep 'Kernel driver in use'
+lspci -nnk -s 01:00.1 | grep 'Kernel driver in use'
 nvidia-smi
 ```
 
-Captured output:
+Output:
 
-```plaintext
-01:00.0 RTX 3050 -> nvidia
-01:00.1 NVIDIA HDA -> snd_hda_intel
-
-nvidia-smi:
-  RTX visible
-  Disp.A Off
-  1 MiB used
-  0% GPU util
-  no running GPU processes
+```text
+Domain 'hami-lab-v2' started
+Kernel driver in use: vfio-pci
+Kernel driver in use: vfio-pci
+Failed to initialize NVML: No supported GPUs were found
 ```
 
-Gate before continuing: `nvidia/snd_hda_intel -> vfio-pci -> nvidia/snd_hda_intel` must be repeatable.
-
-## Phase 5: Attach the NVIDIA GPU Through libvirt
-
-Back up the VM XML and mutable OVMF NVRAM while the VM is shut off. The public host-device files are [rtx-gpu.xml](./examples/18-local-gpu-passthrough/libvirt/rtx-gpu.xml) and [rtx-audio.xml](./examples/18-local-gpu-passthrough/libvirt/rtx-audio.xml). They contain the tested managed host-device definitions for host `0000:01:00.0` and `0000:01:00.1`. Change the source addresses if your host differs.
-
-The files omit the guest PCI addresses so libvirt can assign them for your VM's controller layout. The tested domain assigned guest addresses `07:00.0` and `08:00.0`, as shown here:
-
-```xml
-<hostdev mode='subsystem' type='pci' managed='yes'>
-  <source>
-    <address domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>
-  </source>
-  <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x0'/>
-</hostdev>
-<hostdev mode='subsystem' type='pci' managed='yes'>
-  <source>
-    <address domain='0x0000' bus='0x01' slot='0x00' function='0x1'/>
-  </source>
-  <address type='pci' domain='0x0000' bus='0x08' slot='0x00' function='0x0'/>
-</hostdev>
-```
-
-The virtual display remained primary:
-
-```xml
-<video>
-  <model type='virtio' heads='1' primary='yes' device='virtio-vga'/>
-</video>
-```
-
-On the host, attach each XML file to the shut-off `hami-lab` domain through the `qemu:///system` connection, using libvirt's `attach-device` operation with `--config`. Use the two files under `tutorials/labs/examples/18-local-gpu-passthrough/libvirt/` in your website checkout. The run record preserves this operation, connection, and resulting XML, but not the full original invocation, so no reconstructed terminal command is presented here.
-
-With `managed='yes'`, VM start detaches the devices from the host and assigns them to QEMU. VM shutdown returns them to the host. Keep the virtual display primary; your guest PCI addresses may differ from the captured output below.
-
-Gate before continuing: inspect the VM XML and confirm exactly two managed NVIDIA host devices are present, and the guest still has a virtual primary display.
-
-## Phase 6: Validate the GPU Inside the Guest
-
-Start the VM after host device users are clear.
-
-Run on the host:
+Inside the guest, confirm the PCI devices are visible:
 
 ```bash
-sudo virsh -c qemu:///system start hami-lab
-ssh <guest-user>@<guest-ip> \
-  "lspci -nn | grep -Ei 'nvidia|virtio.*gpu|vga|audio'"
+ssh "${GUEST_USER}@${GUEST_IP}" \
+  "lspci -nnk | grep -A3 -E '07:00.0|08:00.0'"
 ```
 
-Captured output:
+Output:
 
-```plaintext
-07:00.0 VGA compatible controller:
-  NVIDIA GA107M GeForce RTX 3050 Mobile [10de:25a2]
-
-08:00.0 Audio device:
-  NVIDIA [10de:2291]
-
-00:01.0 Red Hat Virtio 1.0 GPU [1af4:1050]
+```text
+07:00.0 VGA compatible controller [0300]: NVIDIA Corporation GA107M [GeForce RTX 3050 Mobile] [10de:25a2]
+  Kernel driver in use: nouveau
+08:00.0 Audio device [0403]: NVIDIA Corporation Device [10de:2291]
+  Kernel driver in use: snd_hda_intel
 ```
 
-Install the guest NVIDIA driver only after PCI visibility works.
+Gate: the guest must see both NVIDIA PCI functions before installing the guest NVIDIA driver.
 
-Run inside the Ubuntu guest:
+## Guest NVIDIA Driver Validation
+
+Inside the guest, inspect the recommended driver and install it:
 
 ```bash
-ubuntu-drivers devices
+ubuntu-drivers devices | grep recommended
 sudo apt-get update
-sudo apt-get install -y nvidia-driver-595-open
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y nvidia-driver-595-open
 sudo reboot
 ```
 
-After reboot, run inside the guest:
+Output:
+
+```text
+recommended: nvidia-driver-595-open
+nvidia-driver-595-open 595.91.07-0ubuntu0.24.04.1 installed
+```
+
+After reboot, validate the guest driver:
 
 ```bash
 nvidia-smi --query-gpu=name,driver_version,memory.total --format=csv,noheader
 ```
 
-Captured output:
+Output:
 
-```plaintext
-NVIDIA GeForce RTX 3050 Laptop GPU, 595.84, 4096 MiB
+```text
+NVIDIA GeForce RTX 3050 Laptop GPU, 595.91.07, 4096 MiB
 ```
 
-Gate before continuing: the guest driver must see the passed-through GPU before container or Kubernetes work begins.
-
-## Phase 7: Configure NVIDIA Container Runtime
-
-This phase verifies the NVIDIA runtime path without Kubernetes. In this run, the guest used containerd 2.2.1, runc 1.3.4, and NVIDIA Container Toolkit 1.20.0.
-
-The package-install commands for containerd, runc, and the NVIDIA Container Toolkit were not preserved. Neither were the commands that generated `/etc/containerd/config.toml` and enabled systemd cgroups. Use the [containerd installation guide](https://github.com/containerd/containerd/blob/main/docs/getting-started.md) and [NVIDIA Container Toolkit installation guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html) for those prerequisites. The tested NVIDIA packages were `nvidia-container-toolkit`, `nvidia-container-toolkit-base`, `libnvidia-container1`, and `libnvidia-container-tools`, all at `1.20.0-1`; current documentation may default to a newer version.
-
-Before the runtime configuration step below, the guest had an explicit containerd v3 configuration with `SystemdCgroup = true`. The Kubernetes playbook checks this state and leaves the runtime configuration intact.
-
-Run inside the guest:
+Check the guest PCI binding:
 
 ```bash
+lspci -nnk -s 07:00.0 | grep 'Kernel driver in use'
+lsmod | grep -E '^nvidia|^nouveau' || true
+```
+
+Output:
+
+```text
+Kernel driver in use: nvidia
+nvidia_uvm
+nvidia_drm
+nvidia_modeset
+nvidia
+```
+
+Gate: `nvidia-smi` must work in the guest before container runtime work begins.
+
+## containerd and NVIDIA Container Toolkit Validation
+
+Install containerd, runc, and the NVIDIA Container Toolkit inside the guest. The tested package versions were containerd `2.2.1-0ubuntu1~24.04.3`, runc `1.3.4-0ubuntu1~24.04.1`, and NVIDIA Container Toolkit `1.20.1-1`.
+
+Configure containerd to import drop-in configs, enable systemd cgroups for both `runc` and the `nvidia` runtime handler, then configure the NVIDIA runtime:
+
+```bash
+sudo nvidia-ctk runtime configure --runtime=containerd
+sudo systemctl restart containerd
 containerd --version
 runc --version
 nvidia-ctk --version
-sudo nvidia-ctk runtime configure --runtime=containerd
-sudo systemctl restart containerd
 systemctl is-active containerd
 ```
 
-Captured output:
+Output:
 
-```plaintext
-NVIDIA Container Toolkit 1.20.0 installed successfully.
-nvidia-ctk runtime configure --runtime=containerd created /etc/containerd/conf.d/99-nvidia.toml
-containerd restarted successfully and remains active.
+```text
+containerd github.com/containerd/containerd/v2 2.2.1
+runc version 1.3.4-0ubuntu1~24.04.1
+NVIDIA Container Toolkit CLI version 1.20.1
+active
 ```
 
-The tested plain container used `docker.io/nvidia/cuda:12.8.1-base-ubuntu24.04`, the `io.containerd.runc.v2` runtime, `/usr/bin/nvidia-container-runtime`, and:
+Confirm the NVIDIA runtime drop-in:
 
-```plaintext
-NVIDIA_VISIBLE_DEVICES=all
-NVIDIA_DRIVER_CAPABILITIES=compute,utility
+```bash
+grep -R 'BinaryName.*nvidia-container-runtime' /etc/containerd
 ```
 
-The exact `ctr run` invocation was not preserved. The image, runtime, environment, and result below are a validation checkpoint, not a captured command recipe. Confirm equivalent GPU visibility in your guest before proceeding.
+Output:
 
-Captured output from inside the container:
+```text
+BinaryName = "/usr/bin/nvidia-container-runtime"
+```
 
-```plaintext
-Driver Version: 595.84
-CUDA Version reported by driver: 13.2
-GPU: NVIDIA GeForce RTX 3050
+Run a plain container GPU smoke test before Kubernetes:
+
+```bash
+sudo ctr run --rm --gpus 0 \
+  docker.io/nvidia/cuda:12.4.1-base-ubuntu22.04 \
+  hami-v2-nvidia-smi \
+  nvidia-smi
+```
+
+Output:
+
+```text
+NVIDIA-SMI 595.91.07
+Driver Version: 595.91.07
+CUDA Version: 13.2
+GPU: NVIDIA GeForce RTX 3050 Laptop GPU
 Bus-Id: 00000000:07:00.0
-VRAM: 4096 MiB
-GPU-Util: 0%
+Memory: 4096 MiB
+Processes: none
 ```
 
-Gate before continuing: the GPU must be visible through the guest container runtime before Kubernetes is added.
+Gate: prove the guest container runtime can reach the GPU before kubeadm. If this layer fails, HAMi will not be able to fix it later.
 
-## Phase 8: Bootstrap Kubernetes and CNI
+## Manual kubeadm Bootstrap
 
-The tested Kubernetes bootstrap used a small Ansible workflow against the Ubuntu guest. The public bundle under `tutorials/labs/examples/18-local-gpu-passthrough/ansible/` contains [site.yml](./examples/18-local-gpu-passthrough/ansible/site.yml), [inventory.example.ini](./examples/18-local-gpu-passthrough/ansible/inventory.example.ini), [ansible.cfg](./examples/18-local-gpu-passthrough/ansible/ansible.cfg), [group_vars/all.yml](./examples/18-local-gpu-passthrough/ansible/group_vars/all.yml), and the four roles used for prerequisites, packages, kubeadm, and Calico. Use the whole directory from the website checkout; downloading `site.yml` alone is not enough.
-
-The automation checks the NVIDIA/containerd baseline, applies Kubernetes prerequisites, installs pinned packages, runs kubeadm, removes the single-node control-plane taint, and installs Calico. The public bundle combines the successful Calico CRD installation with the final runtime-only VXLAN configuration. It does not install the Tigera operator. This sanitized bundle has been checked for syntax and task resolution; it has not been applied again to a fresh VM.
-
-On the controller, install Ansible with the `community.general` and `ansible.posix` collections listed in [requirements.yml](./examples/18-local-gpu-passthrough/ansible/requirements.yml). From the website checkout root:
+Prepare the node for Kubernetes:
 
 ```bash
-cd tutorials/labs/examples/18-local-gpu-passthrough/ansible
-cp inventory.example.ini inventory.ini
-ansible-galaxy collection install -r requirements.yml
+sudo swapoff -a
+sudo sed -i.bak '/ swap /s/^/# kubeadm disabled: /' /etc/fstab
+cat <<'EOF' | sudo tee /etc/modules-load.d/k8s.conf
+overlay
+br_netfilter
+EOF
+sudo modprobe overlay
+sudo modprobe br_netfilter
+cat <<'EOF' | sudo tee /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-iptables = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+net.ipv4.ip_forward = 1
+EOF
+sudo sysctl --system
 ```
 
-Edit `inventory.ini`: replace `GUEST_IP` with the guest's reachable IP address and `GUEST_SSH_USER` with its SSH user. Verify SSH access and the host key first. The guest hostname must be `hami-lab`; the SSH user needs sudo access. The playbook derives the API advertise address from `ansible_host` and the user's home directory from the guest account database. Review the runtime and GPU expectations in `group_vars/all.yml` if your hardware differs.
+Output:
 
-Run from that directory on the controller:
+```text
+net.bridge.bridge-nf-call-iptables = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+net.ipv4.ip_forward = 1
+```
+
+Install Kubernetes packages from the v1.36 repository and hold them:
 
 ```bash
-ansible-playbook --syntax-check site.yml
-ansible-playbook --list-tasks site.yml
-ansible-playbook -K site.yml
+sudo apt-get install -y kubeadm=1.36.5-1.1 kubelet=1.36.5-1.1 kubectl=1.36.5-1.1 cri-tools=1.36.0-1.1
+sudo apt-mark hold kubeadm kubelet kubectl
+kubeadm version -o short
+kubelet --version
+kubectl version --client -o jsonpath='{.clientVersion.gitVersion}{"\n"}'
 ```
 
-The tested values were:
+Output:
 
-```plaintext
-kubeadm/kubelet/kubectl: 1.36.4-1.1
-Kubernetes version: v1.36.4
-CRI socket: unix:///run/containerd/containerd.sock
-containerd: 2.2.1
-cgroup driver: systemd
-Calico: v3.32.2
-Calico backend: VXLAN
-Calico IPIP: Never
-Calico VXLAN: Always
-Calico CIDR: 10.244.0.0/16
+```text
+kubeadm: v1.36.5
+kubelet: Kubernetes v1.36.5
+kubectl client gitVersion: v1.36.5
 ```
 
-The Ansible workflow applied these guest-side prerequisites:
-
-```plaintext
-swapoff -a
-swap entry persisted disabled in /etc/fstab
-/etc/modules-load.d/k8s.conf
-  overlay
-  br_netfilter
-/etc/sysctl.d/99-kubernetes-cri.conf
-  net.bridge.bridge-nf-call-iptables = 1
-  net.bridge.bridge-nf-call-ip6tables = 1
-  net.ipv4.ip_forward = 1
-```
-
-It rendered and ran kubeadm with:
-
-```plaintext
-node name: hami-lab
-cluster name: hami-lab
-advertise address: guest IP from inventory.ini
-Kubernetes version: v1.36.4
-service subnet: 10.96.0.0/12
-DNS domain: cluster.local
-cgroupDriver: systemd
-```
-
-Validate inside the guest:
+Point `crictl` at containerd:
 
 ```bash
+cat <<'EOF' | sudo tee /etc/crictl.yaml
+runtime-endpoint: unix:///run/containerd/containerd.sock
+image-endpoint: unix:///run/containerd/containerd.sock
+timeout: 10
+debug: false
+pull-image-on-create: false
+EOF
+sudo crictl info | grep -E 'RuntimeName|RuntimeVersion|RuntimeApiVersion'
+```
+
+Output:
+
+```text
+RuntimeName: containerd
+RuntimeVersion: 2.2.1
+RuntimeApiVersion: v1
+```
+
+Bootstrap the control plane:
+
+```bash
+sudo kubeadm init \
+  --kubernetes-version v1.36.5 \
+  --apiserver-advertise-address "${GUEST_IP}" \
+  --pod-network-cidr 192.168.0.0/16 \
+  --cri-socket unix:///run/containerd/containerd.sock
+```
+
+Output:
+
+```text
+Your Kubernetes control-plane has initialized successfully!
+```
+
+Configure kubectl for the guest user:
+
+```bash
+mkdir -p "$HOME/.kube"
+sudo cp /etc/kubernetes/admin.conf "$HOME/.kube/config"
+sudo chown "$(id -u):$(id -g)" "$HOME/.kube/config"
 kubectl get nodes -o wide
-kubectl get pods -n kube-system
-systemctl is-active containerd
-nvidia-smi --query-gpu=name,driver_version,memory.total --format=csv,noheader
 ```
 
-Captured output:
+Output:
 
-```plaintext
-node hami-lab: Ready
-Kubernetes: v1.36.4
-calico-node: 1/1 Running
-calico-kube-controllers: 1/1 Running
-CoreDNS x2: 1/1 Running
-containerd: active
-RTX 3050: visible at 07:00.0
-NVIDIA driver: 595.84
+```text
+NAME          STATUS     ROLES           VERSION   INTERNAL-IP       OS-IMAGE
+hami-lab-v2   NotReady   control-plane   v1.36.5   192.168.122.242   Ubuntu 24.04.5 LTS
 ```
 
-Captured CNI validation:
+Check why the node is not ready yet:
 
-```plaintext
-IPPool CIDR: 10.244.0.0/16
-IPIP: Never
-VXLAN: Always
-natOutgoing: true
-10-calico.conflist: present
-calico-kubeconfig: present
-vxlan.calico: UP; VNI 4096; UDP/4789; local 192.168.122.250
-NetworkUnavailable=False (CalicoIsUp)
-Ready=True (KubeletReady)
+```bash
+kubectl describe node hami-lab-v2 | grep -A2 'KubeletNotReady'
 ```
 
-Captured functional network gate:
+Output:
 
-```plaintext
-Pod-to-Pod ping: 3/3, 0% loss
-Pod-to-Pod HTTP: phase7-network-ok
-ClusterIP HTTP: phase7-network-ok
-service DNS-name HTTP: phase7-network-ok
-kubernetes.default.svc.cluster.local -> 10.96.0.1
+```text
+KubeletNotReady: container runtime network not ready
+NetworkPluginNotReady: cni plugin not initialized
 ```
 
-Gate before continuing: the node, CoreDNS, Calico, pod networking, service networking, DNS, containerd, and guest GPU must all be healthy.
+Gate: this `NotReady` state is expected before CNI. Continue only if the control plane pods are running and `/livez` plus `/readyz` pass.
 
-## Phase 9: Validate the Pre-HAMi GPU Path
+## Manual Calico Install
 
-Before installing HAMi, validate the Kubernetes-to-containerd-to-NVIDIA runtime path with a `RuntimeClass`.
+Download the pinned Calico manifest:
 
-Run inside Kubernetes:
+```bash
+CALICO_MANIFEST="$HOME/calico-v3.32.2.yaml"
+curl -L \
+  https://raw.githubusercontent.com/projectcalico/calico/v3.32.2/manifests/calico.yaml \
+  -o "$CALICO_MANIFEST"
+(cd "$HOME" && sha256sum calico-v3.32.2.yaml)
+```
+
+Output:
+
+```text
+a8c828a06a87c629a282ebbc424895b77f3a030251993e41ea400a743675bb02  calico-v3.32.2.yaml
+```
+
+Dry-run the manifest before applying it:
+
+```bash
+kubectl apply --dry-run=server -f "$CALICO_MANIFEST"
+```
+
+Output:
+
+```text
+daemonset.apps/calico-node created (server dry run)
+deployment.apps/calico-kube-controllers created (server dry run)
+```
+
+Apply Calico:
+
+```bash
+kubectl apply -f "$CALICO_MANIFEST"
+kubectl -n kube-system rollout status daemonset/calico-node --timeout=5m
+kubectl -n kube-system rollout status deployment/calico-kube-controllers --timeout=5m
+kubectl wait node hami-lab-v2 --for=condition=Ready --timeout=5m
+```
+
+Output:
+
+```text
+daemonset/calico-node successfully rolled out
+deployment/calico-kube-controllers successfully rolled out
+node/hami-lab-v2 condition met
+```
+
+Inspect the cluster:
+
+```bash
+kubectl get nodes
+kubectl -n kube-system get pods
+```
+
+Output:
+
+```text
+NAME          STATUS   ROLES           VERSION
+hami-lab-v2   Ready    control-plane   v1.36.5
+
+calico-kube-controllers   1/1 Running
+calico-node               1/1 Running
+coredns                   1/1 Running
+etcd-hami-lab-v2          1/1 Running
+kube-apiserver-hami-lab-v2 1/1 Running
+kube-controller-manager   1/1 Running
+kube-proxy                1/1 Running
+kube-scheduler-hami-lab-v2 1/1 Running
+```
+
+Validate DNS from a temporary pod. The toleration is required because this is a single-node control-plane cluster:
+
+```bash
+kubectl run v2-calico-dns-smoke \
+  --image=busybox:1.36.1 \
+  --restart=Never \
+  --overrides='{"spec":{"tolerations":[{"key":"node-role.kubernetes.io/control-plane","operator":"Exists","effect":"NoSchedule"}]}}' \
+  -- nslookup kubernetes.default.svc.cluster.local
+kubectl logs v2-calico-dns-smoke
+kubectl delete pod v2-calico-dns-smoke
+```
+
+Output:
+
+```text
+Server: 10.96.0.10
+Name: kubernetes.default.svc.cluster.local
+Address: 10.96.0.1
+pod "v2-calico-dns-smoke" deleted
+```
+
+Gate: node readiness, Calico, CoreDNS, API health, and guest GPU visibility must all pass before GPU workloads.
+
+## Plain CUDA Kubernetes Workload Before HAMi
+
+Create the `RuntimeClass` for the named NVIDIA runtime handler:
 
 ```bash
 kubectl apply -f - <<'EOF'
@@ -638,387 +779,533 @@ metadata:
   name: nvidia
 handler: nvidia
 EOF
-
-kubectl get runtimeclass nvidia \
-  -o custom-columns='NAME:.metadata.name,HANDLER:.handler'
+kubectl get runtimeclass nvidia -o custom-columns='NAME:.metadata.name,HANDLER:.handler'
 ```
 
-Captured output:
+Output:
 
-```plaintext
+```text
+runtimeclass.node.k8s.io/nvidia created
 NAME     HANDLER
 nvidia   nvidia
 ```
 
-The tested RuntimeClass smoke Pod completed with:
-
-```plaintext
-phase8-runtime-smoke -> Completed
-restarts=0
-RuntimeClass=nvidia
-NVIDIA GeForce RTX 3050 Laptop GPU
-driver 595.84
-4096 MiB
-```
-
-This phase validates:
-
-```mermaid
-%% title: Validation Chain
-flowchart LR
-    GuestGPU["Guest GPU"] --> Runtime["Container runtime"]
-    Runtime --> Kubernetes["Kubernetes"]
-    Kubernetes --> RuntimeClass["RuntimeClass"]
-    RuntimeClass --> Hami["HAMi"]
-    Hami --> Workload["Fractional workload"]
-```
-
-The stock NVIDIA device-plugin was used temporarily during setup to check Kubernetes GPU advertisement, but the exact installation command was not captured. It is not part of this public lab flow. The required public gate here is the retained `RuntimeClass` path and successful GPU execution before HAMi.
-
-Gate before continuing: a Kubernetes Pod using `RuntimeClass` `nvidia` must reach the GPU before HAMi is installed.
-
-## Phase 10: Install and Verify HAMi
-
-Install HAMi only after the lower layers pass. In this run, HAMi v2.10.0 was installed from a clean official v2.10.0 chart, with the existing `RuntimeClass` preserved and the scheduler image tag matched to Kubernetes v1.36.4.
-
-The tested render/install settings were:
-
-```plaintext
-hami-2.10.0.tgz checksum -> PASS
-chart/app version -> 2.10.0
-RuntimeClass override -> nvidia
-RuntimeClass object rendered -> none
-NVIDIA nodeSelector -> gpu=on
-kube-scheduler image tag -> v1.36.4
-HAMi image tag -> v2.10.0
-devicePlugin.nvidiaDriverRoot=/
-```
-
-Label the node:
+Install the lab-adapted NVIDIA device plugin. It uses the stock `nvcr.io/nvidia/k8s-device-plugin:v0.20.1` image, adds `runtimeClassName: nvidia`, and tolerates the control-plane taint:
 
 ```bash
-kubectl label node hami-lab gpu=on
-kubectl get node hami-lab \
-  -o jsonpath='gpu-label={.metadata.labels.gpu}{"\n"}'
+kubectl apply -f - <<'EOF'
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: nvidia-device-plugin-daemonset
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      name: nvidia-device-plugin-ds
+  template:
+    metadata:
+      labels:
+        name: nvidia-device-plugin-ds
+    spec:
+      runtimeClassName: nvidia
+      tolerations:
+        - key: nvidia.com/gpu
+          operator: Exists
+          effect: NoSchedule
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+      containers:
+        - image: nvcr.io/nvidia/k8s-device-plugin:v0.20.1
+          name: nvidia-device-plugin-ctr
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: device-plugin
+              mountPath: /var/lib/kubelet/device-plugins
+      volumes:
+        - name: device-plugin
+          hostPath:
+            path: /var/lib/kubelet/device-plugins
+EOF
+kubectl -n kube-system rollout status daemonset/nvidia-device-plugin-daemonset --timeout=5m
 ```
 
-Captured output:
+Output:
 
-```plaintext
-gpu-label=on
+```text
+runtimeclass.node.k8s.io/nvidia unchanged
+daemonset.apps/nvidia-device-plugin-daemonset created
+daemon set "nvidia-device-plugin-daemonset" successfully rolled out
 ```
 
-Use Helm v3.22.0, the version used in this run. Place the website example directory on the guest, then run the following from that checkout root inside the guest, where `kubectl` already accesses the lab cluster. The [values file](./examples/18-local-gpu-passthrough/hami-values.yaml) uses the chart's actual `devicePlugin.runtimeClassName`, `devicePlugin.nvidiaNodeSelector`, `devicePlugin.nvidiaDriverRoot`, and `scheduler.kubeScheduler.image.tag` keys.
+Wait for the node to advertise one physical GPU:
 
 ```bash
-helm pull hami --repo https://project-hami.github.io/HAMi --version 2.10.0
-helm template hami ./hami-2.10.0.tgz \
-  --namespace kube-system --kube-version 1.36.4 \
-  -f tutorials/labs/examples/18-local-gpu-passthrough/hami-values.yaml
+kubectl get node hami-lab-v2 \
+  -o jsonpath='capacity={.status.capacity.nvidia\.com/gpu} allocatable={.status.allocatable.nvidia\.com/gpu}{"\n"}'
 ```
 
-This public chart-acquisition and render path was checked against the accepted stable configuration: the three HAMi containers use `docker.io/projecthami/hami:v2.10.0`, kube-scheduler uses `v1.36.4`, the device plugin uses `runtimeClassName: nvidia` and `gpu=on`, and the driver-root hostPath is `/` with type `Directory`. No new RuntimeClass is rendered.
+Output:
 
-For a fresh cluster with no existing `hami` release, install it:
+```text
+capacity=1 allocatable=1
+```
+
+Run a plain CUDA workload before HAMi:
 
 ```bash
-helm install hami ./hami-2.10.0.tgz \
-  --namespace kube-system \
-  -f tutorials/labs/examples/18-local-gpu-passthrough/hami-values.yaml \
-  --wait --wait-for-jobs --timeout 10m
-```
-
-This is a public command derived from the tested configuration, not a verbatim record of the original Helm invocation. The chart was rendered locally; this cleaned install command has not been applied to a fresh cluster. The deployed release and workload results below come from the original GPU lab run, whose accepted release was revision 7. A fresh install starts at revision 1.
-
-After installing HAMi, verify the release and components:
-
-```bash
-helm list -n kube-system
-kubectl get pods -n kube-system -l app.kubernetes.io/name=hami -o wide
-kubectl get runtimeclass nvidia \
-  -o custom-columns='NAME:.metadata.name,HANDLER:.handler'
-```
-
-Captured output:
-
-```plaintext
-NAME: hami
-NAMESPACE: kube-system
-REVISION: 7
-STATUS: deployed
-CHART: hami-2.10.0
-APP VERSION: 2.10.0
-```
-
-Captured output:
-
-```plaintext
-NAME                              READY   STATUS    RESTARTS   NODE
-hami-device-plugin-j4s2v          2/2     Running   0          hami-lab
-hami-scheduler-77bbb65896-nh7zq   2/2     Running   0          hami-lab
-```
-
-Captured output:
-
-```plaintext
-NAME     HANDLER
-nvidia   nvidia
-```
-
-Check image identity:
-
-```bash
-kubectl get ds hami-device-plugin -n kube-system \
-  -o jsonpath='{range .spec.template.spec.containers[*]}{.name}={.image}{"\n"}{end}'
-
-kubectl get deploy hami-scheduler -n kube-system \
-  -o jsonpath='{range .spec.template.spec.containers[*]}{.name}={.image}{"\n"}{end}'
-```
-
-Captured output:
-
-```plaintext
-device-plugin=docker.io/projecthami/hami:v2.10.0
-vgpu-monitor=docker.io/projecthami/hami:v2.10.0
-kube-scheduler=registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:v1.36.4
-vgpu-scheduler-extender=docker.io/projecthami/hami:v2.10.0
-```
-
-Gate before continuing: HAMi components must be Running, the node must have `gpu=on`, `RuntimeClass` `nvidia` must exist, and the running HAMi images must be stable v2.10.0 images.
-
-## Phase 11: Run the Fractional CUDA Workload
-
-The final workload uses the HAMi scheduler and NVIDIA RuntimeClass path together:
-
-```mermaid
-%% title: HAMi Workload Path
-flowchart LR
-    PodSpec["Pod spec"] --> Scheduler["hami-scheduler"]
-    Scheduler --> Annotation["Allocation annotation"]
-    Annotation --> RuntimeClass["NVIDIA RuntimeClass"]
-    RuntimeClass --> CUDA["CUDA workload"]
-    CUDA --> Memory["1024 MiB visible memory"]
-```
-
-Create `hami-lab-fractional-smoke.yaml`:
-
-```yaml
+kubectl apply -f - <<'EOF'
 apiVersion: v1
 kind: Pod
 metadata:
-  name: hami-lab-fractional-smoke
-  namespace: default
-  labels:
-    app: hami-lab-fractional-smoke
+  name: v2-plain-cuda-vectoradd
 spec:
   restartPolicy: Never
-  schedulerName: hami-scheduler
   runtimeClassName: nvidia
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      operator: Exists
+      effect: NoSchedule
   containers:
     - name: vectoradd
       image: nvcr.io/nvidia/k8s/cuda-sample:vectoradd-cuda12.5.0
-      imagePullPolicy: IfNotPresent
-      command: ["sh", "-c"]
-      args:
-        - |
-          set -eu
-          /cuda-samples/vectorAdd
-          nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
       resources:
         limits:
-          nvidia.com/gpu: "1"
-          nvidia.com/gpumem: "1024"
-          nvidia.com/gpucores: "25"
+          nvidia.com/gpu: 1
+EOF
+kubectl wait pod/v2-plain-cuda-vectoradd --for=jsonpath='{.status.phase}'=Succeeded --timeout=10m
+kubectl logs v2-plain-cuda-vectoradd
 ```
 
-Run inside Kubernetes:
+Output:
 
-```bash
-kubectl apply -f hami-lab-fractional-smoke.yaml
-kubectl get pod hami-lab-fractional-smoke -o wide
-```
-
-Captured output:
-
-```plaintext
-hami-lab-fractional-smoke   0/1 Completed   0   10s   10.244.214.201   hami-lab
-phase=Succeeded
-```
-
-Captured events:
-
-```plaintext
-Scheduled          hami-scheduler  Successfully assigned default/hami-lab-fractional-smoke to hami-lab
-FilteringSucceed   hami-scheduler  find fit node(hami-lab), 0 nodes not fit, 1 nodes fit(hami-lab:0.00)
-BindingSucceed     hami-scheduler  Successfully binding node [hami-lab] to default/hami-lab-fractional-smoke
-```
-
-Gate before continuing: the Pod should complete through `hami-scheduler`, not through the default scheduler.
-
-## Phase 12: Inspect HAMi Allocation
-
-Run inside Kubernetes:
-
-```bash
-kubectl get pod hami-lab-fractional-smoke \
-  -o jsonpath='name={.metadata.name}{"\n"}node={.spec.nodeName}{"\n"}runtimeClassName={.spec.runtimeClassName}{"\n"}schedulerName={.spec.schedulerName}{"\n"}phase={.status.phase}{"\n"}gpuLimit={.spec.containers[0].resources.limits.nvidia\.com/gpu}{"\n"}gpumemLimit={.spec.containers[0].resources.limits.nvidia\.com/gpumem}{"\n"}gpucoresLimit={.spec.containers[0].resources.limits.nvidia\.com/gpucores}{"\n"}'
-```
-
-Captured output:
-
-```plaintext
-name=hami-lab-fractional-smoke
-node=hami-lab
-runtimeClassName=nvidia
-schedulerName=hami-scheduler
-phase=Succeeded
-gpuLimit=1
-gpumemLimit=1024
-gpucoresLimit=25
-```
-
-Run inside Kubernetes:
-
-```bash
-kubectl get pod hami-lab-fractional-smoke \
-  -o jsonpath='{.metadata.annotations.hami\.io/vgpu-devices-allocated}{"\n"}'
-```
-
-Captured output:
-
-```plaintext
-GPU-55c8d7db-73a6-bf9a-e47f-05680f2e16f8,NVIDIA,1024,25:;
-```
-
-The annotation format is:
-
-```plaintext
-GPU_UUID,VENDOR,GPUMEM_MIB,GPUCORES_PERCENT:;
-```
-
-Gate before continuing: the allocation annotation should contain `NVIDIA,1024,25` for this workload.
-
-## Phase 13: Verify CUDA and Visible GPU Memory
-
-Run inside Kubernetes:
-
-```bash
-kubectl logs hami-lab-fractional-smoke --tail=-1
-```
-
-Captured output:
-
-```plaintext
+```text
+pod/v2-plain-cuda-vectoradd created
+pod/v2-plain-cuda-vectoradd condition met
 [Vector addition of 50000 elements]
 Copy input data from the host memory to the CUDA device
 CUDA kernel launch with 196 blocks of 256 threads
 Copy output data from the CUDA device to the host memory
 Test PASSED
 Done
-NVIDIA GeForce RTX 3050 Laptop GPU, 1024 MiB
 ```
 
-This confirms the expected path in this lab: a real CUDA sample ran successfully, and `nvidia-smi` inside the container reported the requested 1024 MiB memory view.
+This proves Kubernetes, the NVIDIA runtime handler, and the stock device plugin work before HAMi. It is not a HAMi result.
 
-## Phase 14: Cleanup and Recover the Host GPU
-
-Delete the workload:
+Remove the stock plugin before installing HAMi:
 
 ```bash
-kubectl delete pod hami-lab-fractional-smoke --ignore-not-found=true --wait=true
-```
-
-Captured output:
-
-```plaintext
-pod "hami-lab-fractional-smoke" deleted
-```
-
-Shut down the VM through libvirt and validate host recovery. Do not restart host NVIDIA, container, audio, or telemetry services while the VM may still own the GPU.
-
-Run on the host:
-
-```bash
-sudo virsh shutdown hami-lab
-watch -n 2 'sudo virsh domstate hami-lab'
-```
-
-After the VM reports `shut off`, validate recovery:
-
-```bash
-virsh -c qemu:///system domstate hami-lab
-lspci -nnk -s 01:00.0
-lspci -nnk -s 01:00.1
-nvidia-smi --query-gpu=name,driver_version,memory.total --format=csv,noheader
-```
-
-Captured output:
-
-```plaintext
-shut off
-Kernel driver in use: nvidia
-NVIDIA GeForce RTX 3050 Laptop GPU, 615.71.09, 4096 MiB
-```
-
-Once both devices are back on their host drivers, restart the host services you stopped in Phase 4 and verify audio and fan control. Keep services that were already stopped before the lab in their original state.
-
-Gate after cleanup: the VM is shut off, the NVIDIA GPU is back on the host NVIDIA driver, the HDA function is back on `snd_hda_intel`, and host `nvidia-smi` works.
-
-## Troubleshooting
-
-### Pod fails with `no binding pod found`
-
-If a GPU Pod is submitted after HAMi is installed but bypasses `hami-scheduler`, kubelet allocation can fail with:
-
-```plaintext
-UnexpectedAdmissionError
-Allocate failed due to rpc error: code = Unknown desc = no binding pod found on node hami-lab
-```
-
-In this lab, HAMi-managed GPU workloads use:
-
-```yaml
-spec:
-  schedulerName: hami-scheduler
-```
-
-Do not treat a post-HAMi default-scheduler plain CUDA Pod as the success path for this lab.
-
-### `nvidia-smi` does not show the expected memory slice
-
-Check the expected path:
-
-```bash
+kubectl -n kube-system delete ds nvidia-device-plugin-daemonset --ignore-not-found
 kubectl get runtimeclass nvidia
-kubectl get node hami-lab \
-  -o jsonpath='{.metadata.labels.gpu}{"\n"}'
-kubectl get pod <pod-name> \
-  -o jsonpath='{.spec.schedulerName}{"\n"}'
-kubectl get pod <pod-name> \
-  -o jsonpath='{.spec.runtimeClassName}{"\n"}'
-kubectl get pod <pod-name> \
-  -o jsonpath='{.metadata.annotations.hami\.io/vgpu-devices-allocated}{"\n"}'
 ```
 
-For this lab, the expected values are:
+Output:
 
-```plaintext
-schedulerName: hami-scheduler
+```text
+daemonset.apps "nvidia-device-plugin-daemonset" deleted
+NAME     HANDLER   AGE
+nvidia   nvidia
+```
+
+## HAMi Helm Install with Inspected Values
+
+HAMi needs the existing `RuntimeClass`, the `gpu=on` label, and tolerations for this single-node control-plane cluster.
+
+Label the node:
+
+```bash
+kubectl label node hami-lab-v2 gpu=on
+kubectl get node hami-lab-v2 -o jsonpath='gpu-label={.metadata.labels.gpu}{"\n"}'
+```
+
+Output:
+
+```text
+node/hami-lab-v2 labeled
+gpu-label=on
+```
+
+Install Helm and add the HAMi repo:
+
+```bash
+helm version --short
+helm repo add hami https://project-hami.github.io/HAMi
+helm repo update
+helm search repo hami/hami --versions | grep 2.10.0
+```
+
+Output:
+
+```text
+v3.22.0
+"hami" has been added to your repositories
+Update Complete. Happy Helming!
+hami/hami 2.10.0 2.10.0
+```
+
+Create `/tmp/hami-v2-values.yaml`. The same content is available in [`examples/18-local-gpu-passthrough/hami-values.yaml`](./examples/18-local-gpu-passthrough/hami-values.yaml).
+
+```bash
+cat >/tmp/hami-v2-values.yaml <<'EOF'
+devicePlugin:
+  runtimeClassName: nvidia
+  createRuntimeClass: false
+  nvidiaDriverRoot: /
+  nvidiaNodeSelector:
+    gpu: "on"
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      operator: Exists
+      effect: NoSchedule
+
+scheduler:
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      operator: Exists
+      effect: NoSchedule
+  patch:
+    tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
+  kubeScheduler:
+    image:
+      tag: v1.36.5
+EOF
+```
+
+Render the chart before installing it:
+
+```bash
+helm template hami hami/hami \
+  --namespace kube-system \
+  --version 2.10.0 \
+  -f /tmp/hami-v2-values.yaml \
+  | grep -E 'runtimeClassName: nvidia|gpu: "on"|tag: v1.36.5' \
+  | sort -u
+```
+
+Output:
+
+```text
+gpu: "on"
 runtimeClassName: nvidia
-gpu label: on
-allocation annotation contains: NVIDIA,1024,25
+tag: v1.36.5
 ```
 
-### Advanced: Why Process Path Matters
+Install HAMi:
 
-In a separate memory-enforcement validation, normal startup, child process, `kubectl exec` non-login shell, and non-login user-switch paths observed the configured 2048 MiB memory slice. A login shell created with `su -` lost the HAMi allocation environment in this lab and saw the full 4096 MiB card.
+```bash
+helm install hami hami/hami \
+  --namespace kube-system \
+  --version 2.10.0 \
+  -f /tmp/hami-v2-values.yaml \
+  --wait \
+  --timeout 10m
+```
 
-Process path matters because HAMi memory limits are delivered through the container runtime path and consumed by the CUDA/NVML process environment. A shell that changes or drops that environment can become a different validation path from the application process Kubernetes started.
+Output:
 
-Do not use a login shell as your only memory-enforcement check unless you are explicitly testing that path. For the fractional smoke workload in this lab, use the container's normal command and `kubectl logs` output.
+```text
+NAME: hami
+NAMESPACE: kube-system
+STATUS: deployed
+REVISION: 1
+Resource name: nvidia.com/gpu
+```
 
-## Summary
+Verify HAMi:
 
-You built and validated a local HAMi GPU passthrough lab: host virtualization and IOMMU, CPU-only VM, rollback overlay, VFIO detach/recovery, managed libvirt passthrough, guest NVIDIA driver, NVIDIA/containerd runtime, Kubernetes, Calico, pre-HAMi GPU runtime, and HAMi v2.10.0.
+```bash
+helm -n kube-system list --filter '^hami$'
+kubectl -n kube-system get ds hami-device-plugin
+kubectl -n kube-system get deploy hami-scheduler
+kubectl get node hami-lab-v2 \
+  -o jsonpath='capacity={.status.capacity.nvidia\.com/gpu} allocatable={.status.allocatable.nvidia\.com/gpu}{"\n"}'
+```
 
-The final fractional CUDA Pod was scheduled by `hami-scheduler`, used `runtimeClassName: nvidia`, received the allocation `NVIDIA,1024,25`, passed the CUDA vectorAdd test, and reported `1024 MiB` visible GPU memory inside the container. After cleanup, the VM shut down and the GPU returned to the host NVIDIA driver.
+Output:
+
+```text
+hami  kube-system  1  deployed  hami-2.10.0  2.10.0
+hami-device-plugin  desired=1 current=1 ready=1 available=1
+hami-scheduler      ready=1/1 available=1
+capacity=10 allocatable=10
+```
+
+Inspect the HAMi node registration:
+
+```bash
+kubectl get node hami-lab-v2 \
+  -o jsonpath='{.metadata.annotations.hami\.io/node-nvidia-register}{"\n"}'
+```
+
+Output:
+
+```text
+type=NVIDIA GeForce RTX 3050 Laptop GPU
+count=10
+devmem=4096
+devcore=100
+health=true
+```
+
+Gate: HAMi pods must be healthy and the node must advertise `nvidia.com/gpu` capacity and allocatable as `10`.
+
+## Fractional HAMi Workload
+
+Run a fractional CUDA sample through HAMi:
+
+```bash
+kubectl apply -f - <<'EOF'
+apiVersion: v1
+kind: Pod
+metadata:
+  name: v2-hami-fractional-vectoradd
+spec:
+  restartPolicy: Never
+  runtimeClassName: nvidia
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      operator: Exists
+      effect: NoSchedule
+  containers:
+    - name: vectoradd
+      image: nvcr.io/nvidia/k8s/cuda-sample:vectoradd-cuda12.5.0
+      resources:
+        limits:
+          nvidia.com/gpu: 1
+          nvidia.com/gpumem: 2048
+          nvidia.com/gpucores: 50
+EOF
+kubectl wait pod/v2-hami-fractional-vectoradd --for=jsonpath='{.status.phase}'=Succeeded --timeout=10m
+kubectl logs v2-hami-fractional-vectoradd
+```
+
+Output:
+
+```text
+pod/v2-hami-fractional-vectoradd created
+pod/v2-hami-fractional-vectoradd condition met
+[Vector addition of 50000 elements]
+Copy input data from the host memory to the CUDA device
+CUDA kernel launch with 196 blocks of 256 threads
+Copy output data from the CUDA device to the host memory
+Test PASSED
+Done
+```
+
+Inspect how HAMi scheduled the pod:
+
+```bash
+kubectl get pod v2-hami-fractional-vectoradd \
+  -o jsonpath='scheduler={.spec.schedulerName}{"\n"}runtimeClass={.spec.runtimeClassName}{"\n"}allocated={.metadata.annotations.hami\.io/vgpu-devices-allocated}{"\n"}node={.metadata.annotations.hami\.io/vgpu-node}{"\n"}'
+```
+
+Output:
+
+```text
+scheduler=hami-scheduler
+runtimeClass=nvidia
+allocated=GPU-55c8d7db-73a6-bf9a-e47f-05680f2e16f8,NVIDIA,2048,50:;
+node=hami-lab-v2
+```
+
+This validates the HAMi workload path:
+
+```mermaid
+flowchart LR
+  Pod["Pod limits: gpu=1 gpumem=2048 gpucores=50"] --> Scheduler["hami-scheduler"]
+  Scheduler --> Annotation["allocation annotation: NVIDIA,2048,50"]
+  Annotation --> RuntimeClass["runtimeClassName: nvidia"]
+  RuntimeClass --> CUDA["CUDA workload"]
+  CUDA --> Slice["2048 MiB visible memory"]
+```
+
+## Main-Process Memory-Slice Proof
+
+Memory enforcement depends on the process path. Use the container main process as the primary proof, because it starts with the environment HAMi injects for the workload. Do not use a later login shell or ad hoc `kubectl exec` path as the main evidence.
+
+Run `nvidia-smi` and `vectorAdd` from the container's main command:
+
+```bash
+kubectl apply -f - <<'EOF'
+apiVersion: v1
+kind: Pod
+metadata:
+  name: v2-hami-process-path-check
+spec:
+  restartPolicy: Never
+  runtimeClassName: nvidia
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      operator: Exists
+      effect: NoSchedule
+  containers:
+    - name: check
+      image: nvcr.io/nvidia/k8s/cuda-sample:vectoradd-cuda12.5.0
+      command: ["/bin/sh", "-lc"]
+      args:
+        - |
+          echo "===== CONTAINER NVIDIA-SMI ====="
+          nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
+          echo
+          echo "===== CONTAINER VECTORADD ====="
+          /cuda-samples/vectorAdd
+      resources:
+        limits:
+          nvidia.com/gpu: 1
+          nvidia.com/gpumem: 2048
+          nvidia.com/gpucores: 50
+EOF
+kubectl wait pod/v2-hami-process-path-check --for=jsonpath='{.status.phase}'=Succeeded --timeout=10m
+kubectl logs v2-hami-process-path-check
+```
+
+Output:
+
+```text
+pod/v2-hami-process-path-check created
+pod/v2-hami-process-path-check condition met
+===== CONTAINER NVIDIA-SMI =====
+NVIDIA GeForce RTX 3050 Laptop GPU, 2048 MiB
+
+===== CONTAINER VECTORADD =====
+[Vector addition of 50000 elements]
+Copy input data from the host memory to the CUDA device
+CUDA kernel launch with 196 blocks of 256 threads
+Copy output data from the CUDA device to the host memory
+Test PASSED
+Done
+```
+
+Inspect annotations and events:
+
+```bash
+kubectl get pod v2-hami-process-path-check \
+  -o jsonpath='phase={.status.phase}{"\n"}scheduler={.spec.schedulerName}{"\n"}allocated={.metadata.annotations.hami\.io/vgpu-devices-allocated}{"\n"}'
+kubectl describe pod v2-hami-process-path-check | grep -E 'Scheduled|FilteringSucceed|BindingSucceed'
+```
+
+Output:
+
+```text
+phase=Succeeded
+scheduler=hami-scheduler
+allocated=GPU-55c8d7db-73a6-bf9a-e47f-05680f2e16f8,NVIDIA,2048,50:;
+Scheduled by hami-scheduler
+FilteringSucceed: find fit node(hami-lab-v2)
+BindingSucceed: Successfully binding node [hami-lab-v2]
+```
+
+Gate: the public memory-slice proof is the main process reporting `2048 MiB` and then completing `vectorAdd`.
+
+## Clean Shutdown and Full Host Recovery
+
+Before shutting down the VM, confirm the expected ownership while it is running:
+
+```bash
+lspci -nnk -s 01:00.0 | grep 'Kernel driver in use'
+lspci -nnk -s 01:00.1 | grep 'Kernel driver in use'
+nvidia-smi
+```
+
+Output:
+
+```text
+Kernel driver in use: vfio-pci
+Kernel driver in use: vfio-pci
+Failed to initialize NVML: No supported GPUs were found
+```
+
+Shut the guest down cleanly and wait for libvirt:
+
+```bash
+ssh "${GUEST_USER}@${GUEST_IP}" 'sudo poweroff'
+until [ "$(virsh -c qemu:///system domstate "$DOMAIN")" = "shut off" ]; do
+  sleep 2
+done
+virsh -c qemu:///system domstate "$DOMAIN"
+```
+
+Output:
+
+```text
+shut off
+```
+
+Verify host PCI ownership:
+
+```bash
+lspci -nnk -s 01:00.0 | grep 'Kernel driver in use'
+lspci -nnk -s 01:00.1 | grep 'Kernel driver in use'
+```
+
+Output:
+
+```text
+Kernel driver in use: nvidia
+Kernel driver in use: snd_hda_intel
+```
+
+Restart the user audio services:
+
+```bash
+systemctl --user restart pipewire.socket pipewire.service pipewire-pulse.socket pipewire-pulse.service wireplumber.service
+systemctl --user is-active pipewire.socket pipewire.service pipewire-pulse.socket pipewire-pulse.service wireplumber.service
+```
+
+Output:
+
+```text
+active
+active
+active
+active
+active
+```
+
+Confirm PulseAudio compatibility on PipeWire and the returned NVIDIA HDA device:
+
+```bash
+pactl info | grep -E 'Server Name|Default Sink'
+pactl list short cards | grep -E '0000_01_00_1|0000_06_00'
+```
+
+Output:
+
+```text
+Server Name: PulseAudio (on PipeWire 1.6.8)
+Default Sink: alsa_output.pci-0000_06_00.1.pro-output-3
+alsa_card.pci-0000_01_00.1
+alsa_card.pci-0000_06_00.1
+alsa_card.pci-0000_06_00.6
+```
+
+Finally, verify the host GPU:
+
+```bash
+nvidia-smi
+```
+
+Output:
+
+```text
+NVIDIA-SMI 615.71.09
+NVIDIA GeForce RTX 3050 Laptop GPU
+Memory-Usage: 1MiB / 4096MiB
+No running processes found
+```
+
+## Troubleshooting Notes
+
+- If the VM will not start after hostdev attachment, recheck host holders with `fuser -v /dev/nvidia* /dev/snd/*` and confirm the host display is not using the NVIDIA GPU.
+- If the node stays `NotReady` after kubeadm, do not continue to HAMi. Install and validate CNI first.
+- If a workload stays `Pending` on this single-node control-plane lab, check for the `node-role.kubernetes.io/control-plane:NoSchedule` taint and add the toleration shown in the manifests above.
+- If `nvidia-smi` works in the guest but not inside containers, fix the containerd NVIDIA runtime layer before installing Kubernetes.
+- If the main-process memory proof reports the full `4096 MiB`, inspect the HAMi allocation annotation, `RuntimeClass`, and resource limits before drawing a conclusion about memory enforcement.
+- Login shells and later process paths can behave differently from the container main process. Treat them as advanced debugging paths, not as the primary proof for this lab.
