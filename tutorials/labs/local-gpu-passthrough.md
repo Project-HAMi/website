@@ -962,11 +962,12 @@ Install Helm and add the HAMi repo:
 sudo apt-get update
 sudo apt-get install -y apt-transport-https ca-certificates curl gpg
 HELM_BUILDKITE_APT_KEY_ID="DDF78C3E6EBB2D2CC223C95C62BA89D07698DBC6"
-curl -fsSL https://packages.buildkite.com/helm-linux/helm-debian/gpgkey |
-  gpg --dearmor |
+curl -fsSL https://packages.buildkite.com/helm-linux/helm-debian/gpgkey -o /tmp/helm.gpgkey
+gpg --show-keys --with-colons /tmp/helm.gpgkey |
+  awk -F: '$1 == "fpr" { print $10 }' |
+  grep -Fx "$HELM_BUILDKITE_APT_KEY_ID"
+gpg --dearmor /tmp/helm.gpgkey |
   sudo tee /usr/share/keyrings/helm.gpg >/dev/null
-gpg --show-keys --with-fingerprint /usr/share/keyrings/helm.gpg |
-  grep "$HELM_BUILDKITE_APT_KEY_ID"
 echo "deb [signed-by=/usr/share/keyrings/helm.gpg] https://packages.buildkite.com/helm-linux/helm-debian/any/ any main" |
   sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
 sudo apt-get update
