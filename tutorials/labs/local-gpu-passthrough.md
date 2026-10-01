@@ -927,8 +927,10 @@ Remove the stock plugin before installing HAMi:
 
 ```bash
 kubectl -n kube-system delete ds nvidia-device-plugin-daemonset --ignore-not-found
-kubectl -n kube-system wait --for=delete pod \
-  -l name=nvidia-device-plugin-ds --timeout=5m >/dev/null
+if kubectl -n kube-system get pod -l name=nvidia-device-plugin-ds --no-headers 2>/dev/null | grep -q .; then
+  kubectl -n kube-system wait --for=delete pod \
+    -l name=nvidia-device-plugin-ds --timeout=5m >/dev/null
+fi
 kubectl get runtimeclass nvidia
 ```
 
