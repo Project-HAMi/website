@@ -27,6 +27,7 @@ import LogoWall from "../components/logoWall";
 import BeforeAfterComparison from "../components/BeforeAfterComparison";
 import adoptersData from "../data/adopters.json";
 import ecosystemData from "../data/ecosystem.json";
+import technicalPartnersData from "../data/technicalPartners";
 import heroStats from "../data/home/heroStats";
 import valueCards from "../data/home/valueCards";
 import vendorDevices from "../data/home/vendorDevices";
@@ -954,6 +955,20 @@ export default function Home() {
           ref={addRevealRef}
           className={clsx(styles.section, styles.sectionAlt, styles.reveal)}
         >
+          <div className="container">
+            <h2 className={styles.sectionTitle}>{isZh ? "技术合作伙伴" : "Technical Partners"}</h2>
+            <p className={styles.sectionLead}>
+              {isZh
+                ? "这些组织为我们提供硬件、资源与顶级支持。这是 HAMi 维护者与这些组织之间的深度技术合作。如果您有意达成这一级别的合作，请联系我们。"
+                : "These organizations provide us with hardware, resources, and top tier support. This is a deep technical partnership between the HAMi maintainers and these organizations. If you are interested in this level of commitment, please contact us."}
+            </p>
+            <div className={styles.supportersWrap}>
+              <ContributorsList items={technicalPartnersData} />
+            </div>
+          </div>
+        </section>
+
+        <section ref={addRevealRef} className={clsx(styles.section, styles.reveal)}>
           <div className="container">
             <h2 className={styles.sectionTitle}>{isZh ? "贡献组织" : "Contributors"}</h2>
             <p className={styles.sectionLead}>
