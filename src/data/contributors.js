@@ -144,12 +144,6 @@ const contributorsData = [
     alt: "Midokura",
     href: "https://www.midokura.com",
   },
-  {
-    "name": "Vultr",
-    "nameZh": "Vultr",
-    "logo": "/img/ecosystem/vultr.svg",
-    "website": "https://www.vultr.com"
-  }
 ];
 
 export default contributorsData;
