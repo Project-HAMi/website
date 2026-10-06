@@ -28,7 +28,7 @@ A small AI team starts with a single GPU server. As the team, the models, and th
 | Chapter | Scenario | What you learn |
 | --- | --- | --- |
 | [1. Setup](./setup.md) | The team checks its first GPU node | The 5-layer GPU stack, and why it is checked bottom up before HAMi enters the picture |
-| 2. One GPU, one Pod | The team deploys its first model | The device plugin mechanism, and why native GPU resources are whole cards |
+| [2. One GPU, one Pod](./one-gpu-one-pod.md) | The team deploys its first model | The device plugin mechanism, and why native GPU resources are whole cards |
 | 3. Let's just share it | Several Pods share one GPU | What time-slicing, MPS, and MIG can and cannot do, and how scheduling differs from isolation |
 | 4. Enter HAMi | The team needs slicing plus isolation | The Pod path through the webhook, scheduler extender, device plugin, and HAMi-core |
 | 5. More cards, where to put them | The cluster grows to more cards and nodes | Scheduling policies, scoring, and why fragmentation happens |

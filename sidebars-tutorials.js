@@ -6,7 +6,7 @@ module.exports = {
       label: "Workshop",
       collapsed: false,
       link: { type: "doc", id: "workshop/overview" },
-      items: ["workshop/setup"],
+      items: ["workshop/setup", "workshop/one-gpu-one-pod"],
     },
     {
       type: "category",
