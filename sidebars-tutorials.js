@@ -3,6 +3,13 @@ module.exports = {
     "overview",
     {
       type: "category",
+      label: "Workshop",
+      collapsed: false,
+      link: { type: "doc", id: "workshop/overview" },
+      items: ["workshop/setup"],
+    },
+    {
+      type: "category",
       label: "Labs",
       collapsed: false,
       link: {

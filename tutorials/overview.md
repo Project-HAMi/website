@@ -7,6 +7,10 @@ import LabCardGridAuto from '@site/src/components/labs/LabCardGridAuto';
 
 Hands-on tutorials for learning HAMi by doing. Each lab is a step-by-step exercise with real, captured outputs: you build a cluster, install HAMi, and verify GPU partitioning behavior yourself.
 
+## Workshop
+
+New to HAMi? Start with the [HAMi Workshop](/tutorials/workshop): a scenario-driven learning path that follows one team from a single GPU server to a shared GPU cluster, with the principle behind each step.
+
 ## Concepts
 
 Background knowledge that the labs build on.

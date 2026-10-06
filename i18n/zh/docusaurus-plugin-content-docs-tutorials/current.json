@@ -1,4 +1,8 @@
 {
+  "sidebar.tutorials.category.Workshop": {
+    "message": "实战课程",
+    "description": "The label for category Workshop in sidebar tutorials"
+  },
   "sidebar.tutorials.category.Labs": {
     "message": "实验",
     "description": "The label for category Labs in sidebar tutorials"

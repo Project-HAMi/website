@@ -7,6 +7,10 @@ import LabCardGridAuto from '@site/src/components/labs/LabCardGridAuto';
 
 通过动手实践学习 HAMi。每个实验都是带真实输出的分步练习：你将亲手搭建集群、安装 HAMi，并验证 GPU 切分行为。
 
+## 实战课程
+
+刚接触 HAMi？从 [HAMi 实战课程](/zh/tutorials/workshop)开始：这是一条以场景驱动的学习路径，跟随一个团队从单台 GPU 服务器走到共享的 GPU 集群，每一步都讲清背后的原理。
+
 ## 概念
 
 实验所依赖的背景知识。
