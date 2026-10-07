@@ -249,8 +249,10 @@ containerd config dump | grep -E 'default_runtime_name|BinaryName'
 
 关注两项内容：
 
-- `default_runtime_name = 'nvidia'`：kubelet 创建的每个容器都会经过 NVIDIA 包装器。对于没有申请 GPU 的容器，包装器直接调用 `runc`，因此普通 Pod 不受影响。第 2 章和第 4 章的 Device Plugin 都依赖这一配置。
+- `default_runtime_name = 'nvidia'`：kubelet 创建的每个容器都会经过 NVIDIA 包装器。容器没有设置 `NVIDIA_VISIBLE_DEVICES` 时，包装器直接调用 `runc`，不注入 GPU。第 2 章和第 4 章的 Device Plugin 都依赖这一配置。
 - `BinaryName = '/usr/bin/nvidia-container-runtime'`：`nvidia` 运行时指向这个包装器。第二个为空的 `BinaryName` 属于默认的 `runc` 运行时。
+
+> NVIDIA 的 CUDA 镜像（包括本课程使用的 `nvidia/cuda` 和 `pytorch/pytorch` 镜像）自带 `NVIDIA_VISIBLE_DEVICES=all`。在 `nvidia` 为默认运行时的节点上，使用这类镜像的 Pod 即使没有申请 GPU，也能看到节点上的所有 GPU，绕过了调度。NVIDIA Device Plugin 的[配置说明](https://github.com/NVIDIA/k8s-device-plugin#configuration-option-details)介绍了改用 volume mounts 或 CDI 传递设备列表、不再依赖这个环境变量的方式。
 
 ### 4.2 通过 NVIDIA 运行时再次运行容器
 

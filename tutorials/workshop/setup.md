@@ -249,8 +249,10 @@ containerd config dump | grep -E 'default_runtime_name|BinaryName'
 
 Look for two things:
 
-- `default_runtime_name = 'nvidia'`: every container the kubelet creates goes through the NVIDIA wrapper. For containers that do not request GPUs, the wrapper just calls `runc`, so ordinary Pods are unaffected. The device plugins in Chapter 2 and Chapter 4 rely on this.
+- `default_runtime_name = 'nvidia'`: every container the kubelet creates goes through the NVIDIA wrapper. If a container does not set `NVIDIA_VISIBLE_DEVICES`, the wrapper just calls `runc` and injects no GPU. The device plugins in Chapter 2 and Chapter 4 rely on this.
 - `BinaryName = '/usr/bin/nvidia-container-runtime'`: the `nvidia` runtime points at the wrapper. The second, empty `BinaryName` belongs to the default `runc` runtime.
+
+> NVIDIA's CUDA images, including the `nvidia/cuda` and `pytorch/pytorch` images used in this workshop, set `NVIDIA_VISIBLE_DEVICES=all` themselves. With `nvidia` as the default runtime, a Pod using such an image can see every GPU on the node without requesting one, which bypasses scheduling. The [NVIDIA device plugin configuration options](https://github.com/NVIDIA/k8s-device-plugin#configuration-option-details) describe passing the device list through volume mounts or CDI instead of this environment variable.
 
 ### 4.2 Run the container again, through the NVIDIA runtime
 

@@ -25,7 +25,7 @@ toc_max_heading_level: 2
 
 - Device Plugin 如何告诉 Kubernetes 节点上有 GPU
 - 申请了 `nvidia.com/gpu` 的 Pod，容器里最终如何拿到一张具体的 GPU
-- 为什么调度器按整张设备计数，不考虑显存
+- 为什么调度器按整个设备计数，不考虑显存
 - 为什么 `nvidia.com/gpu` 只接受整数
 
 ## 实验环境
@@ -116,11 +116,13 @@ Kubernetes 本身不认识 GPU。硬件厂商通过 [Device Plugin](https://kube
 Device Plugin 通过 Kubernetes 的包管理工具 Helm 安装，后续章节也会用到 Helm。
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-4 | bash
+curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-4 | bash -s -- --version v4.3.0
 helm version
 ```
 
 ```plaintext
+Downloading https://get.helm.sh/helm-v4.3.0-linux-amd64.tar.gz
+Verifying checksum... Done.
 Preparing to install helm into /usr/local/bin
 helm installed into /usr/local/bin/helm
 version.BuildInfo{Version:"v4.3.0", GitCommit:"bec5b06ed841fe5269972d864d5177944fd5970f", GitTreeState:"clean", GoVersion:"go1.27.1", KubeClientVersion:"v1.37"}

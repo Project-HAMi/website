@@ -116,11 +116,13 @@ The scheduler sees only a count of devices. Each device is either free or taken,
 The device plugin is installed with Helm, the Kubernetes package manager. Later chapters use Helm too.
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-4 | bash
+curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-4 | bash -s -- --version v4.3.0
 helm version
 ```
 
 ```plaintext
+Downloading https://get.helm.sh/helm-v4.3.0-linux-amd64.tar.gz
+Verifying checksum... Done.
 Preparing to install helm into /usr/local/bin
 helm installed into /usr/local/bin/helm
 version.BuildInfo{Version:"v4.3.0", GitCommit:"bec5b06ed841fe5269972d864d5177944fd5970f", GitTreeState:"clean", GoVersion:"go1.27.1", KubeClientVersion:"v1.37"}

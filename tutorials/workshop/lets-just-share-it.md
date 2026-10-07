@@ -1,6 +1,6 @@
 ---
 title: "Chapter 3: Let's Just Share It"
-description: "Turn on time-slicing so several Pods share one GPU, then watch memory and compute leak between them, and compare time-slicing, MPS, and MIG."
+description: "Turn on time-slicing so several Pods share one GPU, then watch the Pods compete for memory and compute, and compare time-slicing, MPS, and MIG."
 sidebar_label: "3. Let's Just Share It"
 lab:
   level: Beginner
@@ -177,7 +177,7 @@ Wed Oct  7 00:41:01 2026
 
 The scheduling problem from Chapter 2 is solved. The next two steps check what else the two Pods share.
 
-## Step 3: Watch Memory Leak Between Pods
+## Step 3: Watch Pods Compete for Memory
 
 Look at the GPU from inside `model-b`:
 
@@ -313,7 +313,7 @@ pod "greedy" deleted from default namespace
 pod "model-c" deleted from default namespace
 ```
 
-## Step 4: Watch Compute Leak Between Pods
+## Step 4: Watch Pods Compete for Compute
 
 Next, check compute. The following Pod measures how fast it can multiply two matrices on the GPU and prints the result every 10 seconds. Save it as `bench.yaml`:
 
