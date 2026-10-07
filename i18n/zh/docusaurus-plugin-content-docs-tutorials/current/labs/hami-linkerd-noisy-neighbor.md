@@ -1,6 +1,6 @@
 ---
 title: "实验 18：共享 GPU 上的吵闹邻居，HAMi 与 Linkerd"
-description: "两张物理 GPU，一个集群，十二项证明。HAMi 隔离了什么、隔离不了什么，以及服务网格如何看见这种差别并绕开它。"
+description: "两张物理 GPU，一个集群，十二项证明。看 HAMi 能隔离什么、不能隔离什么，以及服务网格如何发现这种差别并绕开它。"
 sidebar_label: "实验 18：Linkerd 吵闹邻居"
 lab:
   level: Advanced
@@ -18,20 +18,20 @@ tags:
 toc_max_heading_level: 2
 ---
 
-第一批看到这个实验标题的人大概会先笑一下。也许笑得有道理。HAMi 和 Linkerd 是工作在不同层上的两个不同系统。HAMi 切分 GPU，而 Linkerd 路由 HTTP 请求。那证书又能跟这些扯上什么关系？两者之间连一行共用的代码都没有。为了弄清这个想法在现实中到底是怎么回事，我在 Nebius Cloud 上搭了一个有两张 GPU 的集群，测了一整天。这个实验就是那个星期天的逐步复现。
+刚看到这个实验标题，你可能会觉得奇怪：HAMi 和 Linkerd 是两个不同层面的系统。HAMi 切分 GPU，Linkerd 路由 HTTP 请求，两者没有任何共用代码。证书又和这些有什么关系？为了弄清楚，我在 Nebius Cloud 上搭了一个有两张 GPU 的集群，测了一整天。本实验就是那天的完整复现步骤。
 
-把本该在结尾说的话放在开头说。是的，它们工作在不同的层上，而这本来就恰恰是重点。HAMi 把硅片切开，没错，但它藏不住邻居在切片里造成的延迟。藏延迟也不是它的工作。而 Linkerd 完全看不见 GPU，但它看得见每一个请求的延迟，并据此分配流量。我刚才提到的证书问题，答案也是从同一个地方来的。阻止共享同一张卡的两个租户访问对方 endpoint 的，是 Linkerd 给每个 pod 的 mTLS 身份。怎么做到的？答案你一定能在下面找到。
+先说结论。它们确实工作在不同的层，而这正是重点。HAMi 切分 GPU 资源，但它无法隐藏邻居带来的延迟，这也不是它的职责。Linkerd 看不到 GPU，却能看到每个请求的延迟，并据此分配流量。前面提到的证书问题，答案也在这里：Linkerd 给每个 pod 发放 mTLS 身份，正是这个身份阻止了同卡的两个租户访问对方的 endpoint。具体怎么做到的，后面会演示。
 
-本实验的每一条命令和每一段输出都来自 2026-09-26/27 的一次真实运行，同一个 k3s 集群里的两台 Nebius 虚拟机，server 节点上一张 H100 80GB，agent 节点上一张 L40S 48GB，来自官方 chart 的 HAMi 2.10.0，Linkerd edge-26.9.3，Gateway API CRD v1.5.1。
+本实验中所有命令和输出都来自 2026-09-26/27 的一次真实运行。环境是同一个 k3s 集群里的两台 Nebius 虚拟机：server 节点有一张 H100 80GB，agent 节点有一张 L40S 48GB。软件版本是官方 chart 的 HAMi 2.10.0、Linkerd edge-26.9.3 和 Gateway API CRD v1.5.1。
 
 ## 你将学到什么
 
-- HAMi 的显存和算力限制圈住了什么，卡上又有什么依然是共享的（PCIe、L2、HBM、SM 调度）
-- HAMi 和 Linkerd 的 mutating webhook 如何改动同一个 pod，并证明 HAMi-core 只落在 GPU 容器里
-- 用对照组测量吵闹邻居对同卡副本的影响，并读懂为什么 `gpucores` 消除不了它
-- 看着 Linkerd 的 EWMA 负载均衡把客户端的 p99 稳住，而不入网的调用方多付 2 到 3 倍的代价
-- 在小切片上用 HTTPRoute 权重做金丝雀，对逐请求失败的切片做 failure accrual，用 `Server` 和 `AuthorizationPolicy` 做租户隔离
-- `CardInsufficientCore` 会悄悄拦下的两件事，一个 100 core 的邻居，和一个 Deployment 的 surge pod
+- HAMi 的显存和算力限制能管住什么，哪些资源仍然是共享的（PCIe、L2、HBM、SM 调度）
+- HAMi 和 Linkerd 的 mutating webhook 如何修改同一个 pod，并证明 HAMi-core 只作用于 GPU 容器
+- 用对照组测量吵闹邻居对同卡副本的影响，并理解为什么 `gpucores` 消除不了这种影响
+- 观察 Linkerd 的 EWMA 负载均衡如何稳住客户端 p99，而未入网的调用方要多付出 2 到 3 倍的延迟
+- 在小切片上用 HTTPRoute 权重做金丝雀发布，用 failure accrual 隔离逐请求失败的切片，用 `Server` 和 `AuthorizationPolicy` 做租户隔离
+- `CardInsufficientCore` 会悄悄拦住的两种情况：占 100 core 的邻居，以及 Deployment 滚动更新时多出的 surge pod
 
 ## 实验概览
 
@@ -55,10 +55,10 @@ flowchart TB
 
 ## 前提条件
 
-- 同一个 k3s 集群中的两个节点，各有一张 NVIDIA GPU。唯一不能跳过的决定是**至少要有 2 张物理 GPU**。只有一张卡的话，负载均衡就没有一个安静的副本可以把流量挪过去，步骤 8 也就无从展示。
-- 两个节点上都装好 NVIDIA 驱动和 container toolkit，每台主机上 `nvidia-smi` 可用，节点已打上 `gpu=on` 标签。
-- 执行命令的机器上有 `kubectl`、`helm` 和 `jq`。`linkerd` 在步骤 3 安装。
-- 清单文件位于 [`tutorials/labs/examples/18-hami-linkerd-noisy-neighbor/`](https://github.com/Project-HAMi/website/tree/master/tutorials/labs/examples/18-hami-linkerd-noisy-neighbor)。它们也全部内嵌在下文中，所以不需要克隆任何仓库。
+- 同一个 k3s 集群里有两个节点，每个节点一张 NVIDIA GPU。**至少需要 2 张物理 GPU**，这一点不能省。只有一张卡的话，负载均衡没有安静的副本可以切换，步骤 8 就无法演示。
+- 两个节点都已安装 NVIDIA 驱动和 container toolkit，主机上 `nvidia-smi` 可以正常运行，节点已打上 `gpu=on` 标签。
+- 执行命令的机器上已安装 `kubectl`、`helm` 和 `jq`。`linkerd` 会在步骤 3 安装。
+- 清单文件在 [`tutorials/labs/examples/18-hami-linkerd-noisy-neighbor/`](https://github.com/Project-HAMi/website/tree/master/tutorials/labs/examples/18-hami-linkerd-noisy-neighbor)。正文里也完整贴出了所有清单，所以不需要克隆仓库。
 
 | 组件            | 版本                                             |
 | --------------- | ------------------------------------------------ |
@@ -70,32 +70,32 @@ flowchart TB
 | 负载生成器      | `grafana/k6:2.3.0`                               |
 | 租户客户端      | `curlimages/curl:8.22.0`                         |
 
-在你自己的环境里改动任何东西之前，先把这张表看一遍。几个月后把实验搞坏的，几乎总是版本漂移。
+在自己的环境里改动之前，请先对照这张版本表。过几个月实验跑不通，多半是因为版本变了。
 
 :::note[HAMi 隔离了什么，没隔离什么]
 
-一张 H100，不管是一个服务用掉 80 GB 里的 4 GB，还是十个服务各用 4 GB，价格都一样。[HAMi](https://github.com/Project-HAMi/HAMi) 让你能跑这十个。pod 申请 `nvidia.com/gpu: 1`、`nvidia.com/gpumem: 4000` 和 `nvidia.com/gpucores: 50`。HAMi 的 scheduler extender 挑一张还有这么多空间的卡。在节点上，device plugin 通过 `/etc/ld.so.preload` 把 [libvgpu.so](https://github.com/Project-HAMi/HAMi-core) 注入容器。这个库强制执行显存限制，并把 kernel 启动节流到算力份额。
+一张 H100 的价格是固定的，不管是一个服务只用 80 GB 里的 4 GB，还是十个服务各用 4 GB。[HAMi](https://github.com/Project-HAMi/HAMi) 让你可以在一张卡上跑这十个服务。pod 申请 `nvidia.com/gpu: 1`、`nvidia.com/gpumem: 4000` 和 `nvidia.com/gpucores: 50`。HAMi 的 scheduler extender 会选一张还有足够空间的卡。在节点上，device plugin 通过 `/etc/ld.so.preload` 把 [libvgpu.so](https://github.com/Project-HAMi/HAMi-core) 注入容器。这个库负责限制显存，并把 kernel 的启动频率限制在分配的算力份额内。
 
-有些部分仍然是共享的，PCIe 链路、L2 缓存、HBM 带宽，以及节流窗口内 SM 上的 kernel 调度。另一个切片里的计算密集型邻居会在不碰你任何限制的情况下推高你 kernel 的延迟。这就是本实验的问题。如果共享损害了某个服务的延迟，你怎么看见它，又怎么管理它？
+但有些资源仍然是共享的：PCIe 链路、L2 缓存、HBM 带宽，以及一个节流窗口内 SM 上的 kernel 调度。另一个切片里的计算密集型邻居，不需要突破自己的任何限制，就能拉高你的 kernel 延迟。这就是本实验要解决的问题：共享损害了服务延迟时，怎么发现它，又怎么应对？
 
 :::
 
-做完之后，你手里会有这 12 项证明。
+做完之后，你会得到下面 12 项证明的结果。
 
-| # | 论断 | 在这个集群上的结果 |
+| # | 要证明的结论 | 本集群上的结果 |
 | --- | --- | --- |
-| 1 | 两个 webhook 作用于同一个 pod | `schedulerName: hami-scheduler`、native sidecar `linkerd-proxy`、两套 annotation 出现在同一个 pod 上 |
-| 2 | HAMi-core 只在 GPU 容器里 | `libvgpu.so` 预加载和 `CUDA_DEVICE_*` 限制在 `model` 里有，`linkerd-proxy` 里没有 |
-| 3 | 有 sidecar 时隔离依然成立 | 2000 MiB 分配成功，6000 MiB 以 `OutOfMemoryError` 失败，容量显示为 3.91 GiB |
-| 4 | 流量经过代理且走 mTLS | `linkerd viz edges` 显示 SECURED，`tap` 显示 `tls=true` |
-| 5 | 副本在不同的物理卡上 | H100 和 L40S 的 UUID 与 `nvidia-smi -L` 一致 |
-| 6 | 邻居效应是因果的 | 副本 1 的 p50 从 1 ms 到 5 ms，p99 从 8 到 20 ms，邻居挪到另一张卡时回到基线 |
-| 7 | EWMA 会转移流量 | 邻居开启时，入网客户端 p99 为 16 ms，不入网 25 到 48 ms |
-| 8 | 网格开销可以忽略 | 单副本，p50 9.43 对 9.37 ms，p99 11.84 对 11.85 ms |
-| 9 | 金丝雀权重生效 | 请求 90/10，测得 90.1/9.9，请求 50/50，测得 49.7/50.3 |
-| 10 | failure accrual 踢出坏切片 | 到达坏 pod 的请求从 1,251 降到 10，成功率从 97.09% 升到 99.98% |
-| 11 | 租户隔离在网络上也成立 | tenant-a 得到 403，tenant-b 得到 200，两条边都是 SECURED |
-| 12 | 生命周期干净，但有一个陷阱 | 滚动更新 26 秒，切片释放后以完全相同的分配重新发放，卡上有邻居时 surge pod 因 `CardInsufficientCore` 卡在 Pending |
+| 1 | 两个 webhook 同时修改一个 pod | 同一个 pod 上同时出现 `schedulerName: hami-scheduler`、native sidecar `linkerd-proxy` 和两套 annotation |
+| 2 | HAMi-core 只作用于 GPU 容器 | `model` 容器里有 `libvgpu.so` 预加载和 `CUDA_DEVICE_*` 限制，`linkerd-proxy` 里没有 |
+| 3 | 加了 sidecar，隔离仍然有效 | 分配 2000 MiB 成功，分配 6000 MiB 报 `OutOfMemoryError`，可用容量显示为 3.91 GiB |
+| 4 | 流量经过代理并使用 mTLS | `linkerd viz edges` 显示 SECURED，`tap` 显示 `tls=true` |
+| 5 | 两个副本在不同的物理卡上 | H100 和 L40S 的 UUID 与 `nvidia-smi -L` 一致 |
+| 6 | 邻居确实是造成影响的原因 | 邻居在同一张卡上时，副本 1 的 p50 从 1 ms 升到 5 ms，p99 从 8 ms 升到 20 ms；把邻居挪到另一张卡，恢复基线 |
+| 7 | EWMA 会把流量转走 | 邻居开启时，入网客户端 p99 为 16 ms，未入网为 25 到 48 ms |
+| 8 | 网格开销可以忽略 | 单副本下，p50 为 9.43 ms 对 9.37 ms，p99 为 11.84 ms 对 11.85 ms |
+| 9 | 金丝雀权重有效 | 设置 90/10，实测 90.1/9.9；设置 50/50，实测 49.7/50.3 |
+| 10 | failure accrual 能把坏切片踢出轮转 | 到达坏 pod 的请求从 1,251 降到 10，成功率从 97.09% 升到 99.98% |
+| 11 | 租户隔离在网络层也有效 | tenant-a 得到 403，tenant-b 得到 200，两条边都是 SECURED |
+| 12 | 生命周期正常，但有一个陷阱 | 滚动更新耗时 26 秒，旧切片释放后以完全相同的分配重新发放；卡上有邻居时，surge pod 因 `CardInsufficientCore` 一直 Pending |
 
 ## 步骤 1 设计环境
 
@@ -117,18 +117,18 @@ flowchart LR
     end
 ```
 
-图里两个层从不接触。HAMi 给每个切片画出各自的显存限制和算力份额，而卡的下半部分并没有被切分。而 Linkerd 的代理完全看不见卡。它唯一看见的是两个副本的请求延迟。本实验中的每一次测量都是在这张图之上读的。
+图中两个层从不接触。HAMi 给每个切片划定各自的显存上限和算力份额，但卡的底层资源并没有被切开。Linkerd 的代理完全看不到卡，它只能看到两个副本的请求延迟。本实验的所有测量，都是在这张图的基础上解读的。
 
 | 角色 | 节点 | GPU | UUID |
 | --- | --- | --- | --- |
 | GPU-A，model-a 副本 1 和吵闹邻居 | `gpu-node-a` | NVIDIA H100 80GB HBM3 | `GPU-7023a4c2-4128-840d-2b86-ab87d8bf7f47` |
 | GPU-B，model-a 副本 2，安静 | `gpu-node-b` | NVIDIA L40S 48GB | `GPU-4dc50575-f241-9f14-1e6e-ecb4a93c3299` |
 
-我的环境里两张卡不是同一个型号。如果你有两张相同的卡，数字会更干净。如果没有，步骤 7 里的对照组会让这种不对称变得无害。
+我的环境里两张卡型号不同。如果你有两张相同的卡，数据会更干净。如果没有，步骤 7 的对照组可以消除这种不对称带来的影响。
 
-到这里我还需要加一点关于命名的说明。本实验中我把节点叫作 `gpu-node-a` 和 `gpu-node-b`。在我真实的集群里，它们的名字是云厂商分配的长实例 ID，会让正文没法读。你需要把自己的节点名填到两个地方。一个是步骤 2 里的 `scheduler.nodeName` 值，以及步骤 4 中 loadgen 清单里的 `nodeSelector`。输出里的 `gpu-node-a` 也同样要读作你自己的名字。
+关于命名：本实验里我把节点叫作 `gpu-node-a` 和 `gpu-node-b`。我真实集群里的节点名是云厂商分配的长实例 ID，放在正文里没法读。你需要把自己的节点名填到两个地方：步骤 2 里的 `scheduler.nodeName`，以及步骤 4 里 loadgen 清单的 `nodeSelector`。输出里出现的 `gpu-node-a` 也请读作你自己的节点名。
 
-在每台主机上取得你自己的 UUID。
+在每台主机上查看自己的 UUID。
 
 ```bash
 nvidia-smi -L
@@ -139,17 +139,17 @@ GPU 0: NVIDIA H100 80GB HBM3 (UUID: GPU-7023a4c2-4128-840d-2b86-ab87d8bf7f47)
 GPU 0: NVIDIA L40S (UUID: GPU-4dc50575-f241-9f14-1e6e-ecb4a93c3299)
 ```
 
-把这两个值写进下面清单中每一处 `nvidia.com/use-gpuuuid` annotation。这个 annotation 名在 HAMi v2.10.0 的 `pkg/device/nvidia/device.go` 中定义为 `GPUUseUUID`。它的兄弟 `nvidia.com/nouse-gpuuuid` 用来排除卡。
+把这两个 UUID 填进下面清单里每一处 `nvidia.com/use-gpuuuid` annotation。这个 annotation 在 HAMi v2.10.0 的 `pkg/device/nvidia/device.go` 中定义为 `GPUUseUUID`。与它对应的 `nvidia.com/nouse-gpuuuid` 用来排除某张卡。
 
-你会在事件里看到绑定在起作用。pod 的调度事件对另一个节点显示 `CardUuidMismatch`，意思是 extender 因为 UUID 把那张卡剔除了。
+绑定是否生效，可以从事件里看出来。pod 的调度事件会对另一个节点显示 `CardUuidMismatch`，表示 extender 因为 UUID 不匹配，排除了那张卡。
 
 ```plaintext
 FilteringFailed   1 nodes CardUuidMismatch(gpu-node-b)
 ```
 
-别跳过绑定。chart 默认的节点策略是 `binpack`，GPU 策略是 `spread`。你可以在 `helm show values hami-charts/hami --version 2.10.0` 输出的 `scheduler.defaultSchedulerPolicy` 下看到。binpack 会尽量把已经满的节点填满。如果把两个副本交给策略，它们完全可能落到同一张卡上，那样步骤 8 就没有安静的副本可以转移了。所以在这个实验里我们不信任策略，把每个副本按名字绑死。
+不要跳过绑定。chart 默认的节点策略是 `binpack`，GPU 策略是 `spread`，可以在 `helm show values hami-charts/hami --version 2.10.0` 输出的 `scheduler.defaultSchedulerPolicy` 下看到。binpack 会尽量先把已经比较满的节点填满。如果把放置交给策略，两个副本很可能落到同一张卡上，步骤 8 就没有安静的副本可以切换了。所以本实验不依赖策略，而是按名字把每个副本绑定到指定的卡。
 
-我的第二个节点和早先一次实验一样，是一个跑在 privileged 容器里、带 `--network host` 的 k3s agent。这是实验室的捷径，host 网络上的 privileged 容器不是生产节点可接受的形态，生产上请把 agent 直接装在主机上。机器重启时有两件事咬了我一口。它自己的 k3s server 又起来了并占住了 `127.0.0.1:6444`，inotify 限制也被重置了。两者都在主机上修好。
+我的第二个节点和之前的实验一样，是一个运行在 privileged 容器里的 k3s agent，使用 `--network host`。这只是实验室里的省事做法，生产环境不应该这样用，请直接在主机上安装 agent。机器重启时我遇到了两个问题：主机自己的 k3s server 重新启动并占用了 `127.0.0.1:6444`，inotify 限制也被重置了。两个问题都在主机上修复。
 
 ```bash
 sudo systemctl stop k3s
@@ -158,7 +158,7 @@ sudo sysctl -p /etc/sysctl.d/99-k3s-agent.conf
 sudo docker restart k3s-agent
 ```
 
-在动其他任何东西之前，先验证跨节点的 pod 网络。第二个 GPU 节点上的 pod 能访问控制平面节点上的 pod 吗？
+先验证跨节点的 pod 网络，再做其他操作。第二个 GPU 节点上的 pod 能访问控制平面节点上的 pod 吗？
 
 ```bash
 kubectl run nettest --image=busybox:1.36 --overrides='{"spec":{"nodeName":"gpu-node-b"}}' \
@@ -169,17 +169,17 @@ kubectl run nettest --image=busybox:1.36 --overrides='{"spec":{"nodeName":"gpu-n
 OK
 ```
 
-我的集群里有一个早先实验留下的、挂在 docker bridge 上的无 GPU 节点。第一次安装 Linkerd 时 `linkerd-identity` 落到了那里，第二个 GPU 节点上的代理拿不到证书。我没删这个节点，而是把它 cordon 了。如果你也有这样的节点，在进入步骤 3 之前先 cordon 它。
+我的集群里有一个之前实验留下的无 GPU 节点，挂在 docker bridge 上。第一次安装 Linkerd 时，`linkerd-identity` 被调度到了这个节点，第二个 GPU 节点上的代理因此拿不到证书。我没有删除这个节点，而是把它 cordon 了。如果你也有这样的节点，进入步骤 3 之前先 cordon 它。
 
 ## 步骤 2 安装 HAMi
 
-环境就绪，轮到 HAMi。但先做一点我不得不做的清理。如果你在用 GPU Operator，它自己的 device plugin 必须关掉。我一开始跳过了这一步，结果两个 plugin 把同一张卡注册了两次，那种状态下下面的任何数字都不可信。在两个 GPU 节点上打下面这个标签就够了。
+环境准备好了，接下来安装 HAMi。先做一步清理：如果你在用 GPU Operator，必须关掉它自带的 device plugin。我一开始跳过了这一步，结果两个 plugin 把同一张卡注册了两次，之后的所有数字都不可信。在两个 GPU 节点上打下面的标签即可。
 
 ```bash
 kubectl label node <gpu-node> nvidia.com/gpu.deploy.device-plugin=false --overwrite
 ```
 
-现在是真正的安装。如果我照原样装 chart，这一节就只有两行。在 k3s 上不是这么回事，有三个值必须和默认值不同。三个都是我试出来的，也就是错出来的，写在这里是为了你不必再试。
+接下来是正式安装。在别的环境里，直接安装 chart 就行，只需两行命令。但在 k3s 上，有三个值必须改成非默认值。这三个都是我踩坑后才发现的，写在这里是为了让你少走弯路。
 
 ```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/ && helm repo update
@@ -191,7 +191,7 @@ helm upgrade --install hami hami-charts/hami --version 2.10.0 -n kube-system \
   --set devicePlugin.runtimeClassName=nvidia
 ```
 
-这一部分在其他教程里有专门讲解，网站上也有安装路线图，但我还是按顺序过一遍。`scheduler.nodeName` 把 extender 钉在控制平面节点上，因为 API server 访问不到 agent 节点上的 webhook。我们在步骤 1 就遇到过。kube-scheduler 的 tag 必须和你的集群版本一致。chart 的默认值是一个 tag 为空的阿里云镜像，那种形态下它并不知道你的集群跑的是哪个版本。第三个是 `devicePlugin.runtimeClassName=nvidia`，就是它花了我一个小时。k3s 的 containerd 默认用 `runc`，没有 RuntimeClass 的话 plugin 找不到 NVML，反复报下面这个错。
+这部分在其他教程里有专门讲解，网站上也有安装路线图，这里简单过一遍。`scheduler.nodeName` 把 extender 固定在控制平面节点上，因为 API server 访问不到 agent 节点上的 webhook，这一点我们在步骤 1 已经遇到过。kube-scheduler 的 tag 必须和你的集群版本一致。chart 默认使用一个 tag 为空的阿里云镜像，这种情况下它不知道你的集群版本。第三个是 `devicePlugin.runtimeClassName=nvidia`，这个问题花了我一个小时。k3s 的 containerd 默认使用 `runc`，没有 RuntimeClass，plugin 就找不到 NVML，会反复报下面的错误。
 
 ```plaintext
 E0925 19:53:51.423171 factory.go:135] Incompatible strategy detected auto
@@ -199,7 +199,7 @@ E0925 19:53:51.428513 main.go:201] error starting plugins: ... invalid device di
 E0925 19:53:51.599960 main.go:128] Received error: failed to initialize NVML: ERROR_LIBRARY_NOT_FOUND
 ```
 
-看到这个错我先怪了一阵驱动，然后看 kubelet，然后考虑重装 toolkit。结果是 chart 里的一行。这个值还有个好的副作用。HAMi 的 webhook 现在会给每个 GPU pod 加上 `runtimeClassName: nvidia`，而这正是 k3s 上的工作负载本来就需要的。安装完成后，我想亲眼看到两张卡都以 `hami-core` 模式注册。
+看到这个错误，我先怀疑驱动，再检查 kubelet，还考虑过重装 toolkit，最后发现只是 chart 里的一个参数。这个参数还有一个好处：HAMi 的 webhook 现在会给每个 GPU pod 加上 `runtimeClassName: nvidia`，而 k3s 上的 GPU 工作负载本来就需要它。安装完成后，确认两张卡都以 `hami-core` 模式注册。
 
 ```bash
 kubectl get node gpu-node-b -o jsonpath='{.metadata.annotations.hami\.io/node-nvidia-register}'
@@ -213,19 +213,19 @@ kubectl get node gpu-node-b -o jsonpath='{.metadata.annotations.hami\.io/node-nv
 kubectl get nodes -o custom-columns='NODE:.metadata.name,GPU:.status.allocatable.nvidia\.com/gpu'
 ```
 
-两个 GPU 节点上你都应该看到 10。这里第一眼有个容易糊涂的地方。那个 10 不是卡数，更准确地说，是 10 个槽位。`deviceSplitCount: 10` 的默认值表示每张物理卡最多可以被 10 个 pod 共享。申请 `nvidia.com/gpu: 1` 的 pod 占一个槽位，而它拿到卡的多少由 `gpumem` 和 `gpucores` 决定。你会在步骤 7 看到，卡可能在槽位用完之前就满了。我自己也在那里又经历了一遍。
+两个 GPU 节点上都应该看到 10。注意，这个 10 不是卡的数量，而是槽位数。`deviceSplitCount: 10` 是默认值，表示每张物理卡最多可以被 10 个 pod 共享。申请 `nvidia.com/gpu: 1` 的 pod 占一个槽位，它实际能用多少卡资源，由 `gpumem` 和 `gpucores` 决定。步骤 7 会看到，槽位还没用完，卡可能就已经满了。我自己也在那里又踩了一次这个坑。
 
 ## 步骤 3 安装 Gateway API 和 Linkerd
 
-HAMi 起来了，现在轮到网格。Linkerd 安装前有一个前提。Gateway API 的 CRD 必须已经就位，而且它对版本相当严格。我查了[兼容性表](https://linkerd.io/2-edge/features/gateway-api/)。对 Linkerd 2.20 它止于 1.5.1。我用的 edge 版本比 2.20 新，但表还没更新，所以我保守地选了 1.5.1。
+HAMi 已经运行，接下来安装服务网格。安装 Linkerd 之前有一个前提：必须先装好 Gateway API 的 CRD，而且对版本要求很严。我查了[兼容性表](https://linkerd.io/2-edge/features/gateway-api/)，对 Linkerd 2.20 最高支持到 1.5.1。我用的 edge 版本比 2.20 新，但表还没有更新，所以保守地选了 1.5.1。
 
 ```bash
 kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.5.1/standard-install.yaml
 ```
 
-CRD 就位后是 Linkerd 本身。出于和步骤 1 相同的原因，我把控制平面钉在控制平面节点上。第一次尝试时我没这么做。identity 服务落到了那个访问不到的旧节点上，代理拿不到证书，injector 一直起不来。这花了我半小时。
+CRD 就绪后，安装 Linkerd 本身。出于和步骤 1 相同的原因，我把控制平面固定在控制平面节点上。第一次安装时我没这么做，identity 服务被调度到了那个访问不到的旧节点上，代理拿不到证书，injector 一直起不来，白白花了半小时。
 
-把安装脚本先下载下来读一遍再交给 `sh` 是个好习惯，我也这么做了。下面这行和 Linkerd 官方文档里的一模一样，我原样保留。
+先把安装脚本下载下来读一遍，再交给 `sh` 执行，是个好习惯，我也是这么做的。下面这一行和 Linkerd 官方文档完全一样，我原样保留。
 
 ```bash
 curl --proto '=https' --tlsv1.2 -sSfL https://run.linkerd.io/install-edge | sh
@@ -237,7 +237,7 @@ linkerd check
 linkerd viz install --set "nodeSelector.kubernetes\.io/hostname=gpu-node-a" | kubectl apply -f -
 ```
 
-这里冒出了一件我没预料到的事。Viz chart 把那个 `nodeSelector` 值应用到了 `web`、`tap` 和 `tap-injector`，却没有应用到 `metrics-api` 和 `prometheus`。我没时间去查原因。我手动 patch 了这两个然后继续。你会看到同样的现象。
+这里出现了一个我没预料到的情况：Viz chart 把 `nodeSelector` 应用到了 `web`、`tap` 和 `tap-injector`，却没有应用到 `metrics-api` 和 `prometheus`。我没有时间深究原因，直接手动 patch 了这两个 Deployment 就继续了。你可能也会遇到同样的情况。
 
 ```bash
 for d in metrics-api prometheus; do
@@ -245,7 +245,7 @@ for d in metrics-api prometheus; do
 done
 ```
 
-继续之前我想确认两边都真的起来了，因为从这里开始的一切都建立在这两者之上。
+继续之前，先确认两边都已正常运行，因为后面的所有步骤都依赖它们。
 
 ```bash
 linkerd check
@@ -267,17 +267,17 @@ hami-scheduler-7dcb498cc8-cqg9v   2/2   Running   gpu-node-a
 
 :::warning[让 HAMi 的命名空间留在网格之外]
 
-这里让我记下一个警告，以后它可能会让你吃苦头。如果 HAMi 跑在 `kube-system` 里，没问题。Linkerd 的 injector 已经用自己的 selector 把这个命名空间排除了。但如果你把 HAMi 装在了别的命名空间，请给那个命名空间打上 `config.linkerd.io/admission-webhooks=disabled` 标签。HAMi 的 webhook 服务是由 API server 调用的，而 API server 不在网格里。要是中间夹进一个代理，webhook 调用可能会坏掉。
+这里有一个警告，以后可能让你吃亏。HAMi 运行在 `kube-system` 里是没问题的，因为 Linkerd 的 injector 已经用自己的 selector 把这个命名空间排除了。但如果你把 HAMi 装在别的命名空间，请给那个命名空间打上 `config.linkerd.io/admission-webhooks=disabled` 标签。HAMi 的 webhook 服务由 API server 调用，而 API server 不在网格里。中间多一层代理，webhook 调用可能会失败。
 
 :::
 
 ## 步骤 4 部署工作负载
 
-基础设施就绪，现在需要在上面跑点东西。我故意选了一个无聊的工作负载，因为我要测的不是模型，而是模型周围的系统。FastAPI 后面一个固定尺寸的 PyTorch 矩阵乘法。每个请求让一个 512 行的 fp16 batch 通过一个 8192 乘 8192 的权重矩阵 8 次，然后 `torch.cuda.synchronize()` 并返回。启动时预热 20 轮。不下载模型，没有 tokenizer，没有流式输出。让我解释一下原因。如果是 LLM 服务，Linkerd 测到的延迟就不是 time-to-first-token，而是到流结束的时间，那对我毫无意义。要做确定性的测量，非流式的 endpoint 是必须的。应用还在 `/stats` 下维护一个按 pod 计数的请求计数器。这是我后来加的，因为容器日志在 1000 rps 下会滚动，`kubectl logs | grep -c` 会少数。第一次尝试时，我发出的 65,563 个请求只数到了 18,747 个，找了好一阵它们去哪了。
+基础设施准备好了，现在需要跑点东西。我故意选了一个很简单的工作负载，因为要测的不是模型，而是模型周围的系统。它是 FastAPI 背后的一个固定大小的 PyTorch 矩阵乘法：每个请求让一个 512 行的 fp16 batch 通过 8192 乘 8192 的权重矩阵 8 次，然后调用 `torch.cuda.synchronize()` 并返回。启动时预热 20 轮。不下载模型，没有 tokenizer，也没有流式输出。原因是：如果用 LLM 服务，Linkerd 测到的延迟是到流结束的时间，而不是首 token 时间，这对本实验没有意义。要做可重复的测量，必须用非流式的 endpoint。应用还在 `/stats` 下为每个 pod 维护一个请求计数器。这是我后来加的，因为容器日志在 1000 rps 下会滚动，`kubectl logs | grep -c` 会少数。第一次尝试时，我发出了 65,563 个请求，却只数到 18,747 个，找了很久才明白原因。
 
-我想这里还得再加两个关于镜像的小提示。两个都在第一次尝试时拦住了我。`pip install` 需要 `--break-system-packages`，因为镜像里的 Python 受 PEP 668 管理，不让你碰系统包。另外 `nvidia-smi` 不在 L40S 容器的 PATH 里，所以从这里开始每次检查都用一次真实的 CUDA 分配来代替 `nvidia-smi`。后来我觉得这反而是更好的证据。
+关于镜像，还有两个小提示，都是第一次尝试时遇到的。一是 `pip install` 需要加 `--break-system-packages`，因为镜像里的 Python 受 PEP 668 管理，不允许修改系统包。二是 L40S 容器的 PATH 里没有 `nvidia-smi`，所以从这里开始，每次检查都改用一次真实的 CUDA 分配来代替它。后来我发现，这样反而是更有力的证据。
 
-关于放置。一个 Service 后面有两个 Deployment，各自绑定到自己的卡。我知道，一个 Deployment 两个副本看起来更自然，但那样我就没法给两个副本两个不同的 UUID。所以是两个 Deployment。
+关于放置：一个 Service 后面放两个 Deployment，每个绑定到自己的卡。一个 Deployment 两个副本看起来更自然，但那样没法给两个副本指定不同的 UUID，所以用两个 Deployment。
 
 <details>
 <summary>00-namespaces.yaml</summary>
@@ -443,7 +443,7 @@ spec:
 
 </details>
 
-故事里的"反派"角色，也就是吵闹邻居，在下面的清单里。它在 GPU-A 上自己的切片里，对一个 8192 乘 8192 的 fp16 矩阵无限循环地做 `a = a @ a`。`burner-b` 是同样的东西绑到 GPU-B 上。我留着它做对照组。两者都从 0 副本开始，到时候再打开。
+故事里的“反派”，也就是吵闹邻居，在下面的清单里。它在 GPU-A 上自己的切片里，对一个 8192 乘 8192 的 fp16 矩阵无限循环执行 `a = a @ a`。`burner-b` 是同样的负载，绑定到 GPU-B，作为对照组。两者一开始都是 0 个副本，需要时再启动。
 
 <details>
 <summary>20-burner.yaml</summary>
@@ -525,7 +525,7 @@ spec:
 
 </details>
 
-然后是我们的负载生成器 k6，两份。为什么是两份，是本实验最关键的一点，到步骤 8 会清楚。现在只说这么多。一份在 `lab10` 命名空间里并且入网，另一份在 `lab10-unmeshed` 里不入网。两者调用同一个地址 `model-a.lab10.svc.cluster.local:8000/infer`。脚本里的 `REUSE=false` 让每个请求都新开一条连接，这正是让 kube-proxy 的按连接分发看起来像轮询的窍门。
+然后是负载生成器 k6，共两份。为什么要两份，是本实验最关键的一点，到步骤 8 就清楚了。现在只需知道：一份在 `lab10` 命名空间里并且入网，另一份在 `lab10-unmeshed` 里不入网。两者调用同一个地址 `model-a.lab10.svc.cluster.local:8000/infer`。脚本里的 `REUSE=false` 让每个请求都新建一条连接，这样 kube-proxy 按连接分发的效果就和轮询一样。
 
 <details>
 <summary>30-loadgen.yaml</summary>
@@ -621,7 +621,7 @@ spec:
 
 </details>
 
-把上面四份清单按这些文件名保存到同一个目录，并在那个目录里运行命令。如果你克隆了网站仓库，前提条件里提到的 examples 目录已经有它们了。
+把上面四份清单按文件名保存到同一个目录，并在这个目录里运行命令。如果你克隆了网站仓库，前提条件里提到的 examples 目录已经包含这些文件。
 
 ```bash
 kubectl apply -f 00-namespaces.yaml -f 10-model-a.yaml -f 20-burner.yaml -f 30-loadgen.yaml
@@ -634,7 +634,7 @@ model-a-gpu-a-7877c85fb-wglk8    2/2   Running   10.42.0.122   gpu-node-a
 model-a-gpu-b-5d845c65fd-kcmpv   2/2   Running   10.42.12.44   gpu-node-b
 ```
 
-三个都起来了。给每个发一个请求，看看卡各自有多快。
+三个都起来了。给每个发一个请求，看看每张卡的速度。
 
 ```bash
 kubectl exec -n lab10 deploy/loadgen -c k6 -- wget -qO- http://model-a.lab10.svc.cluster.local:8000/infer
@@ -645,13 +645,13 @@ kubectl exec -n lab10 deploy/loadgen -c k6 -- wget -qO- http://model-a.lab10.svc
 {"gpu_ms":3.418,"v":0.0,"pod":"model-a-gpu-b-5d845c65fd-kcmpv"}
 ```
 
-H100 用 1.7 ms 完成一步，L40S 用 3.4 ms，都是 50 core。把这两个数记在脑子的角落里，后面每张表都要对着它们读。
+H100 完成一步用时 1.7 ms，L40S 用时 3.4 ms，都是 50 core。请记住这两个数，后面每张表都要以它们为参照。
 
-再加一个小的实用提示。下面的命令假设 `kubectl` 和 `linkerd` 在 PATH 里。如果你在 k3s 上，用 `sudo k3s kubectl` 代替 `kubectl`。如果 CLI 在你的 home 目录下，用 `$HOME/.linkerd2/bin/linkerd` 代替 `linkerd`。我就是这么做的。
+再提示一点：下面的命令假设 `kubectl` 和 `linkerd` 在 PATH 里。如果你用的是 k3s，请用 `sudo k3s kubectl` 代替 `kubectl`。如果 CLI 装在 home 目录下，请用 `$HOME/.linkerd2/bin/linkerd` 代替 `linkerd`。我就是这样做的。
 
 ## 步骤 5 证明两个 webhook 作用于同一个 pod
 
-现在来到实验的核心。这是没人写过的部分。当你在带有 `linkerd.io/inject: enabled` 标签的命名空间里创建一个申请 GPU 的 pod 时，这个 pod 会被两个独立的 [mutating admission webhook](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/) 改动。我很想知道它们会不会互相破坏。
+现在进入实验的核心，这部分以前没人写过。在带有 `linkerd.io/inject: enabled` 标签的命名空间里创建一个申请 GPU 的 pod，它会被两个独立的 [mutating admission webhook](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/) 修改。我想知道它们会不会互相破坏。
 
 ```mermaid
 %% title: 一个 pod 的解剖
@@ -677,7 +677,7 @@ flowchart TB
     node ==>|"libvgpu.so 和限制，只进入 model"| POD
 ```
 
-这里顺序很重要。HAMi 的 webhook 先执行，改掉 `schedulerName` 并标记申请了 GPU 的容器，Linkerd 的随后执行，加入它自己的两个容器。选卡发生在调度器里。挂载和环境变量在节点上按容器发放。最后这一步就是代理永远拿不到 GPU 份额的原因，我马上证明。先把图放一边，看看集群上到底有什么。
+顺序很重要。HAMi 的 webhook 先执行：修改 `schedulerName`，并标记申请了 GPU 的容器。Linkerd 的 webhook 随后执行：加入它自己的两个容器。选卡在调度器里完成，挂载和环境变量则在节点上按容器发放。最后一点正是代理永远拿不到 GPU 份额的原因，下面会证明。先不看图，看看集群上实际是什么样。
 
 ```bash
 kubectl get mutatingwebhookconfigurations -o json | jq -r '.items[].webhooks[] | "\(.name) failurePolicy=\(.failurePolicy) reinvocation=\(.reinvocationPolicy // "Never")"'
@@ -689,9 +689,9 @@ linkerd-proxy-injector.linkerd.io     failurePolicy=Ignore  reinvocation=Never
 tap-injector.linkerd.io               failurePolicy=Ignore  reinvocation=IfNeeded
 ```
 
-两个都是 `Ignore`，看到这个我停了一下。现在我想在这里来一场小小的头脑风暴。如果 HAMi 的 webhook 在 admission 时不可达，pod 会用默认调度器创建。kube-scheduler 把 `nvidia.com/gpu: 1` 当作一整个设备，pod 要么一直 Pending，要么占走整张卡。没有任何东西会告诉你。如果 Linkerd 的不可达，pod 会以不入网的状态起来，你的网格指标里就多了一个洞。两者的 `reinvocationPolicy` 都是 `Never`，而且其实也不需要，因为 HAMi 只改申请了 GPU 的容器和调度器名字，Linkerd 只加自己的容器。它们不会踩到对方的字段。尽管如此，还是要把 failurePolicy 变成一个有意识的决定，别用默认值凑合。
+两个都是 `Ignore`，这一点值得注意。如果 HAMi 的 webhook 在 admission 时不可达，pod 会用默认调度器创建。kube-scheduler 会把 `nvidia.com/gpu: 1` 当作一整个设备，pod 要么一直 Pending，要么占走整张卡，而且没有任何提示。如果 Linkerd 的不可达，pod 会以未入网的状态启动，网格指标里就会出现一个空洞。两者的 `reinvocationPolicy` 都是 `Never`，实际上也不需要重复调用：HAMi 只修改申请了 GPU 的容器和调度器名称，Linkerd 只添加自己的容器，两者不会改到对方的字段。尽管如此，failurePolicy 应该是一个有意识的选择，不要直接用默认值。
 
-**证明 1。** 现在到真正的问题。两个 webhook 真的作用于同一个 pod 吗？
+**证明 1。** 现在来回答真正的问题：两个 webhook 真的作用于同一个 pod 吗？
 
 ```bash
 for p in $(kubectl get pods -n lab10 -l app=model-a -o name); do
@@ -713,9 +713,9 @@ done
   linkerd.io/proxy-version: edge-26.9.3 | created-by: linkerd/proxy-injector edge-26.9.3
 ```
 
-答案是肯定的。但输出里有个细节让我吃了一惊。看 `linkerd-proxy` 在哪，就在 `initContainers` 下面。第一次看到时我以为出了问题，其实没有。edge-26.9.3 是以 `proxy.nativeSidecar: true` 安装的。你可以从 `linkerd-config` ConfigMap 里读回来。代理现在是一个 Kubernetes [native sidecar](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/)，也就是一个带 `restartPolicy: Always` 的 init 容器（[Linkerd 自己的页面](https://linkerd.io/2-edge/features/native-sidecars/)）。设置 iptables 的 `linkerd-init` 在两种模式下都是普通的 init 容器。
+答案是肯定的。不过输出里有个细节让我意外：`linkerd-proxy` 在 `initContainers` 下面。我第一次看到时以为出了问题，其实没有。edge-26.9.3 是以 `proxy.nativeSidecar: true` 安装的，可以从 `linkerd-config` ConfigMap 里读到这个设置。代理现在是一个 Kubernetes [native sidecar](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/)，也就是带 `restartPolicy: Always` 的 init 容器（见 [Linkerd 官方页面](https://linkerd.io/2-edge/features/native-sidecars/)）。负责设置 iptables 的 `linkerd-init`，在两种模式下都是普通的 init 容器。
 
-**证明 2。** 第二个问题更加隐蔽。HAMi 的预加载会不会漏进错误的容器？我的预期是 HAMi-core 只会出现在有 GPU 的地方，但预期不是证明。
+**证明 2。** 第二个问题更隐蔽：HAMi 的预加载会不会漏进错误的容器？我预期 HAMi-core 只出现在有 GPU 的容器里，但预期不等于证明。
 
 ```bash
 kubectl exec -n lab10 deploy/model-a-gpu-a -c model -- sh -c 'env | grep -E "^(CUDA_DEVICE_SM_LIMIT|CUDA_DEVICE_MEMORY_LIMIT_0|NVIDIA_VISIBLE_DEVICES)"; echo "ld.so.preload: $(cat /etc/ld.so.preload)"'
@@ -731,7 +731,7 @@ linkerd-proxy gpu env: [] | gpu limits: {}
 linkerd-proxy gpu env: [] | gpu limits: {}
 ```
 
-model 这边和预期完全一致。代理那边更难看清，因为镜像是 distroless 的，你没法 exec 进去。折腾了一会儿之后，我决定在节点上直接问 containerd。
+model 容器这边和预期完全一致。代理这边更难查，因为它的镜像是 distroless，没法 exec 进去。试了一会儿之后，我决定直接在节点上问 containerd。
 
 ```bash
 crictl inspect $(crictl ps -a --name linkerd-proxy -q | head -1) | jq '.info.runtimeSpec | {env: [.process.env[] | select(startswith("CUDA_") or startswith("NVIDIA_") or startswith("LD_PRELOAD"))], mounts: [.mounts[].destination | select(contains("vgpu") or contains("ld.so.preload"))]}'
@@ -744,9 +744,9 @@ crictl inspect $(crictl ps -a --name linkerd-proxy -q | head -1) | jq '.info.run
 }
 ```
 
-没有限制，好。也没有预加载，也没有设备。我松了口气。原因其实很简单。HAMi 的 device plugin 按容器回答 kubelet 的 `Allocate` 调用，只有申请了 `nvidia.com/gpu` 的容器才拿到挂载。代理没申请 GPU，所以什么也拿不到。
+没有限制，很好。也没有预加载和设备。原因很简单：HAMi 的 device plugin 按容器响应 kubelet 的 `Allocate` 调用，只有申请了 `nvidia.com/gpu` 的容器才会拿到挂载。代理没有申请 GPU，所以什么都拿不到。
 
-**证明 3。** 还有最重要的问题。sidecar 在旁边时，显存限制还成立吗？我认为这是实验里最重要的证明，因为如果它不成立，其余一切都白费。`nvidia-smi` 不会告诉你，一次真实的分配才会。我试了 2000 MiB 和 6000 MiB，切片是 4000。
+**证明 3。** 还有最重要的问题：有 sidecar 在旁边时，显存限制还有效吗？我认为这是本实验最重要的证明，因为如果它不成立，后面的一切都没有意义。`nvidia-smi` 回答不了这个问题，只有一次真实的分配才可以。切片是 4000 MiB，我分别试了 2000 MiB 和 6000 MiB。
 
 ```bash
 for p in $(kubectl get pods -n lab10 -l app=model-a -o name); do
@@ -770,9 +770,9 @@ done
   alloc 6000 MiB: FAILED OutOfMemoryError: CUDA out of memory. Tried to allocate 5.86 GiB. GPU 0 has a total capacity of 3.91 GiB
 ```
 
-成立！PyTorch 在 80 GB 的卡和 48 GB 的卡上看到的都是 3.91 GiB。这是 `libvgpu.so` 对 `cuMemGetInfo` 的回答，pod 里的代理丝毫没有改变它。看到这个之后，剩下的部分我做得放松多了。
+有效！PyTorch 在 80 GB 的卡和 48 GB 的卡上看到的都是 3.91 GiB。这是 `libvgpu.so` 对 `cuMemGetInfo` 的回答，pod 里的代理完全没有改变它。看到这个结果后，我对后面的部分放心多了。
 
-**关闭 native sidecar。** 就在这里有件事让我放不下。native sidecar 相对较新，不是所有人都在用。旧模式下也一样吗？很容易试。用设为 `"false"` 的 `config.linkerd.io/proxy-enable-native-sidecar` annotation 创建同样的 pod。
+**关闭 native sidecar。** 这里我还有一个疑问：native sidecar 相对较新，不是所有人都在用，旧模式下结果也一样吗？很容易验证。创建同样的 pod，并加上 annotation `config.linkerd.io/proxy-enable-native-sidecar`，值设为 `"false"`。
 
 ```plaintext
 initContainers: ['linkerd-init'] containers: ['linkerd-proxy', 'model'] schedulerName: hami-scheduler
@@ -783,9 +783,9 @@ CUDA_DEVICE_MEMORY_LIMIT_0=4000m
 alloc 2000 MiB ok, total 4000 MiB
 ```
 
-代理挪到了 `containers` 列表里。HAMi 的分配和限制完全一样。所以对 HAMi 没有区别。对 Linkerd 有一个区别。用旧式 sidecar 时，model 容器可能在代理就绪之前启动，它最初的请求可能绕过网格。native sidecar 修正了这个顺序，这也是它成为默认值的原因。
+代理移到了 `containers` 列表里，HAMi 的分配和限制完全不变，所以对 HAMi 没有区别。对 Linkerd 有一点区别：用旧式 sidecar 时，model 容器可能在代理就绪之前启动，最初的请求可能绕过网格。native sidecar 修正了这个启动顺序，这也是它成为默认值的原因。
 
-**证明 5。** 结束这一节之前，我还想记录一件事。副本真的在不同的卡上吗？整个实验都建立在这个假设上，所以我不想让它停留在假设。
+**证明 5。** 结束这一节之前，我还想记录一件事：两个副本真的在不同的卡上吗？整个实验都建立在这个假设上，所以我不想只是假设。
 
 ```bash
 kubectl get pods -n lab10 -l app=model-a -o custom-columns='POD:.metadata.name,NODE:.spec.nodeName,ALLOCATED:.metadata.annotations.hami\.io/vgpu-devices-allocated'
@@ -797,13 +797,13 @@ model-a-gpu-a-7877c85fb-wglk8    gpu-node-a   GPU-7023a4c2-4128-840d-2b86-ab87d8
 model-a-gpu-b-5d845c65fd-kcmpv   gpu-node-b   GPU-4dc50575-f241-9f14-1e6e-ecb4a93c3299,NVIDIA,4000,50:;
 ```
 
-这些 UUID 和步骤 1 里 `nvidia-smi -L` 给出的值一致。搞定。
+这些 UUID 和步骤 1 里 `nvidia-smi -L` 的结果一致，确认无误。
 
-还有最后一个细节。它没发生在我身上，但可能发生在你身上。sidecar 有自己的资源请求，代理默认申请 `100m` CPU 和 `20Mi` 内存。HAMi 的 extender 只看 GPU 请求，而 kube-scheduler 会为整个 pod（包括代理）自己计算 CPU 和内存。在 16 vCPU 的节点上你永远不会注意到。但在一个 CPU 已经塞满的节点上，让 pod 停在 Pending 的是代理的请求而不是 GPU，事件也来自 kube-scheduler 而不是 HAMi。不知道这一点，你就会找错地方。
+最后还有一个细节。它没有发生在我身上，但可能发生在你身上：sidecar 有自己的资源请求，代理默认申请 `100m` CPU 和 `20Mi` 内存。HAMi 的 extender 只看 GPU 请求，而 kube-scheduler 会为整个 pod（包括代理）计算 CPU 和内存。在 16 vCPU 的节点上你不会注意到。但如果节点的 CPU 已经很满，让 pod 一直 Pending 的会是代理的请求，而不是 GPU，事件也来自 kube-scheduler，而不是 HAMi。不知道这一点，就会找错方向。
 
 ## 步骤 6 测量基线和开销
 
-到此证明完成。现在可以开始测量了。首先需要一个一切平静的参照，否则后面的表要对着什么读呢？我用入网的负载生成器开了 8 个虚拟用户，通过 keep-alive 连接压了 60 秒，邻居关闭。k6 给我客户端看到的，`linkerd viz stat` 给我每个副本在自己门口看到的。每次测量我都会把这两个视角并排放，因为它们有时讲的是不同的故事。
+证明阶段结束，现在开始测量。首先需要一个一切平静的参照，否则后面的表没有可比较的对象。我用入网的负载生成器开了 8 个虚拟用户，通过 keep-alive 连接压测 60 秒，邻居保持关闭。k6 给出客户端看到的结果，`linkerd viz stat` 给出每个副本自己看到的结果。每次测量我都会把这两个视角放在一起，因为它们有时反映的情况并不一样。
 
 ```bash
 kubectl exec -n lab10 deploy/loadgen -c k6 -- k6 run -e VUS=8 -e DURATION=60s /scripts/load.js
@@ -825,9 +825,9 @@ model-a-gpu-a-7985f45795-nfhnw      1/1  100.00%  780.5rps          5ms         
 model-a-gpu-b-55558c94f5-8wcgw      1/1  100.00%  273.6rps          8ms         13ms         19ms
 ```
 
-按 `/stats` 计数器，gpu-a 收到 48,196 个请求，gpu-b 收到 16,387 个。第一次看到时我怀疑了一下。分布怎么这么不均匀，是不是哪里坏了？然后当然明白了。即使什么问题都没有，EWMA 也会把四分之三的流量送到更快的卡上。因为这毕竟就是它的工作。读步骤 8 时记住这一点。那里的转移是叠加在这个分布之上的。
+按 `/stats` 计数器，gpu-a 收到 48,196 个请求，gpu-b 收到 16,387 个。我第一次看到时怀疑是不是哪里坏了，分布怎么这么不均匀？后来才明白：即使一切正常，EWMA 也会把大约四分之三的流量送到更快的那张卡，这本来就是它的工作。读步骤 8 时请记住这一点，那里的流量转移是叠加在这个分布之上的。
 
-**证明 4。** 既然流量在跑，我想顺便确认它真的经过代理并且走了 mTLS。
+**证明 4。** 流量正在跑，我顺便确认它是否真的经过了代理并使用了 mTLS。
 
 ```bash
 kubectl exec -n lab10 deploy/loadgen -c k6 -- k6 run --quiet -e VUS=4 -e DURATION=10s /scripts/load.js >/dev/null
@@ -843,7 +843,7 @@ loadgen-79fd95d599-ldp96   model-a-gpu-b-5d845c65fd-kcmpv   lab10   lab10   √
 req id=0:0 proxy=in  src=10.42.0.119:50584 dst=10.42.0.122:8000 tls=true :method=GET :authority=model-a.lab10.svc.cluster.local:8000 :path=/infer
 ```
 
-**证明 8。** 到这里，每个人都会问的那个问题来了！代理的代价是什么？不回答这个，没人会往下读。换我也不读。为此我只留一个副本，把邻居关掉。然后用同样的参数压测，先用入网的生成器，再用不入网的。
+**证明 8。** 现在到了每个人都会问的问题：代理有多大开销？不回答这个，没人会继续往下读。为此，我只保留一个副本，关掉邻居，然后用相同的参数压测，先用入网的生成器，再用未入网的。
 
 ```bash
 kubectl scale deploy -n lab10 model-a-gpu-b burner burner-b --replicas=0
@@ -862,13 +862,13 @@ kubectl scale deploy -n lab10 model-a-gpu-b --replicas=1 && kubectl rollout stat
 | 入网，1 用户   | 18,773 | 626 | 1.51 ms |          | 1.99 ms  |
 | 不入网，1 用户 | 21,255 | 708 | 1.34 ms |          | 1.75 ms  |
 
-8 个并发客户端时，代理在 p50 上加了 0.06 ms。p99 上什么都没加。我把两行叠在一起看了好几遍。差别真的在测量噪声之内。单客户端时，请求端到端耗时 1.4 ms，代理的份额是 0.17 ms，也就是吞吐量的 11%。这个数字看起来可能不小，但和一个每 token 花几十毫秒的真实模型相比，它就是噪声。
+8 个并发客户端时，代理在 p50 上只增加了 0.06 ms，p99 上没有增加。我把两行数据对比了好几遍，差别确实在测量噪声范围内。单个客户端时，一个请求的端到端耗时是 1.4 ms，其中代理占 0.17 ms，吞吐量下降 11%。这个数字看起来不小，但对比一个每个 token 要几十毫秒的真实模型，它就是噪声。
 
 ## 步骤 7 让邻居现形
 
-有了参照，现在把邻居放进来。邻居进入 GPU-A，就在副本 1 旁边。为了单独读出这个副本的延迟，这一节我用带 `REUSE=false` 的不入网生成器。kube-proxy 把新连接均匀分配，两个副本得到相同的请求速率，各自的 inbound 代理报告各自的 p50 和 p99。这一节我故意把网格排除在外。它做了什么，我们到步骤 8 再看。
+有了参照，现在放入邻居。邻居放在 GPU-A 上，紧挨着副本 1。为了单独读出这个副本的延迟，这一节我用带 `REUSE=false` 的未入网生成器。kube-proxy 会把新连接均匀分配，两个副本得到相同的请求速率，各自的 inbound 代理分别报告各自的 p50 和 p99。这一节我故意把网格排除在外，它的作用留到步骤 8 再看。
 
-我的计划是在 100、50 和 20 core 下试邻居。计划在第一档就破了。100 根本没跑起来，而这教了我一件关于 HAMi 我原本不知道的事。HAMi 的算力预算是一个调度约束，而不只是运行时的节流。
+我原本计划用 100、50 和 20 core 三档来测邻居，但第一档就失败了：100 core 的邻居根本没能运行。这让我学到了一件关于 HAMi 的事：HAMi 的算力预算是调度约束，而不只是运行时的节流。
 
 ```bash
 kubectl set resources deploy/burner -n lab10 -c burner --limits=nvidia.com/gpucores=100
@@ -880,10 +880,10 @@ kubectl describe pod -n lab10 -l app=burner | grep -A3 Events
 Warning  FilteringFailed  1 nodes CardInsufficientCore(gpu-node-a)
 ```
 
-原因很简单。副本 1 占着卡的 50 core，extender 不接受任何会把卡推过 100 的东西。能放下的档位是 50、40 和 20。这就是 burner 清单默认带 50 的原因。这句话值得写在每一份 HAMi 设计的角落里。一张卡上各 pod 的 `gpucores` 之和最多为 100，超过时唯一的信号就是一个带 `CardInsufficientCore` 卡在 Pending 的 pod。
+原因很简单：副本 1 已经占了这张卡的 50 core，extender 不会接受任何让总量超过 100 的请求。所以能放下的档位是 50、40 和 20。这也是 burner 清单默认写 50 的原因。这一点值得记在每份 HAMi 设计里：同一张卡上各个 pod 的 `gpucores` 之和不能超过 100，超过时唯一的信号就是 pod 带着 `CardInsufficientCore` 一直 Pending。
 
 ```bash
-# 邻居关闭，然后放到 GPU-A 上跑 20、40 和 50 core，然后放到 GPU-B 做对照，每种状态下都是同样的两条命令
+# 邻居关闭，然后放到 GPU-A 上跑 20、40 和 50 core，再放到 GPU-B 做对照，每种状态都用同样的两条命令
 kubectl scale deploy -n lab10 burner --replicas=0   # 清掉 100 core 的那次尝试
 kubectl exec -n lab10-unmeshed deploy/loadgen -c k6 -- k6 run -e VUS=8 -e DURATION=60s -e REUSE=false /scripts/load.js
 linkerd viz stat -n lab10 pod -t 60s
@@ -891,7 +891,7 @@ kubectl set resources deploy/burner -n lab10 -c burner --limits=nvidia.com/gpuco
 kubectl scale deploy -n lab10 burner --replicas=0 && kubectl scale deploy -n lab10 burner-b --replicas=1 && kubectl rollout status -n lab10 deploy/burner-b   # 对照组
 ```
 
-我依次跑了剩下的三档。下表是每个副本在自己门口看到的延迟。调用方是不入网的生成器，每个请求新开一条连接，8 个用户压 60 秒。
+我依次跑了剩下的三档。下表是每个副本在自己门口看到的延迟。调用方是未入网的生成器，每个请求新建一条连接，8 个用户压测 60 秒。
 
 | GPU-A 上的邻居 | 副本 1（H100）rps、p50、p99 | 副本 2（L40S）rps、p50、p99 |
 | -------------- | --------------------------- | --------------------------- |
@@ -900,32 +900,32 @@ kubectl scale deploy -n lab10 burner --replicas=0 && kubectl scale deploy -n lab
 | gpucores 40    | 273、3 ms、20 ms            | 269、22 ms、35 ms           |
 | gpucores 50    | 276、5 ms、20 ms            | 274、22 ms、30 ms           |
 
-现在我们看到邻居了。副本 1 的 p50 涨了 3 到 5 倍，p99 涨了 2.5 倍，而这期间它的 4000 MiB 和 50 core 限制纹丝未动。另一张卡上的副本 2 连动都没动。
+现在能看到邻居的影响了。副本 1 的 p50 上升了 3 到 5 倍，p99 上升了 2.5 倍，而这期间它的 4000 MiB 和 50 core 限制没有任何变化。另一张卡上的副本 2 则完全没有受影响。
 
-再多看一会儿这张表，第二个信息就出来了。我觉得它比第一个更有意思。20 core 的邻居造成的伤害几乎和 50 core 的一样大。我没料到这一点。然后想通了。`gpucores` 是在一个时间窗口内节流邻居的 kernel 启动。在窗口之内，邻居的 kernel 依然和你的争夺 SM、L2 和 HBM。这个限制封顶的是邻居的平均份额。它不会让邻居的 kernel 变小。
+再看一会儿这张表，还能发现第二个信息，我觉得比第一个更有意思：20 core 的邻居造成的影响，几乎和 50 core 的一样大。我一开始没想到，后来想明白了。`gpucores` 限制的是一个时间窗口内邻居启动 kernel 的频率。在窗口内部，邻居的 kernel 仍然会和你的 kernel 争夺 SM、L2 和 HBM。这个限制封顶的是邻居的平均份额，并不会让邻居的单个 kernel 变小。
 
-**对照组。** 看着目前的表，我想说"好，是共享造成的"。但我还没有资格这么说。两张卡不一样。也许 H100 就是这个脾气，也许那天发生了什么。唯一能分清的办法是把邻居挪到另一张卡上。`burner-b` 在 GPU-B 上跑 50 core，GPU-A 完全空着。这就是上面命令的第三轮。
+**对照组。** 看到目前的表，我很想直接说“是共享造成的”，但还不能这么说。两张卡型号不同，也许 H100 本身就是这个表现，也许当天有别的因素。唯一能区分的办法，是把邻居挪到另一张卡上：让 `burner-b` 在 GPU-B 上以 50 core 运行，GPU-A 完全空着。这就是上面命令的第三轮。
 
 | GPU-B 上的邻居 | 副本 1（H100）rps、p50、p99 | 副本 2（L40S）rps、p50、p99 |
 | -------------- | --------------------------- | --------------------------- |
 | gpucores 50    | 146、1 ms、5 ms             | 145、63 ms、99 ms           |
 
-副本 1 回到了基线。现在共享一张卡的是副本 2，它的 p50 从 24 ms 涨到了 63 ms。因为轮询的调用方要等它，两个副本的请求速率也都减半了。你把邻居带到哪张卡上，效应就跟到哪张卡上。这正是"由共享造成"的含义。
+副本 1 回到了基线。现在和邻居共享卡的是副本 2，它的 p50 从 24 ms 涨到了 63 ms。因为轮询的调用方要等它，两个副本的请求速率也都减半了。邻居在哪张卡上，影响就出现在哪张卡上。这正是“由共享造成”的含义。
 
-写这一节时我犯了一个错误，而纠正它成了我认为实验里最有教益的部分。所以我没删。我一开始把副本 2 的 24 ms p50 归因于连接成本。每个请求新建 TCP 连接，经 VXLAN 到另一个节点，再加上 inbound 代理的协议探测。听起来非常有道理。我甚至已经写下来了。然后我测了。我用一个客户端直连 pod IP，先用 keep-alive，再每个请求新开连接。测量结果如下。
+写这一节时我犯了一个错误，而纠正它的过程是实验里最有价值的部分，所以我没有删掉。我一开始把副本 2 的 24 ms p50 归因于连接成本：每个请求新建 TCP 连接，经 VXLAN 到另一个节点，再加上 inbound 代理的协议探测。这个解释听起来很合理，我甚至已经写下来了。然后我做了测量：用一个客户端直连 pod IP，先用 keep-alive，再每个请求新建连接。结果如下。
 
 | 目标             | Keep-alive p50、p99 | 每请求新连接 p50、p99 |
 | ---------------- | ------------------- | --------------------- |
 | 副本 1，同一节点 | 1.32 ms、1.71 ms    | 1.47 ms、1.90 ms      |
 | 副本 2，另一节点 | 3.63 ms、3.80 ms    | 3.65 ms、3.86 ms      |
 
-听起来有道理的解释没能扛住数字。建连在同一节点上花 0.15 ms，跨节点没有增加任何可测量的量。L40S 用 3.6 ms 完成一个请求。那 24 ms 从哪来？当然是排队。轮询的调用方把 550 rps 的一半送给一个每秒只能做 280 份 3.6 ms 工作的副本。那是这个副本的整整一秒，没有任何余量。入网的调用方以相近的速率给同一个副本发请求，它的 inbound p50 读数是 8 ms。代理如何把请求打包到几条热连接上，与 4 个客户端各自新开连接打进一个正忙于 GPU 的 Python 服务，这两者之间的差异我在本实验中没有拆开，坦白说。我拆开的是这个。在相同的请求速率下，副本 1 的延迟只在邻居在它自己的卡上时才动了。
+这个听起来合理的解释，没能经受住数据的检验。同一节点上建连只花 0.15 ms，跨节点没有增加任何可测量的延迟。L40S 处理一个请求需要 3.6 ms。那 24 ms 从哪来？答案是排队。轮询的调用方把 550 rps 的一半发给一个每秒只能处理 280 个请求（每个 3.6 ms）的副本，280 个乘 3.6 ms 刚好是 1 秒，副本已经满负荷，没有任何余量。入网的调用方以相近的速率给同一个副本发请求，它的 inbound p50 读数是 8 ms。代理把请求合并到少数几条热连接上，与 4 个客户端各自新建连接去访问一个正忙于 GPU 的 Python 服务，这两者的差别我在本实验中没有拆开，这里坦白说明。我拆开的是这一点：在相同的请求速率下，只有当邻居在副本 1 自己的卡上时，副本 1 的延迟才会变化。
 
-再补一句。`gpucores` 是在一个窗口内节流的，所以单次 60 秒的运行展示的是效应的形状，不是它的精确数值。在引用某个数字之前，把邻居测量多跑几次。我跑了三次，形状都一样。
+补充一点：`gpucores` 是按时间窗口节流的，所以单次 60 秒的测试展示的是影响的形状，不是精确数值。引用某个数字之前，请把邻居测量多跑几次。我跑了三次，形状都一样。
 
 ## 步骤 8 展示 EWMA 绕开它
 
-邻居的伤害已经很清楚了，我想。现在我们来到实验真正的问题。网格看得见它吗，会做点什么吗？Linkerd 的 outbound 代理用 [EWMA](https://linkerd.io/2-edge/features/load-balancing/) 平衡每个请求。也就是按每个 endpoint 延迟的指数加权移动平均。理论上变慢的副本应该拿到更少的请求。实践中怎么样，我们来看看。
+邻居造成的影响已经很清楚了。现在回到实验真正的问题：网格能看见它吗？会做点什么吗？Linkerd 的 outbound 代理用 [EWMA](https://linkerd.io/2-edge/features/load-balancing/) 平衡每个请求，也就是按每个 endpoint 延迟的指数加权移动平均来选择。理论上，变慢的副本会收到更少的请求。实际效果如何，我们来看。
 
 ```bash
 kubectl get pods -n lab10 -l app=loadgen -o custom-columns='POD:.metadata.name,PROXY:.metadata.annotations.linkerd\.io/proxy-version'
@@ -937,7 +937,7 @@ kubectl exec -n lab10 deploy/loadgen -c k6 -- k6 run -e VUS=8 -e DURATION=60s /s
 linkerd viz stat -n lab10 pod -t 60s
 ```
 
-这次我用三种不同的调用方去对付同一个邻居，因为"不入网"不是一回事。第一种是 RR，不入网的生成器，每个请求一条新连接。第二种是 16 连接，还是不入网的生成器，但用 16 条 keep-alive 连接，这是一个带连接池的普通应用通过 kube-proxy 看到的样子。第三种是入网，Linkerd 代理后面的生成器，8 个用户。
+这次我用三种不同的调用方，去对付同一个邻居，因为“不入网”并不是单一的情况。第一种是 RR：未入网的生成器，每个请求新建一条连接。第二种是 16 连接：同样是未入网的生成器，但使用 16 条 keep-alive 连接，相当于带连接池的普通应用通过 kube-proxy 访问的情形。第三种是入网：Linkerd 代理后面的生成器，8 个用户。
 
 | GPU-A 上的邻居 | 调用方 | 服务量 gpu-a、gpu-b | gpu-a 份额 | RPS | 客户端 p50 | 客户端 p99 |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -954,13 +954,13 @@ linkerd viz stat -n lab10 pod -t 60s
 | 50 | 不入网，16 连接 | 25,007、16,015 | 61% | 683 | 15.00 ms | 39.99 ms |
 | 50 | 不入网，RR | 16,487、16,455 | 50% | 549 | 12.81 ms | 30.80 ms |
 
-表看着很挤，对吧？先看最后一列。邻居开启时，入网客户端的 p99 在 20、40 和 50 core 下都停在 15.9 到 16.5 ms 之间。也就是离它自己的基线不到 1 ms。所有不入网的变体都在 25 到 48 ms 之间。轮询的调用方继续把一半的请求送给变慢的副本，因为它不知道别的。连接池的调用方在整个运行期间把每条连接钉在一个副本上，拿到什么就过什么日子。
+这张表很挤，先看最后一列。邻居开启时，入网客户端的 p99 在 20、40 和 50 core 下都稳定在 15.9 到 16.5 ms，离它自己的基线不到 1 ms。所有未入网的变体都在 25 到 48 ms 之间。轮询的调用方会继续把一半请求发给变慢的副本，因为它不知道别的。连接池的调用方在整个测试期间把每条连接固定在一个副本上，分到什么就是什么。
 
-份额那一列需要仔细看。第一次读时它骗了我。入网的调用方把副本 1 的份额从 75% 降到了 63%，不错。但 16 连接的不入网调用方显示了类似的份额，而那里根本没有 EWMA。那怎么回事？k6 跑的是闭环。每个虚拟用户在上一个响应回来后才发下一个请求。所以钉在更快副本上的连接自己就会每秒产生更多请求。单看份额分不清"均衡器选的"和"快的先答了"。能分清的是按副本的 inbound 视角。在 50 core 邻居下，入网调用方之下副本 1 以 p50 8 ms、p99 19 ms 服务了 470 rps。16 连接调用方之下它以 p50 15 ms 服务了 417 rps，而副本 2 因为被砸了太多连接，停在 35 ms 的 p50。Linkerd 的 outbound 代理把 8 个用户全部复用到自己的连接上，按观测到的延迟逐请求选副本，所以没有哪个副本会背上它不该背的队列。再加上平稳的 p99，这就是 EWMA 的结果。
+份额这一列需要仔细看，我第一次读时被它误导了。入网的调用方把副本 1 的份额从 75% 降到了 63%，这符合预期。但 16 连接的未入网调用方显示了类似的份额，而那里根本没有 EWMA。这是怎么回事？因为 k6 是闭环压测：每个虚拟用户要等上一个响应回来，才发下一个请求。所以固定在更快副本上的连接，自己就会每秒发出更多请求。光看份额，分不清是“均衡器选的”还是“快的先答了”。能区分的是每个副本的 inbound 视角。在 50 core 邻居下，入网调用方让副本 1 以 p50 8 ms、p99 19 ms 处理了 470 rps。16 连接调用方让它以 p50 15 ms 处理了 417 rps，而副本 2 因为被大量连接压着，p50 停在 35 ms。Linkerd 的 outbound 代理把 8 个用户都复用到自己的连接上，按观测到的延迟逐请求选择副本，所以没有哪个副本会背上不该背的队列。再加上平稳的 p99，这就是 EWMA 的效果。
 
-我又把邻居挪到 GPU-B，50 core。服务量 49,063 对 8,984，副本 1 的份额 85%，客户端 p99 20.9 ms。这次均衡器往另一个方向挪，远离变慢的那张卡。所以方向无所谓。它看见慢的那个，然后从那里挪开。
+我又把邻居挪到 GPU-B，同样 50 core。服务量是 49,063 对 8,984，副本 1 的份额是 85%，客户端 p99 是 20.9 ms。这次均衡器往相反方向调整，远离变慢的那张卡。所以方向并不重要：它发现慢的那个，然后从那里挪开。
 
-这个场景在你自己的环境里唯一可能悄悄失败的点是这个。EWMA 跑在调用方的 outbound 代理里。如果负载生成器不入网，流量走 kube-proxy，EWMA 根本不会运行。场景会说"没起作用"，却不说为什么。所以上面第一条命令打印的是生成器的代理版本。我就是这么抓到的。
+在你自己的环境里，这个场景最容易悄悄失败的地方在这里：EWMA 运行在调用方的 outbound 代理里。如果负载生成器没有入网，流量走 kube-proxy，EWMA 根本不会运行。场景只会显示“没起作用”，却不告诉你原因。所以上面第一条命令会打印生成器的代理版本，我就是这样发现问题的。
 
 ```plaintext
 POD                        PROXY
@@ -969,7 +969,7 @@ loadgen-79fd95d599-ldp96   edge-26.9.3
 
 ## 步骤 9 小切片上的金丝雀
 
-到目前为止我们谈的是网格看见了什么并绕开它。有了同一套机制，还有两样东西是白送的，第一样是金丝雀。`model-a-v2` 在 GPU-B 上一个 1500 MiB、20 core 的小切片里，紧挨着副本 2 的 4000 MiB、50 core 切片。一个以 `model-a` Service 为 parent 的 HTTPRoute 拆分流量。
+到目前为止，我们看的是网格如何发现并绕开邻居的影响。同样的机制还带来两个额外的好处，第一个是金丝雀发布。`model-a-v2` 运行在 GPU-B 上一个 1500 MiB、20 core 的小切片里，紧挨着副本 2 的 4000 MiB、50 core 切片。一个以 `model-a` Service 为 parent 的 HTTPRoute 负责拆分流量。
 
 <details>
 <summary>40-canary.yaml</summary>
@@ -1065,27 +1065,27 @@ POD                             NODE         ALLOC
 model-a-v2-7485bdc9bf-7rxnz     gpu-node-b   GPU-4dc50575-f241-9f14-1e6e-ecb4a93c3299,NVIDIA,1500,20:;
 ```
 
-**证明 9。** 权重真的生效了，还是停留在纸面上？为了看清，我在入网的生成器上开了 8 个用户，每个权重压 60 秒。
+**证明 9。** 权重真的生效了，还是只停留在配置上？为了看清楚，我在入网的生成器上开了 8 个用户，每个权重压测 60 秒。
 
 | 权重 model-a、v2 | 服务量 model-a、v2 | 测得的拆分   | v2 inbound p50、p99 |
 | ---------------- | ------------------ | ------------ | ------------------- |
 | 90、10           | 57,733、6,342      | 90.1%、9.9%  | 17 ms、39 ms        |
 | 50、50           | 15,031、15,235     | 49.7%、50.3% | 26 ms、39 ms        |
 
-生效了，精确到小数点后。你还能看到 20 core 的切片明显更慢，p99 39 ms，而全速的 H100 副本是 10 ms。这正是金丝雀的用处，在你把整张卡交给它之前先告诉你。50/50 时总吞吐从 1,070 降到了 500 rps，因为现在每个请求有一半要等小切片。那是实验的代价，不是故障。
+权重生效了，精确到小数点后一位。还能看到 20 core 的切片明显更慢：p99 是 39 ms，而全速的 H100 副本是 10 ms。这正是金丝雀的作用：在把整张卡交给它之前，先告诉你结果。50/50 时总吞吐从 1,070 降到了 500 rps，因为现在每个请求有一半要等小切片。这是实验设计带来的代价，不是故障。
 
-出于好奇，我用不入网的调用方试了同一个 HTTPRoute。
+出于好奇，我用未入网的调用方试了同一个 HTTPRoute。
 
 ```plaintext
 === same weights, UNMESHED caller (HTTPRoute not applied)
 --- served by v2: 0
 ```
 
-零。流量拆分是 outbound 代理的功能，kube-proxy 根本不知道 HTTPRoute 是什么。这是步骤 8 那个陷阱的另一面。
+结果是零。流量拆分是 outbound 代理的功能，kube-proxy 不知道 HTTPRoute 是什么。这和步骤 8 的陷阱是同一个问题。
 
 ## 步骤 10 把坏切片踢出轮转
 
-第二样白送的东西是把坏切片踢出轮转。这里有个观察让我思考。一个对其工作负载来说太小的切片不会崩溃，它会逐请求失败。所以它在 Kubernetes 眼里是健康的，在用户眼里是坏的。为了展示这一点，我做了一个故意坏掉的副本。`model-a-bad`，清单在下面，以一个 1500 MiB 的切片和 `EXTRA_MIB=1200` 加入 `model-a` Service，并在每次 `/infer` 时尝试分配 1200 MiB 的临时显存。启动和 `/healthz` 都正常，所以 Kubernetes 的 readiness 把它留在 endpoints 里。
+第二个额外的好处，是把坏切片踢出轮转。我观察到一个现象：对工作负载来说太小的切片不会崩溃，而是逐请求失败。所以在 Kubernetes 看来它是健康的，在用户看来却是坏的。为了演示这一点，我故意做了一个会出问题的副本 `model-a-bad`，清单在下面。它使用 1500 MiB 的切片和 `EXTRA_MIB=1200`，加入 `model-a` Service，并在每次 `/infer` 时尝试分配 1200 MiB 的临时显存。启动和 `/healthz` 都正常，所以 Kubernetes 的 readiness 会把它留在 endpoints 里。
 
 <details>
 <summary>50-failure.yaml</summary>
@@ -1154,7 +1154,7 @@ model-a-bad-79c588b54-xkgn5   true    GPU-4dc50575-f241-9f14-1e6e-ecb4a93c3299,N
   HTTP/1.1 500 Internal Server Error
 ```
 
-**证明 10。** Kubernetes 以为这个 pod 是健康的。网格会做什么？我把同样的负载压了两次，入网的生成器，8 个用户，60 秒。第一次没有 failure accrual。第二次我给 Service 加上了 annotation。annotation 的名字取自 [Linkerd 的熔断器页面](https://linkerd.io/2-edge/tasks/circuit-breakers/)。加了 annotation 的 Service 在下面。
+**证明 10。** Kubernetes 认为这个 pod 是健康的，网格会怎么处理？我用相同的负载压测了两次：入网的生成器，8 个用户，60 秒。第一次没有 failure accrual，第二次给 Service 加上了 annotation。annotation 的名称来自 [Linkerd 的熔断器页面](https://linkerd.io/2-edge/tasks/circuit-breakers/)。加了 annotation 的 Service 在下面。
 
 <details>
 <summary>55-failure-accrual.yaml</summary>
@@ -1188,13 +1188,13 @@ spec:
 | accrual，第 1 分钟 | 99.98% | 64,731 中的 12    | 10         | 15.24 ms、19.37 ms  |
 | accrual，第 2 分钟 | 99.99% | 64,739 中的 1     | 1          | 14.78 ms、21.83 ms  |
 
-差别很清楚。没有 accrual 时，坏 pod 继续拿走它那份流量，它的 inbound 一侧显示 `success=1.70% rps=29.4rps`，客户端有 3% 的请求失败。开启 accrual 后，连续 7 次失败之后这个 endpoint 进入惩罚箱，只是偶尔被探测一下。第一分钟有 10 个请求到达它，第二分钟 1 个。Kubernetes 没看见的，网格看见了。
+差别很明显。没有 accrual 时，坏 pod 继续分到它那份流量，它的 inbound 一侧显示 `success=1.70% rps=29.4rps`，客户端有 3% 的请求失败。开启 accrual 后，连续 7 次失败，这个 endpoint 就会进入惩罚箱，只会被偶尔探测一下。第一分钟有 10 个请求到达它，第二分钟只有 1 个。Kubernetes 没发现的问题，网格发现了。
 
-到这里你可能想到了重试。我也想到了。我故意没开重试和超时。它们的名字是 `retry.linkerd.io/http`、`retry.linkerd.io/limit`、`timeout.linkerd.io/request` 和 `timeout.linkerd.io/response`，都在 [Linkerd 的页面](https://linkerd.io/2-edge/features/retries-and-timeouts/)上。对这个工作负载，重试一个 500 是管用的。但在一个流式输出 token 的 LLM endpoint 上不管用，还可能有害。重试会在客户端已经看到部分答案之后，把 prompt 从头再对一个新后端重放一遍，而按 6 ms 矩阵乘法定的请求超时会把一次 40 秒的生成拦腰杀掉。按路由设置它们，并且设得长一些。
+你可能想到了重试，我也想到了。我故意没有开启重试和超时。相关的 annotation 是 `retry.linkerd.io/http`、`retry.linkerd.io/limit`、`timeout.linkerd.io/request` 和 `timeout.linkerd.io/response`，都在 [Linkerd 的页面](https://linkerd.io/2-edge/features/retries-and-timeouts/)上有说明。对这个工作负载，重试一个 500 是有效的。但对流式输出 token 的 LLM endpoint，重试不但没用，还可能有害：客户端已经收到部分回答后，重试会把 prompt 从头发给一个新后端重新生成；而按 6 ms 矩阵乘法设定的请求超时，会把一次 40 秒的生成直接中断。请按路由分别设置，并且超时设得长一些。
 
 ## 步骤 11 同一张卡上的两个租户
 
-回到开头。那个质疑的后半句还立在那里。证书跟这些有什么关系？为了回答，我把两个租户放到了同一张卡上。`tenant-b` 在 GPU-A 上、与副本 1 同一张卡的一个 2000 MiB、10 core 切片里跑一个小模型。`tenant-a` 只有一个客户端 pod。两个命名空间都入网。策略由 3 个对象组成。我也记一下 edge-26.9.3 提供的 CRD 版本。`Server` 是 v1beta3，`AuthorizationPolicy` 和 `MeshTLSAuthentication` 是 v1alpha1。
+回到开头。那个质疑的后半句还没回答：证书和这些有什么关系？为了回答它，我把两个租户放到了同一张卡上。`tenant-b` 在 GPU-A 上、与副本 1 同一张卡的一个 2000 MiB、10 core 切片里运行一个小模型。`tenant-a` 只有一个客户端 pod。两个命名空间都已入网。策略由 3 个对象组成。edge-26.9.3 提供的 CRD 版本是：`Server` 为 v1beta3，`AuthorizationPolicy` 和 `MeshTLSAuthentication` 为 v1alpha1。
 
 <details>
 <summary>60-tenants.yaml</summary>
@@ -1365,7 +1365,7 @@ done
 linkerd viz edges -n tenant-b po
 ```
 
-**证明 11。** 我从两个客户端向同一个 endpoint 各发了一个请求。
+**证明 11。** 我从两个客户端分别向同一个 endpoint 发送了一个请求。
 
 ```plaintext
 == from tenant-a: 403
@@ -1378,21 +1378,21 @@ client-745fc5c7c6-6bmxg    model-85856b88c7-g8pmz   tenant-a  tenant-b  √
 client-745fc5c7c6-wqtgd    model-85856b88c7-g8pmz   tenant-b  tenant-b  √
 ```
 
-注意两条边都是 SECURED。tenant-a 的请求被拒绝，并不意味着它是明文发出去的。tenant-a 的请求是带着有效证书通过 [mTLS](https://linkerd.io/2-edge/features/automatic-mtls/) 到达的，被拒绝是因为证书的身份是 `default.tenant-a.serviceaccount.identity.linkerd.cluster.local`，而[策略](https://linkerd.io/2-edge/features/server-policy/)不认这个身份。现在我可以回答那个质疑了。HAMi 决定哪些 pod 共享这张卡。Linkerd 的身份决定哪些 pod 可以互相通信。共享一张 GPU 不会给租户任何它原本没有的网络路径。这就是证书和这一切的关系。kubelet 的探针继续正常工作，因为 policy controller 单独授权了它们。你会在 `linkerd viz authz` 里看到它们显示为 `default/probe`。
+注意，两条边都是 SECURED。tenant-a 的请求被拒绝，并不是因为它以明文发送。它带着有效证书，通过 [mTLS](https://linkerd.io/2-edge/features/automatic-mtls/) 到达，被拒绝是因为证书里的身份是 `default.tenant-a.serviceaccount.identity.linkerd.cluster.local`，而[策略](https://linkerd.io/2-edge/features/server-policy/)不认可这个身份。现在可以回答前面的质疑了：HAMi 决定哪些 pod 共享这张卡，Linkerd 的身份决定哪些 pod 可以互相通信。共享一张 GPU，不会给租户带来任何它原本没有的网络路径。这就是证书和这一切的关系。kubelet 的探针继续正常工作，因为 policy controller 单独授权了它们，在 `linkerd viz authz` 里显示为 `default/probe`。
 
 :::warning[默认策略接受所有人]
 
-同一段输出里的 `default:all-unauthenticated` 那一行是个警告。那是集群的默认策略。对于每一个你没有写 `Server` 和 `AuthorizationPolicy` 的端口，网格接受任何调用方，有没有身份都一样。租户隔离不会自己出现，它是写出来的。
+同一段输出里的 `default:all-unauthenticated` 这一行是个警告。它是集群的默认策略：对于每一个你没有写 `Server` 和 `AuthorizationPolicy` 的端口，网格接受任何调用方，不管有没有身份。租户隔离不会自动出现，必须自己写策略。
 
 :::
 
 ## 步骤 12 生命周期，以及最后的意外
 
-收尾之前我还想检查一件事。pod 被删掉再回来时，HAMi 真的释放了切片吗？看这个最干净的地方是 HAMi 的调度器指标。它们在 `:31993` 上报告每张卡承诺了什么。
+收尾之前，我还想检查一件事：pod 被删除后重新创建时，HAMi 真的释放了切片吗？最直接的办法是看 HAMi 调度器的指标，它们在 `:31993` 上报告每张卡已经分配了什么。
 
 :::warning[指标端口是一个 NodePort]
 
-再加一个小小的安全提示。那是一个 NodePort，也是 chart 的默认值，所以如果节点有一个外部可达的地址，指标也就外部可达。我的节点有公网 IP，我在安全组里把这个端口关着。你也这么做，或者改掉 `scheduler.service.monitorPort` 并在前面挡点东西。
+再提醒一点安全问题：这个端口是 NodePort，是 chart 的默认配置，所以如果节点有外部可达的地址，指标也会外部可达。我的节点有公网 IP，我在安全组里关闭了这个端口。你也应该这样做，或者修改 `scheduler.service.monitorPort` 并在前面加一层保护。
 
 :::
 
@@ -1405,13 +1405,13 @@ hami_gpu_core_allocated_ratio{device_uuid="GPU-7023a4c2-…"}  60      # replica
 hami_gpu_shared_count{device_uuid="GPU-7023a4c2-…"}          2
 ```
 
-在这个状态下我对副本 1 做了一次滚动更新，然后收到了这一天最后的意外。滚动更新没有完成，一直在等。
+在这个状态下，我对副本 1 做了一次滚动更新，然后遇到了这一天最后的意外：滚动更新一直没有完成，在等待。
 
 ```plaintext
 FilteringFailed  1 nodes CardInsufficientCore(gpu-node-a)
 ```
 
-等了五分钟后我明白了原因，就是早上那条预算规则。只是换了个伪装。Deployment 默认的滚动更新会在移除旧 pod 之前先多开一个 pod。surge pod 要 50 core。GPU-A 只剩 40 空闲。HAMi 说不，于是滚动更新永远等下去，旧 pod 继续服务。干净的复现如下。
+等了五分钟后我明白了原因，就是早上那条预算规则，只是换了个形式出现。Deployment 默认的滚动更新会先多启动一个 pod，再移除旧 pod。这个 surge pod 需要 50 core，而 GPU-A 只剩 40 core 空闲。HAMi 拒绝分配，滚动更新就一直等下去，旧 pod 继续提供服务。下面是干净的复现步骤。
 
 ```plaintext
 ##### PROOF 12a: rollout with headroom (GPU-A: model-a 50 cores, 50 free)
@@ -1426,7 +1426,7 @@ deployment "model-a-gpu-a" successfully rolled out
 --- after fix (72s total)
 ```
 
-**证明 12。** 两种情况并排一放，图景就完整了。有余量时滚动更新用了 26 秒。旧切片被释放。core 回到 50，显存回到 4000 MiB。新 pod 拿到完全相同的分配。卡上有邻居时它根本起不来，唯一的痕迹是 surge pod 上的 `FailedScheduling` 事件。解决办法是 `maxSurge` 0 和 `maxUnavailable` 1。这样切片会原地重建。代价是那个副本上一小段空档。而网格用另一个副本把它补上了。代理什么都没拖住，每个旧 pod 都自己进入了 `Completed`。
+**证明 12。** 把两种情况放在一起，就完整了。有余量时，滚动更新用了 26 秒：旧切片被释放，core 回到 50，显存回到 4000 MiB，新 pod 拿到完全相同的分配。卡上有邻居时，新 pod 根本起不来，唯一的痕迹是 surge pod 上的 `FailedScheduling` 事件。解决办法是设置 `maxSurge` 为 0、`maxUnavailable` 为 1，这样切片会原地重建，代价是那个副本会有一小段空档，而网格用另一个副本把流量接住了。代理没有拖慢任何过程，每个旧 pod 都自己进入了 `Completed`。
 
 ```bash
 kubectl patch deploy -n lab10 model-a-gpu-a -p '{"spec":{"strategy":{"rollingUpdate":{"maxSurge":0,"maxUnavailable":1}}}}'
@@ -1436,9 +1436,9 @@ kubectl rollout status -n lab10 deploy/model-a-gpu-a
 
 ## 步骤 13 从 bind 到 Allocate 要多久
 
-实验的主线到这里结束，但我还有两件我认为读者会觉得有用的事。第一件是这个问题。调度器把 pod 绑定到节点之后，device plugin 的 `Allocate` 调用什么时候到，中间发生了什么？HAMi 为此在节点上用了一把锁。bind 时它在节点上写一个 `hami.io/mutex.lock` annotation，值是时间戳和 pod 名。在 `Allocate` 里 device plugin 读这把锁来知道自己在服务哪个 pod，完成后释放它。锁被持有期间到来的第二个 bind 会以 `node lock contention` 被拒绝，kube-scheduler 稍后重试。
+实验的主线到这里结束，不过还有两件我认为对读者有用的事。第一件是：调度器把 pod 绑定到节点之后，device plugin 的 `Allocate` 调用什么时候到达，中间发生了什么？HAMi 在节点上用了一把锁：bind 时在节点上写一个 `hami.io/mutex.lock` annotation，值是时间戳和 pod 名；在 `Allocate` 里，device plugin 读取这把锁来确定自己在服务哪个 pod，完成后释放它。锁被持有期间到来的第二个 bind 会被拒绝，报 `node lock contention`，kube-scheduler 稍后会重试。
 
-出于好奇，我在同一张 H100 上用 50 个 pod 测了一下。20 个顺序发，30 个一次性发。我测的是调度器的 `Successfully bound pod to node` 那一行和 plugin 的 `Allocate pod name is` 那一行之间的时间。两者都在同一台主机的时钟上，所以可比。
+出于好奇，我在同一张 H100 上用 50 个 pod 做了测试：20 个按顺序发送，30 个一次性发送。我测量的是调度器日志里 `Successfully bound pod to node` 那一行，和 plugin 日志里 `Allocate pod name is` 那一行之间的时间。两者在同一台主机上，使用同一个时钟，所以可以直接比较。
 
 | 测量                                | 值                              |
 | ----------------------------------- | ------------------------------- |
@@ -1446,37 +1446,37 @@ kubectl rollout status -n lab10 deploy/model-a-gpu-a
 | 30 个 pod 突发中因锁争用重试的 bind | 16                              |
 | 从未完成的 pod                      | 0                               |
 
-这个窗口在毫秒量级。锁默认的 5 分钟超时比它高 5 个数量级。所以正常情况下没人需要考虑锁超时。突发中有 16 个 bind 被拒绝并重试，全部完成了。实际的结论显而易见。如果你一次向同一个节点发送很多 GPU pod，会看到 `BindingFailed` 事件。别担心，它们不是错误，是锁在按顺序工作。
+这个时间窗口在毫秒量级，而锁默认的 5 分钟超时比它高 5 个数量级，所以正常情况下不需要考虑锁超时。突发中有 16 个 bind 被拒绝后重试，最终全部完成。实际结论很直接：如果你一次向同一个节点发送很多 GPU pod，会看到 `BindingFailed` 事件。不用担心，这不是错误，而是锁在按顺序工作。
 
 ## 错误特征
 
-搭这个实验时我卡在了很多地方，每次都是先搜日志里那一行。下面是所有这些行。带原因和解决办法。这样你在自己的环境里看到同样的东西时就不用再搜了。
+搭建这个实验时我卡在了很多地方，每次都是先去搜日志里的那一行。下面列出所有这些现象，附上原因和解决办法，这样你在自己的环境里遇到同样的情况时，就不用再去搜了。
 
 | 你看到的 | 原因 | 解决办法 |
 | --- | --- | --- |
 | device plugin 报 `ERROR_LIBRARY_NOT_FOUND`、`invalid device discovery strategy` | containerd 的默认运行时是 `runc`，plugin 找不到 NVML | `devicePlugin.runtimeClassName=nvidia` |
 | `linkerd-proxy-injector` 在 `Init:1/2` 反复重启，代理日志里有 `Failed to obtain identity` | 控制平面 pod 在代理访问不到的节点上 | 用 `nodeSelector` 把控制平面钉在可达节点上，cordon 不可达的节点 |
 | pod Pending，事件里是 `CardInsufficientCore` | 卡上 `gpucores` 之和会超过 100 | 降低邻居的 core，滚动更新用 `maxSurge` 0 |
-| pod Pending，事件里是 `CardUuidMismatch` | `use-gpuuuid` 与该节点上的卡不匹配 | 预期行为，在另一个节点上匹配就没问题 |
+| pod Pending，事件里是 `CardUuidMismatch` | `use-gpuuuid` 与该节点上的卡不匹配 | 这是预期行为，pod 会在 UUID 匹配的节点上调度成功 |
 | 容器在 `pip` 处以 `externally-managed-environment` 退出 | 镜像的 Python 受 PEP 668 管理 | `pip install --break-system-packages` |
 | 容器以 `error while loading shared libraries: libdl.so.2` 退出码 127 | HAMi 的 `libvgpu.so` 预加载需要 glibc，镜像基于 musl | 用基于 glibc 的镜像代替 busybox 或 alpine，例如 `nvcr.io/nvidia/cuda` |
 | k3s agent 容器反复报 `listen tcp 127.0.0.1:6444: bind: address already in use` | 主机上的 k3s server 占着这个端口 | `sudo systemctl stop k3s`，然后重启容器 |
 | 容器化 agent 里 pod 起不来，kubelet 抱怨无法创建 inotify 实例 | 主机的 inotify 限制是 128，并且重启后重置 | `fs.inotify.max_user_instances=8192`，持久化到 `/etc/sysctl.d` 下 |
-| 拉大镜像时其他镜像被删除 | kubelet 的镜像垃圾回收在磁盘超过 85% 时启动 | 腾出磁盘，`docker volume prune` 给我腾出了 19.79 GB |
-| 用 `kubectl logs` 数到的请求比发出的少 | 容器日志滚动了，`--since` 只读当前文件，1000 rps 下一分钟里 65,563 个请求只数到了 18,747 个 | 在应用里计数 |
+| 拉取大镜像时，其他镜像被删除 | 磁盘使用率超过 85% 时，kubelet 会触发镜像垃圾回收 | 腾出磁盘空间，`docker volume prune` 帮我腾出了 19.79 GB |
+| 用 `kubectl logs` 数到的请求比实际发出的少 | 容器日志会滚动，`--since` 只读当前文件；1000 rps 下一分钟发出 65,563 个请求，只数到 18,747 个 | 在应用里自己计数 |
 | Viz 的 `metrics-api` 和 `prometheus` pod 在错误的节点上 | Viz chart 没有把全局 `nodeSelector` 应用到这两个上 | patch 这两个 Deployment |
 
 ## 本实验没有展示的
 
-老实说，本实验没有声称的东西和它声称的一样重要。按顺序。
+老实说，说明本实验没有证明什么，和说明它证明了什么同样重要。下面逐条列出。
 
-- HAMi 不隔离显存带宽和缓存。一个 20 core 的邻居在所有限制都在的情况下把副本 1 的 p50 从 1 ms 推到了 5 ms，50 core 也没更糟。Linkerd 修不了这个。它测量它，然后往那边少发一些。
-- Linkerd 不感知 GPU。EWMA 看见了一个慢的 endpoint，别的什么也没看见。如果邻居把两个副本拖慢得一样，网格就无处可去。
-- `gpucores` 既是节流也是预算。它拦下了 100 core 的邻居和一次滚动更新。两种情况下唯一的痕迹都是 `CardInsufficientCore`。
-- 单次 60 秒的窗口。`gpucores` 是随时间节流的。这些是效应的形状。引用数字之前多跑几次测量。
-- 这是在 Linkerd 的 edge 版本上做的。edge 每周都在动，稳定线是 Buoyant Enterprise for Linkerd。钉住你测试过的 tag。
+- HAMi 不隔离显存带宽和缓存。在所有限制都生效的情况下，一个 20 core 的邻居就把副本 1 的 p50 从 1 ms 推到了 5 ms，50 core 也没有更糟。Linkerd 解决不了这个问题，它只是测量延迟，然后往那边少发一些请求。
+- Linkerd 不感知 GPU。EWMA 只能看到一个慢的 endpoint，其他什么都看不到。如果邻居把两个副本拖慢得一样，网格就没有地方可以转移流量。
+- `gpucores` 既是节流，也是预算。它拦住了 100 core 的邻居，也拦住了一次滚动更新。两种情况下，唯一的痕迹都是 `CardInsufficientCore`。
+- 只测了单次 60 秒的窗口。`gpucores` 是随时间节流的，所以这些数字展示的是影响的形状。引用具体数字之前，请多测几次。
+- 本实验用的是 Linkerd 的 edge 版本。edge 每周都在更新，稳定版本线是 Buoyant Enterprise for Linkerd。请固定你自己测试过的 tag。
 
-下一步，我想把 DCGM 的按卡指标和 HAMi 的按切片指标放到 Linkerd 黄金指标旁边的同一条时间轴上，让一次 p99 尖峰能和 `hami_gpu_core_allocated_ratio` 并排读。
+下一步，我想把 DCGM 的按卡指标和 HAMi 的按切片指标，与 Linkerd 的黄金指标放在同一条时间轴上，这样一次 p99 尖峰就可以和 `hami_gpu_core_allocated_ratio` 并排对照。
 
 ## 清理
 
@@ -1484,21 +1484,21 @@ kubectl rollout status -n lab10 deploy/model-a-gpu-a
 kubectl delete ns lab10 lab10-unmeshed tenant-a tenant-b
 ```
 
-四个命名空间没了。跑完这个之后，我看到两张卡都报告 10 个空闲槽位，`hami_gpu_shared_count` 回到 0。你也应该看到同样的结果。HAMi、Linkerd 和 Viz 保持安装。
+四个命名空间都已删除。运行完之后，我看到两张卡都报告 10 个空闲槽位，`hami_gpu_shared_count` 回到 0。你也应该看到同样的结果。HAMi、Linkerd 和 Viz 保持安装。
 
 ## 本实验证明了什么
 
-| 论断 | 证据 |
+| 要证明的结论 | 证据 |
 | --- | --- |
-| 两个 webhook 作用于同一个 pod | `schedulerName: hami-scheduler`、native sidecar `linkerd-proxy`、HAMi 和 Linkerd 的 annotation 在同一个 pod spec 上 |
-| HAMi-core 只落在 GPU 容器里 | `libvgpu.so` 预加载和 `CUDA_DEVICE_*` 在 `model` 里，containerd 显示 `linkerd-proxy` 上没有 GPU 环境变量或挂载 |
-| 有 sidecar 时显存上限依然成立 | 2000 MiB 分配成功，6000 MiB 被拒绝，PyTorch 在 80 GB 和 48 GB 的卡上都看到 3.91 GiB |
-| 邻居效应是真实的，且由共享造成 | burner 在同卡时副本 1 的 p50 从 1 到 5 ms、p99 从 8 到 20 ms，burner 在另一张卡时不变 |
-| `gpucores` 封顶的是平均值，不是干扰 | 20、40 和 50 core 造成的伤害差不多 |
-| EWMA 稳住了客户端的尾延迟 | 邻居开启时入网 p99 为 15.9 到 16.5 ms，不入网 25 到 48 ms |
-| 8 用户下网格没有可测量的开销 | p50 9.43 对 9.37 ms，p99 11.84 对 11.85 ms |
-| 金丝雀权重和 failure accrual 在切片上有效 | 90/10 测得 90.1/9.9，到达坏切片的请求从 1,251 降到 10 |
-| 共享一张卡不授予任何网络路径 | tenant-a 带着有效的 mTLS 身份得到 403，tenant-b 得到 200 |
-| 算力预算也会拦住滚动更新 | surge pod 因 `CardInsufficientCore` Pending，`maxSurge: 0` 修复它 |
+| 两个 webhook 作用于同一个 pod | `schedulerName: hami-scheduler`、native sidecar `linkerd-proxy`，以及 HAMi 和 Linkerd 的 annotation 同时出现在一个 pod spec 里 |
+| HAMi-core 只作用于 GPU 容器 | `model` 容器里有 `libvgpu.so` 预加载和 `CUDA_DEVICE_*`，containerd 显示 `linkerd-proxy` 上没有 GPU 环境变量或挂载 |
+| 有 sidecar 时显存上限依然有效 | 分配 2000 MiB 成功，6000 MiB 被拒绝，PyTorch 在 80 GB 和 48 GB 的卡上都看到 3.91 GiB |
+| 邻居的影响是真实的，由共享造成 | burner 在同一张卡上时，副本 1 的 p50 从 1 ms 升到 5 ms，p99 从 8 ms 升到 20 ms；burner 在另一张卡上时不变 |
+| `gpucores` 限制的是平均份额，不是干扰 | 20、40 和 50 core 造成的影响差不多 |
+| EWMA 稳住了客户端的尾延迟 | 邻居开启时，入网 p99 为 15.9 到 16.5 ms，未入网为 25 到 48 ms |
+| 8 用户下，网格没有可测量的开销 | p50 为 9.43 ms 对 9.37 ms，p99 为 11.84 ms 对 11.85 ms |
+| 金丝雀权重和 failure accrual 在切片上有效 | 90/10 实测 90.1/9.9，到达坏切片的请求从 1,251 降到 10 |
+| 共享一张卡不会带来额外的网络路径 | tenant-a 带着有效的 mTLS 身份仍得到 403，tenant-b 得到 200 |
+| 算力预算也会拦住滚动更新 | surge pod 因 `CardInsufficientCore` 一直 Pending，设置 `maxSurge: 0` 后解决 |
 
-回到开头，这两个工具确实工作在不同的层上。测了一天之后，我能说的是这个。网格不管理 GPU。它在请求里倾听那些卡没有告诉你的事。
+回到开头：这两个工具确实工作在不同的层。测了一整天，我的结论是：网格不管理 GPU，它只是在请求里倾听那些卡不会告诉你的信息。
