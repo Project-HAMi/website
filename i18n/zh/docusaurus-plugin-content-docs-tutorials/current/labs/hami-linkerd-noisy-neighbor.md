@@ -126,7 +126,7 @@ flowchart LR
 
 我的环境里两张卡型号不同。如果你有两张相同的卡，数据会更干净。如果没有，步骤 7 的对照组可以消除这种不对称带来的影响。
 
-关于命名：本实验里我把节点叫作 `gpu-node-a` 和 `gpu-node-b`。我真实集群里的节点名是云厂商分配的长实例 ID，放在正文里没法读。你需要把自己的节点名填到两个地方：步骤 2 里的 `scheduler.nodeName`，以及步骤 4 里 loadgen 清单的 `nodeSelector`。输出里出现的 `gpu-node-a` 也请读作你自己的节点名。
+关于命名：本实验里我把节点叫作 `gpu-node-a` 和 `gpu-node-b`。我真实集群里的节点名是云厂商分配的长实例 ID，放在正文里没法读。命令和清单里出现节点名的地方，都要换成你自己的节点名：步骤 1 网络测试里的 `nodeName`，步骤 2 里的 `kubectl get node` 检查和 `scheduler.nodeName`，步骤 3 里 Linkerd 和 Viz 安装命令以及 `metrics-api`、`prometheus` patch 里的 `nodeSelector`，还有步骤 4 里 loadgen 清单的 `nodeSelector`。输出里的 `gpu-node-a` 和 `gpu-node-b` 也请读作你自己的节点名。
 
 在每台主机上查看自己的 UUID。
 
@@ -634,10 +634,13 @@ model-a-gpu-a-7877c85fb-wglk8    2/2   Running   10.42.0.122   gpu-node-a
 model-a-gpu-b-5d845c65fd-kcmpv   2/2   Running   10.42.12.44   gpu-node-b
 ```
 
-三个都起来了。给每个发一个请求，看看每张卡的速度。
+三个都起来了。Service 每次只会把请求发给一个后端，所以我们用 pod IP 分别访问每个副本，这样每张卡各得到一个响应，看看每张卡的速度。
 
 ```bash
-kubectl exec -n lab10 deploy/loadgen -c k6 -- wget -qO- http://model-a.lab10.svc.cluster.local:8000/infer
+for g in a b; do
+  IP=$(kubectl get pod -n lab10 -l app=model-a,gpu=$g -o jsonpath='{.items[0].status.podIP}')
+  kubectl exec -n lab10 deploy/loadgen -c k6 -- wget -qO- "http://$IP:8000/infer"
+done
 ```
 
 ```plaintext
@@ -930,14 +933,22 @@ kubectl scale deploy -n lab10 burner --replicas=0 && kubectl scale deploy -n lab
 ```bash
 kubectl get pods -n lab10 -l app=loadgen -o custom-columns='POD:.metadata.name,PROXY:.metadata.annotations.linkerd\.io/proxy-version'
 kubectl scale deploy -n lab10 burner-b --replicas=0   # 步骤 7 的对照组在这里保持关闭
-kubectl set resources deploy/burner -n lab10 -c burner --limits=nvidia.com/gpucores=20 && kubectl scale deploy -n lab10 burner --replicas=1 && kubectl rollout status -n lab10 deploy/burner   # 下面三次运行先在邻居关闭时做，再在 20、40 和 50 时做
-kubectl exec -n lab10-unmeshed deploy/loadgen -c k6 -- k6 run -e VUS=16 -e DURATION=60s /scripts/load.js
-kubectl exec -n lab10-unmeshed deploy/loadgen -c k6 -- k6 run -e VUS=8 -e DURATION=60s -e REUSE=false /scripts/load.js
-kubectl exec -n lab10 deploy/loadgen -c k6 -- k6 run -e VUS=8 -e DURATION=60s /scripts/load.js
-linkerd viz stat -n lab10 pod -t 60s
+for CORES in off 20 40 50; do
+  echo "=== neighbor on GPU-A: $CORES ==="
+  kubectl scale deploy -n lab10 burner --replicas=0   # 每次都从空卡开始，这样新的档位不会和旧 pod 抢资源
+  if [ "$CORES" != off ]; then
+    kubectl set resources deploy/burner -n lab10 -c burner --limits=nvidia.com/gpucores=$CORES
+    kubectl scale deploy -n lab10 burner --replicas=1
+    kubectl rollout status -n lab10 deploy/burner
+  fi
+  kubectl exec -n lab10-unmeshed deploy/loadgen -c k6 -- k6 run -e VUS=16 -e DURATION=60s /scripts/load.js
+  kubectl exec -n lab10-unmeshed deploy/loadgen -c k6 -- k6 run -e VUS=8 -e DURATION=60s -e REUSE=false /scripts/load.js
+  kubectl exec -n lab10 deploy/loadgen -c k6 -- k6 run -e VUS=8 -e DURATION=60s /scripts/load.js
+  linkerd viz stat -n lab10 pod -t 60s
+done
 ```
 
-这次我用三种不同的调用方，去对付同一个邻居，因为“不入网”并不是单一的情况。第一种是 RR：未入网的生成器，每个请求新建一条连接。第二种是 16 连接：同样是未入网的生成器，但使用 16 条 keep-alive 连接，相当于带连接池的普通应用通过 kube-proxy 访问的情形。第三种是入网：Linkerd 代理后面的生成器，8 个用户。
+这个循环依次走过表里的四种邻居状态：关闭、20、40 和 50 core，每种状态下都跑全部三种调用方。这次我用三种不同的调用方，去对付同一个邻居，因为“不入网”并不是单一的情况。第一种是 RR：未入网的生成器，每个请求新建一条连接。第二种是 16 连接：同样是未入网的生成器，但使用 16 条 keep-alive 连接，相当于带连接池的普通应用通过 kube-proxy 访问的情形。第三种是入网：Linkerd 代理后面的生成器，8 个用户。
 
 | GPU-A 上的邻居 | 调用方 | 服务量 gpu-a、gpu-b | gpu-a 份额 | RPS | 客户端 p50 | 客户端 p99 |
 | --- | --- | --- | --- | --- | --- | --- |

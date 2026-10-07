@@ -126,7 +126,7 @@ In the picture the two layers never touch. HAMi draws its own memory limit and c
 
 In my environment the two cards aren't the same model. If you have two identical cards you'll get cleaner numbers. If not, the control group in Step 7 makes the asymmetry harmless.
 
-I also need to add a note on naming at this point. I call the nodes `gpu-node-a` and `gpu-node-b` in this lab. In my real cluster they had the long instance IDs the provider hands out, which made the text unreadable. You'll need to put your own node names in two places, the `scheduler.nodeName` value in Step 2 and the `nodeSelector` in the loadgen manifest in Step 4. Read `gpu-node-a` in the outputs as your own name too.
+I also need to add a note on naming at this point. I call the nodes `gpu-node-a` and `gpu-node-b` in this lab. In my real cluster they had the long instance IDs the provider hands out, which made the text unreadable. You'll need to put your own node names everywhere they appear in a command or manifest: the `nodeName` override in the Step 1 network test, the `kubectl get node` check in Step 2, the `scheduler.nodeName` value in Step 2, the `nodeSelector` in the Linkerd and Viz install commands and in the `metrics-api` and `prometheus` patch in Step 3, and the `nodeSelector` in the loadgen manifests in Step 4. Read `gpu-node-a` and `gpu-node-b` in the outputs as your own names too.
 
 Get your own UUIDs on each host.
 
@@ -634,10 +634,13 @@ model-a-gpu-a-7877c85fb-wglk8    2/2   Running   10.42.0.122   gpu-node-a
 model-a-gpu-b-5d845c65fd-kcmpv   2/2   Running   10.42.12.44   gpu-node-b
 ```
 
-All three are up. Let's send one request to each and see how fast the cards are on their own.
+All three are up. A Service sends each request to just one backend, so we address each replica by its pod IP to get one response per card and see how fast the cards are on their own.
 
 ```bash
-kubectl exec -n lab10 deploy/loadgen -c k6 -- wget -qO- http://model-a.lab10.svc.cluster.local:8000/infer
+for g in a b; do
+  IP=$(kubectl get pod -n lab10 -l app=model-a,gpu=$g -o jsonpath='{.items[0].status.podIP}')
+  kubectl exec -n lab10 deploy/loadgen -c k6 -- wget -qO- "http://$IP:8000/infer"
+done
 ```
 
 ```plaintext
@@ -930,14 +933,22 @@ The neighbor's damage is clear, I think. Now we come to the lab's real question.
 ```bash
 kubectl get pods -n lab10 -l app=loadgen -o custom-columns='POD:.metadata.name,PROXY:.metadata.annotations.linkerd\.io/proxy-version'
 kubectl scale deploy -n lab10 burner-b --replicas=0   # the control group from Step 7 stays off here
-kubectl set resources deploy/burner -n lab10 -c burner --limits=nvidia.com/gpucores=20 && kubectl scale deploy -n lab10 burner --replicas=1 && kubectl rollout status -n lab10 deploy/burner   # the three runs below with the burner off first, then at 20, 40 and 50
-kubectl exec -n lab10-unmeshed deploy/loadgen -c k6 -- k6 run -e VUS=16 -e DURATION=60s /scripts/load.js
-kubectl exec -n lab10-unmeshed deploy/loadgen -c k6 -- k6 run -e VUS=8 -e DURATION=60s -e REUSE=false /scripts/load.js
-kubectl exec -n lab10 deploy/loadgen -c k6 -- k6 run -e VUS=8 -e DURATION=60s /scripts/load.js
-linkerd viz stat -n lab10 pod -t 60s
+for CORES in off 20 40 50; do
+  echo "=== neighbor on GPU-A: $CORES ==="
+  kubectl scale deploy -n lab10 burner --replicas=0   # always start from an empty card, so a new level never competes with the old pod
+  if [ "$CORES" != off ]; then
+    kubectl set resources deploy/burner -n lab10 -c burner --limits=nvidia.com/gpucores=$CORES
+    kubectl scale deploy -n lab10 burner --replicas=1
+    kubectl rollout status -n lab10 deploy/burner
+  fi
+  kubectl exec -n lab10-unmeshed deploy/loadgen -c k6 -- k6 run -e VUS=16 -e DURATION=60s /scripts/load.js
+  kubectl exec -n lab10-unmeshed deploy/loadgen -c k6 -- k6 run -e VUS=8 -e DURATION=60s -e REUSE=false /scripts/load.js
+  kubectl exec -n lab10 deploy/loadgen -c k6 -- k6 run -e VUS=8 -e DURATION=60s /scripts/load.js
+  linkerd viz stat -n lab10 pod -t 60s
+done
 ```
 
-This time I go at the same neighbor with three different callers, because "unmeshed" isn't one thing. The first, RR, is the unmeshed generator with a new connection per request. The second, 16 connections, is the unmeshed generator again but with 16 keep-alive connections, which is what an ordinary application with a connection pool sees through kube-proxy. The third, meshed, is the generator behind a Linkerd proxy with 8 users.
+The loop walks the four neighbor states in the table, off, 20, 40, and 50 cores, and runs all three callers in each one. This time I go at the same neighbor with three different callers, because "unmeshed" isn't one thing. The first, RR, is the unmeshed generator with a new connection per request. The second, 16 connections, is the unmeshed generator again but with 16 keep-alive connections, which is what an ordinary application with a connection pool sees through kube-proxy. The third, meshed, is the generator behind a Linkerd proxy with 8 users.
 
 | Neighbor on GPU-A | Caller | Served gpu-a, gpu-b | gpu-a share | RPS | Client p50 | Client p99 |
 | --- | --- | --- | --- | --- | --- | --- |
