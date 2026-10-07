@@ -30,7 +30,7 @@ HAMi 实战课程是一条有明确起点和终点的学习路径。所有章节
 | [1. 准备环境](./setup.md) | 团队检查第一个 GPU 节点 | GPU 软件栈的 5 层结构，以及为什么在 HAMi 登场之前要自底向上逐层检查 |
 | [2. 一张卡，一个 Pod](./one-gpu-one-pod.md) | 团队部署第一个模型 | Device Plugin 机制，以及为什么原生 GPU 资源只能整卡分配 |
 | [3. 那就共享吧](./lets-just-share-it.md) | 多个 Pod 共享一张 GPU | time-slicing、MPS 和 MIG 能做什么、不能做什么，以及调度和隔离的区别 |
-| 4. HAMi 登场 | 团队需要切分和隔离 | Pod 经过 Webhook、调度器扩展、Device Plugin 和 HAMi-core 的完整路径 |
+| [4. HAMi 登场](./enter-hami.md) | 团队需要切分和隔离 | Pod 经过 Webhook、调度器扩展、Device Plugin 和 HAMi-core 的完整路径 |
 | 5. 卡多了，放哪儿 | 集群扩展到多卡、多节点 | 调度策略、打分机制，以及碎片是如何产生的 |
 | 6. 跑真实模型 | 在共享卡上运行推理服务 | 推理引擎如何在切分后的卡上管理显存 |
 | 7. 看得见 | 谁用了多少 | 分配视角与使用视角的区别，以及指标从何而来 |
