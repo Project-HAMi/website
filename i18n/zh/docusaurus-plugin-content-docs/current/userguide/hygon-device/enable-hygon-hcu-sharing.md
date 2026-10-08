@@ -6,7 +6,9 @@ translated: true
 
 :::caution
 
-社区仓库 [dcu-vgpu-device-plugin](https://github.com/Project-HAMi/dcu-vgpu-device-plugin) 已归档，不再更新。请使用 **Hygon** 官方提供的 [k8s-hcu-device-plugin](https://github.com/HYGON-AI/k8s-hcu-device-plugin)。
+社区仓库 [dcu-vgpu-device-plugin](https://github.com/Project-HAMi/dcu-vgpu-device-plugin) 已归档，不再更新。HCU 用户应使用最新版本的 HAMi 和 **Hygon** 官方提供的最新版本 [k8s-hcu-device-plugin](https://github.com/HYGON-AI/k8s-hcu-device-plugin)。
+
+厂商将 DCU 更名为 HCU 带来了不兼容变更：默认不再支持旧的 DCU 资源名称。HAMi 跟随厂商采用新的命名，这一不兼容问题源于更名，而非 HAMi 调度故障。
 
 :::
 

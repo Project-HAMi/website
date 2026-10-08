@@ -4,7 +4,9 @@ title: Enable Hygon HCU sharing
 
 :::caution
 
-The community [dcu-vgpu-device-plugin](https://github.com/Project-HAMi/dcu-vgpu-device-plugin) repository is archived and will no longer be updated. Use the [k8s-hcu-device-plugin](https://github.com/HYGON-AI/k8s-hcu-device-plugin) provided by **Hygon**.
+The community [dcu-vgpu-device-plugin](https://github.com/Project-HAMi/dcu-vgpu-device-plugin) repository is archived and will no longer be updated. HCU users should use the latest versions of HAMi and the [k8s-hcu-device-plugin](https://github.com/HYGON-AI/k8s-hcu-device-plugin) provided by **Hygon**.
+
+The vendor-driven rename from DCU to HCU is a breaking change: the old DCU resource names are no longer supported by default. HAMi follows the vendor's new naming; this incompatibility results from the rename rather than a HAMi scheduling defect.
 
 :::
 
