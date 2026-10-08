@@ -181,6 +181,7 @@ module.exports = {
         "developers/hostpid-broker",
         "developers/init-container-design",
         "developers/sidecar-container-design",
+        "developers/gpu-limit-delivery-design",
       ],
     },
     {
