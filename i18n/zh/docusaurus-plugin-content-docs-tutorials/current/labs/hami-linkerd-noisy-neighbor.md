@@ -922,7 +922,7 @@ kubectl scale deploy -n lab10 burner --replicas=0 && kubectl scale deploy -n lab
 | 副本 1，同一节点 | 1.32 ms、1.71 ms    | 1.47 ms、1.90 ms      |
 | 副本 2，另一节点 | 3.63 ms、3.80 ms    | 3.65 ms、3.86 ms      |
 
-这个听起来合理的解释，没能经受住数据的检验。同一节点上建连只花 0.15 ms，跨节点没有增加任何可测量的延迟。L40S 处理一个请求需要 3.6 ms。那 24 ms 从哪来？答案是排队。轮询的调用方把 550 rps 的一半发给一个每秒只能处理 280 个请求（每个 3.6 ms）的副本，280 个乘 3.6 ms 刚好是 1 秒，副本已经满负荷，没有任何余量。入网的调用方以相近的速率给同一个副本发请求，它的 inbound p50 读数是 8 ms。代理通过连接复用，把请求分摊到少数几条热连接上，与 4 个客户端各自新建连接去访问一个正忙于 GPU 的 Python 服务，这两者的差别我在本实验中没有拆开，这里坦白说明。我拆开的是这一点：在相同的请求速率下，只有当邻居在副本 1 自己的卡上时，副本 1 的延迟才会变化。
+这个听起来合理的解释，没能经受住数据的检验。同一节点上建连只花 0.15 ms，跨节点没有增加任何可测量的延迟。L40S 处理一个请求需要 3.6 ms。那 24 ms 从哪来？答案是排队。轮询的调用方把 550 rps 的一半发给一个每秒只能处理 280 个请求（每个 3.6 ms）的副本，280 个乘 3.6 ms 刚好是 1 秒，副本已经满负荷，没有任何余量。入网的调用方以相近的速率给同一个副本发请求，它的 inbound p50 读数是 8 ms。代理通过连接复用，把请求分摊到少数几条热连接上，与 4 个客户端各自新建连接去访问一个正忙于 GPU 的 Python 服务，这两者的差别我在本实验中没有拆开，这里坦白说明。我拆开的是这一点：每次运行中两个副本收到的请求速率大致相同，但不同放置方式下的总速率并不一样（邻居在 GPU-A 时约 558 rps，在 GPU-B 时约 291 rps），所以这不是固定负载下的对比。它能说明的是：只有当邻居在副本 1 自己的卡上时，副本 1 的延迟才会变化。
 
 补充一点：`gpucores` 是按时间窗口节流的，所以单次 60 秒的测试只能反映影响的大致趋势，不是精确数值。引用某个数字之前，请把邻居测量多跑几次。我跑了三次，三次测量的变化趋势一致。
 
@@ -942,7 +942,9 @@ for CORES in off 20 40 50; do
     kubectl rollout status -n lab10 deploy/burner
   fi
   kubectl exec -n lab10-unmeshed deploy/loadgen -c k6 -- k6 run -e VUS=16 -e DURATION=60s /scripts/load.js
+  linkerd viz stat -n lab10 pod -t 60s   # 只统计这一次运行
   kubectl exec -n lab10-unmeshed deploy/loadgen -c k6 -- k6 run -e VUS=8 -e DURATION=60s -e REUSE=false /scripts/load.js
+  linkerd viz stat -n lab10 pod -t 60s
   kubectl exec -n lab10 deploy/loadgen -c k6 -- k6 run -e VUS=8 -e DURATION=60s /scripts/load.js
   linkerd viz stat -n lab10 pod -t 60s
 done

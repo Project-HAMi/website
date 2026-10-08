@@ -922,7 +922,7 @@ I made a mistake while writing this section, and correcting it became, I think, 
 | replica 1, same node  | 1.32 ms, 1.71 ms    | 1.47 ms, 1.90 ms                    |
 | replica 2, other node | 3.63 ms, 3.80 ms    | 3.65 ms, 3.86 ms                    |
 
-The explanation that sounded right didn't survive the numbers. Connection setup costs 0.15 ms on the same node and adds nothing measurable across nodes. The L40S finishes a request in 3.6 ms. So where does 24 ms come from? Queueing, of course. The round-robin caller sends half of 550 rps to a replica that can do 280 pieces of 3.6 ms work per second. That's the replica's entire second, with nothing to spare. The meshed caller sends the same replica a similar rate and its inbound p50 reads 8 ms. How the proxy multiplexes requests over a few warm connections, versus 4 clients each opening a fresh connection into a Python server that's busy on the GPU, is something I didn't separate in this lab, let me be honest about that. What I did separate is this. At equal request rates, replica 1's latency moved only when the neighbor was on its own card.
+The explanation that sounded right didn't survive the numbers. Connection setup costs 0.15 ms on the same node and adds nothing measurable across nodes. The L40S finishes a request in 3.6 ms. So where does 24 ms come from? Queueing, of course. The round-robin caller sends half of 550 rps to a replica that can do 280 pieces of 3.6 ms work per second. That's the replica's entire second, with nothing to spare. The meshed caller sends the same replica a similar rate and its inbound p50 reads 8 ms. How the proxy multiplexes requests over a few warm connections, versus 4 clients each opening a fresh connection into a Python server that's busy on the GPU, is something I didn't separate in this lab, let me be honest about that. What I did separate is this. Within each run both replicas received about the same request rate, but the total rate differed between placements (about 558 rps with the neighbor on GPU-A, about 291 rps on GPU-B), so this is not a fixed-load comparison. What it does show is that replica 1's latency moved only when the neighbor was on its own card.
 
 One more thing. `gpucores` throttles over a window, so single 60-second runs only show the general trend of the effect, not its exact number. Before you quote a number, run the neighbor measurement a few times. I ran it three times and the trend was consistent.
 
@@ -942,7 +942,9 @@ for CORES in off 20 40 50; do
     kubectl rollout status -n lab10 deploy/burner
   fi
   kubectl exec -n lab10-unmeshed deploy/loadgen -c k6 -- k6 run -e VUS=16 -e DURATION=60s /scripts/load.js
+  linkerd viz stat -n lab10 pod -t 60s   # statistics for this run only
   kubectl exec -n lab10-unmeshed deploy/loadgen -c k6 -- k6 run -e VUS=8 -e DURATION=60s -e REUSE=false /scripts/load.js
+  linkerd viz stat -n lab10 pod -t 60s
   kubectl exec -n lab10 deploy/loadgen -c k6 -- k6 run -e VUS=8 -e DURATION=60s /scripts/load.js
   linkerd viz stat -n lab10 pod -t 60s
 done
