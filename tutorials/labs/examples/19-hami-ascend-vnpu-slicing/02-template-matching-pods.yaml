@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: auto-4096
+spec:
+  schedulerName: hami-scheduler
+  runtimeClassName: ascend
+  restartPolicy: Never
+  containers:
+    - name: npu-test
+      image: docker.io/ascendai/cann:7.0.1-310p-openeuler20.03-py3.8
+      imagePullPolicy: IfNotPresent
+      securityContext:
+        allowPrivilegeEscalation: false
+      command: ["bash", "-lc"]
+      args:
+        - |
+          echo "ASCEND_VISIBLE_DEVICES=$ASCEND_VISIBLE_DEVICES"
+          echo "ASCEND_VNPU_SPECS=$ASCEND_VNPU_SPECS"
+          npu-smi info
+          sleep 3600
+      resources:
+        limits:
+          huawei.com/Ascend310P: "1"
+          huawei.com/Ascend310P-memory: "4096"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: auto-7000
+spec:
+  schedulerName: hami-scheduler
+  runtimeClassName: ascend
+  restartPolicy: Never
+  containers:
+    - name: npu-test
+      image: docker.io/ascendai/cann:7.0.1-310p-openeuler20.03-py3.8
+      imagePullPolicy: IfNotPresent
+      securityContext:
+        allowPrivilegeEscalation: false
+      command: ["bash", "-lc"]
+      args:
+        - |
+          echo "ASCEND_VISIBLE_DEVICES=$ASCEND_VISIBLE_DEVICES"
+          echo "ASCEND_VNPU_SPECS=$ASCEND_VNPU_SPECS"
+          npu-smi info
+          sleep 3600
+      resources:
+        limits:
+          huawei.com/Ascend310P: "1"
+          huawei.com/Ascend310P-memory: "7000"
