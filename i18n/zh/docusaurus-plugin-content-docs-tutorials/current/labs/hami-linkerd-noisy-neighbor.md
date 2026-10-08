@@ -86,7 +86,7 @@ flowchart TB
 | --- | --- | --- |
 | 1 | 两个 webhook 同时修改一个 pod | 同一个 pod 上同时出现 `schedulerName: hami-scheduler`、native sidecar `linkerd-proxy` 和两套 annotation |
 | 2 | HAMi-core 只作用于 GPU 容器 | `model` 容器里有 `libvgpu.so` 预加载和 `CUDA_DEVICE_*` 限制，`linkerd-proxy` 里没有 |
-| 3 | 加了 sidecar，隔离仍然有效 | 分配 2000 MiB 成功，分配 6000 MiB 报 `OutOfMemoryError`，可用容量显示为 3.91 GiB |
+| 3 | 加了 sidecar，隔离仍然有效 | 分配 2000 MiB 成功，分配 6000 MiB 报 `OutOfMemoryError`，显存总容量显示为 3.91 GiB |
 | 4 | 流量经过代理并使用 mTLS | `linkerd viz edges` 显示 SECURED，`tap` 显示 `tls=true` |
 | 5 | 两个副本在不同的物理卡上 | H100 和 L40S 的 UUID 与 `nvidia-smi -L` 一致 |
 | 6 | 邻居确实是造成影响的原因 | 邻居在同一张卡上时，副本 1 的 p50 从 1 ms 升到 5 ms，p99 从 8 ms 升到 20 ms；把邻居挪到另一张卡，恢复基线 |
@@ -179,7 +179,7 @@ OK
 kubectl label node <gpu-node> nvidia.com/gpu.deploy.device-plugin=false --overwrite
 ```
 
-接下来是正式安装。在别的环境里，直接安装 chart 就行，只需两行命令。但在 k3s 上，有三个值必须改成非默认值。这三个都是我踩坑后才发现的，写在这里是为了让你少走弯路。
+接下来是正式安装。在别的环境里，直接安装 chart 就行，只需两行命令。但在 k3s 上，有三个值必须改成非默认值（另见 [k3s 安装指南](https://project-hami.io/zh/docs/installation/k3s-installation)）。这三个都是我踩坑后才发现的，写在这里是为了让你少走弯路。
 
 ```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/ && helm repo update
@@ -894,7 +894,7 @@ kubectl set resources deploy/burner -n lab10 -c burner --limits=nvidia.com/gpuco
 kubectl scale deploy -n lab10 burner --replicas=0 && kubectl scale deploy -n lab10 burner-b --replicas=1 && kubectl rollout status -n lab10 deploy/burner-b   # 对照组
 ```
 
-我依次跑了剩下的三档。下表是每个副本在自己门口看到的延迟。调用方是未入网的生成器，每个请求新建一条连接，8 个用户压测 60 秒。
+我依次跑了剩下的三档。下表是每个副本的入站代理观测到的请求延迟。调用方是未入网的生成器，每个请求新建一条连接，8 个用户压测 60 秒。
 
 | GPU-A 上的邻居 | 副本 1（H100）rps、p50、p99 | 副本 2（L40S）rps、p50、p99 |
 | -------------- | --------------------------- | --------------------------- |
@@ -922,9 +922,9 @@ kubectl scale deploy -n lab10 burner --replicas=0 && kubectl scale deploy -n lab
 | 副本 1，同一节点 | 1.32 ms、1.71 ms    | 1.47 ms、1.90 ms      |
 | 副本 2，另一节点 | 3.63 ms、3.80 ms    | 3.65 ms、3.86 ms      |
 
-这个听起来合理的解释，没能经受住数据的检验。同一节点上建连只花 0.15 ms，跨节点没有增加任何可测量的延迟。L40S 处理一个请求需要 3.6 ms。那 24 ms 从哪来？答案是排队。轮询的调用方把 550 rps 的一半发给一个每秒只能处理 280 个请求（每个 3.6 ms）的副本，280 个乘 3.6 ms 刚好是 1 秒，副本已经满负荷，没有任何余量。入网的调用方以相近的速率给同一个副本发请求，它的 inbound p50 读数是 8 ms。代理把请求合并到少数几条热连接上，与 4 个客户端各自新建连接去访问一个正忙于 GPU 的 Python 服务，这两者的差别我在本实验中没有拆开，这里坦白说明。我拆开的是这一点：在相同的请求速率下，只有当邻居在副本 1 自己的卡上时，副本 1 的延迟才会变化。
+这个听起来合理的解释，没能经受住数据的检验。同一节点上建连只花 0.15 ms，跨节点没有增加任何可测量的延迟。L40S 处理一个请求需要 3.6 ms。那 24 ms 从哪来？答案是排队。轮询的调用方把 550 rps 的一半发给一个每秒只能处理 280 个请求（每个 3.6 ms）的副本，280 个乘 3.6 ms 刚好是 1 秒，副本已经满负荷，没有任何余量。入网的调用方以相近的速率给同一个副本发请求，它的 inbound p50 读数是 8 ms。代理通过连接复用，把请求分摊到少数几条热连接上，与 4 个客户端各自新建连接去访问一个正忙于 GPU 的 Python 服务，这两者的差别我在本实验中没有拆开，这里坦白说明。我拆开的是这一点：在相同的请求速率下，只有当邻居在副本 1 自己的卡上时，副本 1 的延迟才会变化。
 
-补充一点：`gpucores` 是按时间窗口节流的，所以单次 60 秒的测试展示的是影响的形状，不是精确数值。引用某个数字之前，请把邻居测量多跑几次。我跑了三次，形状都一样。
+补充一点：`gpucores` 是按时间窗口节流的，所以单次 60 秒的测试只能反映影响的大致趋势，不是精确数值。引用某个数字之前，请把邻居测量多跑几次。我跑了三次，三次测量的变化趋势一致。
 
 ## 步骤 8 展示 EWMA 绕开它
 
@@ -1199,7 +1199,7 @@ spec:
 | accrual，第 1 分钟 | 99.98% | 64,731 中的 12    | 10         | 15.24 ms、19.37 ms  |
 | accrual，第 2 分钟 | 99.99% | 64,739 中的 1     | 1          | 14.78 ms、21.83 ms  |
 
-差别很明显。没有 accrual 时，坏 pod 继续分到它那份流量，它的 inbound 一侧显示 `success=1.70% rps=29.4rps`，客户端有 3% 的请求失败。开启 accrual 后，连续 7 次失败，这个 endpoint 就会进入惩罚箱，只会被偶尔探测一下。第一分钟有 10 个请求到达它，第二分钟只有 1 个。Kubernetes 没发现的问题，网格发现了。
+差别很明显。没有 accrual 时，坏 pod 继续分到它那份流量，它的 inbound 一侧显示 `success=1.70% rps=29.4rps`，客户端有 3% 的请求失败。开启 accrual 后，连续 7 次失败，该后端会被暂时移出正常流量分配，只接受间歇性的探测请求。第一分钟有 10 个请求到达它，第二分钟只有 1 个。Kubernetes 没发现的问题，网格发现了。
 
 你可能想到了重试，我也想到了。我故意没有开启重试和超时。相关的 annotation 是 `retry.linkerd.io/http`、`retry.linkerd.io/limit`、`timeout.linkerd.io/request` 和 `timeout.linkerd.io/response`，都在 [Linkerd 的页面](https://linkerd.io/2-edge/features/retries-and-timeouts/)上有说明。对这个工作负载，重试一个 500 是有效的。但对流式输出 token 的 LLM endpoint，重试不但没用，还可能有害：客户端已经收到部分回答后，重试会把 prompt 从头发给一个新后端重新生成；而按 6 ms 矩阵乘法设定的请求超时，会把一次 40 秒的生成直接中断。请按路由分别设置，并且超时设得长一些。
 
@@ -1484,7 +1484,7 @@ kubectl rollout status -n lab10 deploy/model-a-gpu-a
 - HAMi 不隔离显存带宽和缓存。在所有限制都生效的情况下，一个 20 core 的邻居就把副本 1 的 p50 从 1 ms 推到了 5 ms，50 core 也没有更糟。Linkerd 解决不了这个问题，它只是测量延迟，然后往那边少发一些请求。
 - Linkerd 不感知 GPU。EWMA 只能看到一个慢的 endpoint，其他什么都看不到。如果邻居把两个副本拖慢得一样，网格就没有地方可以转移流量。
 - `gpucores` 既是节流，也是预算。它拦住了 100 core 的邻居，也拦住了一次滚动更新。两种情况下，唯一的痕迹都是 `CardInsufficientCore`。
-- 只测了单次 60 秒的窗口。`gpucores` 是随时间节流的，所以这些数字展示的是影响的形状。引用具体数字之前，请多测几次。
+- 只测了单次 60 秒的窗口。`gpucores` 是随时间节流的，所以这些结果只能反映影响的大致趋势。引用具体数字之前，请多测几次。
 - 本实验用的是 Linkerd 的 edge 版本。edge 每周都在更新，稳定版本线是 Buoyant Enterprise for Linkerd。请固定你自己测试过的 tag。
 
 下一步，我想把 DCGM 的按卡指标和 HAMi 的按切片指标，与 Linkerd 的黄金指标放在同一条时间轴上，这样一次 p99 尖峰就可以和 `hami_gpu_core_allocated_ratio` 并排对照。

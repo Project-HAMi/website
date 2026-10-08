@@ -86,7 +86,7 @@ When you're done you'll have these 12 proofs in hand.
 | --- | --- | --- |
 | 1 | Both webhooks applied to the same pod | `schedulerName: hami-scheduler`, native sidecar `linkerd-proxy`, both annotation sets on one pod |
 | 2 | HAMi-core only in the GPU container | `libvgpu.so` preload and `CUDA_DEVICE_*` limits in `model`, none in `linkerd-proxy` |
-| 3 | Isolation holds with the sidecar present | 2000 MiB allocates, 6000 MiB fails with `OutOfMemoryError`, capacity reads 3.91 GiB |
+| 3 | Isolation holds with the sidecar present | 2000 MiB allocates, 6000 MiB fails with `OutOfMemoryError`, total capacity reads 3.91 GiB |
 | 4 | Traffic is proxied and mTLS'd | `linkerd viz edges` SECURED, `tap` shows `tls=true` |
 | 5 | Replicas on different physical cards | H100 and L40S UUIDs match `nvidia-smi -L` |
 | 6 | The neighbor effect is causal | replica 1 p50 1 ms to 5 ms, p99 8 to 20 ms, back at baseline when the neighbor is on the other card |
@@ -179,7 +179,7 @@ Environment ready, on to HAMi. But first a bit of housekeeping I had to do. If y
 kubectl label node <gpu-node> nvidia.com/gpu.deploy.device-plugin=false --overwrite
 ```
 
-Now the real install. If I'd installed the chart as is, this section would be two lines. On k3s it doesn't go that way, three values have to differ from the defaults. I found all three by trial, which is to say by error, and they're here so you don't have to.
+Now the real install. If I'd installed the chart as is, this section would be two lines. On k3s it doesn't go that way, three values have to differ from the defaults (see also the [k3s installation guide](https://project-hami.io/docs/installation/k3s-installation)). I found all three by trial, which is to say by error, and they're here so you don't have to.
 
 ```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/ && helm repo update
@@ -894,7 +894,7 @@ kubectl set resources deploy/burner -n lab10 -c burner --limits=nvidia.com/gpuco
 kubectl scale deploy -n lab10 burner --replicas=0 && kubectl scale deploy -n lab10 burner-b --replicas=1 && kubectl rollout status -n lab10 deploy/burner-b   # control group
 ```
 
-I ran the remaining three levels in turn. The table below shows the latency each replica saw at its own door. The caller is the unmeshed generator, opening a new connection for every request, 8 users for 60 seconds.
+I ran the remaining three levels in turn. The table below shows the request latency each replica's inbound proxy observed. The caller is the unmeshed generator, opening a new connection for every request, 8 users for 60 seconds.
 
 | Neighbor on GPU-A | Replica 1 (H100) rps, p50, p99 | Replica 2 (L40S) rps, p50, p99 |
 | ----------------- | ------------------------------ | ------------------------------ |
@@ -922,9 +922,9 @@ I made a mistake while writing this section, and correcting it became, I think, 
 | replica 1, same node  | 1.32 ms, 1.71 ms    | 1.47 ms, 1.90 ms                    |
 | replica 2, other node | 3.63 ms, 3.80 ms    | 3.65 ms, 3.86 ms                    |
 
-The explanation that sounded right didn't survive the numbers. Connection setup costs 0.15 ms on the same node and adds nothing measurable across nodes. The L40S finishes a request in 3.6 ms. So where does 24 ms come from? Queueing, of course. The round-robin caller sends half of 550 rps to a replica that can do 280 pieces of 3.6 ms work per second. That's the replica's entire second, with nothing to spare. The meshed caller sends the same replica a similar rate and its inbound p50 reads 8 ms. How the proxy packs requests over a few warm connections, versus 4 clients each opening a fresh connection into a Python server that's busy on the GPU, is something I didn't separate in this lab, let me be honest about that. What I did separate is this. At equal request rates, replica 1's latency moved only when the neighbor was on its own card.
+The explanation that sounded right didn't survive the numbers. Connection setup costs 0.15 ms on the same node and adds nothing measurable across nodes. The L40S finishes a request in 3.6 ms. So where does 24 ms come from? Queueing, of course. The round-robin caller sends half of 550 rps to a replica that can do 280 pieces of 3.6 ms work per second. That's the replica's entire second, with nothing to spare. The meshed caller sends the same replica a similar rate and its inbound p50 reads 8 ms. How the proxy multiplexes requests over a few warm connections, versus 4 clients each opening a fresh connection into a Python server that's busy on the GPU, is something I didn't separate in this lab, let me be honest about that. What I did separate is this. At equal request rates, replica 1's latency moved only when the neighbor was on its own card.
 
-One more thing. `gpucores` throttles over a window, so single 60-second runs show the shape of the effect, not its exact number. Before you quote a number, run the neighbor measurement a few times. I ran it three times and the shape came out the same.
+One more thing. `gpucores` throttles over a window, so single 60-second runs only show the general trend of the effect, not its exact number. Before you quote a number, run the neighbor measurement a few times. I ran it three times and the trend was consistent.
 
 ## Step 8. Show EWMA Routing Around It
 
@@ -1199,7 +1199,7 @@ spec:
 | accrual, minute 1 | 99.98%  | 12 of 64,731    | 10                  | 15.24 ms, 19.37 ms  |
 | accrual, minute 2 | 99.99%  | 1 of 64,739     | 1                   | 14.78 ms, 21.83 ms  |
 
-The difference is clear. Without accrual the bad pod keeps taking its share of traffic, its inbound side reads `success=1.70% rps=29.4rps`, and 3% of the client's requests fail. With accrual on, after 7 consecutive failures the endpoint goes into a penalty box and is only probed now and then. 10 requests reached it in the first minute, 1 in the second. The mesh saw what Kubernetes didn't.
+The difference is clear. Without accrual the bad pod keeps taking its share of traffic, its inbound side reads `success=1.70% rps=29.4rps`, and 3% of the client's requests fail. With accrual on, after 7 consecutive failures the endpoint is temporarily taken out of normal traffic distribution and only receives occasional probe requests. 10 requests reached it in the first minute, 1 in the second. The mesh saw what Kubernetes didn't.
 
 At this point retries may have crossed your mind. They crossed mine. I left retries and timeouts off on purpose. The names are `retry.linkerd.io/http`, `retry.linkerd.io/limit`, `timeout.linkerd.io/request`, and `timeout.linkerd.io/response`, all on [Linkerd's page](https://linkerd.io/2-edge/features/retries-and-timeouts/). For this workload retrying a 500 would have worked. But on an LLM endpoint that streams tokens it won't, and it can do harm. A retry replays the prompt from scratch against a new backend after the client has already seen part of the answer, and a request timeout sized for a 6 ms matmul kills a 40-second generation halfway through. Set them per route and set them long.
 
@@ -1484,7 +1484,7 @@ To be honest, what this lab doesn't claim matters as much as what it does. In or
 - HAMi doesn't isolate memory bandwidth or cache. A 20-core neighbor took replica 1 from 1 ms to 5 ms at p50 with every limit in place, and 50 cores did no worse. Linkerd doesn't fix that. It measures it and sends less there.
 - Linkerd isn't GPU-aware. EWMA saw a slow endpoint and nothing else. Had the neighbor slowed both replicas equally, the mesh would have had nowhere to go.
 - `gpucores` is a budget as much as a throttle. It blocked the 100-core neighbor and a rolling update. In both cases the only trace was `CardInsufficientCore`.
-- Single 60-second windows. `gpucores` throttles over time. These are the shape of the effect. Run the measurements a few times before quoting a number.
+- Single 60-second windows. `gpucores` throttles over time. These only reflect the general trend of the effect. Run the measurements a few times before quoting a number.
 - This was built on a Linkerd edge release. Edge moves weekly, the stable line is Buoyant Enterprise for Linkerd. Pin the tag you tested.
 
 As a next step I want to put DCGM's per-card and HAMi's per-slice metrics next to Linkerd's golden metrics on one time axis, so a p99 spike can be read side by side with `hami_gpu_core_allocated_ratio`.
