@@ -1,7 +1,7 @@
 ---
-title: "实验 18：用 HAMi DRA 共享昇腾 NPU"
+title: "实验 19：用 HAMi DRA 共享昇腾 NPU"
 description: "在昇腾 310P3 节点上安装 HAMi DRA 0.2.3 与 Ascend DRA Driver，观察 webhook 如何把 huawei.com/Ascend310P 请求转换成 ResourceClaim，并验证双 Pod NPU 共享、显存配额隔离与调度器容量记账。"
-sidebar_label: "实验 18：昇腾 + HAMi DRA"
+sidebar_label: "实验 19：昇腾 + HAMi DRA"
 lab:
   level: Advanced
   duration: 约 120 分钟
