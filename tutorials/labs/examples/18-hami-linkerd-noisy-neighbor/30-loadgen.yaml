@@ -1,0 +1,86 @@
+# k6 load generators, one meshed and one not
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: loadgen-script
+  namespace: lab10
+data:
+  load.js: |
+    import http from 'k6/http';
+    import { check } from 'k6';
+    export const options = {
+      vus: Number(__ENV.VUS || 8),
+      duration: __ENV.DURATION || '60s',
+      noConnectionReuse: (__ENV.REUSE || 'true') !== 'true',
+      summaryTrendStats: ['avg', 'p(50)', 'p(90)', 'p(99)', 'max'],
+    };
+    export default function () {
+      const r = http.get('http://model-a.lab10.svc.cluster.local:8000/infer');
+      check(r, { 'status 200': (res) => res.status === 200 });
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: loadgen-script
+  namespace: lab10-unmeshed
+data:
+  load.js: |
+    import http from 'k6/http';
+    import { check } from 'k6';
+    export const options = {
+      vus: Number(__ENV.VUS || 8),
+      duration: __ENV.DURATION || '60s',
+      noConnectionReuse: (__ENV.REUSE || 'true') !== 'true',
+      summaryTrendStats: ['avg', 'p(50)', 'p(90)', 'p(99)', 'max'],
+    };
+    export default function () {
+      const r = http.get('http://model-a.lab10.svc.cluster.local:8000/infer');
+      check(r, { 'status 200': (res) => res.status === 200 });
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loadgen
+  namespace: lab10
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: loadgen }
+  template:
+    metadata:
+      labels: { app: loadgen }
+    spec:
+      nodeSelector: { kubernetes.io/hostname: gpu-node-a }
+      containers:
+        - name: k6
+          image: grafana/k6:2.3.0
+          command: ["sleep", "infinity"]
+          volumeMounts: [{ name: scripts, mountPath: /scripts }]
+      volumes:
+        - name: scripts
+          configMap: { name: loadgen-script }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loadgen
+  namespace: lab10-unmeshed
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: loadgen }
+  template:
+    metadata:
+      labels: { app: loadgen }
+    spec:
+      nodeSelector: { kubernetes.io/hostname: gpu-node-a }
+      containers:
+        - name: k6
+          image: grafana/k6:2.3.0
+          command: ["sleep", "infinity"]
+          volumeMounts: [{ name: scripts, mountPath: /scripts }]
+      volumes:
+        - name: scripts
+          configMap: { name: loadgen-script }

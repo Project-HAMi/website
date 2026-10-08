@@ -97,3 +97,6 @@
 "隔离":
   label: "隔离"
   permalink: "/isolation"
+"service-mesh":
+  label: "服务网格"
+  permalink: "/service-mesh"
