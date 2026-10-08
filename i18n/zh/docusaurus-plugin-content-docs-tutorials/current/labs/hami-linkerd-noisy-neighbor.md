@@ -5,7 +5,7 @@ sidebar_label: "实验 18：Linkerd 吵闹邻居"
 lab:
   level: Advanced
   duration: 约 120 分钟
-  environment: 同一个 k3s 集群中的两台云 GPU 虚拟机（一台 H100 server 节点和一台 L40S agent 节点）
+  environment: 同一个 K3s 集群中的两台云 GPU 虚拟机（一台 H100 server 节点和一台 L40S agent 节点）
   cost: 两张卡约 2 小时的 GPU 费用
   authors:
     - moezdil
@@ -22,7 +22,7 @@ toc_max_heading_level: 2
 
 先说结论。它们确实工作在不同的层，而这正是重点。HAMi 切分 GPU 资源，但它无法隐藏邻居带来的延迟，这也不是它的职责。Linkerd 看不到 GPU，却能看到每个请求的延迟，并据此分配流量。前面提到的证书问题，答案也在这里：Linkerd 给每个 pod 发放 mTLS 身份，正是这个身份阻止了同卡的两个租户访问对方的 endpoint。具体怎么做到的，后面会演示。
 
-本实验中所有命令和输出都来自 2026-09-26/27 的一次真实运行。环境是同一个 k3s 集群里的两台 Nebius 虚拟机：server 节点有一张 H100 80GB，agent 节点有一张 L40S 48GB。软件版本是官方 chart 的 HAMi 2.10.0、Linkerd edge-26.9.3 和 Gateway API CRD v1.5.1。
+本实验中所有命令和输出都来自 2026-09-26/27 的一次真实运行。环境是同一个 K3s 集群里的两台 Nebius 虚拟机：server 节点有一张 H100 80GB，agent 节点有一张 L40S 48GB。软件版本是官方 chart 的 HAMi 2.10.0、Linkerd edge-26.9.3 和 Gateway API CRD v1.5.1。
 
 ## 你将学到什么
 
@@ -55,7 +55,7 @@ flowchart TB
 
 ## 前提条件
 
-- 同一个 k3s 集群里有两个节点，每个节点一张 NVIDIA GPU。**至少需要 2 张物理 GPU**，这一点不能省。只有一张卡的话，负载均衡没有安静的副本可以切换，步骤 8 就无法演示。
+- 同一个 K3s 集群里有两个节点，每个节点一张 NVIDIA GPU。**至少需要 2 张物理 GPU**，这一点不能省。只有一张卡的话，负载均衡没有安静的副本可以切换，步骤 8 就无法演示。
 - 两个节点都已安装 NVIDIA 驱动和 container toolkit，主机上 `nvidia-smi` 可以正常运行，节点已打上 `gpu=on` 标签。
 - 执行命令的机器上已安装 `kubectl`、`helm` 和 `jq`。`linkerd` 会在步骤 3 安装。
 - 清单文件在 [`tutorials/labs/examples/18-hami-linkerd-noisy-neighbor/`](https://github.com/Project-HAMi/website/tree/master/tutorials/labs/examples/18-hami-linkerd-noisy-neighbor)。正文里也完整贴出了所有清单，所以不需要克隆仓库。
@@ -76,7 +76,7 @@ flowchart TB
 
 一张 H100 的价格是固定的，不管是一个服务只用 80 GB 里的 4 GB，还是十个服务各用 4 GB。[HAMi](https://github.com/Project-HAMi/HAMi) 让你可以在一张卡上跑这十个服务。pod 申请 `nvidia.com/gpu: 1`、`nvidia.com/gpumem: 4000` 和 `nvidia.com/gpucores: 50`。HAMi 的 scheduler extender 会选一张还有足够空间的卡。在节点上，device plugin 通过 `/etc/ld.so.preload` 把 [libvgpu.so](https://github.com/Project-HAMi/HAMi-core) 注入容器。这个库负责限制显存，并把 kernel 的启动频率限制在分配的算力份额内。
 
-但有些资源仍然是共享的：PCIe 链路、L2 缓存、HBM 带宽，以及一个节流窗口内 SM 上的 kernel 调度。另一个切片里的计算密集型邻居，不需要突破自己的任何限制，就能拉高你的 kernel 延迟。这就是本实验要解决的问题：共享损害了服务延迟时，怎么发现它，又怎么应对？
+但有些资源仍然是共享的：PCIe 链路、L2 缓存、HBM 带宽，以及一个节流窗口内 SM 上的 kernel 调度。另一个切片里的计算密集型邻居，不需要突破自己的任何限制，就能拉高受影响工作负载的 kernel 延迟。这就是本实验要解决的问题：共享损害了服务延迟时，怎么发现它，又怎么应对？
 
 :::
 
@@ -149,7 +149,7 @@ FilteringFailed   1 nodes CardUuidMismatch(gpu-node-b)
 
 不要跳过绑定。chart 默认的节点策略是 `binpack`，GPU 策略是 `spread`，可以在 `helm show values hami-charts/hami --version 2.10.0` 输出的 `scheduler.defaultSchedulerPolicy` 下看到。binpack 会尽量先把已经比较满的节点填满。如果把放置交给策略，两个副本很可能落到同一张卡上，步骤 8 就没有安静的副本可以切换了。所以本实验不依赖策略，而是按名字把每个副本绑定到指定的卡。
 
-我的第二个节点和之前的实验一样，是一个运行在 privileged 容器里的 k3s agent，使用 `--network host`。这只是实验室里的省事做法，生产环境不应该这样用，请直接在主机上安装 agent。机器重启时我遇到了两个问题：主机自己的 k3s server 重新启动并占用了 `127.0.0.1:6444`，inotify 限制也被重置了。两个问题都在主机上修复。
+我的第二个节点和之前的实验一样，是一个运行在 privileged 容器里的 K3s agent，使用 `--network host`。这只是实验室里的省事做法，生产环境不应该这样用，请直接在主机上安装 agent。机器重启时我遇到了两个问题：主机自己的 K3s server 重新启动并占用了 `127.0.0.1:6444`，inotify 限制也被重置了。两个问题都在主机上修复。
 
 ```bash
 sudo systemctl stop k3s
@@ -179,7 +179,7 @@ OK
 kubectl label node <gpu-node> nvidia.com/gpu.deploy.device-plugin=false --overwrite
 ```
 
-接下来是正式安装。在别的环境里，直接安装 chart 就行，只需两行命令。但在 k3s 上，有三个值必须改成非默认值（另见 [k3s 安装指南](https://project-hami.io/zh/docs/installation/k3s-installation)）。这三个都是我踩坑后才发现的，写在这里是为了让你少走弯路。
+接下来是正式安装。在别的环境里，直接安装 chart 就行，只需两行命令。但在 K3s 上，有三个值必须改成非默认值（另见 [K3s 安装指南](https://project-hami.io/zh/docs/installation/k3s-installation)）。这三个都是我踩坑后才发现的，写在这里是为了让你少走弯路。
 
 ```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/ && helm repo update
@@ -191,7 +191,7 @@ helm upgrade --install hami hami-charts/hami --version 2.10.0 -n kube-system \
   --set devicePlugin.runtimeClassName=nvidia
 ```
 
-这部分在其他教程里有专门讲解，网站上也有安装路线图，这里简单过一遍。`scheduler.nodeName` 把 extender 固定在控制平面节点上，因为 API server 访问不到 agent 节点上的 webhook，这一点我们在步骤 1 已经遇到过。kube-scheduler 的 tag 必须和你的集群版本一致。chart 默认使用一个 tag 为空的阿里云镜像，这种情况下它不知道你的集群版本。第三个是 `devicePlugin.runtimeClassName=nvidia`，这个问题花了我一个小时。k3s 的 containerd 默认使用 `runc`，没有 RuntimeClass，plugin 就找不到 NVML，会反复报下面的错误。
+这部分在其他教程里有专门讲解，网站上也有安装路线图，这里简单过一遍。`scheduler.nodeName` 把 extender 固定在控制平面节点上，因为 API server 访问不到 agent 节点上的 webhook，这一点我们在步骤 1 已经遇到过。kube-scheduler 的 tag 必须和你的集群版本一致。chart 默认使用一个 tag 为空的阿里云镜像，这种情况下它不知道你的集群版本。第三个是 `devicePlugin.runtimeClassName=nvidia`，这个问题花了我一个小时。K3s 的 containerd 默认使用 `runc`，没有 RuntimeClass，plugin 就找不到 NVML，会反复报下面的错误。
 
 ```plaintext
 E0925 19:53:51.423171 factory.go:135] Incompatible strategy detected auto
@@ -199,7 +199,7 @@ E0925 19:53:51.428513 main.go:201] error starting plugins: ... invalid device di
 E0925 19:53:51.599960 main.go:128] Received error: failed to initialize NVML: ERROR_LIBRARY_NOT_FOUND
 ```
 
-看到这个错误，我先怀疑驱动，再检查 kubelet，还考虑过重装 toolkit，最后发现只是 chart 里的一个参数。这个参数还有一个好处：HAMi 的 webhook 现在会给每个 GPU pod 加上 `runtimeClassName: nvidia`，而 k3s 上的 GPU 工作负载本来就需要它。安装完成后，确认两张卡都以 `hami-core` 模式注册。
+看到这个错误，我先怀疑驱动，再检查 kubelet，还考虑过重装 toolkit，最后发现只是 chart 里的一个参数。这个参数还有一个好处：HAMi 的 webhook 现在会给每个 GPU pod 加上 `runtimeClassName: nvidia`，而 K3s 上的 GPU 工作负载本来就需要它。安装完成后，确认两张卡都以 `hami-core` 模式注册。
 
 ```bash
 kubectl get node gpu-node-b -o jsonpath='{.metadata.annotations.hami\.io/node-nvidia-register}'
@@ -650,7 +650,7 @@ done
 
 H100 完成一步用时 1.7 ms，L40S 用时 3.4 ms，都是 50 core。请记住这两个数，后面每张表都要以它们为参照。
 
-再提示一点：下面的命令假设 `kubectl` 和 `linkerd` 在 PATH 里。如果你用的是 k3s，请用 `sudo k3s kubectl` 代替 `kubectl`。如果 CLI 装在 home 目录下，请用 `$HOME/.linkerd2/bin/linkerd` 代替 `linkerd`。我就是这样做的。
+再提示一点：下面的命令假设 `kubectl` 和 `linkerd` 在 PATH 里。如果你用的是 K3s，请用 `sudo k3s kubectl` 代替 `kubectl`。如果 CLI 装在 home 目录下，请用 `$HOME/.linkerd2/bin/linkerd` 代替 `linkerd`。我就是这样做的。
 
 ## 步骤 5 证明两个 webhook 作用于同一个 pod
 
@@ -1083,7 +1083,7 @@ model-a-v2-7485bdc9bf-7rxnz     gpu-node-b   GPU-4dc50575-f241-9f14-1e6e-ecb4a93
 | 90、10           | 57,733、6,342      | 90.1%、9.9%  | 17 ms、39 ms        |
 | 50、50           | 15,031、15,235     | 49.7%、50.3% | 26 ms、39 ms        |
 
-权重生效了，精确到小数点后一位。还能看到 20 core 的切片明显更慢：p99 是 39 ms，而全速的 H100 副本是 10 ms。这正是金丝雀的作用：在把整张卡交给它之前，先告诉你结果。50/50 时总吞吐从 1,070 降到了 500 rps，因为现在每个请求有一半要等小切片。这是实验设计带来的代价，不是故障。
+权重生效了，精确到小数点后一位。还能看到 20 core 的切片明显更慢：p99 是 39 ms，而全速的 H100 副本是 10 ms。这正是金丝雀的作用：在把整张卡交给它之前，先告诉你结果。50/50 时总吞吐从 1,070 降到了 500 rps，因为现在一半的请求被分配给小切片，由较慢的后端处理。这是实验设计带来的代价，不是故障。
 
 出于好奇，我用未入网的调用方试了同一个 HTTPRoute。
 
@@ -1468,10 +1468,10 @@ kubectl rollout status -n lab10 deploy/model-a-gpu-a
 | device plugin 报 `ERROR_LIBRARY_NOT_FOUND`、`invalid device discovery strategy` | containerd 的默认运行时是 `runc`，plugin 找不到 NVML | `devicePlugin.runtimeClassName=nvidia` |
 | `linkerd-proxy-injector` 在 `Init:1/2` 反复重启，代理日志里有 `Failed to obtain identity` | 控制平面 pod 在代理访问不到的节点上 | 用 `nodeSelector` 把控制平面钉在可达节点上，cordon 不可达的节点 |
 | pod Pending，事件里是 `CardInsufficientCore` | 卡上 `gpucores` 之和会超过 100 | 降低邻居的 core，滚动更新用 `maxSurge` 0 |
-| pod Pending，事件里是 `CardUuidMismatch` | `use-gpuuuid` 与该节点上的卡不匹配 | 这是预期行为，pod 会在 UUID 匹配的节点上调度成功 |
+| pod Pending，事件里是 `CardUuidMismatch` | `use-gpuuuid` 与该节点上的卡不匹配 | 另一个节点的 GPU UUID 匹配时，此处出现不匹配属于预期现象 |
 | 容器在 `pip` 处以 `externally-managed-environment` 退出 | 镜像的 Python 受 PEP 668 管理 | `pip install --break-system-packages` |
 | 容器以 `error while loading shared libraries: libdl.so.2` 退出码 127 | HAMi 的 `libvgpu.so` 预加载需要 glibc，镜像基于 musl | 用基于 glibc 的镜像代替 busybox 或 alpine，例如 `nvcr.io/nvidia/cuda` |
-| k3s agent 容器反复报 `listen tcp 127.0.0.1:6444: bind: address already in use` | 主机上的 k3s server 占着这个端口 | `sudo systemctl stop k3s`，然后重启容器 |
+| K3s agent 容器反复报 `listen tcp 127.0.0.1:6444: bind: address already in use` | 主机上的 K3s server 占着这个端口 | `sudo systemctl stop k3s`，然后重启容器 |
 | 容器化 agent 里 pod 起不来，kubelet 抱怨无法创建 inotify 实例 | 主机的 inotify 限制是 128，并且重启后重置 | `fs.inotify.max_user_instances=8192`，持久化到 `/etc/sysctl.d` 下 |
 | 拉取大镜像时，其他镜像被删除 | 磁盘使用率超过 85% 时，kubelet 会触发镜像垃圾回收 | 腾出磁盘空间，`docker volume prune` 帮我腾出了 19.79 GB |
 | 用 `kubectl logs` 数到的请求比实际发出的少 | 容器日志会滚动，`--since` 只读当前文件；1000 rps 下一分钟发出 65,563 个请求，只数到 18,747 个 | 在应用里自己计数 |

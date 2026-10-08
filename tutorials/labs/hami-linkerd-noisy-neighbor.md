@@ -5,7 +5,7 @@ sidebar_label: "Lab 18: Linkerd Noisy Neighbors"
 lab:
   level: Advanced
   duration: about 120 minutes
-  environment: two cloud GPU VMs in one k3s cluster (an H100 server node and an L40S agent node)
+  environment: two cloud GPU VMs in one K3s cluster (an H100 server node and an L40S agent node)
   cost: about 2 hours of GPU time on two cards
   authors:
     - moezdil
@@ -22,7 +22,7 @@ The first people who see the title of this lab will probably smile first. Maybe 
 
 Let me say at the start what I'd say at the end. Yes, they work on different layers, and that's exactly the point anyway. HAMi splits the silicon, yes it does, but it can't hide the latency a neighbor causes inside a slice. Hiding it isn't its job either. Linkerd, on the other hand, never sees the GPU, but it sees the latency of every request and spreads traffic accordingly. The answer to the certificate question I mentioned a moment ago comes out of the same place. What stops two tenants sharing the same card from reaching each other's endpoints is the mTLS identity Linkerd gives every pod. How? You'll certainly find the answer below.
 
-Every command and output in this lab was captured from a live run on 2026-09-26/27, two Nebius VMs in one k3s cluster, an H100 80GB on the server node and an L40S 48GB on an agent node, HAMi 2.10.0 from the official chart, Linkerd edge-26.9.3, Gateway API CRDs v1.5.1.
+Every command and output in this lab was captured from a live run on 2026-09-26/27, two Nebius VMs in one K3s cluster, an H100 80GB on the server node and an L40S 48GB on an agent node, HAMi 2.10.0 from the official chart, Linkerd edge-26.9.3, Gateway API CRDs v1.5.1.
 
 ## What You'll Learn
 
@@ -55,7 +55,7 @@ flowchart TB
 
 ## Prerequisites
 
-- Two nodes with one NVIDIA GPU each in one k3s cluster. The one decision you can't skip is having **at least 2 physical GPUs**. With a single card there's no quiet replica for the load balancer to move traffic to, and Step 8 has nothing to show.
+- Two nodes with one NVIDIA GPU each in one K3s cluster. The one decision you can't skip is having **at least 2 physical GPUs**. With a single card there's no quiet replica for the load balancer to move traffic to, and Step 8 has nothing to show.
 - NVIDIA driver and container toolkit on both nodes, `nvidia-smi` working on each host, and the `gpu=on` node label in place.
 - `kubectl`, `helm`, and `jq` on the machine you run the commands from. `linkerd` gets installed in Step 3.
 - Manifests from [`tutorials/labs/examples/18-hami-linkerd-noisy-neighbor/`](https://github.com/Project-HAMi/website/tree/master/tutorials/labs/examples/18-hami-linkerd-noisy-neighbor). Every one of them is also inlined below, so nothing has to be cloned.
@@ -76,7 +76,7 @@ Read this table once before you change anything in your own environment. What br
 
 An H100 costs the same whether one service uses 4 GB of its 80 GB or ten services use 4 GB each. [HAMi](https://github.com/Project-HAMi/HAMi) lets you run the ten. A pod asks for `nvidia.com/gpu: 1`, `nvidia.com/gpumem: 4000`, and `nvidia.com/gpucores: 50`. HAMi's scheduler extender picks a card with that much room. On the node, the device plugin injects [libvgpu.so](https://github.com/Project-HAMi/HAMi-core) into the container through `/etc/ld.so.preload`. That library enforces the memory limit and throttles kernel launches to the core share.
 
-Some parts stay shared, the PCIe link, the L2 cache, HBM bandwidth, and the scheduling of kernels on the SMs inside the throttle window. A compute-bound neighbor in another slice pushes your kernels' latency up without touching your limits. That's the lab's question. If sharing hurts one service's latency, how do you see it, and how do you manage it?
+Some parts stay shared, the PCIe link, the L2 cache, HBM bandwidth, and the scheduling of kernels on the SMs inside the throttle window. A compute-bound neighbor in another slice pushes the latency of the affected workload's kernels up without touching your limits. That's the lab's question. If sharing hurts one service's latency, how do you see it, and how do you manage it?
 
 :::
 
@@ -149,7 +149,7 @@ FilteringFailed   1 nodes CardUuidMismatch(gpu-node-b)
 
 Don't skip the pin. The chart's default node policy is `binpack` and its GPU policy is `spread`. You can see this under `scheduler.defaultSchedulerPolicy` in the output of `helm show values hami-charts/hami --version 2.10.0`. Binpack tries to fill the node that's already full. If you leave the two replicas to the policy, it's possible for them to land on the same card, and then there's no quiet replica for Step 8 to shift to. That's why in this lab we don't trust the policy and pin each replica by name.
 
-My second node, as in an earlier experiment, was a k3s agent running in a privileged container with `--network host`. That's a lab shortcut. A privileged container on the host network isn't an acceptable shape for a production node, install the agent directly on the host there. Two things bit me when the machine restarted. Its own k3s server had come back and taken `127.0.0.1:6444`, and the inotify limit had reset. Both fixed on the host.
+My second node, as in an earlier experiment, was a K3s agent running in a privileged container with `--network host`. That's a lab shortcut. A privileged container on the host network isn't an acceptable shape for a production node, install the agent directly on the host there. Two things bit me when the machine restarted. Its own K3s server had come back and taken `127.0.0.1:6444`, and the inotify limit had reset. Both fixed on the host.
 
 ```bash
 sudo systemctl stop k3s
@@ -179,7 +179,7 @@ Environment ready, on to HAMi. But first a bit of housekeeping I had to do. If y
 kubectl label node <gpu-node> nvidia.com/gpu.deploy.device-plugin=false --overwrite
 ```
 
-Now the real install. If I'd installed the chart as is, this section would be two lines. On k3s it doesn't go that way, three values have to differ from the defaults (see also the [k3s installation guide](https://project-hami.io/docs/installation/k3s-installation)). I found all three by trial, which is to say by error, and they're here so you don't have to.
+Now the real install. If I'd installed the chart as is, this section would be two lines. On K3s it doesn't go that way, three values have to differ from the defaults (see also the [K3s installation guide](https://project-hami.io/docs/installation/k3s-installation)). I found all three by trial, which is to say by error, and they're here so you don't have to.
 
 ```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/ && helm repo update
@@ -191,7 +191,7 @@ helm upgrade --install hami hami-charts/hami --version 2.10.0 -n kube-system \
   --set devicePlugin.runtimeClassName=nvidia
 ```
 
-This part is covered in its own tutorials and the site has an installation roadmap, but let me go through it in order anyway. `scheduler.nodeName` pins the extender to the control-plane node, because the API server can't reach a webhook on the agent node. We ran into that in Step 1. The kube-scheduler tag has to match your cluster version. The chart's default is an Aliyun mirror with an empty tag, and in that shape it doesn't know what version your cluster runs. The third is `devicePlugin.runtimeClassName=nvidia`, and that's the one that cost me an hour. k3s's containerd uses `runc` by default, and without a RuntimeClass the plugin can't find NVML and loops on this.
+This part is covered in its own tutorials and the site has an installation roadmap, but let me go through it in order anyway. `scheduler.nodeName` pins the extender to the control-plane node, because the API server can't reach a webhook on the agent node. We ran into that in Step 1. The kube-scheduler tag has to match your cluster version. The chart's default is an Aliyun mirror with an empty tag, and in that shape it doesn't know what version your cluster runs. The third is `devicePlugin.runtimeClassName=nvidia`, and that's the one that cost me an hour. K3s's containerd uses `runc` by default, and without a RuntimeClass the plugin can't find NVML and loops on this.
 
 ```plaintext
 E0925 19:53:51.423171 factory.go:135] Incompatible strategy detected auto
@@ -199,7 +199,7 @@ E0925 19:53:51.428513 main.go:201] error starting plugins: ... invalid device di
 E0925 19:53:51.599960 main.go:128] Received error: failed to initialize NVML: ERROR_LIBRARY_NOT_FOUND
 ```
 
-When I saw this I blamed the driver for a while, then looked at the kubelet, then considered reinstalling the toolkit. It turned out to be one line in the chart. The same value has a nice side effect. HAMi's webhook now adds `runtimeClassName: nvidia` to every GPU pod, which is exactly what workloads on k3s need anyway. Once the install finished I wanted to see with my own eyes that both cards registered in `hami-core` mode.
+When I saw this I blamed the driver for a while, then looked at the kubelet, then considered reinstalling the toolkit. It turned out to be one line in the chart. The same value has a nice side effect. HAMi's webhook now adds `runtimeClassName: nvidia` to every GPU pod, which is exactly what workloads on K3s need anyway. Once the install finished I wanted to see with my own eyes that both cards registered in `hami-core` mode.
 
 ```bash
 kubectl get node gpu-node-b -o jsonpath='{.metadata.annotations.hami\.io/node-nvidia-register}'
@@ -650,7 +650,7 @@ done
 
 The H100 finishes the step in 1.7 ms, the L40S in 3.4 ms, both at 50 cores. Keep those two numbers in a corner of your mind, we'll read every table against them.
 
-Let me add one more small practical note. The commands below assume `kubectl` and `linkerd` on the PATH. If you're on k3s, use `sudo k3s kubectl` for `kubectl`. If the CLI is under your home directory, use `$HOME/.linkerd2/bin/linkerd` for `linkerd`. That's what I did.
+Let me add one more small practical note. The commands below assume `kubectl` and `linkerd` on the PATH. If you're on K3s, use `sudo k3s kubectl` for `kubectl`. If the CLI is under your home directory, use `$HOME/.linkerd2/bin/linkerd` for `linkerd`. That's what I did.
 
 ## Step 5. Prove That Two Webhooks Touch the Same Pod
 
@@ -1083,7 +1083,7 @@ model-a-v2-7485bdc9bf-7rxnz     gpu-node-b   GPU-4dc50575-f241-9f14-1e6e-ecb4a93
 | 90, 10              | 57,733, 6,342      | 90.1%, 9.9%    | 17 ms, 39 ms        |
 | 50, 50              | 15,031, 15,235     | 49.7%, 50.3%   | 26 ms, 39 ms        |
 
-Applied, down to the decimal. You can also see the 20-core slice is visibly slow, p99 39 ms against 10 ms on the full-speed H100 replica. That's exactly what a canary is for, telling you before you hand it a whole card. At 50/50 total throughput dropped from 1,070 to 500 rps, because half of every request now waits on the small slice. That's the cost of the experiment, not a fault.
+Applied, down to the decimal. You can also see the 20-core slice is visibly slow, p99 39 ms against 10 ms on the full-speed H100 replica. That's exactly what a canary is for, telling you before you hand it a whole card. At 50/50 total throughput dropped from 1,070 to 500 rps, because half of the requests are now routed to the small slice and served by the slower backend. That's the cost of the experiment, not a fault.
 
 Out of curiosity I tried the same HTTPRoute with the unmeshed caller.
 
@@ -1468,10 +1468,10 @@ I got stuck on a lot of things building this lab, and every time I searched the 
 | Device plugin `ERROR_LIBRARY_NOT_FOUND`, `invalid device discovery strategy` | containerd's default runtime is `runc`, the plugin can't find NVML | `devicePlugin.runtimeClassName=nvidia` |
 | `linkerd-proxy-injector` looping at `Init:1/2`, proxy log says `Failed to obtain identity` | control plane pods on a node the proxy can't reach | pin the control plane with `nodeSelector` to a reachable node, cordon the unreachable one |
 | Pod Pending, event says `CardInsufficientCore` | the `gpucores` sum on the card would exceed 100 | lower the neighbor's cores, `maxSurge` 0 for rollouts |
-| Pod Pending, event says `CardUuidMismatch` | `use-gpuuuid` doesn't match the card on that node | expected, fine if it matches on the other node |
+| Pod Pending, event says `CardUuidMismatch` | `use-gpuuuid` doesn't match the card on that node | expected, a mismatch here is normal when the UUID matches on the other node |
 | Container dies in `pip` with `externally-managed-environment` | the image's Python is PEP 668 managed | `pip install --break-system-packages` |
 | Container exits 127 with `error while loading shared libraries: libdl.so.2` | HAMi's `libvgpu.so` preload needs glibc, the image is musl based | a glibc image instead of busybox or alpine, for example `nvcr.io/nvidia/cuda` |
-| k3s agent container loops on `listen tcp 127.0.0.1:6444: bind: address already in use` | the host's k3s server holds the port | `sudo systemctl stop k3s`, then restart the container |
+| K3s agent container loops on `listen tcp 127.0.0.1:6444: bind: address already in use` | the host's K3s server holds the port | `sudo systemctl stop k3s`, then restart the container |
 | Pods won't start in the containerised agent, kubelet complains it can't create inotify instances | the host's inotify limit is 128 and resets on reboot | `fs.inotify.max_user_instances=8192`, persisted under `/etc/sysctl.d` |
 | Other images get deleted while a big image pulls | the kubelet's image garbage collector starts past 85% disk | free disk, `docker volume prune` freed 19.79 GB for me |
 | Requests counted with `kubectl logs` are fewer than sent | the container log rotates and `--since` reads only the current file, at 1000 rps 18,747 of 65,563 were counted in a minute | count requests in the app |
