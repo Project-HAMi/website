@@ -59,6 +59,10 @@ A file at `/overrideEnv` with the right limit did not change the result on the d
 
 Deliver the values through a mounted config file, make it the default, and keep environment delivery as a switch. Environment mode is not expected to cover login sessions, operators who need that use the default.
 
+### Prior art
+
+[HAMi#3063](https://github.com/Project-HAMi/HAMi/pull/3063) with [HAMi-core#332](https://github.com/Project-HAMi/HAMi-core/pull/332) (closed) proposed the same mechanism: a per-container file beside the cache directory, mounted read-only at `/overrideEnv`, loaded at the start of `initialized()`, allocation failing on a write error, and `CUDA_TASK_PRIORITY` and `GPU_CORE_UTILIZATION_POLICY` taken from the container spec. This design adds the `limitDelivery` switch and rollback path, atomic publication of the file, collection of the file with the dead pod's directory, a reader that is not stopped by one bad line, and the compatibility section below.
+
 ## Goals
 
 - Every process in a container gets the same limits, however it was started.
@@ -72,7 +76,7 @@ Out of scope, tracked separately: conflicts between processes carrying different
 
 ### The limits file
 
-One `KEY=VALUE` per line, keys sorted, no comments:
+One `KEY=VALUE` per line, keys sorted, no comments, no blank lines:
 
 ```
 CUDA_DEVICE_MEMORY_LIMIT_0=3000m
@@ -81,7 +85,7 @@ CUDA_DEVICE_SM_LIMIT=50
 HAMI_LIMITS_FORMAT=1
 ```
 
-It carries every variable HAMi-core reads, including the shared cache path (without it a process would enforce the limit against a private file and stay invisible to the pod's accounting) and, when set, `CUDA_OVERSUBSCRIBE`, `GPU_CORE_UTILIZATION_POLICY`, `LIBCUDA_LOG_LEVEL`, `LIBVGPU_HOSTPID_BROKER`. `HAMI_LIMITS_FORMAT` lets a future reader recognize an older or newer file. The format is the one HAMi-core's existing reader already parses; JSON would add a parser to a library loaded into every process on the node.
+It carries every variable HAMi-core reads, including the shared cache path (without it a process would enforce the limit against a private file and stay invisible to the pod's accounting) and, when set, `CUDA_OVERSUBSCRIBE`, `GPU_CORE_UTILIZATION_POLICY`, `LIBCUDA_LOG_LEVEL`, `LIBVGPU_HOSTPID_BROKER`. It also carries, from the container spec, `CUDA_TASK_PRIORITY` and `GPU_CORE_UTILIZATION_POLICY` as the webhook set them. `HAMI_LIMITS_FORMAT` lets a future reader recognize an older or newer file. The format is the subset HAMi-core's `load_env_from_file()` reads today: it stops at the first line without an `=`, and a plugin-written file contains no such line; JSON would add a parser to a library loaded into every process on the node.
 
 ### Delivery mode
 
@@ -114,13 +118,13 @@ The host file sits **next to** the per-container directory, never inside it: tha
 
 ### Device plugin
 
-In `Allocate()`, after the container's environment and mounts are final, in `file` mode only: select the variables HAMi-core reads, write them sorted to a temporary file, `fsync`, `chmod 0644`, `rename` over the final name (a truncated `CUDA_DEVICE_MEMORY_LIMIT_0=30` would read as 30 bytes), then append a read-only mount to `/overrideEnv`. A write failure fails the allocation: a limit that could not be delivered must not become no limit. The vGPU monitor removes the `.limits` file with the dead pod's directory.
+In `Allocate()`, after the container's environment and mounts are final, in `file` mode only: select the variables HAMi-core reads, write them sorted to a temporary file, `fsync`, `chmod 0644`, `rename` over the final name (a truncated `CUDA_DEVICE_MEMORY_LIMIT_0=30` would read as 30 bytes), then append a read-only mount to `/overrideEnv`. A write failure fails the allocation: a limit that could not be delivered must not become no limit. In MIG mode the plugin injects none of these variables and mounts neither `libvgpu.so` nor `/etc/ld.so.preload`, so it writes no file and adds no mount. The vGPU monitor removes the `.limits` file with the dead pod's directory.
 
 ### HAMi-core
 
 1. Read the file at the **start of initialization**, before the shared region is chosen and the limits stamped. Both the CUDA and NVML entry points go through the same initialization.
 2. A file value replaces an environment value. In `file` mode the file is the source of truth; in `env` mode there is no file.
-3. The reader skips blank lines and `#` comments, accepts CRLF, and logs and skips a malformed line instead of stopping.
+3. A change to `load_env_from_file()`: today it stops at the first line without an `=`; instead, log the line with its number and skip it, so one bad line in a hand-edited file cannot discard the lines after it, including the cache path.
 4. An absent file is logged at INFO and the environment is used, so bare Docker and `env` mode are unchanged.
 
 ## Failure behavior
@@ -128,6 +132,7 @@ In `Allocate()`, after the container's environment and mounts are final, in `fil
 | Situation | Device plugin | HAMi-core |
 | --- | --- | --- |
 | `env` mode | no file, no mount | environment only |
+| MIG mode | no variables, no file, no mount | nothing to read |
 | file absent (older plugin, bare Docker) | — | INFO log, environment only |
 | file cannot be written | allocation fails | pod does not start uncapped |
 | malformed line | never written | ERROR with line number, line skipped |
@@ -137,7 +142,7 @@ There is no path on which a file exists and yields no limit.
 
 ## Compatibility
 
-Environment variables stay injected in `file` mode, so every combination is safe, an old HAMi-core with a new plugin, or a new HAMi-core with an old plugin, behaves exactly as today, only new plugin in `file` mode with new HAMi-core changes behaviour, and only for processes that had no limit before. Running pods keep their allocation until recreated.
+Environment variables stay injected in `file` mode, so no combination regresses. A new HAMi-core with an old plugin finds no file and behaves as today. An old HAMi-core with a new plugin does read the file, but only in `nvml_preInit()`, after `ensure_initialized()` has created the shared region: for the entrypoint the file equals the environment and nothing changes; for a login session the limit is still seeded as `0` before the file is read, so enforcement is unchanged (verified in the reproduction above). Only a new plugin in `file` mode with a new HAMi-core changes behaviour, and only for processes that had no limit before. Running pods keep their allocation until recreated.
 
 ## Security considerations
 
@@ -156,6 +161,5 @@ Rollout: upgrade the device plugin (default `file`, or `env` globally and `file`
 
 ## Known limitations
 
-- Variables the webhook sets on the pod spec, such as `CUDA_TASK_PRIORITY`, are not carried by the file.
 - `LIBCUDA_LOG_LEVEL` is read before the file, so a session without environment logs at the default level.
 - Sandboxed runtimes (gVisor, Kata) and CRI-O need their own validation of the single-file mount.
