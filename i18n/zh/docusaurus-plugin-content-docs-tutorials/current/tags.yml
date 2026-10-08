@@ -103,3 +103,6 @@
 "modelkit":
   label: "ModelKit"
   permalink: "/modelkit"
+"service-mesh":
+  label: "服务网格"
+  permalink: "/service-mesh"

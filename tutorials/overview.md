@@ -32,4 +32,5 @@ Each lab lists its own prerequisites.
 - **Lab 14** installs HAMi v2.10.0 on a four-T4 GKE node and observes the composable `gpu-scheduler-policy` chains (`spread`, `binpack`, `mutex`, `mutex,binpack`) through allocation annotations and scheduler logs.
 - **Lab 16** installs HAMi v2.10.0 on a seven-GPU RTX PRO 6000 server and verifies the complete Dynamic MIG lifecycle: per-Pod placement, mixed profiles, selective reclamation, device-plugin restart recovery, and spillover to a second GPU.
 - **Lab 17** packages a model as a KitOps ModelKit, pulls it from Jozu Hub through an initContainer, and serves it with SGLang and optionally vLLM on HAMi GPU shares.
+- **Lab 18** stages a noisy neighbor next to a quiet tenant on two shared GPUs, proves what HAMi isolation covers and what it does not, and routes around the contention with Linkerd.
 - **Lab 19** installs HAMi DRA 0.2.3 and the Ascend DRA driver on an Ascend 310P3 node and verifies the request-to-ResourceClaim conversion, two-Pod NPU sharing, memory quota enforcement, and scheduler capacity accounting.

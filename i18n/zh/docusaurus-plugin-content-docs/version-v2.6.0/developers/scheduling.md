@@ -111,7 +111,7 @@ Node2 score: ((1+2)/4) * 10= 7.5
 
 #### Spread
 
-Spread 主要考虑节点资源使用情况。使用越少，得分越高。
+Spread 主要考虑节点资源使用情况。使用越少，得分越低，但优先级越高。
 
 ```text
 score: ((request + used) / allocatable) * 10

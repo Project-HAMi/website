@@ -271,6 +271,85 @@ const events = [
     talkUrl:
       "https://www.lfopensource.cn/kubecon-cloudnativecon-openinfra-summit-pytorch-conference-china/program/schedule/",
   },
+  {
+    slug: "observability-summit-europe",
+    title: {
+      en: "Vendor-Neutral GPU Observability for Kubernetes",
+      zh: "面向 Kubernetes 的厂商中立 GPU 可观测性",
+    },
+    date: "2026-10-05",
+    startTime: "16:25",
+    endTime: "16:50",
+    timeZone: "CEST",
+    speaker: "Reza Jelveh",
+    location: {
+      en: "Prague Congress Centre, Prague, Czechia",
+      zh: "捷克 布拉格 布拉格会议中心",
+    },
+    address: {
+      addressLocality: "Prague",
+      addressCountry: "CZ",
+    },
+    room: "South Hall 3 B (Floor 3)",
+    description: {
+      en: "GPU observability in Kubernetes is fragmented. Each vendor ships their own metrics stack: NVIDIA DCGM, AMD ROCm SMI. Platform teams running heterogeneous clusters stitch together three different dashboards to answer one question: \"Are my GPUs being used efficiently?\" HAMi (CNCF Incubation) sits at the scheduling layer and sees every GPU operation. That single integration point gives you centralized observability across NVIDIA, AMD, Ascend, and any accelerator with a device plugin. HAMi manages the underlying vendor metrics itself and attributes that data to individual workloads, so you don't need to know the per-vendor exporters and their metrics in detail, while still getting utilization, memory pressure, and allocation efficiency per workload regardless of the underlying hardware. This talk covers why GPU observability is harder than CPU observability (CUDA context model, MIG partitioning, device-plugin opacity), and how HAMi's scheduling-layer instrumentation provides one vendor-neutral view across heterogeneous accelerators.",
+      zh: "Kubernetes 中的 GPU 可观测性是割裂的。每家厂商都自带一套指标栈：NVIDIA DCGM、AMD ROCm SMI。运行异构集群的平台团队需要拼凑三套不同的仪表盘，才能回答同一个问题：「我的 GPU 是否被高效利用？」HAMi（CNCF 孵化项目）位于调度层，能够看到每一次 GPU 操作。这个单一的集成点让你在 NVIDIA、AMD、Ascend 以及任何具备 device plugin 的加速器上获得集中式可观测性。HAMi 会托管底层厂商指标，并将其中相关数据归属到各个工作负载，因此你无需深入了解各家厂商的 exporter 及其指标细节，同样能按工作负载获得利用率、显存压力和分配效率，无论底层硬件是什么。本次演讲将介绍：为什么 GPU 可观测性比 CPU 可观测性更难（CUDA 上下文模型、MIG 分区、device plugin 的不透明性），以及 HAMi 的调度层埋点如何为异构加速器提供统一的厂商中立视图。",
+    },
+    resources: {
+      communityFlyer: {
+        en: "Community Flyer",
+        zh: "社区宣传册",
+        url: "/resources/events/flyers/community-flyer.pdf",
+      },
+      talkSlides: {
+        en: "Talk Slides",
+        zh: "演讲幻灯片",
+        url: "/resources/events/2026-o11y-summit-europe/hami_cross_platform_observability.pdf",
+      },
+    },
+    externalUrl: "https://events.linuxfoundation.org/observability-summit-europe/",
+    talkUrl:
+      "https://events.linuxfoundation.org/observability-summit-europe/program/schedule/?id=1281232",
+  },
+  {
+    slug: "opensource-summit-europe",
+    title: {
+      en: "Designing Permissioned AI Agents That Can Run Offline",
+      zh: "设计可离线运行的权限受控 AI 智能体",
+    },
+    date: "2026-10-08",
+    startTime: "14:40",
+    endTime: "15:20",
+    timeZone: "CEST",
+    speaker: "Reza Jelveh",
+    location: {
+      en: "Prague Congress Centre, Prague, Czechia",
+      zh: "捷克 布拉格 布拉格会议中心",
+    },
+    address: {
+      addressLocality: "Prague",
+      addressCountry: "CZ",
+    },
+    room: "Forum Hall (Floor 2)",
+    description: {
+      en: "AI agents are moving from chat interfaces into workflows that read files, call tools, modify state, and coordinate multiple services. In cloud-hosted designs, this often creates a fragile trust boundary: private data leaves the device, tools are authorized through broad API keys, and the user has limited visibility into what the agent can do. This talk presents an open-source, local-first approach to permissioned AI agents that can run offline on Linux edge or personal infrastructure, built on one assumption: every tool is hostile, so limits must be enforced in the tool, not in the agent. We will break the boundary down into tool invocation, deny-by-default capability scoping, keeping the grant out of the agent's reach, human approval for destructive changes, sandboxing at the process, container, microVM and Kubernetes level, and per-agent GPU slices for local model serving. The session is not about a specific agent framework; it is about the system boundary around agents. Attendees will learn how to separate reasoning from action, how to map tools to least-privilege permissions, how to defend around MCP servers they did not write, and how to keep sensitive context and compute local.",
+      zh: "AI 智能体正在从聊天界面走向真实工作流：读取文件、调用工具、修改状态并协调多个服务。在云托管的设计中，这往往形成脆弱的信任边界：私有数据离开设备，工具通过权限过宽的 API 密钥授权，用户也难以看清智能体到底能做什么。本演讲介绍一种开源、本地优先的权限受控 AI 智能体方案，可在 Linux 边缘设备或个人基础设施上离线运行，其前提只有一个：每个工具都是不可信的，因此限制必须在工具侧强制执行，而不是依赖智能体自觉。我们将把这一边界拆解为：工具调用、默认拒绝的能力范围划定、让授权凭据远离智能体、破坏性变更需人工审批、进程/容器/microVM/Kubernetes 多层沙箱隔离，以及为本地模型推理按智能体分配 GPU 切片。本场分享不针对某个特定智能体框架，而是聚焦智能体周围的系统边界。听众将学到如何把推理与执行分离、如何将工具映射到最小权限、如何防护并非自己编写的 MCP 服务器，以及如何让敏感上下文与算力留在本地。",
+    },
+    resources: {
+      communityFlyer: {
+        en: "Community Flyer",
+        zh: "社区宣传册",
+        url: "/resources/events/flyers/community-flyer.pdf",
+      },
+      talkSlides: {
+        en: "Talk Slides",
+        zh: "演讲幻灯片",
+        url: "/resources/events/2026-o11y-summit-europe/ossummit_europe_agents.pdf",
+      },
+    },
+    externalUrl: "https://events.linuxfoundation.org/open-source-summit-europe/",
+    talkUrl: "https://osselceu2026.sched.com/event/a533a839491960839042f705cbe3acd4",
+  },
 ];
 
 export default events;

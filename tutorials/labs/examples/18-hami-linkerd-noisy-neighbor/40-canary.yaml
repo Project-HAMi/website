@@ -1,0 +1,71 @@
+# canary, model-a-v2 on a small slice with HTTPRoute weights
+apiVersion: v1
+kind: Service
+metadata:
+  name: model-a-v2
+  namespace: lab10
+spec:
+  selector: { app: model-a-v2 }
+  ports: [{ name: http, port: 8000, targetPort: 8000 }]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: model-a-v2
+  namespace: lab10
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: model-a-v2 }
+  template:
+    metadata:
+      labels: { app: model-a-v2 }
+      annotations:
+        nvidia.com/use-gpuuuid: "GPU-4dc50575-f241-9f14-1e6e-ecb4a93c3299"
+    spec:
+      containers:
+        - name: model
+          image: pytorch/pytorch:2.14.0-cuda12.6-cudnn9-runtime
+          command:
+            [
+              "sh",
+              "-c",
+              "pip install -q --break-system-packages fastapi uvicorn && cd /app && exec uvicorn app:app --host 0.0.0.0 --port 8000",
+            ]
+          ports: [{ containerPort: 8000, name: http }]
+          volumeMounts: [{ name: app, mountPath: /app }]
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+              nvidia.com/gpumem: 1500
+              nvidia.com/gpucores: 20
+          startupProbe:
+            httpGet: { path: /healthz, port: 8000 }
+            periodSeconds: 5
+            failureThreshold: 120
+          readinessProbe:
+            httpGet: { path: /healthz, port: 8000 }
+            periodSeconds: 5
+      volumes:
+        - name: app
+          configMap: { name: model-a-app }
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: model-a-canary
+  namespace: lab10
+spec:
+  parentRefs:
+    - name: model-a
+      kind: Service
+      group: core
+      port: 8000
+  rules:
+    - backendRefs:
+        - name: model-a
+          port: 8000
+          weight: 90
+        - name: model-a-v2
+          port: 8000
+          weight: 10

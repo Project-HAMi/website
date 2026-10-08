@@ -53,6 +53,7 @@ module.exports = {
             "installation/aws-installation",
             "installation/k3s-installation",
             "installation/gke-installation",
+            "installation/tke-installation",
           ],
         },
         {
@@ -115,6 +116,7 @@ module.exports = {
       },
       items: [
         "userguide/configure",
+        "userguide/interactive-manifest-generator",
         {
           type: "category",
           label: "Monitoring",
@@ -179,6 +181,7 @@ module.exports = {
         "developers/hostpid-broker",
         "developers/init-container-design",
         "developers/sidecar-container-design",
+        "developers/gpu-limit-delivery-design",
       ],
     },
     {

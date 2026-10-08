@@ -1,0 +1,18 @@
+# failure accrual on the Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: model-a
+  namespace: lab10
+  annotations:
+    balancer.linkerd.io/failure-accrual: consecutive
+    balancer.linkerd.io/failure-accrual-consecutive-max-failures: "7"
+    balancer.linkerd.io/failure-accrual-consecutive-min-penalty: 5s
+    balancer.linkerd.io/failure-accrual-consecutive-max-penalty: 60s
+spec:
+  selector:
+    app: model-a
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8000
