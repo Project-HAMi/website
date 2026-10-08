@@ -311,6 +311,45 @@ const events = [
     talkUrl:
       "https://events.linuxfoundation.org/observability-summit-europe/program/schedule/?id=1281232",
   },
+  {
+    slug: "opensource-summit-europe",
+    title: {
+      en: "Designing Permissioned AI Agents That Can Run Offline",
+      zh: "设计可离线运行的权限受控 AI 智能体",
+    },
+    date: "2026-10-08",
+    startTime: "14:40",
+    endTime: "15:20",
+    timeZone: "CEST",
+    speaker: "Reza Jelveh",
+    location: {
+      en: "Prague Congress Centre, Prague, Czechia",
+      zh: "捷克 布拉格 布拉格会议中心",
+    },
+    address: {
+      addressLocality: "Prague",
+      addressCountry: "CZ",
+    },
+    room: "Forum Hall (Floor 2)",
+    description: {
+      en: "AI agents are moving from chat interfaces into workflows that read files, call tools, modify state, and coordinate multiple services. In cloud-hosted designs, this often creates a fragile trust boundary: private data leaves the device, tools are authorized through broad API keys, and the user has limited visibility into what the agent can do. This talk presents an open-source, local-first approach to permissioned AI agents that can run offline on Linux edge or personal infrastructure, built on one assumption: every tool is hostile, so limits must be enforced in the tool, not in the agent. We will break the boundary down into tool invocation, deny-by-default capability scoping, keeping the grant out of the agent's reach, human approval for destructive changes, sandboxing at the process, container, microVM and Kubernetes level, and per-agent GPU slices for local model serving. The session is not about a specific agent framework; it is about the system boundary around agents. Attendees will learn how to separate reasoning from action, how to map tools to least-privilege permissions, how to defend around MCP servers they did not write, and how to keep sensitive context and compute local.",
+      zh: "AI 智能体正在从聊天界面走向真实工作流：读取文件、调用工具、修改状态并协调多个服务。在云托管的设计中，这往往形成脆弱的信任边界：私有数据离开设备，工具通过权限过宽的 API 密钥授权，用户也难以看清智能体到底能做什么。本演讲介绍一种开源、本地优先的权限受控 AI 智能体方案，可在 Linux 边缘设备或个人基础设施上离线运行，其前提只有一个：每个工具都是不可信的，因此限制必须在工具侧强制执行，而不是依赖智能体自觉。我们将把这一边界拆解为：工具调用、默认拒绝的能力范围划定、让授权凭据远离智能体、破坏性变更需人工审批、进程/容器/microVM/Kubernetes 多层沙箱隔离，以及为本地模型推理按智能体分配 GPU 切片。本场分享不针对某个特定智能体框架，而是聚焦智能体周围的系统边界。听众将学到如何把推理与执行分离、如何将工具映射到最小权限、如何防护并非自己编写的 MCP 服务器，以及如何让敏感上下文与算力留在本地。",
+    },
+    resources: {
+      communityFlyer: {
+        en: "Community Flyer",
+        zh: "社区宣传册",
+        url: "/resources/events/flyers/community-flyer.pdf",
+      },
+      talkSlides: {
+        en: "Talk Slides",
+        zh: "演讲幻灯片",
+        url: "/resources/events/2026-o11y-summit-europe/ossummit_europe_agents.pdf",
+      },
+    },
+    externalUrl: "https://events.linuxfoundation.org/open-source-summit-europe/",
+    talkUrl: "https://osselceu2026.sched.com/event/a533a839491960839042f705cbe3acd4",
+  },
 ];
 
 export default events;
