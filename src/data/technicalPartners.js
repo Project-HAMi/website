@@ -15,7 +15,7 @@ const technicalPartnersData = [
     href: "https://www.huawei.com",
   },
   {
-    logo: "/img/ecosystem/vultr.svg",
+    logo: "/img/contributors/vultr.svg",
     alt: "Vultr",
     href: "https://www.vultr.com",
   },
