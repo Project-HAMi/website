@@ -45,7 +45,7 @@ flowchart TD
 三个组件，三段职责，整个实验期间要分清：
 
 - **HAMi-DRA** 负责“请求怎么声明”。它是一组 admission webhook，不做任何 NPU 虚拟化，也不部署 kubelet plugin。
-- **Ascend DRA driver**（driver 名 `ascend.project-hami.io`，来自 [4pdOss/hami-dra-driver](https://github.com/4pdOss/hami-dra-driver)）负责“设备怎么分配”：设备发现、ResourceSlice 发布、kubelet Prepare/Unprepare、CDI 注入。
+- **Ascend DRA driver**（driver 名 `ascend.project-hami.io`，来自 [Project-HAMi/ascend-dra-driver](https://github.com/Project-HAMi/ascend-dra-driver)）负责“设备怎么分配”：设备发现、ResourceSlice 发布、kubelet Prepare/Unprepare、CDI 注入。
 - **HAMivNPUCore** 负责“设备怎么共享”：`libvnpu.so` 拦截加容器内 limiter，强制显存配额（`NPU_MEM_QUOTA`）与算力时间片（`NPU_PRIORITY`）。
 
 ## 前置条件
@@ -69,7 +69,7 @@ flowchart TD
 | 昇腾驱动 / 固件 | 25.5.1 / 7.8.0.6.201 |
 | HAMi-DRA | 0.2.3（chart 与镜像 tag 一致） |
 | Ascend DRA driver | chart `ascend-dra-driver-0.1.1`（app 0.1.0），镜像 `projecthami/ascend-dra-driver:uuid-fix-20260909`（开发构建，见步骤 2） |
-| 共存组件 | HAMi 企业版 2.10.0-r1（hami-scheduler、hami-ascend-device-plugin、hami-resource-pool-manager）、cert-manager v1.21.1 |
+| 共存组件 | HAMi v2.10.0（hami-scheduler、hami-ascend-device-plugin）、cert-manager v1.21.1 |
 
 ### 检查 feature gate
 
@@ -132,7 +132,7 @@ ascend    ascend    ...
 
 ### 与存量 HAMi core 部署共存
 
-如果集群已在运行 HAMi core 或 HAMi 企业版（hami-scheduler、hami-webhook、hami-ascend-device-plugin），它们的 mutating webhook 同样会拦截 `huawei.com/Ascend310P*` 资源请求，对同一个 Pod 二次改写。DRA 的 workload 必须在两层上同时豁免：
+如果集群已在运行 HAMi core（hami-scheduler、hami-webhook、hami-ascend-device-plugin），它们的 mutating webhook 同样会拦截 `huawei.com/Ascend310P*` 资源请求，对同一个 Pod 二次改写。DRA 的 workload 必须在两层上同时豁免：
 
 ```bash
 kubectl create ns dra-ascend-e2e
@@ -195,13 +195,13 @@ mutatingwebhookconfiguration.admissionregistration.k8s.io/hami-dra-mutatingwebho
 validatingwebhookconfiguration.admissionregistration.k8s.io/hami-dra-validatingwebhookconfiguration
 ```
 
-这份列表里的 hami-scheduler 与 hami-ascend-device-plugin 属于先前已存在的 HAMi 企业版安装，不属于 HAMi-DRA。HAMi-DRA 自身只运行一个 deployment，即 webhook。它不部署任何 kubelet plugin：昇腾的节点侧 driver 来自下一步。
+这份列表里的 hami-scheduler 与 hami-ascend-device-plugin 属于先前已存在的 HAMi 安装，不属于 HAMi-DRA。HAMi-DRA 自身只运行一个 deployment，即 webhook。它不部署任何 kubelet plugin：昇腾的节点侧 driver 来自下一步。
 
 ## 步骤 2：安装 Ascend DRA Driver
 
 ```bash
-git clone --recurse-submodules https://github.com/4pdOss/hami-dra-driver.git
-cd hami-dra-driver
+git clone --recurse-submodules https://github.com/Project-HAMi/ascend-dra-driver.git
+cd ascend-dra-driver
 helm upgrade --install ascend-dra-driver \
   deployments/helm/ascend-dra-driver \
   -n ascend-dra-driver --create-namespace
@@ -711,7 +711,7 @@ claim 的删除由 HAMi-DRA validating webhook 负责。如果 Pod 删除时 web
 
 ### 与 HAMi core webhook 冲突
 
-- **症状**：集群中已有 HAMi core 或企业版时，DRA 的 Pod 被二次改写、携带非预期注解，或调度行为异常。
+- **症状**：集群中已有 HAMi core 时，DRA 的 Pod 被二次改写、携带非预期注解，或调度行为异常。
 - **原因**：HAMi core 的 mutating webhook 同样拦截 `huawei.com/Ascend310P*` 资源请求。
 - **检查**：`kubectl get mutatingwebhookconfigurations | grep hami`；对比 Pod 提交前后的 spec。
 - **修复**：namespace 与 Pod 双层打 `hami.io/webhook: ignore` 标签，与本实验一致。
@@ -787,4 +787,4 @@ helm uninstall hami-dra -n hami-system
 - 这条链路背后的概念与设计：[如何使用 HAMi DRA](/zh/docs/installation/how-to-use-hami-dra)
 - NVIDIA GPU 上的同一套转换流程：[实验 4：用 DRA 切分 GPU](/zh/tutorials/labs/hami-dra) 与 [实验 11：KServe 推理与 HAMi DRA GPU 共享](/zh/tutorials/labs/kserve-hami-dra)
 - 同一块硬件走 device-plugin 路径：[实验 13：用 Volcano + HAMi-core 软切分昇腾 310P3 vNPU](/zh/tutorials/labs/volcano-ascend-vnpu)
-- 相关组件：[Project-HAMi/HAMi-DRA](https://github.com/Project-HAMi/HAMi-DRA) · [4pdOss/hami-dra-driver](https://github.com/4pdOss/hami-dra-driver) · [Project-HAMi/hami-vnpu-core](https://github.com/Project-HAMi/hami-vnpu-core)
+- 相关组件：[Project-HAMi/HAMi-DRA](https://github.com/Project-HAMi/HAMi-DRA) · [Project-HAMi/ascend-dra-driver](https://github.com/Project-HAMi/ascend-dra-driver) · [Project-HAMi/hami-vnpu-core](https://github.com/Project-HAMi/hami-vnpu-core)

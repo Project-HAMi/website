@@ -45,7 +45,7 @@ flowchart TD
 Three components, three responsibilities. Keep them apart throughout the lab:
 
 - **HAMi-DRA** decides _how the request is declared_. It is a set of admission webhooks, does no NPU virtualization, and deploys no kubelet plugin.
-- **Ascend DRA driver** (driver name `ascend.project-hami.io`, from [4pdOss/hami-dra-driver](https://github.com/4pdOss/hami-dra-driver)) decides _how a device is allocated_: discovery, ResourceSlice publication, kubelet Prepare/Unprepare, CDI injection.
+- **Ascend DRA driver** (driver name `ascend.project-hami.io`, from [Project-HAMi/ascend-dra-driver](https://github.com/Project-HAMi/ascend-dra-driver)) decides _how a device is allocated_: discovery, ResourceSlice publication, kubelet Prepare/Unprepare, CDI injection.
 - **HAMivNPUCore** decides _how a device is shared_: `libvnpu.so` interception plus the in-container limiter enforce the memory quota (`NPU_MEM_QUOTA`) and the compute time slice (`NPU_PRIORITY`).
 
 ## Prerequisites
@@ -69,7 +69,7 @@ Three components, three responsibilities. Keep them apart throughout the lab:
 | Ascend driver / firmware | 25.5.1 / 7.8.0.6.201 |
 | HAMi-DRA | 0.2.3 (chart and image tag) |
 | Ascend DRA driver | chart `ascend-dra-driver-0.1.1` (app 0.1.0), image `projecthami/ascend-dra-driver:uuid-fix-20260909` (development build, see Step 2) |
-| Coexisting | HAMi enterprise 2.10.0-r1 (hami-scheduler, hami-ascend-device-plugin, hami-resource-pool-manager), cert-manager v1.21.1 |
+| Coexisting | HAMi v2.10.0 (hami-scheduler, hami-ascend-device-plugin), cert-manager v1.21.1 |
 
 ### Check the feature gate
 
@@ -132,7 +132,7 @@ ascend    ascend    ...
 
 ### Coexistence with an existing HAMi core installation
 
-If the cluster already runs HAMi core or HAMi enterprise (hami-scheduler, hami-webhook, hami-ascend-device-plugin), their mutating webhook also intercepts `huawei.com/Ascend310P*` resources and rewrites the same Pod a second time. DRA workloads must opt out on two levels:
+If the cluster already runs HAMi core (hami-scheduler, hami-webhook, hami-ascend-device-plugin), their mutating webhook also intercepts `huawei.com/Ascend310P*` resources and rewrites the same Pod a second time. DRA workloads must opt out on two levels:
 
 ```bash
 kubectl create ns dra-ascend-e2e
@@ -195,13 +195,13 @@ mutatingwebhookconfiguration.admissionregistration.k8s.io/hami-dra-mutatingwebho
 validatingwebhookconfiguration.admissionregistration.k8s.io/hami-dra-validatingwebhookconfiguration
 ```
 
-The hami-scheduler and hami-ascend-device-plugin Pods in this listing belong to the pre-existing HAMi enterprise installation, not to HAMi-DRA. HAMi-DRA itself runs exactly one deployment, the webhook. It deploys no kubelet plugin: the node-side driver for Ascend comes from the next step.
+The hami-scheduler and hami-ascend-device-plugin Pods in this listing belong to the pre-existing HAMi installation, not to HAMi-DRA. HAMi-DRA itself runs exactly one deployment, the webhook. It deploys no kubelet plugin: the node-side driver for Ascend comes from the next step.
 
 ## Step 2: Install the Ascend DRA Driver
 
 ```bash
-git clone --recurse-submodules https://github.com/4pdOss/hami-dra-driver.git
-cd hami-dra-driver
+git clone --recurse-submodules https://github.com/Project-HAMi/ascend-dra-driver.git
+cd ascend-dra-driver
 helm upgrade --install ascend-dra-driver \
   deployments/helm/ascend-dra-driver \
   -n ascend-dra-driver --create-namespace
@@ -711,7 +711,7 @@ Claim deletion is the HAMi-DRA validating webhook's job. If the webhook is down 
 
 ### Conflicts with the HAMi core webhook
 
-- **Symptom**: with HAMi core or enterprise already in the cluster, DRA Pods get rewritten twice, carry unexpected annotations, or schedule erratically.
+- **Symptom**: with HAMi core already in the cluster, DRA Pods get rewritten twice, carry unexpected annotations, or schedule erratically.
 - **Cause**: the HAMi core mutating webhook also intercepts `huawei.com/Ascend310P*` resources.
 - **Check**: `kubectl get mutatingwebhookconfigurations | grep hami`; diff the Pod spec before and after submission.
 - **Fix**: the `hami.io/webhook: ignore` label on both the namespace and the Pod, as in this lab.
@@ -787,4 +787,4 @@ Leave the feature gates and the `ascend` RuntimeClass in place if other work use
 - The concepts and design behind this path: [How to use HAMi DRA](/docs/installation/how-to-use-hami-dra)
 - The same conversion flow on NVIDIA GPUs: [Lab 4: GPU Slicing with Dynamic Resource Allocation](/tutorials/labs/hami-dra) and [Lab 11: KServe Inference with HAMi DRA GPU Sharing](/tutorials/labs/kserve-hami-dra)
 - The same hardware under the device-plugin path: [Lab 13: Soft-Slicing Ascend 310P3 vNPU with Volcano and HAMi-core](/tutorials/labs/volcano-ascend-vnpu)
-- Components: [Project-HAMi/HAMi-DRA](https://github.com/Project-HAMi/HAMi-DRA) · [4pdOss/hami-dra-driver](https://github.com/4pdOss/hami-dra-driver) · [Project-HAMi/hami-vnpu-core](https://github.com/Project-HAMi/hami-vnpu-core)
+- Components: [Project-HAMi/HAMi-DRA](https://github.com/Project-HAMi/HAMi-DRA) · [Project-HAMi/ascend-dra-driver](https://github.com/Project-HAMi/ascend-dra-driver) · [Project-HAMi/hami-vnpu-core](https://github.com/Project-HAMi/hami-vnpu-core)

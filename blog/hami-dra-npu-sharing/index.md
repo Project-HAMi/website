@@ -6,11 +6,11 @@ authors: [rootsongjc]
 tags: ["HAMi", "DRA", "Ascend", "NPU Sharing", "Kubernetes"]
 ---
 
-On September 15, 2026, the HAMi community released [HAMi DRA](https://github.com/Project-HAMi/HAMi-DRA) 0.2.3. The version itself is a routine iteration, but the timing is worth noting: in August the Ascend DRA driver entered development preview; before that, the HAMi 2.9 release webinar declared HAMi-DRA production-ready, with NPU DRA support planned for 2.10. For anyone tracking heterogeneous compute scheduling, HAMi DRA has moved from "experimental direction" to "an option worth evaluating seriously".
+On September 15, 2026, the HAMi community released [HAMi DRA](https://github.com/Project-HAMi/HAMi-DRA) 0.2.3. The version itself is a routine iteration, but the timing is worth noting: the HAMi 2.9 release webinar declared HAMi-DRA production-ready, with NPU DRA support planned for 2.10. For anyone tracking heterogeneous compute scheduling, HAMi DRA has moved from "experimental direction" to "an option worth evaluating seriously".
 
 The discussion around it has not stopped either. Ever since Kubernetes 1.34 took DRA (Dynamic Resource Allocation) to GA, "does DRA make HAMi obsolete?" has been a frequent question in the community channels; the answer given in [Does Kubernetes DRA Replace HAMi?](/blog/does-kubernetes-dra-replace-hami) is that DRA absorbs the request-and-scheduling half, while the enforce-inside-the-container half was never something DRA set out to do, and that is exactly where HAMi stays.
 
-HAMi DRA is the community's engineering answer to that debate: a migration layer that automatically converts the HAMi-style resource requests in existing workloads into native ResourceClaims, hands scheduling and accounting back to kube-scheduler, keeps runtime isolation with HAMi-core, and leaves the business side without a single line to change. The current 0.2.3 release covers NVIDIA GPUs; with the Ascend DRA driver entering preview, the chain has been verified end to end on a real 310P3 cluster, and the community shipped the companion [Lab 19: Ascend NPU Sharing with HAMi DRA](/tutorials/labs/ascend-hami-dra) with every command and real output. This post is a systematic introduction to HAMi DRA: its motivation, design, usage, and current boundaries.
+HAMi DRA is the community's engineering answer to that debate: a migration layer that automatically converts the HAMi-style resource requests in existing workloads into native ResourceClaims, hands scheduling and accounting back to kube-scheduler, keeps runtime isolation with HAMi-core, and leaves the business side without a single line to change. The current 0.2.3 release covers NVIDIA GPUs; with the Ascend DRA driver, the chain has been verified end to end on a real 310P3 cluster, and the community shipped the companion [Lab 19: Ascend NPU Sharing with HAMi DRA](/tutorials/labs/ascend-hami-dra) with every command and real output. This post is a systematic introduction to HAMi DRA: its motivation, design, usage, and current boundaries.
 
 <!-- truncate -->
 
@@ -47,7 +47,7 @@ None of these are bugs in the code; they are the road itself: simulating fine-gr
 
 ![Where HAMi gets stuck on Device Plugin](/img/hami-dra-npu-sharing/where-hami-stuck.png)
 
-The left side of the figure is the whole chain HAMi had to build itself to deliver sharing: every layer between the Pod and the accelerator is HAMi's own. The dashed lines show where each bottleneck lives: number 1 sits in the resource declaration itself (extended resources stay invisible to native quotas), while numbers 2, 3, and 4 all sit in the Scheduler Extender stage — preemption is limited by the extender API, the node lock serializes concurrent scheduling, and a failed request can lock a node for 5 minutes.
+The left side of the figure is the whole chain HAMi had to build itself to deliver sharing: every layer between the Pod and the accelerator is HAMi's own. The dashed lines show where each bottleneck lives: number 1 sits in the resource declaration itself (extended resources stay invisible to native quotas), while numbers 2, 3, and 4 all sit in the Scheduler Extender stage: preemption is limited by the extender API, the node lock serializes concurrent scheduling, and a failed request can lock a node for 5 minutes.
 
 ## What DRA changed
 
@@ -160,9 +160,8 @@ What HAMi DRA can do is bounded by each vendor's DRA driver progress:
 - 2025.09: NVIDIA DRA driver, Consumable Capacity ready
 - 2026.03: Hygon DCU DRA driver integrated with HAMi DRA
 - 2026.04: Enflame DRA driver, integration under way
-- 2026.08: the **Ascend DRA driver entered development and preview** (4pdOss/hami-dra-driver)
 
-The Ascend path entering preview means HAMi DRA's reach has just extended to NPUs: [Lab 19](/tutorials/labs/ascend-hami-dra) has already run the complete chain from HAMi request to NPU sharing on a 310P3 server, and the Ascend DRA driver is currently chart 0.1.1 (the lab used the development build fixing uuid generation; behavior may change before an official release). The HAMi 2.9 release webinar mentioned that NPU DRA support is planned to ship with 2.10, with test builds released to the community beforehand; the window for trying it and giving feedback is now.
+The Ascend path extends HAMi DRA's reach to NPUs: [Lab 19](/tutorials/labs/ascend-hami-dra) has already run the complete chain from HAMi request to NPU sharing on a 310P3 server with the official [Project-HAMi/ascend-dra-driver](https://github.com/Project-HAMi/ascend-dra-driver) at chart 0.1.1 (the lab used the development build fixing uuid generation; behavior may change before an official release). The HAMi 2.9 release webinar mentioned that NPU DRA support is planned to ship with 2.10, with test builds released to the community beforehand; the window for trying it and giving feedback is now.
 
 ## The practical constraints before adoption
 
@@ -190,4 +189,4 @@ Zooming out: Kubernetes is evolving into the control plane of AI infrastructure,
 - Community getting-started guide (in Chinese): [HAMi meets Kubernetes DRA: a practical guide](https://dynamia.ai/zh/blog/hami-dra-quickstart)
 - Mesut Oezdil: [Does Kubernetes DRA Replace HAMi?](/blog/does-kubernetes-dra-replace-hami) ([CNCF blog original](https://www.cncf.io/blog/2026/08/07/does-kubernetes-dra-replace-hami/))
 - User guide: [How to use HAMi DRA](/docs/installation/how-to-use-hami-dra); hands-on: [Lab 19: Ascend NPU Sharing with HAMi DRA](/tutorials/labs/ascend-hami-dra) and [Lab 4: GPU Slicing with Dynamic Resource Allocation](/tutorials/labs/hami-dra)
-- Components: [Project-HAMi/HAMi-DRA](https://github.com/Project-HAMi/HAMi-DRA) · [4pdOss/hami-dra-driver](https://github.com/4pdOss/hami-dra-driver) · [Project-HAMi/hami-vnpu-core](https://github.com/Project-HAMi/hami-vnpu-core)
+- Components: [Project-HAMi/HAMi-DRA](https://github.com/Project-HAMi/HAMi-DRA) · [Project-HAMi/ascend-dra-driver](https://github.com/Project-HAMi/ascend-dra-driver) · [Project-HAMi/hami-vnpu-core](https://github.com/Project-HAMi/hami-vnpu-core)

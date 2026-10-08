@@ -6,11 +6,11 @@ authors: [rootsongjc]
 tags: ["HAMi", "DRA", "Ascend", "NPU 共享", "Kubernetes"]
 ---
 
-2026 年 9 月 15 日，HAMi 社区发布了 [HAMi DRA](https://github.com/Project-HAMi/HAMi-DRA) 0.2.3。这个版本本身是一次常规迭代，但时间点值得注意：8 月，昇腾 DRA Driver 刚进入开发预览；再往前，HAMi 2.9 版本直播宣布 HAMi-DRA 进入生产可用，NPU 的 DRA 支持计划随 2.10 发布。对关注异构算力调度的用户来说，HAMi DRA 已经从“实验性方向”变成了“可以认真评估的选项”。
+2026 年 9 月 15 日，HAMi 社区发布了 [HAMi DRA](https://github.com/Project-HAMi/HAMi-DRA) 0.2.3。这个版本本身是一次常规迭代，但时间点值得注意：HAMi 2.9 版本直播宣布 HAMi-DRA 进入生产可用，NPU 的 DRA 支持计划随 2.10 发布。对关注异构算力调度的用户来说，HAMi DRA 已经从“实验性方向”变成了“可以认真评估的选项”。
 
 围绕它的讨论也一直没有停。自从 Kubernetes 1.34 将 DRA（Dynamic Resource Allocation）推进至 GA，“DRA 会不会让 HAMi 过时”就成了社区频道里的高频问题；[《Kubernetes DRA 会取代 HAMi 吗？》](/zh/blog/does-kubernetes-dra-replace-hami)给出的回答是：DRA 吸收的是“请求与调度”的那一半，而“容器内强制执行”的那一半，DRA 从未设计去做，这正是 HAMi 保留的位置。
 
-HAMi DRA 就是社区对这个争论的工程回应：一个迁移层，把存量 workload 里的 HAMi 风格资源请求自动转换成原生 ResourceClaim，调度与记账交还 kube-scheduler，运行时隔离继续由 HAMi-core 完成，业务侧一行代码不用改。当前 0.2.3 版本覆盖 NVIDIA GPU；随着昇腾 DRA Driver 进入预览，这条链路已在真实的 310P3 集群上完成端到端验证，社区同步发布了配套的 [实验 19：用 HAMi DRA 共享昇腾 NPU](/zh/tutorials/labs/ascend-hami-dra)，提供每一步的命令与真实输出。本文系统介绍 HAMi DRA 的动机、设计、使用方式与当前边界。
+HAMi DRA 就是社区对这个争论的工程回应：一个迁移层，把存量 workload 里的 HAMi 风格资源请求自动转换成原生 ResourceClaim，调度与记账交还 kube-scheduler，运行时隔离继续由 HAMi-core 完成，业务侧一行代码不用改。当前 0.2.3 版本覆盖 NVIDIA GPU；在昇腾 DRA Driver 的配合下，这条链路已在真实的 310P3 集群上完成端到端验证，社区同步发布了配套的 [实验 19：用 HAMi DRA 共享昇腾 NPU](/zh/tutorials/labs/ascend-hami-dra)，提供每一步的命令与真实输出。本文系统介绍 HAMi DRA 的动机、设计、使用方式与当前边界。
 
 <!-- truncate -->
 
@@ -36,7 +36,7 @@ resources:
 
 但这些组件都是补在旧 API 上的，补得越多，结构性问题越明显。HAMi 现有方案最常见的四个痛点：
 
-| 痛点 | 说白了 |
+| 痛点 | 解释 |
 | :-- | :-- |
 | 配额管不住 | `huawei.com/*` 这类资源不在 Kubernetes 原生配额（ResourceQuota）的统计范围内，想按团队限制用量，就得自己再造一套配额系统 |
 | 抢占用不上 | 抢占（Preemption）等调度功能不认识树外调度器替它做的决定，高优先级任务来了，也没法让低优先级任务让位 |
@@ -47,7 +47,7 @@ resources:
 
 ![HAMi 在 Device Plugin 之上卡住的位置](/img/hami-dra-npu-sharing/where-hami-stuck-zh.png)
 
-图中左侧是 HAMi 为实现共享而自建的整条链路：从 Pod 到加速器之间的每一层都由 HAMi 自己实现。四个瓶颈的位置如图中虚线所示：第 1 个出在资源声明本身（Extended Resource 不进原生配额），第 2、3、4 个都出在 Scheduler Extender 这一环——抢占受 Extender API 限制、节点锁把并发退化为串行、失败请求可能锁住节点 5 分钟。
+图中左侧是 HAMi 为实现共享而自建的整条链路：从 Pod 到加速器之间的每一层都由 HAMi 自己实现。四个瓶颈的位置如图中虚线所示：第 1 个出在资源声明本身（Extended Resource 不进原生配额），第 2、3、4 个都出在 Scheduler Extender 这一环。抢占受 Extender API 限制、节点锁把并发退化为串行、失败请求可能锁住节点 5 分钟。
 
 ## DRA 改变了什么
 
@@ -160,9 +160,8 @@ HAMi DRA 的能力边界很大程度上取决于各厂商 DRA driver 的适配�
 - 2025.09：NVIDIA DRA Driver，Consumable Capacity 就绪
 - 2026.03：海光 DCU DRA Driver 完成与 HAMi DRA 的集成
 - 2026.04：Enflame（燧原）DRA Driver 集成推进中
-- 2026.08：**Ascend DRA Driver 进入开发与预览**（4pdOss/hami-dra-driver）
 
-昇腾链路进入预览，意味着 HAMi DRA 的能力边界刚刚扩展到 NPU：[实验 19](/zh/tutorials/labs/ascend-hami-dra) 已在一台 310P3 服务器上把 HAMi 请求到 NPU 共享的完整链路跑通，昇腾 DRA driver 当前为 chart 0.1.1（实验所用镜像为修复 uuid 生成问题的开发构建，正式发布前行为可能变化）。HAMi 2.9 版本直播中提到 NPU 的 DRA 支持计划随 2.10 发布，在那之前会先放出测试版本供社区试用，现在正是尝鲜与反馈的窗口。
+昇腾链路的打通，意味着 HAMi DRA 的能力边界扩展到了 NPU：[实验 19](/zh/tutorials/labs/ascend-hami-dra) 已在一台 310P3 服务器上，用官方 [Project-HAMi/ascend-dra-driver](https://github.com/Project-HAMi/ascend-dra-driver)（chart 0.1.1）把 HAMi 请求到 NPU 共享的完整链路跑通（实验所用镜像为修复 uuid 生成问题的开发构建，正式发布前行为可能变化）。HAMi 2.9 版本直播中提到 NPU 的 DRA 支持计划随 2.10 发布，在那之前会先放出测试版本供社区试用，现在正是尝鲜与反馈的窗口。
 
 ## 落地前的现实约束
 
@@ -190,4 +189,4 @@ HAMi-DRA 的 roadmap 上排着：更多异构设备（MetaX、天数智芯 Iluva
 - 社区上手指南：[HAMi 正式接入 Kubernetes DRA：下一代 GPU 资源模型实践指南](https://dynamia.ai/zh/blog/hami-dra-quickstart)
 - Mesut Oezdil：[Kubernetes DRA 会取代 HAMi 吗？](/zh/blog/does-kubernetes-dra-replace-hami)（[英文原文](https://www.cncf.io/blog/2026/08/07/does-kubernetes-dra-replace-hami/)，CNCF 博客）
 - 用户指南：[如何使用 HAMi DRA](/zh/docs/installation/how-to-use-hami-dra)；动手实验：[实验 19：用 HAMi DRA 共享昇腾 NPU](/zh/tutorials/labs/ascend-hami-dra)、[实验 4：用 DRA 切分 GPU](/zh/tutorials/labs/hami-dra)
-- 相关组件：[Project-HAMi/HAMi-DRA](https://github.com/Project-HAMi/HAMi-DRA) · [4pdOss/hami-dra-driver](https://github.com/4pdOss/hami-dra-driver) · [Project-HAMi/hami-vnpu-core](https://github.com/Project-HAMi/hami-vnpu-core)
+- 相关组件：[Project-HAMi/HAMi-DRA](https://github.com/Project-HAMi/HAMi-DRA) · [Project-HAMi/ascend-dra-driver](https://github.com/Project-HAMi/ascend-dra-driver) · [Project-HAMi/hami-vnpu-core](https://github.com/Project-HAMi/hami-vnpu-core)
