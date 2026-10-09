@@ -157,8 +157,10 @@ sudo ls -l /run/nvidia/validations/toolkit-ready
 GPU Operator 同时管理驱动和 Toolkit 时，将以下 HAMi values 保存为 `hami-nvidia-values.yaml`：
 
 ```yaml
+devices:
+  nvidia:
+    runtimeClassName: nvidia
 devicePlugin:
-  runtimeClassName: nvidia
   deviceListStrategy: envvar
   nvidiaDriverRoot: /run/nvidia/driver
   gpuOperatorToolkitReady:
@@ -167,7 +169,7 @@ devicePlugin:
 
 - 驱动由宿主机管理时，将 `devicePlugin.nvidiaDriverRoot` 设为 `/`。路径必须与节点实际目录一致。
 - Toolkit 由宿主机管理时，设置 `devicePlugin.gpuOperatorToolkitReady.enabled=false`。启用该选项会等待 Operator 的 Toolkit 就绪标记。
-- RuntimeClass 使用其他名称时，将 `devicePlugin.runtimeClassName` 设为对应名称。运行时由宿主机管理且已将 NVIDIA 设为默认运行时时，可省略此配置。
+- RuntimeClass 使用其他名称时，将 `devices.nvidia.runtimeClassName` 设为对应名称。运行时由宿主机管理且已将 NVIDIA 设为默认运行时时，可省略此配置。
 - 使用 CDI 时，按 [NVIDIA CDI 指南](./configure-cdi.md)设置参数，包括驱动根目录和实际的 `nvidia-ctk` hook 路径。
 
 ### 为节点打标签

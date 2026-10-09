@@ -36,9 +36,11 @@ topologyManagerPolicyOptions:
 所有开关默认关闭。在 Helm values 中：
 
 ```yaml
+devices:
+  nvidia:
+    # 向 kubelet 上报每个副本的 NUMA 节点。
+    enableNumaTopology: true
 devicePlugin:
-  # 向 kubelet 上报每个副本的 NUMA 节点。
-  enableNumaTopology: true
   # 允许 device plugin 调用调度器的 refit 端点。
   numaRefit:
     enabled: true
