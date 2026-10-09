@@ -33,4 +33,4 @@ import LabCardGridAuto from '@site/src/components/labs/LabCardGridAuto';
 - **实验 16** 在配备 7 张 RTX PRO 6000 的服务器上安装 HAMi v2.10.0，并验证完整的 Dynamic MIG 生命周期：按 Pod 创建 MIG、混合规格、选择性回收、device plugin 重启恢复以及跨 GPU 调度。
 - **实验 17** 将模型打包为 KitOps ModelKit，通过 initContainer 从 Jozu Hub 拉取，并使用 SGLang（可选 vLLM）在 HAMi GPU 共享资源上提供服务。
 - **实验 18** 在两张共享 GPU 上同时运行吵闹邻居与安静租户负载，验证 HAMi 隔离能覆盖与不能覆盖的边界，并使用 Linkerd 让敏感流量绕开竞争。
-- **实验 19** 在昇腾 310P3 节点上安装 HAMi DRA 0.2.3 与 Ascend DRA Driver，验证请求到 ResourceClaim 的转换、双 Pod NPU 共享、显存配额隔离与调度器容量记账。
+- **实验 20** 在昇腾 310P3 节点上安装 HAMi DRA 0.2.3 与 Ascend DRA Driver，验证请求到 ResourceClaim 的转换、双 Pod NPU 共享、显存配额隔离与调度器容量记账。

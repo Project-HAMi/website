@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ascend-share-a
+  namespace: dra-ascend-e2e
+  labels:
+    hami.io/webhook: ignore
+  annotations:
+    hami.io/use-Ascend310P-uuid: "68496E64-20E05477-92C31323-6E78030A-BD003019" # pins to npu-0-0
+spec:
+  runtimeClassName: ascend
+  containers:
+  - name: app
+    image: quay.io/ascend/vllm-ascend:v0.23.0-310p
+    command: [ "sh", "-c", "sleep 3600" ]
+    resources:
+      limits:
+        huawei.com/Ascend310P: 1
+        huawei.com/Ascend310P-memory: "8192"
+        huawei.com/Ascend310P-core: "50"

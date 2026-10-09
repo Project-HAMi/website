@@ -1,0 +1,14 @@
+deviceVendors:
+  - ascend # Ascend conversion only (910A/B2/B3/B4/B4-1/310P/910C)
+
+drivers:
+  nvidia:
+    enabled: false # no NVIDIA kubelet driver
+  fake:
+    enabled: false
+
+monitor:
+  enabled: false # optional Prometheus metrics component, not used here
+
+certs:
+  certManager:

@@ -1,7 +1,7 @@
 ---
-title: "Lab 19: Ascend NPU Sharing with HAMi DRA"
+title: "Lab 20: Ascend NPU Sharing with HAMi DRA"
 description: "Install HAMi DRA 0.2.3 and the Ascend DRA driver on an Ascend 310P3 node, watch the webhook turn huawei.com/Ascend310P requests into ResourceClaims, and verify two-Pod NPU sharing, memory quota enforcement, and scheduler capacity accounting."
-sidebar_label: "Lab 19: Ascend + HAMi DRA"
+sidebar_label: "Lab 20: Ascend + HAMi DRA"
 lab:
   level: Advanced
   duration: about 120 minutes
@@ -9,7 +9,7 @@ lab:
   cost: requires dedicated Ascend 310P3 aarch64 hardware; HAMivNPUCore soft slicing is ARM-only
   authors:
     - rootsongjc
-  verified: "2026-09-17"
+  verified: "2026-10-09"
 tags:
   - dra
   - hami
@@ -56,6 +56,7 @@ Three components, three responsibilities. Keep them apart throughout the lab:
 - Ascend driver 25.5 or newer on an ARM (aarch64) host, with device-share mode enabled on each NPU used for soft slicing.
 - The `ascend` RuntimeClass present (Pods need `runtimeClassName: ascend`).
 - cert-manager (HAMi-DRA uses it to issue webhook certificates).
+- Manifests from [`tutorials/labs/examples/20-ascend-hami-dra/`](https://github.com/Project-HAMi/website/tree/master/tutorials/labs/examples/20-ascend-hami-dra) (`ascend-values.yaml` and `pod.yaml`); both are also inlined in the steps below, so nothing has to be cloned.
 
 ### Verification environment
 
@@ -205,7 +206,7 @@ cd ascend-dra-driver
 git checkout 91d82a28 # the commit this lab was verified against
 helm upgrade --install ascend-dra-driver \
   deployments/helm/ascend-dra-driver \
-  --set image.tag=uuid-fix-20260909 \
+  --set image.tag=latest \
   -n ascend-dra-driver --create-namespace
 ```
 
@@ -213,7 +214,7 @@ The chart defaults to HAMivNPUCore mode. Do not set `kubeletPlugin.fullCardAndTr
 
 :::note About the image version used in this lab
 
-The verification run used chart `ascend-dra-driver-0.1.1` with the image overridden to the development build `projecthami/ascend-dra-driver:uuid-fix-20260909`, which fixes a ResourceSlice uuid generation bug in earlier builds. Behavior may change before an official release; pin what you tested against.
+The verification run used chart `ascend-dra-driver-0.1.1` with the development build `projecthami/ascend-dra-driver:uuid-fix-20260909`, which fixes a ResourceSlice uuid generation bug in earlier builds. That tag was never published to a public registry. The uuid fix is merged on the driver's master branch, and the `latest` image on Docker Hub was pushed on 2026-09-14, after that merge, so the command above installs `image.tag=latest` instead. Do not drop the override: the chart default resolves to an unpublished `0.1.0` tag. `latest` tracks master and moves; pin the exact tag or digest you test against.
 
 :::
 

@@ -1,7 +1,7 @@
 ---
-title: "实验 19：用 HAMi DRA 共享昇腾 NPU"
+title: "实验 20：用 HAMi DRA 共享昇腾 NPU"
 description: "在昇腾 310P3 节点上安装 HAMi DRA 0.2.3 与 Ascend DRA Driver，观察 webhook 如何把 huawei.com/Ascend310P 请求转换成 ResourceClaim，并验证双 Pod NPU 共享、显存配额隔离与调度器容量记账。"
-sidebar_label: "实验 19：昇腾 + HAMi DRA"
+sidebar_label: "实验 20：昇腾 + HAMi DRA"
 lab:
   level: Advanced
   duration: 约 120 分钟
@@ -9,7 +9,7 @@ lab:
   cost: 需要专属的昇腾 310P3 aarch64 硬件；HAMivNPUCore 软切分仅支持 ARM
   authors:
     - rootsongjc
-  verified: "2026-09-17"
+  verified: "2026-10-09"
 tags:
   - DRA
   - hami
@@ -56,6 +56,7 @@ flowchart TD
 - ARM（aarch64）宿主机，昇腾驱动 25.5 或更高，用于软切分的每块 NPU 都开启 device-share 模式。
 - `ascend` RuntimeClass 存在（Pod 需要 `runtimeClassName: ascend`）。
 - cert-manager（HAMi-DRA 用它签发 webhook 证书）。
+- 清单文件来自 [`tutorials/labs/examples/20-ascend-hami-dra/`](https://github.com/Project-HAMi/website/tree/master/tutorials/labs/examples/20-ascend-hami-dra)（`ascend-values.yaml` 与 `pod.yaml`），下文步骤中均已内联，无需克隆仓库。
 
 ### 验证环境
 
@@ -205,7 +206,7 @@ cd ascend-dra-driver
 git checkout 91d82a28 # 本实验验证时使用的 commit
 helm upgrade --install ascend-dra-driver \
   deployments/helm/ascend-dra-driver \
-  --set image.tag=uuid-fix-20260909 \
+  --set image.tag=latest \
   -n ascend-dra-driver --create-namespace
 ```
 
@@ -213,7 +214,7 @@ chart 默认开启 HAMivNPUCore 模式。不要设置 `kubeletPlugin.fullCardAnd
 
 :::note 关于本实验使用的镜像版本
 
-验证运行使用 chart `ascend-dra-driver-0.1.1`，镜像覆盖为开发构建 `projecthami/ascend-dra-driver:uuid-fix-20260909`，该构建修复了早期版本 ResourceSlice uuid 生成的 bug。正式发布前行为可能变化；请固定你实际测试过的版本。
+验证运行使用 chart `ascend-dra-driver-0.1.1`，镜像为开发构建 `projecthami/ascend-dra-driver:uuid-fix-20260909`，该构建修复了早期版本 ResourceSlice uuid 生成的 bug。该 tag 未发布到任何公开 registry。uuid 修复已合入 driver 的 master 分支，Docker Hub 上的 `latest` 镜像于 2026-09-14（合入之后）推送，因此上面的安装命令改用 `image.tag=latest`。不要省略该覆盖：chart 默认 tag 会解析为未发布的 `0.1.0`。`latest` 跟随 master 移动；请固定你实际测试过的 tag 或 digest。
 
 :::
 
