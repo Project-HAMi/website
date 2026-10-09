@@ -1,7 +1,7 @@
 ---
-title: "Lab 18: Local GPU Passthrough with HAMi"
+title: "Lab 20: Local GPU Passthrough with HAMi"
 description: "Build a local VM-based GPU passthrough lab and validate HAMi fractional GPU allocation."
-sidebar_label: "Lab 18: Local GPU Passthrough"
+sidebar_label: "Lab 20: Local GPU Passthrough"
 lab:
   level: Advanced
   duration: about 120 minutes
@@ -64,12 +64,13 @@ flowchart LR
 
 ## Set Local Variables
 
-Set these values once on the host and reuse them through the lab. The commands below use variables so they are easier to copy, while the output blocks show the values from the tested environment.
+Set these values in the shell where a step uses them. Host-only variables drive libvirt and disk commands; `GUEST_IP` and `POD_CIDR` are also used inside the VM during kubeadm and Calico setup. The commands below use variables so they are easier to copy, while the output blocks show the values from the tested environment.
 
 ```bash
 export DOMAIN=hami-lab-v2
 export GUEST_USER=ubuntu # replace with your VM user
 export GUEST_IP=192.168.122.242 # replace with your VM IP
+export POD_CIDR=10.244.0.0/16
 export ISO="$HOME/Downloads/ubuntu-24.04.5-live-server-amd64.iso"
 export BASE=/var/lib/libvirt/images/hami-lab-v2-base.qcow2
 export WORK=/var/lib/libvirt/images/hami-lab-v2-work.qcow2
@@ -82,7 +83,7 @@ Start with read-only host checks. Do not detach the GPU yet.
 Run on the host:
 
 ```bash
-lscpu | grep -E 'Virtualization|Model name'
+lscpu | awk -F: '/Model name|Virtualization/ {gsub(/^[[:space:]]+/, "", $2); print $1 ": " $2}'
 test -e /dev/kvm && echo "/dev/kvm present"
 virsh -c qemu:///system dominfo "$DOMAIN" >/dev/null 2>&1 || \
   echo "$DOMAIN domain name is free"
@@ -91,7 +92,8 @@ virsh -c qemu:///system dominfo "$DOMAIN" >/dev/null 2>&1 || \
 Output from the tested host:
 
 ```text
-CPU virtualization: AMD-V
+Model name: AMD Ryzen 5 5600H with Radeon Graphics
+Virtualization: AMD-V
 /dev/kvm present
 hami-lab-v2 domain name is free
 ```
@@ -198,10 +200,10 @@ sudo virt-install \
   --graphics spice \
   --video virtio \
   --console pty,target_type=serial \
-  --autoconsole spice
+  --autoconsole graphical
 ```
 
-Complete the Ubuntu Server 24.04.5 LTS installer in the SPICE console that opens, including OpenSSH. Then validate the guest:
+Complete the Ubuntu Server 24.04.5 LTS installer in the graphical console that opens. With `--graphics spice`, this is a SPICE-backed console. Install OpenSSH during setup, then validate the guest:
 
 ```bash
 ssh "${GUEST_USER}@${GUEST_IP}" \
@@ -522,15 +524,24 @@ sudo apt-get install -y \
   nvidia-container-toolkit=1.20.1-1
 ```
 
-Configure containerd to import drop-in configs, enable systemd cgroups for both `runc` and the `nvidia` runtime handler, then configure the NVIDIA runtime:
+Configure the NVIDIA runtime, enable systemd cgroups for both `runc` and the `nvidia` runtime handler, then restart containerd:
 
 ```bash
 sudo nvidia-ctk runtime configure --runtime=containerd
+sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/g' \
+  /etc/containerd/config.toml \
+  /etc/containerd/conf.d/99-nvidia.toml
 sudo systemctl restart containerd
+```
+
+Validate the runtime versions and cgroup settings:
+
+```bash
 containerd --version
 runc --version
 nvidia-ctk --version
 systemctl is-active containerd
+grep -R 'SystemdCgroup = true' /etc/containerd/config.toml /etc/containerd/conf.d/99-nvidia.toml
 ```
 
 Output:
@@ -540,6 +551,8 @@ containerd github.com/containerd/containerd/v2 2.2.1
 runc version 1.3.4-0ubuntu1~24.04.1
 NVIDIA Container Toolkit CLI version 1.20.1
 active
+/etc/containerd/config.toml:            SystemdCgroup = true
+/etc/containerd/conf.d/99-nvidia.toml:            SystemdCgroup = true
 ```
 
 Confirm the NVIDIA runtime drop-in:
@@ -560,19 +573,13 @@ Run a plain container GPU smoke test before Kubernetes:
 sudo ctr run --rm --gpus 0 \
   docker.io/nvidia/cuda:12.4.1-base-ubuntu22.04 \
   hami-v2-nvidia-smi \
-  nvidia-smi
+  nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
 ```
 
 Output:
 
 ```text
-NVIDIA-SMI 595.91.07
-Driver Version: 595.91.07
-CUDA Version: 13.2
-GPU: NVIDIA GeForce RTX 3050 Laptop GPU
-Bus-Id: 00000000:07:00.0
-Memory: 4096 MiB
-Processes: none
+NVIDIA GeForce RTX 3050 Laptop GPU, 4096 MiB
 ```
 
 Gate: prove the guest container runtime can reach the GPU before kubeadm. If this layer fails, HAMi will not be able to fix it later.
@@ -659,7 +666,7 @@ Bootstrap the control plane:
 sudo kubeadm init \
   --kubernetes-version v1.36.5 \
   --apiserver-advertise-address "${GUEST_IP}" \
-  --pod-network-cidr 192.168.0.0/16 \
+  --pod-network-cidr "${POD_CIDR}" \
   --cri-socket unix:///run/containerd/containerd.sock
 ```
 
@@ -702,20 +709,48 @@ Gate: this `NotReady` state is expected before CNI. Continue only if the control
 
 ## Manual Calico Install
 
-Download the pinned Calico manifest:
+Download the pinned Calico manifest and verify its checksum:
 
 ```bash
 CALICO_MANIFEST="$HOME/calico-v3.32.2.yaml"
 curl -L \
   https://raw.githubusercontent.com/projectcalico/calico/v3.32.2/manifests/calico.yaml \
   -o "$CALICO_MANIFEST"
-(cd "$HOME" && sha256sum calico-v3.32.2.yaml)
+(cd "$HOME" && printf '%s  %s\n' \
+  'a8c828a06a87c629a282ebbc424895b77f3a030251993e41ea400a743675bb02' \
+  'calico-v3.32.2.yaml' | sha256sum -c -)
 ```
 
 Output:
 
 ```text
-a8c828a06a87c629a282ebbc424895b77f3a030251993e41ea400a743675bb02  calico-v3.32.2.yaml
+calico-v3.32.2.yaml: OK
+```
+
+Set Calico's IPv4 pool to the non-overlapping Pod CIDR used by kubeadm. The upstream manifest leaves this option commented, which can overlap common libvirt guest networks.
+
+```bash
+python3 - "$POD_CIDR" <<'PY'
+from pathlib import Path
+import re
+import sys
+
+cidr = sys.argv[1]
+path = Path.home() / "calico-v3.32.2.yaml"
+text = path.read_text()
+new = f'''            - name: CALICO_IPV4POOL_CIDR
+              value: "{cidr}"
+'''
+text, count = re.subn(
+    r'(?m)^            # - name: CALICO_IPV4POOL_CIDR\n            #   value: "[^"]+"\n',
+    new,
+    text,
+    count=1,
+)
+if count != 1:
+    raise SystemExit("CALICO_IPV4POOL_CIDR block not found")
+path.write_text(text)
+PY
 ```
 
 Dry-run the manifest before applying it:
@@ -1085,7 +1120,11 @@ Inspect the HAMi node registration:
 
 ```bash
 kubectl get node hami-lab-v2 \
-  -o jsonpath='{.metadata.annotations.hami\.io/node-nvidia-register}{"\n"}'
+  -o jsonpath='{.metadata.annotations.hami\.io/node-nvidia-register}' |
+  python3 -c 'import json, sys
+gpu = json.load(sys.stdin)[0]
+for key in ("type", "count", "devmem", "devcore", "health"):
+    print(f"{key}={gpu[key]}")'
 ```
 
 Output:
@@ -1173,6 +1212,14 @@ flowchart LR
 ## Main-Process Memory-Slice Proof
 
 Memory enforcement depends on the process path. Use the container main process as the primary proof, because it starts with the environment HAMi injects for the workload. Do not use a later login shell or ad hoc `kubectl exec` path as the main evidence.
+
+This lab intentionally separates the process paths:
+
+| Process path                          | Status in this lab                                  |
+| ------------------------------------- | --------------------------------------------------- |
+| Container main process                | Validated below with `nvidia-smi` and `vectorAdd`.  |
+| Later SSH session or login shell      | Not claimed as a success path in this Lab 20 draft. |
+| Ad hoc `kubectl exec` troubleshooting | Useful for inspection, but not the memory proof.    |
 
 Run `nvidia-smi` and `vectorAdd` from the container's main command:
 
@@ -1318,7 +1365,7 @@ Confirm PulseAudio compatibility on PipeWire and the returned NVIDIA HDA device:
 
 ```bash
 pactl info | grep -E 'Server Name|Default Sink'
-pactl list short cards | grep -E '0000_01_00_1|0000_06_00'
+pactl list short cards | awk '{print $2}' | grep -E 'alsa_card\.pci-0000_(01_00\.1|06_00\.[16])'
 ```
 
 Output:
