@@ -1,0 +1,22 @@
+# A whole-card request intentionally omits the -memory resource key. Apply it
+# while template slices are running to observe CardInsufficientMemory.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: whole-after-slices
+  labels:
+    hami.run/lab-18: "true"
+spec:
+  schedulerName: hami-scheduler
+  runtimeClassName: ascend
+  restartPolicy: Never
+  containers:
+    - name: npu
+      image: docker.io/ascendai/cann:7.0.1-310p-openeuler20.03-py3.8
+      imagePullPolicy: IfNotPresent
+      securityContext:
+        allowPrivilegeEscalation: false
+      command: ["bash", "-lc", "echo WHOLE_CARD_OK; sleep 86400"]
+      resources:
+        limits:
+          huawei.com/Ascend310P: "1"
