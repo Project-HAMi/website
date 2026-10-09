@@ -30,7 +30,7 @@ sidebar_label: General Technical Review
 - **Additional supported use cases:** Topology-aware scheduling, multiple scheduling policies (binpack/spread), dynamic MIG support for NVIDIA, and heterogeneous device support (e.g., NVIDIA, Cambricon, Hygon, Iluvatar, MetaX, Enflame, Ascend integration references).
 - **Unsupported/non-goal use cases:** HAMi is not a model serving framework, training framework, or general-purpose cluster autoscaler. It focuses on accelerator virtualization/scheduling.
 - **Organizations that benefit:** Public cloud, private cloud, enterprise AI platforms, telecom, finance, education, manufacturing, and internet companies operating shared accelerator clusters.
-- **End-user research:** Formal, survey-style user research is still limited. The clearest public evidence of production adoption is **CNCF end-user case studies**, including multiple community-submitted stories that feature HAMi; the [HAMi-filtered case study list](https://www.cncf.io/case-studies/?_sft_lf-project=hami) is the updating catalog on cncf.io. Representative named end users include:
+- **End-user research:** Formal, survey-style user research is still limited. The clearest public evidence of production adoption is **CNCF end-user case studies**, including multiple community-submitted stories that feature HAMi; the [HAMi-filtered case study list](https://www.cncf.io/case-studies/?_sft_lf-project=hami) is the up-to-date catalog on cncf.io. Representative named end users include:
   - [SF Technology](https://www.cncf.io/case-studies/sf-technology/) (technology arm of SF Express)
   - [Ke Holdings Inc.](https://www.cncf.io/case-studies/ke-holdings-inc/)
   - [NIO](https://www.cncf.io/case-studies/nio/)
@@ -117,7 +117,7 @@ Data plane is cluster-local; no mandatory external telemetry service. Regional/o
 
 Scheduler supports leader election and configurable replicas.
 
-- Workload side: since HAMi v2.5, already-running tasks are designed to remain stable and are not expected to fail solely due to cluster-side events such as HAMi upgrades/uninstallations or transient Kubernetes/HAMi control-plane faults.
+- Workload side: HAMi v2.5 addressed running-task crashes during reinstall. This is not a guarantee for upgrades or transient control-plane faults; stop or reschedule GPU workloads before upgrading.
 - Scheduling side: since HAMi v2.8, multi-replica scheduler deployment with leader election is supported to provide high availability for scheduling decisions.
 
 #### Resource requirements (CPU/memory/network)
@@ -220,7 +220,7 @@ See separate [document](https://github.com/cncf/toc/blob/main/projects/hami/secu
   - Rolling back images without rolling back the matching chart/configuration revision.
   - Failing to roll back customized values and policy ConfigMaps together with workloads/images.
   - Performing multi-version jump rollbacks (for example two or more minor versions) without staged validation.
-- **Impact to running workloads:** Since HAMi v2.5, already-running pods are generally expected to remain unaffected by control-plane rollout actions; new scheduling/allocation decisions may still change during upgrades/rollbacks.
+- **Impact to running workloads:** HAMi v2.5 addressed running-task crashes during reinstall, but upgrades and rollbacks can still affect active workloads; stop or reschedule GPU workloads before upgrading. New scheduling/allocation decisions may also change.
 - **Rollback indicators:** Primary indicators include admission/scheduling errors, abnormal pending-pod growth, device plugin registration issues, and policy mismatch symptoms. Operationally, the project recommends staying on recent supported releases whenever possible.
 - **Upgrade path testing:** Unit/e2e coverage exists; explicit long-chain upgrade->downgrade->upgrade matrices are still evolving and should be expanded for incubation.
 - **Deprecation communication:** Deprecations are communicated in documentation and community meetings, with explicit in-doc annotations. A typical transition window keeps old and new APIs available for one subsequent release, followed by old API removal after the next release cycle.

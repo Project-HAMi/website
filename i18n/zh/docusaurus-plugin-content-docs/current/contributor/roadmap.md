@@ -21,7 +21,7 @@ sidebar_label: 路线图
 | GPU      | MetaX         | MXC500               |    是    |    是    |    否    |
 | XPU      | Kunlunxin     | P800                 |    是    |    是    |    否    |
 | GPU      | Vastai        | VA16                 |    是    |    是    |    否    |
-| Neuron   | AWS           | Inferentia, Trainium |    否    |    是    |    是    |
+| Neuron   | AWS           | Inferentia, Trainium |    否    |    是    |    否    |
 
 ## 计划功能
 

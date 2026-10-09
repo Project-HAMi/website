@@ -16,11 +16,11 @@ sidebar_label: Roadmap
 | GPU | Iluvatar | All | Yes | Yes | No |
 | DPU | Teco | Checking | In progress | In progress | No |
 | GPU | Moore Threads | MTT S4000 | Yes | Yes | No |
-| GPU | Birentech | Biren166M | Yes | Yes | No |
+| GPU | Birentech | Biren166M | No | No | No |
 | GPU | MetaX | MXC500 | Yes | Yes | No |
 | XPU | Kunlunxin | P800 | Yes | Yes | No |
 | GPU | Vastai | VA16 | Yes | Yes | No |
-| Neuron | AWS | Inferentia, Trainium | No | Yes | Yes |
+| Neuron | AWS | Inferentia, Trainium | No | Yes | No |
 
 ## Planned Features
 
