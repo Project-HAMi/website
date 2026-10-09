@@ -38,7 +38,7 @@ resources:
 
 | 痛点 | 解释 |
 | :-- | :-- |
-| 配额管不住 | `huawei.com/*` 这类资源不在 Kubernetes 原生配额（ResourceQuota）的统计范围内，想按团队限制用量，就得自己再造一套配额系统 |
+| 配额管不住 | 原生 ResourceQuota 能统计 `huawei.com/*` 这类 Extended Resource 的请求量，但只能按命名空间记总账，看不到 HAMi 在每块卡上做的内存加算力切分，想按团队限制真实用量，就得自己再造一套配额系统 |
 | 抢占用不上 | 抢占（Preemption）等调度功能不认识树外调度器替它做的决定，高优先级任务来了，也没法让低优先级任务让位 |
 | 越忙越慢 | 多个 Pod 同时调度到同一台节点时只能排队一个个来（节点锁），集群越忙，创建 Pod 越慢 |
 | 偶尔卡死 | 一次失败的请求可能让整台节点被锁 5 分钟，期间这台节点上的新 Pod 全部干等 |
@@ -47,7 +47,7 @@ resources:
 
 ![HAMi 在 Device Plugin 之上卡住的位置](/img/hami-dra-npu-sharing/where-hami-stuck-zh.png)
 
-图中左侧是 HAMi 为实现共享而自建的整条链路：从 Pod 到加速器之间的每一层都由 HAMi 自己实现。四个瓶颈的位置如图中虚线所示：第 1 个出在资源声明本身（Extended Resource 不进原生配额），第 2、3、4 个都出在 Scheduler Extender 这一环。抢占受 Extender API 限制、节点锁把并发退化为串行、失败请求可能锁住节点 5 分钟。
+图中左侧是 HAMi 为实现共享而自建的整条链路：从 Pod 到加速器之间的每一层都由 HAMi 自己实现。四个瓶颈的位置如图中虚线所示：第 1 个出在资源声明本身（Extended Resource 进原生配额的只有整卡计数，没有 HAMi 的精细切分），第 2、3、4 个都出在 Scheduler Extender 这一环。抢占受限是因为 HAMi 未实现 Extender API 中的可选抢占接口（preempt verb）、节点锁把并发退化为串行、失败请求可能锁住节点 5 分钟。
 
 ## DRA 改变了什么
 

@@ -51,7 +51,7 @@ Three components, three responsibilities. Keep them apart throughout the lab:
 ## Prerequisites
 
 - Kubernetes 1.34 or newer (DRA core APIs are GA since 1.34). This lab was verified on 1.35.7, single node, control-plane and worker on the same machine.
-- The `DRAConsumableCapacity` feature gate enabled on kube-apiserver, kube-scheduler, and kubelet. Capacity requests and `allowMultipleAllocations` accounting depend on it.
+- The `DRAConsumableCapacity` feature gate enabled on kube-apiserver, kube-controller-manager, kube-scheduler, and kubelet; the gate is alpha and off by default before 1.36, so set it explicitly. Capacity requests and `allowMultipleAllocations` accounting depend on it.
 - containerd with CDI enabled: `enable_cdi = true` and `cdi_spec_dirs = ["/etc/cdi", "/var/run/cdi"]`.
 - Ascend driver 25.5 or newer on an ARM (aarch64) host, with device-share mode enabled on each NPU used for soft slicing.
 - The `ascend` RuntimeClass present (Pods need `runtimeClassName: ascend`).
@@ -74,7 +74,7 @@ Three components, three responsibilities. Keep them apart throughout the lab:
 ### Check the feature gate
 
 ```bash
-ps -ef | grep -E "kube-apiserver|kube-scheduler|kubelet" | grep -o "feature-gates=.*"
+ps -ef | grep -E "kube-apiserver|kube-controller-manager|kube-scheduler|kubelet" | grep -o "feature-gates=.*"
 ```
 
 ```text
@@ -202,8 +202,10 @@ The hami-scheduler and hami-ascend-device-plugin Pods in this listing belong to 
 ```bash
 git clone --recurse-submodules https://github.com/Project-HAMi/ascend-dra-driver.git
 cd ascend-dra-driver
+git checkout 91d82a28 # the commit this lab was verified against
 helm upgrade --install ascend-dra-driver \
   deployments/helm/ascend-dra-driver \
+  --set image.tag=uuid-fix-20260909 \
   -n ascend-dra-driver --create-namespace
 ```
 
@@ -610,10 +612,10 @@ npu-smi info   # process list, abridged
 
 ## Step 9: Exhaust Capacity, Release, and Reallocate
 
-Pods A and B now hold 16384 MiB / 100 cores of `npu-0-0`; the device has 5141 MiB / 0 cores left. Submit Pod C requesting 8192 MiB / 50 cores with the same uuid annotation:
+Pods A and B now hold 16384 MiB / 100 cores of `npu-0-0`; the device has 5141 MiB / 0 cores left. Submit Pod C as a renamed copy of `pod.yaml` (still 8192 MiB / 50 cores, same uuid annotation):
 
 ```bash
-kubectl apply -f pod-c.yaml
+sed 's/ascend-share-a/ascend-share-c/' pod.yaml | kubectl apply -f -
 kubectl get pod ascend-share-c -n dra-ascend-e2e
 kubectl describe pod ascend-share-c -n dra-ascend-e2e | tail -4
 kubectl get resourceclaim -n dra-ascend-e2e
@@ -727,8 +729,8 @@ Claim deletion is the HAMi-DRA validating webhook's job. If the webhook is down 
 
 - **Symptom**: ResourceClaims with `capacity.requests` are rejected, or scheduling does not account capacity (oversubscription succeeds, sharing misbehaves).
 - **Cause**: capacity requests and `allowMultipleAllocations` accounting depend on the gate.
-- **Check**: `ps -ef | grep -E "kube-apiserver|kube-scheduler|kubelet" | grep -o "feature-gates=.*"`.
-- **Fix**: add `DRAConsumableCapacity=true` to all three components and restart them.
+- **Check**: `ps -ef | grep -E "kube-apiserver|kube-controller-manager|kube-scheduler|kubelet" | grep -o "feature-gates=.*"`.
+- **Fix**: add `DRAConsumableCapacity=true` to all four components and restart them.
 
 ### device-share not enabled
 

@@ -51,7 +51,7 @@ flowchart TD
 ## 前置条件
 
 - Kubernetes 1.34 或更高版本（DRA 核心 API 自 1.34 起 GA）。本实验在 1.35.7 上验证，单节点，control-plane 与 worker 同机。
-- kube-apiserver、kube-scheduler、kubelet 三处均开启 `DRAConsumableCapacity` feature gate。容量请求与 `allowMultipleAllocations` 记账都依赖它。
+- kube-apiserver、kube-controller-manager、kube-scheduler、kubelet 四处均开启 `DRAConsumableCapacity` feature gate（该 gate 在 1.36 之前为 alpha 且默认关闭，需显式开启）。容量请求与 `allowMultipleAllocations` 记账都依赖它。
 - containerd 开启 CDI：`enable_cdi = true` 且 `cdi_spec_dirs = ["/etc/cdi", "/var/run/cdi"]`。
 - ARM（aarch64）宿主机，昇腾驱动 25.5 或更高，用于软切分的每块 NPU 都开启 device-share 模式。
 - `ascend` RuntimeClass 存在（Pod 需要 `runtimeClassName: ascend`）。
@@ -74,7 +74,7 @@ flowchart TD
 ### 检查 feature gate
 
 ```bash
-ps -ef | grep -E "kube-apiserver|kube-scheduler|kubelet" | grep -o "feature-gates=.*"
+ps -ef | grep -E "kube-apiserver|kube-controller-manager|kube-scheduler|kubelet" | grep -o "feature-gates=.*"
 ```
 
 ```text
@@ -202,8 +202,10 @@ validatingwebhookconfiguration.admissionregistration.k8s.io/hami-dra-validatingw
 ```bash
 git clone --recurse-submodules https://github.com/Project-HAMi/ascend-dra-driver.git
 cd ascend-dra-driver
+git checkout 91d82a28 # 本实验验证时使用的 commit
 helm upgrade --install ascend-dra-driver \
   deployments/helm/ascend-dra-driver \
+  --set image.tag=uuid-fix-20260909 \
   -n ascend-dra-driver --create-namespace
 ```
 
@@ -307,7 +309,7 @@ spec:
 四处细节对后续步骤至关重要：
 
 - 每块 310P3 是一个 device（`npu-0-0`、`npu-1-0`），不是节点上的卡数计数。
-- `uuid` attribute 是芯片 UUID，例如 `68496E64-20E05477-92C31323-6E78030A-BD003019`，**不是**“节点名-序号”格式的字符串。选卡注解的值必须从这里抄，不能凭记忆手写。
+- `uuid` attribute 是芯片 UUID，例如 `68496E64-20E05477-92C31323-6E78030A-BD003019`，**不是**“节点名 - 序号”格式的字符串。选卡注解的值必须从这里抄，不能凭记忆手写。
 - 容量沿两个维度发布：`memory`（MiB）与 `cores`（整卡百分比），各自的 `requestPolicy` 声明合法请求范围与步长。
 - `allowMultipleAllocations: true` 允许同一设备被多个 ResourceClaim 分配。没有它就没有 NPU 共享。
 
@@ -610,10 +612,10 @@ npu-smi info   # 进程列表（节选）
 
 ## 步骤 9：耗尽容量、释放与再分配
 
-Pod A 与 B 此时占住 `npu-0-0` 的 16384 MiB / 100 cores；该设备只剩 5141 MiB / 0 cores。提交请求 8192 MiB / 50 cores 的 Pod C，使用同一 uuid 注解：
+Pod A 与 B 此时占住 `npu-0-0` 的 16384 MiB / 100 cores；该设备只剩 5141 MiB / 0 cores。将 `pod.yaml` 改名派生出 Pod C（仍为 8192 MiB / 50 cores，uuid 注解相同）：
 
 ```bash
-kubectl apply -f pod-c.yaml
+sed 's/ascend-share-a/ascend-share-c/' pod.yaml | kubectl apply -f -
 kubectl get pod ascend-share-c -n dra-ascend-e2e
 kubectl describe pod ascend-share-c -n dra-ascend-e2e | tail -4
 kubectl get resourceclaim -n dra-ascend-e2e
@@ -719,7 +721,7 @@ claim 的删除由 HAMi-DRA validating webhook 负责。如果 Pod 删除时 web
 ### CEL 选择器与 ResourceSlice 不匹配
 
 - **症状**：Pod 一直 Pending，事件为 `cannot allocate all claims`；claim 停在 `pending`。
-- **原因**：uuid 注解与实际发布的 uuid 不一致（例如凭印象写成“节点名-序号”）。早期 driver 版本的 uuid 生成也有 bug，本实验因此使用 `uuid-fix-20260909` 构建。
+- **原因**：uuid 注解与实际发布的 uuid 不一致（例如凭印象写成“节点名 - 序号”）。早期 driver 版本的 uuid 生成也有 bug，本实验因此使用 `uuid-fix-20260909` 构建。
 - **检查**：`kubectl get resourceslice -o yaml | grep -A2 uuid`，对照 Pod 注解。
 - **修复**：uuid 永远从 ResourceSlice 抄写；`hami.io/use-nputype` 的值对 `productName`（如 `310P3`）。
 
@@ -727,8 +729,8 @@ claim 的删除由 HAMi-DRA validating webhook 负责。如果 Pod 删除时 web
 
 - **症状**：带 `capacity.requests` 的 ResourceClaim 被拒，或调度不记账（超额也能调度、共享行为异常）。
 - **原因**：容量请求与 `allowMultipleAllocations` 记账依赖该 gate。
-- **检查**：`ps -ef | grep -E "kube-apiserver|kube-scheduler|kubelet" | grep -o "feature-gates=.*"`。
-- **修复**：三个组件统一加 `DRAConsumableCapacity=true` 并重启。
+- **检查**：`ps -ef | grep -E "kube-apiserver|kube-controller-manager|kube-scheduler|kubelet" | grep -o "feature-gates=.*"`。
+- **修复**：四个组件统一加 `DRAConsumableCapacity=true` 并重启。
 
 ### device-share 未开启
 

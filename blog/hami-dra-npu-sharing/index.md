@@ -38,7 +38,7 @@ But every one of these components is a patch on the old API, and the more patche
 
 | Pain | In plain words |
 | :-- | :-- |
-| Quota does not bite | resources like `huawei.com/*` are invisible to native ResourceQuota; limiting usage per team means building a separate quota system |
+| Quota does not bite | native ResourceQuota can count `huawei.com/*` extended-resource requests, but only as flat totals per namespace; it cannot see the per-device memory-and-core slicing HAMi does, so limiting real usage per team means building a separate quota system |
 | Preemption does not apply | preemption and other scheduler features do not recognize decisions made by an out-of-tree scheduler, so a high-priority task cannot bump a low-priority one out of the way |
 | Slower when busy | several Pods scheduled to the same node are processed one by one (the node lock); the busier the cluster, the slower Pod creation gets |
 | Occasional stalls | one failed request can leave a whole node locked for 5 minutes, and every new Pod on that node waits |
@@ -47,7 +47,7 @@ None of these are bugs in the code; they are the road itself: simulating fine-gr
 
 ![Where HAMi gets stuck on Device Plugin](/img/hami-dra-npu-sharing/where-hami-stuck.png)
 
-The left side of the figure is the whole chain HAMi had to build itself to deliver sharing: every layer between the Pod and the accelerator is HAMi's own. The dashed lines show where each bottleneck lives: number 1 sits in the resource declaration itself (extended resources stay invisible to native quotas), while numbers 2, 3, and 4 all sit in the Scheduler Extender stage: preemption is limited by the extender API, the node lock serializes concurrent scheduling, and a failed request can lock a node for 5 minutes.
+The left side of the figure is the whole chain HAMi had to build itself to deliver sharing: every layer between the Pod and the accelerator is HAMi's own. The dashed lines show where each bottleneck lives: number 1 sits in the resource declaration itself (extended resources enter native quotas only as flat card counts, not the fine-grained slicing HAMi performs), while numbers 2, 3, and 4 all sit in the Scheduler Extender stage: preemption is limited because HAMi does not implement the optional preempt verb that the extender API defines, the node lock serializes concurrent scheduling, and a failed request can lock a node for 5 minutes.
 
 ## What DRA changed
 
