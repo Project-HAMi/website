@@ -101,6 +101,11 @@ module.exports = {
           id: "labs/hami-linkerd-noisy-neighbor",
           customProps: { level: "Advanced", duration: "about 120 minutes" },
         },
+        {
+          type: "doc",
+          id: "labs/hami-ascend-vnpu-slicing",
+          customProps: { level: "Intermediate", duration: "about 60 minutes" },
+        },
       ],
     },
   ],
