@@ -6,7 +6,7 @@ metadata:
   labels:
     hami.io/webhook: ignore
   annotations:
-    hami.io/use-Ascend310P-uuid: "68496E64-20E05477-92C31323-6E78030A-BD003019" # pins to npu-0-0
+    hami.io/use-Ascend310P-uuid: "REPLACE_WITH_YOUR_NPU_UUID" # take a uuid from `kubectl get resourceslice` output; pins the Pod to that NPU
 spec:
   runtimeClassName: ascend
   containers:

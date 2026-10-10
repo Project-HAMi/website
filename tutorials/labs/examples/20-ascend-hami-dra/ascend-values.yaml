@@ -12,3 +12,4 @@ monitor:
 
 certs:
   certManager:
+    enabled: true

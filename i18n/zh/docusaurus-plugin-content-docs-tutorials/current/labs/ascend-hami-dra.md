@@ -354,7 +354,7 @@ spec:
           huawei.com/Ascend310P-core: "50"
 ```
 
-manifest 里的三个选择：`hami.io/webhook: ignore` 标签让共存的 HAMi core webhook 不碰这个 Pod；`runtimeClassName: ascend` 让 containerd 走 Ascend Docker Runtime；`vllm-ascend` 镜像内含 CANN、torch_npu 与 npu-smi，方便稍后从容器内部检查设备。
+manifest 里的三个选择：`hami.io/webhook: ignore` 标签让共存的 HAMi core webhook 不碰这个 Pod；`runtimeClassName: ascend` 让 containerd 走 Ascend Docker Runtime；`vllm-ascend` 镜像内含 CANN、torch_npu 与 npu-smi，方便稍后从容器内部检查设备。这里的 uuid 是验证服务器上的；若直接使用仓库里的 `tutorials/labs/examples/20-ascend-hami-dra/pod.yaml` 而非复制上面的代码块，请先把其中的 `REPLACE_WITH_YOUR_NPU_UUID` 占位符替换为你自己 `kubectl get resourceslice`（步骤 3）输出中的 uuid 再 apply。
 
 ```bash
 kubectl apply -f pod.yaml
