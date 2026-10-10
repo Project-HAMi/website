@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: native-sidecar-pod
+  labels:
+    app: native-sidecar-demo
+spec:
+  restartPolicy: Never
+  initContainers:
+    - name: proxy-sidecar
+      image: busybox:1.36
+      restartPolicy: Always # KEP-753 Native Sidecar Container: runs for the full Pod lifetime
+      command: ["sh", "-c", "echo 'Inference proxy sidecar running...' && sleep infinity"]
+      env:
+        - name: CUDA_DISABLE_CONTROL
+          value: "true"
+      resources:
+        limits:
+          nvidia.com/gpu: 1
+          nvidia.com/gpumem: 2000 # 2000 MiB permanently reserved for the sidecar
+  containers:
+    - name: inference-app
+      image: busybox:1.36
+      command: ["sh", "-c", "echo 'Main inference app running...' && sleep infinity"]
+      env:
+        - name: CUDA_DISABLE_CONTROL
+          value: "true"
+      resources:
+        limits:
+          nvidia.com/gpu: 1
+          nvidia.com/gpumem: 4000 # 4000 MiB reserved for the app (Total demand: 6000 MiB)

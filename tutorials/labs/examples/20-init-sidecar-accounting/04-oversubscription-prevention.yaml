@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: competing-workload-pod
+  labels:
+    app: competing-workload
+spec:
+  restartPolicy: Never
+  containers:
+    - name: worker
+      image: busybox:1.36
+      command: ["sh", "-c", "echo 'Competing workload running...' && sleep infinity"]
+      env:
+        - name: CUDA_DISABLE_CONTROL
+          value: "true"
+      resources:
+        limits:
+          nvidia.com/gpu: 1
+          nvidia.com/gpumem: 4000 # Requests 4000 MiB (will be blocked if node only has 2000 MiB remaining)
