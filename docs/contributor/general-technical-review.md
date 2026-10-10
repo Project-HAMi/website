@@ -11,8 +11,6 @@ sidebar_label: General Technical Review
 - **Template Version:** v1.0
 - **Description:** HAMi is a Kubernetes middleware for heterogeneous AI device sharing, isolation, and scheduling across GPUs/NPUs and other accelerators.
 
----
-
 ## Day 0 - Planning Phase
 
 ### Scope
@@ -191,8 +189,6 @@ kubectl get pods -n kube-system | grep -E "hami-scheduler|hami-device-plugin"
 
 See separate [document](https://github.com/cncf/toc/blob/main/projects/hami/security-assesment/self-assessment.md)
 
----
-
 ## Day 1 - Installation and Deployment Phase
 
 ### Project Installation and Configuration
@@ -225,5 +221,3 @@ See separate [document](https://github.com/cncf/toc/blob/main/projects/hami/secu
 - **Upgrade path testing:** Unit/e2e coverage exists; explicit long-chain upgrade->downgrade->upgrade matrices are still evolving and should be expanded for incubation.
 - **Deprecation communication:** Deprecations are communicated in documentation and community meetings, with explicit in-doc annotations. A typical transition window keeps old and new APIs available for one subsequent release, followed by old API removal after the next release cycle.
 - **Alpha/beta capabilities:** Exposed by configuration flags and values; users opt in through chart values and documented settings.
-
----
