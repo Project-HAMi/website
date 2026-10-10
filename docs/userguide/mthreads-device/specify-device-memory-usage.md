@@ -21,4 +21,4 @@ The maximum and the valid values depend on the card model:
 | MTT S4000  | 48 GiB        | 2, 4, 8, 16, 32, 64, 96       |
 | MTT S5000  | 80 GiB        | 2, 4, 8, 16, 32, 64, 128, 160 |
 
-Values outside the list are rejected at admission. On MTT S5000 clusters, set `mthreadsMemoryPerCard` to `160` when installing HAMi. See [Enable Mthreads GPU sharing](enable-mthreads-gpu-sharing.md) for details.
+Values outside the list are rejected at admission. On MTT S5000 clusters, set `devices.mthreads.memoryPerCard` to `[160]` when installing HAMi. See [Enable Mthreads GPU sharing](enable-mthreads-gpu-sharing.md) for details.

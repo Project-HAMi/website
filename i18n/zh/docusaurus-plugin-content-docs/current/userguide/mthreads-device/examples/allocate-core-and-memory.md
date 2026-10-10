@@ -28,7 +28,7 @@ spec:
           mthreads.com/sgpu-core: 8
 ```
 
-在 MTT S5000 上，可以申请最大至整卡 80 GiB 的更大切片（需要安装 HAMi 时将 `mthreadsMemoryPerCard` 设置为 `160`）：
+在 MTT S5000 上，可以申请最大至整卡 80 GiB 的更大切片（需要安装 HAMi 时将 `devices.mthreads.memoryPerCard` 设置为 `[160]`）：
 
 ```yaml
 apiVersion: v1

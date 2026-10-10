@@ -105,19 +105,20 @@ Keep `mt-universal-gpu-device-controller` running. Kubelet device allocation for
 Create a `values.yaml` file:
 
 ```yaml
-# MTT S5000 has 80 GiB device memory = 160 x 512 MiB units per card.
-# The chart default (96) matches the MTT S4000 and must be overridden for S5000.
-mthreadsMemoryPerCard: 160
 devices:
   mthreads:
     enabled: true
+    # MTT S5000 has 80 GiB device memory = 160 x 512 MiB units per card.
+    # The chart default (96) matches the MTT S4000 and must be overridden for S5000.
+    memoryPerCard:
+      - 160
 ```
 
-HAMi models each Mthreads card with a per-card memory capacity. The default of 96 units matches the MTT S4000 (48 GiB). The MTT S5000 has 80 GiB, so set `mthreadsMemoryPerCard` to `160`. Without this, exclusive allocations only get 48 GiB and larger slices (for example 128 units) are rejected. This parameter is cluster-level; clusters mixing S4000 and S5000 need separate node pools per card model.
+HAMi models each Mthreads card with a per-card memory capacity. The default of 96 units matches the MTT S4000 (48 GiB). The MTT S5000 has 80 GiB, so set `devices.mthreads.memoryPerCard` to `[160]`. Without this, exclusive allocations only get 48 GiB and larger slices (for example 128 units) are rejected. This parameter is cluster-level; clusters mixing S4000 and S5000 need separate node pools per card model.
 
 :::note
 
-`mthreadsMemoryPerCard` requires a HAMi release that includes the mthreads per-card memory feature ([Project-HAMi/HAMi#2988](https://github.com/Project-HAMi/HAMi/pull/2988), merged after v2.10.0). On v2.10.0 and earlier the value is silently ignored: every Mthreads card is modeled as 96 units, and slice values above 96 are rejected.
+`devices.mthreads.memoryPerCard` requires a HAMi release that includes the mthreads per-card memory feature ([Project-HAMi/HAMi#2988](https://github.com/Project-HAMi/HAMi/pull/2988), merged after v2.10.0). On v2.10.0 and earlier the value is silently ignored: every Mthreads card is modeled as 96 units, and slice values above 96 are rejected.
 
 :::
 
@@ -204,7 +205,7 @@ Available resource types and slicing rules on the S5000:
 | Resource | Unit | Description |
 | --- | --- | --- |
 | `mthreads.com/vgpu` | sliced card | Number of sliced GPUs. Multi-card tasks request whole cards only. |
-| `mthreads.com/sgpu-memory` | 512 MiB | Device memory per slice. Valid values with `mthreadsMemoryPerCard: 160`: 2, 4, 8, 16, 32, 64, 128, 160. |
+| `mthreads.com/sgpu-memory` | 512 MiB | Device memory per slice. Valid values with `devices.mthreads.memoryPerCard: [160]`: 2, 4, 8, 16, 32, 64, 128, 160. |
 | `mthreads.com/sgpu-core` | 1/16 card cores | Compute cores per slice, from 1 to 16. Maps to the container's compute weight. |
 
 To exclusively occupy one sliced card, request `mthreads.com/vgpu` alone. The webhook grants the full sliced card: it sets `sgpu-core` to 16, and `sgpu-memory` to the card's full per-card capacity (160 units = 80 GiB on the S5000), which is taken from the node's reported capacity rather than a fixed value:

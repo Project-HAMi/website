@@ -106,19 +106,20 @@ operator 只在启动时同步组件状态，因此必须重启 rollout。重启
 创建 `values.yaml` 文件：
 
 ```yaml
-# MTT S5000 每卡 80 GiB 显存 = 160 x 512 MiB 单位。
-# chart 默认值（96）对应 MTT S4000，S5000 必须覆盖该值。
-mthreadsMemoryPerCard: 160
 devices:
   mthreads:
     enabled: true
+    # MTT S5000 每卡 80 GiB 显存 = 160 x 512 MiB 单位。
+    # chart 默认值（96）对应 MTT S4000，S5000 必须覆盖该值。
+    memoryPerCard:
+      - 160
 ```
 
-HAMi 按每卡显存容量来建模摩尔线程显卡。默认值 96 个单位对应 MTT S4000（48 GiB）。MTT S5000 显存为 80 GiB，因此需将 `mthreadsMemoryPerCard` 设置为 `160`。若不设置，独占分配只能获得 48 GiB，较大的切片（例如 128 个单位）会被拒绝。该参数为集群级配置；S4000 与 S5000 混布的集群需要按卡型号划分独立节点池。
+HAMi 按每卡显存容量来建模摩尔线程显卡。默认值 96 个单位对应 MTT S4000（48 GiB）。MTT S5000 显存为 80 GiB，因此需将 `devices.mthreads.memoryPerCard` 设置为 `[160]`。若不设置，独占分配只能获得 48 GiB，较大的切片（例如 128 个单位）会被拒绝。该参数为集群级配置；S4000 与 S5000 混布的集群需要按卡型号划分独立节点池。
 
 :::note
 
-`mthreadsMemoryPerCard` 需要包含 mthreads 单卡显存特性的 HAMi 版本（该特性于 v2.10.0 之后随 [Project-HAMi/HAMi#2988](https://github.com/Project-HAMi/HAMi/pull/2988) 合入）。在 v2.10.0 及更早版本上该值会被静默忽略：所有摩尔线程卡均按 96 个单位建模，大于 96 的切片值会被拒绝。
+`devices.mthreads.memoryPerCard` 需要包含 mthreads 单卡显存特性的 HAMi 版本（该特性于 v2.10.0 之后随 [Project-HAMi/HAMi#2988](https://github.com/Project-HAMi/HAMi/pull/2988) 合入）。在 v2.10.0 及更早版本上该值会被静默忽略：所有摩尔线程卡均按 96 个单位建模，大于 96 的切片值会被拒绝。
 
 :::
 
@@ -205,7 +206,7 @@ S5000 上可用的资源类型与切片规则：
 | 资源 | 单位 | 说明 |
 | --- | --- | --- |
 | `mthreads.com/vgpu` | 切片卡 | 切片 GPU 的数量。多卡任务只能请求整卡。 |
-| `mthreads.com/sgpu-memory` | 512 MiB | 每个切片的显存。`mthreadsMemoryPerCard: 160` 时的有效取值：2、4、8、16、32、64、128、160。 |
+| `mthreads.com/sgpu-memory` | 512 MiB | 每个切片的显存。`devices.mthreads.memoryPerCard: [160]` 时的有效取值：2、4、8、16、32、64、128、160。 |
 | `mthreads.com/sgpu-core` | 1/16 卡算力核组 | 每个切片的算力核组数，1 到 16。映射为容器的算力权重。 |
 
 若要独占一张被切片的卡，只需请求 `mthreads.com/vgpu`。webhook 会授予整张被切片的卡：它将 `sgpu-core` 设为 16，`sgpu-memory` 设为该卡的完整每卡容量（S5000 上为 160 单位 = 80 GiB），该值取自节点上报的容量而非硬编码：

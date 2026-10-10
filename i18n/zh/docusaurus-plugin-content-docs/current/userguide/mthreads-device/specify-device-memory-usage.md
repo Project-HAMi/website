@@ -20,4 +20,4 @@ resources:
 | MTT S4000 | 48 GiB | 2、4、8、16、32、64、96       |
 | MTT S5000 | 80 GiB | 2、4、8、16、32、64、128、160 |
 
-取值不在列表内的请求会在准入时被拒绝。MTT S5000 集群在安装 HAMi 时需将 `mthreadsMemoryPerCard` 设置为 `160`。详见[启用 Mthreads GPU 共享](enable-mthreads-gpu-sharing.md)。
+取值不在列表内的请求会在准入时被拒绝。MTT S5000 集群在安装 HAMi 时需将 `devices.mthreads.memoryPerCard` 设置为 `[160]`。详见[启用 Mthreads GPU 共享](enable-mthreads-gpu-sharing.md)。
