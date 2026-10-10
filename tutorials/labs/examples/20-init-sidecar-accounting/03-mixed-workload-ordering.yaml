@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mixed-workload-pod
+  labels:
+    app: mixed-workload-demo
+spec:
+  restartPolicy: Never
+  initContainers:
+    # Sidecar declared before the regular init container
+    - name: cache-sidecar
+      image: busybox:1.36
+      restartPolicy: Always # Native sidecar: stays running
+      command: ["sh", "-c", "echo 'Cache sidecar active...' && sleep infinity"]
+      env:
+        - name: CUDA_DISABLE_CONTROL
+          value: "true"
+      resources:
+        limits:
+          nvidia.com/gpu: 1
+          nvidia.com/gpumem: 2000 # 2000 MiB
+    # Regular init container: runs to completion
+    - name: weights-loader
+      image: busybox:1.36
+      command: ["sh", "-c", "echo 'Loading model weights...' && sleep 15 && echo 'Done'"]
+      env:
+        - name: CUDA_DISABLE_CONTROL
+          value: "true"
+      resources:
+        limits:
+          nvidia.com/gpu: 1
+          nvidia.com/gpumem: 5000 # 5000 MiB (Peak with preceding sidecar: 7000 MiB)
+  containers:
+    - name: serving-engine
+      image: busybox:1.36
+      command: ["sh", "-c", "echo 'Serving engine active...' && sleep infinity"]
+      env:
+        - name: CUDA_DISABLE_CONTROL
+          value: "true"
+      resources:
+        limits:
+          nvidia.com/gpu: 1
+          nvidia.com/gpumem: 4000 # 4000 MiB (Steady-state with sidecar: 6000 MiB)

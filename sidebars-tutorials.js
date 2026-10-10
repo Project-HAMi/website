@@ -106,6 +106,11 @@ module.exports = {
           id: "labs/hami-ascend-vnpu-slicing",
           customProps: { level: "Intermediate", duration: "about 60 minutes" },
         },
+        {
+          type: "doc",
+          id: "labs/init-sidecar-container-accounting",
+          customProps: { level: "Intermediate", duration: "about 45 minutes" },
+        },
       ],
     },
   ],
