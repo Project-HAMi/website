@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: regular-init-pod
+  labels:
+    app: regular-init-demo
+spec:
+  restartPolicy: Never
+  initContainers:
+    - name: model-prep
+      image: busybox:1.36
+      command: ["sh", "-c", "echo 'Preparing model weights on GPU...' && sleep 15 && echo 'Done'"]
+      env:
+        - name: CUDA_DISABLE_CONTROL
+          value: "true" # Enables lightweight simulation in fake GPU / nvml-mock environments
+      resources:
+        limits:
+          nvidia.com/gpu: 1
+          nvidia.com/gpumem: 4000 # 4000 MiB allocated to the init task
+  containers:
+    - name: inference-app
+      image: busybox:1.36
+      command: ["sh", "-c", "echo 'Inference app running...' && sleep infinity"]
+      env:
+        - name: CUDA_DISABLE_CONTROL
+          value: "true"
+      resources:
+        limits:
+          nvidia.com/gpu: 1
+          nvidia.com/gpumem: 4000 # 4000 MiB allocated to the main application
