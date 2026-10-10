@@ -80,14 +80,17 @@ pod_cost_per_hour = core_price_per_hour * core_fraction
 
 ### Reconciliation identity
 
-For every physical card, the per-Pod charges plus the unreserved idle cost must equal the card's price:
+For every physical card, the per-Pod charges plus the idle cost must equal the card's price:
 
 ```text
+idle_cost_per_hour = core_price_per_hour * (1 - sum(core_fraction over pods on the card))
+                   + mem_price_per_hour  * (1 - sum(mem_fraction  over pods on the card))
+
 sum(pod_cost_per_hour over pods on the card) + idle_cost_per_hour
   == physical_gpu_price_per_hour
 ```
 
-The idle cost prices the fraction of the card that no Pod reserved. This identity is the correctness test for the whole model: it holds for a fully reserved card with the four quarter Pods and for a single whole-GPU Pod alike.
+The idle cost is the per-dimension remainder: for compute and for memory it prices the fraction of the card that no Pod's charge accounts for. That covers both capacity no Pod reserved and, under the measured policy, reserved capacity left idle inside a Pod's slice. Because the idle term is defined as the exact complement of the summed fractions in each dimension, the identity holds by construction for both policies: on a fully reserved card the reservation fractions sum to 1 and the idle cost is 0, while measured fractions that sum to less than 1 raise the idle cost by the matching amount, so a fully reserved but under-used card is never billed below its price.
 
 ### Attribution policies
 
@@ -101,11 +104,11 @@ Measured policy. `core_fraction` comes from `hami_container_device_utilization_r
 
 In HAMi, `gpucores` of 0 or unset means no compute limit, not zero compute. Such a Pod is allowed to use the whole card's compute and competes with any co-located Pods. Its real compute share cannot be derived from the allocation alone.
 
-These Pods are an explicit class. Under the reservation policy they are either excluded from compute attribution and flagged as unattributable, or given a configurable fallback such as an equal split of the card's unreserved compute among the no-limit Pods sharing it. They are never silently billed as zero compute. Under the measured policy their compute share is taken from measured utilization over time. The first milestone avoids this case entirely by using only explicit nonzero limits.
+These Pods are an explicit class. Under the reservation policy they are either excluded from compute attribution and flagged as unattributable, or given a configurable fallback such as an equal split of the card's unreserved compute among the no-limit Pods sharing it. They are never silently billed as zero compute. Under the measured policy their compute share is taken from measured utilization over time, but only when the runtime actually collects that metric for no-limit containers. HAMi populates `hami_container_device_utilization_ratio` only under specific runtime settings and not reliably for Pods without an explicit core limit, so when the metric is unavailable for these Pods they are flagged as unattributable rather than billed as zero. The first milestone avoids this case entirely by using only explicit nonzero limits.
 
 ### Pod identity across the join
 
-The reservation and runtime metrics both omit the Pod UID. Rather than add a `pod_uid` label to HAMi metrics, the join to workloads and Pod lifetime is done on the OpenCost side using kube-state-metrics and cadvisor, keyed on namespace, pod, container, and node. HAMi already exposes those label keys. A `pod_uid` label would also raise metric cardinality on these high-volume series.
+The reservation and runtime metrics both omit the Pod UID, and their label sets differ. The scheduler reservation metrics carry `namespace`, `node`, `pod`, `container_index`, and `device_uuid`; the runtime metrics carry `namespace`, `pod`, `container`, `vdevice_index`, and `device_uuid`, with no `node`. Joining the two families, and joining either to workload and Pod-lifetime data from kube-state-metrics and cadvisor, therefore requires normalizing these labels with recording rules or scrape relabeling: reconciling the container identifier (`container_index` against `container`) and supplying `node` for the runtime series, or defining a separate join key per family. Once normalized the join is keyed on namespace, pod, container, and node. Adding a `pod_uid` label to HAMi metrics was considered and rejected: it would not remove the normalization step and would raise cardinality on these high-volume series.
 
 The one case this leaves open is a Pod recreated with the same name on the same node within a single scrape window. A `pod_uid` label is kept as a documented fallback if that case is shown to corrupt attribution in practice.
 
