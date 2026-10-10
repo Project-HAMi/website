@@ -127,8 +127,8 @@ kubectl get runtimeclass ascend
 ```
 
 ```text
-NAME      HANDLER   AGE
-ascend    ascend    ...
+NAME     HANDLER   AGE
+ascend   ascend    23d
 ```
 
 ### 与存量 HAMi core 部署共存
