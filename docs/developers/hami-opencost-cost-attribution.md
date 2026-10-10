@@ -92,6 +92,8 @@ sum(pod_cost_per_hour over pods on the card) + idle_cost_per_hour
 
 The idle cost is the per-dimension remainder: for compute and for memory it prices the fraction of the card that no Pod's charge accounts for. That covers both capacity no Pod reserved and, under the measured policy, reserved capacity left idle inside a Pod's slice. Because the idle term is defined as the exact complement of the summed fractions in each dimension, the identity holds by construction for both policies: on a fully reserved card the reservation fractions sum to 1 and the idle cost is 0, while measured fractions that sum to less than 1 raise the idle cost by the matching amount, so a fully reserved but under-used card is never billed below its price.
 
+The summed fractions are bounded to the interval 0 to 1 per card in each dimension, which keeps the idle cost non-negative and stops Pod charges from exceeding the card price. Memory is bounded physically, since used bytes cannot exceed the card total. Measured compute can briefly sum above 1 under contention or sampling noise; when the raw per-container ratios on a card sum above 1, the pipeline normalizes them proportionally so the dimension sums to exactly 1, which floors the idle cost at 0 and preserves the Pods' relative shares. Intervals where that normalization would have to discard more than a configurable tolerance are marked unattributable rather than billed on distorted fractions.
+
 ### Attribution policies
 
 Two policies are defined. Both use the same cost model and reconciliation identity, and differ only in how the fractions are measured.
@@ -125,5 +127,6 @@ A reproduction harness with the manifests, queries, recording rules, the `promto
 ## Remaining Work
 
 - Run the reproduction on a multi-tenant GPU cluster and record the measured utilization numbers for both policies.
+- Extend the `promtool` test with an over-subscribed interval, where the summed measured fractions exceed 1, to cover the proportional normalization and the unattributable fallback in both the compute and memory dimensions.
 - Specify the unlimited-core fallback and the init-container release behavior as explicit, measured policies before broader use.
 - Decide, with the OpenCost community, where the integration lives and how it avoids double counting native GPU cost.
