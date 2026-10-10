@@ -114,7 +114,7 @@ devices:
       - 160
 ```
 
-HAMi models each Mthreads card with a per-card memory capacity. The default of 96 units matches the MTT S4000 (48 GiB). The MTT S5000 has 80 GiB, so set `devices.mthreads.memoryPerCard` to `[160]`. Without this, exclusive allocations only get 48 GiB and larger slices (for example 128 units) are rejected. This parameter is cluster-level; clusters mixing S4000 and S5000 need separate node pools per card model.
+HAMi models each Mthreads card with a per-card memory capacity. The default of 96 units matches the MTT S4000 (48 GiB). The MTT S5000 has 80 GiB, so set `devices.mthreads.memoryPerCard` to `[160]`. Without this, exclusive allocations only get 48 GiB and larger slices (for example 128 units) are rejected. This parameter is a cluster-level list with one entry per card model; a mixed S4000/S5000 cluster can pass `[96, 160]` and needs no separate node pools.
 
 :::note
 

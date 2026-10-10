@@ -33,7 +33,7 @@ translated: true
 | MTT S4000 | 48 GiB | 96                     | 2、4、8、16、32、64、96       |
 | MTT S5000 | 80 GiB | 160                    | 2、4、8、16、32、64、128、160 |
 
-取值不在有效列表内的请求会被准入 webhook 拒绝。每卡容量由集群级的 `devices.mthreads.memoryPerCard` chart 参数控制，两种卡型号混布的集群需要按型号划分独立节点池。每卡超过 96 的取值还需要包含 `memoryPerCard` 特性的 HAMi 版本，见[在 HAMi 中使用摩尔线程 MTT S5000](../../installation/how-to-use-mthreads-s5000.md)。
+取值不在有效列表内的请求会被准入 webhook 拒绝。每卡容量由集群级的 `devices.mthreads.memoryPerCard` 参数控制，它是一个按卡型号一项一值的列表。混合 S4000/S5000 的集群可填写 `[96, 160]`，因此无需划分独立节点池。每卡超过 96 的取值还需要包含 `memoryPerCard` 特性的 HAMi 版本，见[在 HAMi 中使用摩尔线程 MTT S5000](../../installation/how-to-use-mthreads-s5000.md)。
 
 ## 节点需求
 
