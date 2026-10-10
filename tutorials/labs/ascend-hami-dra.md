@@ -226,7 +226,22 @@ kubectl get deviceclass
 kubectl get resourceslice
 ```
 
-Expected: all driver Pods Running, one DeviceClass named `hami-vnpu-core.project-hami.io`, and one ResourceSlice per node with driver `ascend.project-hami.io`.
+```text
+NAME                                    READY   STATUS    RESTARTS   AGE
+ascend-dra-driver-kubeletplugin-h95tk   1/1     Running   0          22d
+```
+
+```text
+NAME                             AGE
+hami-vnpu-core.project-hami.io   22d
+```
+
+```text
+NAME                                          NODE             DRIVER                   POOL             AGE
+aio-node74-arm-ascend.project-hami.io-gktzs   aio-node74-arm   ascend.project-hami.io   aio-node74-arm   23d
+```
+
+All driver Pods Running, one DeviceClass named `hami-vnpu-core.project-hami.io`, and one ResourceSlice per node with driver `ascend.project-hami.io`.
 
 ## Step 3: Inspect the DeviceClass and the ResourceSlice
 

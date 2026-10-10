@@ -226,7 +226,22 @@ kubectl get deviceclass
 kubectl get resourceslice
 ```
 
-预期：driver Pod 全部 Running，一个名为 `hami-vnpu-core.project-hami.io` 的 DeviceClass，每个节点一条 driver 为 `ascend.project-hami.io` 的 ResourceSlice。
+```text
+NAME                                    READY   STATUS    RESTARTS   AGE
+ascend-dra-driver-kubeletplugin-h95tk   1/1     Running   0          22d
+```
+
+```text
+NAME                             AGE
+hami-vnpu-core.project-hami.io   22d
+```
+
+```text
+NAME                                          NODE             DRIVER                   POOL             AGE
+aio-node74-arm-ascend.project-hami.io-gktzs   aio-node74-arm   ascend.project-hami.io   aio-node74-arm   23d
+```
+
+driver Pod 全部 Running，一个名为 `hami-vnpu-core.project-hami.io` 的 DeviceClass，每个节点一条 driver 为 `ascend.project-hami.io` 的 ResourceSlice。
 
 ## 步骤 3：查看 DeviceClass 与 ResourceSlice
 
