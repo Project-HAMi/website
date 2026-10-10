@@ -51,13 +51,13 @@ translated: true
 
 :::
 
-- 在安装 HAMi 时配置参数 `devices.mthreads.enabled=true`
+- 在安装 HAMi 时配置参数 `devices.mthreads.enabled=true`。默认安装方式（MTT S4000 或其他 96 单位的卡）直接执行：
 
 ```bash
 helm install hami hami-charts/hami --set scheduler.kubeScheduler.image.tag={your kubernetes version} --set devices.mthreads.enabled=true -n kube-system
 ```
 
-- 在 MTT S5000 集群上，还需在 values 文件中设置每卡显存容量：
+- 在 MTT S5000 集群上，改用 values 文件设置每卡显存容量（替代上面的单行命令，二者选其一）：
 
 ```yaml
 devices:
@@ -71,6 +71,18 @@ devices:
 
 ```bash
 helm install hami hami-charts/hami -n kube-system -f values.yaml
+```
+
+- 如果 HAMi 已安装，请用 `helm upgrade` 应用同样的 values，而不是重新安装：
+
+```bash
+helm upgrade hami hami-charts/hami -n kube-system -f values.yaml
+```
+
+chart 不会自动滚动更新调度器，升级后需要手动重启使其加载新的设备配置：
+
+```bash
+kubectl -n kube-system rollout restart deploy/hami-scheduler
 ```
 
 ## 运行 GPU 任务

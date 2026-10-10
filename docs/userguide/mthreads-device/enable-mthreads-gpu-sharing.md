@@ -49,13 +49,13 @@ You can remove `mt-mutating-webhook` and `mt-gpu-scheduler` after installation (
 
 :::
 
-- Set `devices.mthreads.enabled=true` when installing HAMi
+- Set `devices.mthreads.enabled=true` when installing HAMi. For a default install (MTT S4000, or any 96-unit card), run:
 
 ```bash
 helm install hami hami-charts/hami --set scheduler.kubeScheduler.image.tag={your kubernetes version} --set devices.mthreads.enabled=true -n kube-system
 ```
 
-- On MTT S5000 clusters, also set the per-card memory capacity in a values file:
+- On MTT S5000 clusters, use a values file with the per-card memory capacity instead of the one-liner above:
 
 ```yaml
 devices:
@@ -69,6 +69,18 @@ devices:
 
 ```bash
 helm install hami hami-charts/hami -n kube-system -f values.yaml
+```
+
+- If HAMi is already installed, apply the same values with `helm upgrade` instead of reinstalling:
+
+```bash
+helm upgrade hami hami-charts/hami -n kube-system -f values.yaml
+```
+
+The device config change is not rolled automatically; restart the scheduler after upgrading:
+
+```bash
+kubectl -n kube-system rollout restart deploy/hami-scheduler
 ```
 
 ## Running Mthreads jobs
