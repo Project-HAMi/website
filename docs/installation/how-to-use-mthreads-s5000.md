@@ -5,7 +5,7 @@ title: Use HAMi with Mthreads MTT S5000
 
 ## Introduction
 
-HAMi supports GPU sharing on Mthreads MTT S5000 through the vendor's sGPU technology. In this setup, each vendor does what it does best:
+HAMi supports GPU sharing on Mthreads MTT S5000 through the vendor's sGPU technology. In this setup, each component handles a distinct part of the stack:
 
 - The Mthreads GPU Operator (Full mode) installs the kernel driver, configures the container runtime, and reports device resources to kubelet, including whole cards (`mthreads.com/gpu`) and sGPU slices (`mthreads.com/sgpu-core`, `mthreads.com/sgpu-memory`).
 - HAMi takes over scheduling and admission for sGPU slices, deciding which tasks share which card and how much memory and cores each task gets.
@@ -55,7 +55,7 @@ Full mode containerizes the entire software stack (driver, container toolkit, de
          sgpuSpec:
            "max_inst": "16" # max slice instances per card
            "policy": "0" # 0: performance, 1: weak isolation, 2: strong isolation
-           "overcommit_ratio": "1.1"
+           "overcommit_ratio": "1.1" # ratio; 1.1 = 110% oversubscription, valid range 1.0-2.0
            "time_slice": "1"
          selector:
            matchLabels:
@@ -67,6 +67,16 @@ Full mode containerizes the entire software stack (driver, container toolkit, de
    ```bash
    kubectl get node <gpu-node> -o json | grep mthreads.com
    ```
+
+   Example output on an S5000 node with all 8 cards bound to sgpu_km:
+
+   ```text
+           "mthreads.com/gpu": "8",
+           "mthreads.com/sgpu-core": "128",
+           "mthreads.com/sgpu-memory": "1280"
+   ```
+
+   (8 whole cards; the 8 sliced cards contribute 8×16 = 128 `sgpu-core` units and 8×160 = 1280 `sgpu-memory` units.)
 
    Expect `mthreads.com/gpu` (whole cards), plus `mthreads.com/sgpu-core` (16 units per sliced card) and `mthreads.com/sgpu-memory` (160 units per sliced card on the S5000, each unit equals 512 MiB).
 
@@ -95,20 +105,19 @@ Keep `mt-universal-gpu-device-controller` running. Kubelet device allocation for
 Create a `values.yaml` file:
 
 ```yaml
+# MTT S5000 has 80 GiB device memory = 160 x 512 MiB units per card.
+# The chart default (96) matches the MTT S4000 and must be overridden for S5000.
+mthreadsMemoryPerCard: 160
 devices:
   mthreads:
     enabled: true
-    # MTT S5000 has 80 GiB device memory = 160 x 512 MiB units per card.
-    # The chart default (96) matches the MTT S4000 and must be overridden for S5000.
-    memoryPerCard:
-      - 160
 ```
 
-HAMi models each Mthreads card with a per-card memory capacity. The default of 96 units matches the MTT S4000 (48 GiB). The MTT S5000 has 80 GiB, so set `memoryPerCard` to `[160]`. Without this, exclusive allocations only get 48 GiB and larger slices (for example 128 units) are rejected. This parameter is cluster-level; clusters mixing S4000 and S5000 need separate node pools per card model.
+HAMi models each Mthreads card with a per-card memory capacity. The default of 96 units matches the MTT S4000 (48 GiB). The MTT S5000 has 80 GiB, so set `mthreadsMemoryPerCard` to `160`. Without this, exclusive allocations only get 48 GiB and larger slices (for example 128 units) are rejected. This parameter is cluster-level; clusters mixing S4000 and S5000 need separate node pools per card model.
 
 :::note
 
-`devices.mthreads.memoryPerCard` requires a HAMi release that includes the mthreads per-card memory feature ([Project-HAMi/HAMi#2988](https://github.com/Project-HAMi/HAMi/pull/2988), merged after v2.10.0). On v2.10.0 and earlier the value is silently ignored: every Mthreads card is modeled as 96 units, and slice values above 96 are rejected.
+`mthreadsMemoryPerCard` requires a HAMi release that includes the mthreads per-card memory feature ([Project-HAMi/HAMi#2988](https://github.com/Project-HAMi/HAMi/pull/2988), merged after v2.10.0). On v2.10.0 and earlier the value is silently ignored: every Mthreads card is modeled as 96 units, and slice values above 96 are rejected.
 
 :::
 
@@ -126,6 +135,14 @@ Verify the installation:
 kubectl get pods -n kube-system | grep hami
 ```
 
+Example output:
+
+```text
+hami-scheduler-7d9c8b6f4-abcde   2/2   Running   0   3m
+hami-webhook-5f6g7h8d9-xyz12      1/1   Running   0   3m
+hami-device-plugin-7c9b6d-2xz9p   1/1   Running   0   3m
+```
+
 The `hami-scheduler` pod should show `2/2` containers running (kube-scheduler plus the HAMi scheduler extender).
 
 ## sGPU Host Configuration
@@ -137,7 +154,7 @@ On each GPU node, the running sGPU service exposes configuration nodes under `/p
 | `max_inst` | 1-16 | Max slice instances per card. |
 | `policy` | 0, 1, 2 | Compute isolation mode. `0`: performance (default), no compute isolation, slices behave like processes on a bare card. `1`: weak isolation, an idle card is fully used by the running container. `2`: strong isolation, time slices are enforced even when other containers are idle (equal split only). |
 | `time_slice` | integer, ms | Scheduler time slice length, default 1 ms, minimum 1 ms. Larger values are fairer, smaller values are more efficient. Only affects the weak and strong isolation modes. |
-| `overcommit_ratio` | 100-200 | Device memory oversubscription ratio in percent. |
+| `overcommit_ratio` | 100-200 | Device memory oversubscription ratio, in percent. The ClusterConfig `sgpuSpec.overcommit_ratio` uses the equivalent ratio (for example, `1.1` = 110%); the `/proc/sgpu_km` knob reports the percentage. |
 
 Key points when tuning these values:
 
@@ -161,7 +178,7 @@ spec:
   restartPolicy: OnFailure
   containers:
     - name: task
-      image: <your-image> # must include the MUSA user-space driver stack
+      image: core.harbor.zlidc.mthreads.com:30003/mt-ai/lm-qy2:v17-mpc # MUSA user-space driver stack (use any MUSA-runtime image)
       command: ["sleep", "infinity"]
       resources:
         limits:
@@ -187,10 +204,10 @@ Available resource types and slicing rules on the S5000:
 | Resource | Unit | Description |
 | --- | --- | --- |
 | `mthreads.com/vgpu` | sliced card | Number of sliced GPUs. Multi-card tasks request whole cards only. |
-| `mthreads.com/sgpu-memory` | 512 MiB | Device memory per slice. Valid values with `memoryPerCard: [160]`: 2, 4, 8, 16, 32, 64, 128, 160. |
+| `mthreads.com/sgpu-memory` | 512 MiB | Device memory per slice. Valid values with `mthreadsMemoryPerCard: 160`: 2, 4, 8, 16, 32, 64, 128, 160. |
 | `mthreads.com/sgpu-core` | 1/16 card cores | Compute cores per slice, from 1 to 16. Maps to the container's compute weight. |
 
-To exclusively occupy one sliced card, request `mthreads.com/vgpu` alone. The webhook fills in the full card (`sgpu-core: 16`, `sgpu-memory: 160` on the S5000):
+To exclusively occupy one sliced card, request `mthreads.com/vgpu` alone. The webhook grants the full sliced card: it sets `sgpu-core` to 16, and `sgpu-memory` to the card's full per-card capacity (160 units = 80 GiB on the S5000), which is taken from the node's reported capacity rather than a fixed value:
 
 ```yaml
 resources:

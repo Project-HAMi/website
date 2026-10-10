@@ -50,11 +50,11 @@ module.exports = {
             "installation/upgrade",
             "installation/uninstall",
             "installation/webui-installation",
+            "installation/how-to-use-mthreads-s5000",
             "installation/aws-installation",
             "installation/k3s-installation",
             "installation/gke-installation",
             "installation/tke-installation",
-            "installation/how-to-use-mthreads-s5000",
           ],
         },
         {

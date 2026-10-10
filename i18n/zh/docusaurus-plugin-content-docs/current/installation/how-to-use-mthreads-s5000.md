@@ -56,7 +56,7 @@ Full 模式将整个软件栈（驱动、容器工具链、设备插件、监控
          sgpuSpec:
            "max_inst": "16" # 每张卡的最大切片实例数
            "policy": "0" # 0：性能模式，1：弱隔离，2：强隔离
-           "overcommit_ratio": "1.1"
+           "overcommit_ratio": "1.1" # 比率；1.1 = 超卖 110%，取值范围 1.0-2.0
            "time_slice": "1"
          selector:
            matchLabels:
@@ -68,6 +68,16 @@ Full 模式将整个软件栈（驱动、容器工具链、设备插件、监控
    ```bash
    kubectl get node <gpu-node> -o json | grep mthreads.com
    ```
+
+   以下是在一张 8 卡全部绑定到 sgpu_km 的 S5000 节点上的示例输出：
+
+   ```text
+           "mthreads.com/gpu": "8",
+           "mthreads.com/sgpu-core": "128",
+           "mthreads.com/sgpu-memory": "1280"
+   ```
+
+   （8 张整卡；8 张被切片的卡共贡献 8×16 = 128 个 `sgpu-core` 单位与 8×160 = 1280 个 `sgpu-memory` 单位。）
 
    预期看到 `mthreads.com/gpu`（整卡）、`mthreads.com/sgpu-core`（每张被切片的卡 16 个单位）和 `mthreads.com/sgpu-memory`（S5000 每张被切片的卡 160 个单位，每单位等于 512 MiB）。
 
@@ -96,20 +106,19 @@ operator 只在启动时同步组件状态，因此必须重启 rollout。重启
 创建 `values.yaml` 文件：
 
 ```yaml
+# MTT S5000 每卡 80 GiB 显存 = 160 x 512 MiB 单位。
+# chart 默认值（96）对应 MTT S4000，S5000 必须覆盖该值。
+mthreadsMemoryPerCard: 160
 devices:
   mthreads:
     enabled: true
-    # MTT S5000 每卡 80 GiB 显存 = 160 x 512 MiB 单位。
-    # chart 默认值（96）对应 MTT S4000，S5000 必须覆盖该值。
-    memoryPerCard:
-      - 160
 ```
 
-HAMi 按每卡显存容量来建模摩尔线程显卡。默认值 96 个单位对应 MTT S4000（48 GiB）。MTT S5000 显存为 80 GiB，因此需将 `memoryPerCard` 设置为 `[160]`。若不设置，独占分配只能获得 48 GiB，较大的切片（例如 128 个单位）会被拒绝。该参数为集群级配置；S4000 与 S5000 混布的集群需要按卡型号划分独立节点池。
+HAMi 按每卡显存容量来建模摩尔线程显卡。默认值 96 个单位对应 MTT S4000（48 GiB）。MTT S5000 显存为 80 GiB，因此需将 `mthreadsMemoryPerCard` 设置为 `160`。若不设置，独占分配只能获得 48 GiB，较大的切片（例如 128 个单位）会被拒绝。该参数为集群级配置；S4000 与 S5000 混布的集群需要按卡型号划分独立节点池。
 
 :::note
 
-`devices.mthreads.memoryPerCard` 需要包含 mthreads 单卡显存特性的 HAMi 版本（该特性于 v2.10.0 之后随 [Project-HAMi/HAMi#2988](https://github.com/Project-HAMi/HAMi/pull/2988) 合入）。在 v2.10.0 及更早版本上该值会被静默忽略：所有摩尔线程卡均按 96 个单位建模，大于 96 的切片值会被拒绝。
+`mthreadsMemoryPerCard` 需要包含 mthreads 单卡显存特性的 HAMi 版本（该特性于 v2.10.0 之后随 [Project-HAMi/HAMi#2988](https://github.com/Project-HAMi/HAMi/pull/2988) 合入）。在 v2.10.0 及更早版本上该值会被静默忽略：所有摩尔线程卡均按 96 个单位建模，大于 96 的切片值会被拒绝。
 
 :::
 
@@ -127,6 +136,14 @@ helm install hami hami-charts/hami -n kube-system -f values.yaml
 kubectl get pods -n kube-system | grep hami
 ```
 
+示例输出：
+
+```text
+hami-scheduler-7d9c8b6f4-abcde   2/2   Running   0   3m
+hami-webhook-5f6g7h8d9-xyz12      1/1   Running   0   3m
+hami-device-plugin-7c9b6d-2xz9p   1/1   Running   0   3m
+```
+
 `hami-scheduler` pod 应显示 `2/2` 个容器处于运行状态（kube-scheduler 加 HAMi 调度器扩展）。
 
 ## sGPU 宿主机配置
@@ -138,7 +155,7 @@ kubectl get pods -n kube-system | grep hami
 | `max_inst` | 1-16 | 每张卡的最大切片实例数。 |
 | `policy` | 0, 1, 2 | 算力隔离模式。`0`：性能模式（默认），无算力隔离，切片行为类似裸卡上的进程。`1`：弱隔离，空闲卡可被运行中的容器完全使用。`2`：强隔离，即使其他容器空闲也强制按时间片分配（仅均分）。 |
 | `time_slice` | 整数，毫秒 | 调度器时间片长度，默认 1 ms，最小 1 ms。值越大越公平，值越小效率越高。仅影响弱隔离和强隔离模式。 |
-| `overcommit_ratio` | 100-200 | 显存超卖比例（百分比）。 |
+| `overcommit_ratio` | 100-200 | 显存超卖比例（百分比）。ClusterConfig 的 `sgpuSpec.overcommit_ratio` 使用等效比率（例如 `1.1` = 110%）；`/proc/sgpu_km` 旋钮上报的是百分比。 |
 
 调优这些值时的要点：
 
@@ -162,7 +179,7 @@ spec:
   restartPolicy: OnFailure
   containers:
     - name: task
-      image: <your-image> # 必须包含 MUSA 用户态驱动栈
+      image: core.harbor.zlidc.mthreads.com:30003/mt-ai/lm-qy2:v17-mpc # MUSA 用户态驱动栈（也可用任意 MUSA 运行时镜像）
       command: ["sleep", "infinity"]
       resources:
         limits:
@@ -188,10 +205,10 @@ S5000 上可用的资源类型与切片规则：
 | 资源 | 单位 | 说明 |
 | --- | --- | --- |
 | `mthreads.com/vgpu` | 切片卡 | 切片 GPU 的数量。多卡任务只能请求整卡。 |
-| `mthreads.com/sgpu-memory` | 512 MiB | 每个切片的显存。`memoryPerCard: [160]` 时的有效取值：2、4、8、16、32、64、128、160。 |
+| `mthreads.com/sgpu-memory` | 512 MiB | 每个切片的显存。`mthreadsMemoryPerCard: 160` 时的有效取值：2、4、8、16、32、64、128、160。 |
 | `mthreads.com/sgpu-core` | 1/16 卡算力核组 | 每个切片的算力核组数，1 到 16。映射为容器的算力权重。 |
 
-若要独占一张被切片的卡，只需请求 `mthreads.com/vgpu`。webhook 会自动补全整卡配置（S5000 上为 `sgpu-core: 16`、`sgpu-memory: 160`）：
+若要独占一张被切片的卡，只需请求 `mthreads.com/vgpu`。webhook 会授予整张被切片的卡：它将 `sgpu-core` 设为 16，`sgpu-memory` 设为该卡的完整每卡容量（S5000 上为 160 单位 = 80 GiB），该值取自节点上报的容量而非硬编码：
 
 ```yaml
 resources:

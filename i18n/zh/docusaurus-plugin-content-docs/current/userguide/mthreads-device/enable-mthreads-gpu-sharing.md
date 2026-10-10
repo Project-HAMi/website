@@ -22,7 +22,7 @@ translated: true
 
 3. 支持独占模式，只指定`mthreads.com/vgpu`即为独占申请
 
-4. 本特性目前已在 MTT S4000 和 MTT S5000 设备上测试通过。MTT S5000 集群在安装 HAMi 时需将 `devices.mthreads.memoryPerCard` 设置为 `[160]`，参见下文[开启 GPU 复用](#开启-gpu-复用)。
+4. 本特性目前已在 MTT S4000 和 MTT S5000 设备上测试通过。MTT S5000 集群在安装 HAMi 时需将 `mthreadsMemoryPerCard` 设置为 `160`，参见下文[开启 GPU 复用](#开启-gpu-复用)。
 
 ## 卡片规格
 
@@ -33,7 +33,7 @@ translated: true
 | MTT S4000 | 48 GiB | 96                     | 2、4、8、16、32、64、96       |
 | MTT S5000 | 80 GiB | 160                    | 2、4、8、16、32、64、128、160 |
 
-取值不在有效列表内的请求会被准入 webhook 拒绝。每卡容量由集群级的 `devices.mthreads.memoryPerCard` chart 参数控制，两种卡型号混布的集群需要按型号划分独立节点池。每卡超过 96 的取值还需要包含 `memoryPerCard` 特性的 HAMi 版本，见[在 HAMi 中使用摩尔线程 MTT S5000](../../installation/how-to-use-mthreads-s5000.md)。
+取值不在有效列表内的请求会被准入 webhook 拒绝。每卡容量由集群级的 `mthreadsMemoryPerCard` chart 参数控制，两种卡型号混布的集群需要按型号划分独立节点池。每卡超过 96 的取值还需要包含 `mthreadsMemoryPerCard` 特性的 HAMi 版本，见[在 HAMi 中使用摩尔线程 MTT S5000](../../installation/how-to-use-mthreads-s5000.md)。
 
 ## 节点需求
 
@@ -57,16 +57,20 @@ translated: true
 helm install hami hami-charts/hami --set scheduler.kubeScheduler.image.tag={your kubernetes version} --set devices.mthreads.enabled=true -n kube-system
 ```
 
-- 在 MTT S5000 集群上，改用 values 文件设置每卡显存容量（替代上面的单行命令，二者选其一）：
+- 在 MTT S5000 集群上，改用 values 文件设置每卡显存容量（需同时带上 kubeScheduler tag 与每卡显存容量，替代上面的单行命令，二者选其一）：
 
 ```yaml
+# 设置与你的 Kubernetes 版本对应的调度器镜像 tag。
+scheduler:
+  kubeScheduler:
+    image:
+      tag: {your kubernetes version}
+# MTT S5000 每卡 80 GiB 显存 = 160 x 512 MiB 单位。
+# chart 默认值（96）对应 MTT S4000，S5000 必须覆盖该值。
+mthreadsMemoryPerCard: 160
 devices:
   mthreads:
     enabled: true
-    # MTT S5000 每卡 80 GiB 显存 = 160 x 512 MiB 单位。
-    # chart 默认值（96）对应 MTT S4000，S5000 必须覆盖该值。
-    memoryPerCard:
-      - 160
 ```
 
 ```bash

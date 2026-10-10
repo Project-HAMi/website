@@ -20,7 +20,7 @@ title: Enable Mthreads GPU sharing
 
 3. Support allocating exclusive Mthreads GPU by specifying mthreads.com/vgpu only.
 
-4. These features are tested on MTT S4000 and MTT S5000. On MTT S5000 clusters, set `devices.mthreads.memoryPerCard` to `[160]` when installing HAMi, as shown in [Enabling GPU-sharing Support](#enabling-gpu-sharing-support).
+4. These features are tested on MTT S4000 and MTT S5000. On MTT S5000 clusters, set `mthreadsMemoryPerCard` to `160` when installing HAMi, as shown in [Enabling GPU-sharing Support](#enabling-gpu-sharing-support).
 
 ## Card specifications
 
@@ -31,7 +31,7 @@ Both card models expose 16 core groups per card. Device memory is requested in 5
 | MTT S4000  | 48 GiB        | 96                        | 2, 4, 8, 16, 32, 64, 96       |
 | MTT S5000  | 80 GiB        | 160                       | 2, 4, 8, 16, 32, 64, 128, 160 |
 
-Requests with values outside the valid list are rejected by the admission webhook. The per-card capacity is controlled by the cluster-level `devices.mthreads.memoryPerCard` chart value, so clusters mixing both card models need separate node pools per model. Values above 96 per card additionally require a HAMi release with the `memoryPerCard` feature, see [Use HAMi with Mthreads MTT S5000](../../installation/how-to-use-mthreads-s5000.md).
+Requests with values outside the valid list are rejected by the admission webhook. The per-card capacity is controlled by the cluster-level `mthreadsMemoryPerCard` chart value, so clusters mixing both card models need separate node pools per model. Values above 96 per card additionally require a HAMi release with the `mthreadsMemoryPerCard` feature, see [Use HAMi with Mthreads MTT S5000](../../installation/how-to-use-mthreads-s5000.md).
 
 ## Prerequisites
 
@@ -55,16 +55,20 @@ You can remove `mt-mutating-webhook` and `mt-gpu-scheduler` after installation (
 helm install hami hami-charts/hami --set scheduler.kubeScheduler.image.tag={your kubernetes version} --set devices.mthreads.enabled=true -n kube-system
 ```
 
-- On MTT S5000 clusters, use a values file with the per-card memory capacity instead of the one-liner above:
+- On MTT S5000 clusters, use a values file that also carries the kubeScheduler tag and the per-card memory capacity instead of the one-liner above:
 
 ```yaml
+# Set the scheduler image tag for your Kubernetes version.
+scheduler:
+  kubeScheduler:
+    image:
+      tag: {your kubernetes version}
+# MTT S5000 has 80 GiB device memory = 160 x 512 MiB units per card.
+# The chart default (96) matches the MTT S4000 and must be overridden for S5000.
+mthreadsMemoryPerCard: 160
 devices:
   mthreads:
     enabled: true
-    # MTT S5000 has 80 GiB device memory = 160 x 512 MiB units per card.
-    # The chart default (96) matches the MTT S4000 and must be overridden for S5000.
-    memoryPerCard:
-      - 160
 ```
 
 ```bash

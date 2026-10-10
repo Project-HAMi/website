@@ -26,7 +26,7 @@ spec:
           mthreads.com/sgpu-core: 8
 ```
 
-On an MTT S5000, larger slices up to the full 80 GiB card are available (requires `devices.mthreads.memoryPerCard` set to `[160]`):
+On an MTT S5000, larger slices up to the full 80 GiB card are available (requires `mthreadsMemoryPerCard` set to `160`):
 
 ```yaml
 apiVersion: v1
