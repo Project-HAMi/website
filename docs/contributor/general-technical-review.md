@@ -120,7 +120,7 @@ Scheduler supports leader election and configurable replicas.
 
 #### Resource requirements (CPU/memory/network)
 
-Configurable per component via Helm values. The chart leaves `resources` unset by default, so production clusters should set explicit requests/limits. The following estimates are practical planning baselines for HAMi v2.8.0 on Kubernetes 1.20+, with NVIDIA sharing enabled and normal scheduling churn.
+Configurable per component via Helm values. The chart leaves `resources` unset by default, so production clusters should set explicit requests/limits. The following estimates are practical planning baselines for HAMi v2.8.0 on Kubernetes 1.23+, with NVIDIA sharing enabled and normal scheduling churn.
 
 - **Assumptions for estimates:** 1 scheduler replica (`kube-scheduler` + HAMi extender), 1 device-plugin DaemonSet pod per GPU node (`device-plugin` + `vgpu-monitor`), Prometheus scraping every 15-30s, and no unusual pod-creation spikes.
 

@@ -121,7 +121,7 @@ Kubernetes API server、kube-scheduler/Volcano 调度集成、kubelet device plu
 
 #### 资源需求（CPU/内存/网络）
 
-可通过 Helm values 按组件配置。chart 默认不设置 `resources`，因此生产集群应显式设置 requests/limits。以下估算是在 Kubernetes 1.20+ 上、启用 NVIDIA 共享且调度变动正常的前提下，针对 HAMi v2.8.0 的实用规划基线。
+可通过 Helm values 按组件配置。chart 默认不设置 `resources`，因此生产集群应显式设置 requests/limits。以下估算是在 Kubernetes 1.23+ 上、启用 NVIDIA 共享且调度变动正常的前提下，针对 HAMi v2.8.0 的实用规划基线。
 
 - **估算假设：** 1 个调度器副本（`kube-scheduler` + HAMi extender），每个 GPU 节点 1 个 device-plugin DaemonSet Pod（`device-plugin` + `vgpu-monitor`），Prometheus 每 15-30 秒抓取一次，且没有异常的 Pod 创建高峰。
 
