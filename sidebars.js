@@ -81,6 +81,7 @@ module.exports = {
             "installation/gke-installation",
             "installation/tke-installation",
             "installation/openshift-installation",
+            "installation/cce-installation",
           ],
         },
         {

@@ -53,7 +53,8 @@
             "installation/aws-installation",
             "installation/k3s-installation",
             "installation/gke-installation",
-            "installation/tke-installation"
+            "installation/tke-installation",
+            "installation/cce-installation"
           ]
         },
         {
