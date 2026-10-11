@@ -118,24 +118,27 @@ virt-install version 5.1.0
 Ubuntu ISO is present
 ```
 
-Identify the GPU, its audio function, and their IOMMU group:
+Identify the GPU, its audio function, and every device in the GPU's IOMMU group:
 
 ```bash
-lspci -nnk -s 01:00.0
-lspci -nnk -s 01:00.1
-readlink /sys/bus/pci/devices/0000:01:00.0/iommu_group
-readlink /sys/bus/pci/devices/0000:01:00.1/iommu_group
+GPU_GROUP="$(basename "$(readlink /sys/bus/pci/devices/0000:01:00.0/iommu_group)")"
+printf 'GPU IOMMU group: %s\n' "$GPU_GROUP"
+for dev in /sys/kernel/iommu_groups/"$GPU_GROUP"/devices/*; do
+  pci="${dev##*/}"
+  printf '%s ' "$pci"
+  lspci -nn -s "${pci#0000:}"
+  lspci -nnk -s "${pci#0000:}" | awk '/Kernel driver in use/ {print "  " $0}'
+done
 ```
 
 Output from the tested host:
 
 ```text
-01:00.0 NVIDIA GA107M GeForce RTX 3050 Mobile [10de:25a2]
-  Kernel driver in use: nvidia
-01:00.1 NVIDIA GA107 High Definition Audio Controller [10de:2291]
-  Kernel driver in use: snd_hda_intel
-0000:01:00.0 -> group 11
-0000:01:00.1 -> group 11
+GPU IOMMU group: 11
+0000:01:00.0 01:00.0 VGA compatible controller [0300]: NVIDIA Corporation GA107M [GeForce RTX 3050 Mobile] [10de:25a2]
+    Kernel driver in use: nvidia
+0000:01:00.1 01:00.1 Audio device [0403]: NVIDIA Corporation GA107 High Definition Audio Controller [10de:2291]
+    Kernel driver in use: snd_hda_intel
 ```
 
 Verify that the host display does not depend on the NVIDIA GPU:
@@ -162,7 +165,7 @@ OpenGL vendor: AMD
 OpenGL renderer: AMD Radeon Graphics
 ```
 
-Gate: continue only if the NVIDIA VGA and HDA functions can move together and the host has a separate working display path.
+Gate: every member of the IOMMU group moves together. Continue only if every listed device can safely be detached from the host and the host has a separate working display path.
 
 ## Fresh VM Creation and qcow2 Rollback Boundary
 
@@ -396,16 +399,28 @@ nbfc_service inactive
 nvidia-persistenced inactive
 ```
 
-Attach the GPU and audio XML to the shut-off VM. The XML files are in [`examples/18-local-gpu-passthrough/libvirt/rtx-gpu.xml`](./examples/18-local-gpu-passthrough/libvirt/rtx-gpu.xml) and [`examples/18-local-gpu-passthrough/libvirt/rtx-audio.xml`](./examples/18-local-gpu-passthrough/libvirt/rtx-audio.xml).
+Create the GPU and audio hostdev XML files, then attach them to the shut-off VM. The same XML is also kept in [`rtx-gpu.xml`](./examples/20-local-gpu-passthrough/libvirt/rtx-gpu.xml) and [`rtx-audio.xml`](./examples/20-local-gpu-passthrough/libvirt/rtx-audio.xml) for reference.
 
 ```bash
+cat >rtx-gpu.xml <<'EOF'
+<hostdev mode='subsystem' type='pci' managed='yes'>
+  <source>
+    <address domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>
+  </source>
+</hostdev>
+EOF
+
+cat >rtx-audio.xml <<'EOF'
+<hostdev mode='subsystem' type='pci' managed='yes'>
+  <source>
+    <address domain='0x0000' bus='0x01' slot='0x00' function='0x1'/>
+  </source>
+</hostdev>
+EOF
+
 virsh -c qemu:///system domstate "$DOMAIN"
-virsh -c qemu:///system attach-device "$DOMAIN" \
-  tutorials/labs/examples/18-local-gpu-passthrough/libvirt/rtx-gpu.xml \
-  --config
-virsh -c qemu:///system attach-device "$DOMAIN" \
-  tutorials/labs/examples/18-local-gpu-passthrough/libvirt/rtx-audio.xml \
-  --config
+virsh -c qemu:///system attach-device "$DOMAIN" ./rtx-gpu.xml --config
+virsh -c qemu:///system attach-device "$DOMAIN" ./rtx-audio.xml --config
 ```
 
 Output:
@@ -1026,7 +1041,7 @@ Update Complete. Happy Helming!
 hami/hami 2.10.0 2.10.0
 ```
 
-Create `/tmp/hami-v2-values.yaml`. The same content is available in [`examples/18-local-gpu-passthrough/hami-values.yaml`](./examples/18-local-gpu-passthrough/hami-values.yaml).
+Create `/tmp/hami-v2-values.yaml`. The same content is available in [`examples/20-local-gpu-passthrough/hami-values.yaml`](./examples/20-local-gpu-passthrough/hami-values.yaml).
 
 ```bash
 cat >/tmp/hami-v2-values.yaml <<'EOF'
@@ -1215,11 +1230,11 @@ Memory enforcement depends on the process path. Use the container main process a
 
 This lab intentionally separates the process paths:
 
-| Process path                          | Status in this lab                                  |
-| ------------------------------------- | --------------------------------------------------- |
-| Container main process                | Validated below with `nvidia-smi` and `vectorAdd`.  |
-| Later SSH session or login shell      | Not claimed as a success path in this Lab 20 draft. |
-| Ad hoc `kubectl exec` troubleshooting | Useful for inspection, but not the memory proof.    |
+| Process path                          | Status in this lab                                 |
+| ------------------------------------- | -------------------------------------------------- |
+| Container main process                | Validated below with `nvidia-smi` and `vectorAdd`. |
+| Later SSH session or login shell      | Not claimed as a success path in this lab.         |
+| Ad hoc `kubectl exec` troubleshooting | Useful for inspection, but not the memory proof.   |
 
 Run `nvidia-smi` and `vectorAdd` from the container's main command:
 
