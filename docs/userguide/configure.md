@@ -79,6 +79,8 @@ The device plugin reads node labels when it starts. If you change the labels lat
 
 In the example below, nodes labeled `gpu.example.com/pool=mig` use MIG mode. Nodes with model t4 or l4 use hami-core mode with a split count of 4. All other nodes use a split count of 10.
 
+If a node has both labels, both entries are applied in list order. The later entry overrides the settings, so it uses hami-core mode with a split count of 4.
+
 ```json
 {
   "nodeconfig": [
