@@ -5,21 +5,9 @@ sidebar_label: HAMi on ACK
 
 This guide covers the ACK-specific configuration for installing HAMi on NVIDIA GPU nodes in [Alibaba Cloud Container Service for Kubernetes (ACK)](https://www.alibabacloud.com/product/kubernetes). For everything else, follow [Prerequisites](./prerequisites.md) and [Online Installation from Helm](./online-installation.md).
 
-The steps were verified in the following environment:
-
-| Component         | Version                                      |
-| ----------------- | -------------------------------------------- |
-| Cluster           | ACK managed cluster, China (Hangzhou) region |
-| Node type         | `ecs.gn6i-c4g1.xlarge`, 1 × Tesla T4         |
-| Operating system  | Ubuntu 24.04.3 LTS                           |
-| Kubernetes        | `v1.36.2-aliyun.1`                           |
-| Container runtime | containerd `2.3.4`                           |
-| NVIDIA driver     | `535.161.07`, CUDA `12.2`, installed by ACK  |
-| HAMi              | `2.10.0`                                     |
-
 ## Prepare the GPU node pool
 
-When creating the node pool, select a GPU instance type. ACK installs the NVIDIA driver and NVIDIA Container Toolkit on the node, so GPU Operator is not required. This guide was verified without ACK's shared GPU scheduling components.
+When creating the node pool, select a GPU instance type. ACK installs the NVIDIA driver and NVIDIA Container Toolkit on the node, so GPU Operator is not required. ACK's shared GPU scheduling components are not required either.
 
 ACK also sets `nvidia-container-runtime` as the binary of containerd's default `runc` runtime. Every container therefore uses the NVIDIA runtime, and HAMi does not need a RuntimeClass. To confirm, run on the GPU node:
 
@@ -38,7 +26,7 @@ Because ACK installs the driver directly on the host, with `nvidia-smi` in `/usr
 
 ## Disable ACK's NVIDIA Device Plugin {#disable-ack-device-plugin}
 
-ACK installs the `ack-nvidia-device-plugin` add-on by default. It runs as the `kube-system/ack-nvidia-device-plugin` DaemonSet on nodes labeled `ack.node.gpu.schedule=default`, a label ACK adds to GPU nodes. It registers `nvidia.com/gpu` through the same kubelet socket as HAMi, so only one of them can be active on a node. See [Pods see the whole GPU](#pods-see-the-whole-gpu) for what happens when both run.
+ACK installs the `ack-nvidia-device-plugin` add-on by default. It runs as the `kube-system/ack-nvidia-device-plugin` DaemonSet on nodes labeled `ack.node.gpu.schedule=default`, a label ACK adds to GPU nodes. It registers `nvidia.com/gpu` through the same kubelet socket as HAMi's Device Plugin, so only one of them can be active on a node. See [Pods see the whole GPU](#pods-see-the-whole-gpu) for what happens when both run.
 
 Use one of the following methods.
 
@@ -84,36 +72,21 @@ kubectl label node <node-name> gpu=on
 
 ## Copy the HAMi images to Container Registry {#copy-the-hami-images}
 
-Nodes in Chinese mainland regions cannot reach Docker Hub. The HAMi chart pulls `docker.io/projecthami/hami` and `docker.io/liangjw/kube-webhook-certgen`, so the `hami-admission-create` Job fails with an error similar to:
+Nodes in Chinese mainland regions cannot reach Docker Hub, so the `hami` and `kube-webhook-certgen` images fail to pull. The chart's default `kube-scheduler` image comes from `registry.cn-hangzhou.aliyuncs.com` and pulls normally.
 
-```text
-Failed to pull image "docker.io/liangjw/kube-webhook-certgen:v1.1.1": ... dial tcp 157.240.17.35:443: i/o timeout
-```
-
-The chart's default `kube-scheduler` image comes from `registry.cn-hangzhou.aliyuncs.com` and pulls normally.
-
-Copy the two Docker Hub images to an Alibaba Cloud Container Registry (ACR) instance in the same region as the cluster. Use either edition:
+Copy the two Docker Hub images to an Alibaba Cloud Container Registry (ACR) instance in the same region as the cluster, and make the `hami` and `kube-webhook-certgen` repositories public so that the nodes can pull them without credentials. Use either edition:
 
 - ACR Enterprise Edition can sync the images from Docker Hub. See [Create an ACR Enterprise Edition instance](https://www.alibabacloud.com/help/en/acr/user-guide/create-a-container-registry-enterprise-edition-instance) and [Subscribe to images from overseas sources](https://www.alibabacloud.com/help/en/acr/user-guide/subscribe-to-image-tags).
 - ACR Personal Edition requires you to push the images yourself. See [Push and pull images by using a Personal Edition instance](https://www.alibabacloud.com/help/en/acr/user-guide/use-a-container-registry-personal-edition-instance-to-push-and-pull-images).
 
-Make the `hami` and `kube-webhook-certgen` repositories public so that the nodes can pull them without credentials.
-
-To push the images yourself, log in to the instance's public endpoint from a machine that can reach Docker Hub:
+To push the images yourself, log in to the instance's public endpoint from a machine that can reach Docker Hub, and copy the images. `--all` copies the image for every platform:
 
 ```bash
-docker login --username=<username> registry.cn-<personal-instance-region>.aliyuncs.com
-```
-
-Copy the images with `docker buildx imagetools create`. It copies the image index with every platform, so the `linux/amd64` image is included even when you run it on an arm64 machine:
-
-```bash
-docker buildx imagetools create \
-  --tag registry.cn-<personal-instance-region>.aliyuncs.com/<namespace>/hami:v2.10.0 \
-  docker.io/projecthami/hami:v2.10.0
-docker buildx imagetools create \
-  --tag registry.cn-<personal-instance-region>.aliyuncs.com/<namespace>/kube-webhook-certgen:v1.1.1 \
-  docker.io/liangjw/kube-webhook-certgen:v1.1.1
+skopeo login --username=<username> registry.cn-<personal-instance-region>.aliyuncs.com
+skopeo copy --all docker://docker.io/projecthami/hami:v2.10.0 \
+  docker://registry.cn-<personal-instance-region>.aliyuncs.com/<namespace>/hami:v2.10.0
+skopeo copy --all docker://docker.io/liangjw/kube-webhook-certgen:v1.1.1 \
+  docker://registry.cn-<personal-instance-region>.aliyuncs.com/<namespace>/kube-webhook-certgen:v1.1.1
 ```
 
 ## Grant the HAMi scheduler access to DRA resources {#grant-dra-access}
@@ -206,7 +179,7 @@ NAME             HOLDER                                                         
 hami-scheduler   hami-scheduler-566cc89c9d-68f6n_8ed04e0d-8e3d-457a-a866-76fc43de07f5   38s
 ```
 
-Then confirm that HAMi registered the GPU. With the default `devicePlugin.deviceSplitCount` of 10, a single T4 is reported as 10 `nvidia.com/gpu` resources:
+Then confirm that HAMi registered the GPU. With the default `devicePlugin.deviceSplitCount` of 10, a single GPU is reported as 10 `nvidia.com/gpu` resources:
 
 ```bash
 kubectl get node <node-name> -o jsonpath='{.status.allocatable.nvidia\.com/gpu}{"\n"}'
@@ -220,7 +193,7 @@ kubectl get node <node-name> -o jsonpath='{.status.allocatable.nvidia\.com/gpu}{
 
 ### Pods see the whole GPU {#pods-see-the-whole-gpu}
 
-If ACK's Device Plugin runs on a node alongside HAMi, the last plugin to register takes over `nvidia.com/gpu`. When ACK's plugin wins, the node's `nvidia.com/gpu` allocatable drops from the HAMi value (for example, `10`) to the physical GPU count. New Pods start without errors, but HAMi's limits no longer apply.
+If ACK's Device Plugin runs on a node alongside HAMi, the last Device Plugin to register takes over `nvidia.com/gpu`. When ACK's Device Plugin wins, the node's `nvidia.com/gpu` allocatable drops from the HAMi value (for example, `10`) to the physical GPU count. New Pods start without errors, but HAMi's limits no longer apply.
 
 To recover:
 
@@ -233,15 +206,15 @@ To recover:
    ```
 
 3. Confirm that the node's `nvidia.com/gpu` allocatable is back to the HAMi value.
-4. Recreate the Pods that started while ACK's plugin was active.
+4. Recreate the Pods that started while ACK's Device Plugin was active.
 
 ### NUMA error in Device Plugin logs
 
-On the verified T4 instance, `hami-device-plugin` logs the following error every registration cycle:
+On an `ecs.gn6i-c4g1.xlarge` instance, which has a single NUMA node, `hami-device-plugin` logs the following error every registration cycle:
 
 ```text
 E1010 16:47:54.742604   36382 register.go:168] "failed to get numa information from sysfs" idx=0
 I1010 16:47:54.742629   36382 register.go:204] Registered device id=0, memory=15360MB, type=NVIDIA-Tesla T4, numa=0, health=true
 ```
 
-HAMi reads the GPU's NUMA node from `/sys/bus/pci/devices/<bus-id>/numa_node`. On this single-NUMA virtual machine, the kernel reports `-1` for every PCI device, including the GPU. HAMi cannot determine a node, logs the error, and falls back to `numa=0`, which matches the actual topology. The device still registers with `health=true`, and GPU workloads run normally. You can ignore this error on single-NUMA instances.
+HAMi reads the GPU's NUMA node from `/sys/bus/pci/devices/<bus-id>/numa_node`. On this instance, the kernel reports `-1` for every PCI device, including the GPU. HAMi cannot determine the NUMA node, logs the error, and falls back to `numa=0`, which matches the actual topology. The device still registers with `health=true`, and GPU workloads run normally. You can ignore this error on single-NUMA instances.

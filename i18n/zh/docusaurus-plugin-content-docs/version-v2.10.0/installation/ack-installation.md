@@ -6,21 +6,9 @@ translated: true
 
 本文介绍在[阿里云容器服务 Kubernetes 版（ACK）](https://www.aliyun.com/product/kubernetes)的 NVIDIA GPU 节点上安装 HAMi 所需的 ACK 配置。其他通用步骤见[安装前提条件](./prerequisites.md)和[通过 Helm 在线安装](./online-installation.md)。
 
-以下步骤已在如下环境中验证：
-
-| 组件        | 版本                                   |
-| ----------- | -------------------------------------- |
-| 集群        | ACK 托管集群，华东1（杭州）地域        |
-| 节点类型    | `ecs.gn6i-c4g1.xlarge`，1 × Tesla T4   |
-| 操作系统    | Ubuntu 24.04.3 LTS                     |
-| Kubernetes  | `v1.36.2-aliyun.1`                     |
-| 容器运行时  | containerd `2.3.4`                     |
-| NVIDIA 驱动 | `535.161.07`，CUDA `12.2`，由 ACK 安装 |
-| HAMi        | `2.10.0`                               |
-
 ## 准备 GPU 节点池
 
-创建节点池时，选择 GPU 实例规格。ACK 会在节点上安装 NVIDIA 驱动和 NVIDIA Container Toolkit，因此无需部署 GPU Operator。本文在未安装 ACK 共享 GPU 调度组件的情况下验证。
+创建节点池时，选择 GPU 实例规格。ACK 会在节点上安装 NVIDIA 驱动和 NVIDIA Container Toolkit，因此无需部署 GPU Operator，也无需安装 ACK 共享 GPU 调度组件。
 
 ACK 还会将 containerd 默认 `runc` 运行时的可执行文件设置为 `nvidia-container-runtime`。所有容器都会使用 NVIDIA 运行时，HAMi 无需配置 RuntimeClass。可在 GPU 节点上运行以下命令确认：
 
@@ -39,7 +27,7 @@ grep -A1 'runtimes.runc.options' /etc/containerd/config.toml
 
 ## 禁用 ACK 自带的 NVIDIA Device Plugin {#disable-ack-device-plugin}
 
-ACK 默认会安装 `ack-nvidia-device-plugin` 组件，即 DaemonSet `kube-system/ack-nvidia-device-plugin`。它运行在带有 `ack.node.gpu.schedule=default` 标签的节点上，ACK 会为 GPU 节点自动添加该标签。它与 HAMi 通过同一个 kubelet socket 注册 `nvidia.com/gpu`，因此同一节点上只能有一个生效。两者同时运行的后果见 [Pod 能看到整张 GPU](#pods-see-the-whole-gpu)。
+ACK 默认会安装 `ack-nvidia-device-plugin` 组件，即 DaemonSet `kube-system/ack-nvidia-device-plugin`。它运行在带有 `ack.node.gpu.schedule=default` 标签的节点上，ACK 会为 GPU 节点自动添加该标签。它与 HAMi 的 Device Plugin 通过同一个 kubelet socket 注册 `nvidia.com/gpu`，因此同一节点上只能有一个生效。两者同时运行的后果见 [Pod 能看到整张 GPU](#pods-see-the-whole-gpu)。
 
 可以使用以下任一方法。
 
@@ -85,36 +73,21 @@ kubectl label node <node-name> gpu=on
 
 ## 将 HAMi 镜像复制到容器镜像服务 {#copy-the-hami-images}
 
-中国内地地域的节点无法访问 Docker Hub。HAMi Chart 会拉取 `docker.io/projecthami/hami` 和 `docker.io/liangjw/kube-webhook-certgen`，因此 `hami-admission-create` Job 会报类似以下错误：
+中国内地地域的节点无法访问 Docker Hub，因此 `hami` 和 `kube-webhook-certgen` 镜像会拉取失败。Chart 默认的 `kube-scheduler` 镜像来自 `registry.cn-hangzhou.aliyuncs.com`，可以正常拉取。
 
-```text
-Failed to pull image "docker.io/liangjw/kube-webhook-certgen:v1.1.1": ... dial tcp 157.240.17.35:443: i/o timeout
-```
-
-Chart 默认的 `kube-scheduler` 镜像来自 `registry.cn-hangzhou.aliyuncs.com`，可以正常拉取。
-
-将这两个 Docker Hub 镜像复制到与集群同地域的阿里云容器镜像服务（ACR）实例中。可以使用以下任一版本：
+将这两个 Docker Hub 镜像复制到与集群同地域的阿里云容器镜像服务（ACR）实例中，并将 `hami` 和 `kube-webhook-certgen` 仓库设置为公开，使节点无需凭证即可拉取。可以使用以下任一版本：
 
 - ACR 企业版可以从 Docker Hub 同步镜像。见[创建企业版实例](https://help.aliyun.com/zh/acr/user-guide/create-a-container-registry-enterprise-edition-instance)和[通过制品订阅获取海外源镜像](https://help.aliyun.com/zh/acr/user-guide/subscribe-to-image-tags)。
 - ACR 个人版需要自行推送镜像。见[使用个人版实例推送拉取镜像](https://help.aliyun.com/zh/acr/user-guide/use-a-container-registry-personal-edition-instance-to-push-and-pull-images)。
 
-将 `hami` 和 `kube-webhook-certgen` 仓库设置为公开，使节点无需凭证即可拉取。
-
-自行推送镜像时，在一台能访问 Docker Hub 的机器上登录实例的公网地址：
+自行推送镜像时，在一台能访问 Docker Hub 的机器上登录实例的公网地址，然后复制镜像。`--all` 会复制镜像的所有平台：
 
 ```bash
-docker login --username=<username> registry.cn-<个人版实例所在的地域>.aliyuncs.com
-```
-
-使用 `docker buildx imagetools create` 复制镜像。该命令会复制包含所有平台的镜像索引，因此即使在 arm64 机器上运行，也会包含 `linux/amd64` 镜像：
-
-```bash
-docker buildx imagetools create \
-  --tag registry.cn-<个人版实例所在的地域>.aliyuncs.com/<namespace>/hami:v2.10.0 \
-  docker.io/projecthami/hami:v2.10.0
-docker buildx imagetools create \
-  --tag registry.cn-<个人版实例所在的地域>.aliyuncs.com/<namespace>/kube-webhook-certgen:v1.1.1 \
-  docker.io/liangjw/kube-webhook-certgen:v1.1.1
+skopeo login --username=<username> registry.cn-<个人版实例所在的地域>.aliyuncs.com
+skopeo copy --all docker://docker.io/projecthami/hami:v2.10.0 \
+  docker://registry.cn-<个人版实例所在的地域>.aliyuncs.com/<namespace>/hami:v2.10.0
+skopeo copy --all docker://docker.io/liangjw/kube-webhook-certgen:v1.1.1 \
+  docker://registry.cn-<个人版实例所在的地域>.aliyuncs.com/<namespace>/kube-webhook-certgen:v1.1.1
 ```
 
 ## 为 HAMi 调度器授予 DRA 资源访问权限 {#grant-dra-access}
@@ -207,7 +180,7 @@ NAME             HOLDER                                                         
 hami-scheduler   hami-scheduler-566cc89c9d-68f6n_8ed04e0d-8e3d-457a-a866-76fc43de07f5   38s
 ```
 
-然后确认 HAMi 已注册 GPU。`devicePlugin.deviceSplitCount` 默认为 10，因此一张 T4 会上报 10 个 `nvidia.com/gpu`：
+然后确认 HAMi 已注册 GPU。`devicePlugin.deviceSplitCount` 默认为 10，因此一张 GPU 会上报 10 个 `nvidia.com/gpu`：
 
 ```bash
 kubectl get node <node-name> -o jsonpath='{.status.allocatable.nvidia\.com/gpu}{"\n"}'
@@ -221,7 +194,7 @@ kubectl get node <node-name> -o jsonpath='{.status.allocatable.nvidia\.com/gpu}{
 
 ### Pod 能看到整张 GPU {#pods-see-the-whole-gpu}
 
-如果节点上 ACK 自带的 Device Plugin 与 HAMi 同时运行，最后注册的插件会接管 `nvidia.com/gpu`。当 ACK 的插件接管后，节点的 `nvidia.com/gpu` allocatable 会从 HAMi 上报的值（例如 `10`）降为物理 GPU 数量。新建的 Pod 可以正常启动，不会报错，但 HAMi 的限制不再生效。
+如果节点上 ACK 自带的 Device Plugin 与 HAMi 同时运行，最后注册的 Device Plugin 会接管 `nvidia.com/gpu`。当 ACK 的 Device Plugin 接管后，节点的 `nvidia.com/gpu` allocatable 会从 HAMi 上报的值（例如 `10`）降为物理 GPU 数量。新建的 Pod 可以正常启动，不会报错，但 HAMi 的限制不再生效。
 
 恢复步骤：
 
@@ -234,15 +207,15 @@ kubectl get node <node-name> -o jsonpath='{.status.allocatable.nvidia\.com/gpu}{
    ```
 
 3. 确认节点的 `nvidia.com/gpu` allocatable 恢复为 HAMi 上报的值。
-4. 重建在 ACK 插件生效期间启动的 Pod。
+4. 重建在 ACK 的 Device Plugin 生效期间启动的 Pod。
 
 ### Device Plugin 日志中出现 NUMA 错误
 
-在验证用的 T4 实例上，`hami-device-plugin` 每次注册设备时都会输出以下错误：
+在只有一个 NUMA 节点的 `ecs.gn6i-c4g1.xlarge` 实例上，`hami-device-plugin` 每次注册设备时都会输出以下错误：
 
 ```text
 E1010 16:47:54.742604   36382 register.go:168] "failed to get numa information from sysfs" idx=0
 I1010 16:47:54.742629   36382 register.go:204] Registered device id=0, memory=15360MB, type=NVIDIA-Tesla T4, numa=0, health=true
 ```
 
-HAMi 从 `/sys/bus/pci/devices/<bus-id>/numa_node` 读取 GPU 所属的 NUMA 节点。在这台单 NUMA 节点的虚拟机上，内核为包括 GPU 在内的所有 PCI 设备上报 `-1`。HAMi 无法确定节点，于是输出这条错误并回退为 `numa=0`，与实际拓扑一致。设备仍以 `health=true` 注册成功，GPU 负载运行正常。在单 NUMA 节点的实例上可以忽略这条错误。
+HAMi 从 `/sys/bus/pci/devices/<bus-id>/numa_node` 读取 GPU 所属的 NUMA 节点。在该实例上，内核为包括 GPU 在内的所有 PCI 设备上报 `-1`。HAMi 无法确定 NUMA 节点，于是输出这条错误并回退为 `numa=0`，与实际拓扑一致。设备仍以 `health=true` 注册成功，GPU 负载运行正常。在单 NUMA 节点的实例上可以忽略这条错误。
