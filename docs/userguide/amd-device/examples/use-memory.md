@@ -1,0 +1,23 @@
+---
+title: Allocate device memory
+---
+
+To cap the device memory of a pod, set `amd.com/gpumem` in MiB together with `amd.com/gpu`.
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: amd-gpu-memory
+spec:
+  containers:
+    - name: rocm
+      image: rocm/dev-ubuntu-24.04:7.2.4
+      command: ["bash", "-c", "sleep infinity"]
+      securityContext:
+        allowPrivilegeEscalation: false
+      resources:
+        limits:
+          amd.com/gpu: 1
+          amd.com/gpumem: 4096 # MiB of device memory this pod may allocate on the GPU (optional, integer)
+```

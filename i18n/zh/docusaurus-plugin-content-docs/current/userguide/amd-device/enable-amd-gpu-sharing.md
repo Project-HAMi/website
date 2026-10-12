@@ -6,192 +6,61 @@ translated: true
 
 ## 简介
 
-HAMi 支持共享 AMD Instinct/ROCm GPU。工作负载通过标准 Kubernetes 资源请求显存和算力份额，无需修改应用代码。
+HAMi 通过以下资源在 Pod 之间共享 AMD GPU（Radeon 和 Instinct）：
 
-**GPU 共享**: 每个任务可以只占用一部分显卡，多个任务可以共享一张显卡。
+- `amd.com/gpu`：GPU 数量
+- `amd.com/gpumem`：每张 GPU 的设备显存，单位 MiB
+- `amd.com/gpumem-percentage`：每张 GPU 的设备显存占其 VRAM 的百分比（1-100）；同时设置 `amd.com/gpumem` 时以 `amd.com/gpumem` 为准
+- `amd.com/gpucores`：每张 GPU 的计算单元百分比（1-100）
 
-**可限制分配的显存大小**: 可以用显存值（MiB）分配 GPU，HAMi 会确保任务使用的显存不会超过分配数值。
+未申请显存和算力的 Pod 获得整张 GPU。
 
-**可限制计算单元数量**: 可以指定任务使用的算力比例（例如 `amd.com/gpucores: 25` 代表使用约 25% CU）。
+### 部署
 
-:::caution
+1. 照常安装 HAMi chart。它会向调度器注册 AMD 资源（`values.yaml` 中的 `devices.amd.*`）。
+2. 在 AMD 节点上安装 [amd-device-plugin](https://github.com/Project-HAMi/amd-device-plugin)。它把每张 GPU 发布到节点注解 `hami.io/node-amd-register`，为 Pod 分配 CU 切片和显存限制；当 DRM 设备无法打开，或 AMD Device Metrics Exporter 报告 GPU 不健康时，将该 GPU 标记为不健康。
 
-请使用 [amd-device-plugin](https://github.com/Project-HAMi/amd-device-plugin) 镜像和 Helm chart。不要用上游 ROCm `k8s-device-plugin` 镜像来跑 HAMi soft vGPU。
+显存限制由 [amd-hami-core](https://github.com/Project-HAMi/amd-hami-core)（`libamvgpu`，由插件注入）执行；如果节点具有 `dmem` cgroup 控制器并使用 systemd cgroup 驱动，内核也会同时限制。
 
-显存隔离依赖 glibc `LD_AUDIT` 加载 `libamvgpu.so`，当前需要 `GLIBC_2.34` 及以上符号。基于更旧 glibc（例如 Ubuntu 20.04、RHEL 8）或 musl/Alpine 的工作负载镜像暂不支持。详见 [HAMi#2265](https://github.com/Project-HAMi/HAMi/issues/2265)。
+显存限制的前提条件和局限：
 
-:::
+- hook 要求工作负载镜像中的 glibc 为 2.34 或更新版本。在 musl、静态链接或 glibc 更旧的镜像上不会加载 hook，Pod 将在没有进程内上限的情况下运行；插件的 `dp.muslFailClosed.enabled` 设置（默认关闭，实验性）会改为拒绝此类 Pod。
+- 内核层限制需要启用 `dmem` 控制器的 cgroup v2（内核 6.14 或更新版本）和 systemd cgroup 驱动；否则只有 hook 执行限制。
+- hook 在进程内工作，因此去掉 `LD_AUDIT` 的进程可以绕过它。整卡请求既没有 hook，也没有 `dmem` 限制。
+- 示例 Pod 以镜像的默认用户（root）运行，并关闭了权限提升。非 root Pod 还需要设置 `runAsUser`，以及节点上 `video` 和 `render` 组的 `supplementalGroups`，这些组 ID 因节点而异。
+- amd-device-plugin 的版本要与镜像所属的 chart 版本一致；来自 `main` 的 chart 需要用 `main` 构建的镜像。
 
-## 节点需求
-
-需要部署以下组件：
-
-| 组件 | 作用 | 关键要求 |
-| --- | --- | --- |
-| HAMi | 调度、设备分配和准入 | scheduler 正常运行，并管理三个 AMD 资源 |
-| AMD GPU Operator（推荐） | 驱动和 ROCm 环境 | 禁用 Operator 原生 device-plugin |
-| [amd-device-plugin](https://github.com/Project-HAMi/amd-device-plugin) | 注册 AMD 资源、分配 CU、注入容器运行时限制 | 部署 chart/镜像 `0.0.1` 或更新版本；通过 amd-smi/libdrm 发现显存与 CU |
-
-节点还必须具备可用的 AMD 驱动和 ROCm（已在 ROCm 7.0.2 上验证）。可用以下命令确认：
-
-```bash
-amd-smi static --gpu 0
-```
-
-输出应包含设备型号、VRAM 和 `NUM_COMPUTE_UNITS`。
-
-## 开启 AMD GPU 共享
-
-### 配置 HAMi
-
-安装 HAMi 后，确认 scheduler 管理所有 AMD vGPU 资源。values 文件中应包含：
-
-```yaml
-devices:
-  amd:
-    customresources:
-      - amd.com/gpu
-      - amd.com/gpumem
-      - amd.com/gpucores
-```
-
-安装或升级后确认 scheduler 正常运行：
-
-```bash
-kubectl -n kube-system get pods | grep hami-scheduler
-```
-
-### 禁用 AMD GPU Operator device-plugin
-
-若使用 [AMD GPU Operator](https://github.com/ROCm/gpu-operator) 管理驱动和 ROCm，请关闭其原生 device-plugin，避免与 HAMi `amd-device-plugin` 竞争 `amd.com/gpu`：
-
-```bash
-kubectl -n kube-amd-gpu patch deviceconfig default --type=merge -p \
-  '{"spec":{"devicePlugin":{"enableDevicePlugin":false}}}'
-```
-
-`amd-device-plugin` 通过 amd-smi/libdrm 读取每张卡的显存、CU、UUID 和产品名称，因此对 HAMi soft vGPU 而言，Operator node-labeller 是可选的。
-
-### 部署 amd-device-plugin
-
-在所有 AMD GPU 节点上部署 [amd-device-plugin](https://github.com/Project-HAMi/amd-device-plugin)。Chart `0.0.1` 默认镜像为 `ghcr.io/project-hami/amd-device-plugin:0.0.1`，并通过 `postStart` lifecycle hook 将镜像内的 `libamvgpu.so` 安装到节点：
-
-```bash
-helm upgrade --install amd-gpu \
-  https://github.com/Project-HAMi/amd-device-plugin/releases/download/amd-gpu-helm-0.0.1/amd-gpu-0.0.1.tgz \
-  --namespace kube-system \
-  --create-namespace
-```
-
-若环境中 GHCR 包为私有，请配置 `imagePullSecrets`。也可以 clone 仓库后从 `./helm/amd-gpu` 安装。
-
-等待 DaemonSet 就绪：
-
-```bash
-kubectl -n kube-system rollout status ds/amd-gpu-device-plugin-daemonset
-```
-
-确认 device-plugin 已将完整设备信息注册给 HAMi：
-
-```bash
-kubectl get node <node-name> -o jsonpath='{.metadata.annotations.hami\.io/node-amd-register}'
-```
-
-结果必须包含 `devmem` 和 `devcore`。例如 MI300X VF：
-
-```json
-[
-  {
-    "id": "8eff74b5-0000-1000-801b-b56457addd1b",
-    "index": 0,
-    "count": 10,
-    "devmem": 196288,
-    "devcore": 304,
-    "type": "AMD Instinct MI300X VF",
-    "numa": 0,
-    "health": true,
-    "devicevendor": "amd",
-    "custominfo": {
-      "pciBDF": "0000:83:00.0"
-    }
-  }
-]
-```
-
-## 运行 AMD vGPU 任务
-
-通过 `amd.com/gpu`、`amd.com/gpumem` 和 `amd.com/gpucores` 请求 AMD GPU：
-
-- `amd.com/gpu`：Pod 需要的 AMD GPU 数量
-- `amd.com/gpumem`：每张 GPU 的显存配额，单位为 MiB
-- `amd.com/gpucores`：每张 GPU 的 CU 配额百分比，范围为 1-100；例如 `25` 在 304 CU 的设备上约分配 76 CU
-
-请使用满足上述 `GLIBC_2.34` 要求的 glibc 工作负载镜像（例如较新的 `rocm/pytorch` 标签）：
+### 运行 AMD 任务
 
 ```yaml
 apiVersion: v1
 kind: Pod
 metadata:
-  name: amd-vgpu-example
+  name: amd-gpu-cores
 spec:
-  schedulerName: hami-scheduler
-  restartPolicy: Never
   containers:
-    - name: pytorch
-      image: rocm/pytorch:latest
-      command: ["bash", "-c"]
-      args:
-        - |
-          env | grep -E 'LD_AUDIT|HIP_DEVICE_MEMORY_LIMIT'
-          python3 -c 'import torch; print(torch.cuda.mem_get_info(0)); print(torch.cuda.get_device_name(0))'
-          sleep 300
+    - name: rocm
+      image: rocm/dev-ubuntu-24.04:7.2.4
+      command: ["bash", "-c", "sleep infinity"]
       resources:
-        requests:
-          amd.com/gpu: 1
-          amd.com/gpumem: 49152
-          amd.com/gpucores: 25
         limits:
           amd.com/gpu: 1
-          amd.com/gpumem: 49152
-          amd.com/gpucores: 25
+          amd.com/gpumem: 4096 # MiB
+          amd.com/gpucores: 25 # GPU 计算单元的百分比
 ```
 
-```bash
-kubectl apply -f amd-vgpu-example.yaml
-kubectl get pod amd-vgpu-example -o wide
-kubectl logs amd-vgpu-example
-```
+更多示例：
 
-成功时，日志应包含类似内容：
+- [分配整张 GPU](./examples/default-use.md)
+- [分配设备显存](./examples/use-memory.md)和[按百分比分配](./examples/use-memory-percentage.md)
+- [分配设备核心和显存](./examples/allocate-core-and-memory.md)
+- 用 `amd.com/use-gputype` 和 `amd.com/nouse-gputype` 选择或避开某种 GPU 类型：[选择](./examples/specify-card-type-to-use.md)、[避开](./examples/specify-card-type-not-use.md)
+- 用 `amd.com/use-gpu-uuid` 和 `amd.com/nouse-gpu-uuid` 按 UUID 选择或避开 GPU：[选择](./examples/specify-uuid-to-use.md)、[避开](./examples/specify-uuid-not-use.md)
 
-```text
-LD_AUDIT=/usr/local/vgpu/libamvgpu.so
-HIP_DEVICE_MEMORY_LIMIT=49152m
-(51539607552, 51539607552)
-AMD Instinct MI300X VF
-```
+### 注意事项
 
-`51539607552` 为字节，约等于 48 GiB。可同时提交两个相同的 48 GiB / 25% CU 工作负载，验证共享和并发。
-
-## 常见问题
-
-| 症状 | 处理 |
-| --- | --- |
-| `node unregistered` | 检查 `amd-device-plugin` 是否运行，以及 `hami.io/node-amd-register` 是否包含 `devmem`、`devcore`。必要时重启 DaemonSet。 |
-| `CardInsufficientMemory` | Pod 请求的显存超过设备剩余显存；降低 `amd.com/gpumem` 或等待其他工作负载结束。 |
-| `insufficient free CUs` | 删除已完成的 AMD vGPU 测试 Pod，并重启 `amd-device-plugin` 清理过期分配。 |
-| 容器内显存仍为物理卡大小 | 检查 Pod 环境是否有 `LD_AUDIT` 和 `HIP_DEVICE_MEMORY_LIMIT`，以及工作负载镜像的 glibc 是否兼容。 |
-| 工作负载无法启动 / 加载不了 `libamvgpu.so` | 换用 `GLIBC_2.34` 及以上的 glibc 镜像；musl/Alpine 和旧发行版暂不支持。 |
-
-测试完成后删除工作负载：
-
-```bash
-kubectl delete pod amd-vgpu-example
-```
-
-## 注意事项
-
-1. 请部署 [amd-device-plugin](https://github.com/Project-HAMi/amd-device-plugin) `0.0.1` 或更新版本（`ghcr.io/project-hami/amd-device-plugin`）。
-2. 使用 HAMi AMD soft vGPU 共享时，请保持 AMD GPU Operator 原生 device-plugin 关闭。
-3. 未设置 `amd.com/gpucores` 时，容器会获得每张已分配 GPU 的全部 CU。
-4. 当前镜像内置的 `libamvgpu.so` 分发方式是临时方案，后续将迁移到 `amd-hami-core` 正式产物。
+- **核心是 CU 掩码。** `amd.com/gpucores` 会转换为 `HSA_CU_MASK`。在 RDNA GPU 上，请求会向上取整到完整的 WGP（2 个 CU），插件会把该粒度发布为 `cuPerWGP`。掩码由 ROCm 运行时执行，并由 `libamvgpu` 固定；未经过 `LD_AUDIT` hook 启动的子进程不受限制。
+- **共享份数。** 插件会把每张 GPU 发布多次：RDNA4（gfx12）为 2 次，因为更多进程共享时其吞吐量会下降，其他为 10 次。插件 chart 中的 `dp.splitCount` 可以覆盖该值。
+- **整卡 Pod** 既没有 CU 掩码，也没有显存限制，并且不会加载 `libamvgpu`。
+- **监控。** 在插件 chart 中设置 `monitor.enabled=true` 会运行 `k8s-vgpu-monitor`。它在 9394 端口上按容器提供 `hami_vgpu_memory_used_bytes` 和 `hami_vgpu_memory_limit_bytes`，按 GPU 提供 `hami_host_gpu_memory_used_bytes`、`hami_host_gpu_utilization_ratio`、`hami_host_gpu_temperature_celsius` 和 `hami_host_gpu_power_usage_watts`，指标名称与 NVIDIA monitor 一致。不报告按容器的利用率：内核不按进程统计计算时间。
+- **调度器指标**中的 AMD 核心以 GPU 的百分比表示。
