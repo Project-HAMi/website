@@ -5,23 +5,11 @@ sidebar_label: HAMi on CCE
 
 This guide covers the CCE-specific configuration for installing HAMi on NVIDIA GPU nodes in [Huawei Cloud Cloud Container Engine (CCE)](https://www.huaweicloud.com/intl/en-us/product/cce.html). For everything else, follow [Prerequisites](./prerequisites.md) and [Online Installation from Helm](./online-installation.md).
 
-The steps were verified in the following environment:
-
-| Component         | Version                                                               |
-| ----------------- | --------------------------------------------------------------------- |
-| Cluster           | CCE Standard cluster, CN Southwest-Guiyang1 region                    |
-| Node type         | `g6.xlarge.4`, 1 × Tesla T4                                           |
-| Operating system  | Ubuntu 22.04.5 LTS                                                    |
-| Kubernetes        | `v1.36.2-r10-36.0.2.3`                                                |
-| Container runtime | containerd `2.3.4`                                                    |
-| NVIDIA driver     | `580.126.20`, CUDA `13.0`, installed by the CCE AI Suite (NVIDIA GPU) |
-| HAMi              | `2.10.0`                                                              |
-
 ## Prepare the GPU node pool
 
 Install the [CCE AI Suite (NVIDIA GPU)](https://support.huaweicloud.com/intl/en-us/usermanual-cce/cce_10_0141.html) add-on before creating the GPU node pool, and keep its default driver. GPU Operator is not required. Keep GPU virtualization disabled.
 
-The add-on installs the NVIDIA driver and NVIDIA Container Toolkit on each GPU node, with the driver under `/usr/local/nvidia`. It also adds an `nvidia` runtime to containerd, but the default runtime stays `runc`. HAMi therefore needs a RuntimeClass that points to the `nvidia` runtime. To confirm, run on the GPU node:
+The CCE AI Suite installs the NVIDIA driver and NVIDIA Container Toolkit on each GPU node, with the driver under `/usr/local/nvidia`. It also adds an `nvidia` runtime to containerd, but the default runtime stays `runc`. HAMi therefore needs a RuntimeClass that points to the `nvidia` runtime. To confirm, run on the GPU node:
 
 ```bash
 grep default_runtime_name /etc/containerd/config.toml
@@ -40,9 +28,9 @@ The cluster has no RuntimeClass by default. The HAMi chart creates one. See [Pre
 
 ## Disable CCE's NVIDIA Device Plugin {#disable-cce-device-plugin}
 
-The add-on runs the `kube-system/nvidia-gpu-device-plugin` DaemonSet on GPU nodes. It registers `nvidia.com/gpu` through the same kubelet socket as HAMi, so only one of them can be active on a node. See [Pods see the whole GPU](#pods-see-the-whole-gpu) for what happens when both run.
+The CCE AI Suite runs its device plugin as the `kube-system/nvidia-gpu-device-plugin` DaemonSet on GPU nodes. It registers `nvidia.com/gpu` through the same kubelet socket as HAMi's Device Plugin, so only one of them can be active on a node. See [Pods see the whole GPU](#pods-see-the-whole-gpu) for what happens when both run.
 
-The device plugin and the driver installer DaemonSets of the add-on both select nodes by the `accelerator` label, which CCE adds to GPU nodes. Removing that label would also stop the driver installer. Add a rule to the device plugin DaemonSet that skips nodes labeled `gpu=on`:
+The CCE AI Suite deploys the device plugin (`nvidia-gpu-device-plugin`) together with the driver installer (`nvidia-driver-installer`), and neither its console settings nor its YAML parameters can turn off the device plugin alone. The DaemonSets of both components select nodes by the `accelerator` label, which CCE adds to GPU nodes, so removing that label would also stop the driver installer. Add a rule to the device plugin DaemonSet that skips nodes labeled `gpu=on`:
 
 ```bash
 kubectl -n kube-system patch ds nvidia-gpu-device-plugin --type=json -p='[{"op":"add","path":"/spec/template/spec/affinity/nodeAffinity/requiredDuringSchedulingIgnoredDuringExecution/nodeSelectorTerms/0/matchExpressions/-","value":{"key":"gpu","operator":"NotIn","values":["on"]}}]'
@@ -76,39 +64,22 @@ The name of the driver installer DaemonSet depends on the node operating system.
 
 ## Copy the HAMi images to SWR {#copy-the-hami-images}
 
-The HAMi chart pulls images from Docker Hub and `registry.cn-hangzhou.aliyuncs.com`. On nodes without public network access, the Pods fail with errors similar to:
+The HAMi chart pulls images from Docker Hub and `registry.cn-hangzhou.aliyuncs.com`, which nodes without public network access cannot reach. Copy the three images to SoftWare Repository for Container (SWR) in the same region as the cluster.
 
-```text
-Failed to pull image "registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:v1.36.2": ... dial tcp 120.55.105.209:443: i/o timeout
-```
+First [create an organization](https://support.huaweicloud.com/intl/en-us/usermanual-swr/swr_01_0014.html). Then, on a machine that can reach Docker Hub and `registry.k8s.io`, generate a login command in the SWR console as described in [Pushing an Image](https://support.huaweicloud.com/intl/en-us/usermanual-swr/swr_01_0011.html), and run it with `skopeo login` in place of `docker login`.
 
-Copy the three images to SoftWare Repository for Container (SWR) in the same region as the cluster. First [create an organization](https://support.huaweicloud.com/intl/en-us/usermanual-swr/swr_01_0014.html). Then, on a machine that can reach Docker Hub and `registry.k8s.io`, log in to SWR with the login command generated in the SWR console. See [Pushing an Image](https://support.huaweicloud.com/intl/en-us/usermanual-swr/swr_01_0011.html).
+The chart sets the `kube-scheduler` image tag to the Kubernetes version of the cluster. For example, if `kubectl version` shows a server version of `v1.36.2-r0-36.0.13.6`, the tag is `v1.36.2`.
 
-The chart sets the `kube-scheduler` image tag to the Kubernetes version of the cluster. Find it in the server version:
+Copy the images, replacing `<region>` with the region ID, for example `cn-southwest-2`, and `v1.36.2` with the tag of your cluster. `--all` copies the image for every platform:
 
 ```bash
-kubectl version
+skopeo copy --all docker://docker.io/projecthami/hami:v2.10.0 \
+  docker://swr.<region>.myhuaweicloud.com/<organization>/hami:v2.10.0
+skopeo copy --all docker://docker.io/liangjw/kube-webhook-certgen:v1.1.1 \
+  docker://swr.<region>.myhuaweicloud.com/<organization>/kube-webhook-certgen:v1.1.1
+skopeo copy --all docker://registry.k8s.io/kube-scheduler:v1.36.2 \
+  docker://swr.<region>.myhuaweicloud.com/<organization>/kube-scheduler:v1.36.2
 ```
-
-For a server version of `v1.36.2-r0-36.0.13.6`, the tag is `v1.36.2`.
-
-Copy the images with `docker buildx imagetools create`. It copies the image index with every platform, so the `linux/amd64` image is included even when you run it on an arm64 machine:
-
-```bash
-docker buildx imagetools create \
-  --tag swr.<region>.myhuaweicloud.com/<organization>/hami:v2.10.0 \
-  docker.io/projecthami/hami:v2.10.0
-docker buildx imagetools create \
-  --tag swr.<region>.myhuaweicloud.com/<organization>/kube-webhook-certgen:v1.1.1 \
-  docker.io/liangjw/kube-webhook-certgen:v1.1.1
-docker buildx imagetools create \
-  --tag swr.<region>.myhuaweicloud.com/<organization>/kube-scheduler:v1.36.2 \
-  registry.k8s.io/kube-scheduler:v1.36.2
-```
-
-Replace `<region>` with the region ID, for example `cn-southwest-2`, and `v1.36.2` with the tag found above.
-
-The repositories can stay private. CCE creates a `default-secret` in every namespace with the credentials for pulling images from SWR. See [Cluster Secrets](https://support.huaweicloud.com/intl/en-us/usermanual-cce/cce_10_0388.html).
 
 ## Prepare the HAMi values {#prepare-the-hami-values}
 
@@ -143,7 +114,7 @@ devicePlugin:
       repository: <organization>/hami
 ```
 
-`global.imagePullSecrets` uses CCE's `default-secret` to pull the images. `devicePlugin.runtimeClassName` and `devicePlugin.createRuntimeClass` create the `nvidia` RuntimeClass and use it for HAMi's Device Plugin. HAMi also sets it on the Pods that request vGPU resources.
+`global.imagePullSecrets` uses `default-secret`, which CCE creates in every namespace with the credentials for pulling images from SWR, so the repositories can stay private. See [Cluster Secrets](https://support.huaweicloud.com/intl/en-us/usermanual-cce/cce_10_0388.html). `devicePlugin.runtimeClassName` and `devicePlugin.createRuntimeClass` create the `nvidia` RuntimeClass and use it for HAMi's Device Plugin. HAMi also sets it on the Pods that request vGPU resources.
 
 ## Install HAMi
 
@@ -168,7 +139,7 @@ NAME             HOLDER                                                         
 hami-scheduler   hami-scheduler-57478c9db5-ttlrj_845424a5-33aa-4881-a744-9baa9090c26c   26s
 ```
 
-Then confirm that HAMi registered the GPU. With the default `devicePlugin.deviceSplitCount` of 10, a single T4 is reported as 10 `nvidia.com/gpu` resources:
+Then confirm that HAMi registered the GPU. With the default `devicePlugin.deviceSplitCount` of 10, a single GPU is reported as 10 `nvidia.com/gpu` resources:
 
 ```bash
 kubectl get node <node-name> -o jsonpath='{.status.allocatable.nvidia\.com/gpu}{"\n"}'
@@ -182,7 +153,7 @@ kubectl get node <node-name> -o jsonpath='{.status.allocatable.nvidia\.com/gpu}{
 
 ### Pods see the whole GPU {#pods-see-the-whole-gpu}
 
-If CCE's Device Plugin runs on a node alongside HAMi, the last plugin to register takes over `nvidia.com/gpu`. When CCE's plugin wins, the node's `nvidia.com/gpu` allocatable drops from the HAMi value (for example, `10`) to the physical GPU count. New Pods start without errors, but HAMi's limits no longer apply.
+If CCE's Device Plugin runs on a node alongside HAMi, the last Device Plugin to register takes over `nvidia.com/gpu`. When CCE's Device Plugin wins, the node's `nvidia.com/gpu` allocatable drops from the HAMi value (for example, `10`) to the physical GPU count. New Pods start without errors, but HAMi's limits no longer apply.
 
 To recover:
 
@@ -195,7 +166,7 @@ To recover:
    ```
 
 3. Confirm that the node's `nvidia.com/gpu` allocatable is back to the HAMi value.
-4. Recreate the Pods that started while CCE's plugin was active.
+4. Recreate the Pods that started while CCE's Device Plugin was active.
 
 ### HAMi's Device Plugin keeps restarting
 
@@ -210,11 +181,11 @@ The container runs with the default `runc` runtime and cannot find the NVIDIA dr
 
 ### NUMA error in Device Plugin logs
 
-On the verified T4 instance, `hami-device-plugin` logs the following error every registration cycle:
+On a `g6.xlarge.4` instance, which has a single NUMA node, `hami-device-plugin` logs the following error every registration cycle:
 
 ```text
 E1011 05:13:54.908058   55835 register.go:168] "failed to get numa information from sysfs" idx=0
 I1011 05:13:54.908089   55835 register.go:204] Registered device id=0, memory=15360MB, type=NVIDIA-Tesla T4, numa=0, health=true
 ```
 
-HAMi reads the GPU's NUMA node from `/sys/bus/pci/devices/<bus-id>/numa_node`. On this single-NUMA virtual machine, the kernel reports `-1` for the GPU. HAMi cannot determine a node, logs the error, and falls back to `numa=0`, which matches the actual topology. The device still registers with `health=true`, and GPU workloads run normally. You can ignore this error on single-NUMA instances.
+HAMi reads the GPU's NUMA node from `/sys/bus/pci/devices/<bus-id>/numa_node`. On this instance, the kernel reports `-1` for the GPU. HAMi cannot determine the NUMA node, logs the error, and falls back to `numa=0`, which matches the actual topology. The device still registers with `health=true`, and GPU workloads run normally. You can ignore this error on single-NUMA instances.
