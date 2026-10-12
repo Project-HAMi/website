@@ -47,7 +47,8 @@ HAMi allows configuring per-node behavior for device plugin. Edit the ConfigMap:
 kubectl -n <namespace> edit cm hami-device-plugin
 ```
 
-- `name`: Name of the node.
+- `name`: Name of the node, or `"*"`. `"*"` is used as a fallback when no node name or label selector matches. It is not a wildcard.
+- `nodelabelselector`: Kubernetes label selector for matching nodes. Supports matchLabels and matchExpressions. Specify either name or `nodelabelselector` for each entry, not both.
 - `operatingmode`: Operating mode of the node, can be "hami-core" or "mig", default: "hami-core".
 - `devicememoryscaling`: Overcommit ratio of device memory.
 - `devicecorescaling`: Overcommit ratio of device core.
@@ -56,6 +57,51 @@ kubectl -n <namespace> edit cm hami-device-plugin
   - `uuid`: UUIDs of devices to ignore
   - `index`: Indexes of devices to ignore.
   - A device is ignored by HAMi if it is in the `uuid` or `index` list.
+
+### Which entries apply to a node
+
+The device plugin checks for matching entries in this order:
+
+1. Entries whose `name` equals the node name.
+2. If there are none, every entry whose `nodelabelselector` matches the node labels.
+3. If there are none, the entry whose `name` is `"*"`.
+4. Otherwise, the global settings in Device Configs above.
+
+If more than one entry matches in step 1 or 2, they are applied in list order. A later entry overrides only the fields it sets
+
+Entries that set both `name` and `nodelabelselector`, and entries with an empty or invalid selector, are ignored and an error is logged
+
+:::note
+
+The device plugin reads node labels when it starts. If you change the labels later, restart the device plugin. select labels that the node has from the moment it registers, such as labels set by a node group or by kubelet `--node-labels`. avoid labels that a controller adds after the node registers.
+
+:::
+
+In the example below, nodes labeled `gpu.example.com/pool=mig` use MIG mode. Nodes with model t4 or l4 use hami-core mode with a split count of 4. All other nodes use a split count of 10.
+
+```json
+{
+  "nodeconfig": [
+    {
+      "nodelabelselector": { "matchLabels": { "gpu.example.com/pool": "mig" } },
+      "operatingmode": "mig"
+    },
+    {
+      "nodelabelselector": {
+        "matchExpressions": [
+          { "key": "gpu.example.com/model", "operator": "In", "values": ["t4", "l4"] }
+        ]
+      },
+      "operatingmode": "hami-core",
+      "devicesplitcount": 4
+    },
+    {
+      "name": "*",
+      "devicesplitcount": 10
+    }
+  ]
+}
+```
 
 ## Chart Configs: arguments
 
