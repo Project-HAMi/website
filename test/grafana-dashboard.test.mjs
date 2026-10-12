@@ -50,7 +50,9 @@ test("all Prometheus queries use the selectable datasource", () => {
 test("queries only use HAMi v2.10 metrics and selected DCGM metrics", () => {
   const allowedMetrics = new Set([
     "hami_container_device_utilization_ratio",
+    "hami_container_last_kernel_elapsed_seconds",
     "hami_gpu_core_allocated_ratio",
+    "hami_gpu_core_limit_ratio",
     "hami_gpu_memory_allocated_bytes",
     "hami_gpu_memory_limit_bytes",
     "hami_gpu_shared_count",
@@ -58,6 +60,8 @@ test("queries only use HAMi v2.10 metrics and selected DCGM metrics", () => {
     "hami_host_gpu_utilization_ratio",
     "hami_node_gpu_memory_allocated_ratio",
     "hami_node_gpu_overview",
+    "hami_vgpu_memory_buffer_bytes",
+    "hami_vgpu_memory_context_bytes",
     "hami_vgpu_memory_limit_bytes",
     "hami_vgpu_memory_used_bytes",
     "DCGM_FI_DEV_GPU_TEMP",
@@ -231,4 +235,44 @@ test("tables hide the internal zone label", () => {
     );
     assert.equal(organize.options.excludeByName.zone, true, title);
   }
+});
+
+test("GPU cores allocated % stat uses core limit ratio for capacity", () => {
+  const panel = panelByTitle("GPU cores allocated %");
+  assert.equal(panel.type, "stat");
+  assert.match(
+    panel.targets[0].expr,
+    /hami_gpu_core_allocated_ratio.*hami_gpu_core_limit_ratio/,
+  );
+  assert.match(panel.targets[0].expr, /clamp_min/);
+  assert.equal(panel.fieldConfig.defaults.unit, "percent");
+  assert.equal(panel.fieldConfig.defaults.max, null);
+});
+
+test("vGPU memory context vs buffer shows side-by-side lines", () => {
+  const panel = panelByTitle("vGPU memory: context vs buffer");
+  assert.equal(panel.type, "timeseries");
+  assert.equal(panel.targets.length, 2);
+  assert.match(panel.targets[0].expr, /hami_vgpu_memory_context_bytes/);
+  assert.match(panel.targets[1].expr, /hami_vgpu_memory_buffer_bytes/);
+  assert.equal(panel.fieldConfig.defaults.custom.stacking.mode, "none");
+  assert.match(
+    panel.description,
+    /does not equal total used/i,
+  );
+});
+
+test("time since last kernel table warns about missing series", () => {
+  const panel = panelByTitle("Time since last kernel");
+  assert.equal(panel.type, "table");
+  assert.match(panel.targets[0].expr, /hami_container_last_kernel_elapsed_seconds/);
+  assert.match(panel.targets[0].expr, /topk\(20,/);
+  assert.match(
+    panel.description,
+    /never run a kernel have no series/i,
+  );
+  const organize = panel.transformations.find(
+    (transformation) => transformation.id === "organize",
+  );
+  assert.equal(organize.options.excludeByName.zone, true);
 });

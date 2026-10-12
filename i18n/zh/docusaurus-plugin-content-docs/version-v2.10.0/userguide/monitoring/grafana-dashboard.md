@@ -109,10 +109,10 @@ JSON 使用数据源变量，不绑定固定的 Prometheus UID。导入后选择
 
 | 区域 | 面板 |
 | --- | --- |
-| Cluster overview | 物理 GPU 数量、总显存、已分配显存和共享容器数 |
+| Cluster overview | 物理 GPU 数量、总显存、已分配显存、GPU 核心分配百分比和共享容器数 |
 | Physical GPUs (host) | 实时显存和利用率，以及分配量与实际用量的对比 |
 | Scheduler / allocation | 设备上限、分配比例、共享情况和 GPU 清单 |
-| vGPU / container workloads | 每个容器的 vGPU 显存、上限和利用率 |
+| vGPU / container workloads | 每个容器的 vGPU 显存（总量、上下文与缓冲区对比）、上限、利用率和空闲时间分析 |
 | NVIDIA hardware telemetry (optional DCGM Exporter) | XID 错误、温度、功耗和 SM 时钟频率 |
 
 ## DCGM Exporter（可选）
@@ -125,6 +125,29 @@ NVIDIA 硬件遥测区域需要以下 DCGM Exporter 指标：
 - `DCGM_FI_DEV_SM_CLOCK`
 
 查询使用 DCGM 的 `UUID` 标签匹配 HAMi 的 `device_uuid` 标签。
+
+## HAMi v2.10.0 新增面板
+
+### GPU 核心分配百分比
+
+显示集群概览区域中已分配 GPU 核心占总核心容量的百分比。启用 `deviceCoreScaling` 时可超过 100%。
+
+### vGPU 显存：上下文与缓冲区对比
+
+显示每个容器的 vGPU 显存分解：
+- **CUDA 上下文显存**：驱动和 CUDA 运行时开销
+- **应用缓冲区**：工作负载分配的显存
+
+此分解有助于识别上下文密集型与缓冲区密集型工作负载。注意：上下文 + 缓冲区并不等于总用量，因为数据和偏移段单独存在。
+
+### 距上次内核的时间
+
+显示容器按上次 GPU 内核启动时间排序的表格。用于：
+- 检测空闲或卡住的作业持有 GPU 显存
+- 查找清理或驱逐的候选对象
+- 优化 GPU 利用率
+
+**注意**：从未运行过内核的容器在此指标中没有系列数据。
 
 ## 故障排查
 

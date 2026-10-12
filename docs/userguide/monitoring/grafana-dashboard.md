@@ -110,10 +110,10 @@ The JSON uses a data source variable instead of a fixed Prometheus UID. Select t
 
 | Row | Panels |
 | --- | --- |
-| Cluster overview | Physical GPU count, total memory, allocated memory, and shared containers |
+| Cluster overview | Physical GPU count, total memory, allocated memory, GPU cores allocated %, and shared containers |
 | Physical GPUs (host) | Real-time memory usage and utilization, with allocation comparisons |
 | Scheduler / allocation | Device limits, allocation ratios, sharing, and GPU inventory |
-| vGPU / container workloads | Per-container vGPU memory, limits, and utilization |
+| vGPU / container workloads | Per-container vGPU memory (total, context vs buffer), limits, utilization, and idle time analysis |
 | NVIDIA hardware telemetry (optional DCGM Exporter) | XID errors, temperature, power usage, and SM clock |
 
 ## DCGM Exporter (optional)
@@ -126,6 +126,29 @@ The NVIDIA hardware telemetry row requires these DCGM Exporter metrics:
 - `DCGM_FI_DEV_SM_CLOCK`
 
 The queries match the DCGM `UUID` label to HAMi's `device_uuid` label.
+
+## New panels in HAMi v2.10.0
+
+### GPU cores allocated %
+
+Displays allocated GPU cores as a percentage of total core capacity in the cluster overview row. Can exceed 100% when `deviceCoreScaling` is enabled.
+
+### vGPU memory: context vs buffer
+
+Shows per-container vGPU memory split into:
+- **CUDA context memory**: Driver and CUDA runtime overhead
+- **Application buffers**: Memory allocated by the workload
+
+This breakdown helps identify context-heavy vs buffer-heavy workloads. Note that context + buffer does not equal total used memory, as data and offset segments exist separately.
+
+### Time since last kernel
+
+Table showing containers sorted by time since their last GPU kernel launch. Useful for:
+- Detecting idle or stuck jobs holding GPU memory
+- Finding candidates for cleanup or eviction
+- Optimizing GPU utilization
+
+**Note:** Containers that have never run a kernel have no series in this metric.
 
 ## Troubleshooting
 
