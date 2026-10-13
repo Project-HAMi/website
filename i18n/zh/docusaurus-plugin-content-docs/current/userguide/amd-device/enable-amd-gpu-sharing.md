@@ -56,7 +56,7 @@ kubectl get node <node> -o jsonpath='{.metadata.annotations.hami\.io/node-amd-re
 
 显存限制的前提条件和局限：
 
-- hook 要求工作负载镜像中的 glibc 为 2.34 或更新版本。在 musl、静态链接或 glibc 更旧的镜像上不会加载 hook，Pod 将在没有进程内上限的情况下运行；插件的 `dp.muslFailClosed.enabled` 设置（默认关闭，实验性）会改为拒绝此类 Pod。
+- hook 要求工作负载镜像中的 glibc 为 2.34 或更新版本。在 musl 和静态链接的镜像上不会加载 hook。在更旧的 glibc 镜像上，加载器会拒绝它并报告 `GLIBC_2.34 not found`（在 Ubuntu 18.04 上的测试中 Pod 仍然启动）。无论哪种情况，Pod 都没有进程内上限，只有节点支持时的内核 `dmem` 限制在起作用。插件的 `dp.muslFailClosed.enabled` 设置（默认关闭，实验性）会拒绝此类 Pod；除非 `dmem` 已经限制了它的显存，此时插件会省去 hook，Pod 照常运行。
 - 内核层限制需要启用 `dmem` 控制器的 cgroup v2（内核 6.14 或更新版本）和 systemd cgroup 驱动；否则只有 hook 执行限制。
 - hook 在进程内工作，因此去掉 `LD_AUDIT` 的进程可以绕过它。整卡请求既没有 hook，也没有 `dmem` 限制。
 - 示例 Pod 以镜像的默认用户（root）运行，并关闭了权限提升。非 root Pod 还需要设置 `runAsUser`，以及节点上 `video` 和 `render` 组的 `supplementalGroups`，这些组 ID 因节点而异。
