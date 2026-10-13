@@ -7,6 +7,7 @@ title: 常见问题
 | **GPU 厂商** | **GPU 型号** | **粒度** | **多 GPU 支持** |
 | --- | --- | --- | --- |
 | NVIDIA | 几乎所有主流消费级和数据中心 GPU | 核心 1%，显存 1M | 支持。多 GPU 仍可通过虚拟化进行拆分和共享。 |
+| AMD | Instinct 和 Radeon（ROCm） | 核心 1%（RDNA 上按整个 WGP），显存 1M | 已实现，但仍需真实多 GPU 验证：目前的多 GPU 运行使用的是单块真实 GPU 上的模拟 GPU。参见 [AMD 测试状态](../userguide/amd-device/verification-status.md)。 |
 | 昇腾 | 910A、910B2、910B3、310P | 最小粒度取决于卡类型模板。参考[官方模板](https://www.hiascend.com/document/detail/zh/mindx-dl/50rc1/AVI/cpaug/cpaug_0005.html)。 | 支持，但当 `npu > 1` 时不支持拆分，整卡独占。 |
 | 海光 | 全部 | 核心 1%，显存 1M | 支持，但当 `hcu > 1` 时不支持拆分，整卡独占。 |
 | 寒武纪 | 370、590 | 核心 1%，显存 256M | 支持，但当 `mlu > 1` 时不支持拆分，整卡独占。 |
