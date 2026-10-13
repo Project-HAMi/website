@@ -69,7 +69,7 @@ The device plugin checks for matching entries in this order:
 
 If more than one entry matches in step 1, 2, or 3, they are applied in list order. A later entry overrides only the fields it sets.
 
-Entries that set both `name` and `nodelabelselector`, and entries with an empty or invalid selector, are ignored and an error is logged.
+Entries that set both `name` and `nodelabelselector`, and entries with an empty or invalid selector, are ignored and an error is logged. If `config.json` fails to load (e.g. invalid value type), no entries are applied and an error is logged.
 
 :::note
 
