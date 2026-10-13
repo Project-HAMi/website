@@ -11,6 +11,18 @@ Before installing HAMi, prepare the Kubernetes cluster and device nodes as descr
 - Helm and `kubectl` installed, and an account with permission to install HAMi's cluster resources.
 - Nodes that meet the device driver's operating system and kernel requirements. See the device guides below for driver and runtime setup.
 
+:::info Red Hat OpenShift
+
+If you're installing HAMi on **Red Hat OpenShift Container Platform**, refer to the [OpenShift Installation Guide](openshift-installation.md) for platform-specific requirements including:
+- SecurityContextConstraints (SCC) configuration
+- SELinux considerations
+- GPU Operator integration
+- Chart version requirements (v2.11.0+)
+
+The OpenShift guide includes working Helm values and troubleshooting for OpenShift-specific issues.
+
+:::
+
 ## Find your device's prerequisites {#device-prerequisites}
 
 | Device | Prerequisites and setup |
