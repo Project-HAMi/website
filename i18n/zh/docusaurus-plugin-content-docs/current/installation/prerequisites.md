@@ -17,17 +17,17 @@ translated: true
 | 设备 | 前置条件与配置入口 |
 | --- | --- |
 | NVIDIA GPU | [准备 NVIDIA GPU 节点](#准备-nvidia-gpu-节点) |
-| 华为昇腾 NPU | [先决条件](../userguide/ascend-device/enable-ascend-sharing.md#先决条件) |
 | AMD GPU | [节点需求](../userguide/amd-device/enable-amd-gpu-sharing.md#节点需求) |
-| 寒武纪 MLU | [节点需求](../userguide/cambricon-device/enable-cambricon-mlu-sharing.md#节点需求) |
-| 海光 HCU | [节点需求](../userguide/hygon-device/enable-hygon-hcu-sharing.md#节点需求) |
-| 摩尔线程 GPU | [节点需求](../userguide/mthreads-device/enable-mthreads-gpu-sharing.md#节点需求) |
-| 天数智芯 GPU | [前置条件](../userguide/iluvatar-device/enable-iluvatar-gpu-sharing.md#前置条件) |
-| 燧原 GCU | [节点需求](../userguide/enflame-device/enable-enflame-gcu-sharing.md#节点需求) |
 | AWS Neuron | [前提条件](../userguide/awsneuron-device/enable-awsneuron-managing.md#前提条件) |
+| 壁仞 GPU | [设备配置](../userguide/biren-device/enable-biren-sharing.md#使用壁仞设备) |
+| 寒武纪 MLU | [节点需求](../userguide/cambricon-device/enable-cambricon-mlu-sharing.md#节点需求) |
+| 燧原 GCU | [节点需求](../userguide/enflame-device/enable-enflame-gcu-sharing.md#节点需求) |
+| 华为昇腾 NPU | [先决条件](../userguide/ascend-device/enable-ascend-sharing.md#先决条件) |
+| 海光 HCU | [节点需求](../userguide/hygon-device/enable-hygon-hcu-sharing.md#节点需求) |
+| 天数智芯 GPU | [前置条件](../userguide/iluvatar-device/enable-iluvatar-gpu-sharing.md#前置条件) |
 | 昆仑芯 XPU | [整卡调度](../userguide/kunlunxin-device/enable-kunlunxin-schedule.md#前置条件) / [vXPU 共享](../userguide/kunlunxin-device/enable-kunlunxin-vxpu.md#前置条件) |
 | 沐曦 GPU | [整卡调度](../userguide/metax-device/metax-gpu/enable-metax-gpu-schedule.md#前提条件) / [sGPU 共享](../userguide/metax-device/metax-sgpu/enable-metax-gpu-sharing.md#需求) |
-| 壁仞 GPU | [设备配置](../userguide/biren-device/enable-biren-sharing.md#使用壁仞设备) |
+| 摩尔线程 GPU | [节点需求](../userguide/mthreads-device/enable-mthreads-gpu-sharing.md#节点需求) |
 | 瀚博半导体 | [设备配置](../userguide/vastai/enable-vastai-sharing.md#使用瀚博半导体设备) |
 
 ## 准备 NVIDIA GPU 节点
