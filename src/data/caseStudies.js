@@ -1,5 +1,36 @@
 const caseStudiesData = [
   {
+    name: "ZYT",
+    nameZh: "卓驭科技",
+    logo: "/img/adopters/zyt.png",
+    logoZh: "/img/adopters/zyt-zh.svg",
+    website: "https://www.zyt.com",
+    publishedAt: "2026-09-29",
+    metric: {
+      en: "GPU utilization lifted from under 15% to over 55%, with >95% allocation",
+      zh: "GPU 利用率从不足 15% 提升至 55% 以上，分配率超 95%",
+    },
+    summary: {
+      en: "Building an elastic driving cloud for autonomous driving with Kubernetes, Koordinator, and HAMi, sharing fine-grained GPU slices across training, inference, and dev Codespaces.",
+      zh: "基于 Kubernetes、Koordinator 与 HAMi 构建弹性自动驾驶驾驶云，为训练、推理与开发环境（Codespaces）提供细粒度 GPU 切片共享。",
+    },
+    highlights: [
+      {
+        en: "GPU allocation stays above 95% while overall utilization rose from under 15% to over 55%, about 60% on shared inference.",
+        zh: "GPU 分配率保持在 95% 以上，整体利用率由不足 15% 提升至 55% 以上，共享推理场景约 60%。",
+      },
+      {
+        en: "Codespaces GPU dev environments cut whole-GPU card usage by about 60%, serving 10+ algorithm, data, and platform teams.",
+        zh: "Codespaces 开发环境整机 GPU 卡用量减少约 60%，支撑十余个算法、数据与平台团队。",
+      },
+      {
+        en: "Two-level ElasticQuota with reservation and gang scheduling sustains 300K–800K pod scheduling per day with 100+ quota objects per cluster.",
+        zh: "两级 ElasticQuota 配合资源预留与 Gang 调度，单集群 100+ 配额对象，支撑每日 30 万至 80 万 Pod 调度。",
+      },
+    ],
+    url: "https://www.cncf.io/case-studies/zhuoyu-technology/",
+  },
+  {
     name: "CETC Cloud",
     nameZh: "电科云",
     logo: "/img/adopters/cetc.png",
