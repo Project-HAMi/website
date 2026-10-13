@@ -27,7 +27,7 @@ flowchart TB
         CORE["HAMi-core<br/>运行时 GPU 隔离"]
     end
 
-    HW["异构加速器<br/>NVIDIA · 昇腾 · 寒武纪 · 海光 · 摩尔线程 · 天数智芯 · …"]
+    HW["异构加速器<br/>NVIDIA · AMD · 昇腾 · 寒武纪 · 海光 · 摩尔线程 · 天数智芯 · …"]
 
     WL --> Schedulers
     KS -->|"GPU 过滤 / 打分"| HSCHED
