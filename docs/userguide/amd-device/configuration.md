@@ -29,6 +29,7 @@ The plugin needs `NODE_NAME` and RBAC to patch nodes, `nodes/status` and pods an
 | `dp.hookInstaller.enabled` |  | `true` | Copy `libamvgpu.so` from the image to `<dp.hostHookPath>/vgpu` on each node. |
 | `dp.hostHookPath` |  | `/usr/local` | Host directory for the hook. Workloads always see it at `/usr/local/vgpu/libamvgpu.so`. |
 | `monitor.enabled` (top level) |  | `false` | Run `k8s-vgpu-monitor`. |
+| `monitor.metricsBindAddress` (top level) | `-metrics_bind_address` | `:9394` | Address the monitor serves `/metrics` on; the container port and the scrape annotation follow it. |
 
 ## Operating modes
 
@@ -93,7 +94,7 @@ This only matters for Instinct GPUs that are split into compute partitions, for 
 ## Optional components
 
 - **GPU health from the AMD Device Metrics Exporter.** Install the [exporter](https://github.com/ROCm/device-metrics-exporter) with its gRPC socket enabled at `/var/lib/amd-metrics-exporter/`. The plugin then also uses the per-GPU health that the exporter reports, for example after ECC errors. Without it, the plugin still checks that each GPU's device node can be opened.
-- **GPU metrics.** `monitor.enabled=true` runs `k8s-vgpu-monitor` on each GPU node. It serves Prometheus metrics on port 9394 under the names of the HAMi NVIDIA vGPU monitor: `hami_vgpu_memory_used_bytes` and `hami_vgpu_memory_limit_bytes` per container, and `hami_host_gpu_memory_used_bytes`, `hami_host_gpu_memory_total_bytes`, `hami_host_gpu_utilization_ratio`, `hami_host_gpu_temperature_celsius` and `hami_host_gpu_power_usage_watts` per GPU. Container memory comes from the `dmem` cgroup controller, so it needs the systemd cgroup driver and a kernel with the controller. Per-container utilization is not reported, because the kernel does not account compute time per process.
+- **GPU metrics.** `monitor.enabled=true` runs `k8s-vgpu-monitor` on each GPU node. It serves Prometheus metrics on port 9394 under the names of the HAMi NVIDIA vGPU monitor: `hami_vgpu_memory_used_bytes` and `hami_vgpu_memory_limit_bytes` per container, and `hami_host_gpu_memory_used_bytes`, `hami_host_gpu_memory_total_bytes`, `hami_host_gpu_utilization_ratio`, `hami_host_gpu_temperature_celsius` and `hami_host_gpu_power_usage_watts` per GPU, plus `hami_vgpumonitor_collect_success` per node (1 when the last collection fully succeeded, 0 when any part failed). Container memory comes from the `dmem` cgroup controller, so it needs the systemd cgroup driver and a kernel with the controller. Per-container utilization is not reported, because the kernel does not account compute time per process.
 - **Node labeller.** `k8s-ds-amdgpu-labeller.yaml` deploys the upstream labeller, which adds `amd.com/gpu.*` node labels such as VRAM, CU count, device ID and family:
 
 ```bash

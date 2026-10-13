@@ -39,13 +39,14 @@ Registered under `hami.io/node-amd-register`, in JSON format, an array of `Devic
   {
     "id": "<device-id>",
     "index": 0,
-    "count": 1,
+    "count": 10,
     "devmem": 196608,
     "devcore": 304,
     "type": "AMD Instinct MI300X VF",
     "numa": 0,
-    "mode": "hami-core",
-    "health": true
+    "health": true,
+    "devicevendor": "amd",
+    "custominfo": { "pciBDF": "0000:83:00.0", "cuPerWGP": 1 }
   }
 ]
 ```
@@ -53,6 +54,9 @@ Registered under `hami.io/node-amd-register`, in JSON format, an array of `Devic
 - `devmem` = total device memory in MiB (e.g. 196608 for MI300X).
 - `devcore` = total CU count (e.g. 304 for MI300X).
 - `id` = device identifier.
+- `count` = how many pods may share the GPU (`-split_count`, by default 10, or 2 on gfx12).
+- `type` = the product name from AMD SMI (`amd-gpu` if AMD SMI reports none).
+- `custominfo` = extra fields such as the PCI address, `cuPerWGP`, the XGMI peers and the partition profiles; see [How AMD GPU sharing works](../userguide/amd-device/how-it-works.md#what-the-plugin-publishes).
 
 ### 4.2 Pod allocation (scheduler -> pod annotations -> Allocate)
 
@@ -115,7 +119,7 @@ The scheduler records this `cuCount` in `hami.io/amd-devices-allocated`. The dev
 
 - **No `amd-smi` / `rocm-smi` virtualization.** These read sysfs/drm, not HIP, so LD_AUDIT cannot intercept them; in-container tools may report physical resources.
 - **The CU mask is cooperative, not a security boundary.** `HSA_CU_MASK` is an environment variable read by ROCr at initialization, so a process that clears it before ROCr starts regains the full device. Unlike the memory limit, which the LD_AUDIT layer enforces at the HIP API boundary, CU partitioning holds only for workloads that leave the injected environment alone.
-- **Mixed GPU types are not supported on one node.** The device plugin derives the GPU type from `amd.com/gpu.product-name`, but this label cannot describe multiple GPU types.
+- **Mixed GPU types on one node are untested.** The device plugin registers each GPU's type from its AMD SMI product name, and the node was only run with one GPU model.
 - **WGP-aware CU allocation.** RDNA (GFX10+) devices need WGP pair alignment when building `HSA_CU_MASK` ([setting CUs](https://rocm.docs.amd.com/en/latest/reference/system-optimization/gpu-isolation.html)). The device plugin allocates whole WGPs and rounds a request up (3 CUs become 4), and publishes the pair size as `custominfo.cuPerWGP` so a scheduler that reads it books the same count. The scheduler side needs a HAMi release newer than v2.10.0.
 
 ## 7. Multi-GPU validation required
