@@ -12,7 +12,7 @@ HAMi shares AMD GPUs (Radeon and Instinct) between pods with the following resou
 - `amd.com/gpumem-percentage`: device memory per GPU as a percentage of its VRAM (1-100); `amd.com/gpumem` wins if both are set
 - `amd.com/gpucores`: compute units per GPU as a percentage (1-100)
 
-A pod that asks for no memory or cores gets the whole GPU.
+A pod that asks for no memory or cores gets the whole GPU. A pod that sets only `amd.com/gpumem-percentage` gets one GPU added by the webhook.
 
 :::note
 
@@ -89,6 +89,7 @@ More examples:
 - Pick or avoid a GPU by UUID with `amd.com/use-gpu-uuid` and `amd.com/nouse-gpu-uuid`: [use](./examples/specify-uuid-to-use.md), [avoid](./examples/specify-uuid-not-use.md)
 - Keep the GPUs of one pod on a NUMA node or on XGMI-linked GPUs: [numa-bind](./examples/numa-bind.md), [link-bind](./examples/link-bind.md)
 - Pick how GPUs are chosen on a node: [scheduling policy](./examples/scheduler-policy.md)
+- Give a pod a queue priority: [task priority](./examples/task-priority.md)
 
 ### Scheduling behavior
 
@@ -103,17 +104,17 @@ More examples:
 - **Whole-GPU pods** get neither a CU mask nor a memory limit and do not load `libamvgpu`.
 - **A request without `amd.com/gpucores` gets all CUs.** The scheduler books the whole compute range of the GPU for it, so a pod that sets only `amd.com/gpumem` blocks the compute of that GPU and the next such pod waits until it ends. Set `amd.com/gpucores` on every pod that should share a GPU.
 - **Memory oversubscription.** `dp.deviceMemoryScaling` above 1 in the plugin chart registers more VRAM than the GPU has. Pods then get `HIP_OVERSUBSCRIBE=true` and `hipMalloc` is served from managed memory, which needs XNACK on CDNA.
-- **Compute partitions.** On Instinct GPUs that can be split into compute partitions (`spx`, `dpx`, `qpx`, `cpx`), `dp.operatingMode=partition` registers hard partitions instead of CU slices, and `-resource_naming_strategy=mixed` names them after their mode. Drain the node before you change the mode. See [Configuration](https://github.com/Project-HAMi/amd-device-plugin/blob/main/docs/user-guide/configuration.md) and [MI355X partitioning](https://github.com/Project-HAMi/amd-device-plugin/blob/main/docs/user-guide/mi355x-partitioning.md) in the plugin repository.
+- **Compute partitions.** On Instinct GPUs that can be split into compute partitions (`spx`, `dpx`, `qpx`, `cpx`), `dp.operatingMode=partition` registers hard partitions instead of CU slices, and `-resource_naming_strategy=mixed` names them after their mode. Drain the node before you change the mode. See [Configuration](./configuration.md#operating-modes).
 - **Monitoring.** `monitor.enabled=true` in the plugin chart runs `k8s-vgpu-monitor`, which serves `hami_vgpu_memory_used_bytes` and `hami_vgpu_memory_limit_bytes` per container and `hami_host_gpu_memory_used_bytes`, `hami_host_gpu_utilization_ratio`, `hami_host_gpu_temperature_celsius` and `hami_host_gpu_power_usage_watts` per GPU on port 9394, under the metric names of the NVIDIA monitor. Per-container utilization is not reported: the kernel does not account compute time per process.
 - **Metrics from the scheduler** report AMD cores as a percentage of the GPU.
 
 ### Tested configurations and known gaps
 
-The plugin and the AMD changes in HAMi were run on a real AMD Instinct MI325X (a single GPU, seen as a virtual function) with k3s, on kernels 6.8 and 7.0, ROCm 6.2 and 7.2, and the PyTorch, TensorFlow, JAX and vLLM example pods. Memory limits, CU masks, the namespace quota and the example manifests in this guide were checked on that GPU. The following was not run on hardware and is only covered by unit tests or by a scheduler fed with simulated GPUs:
+The plugin and the AMD changes in HAMi were run on a real AMD Instinct MI325X (a single GPU, seen as a virtual function) with k3s, on kernels 6.8 and 7.0, ROCm 6.2 and 7.2, and the PyTorch, TensorFlow, JAX and vLLM example pods. Memory limits, CU masks, the queue priority, the namespace quota and the example manifests in this guide were checked on that GPU. Several GPUs with XGMI and NUMA, compute partitions on bare-metal MI300, MI325 and MI355, RDNA cards and a real hardware fault were not run on hardware. [AMD GPU test status](./verification-status.md) has the details.
 
-- Several GPUs on one node: XGMI links, NUMA placement, `numa-bind`, `link-bind` and the `topology-aware` order.
-- Compute partitions (`dpx`, `qpx`, `cpx`) on bare-metal MI300, MI325 and MI355.
-- RDNA cards, and the reaction to a real hardware fault reported by the Device Metrics Exporter.
-- XNACK, where a `hipMalloc` larger than VRAM is served from host memory.
+### Learn more
 
-[STATUS.md](https://github.com/Project-HAMi/amd-device-plugin/blob/main/STATUS.md) in the plugin repository lists, for every merged pull request, what was run and what is still open.
+- [How AMD GPU sharing works](./how-it-works.md): the request flow, the node registration and the memory library.
+- [Configure the AMD device plugin](./configuration.md): every chart value, operating modes and compute partitions, `dmem`, CDI and metrics.
+- [Troubleshoot AMD GPU sharing](./troubleshooting.md): symptoms, causes and a glossary.
+- [AMD GPU test status](./verification-status.md): what was verified on a real GPU and what was not.

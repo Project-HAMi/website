@@ -17,16 +17,16 @@ Before installing HAMi, prepare the Kubernetes cluster and device nodes as descr
 | --- | --- |
 | NVIDIA GPU | [Prepare NVIDIA GPU nodes](#preparing-your-gpu-nodes) |
 | AMD GPU | [Prerequisites](../userguide/amd-device/enable-amd-gpu-sharing.md#prerequisites) |
-| Huawei Ascend NPU | [Prerequisites](../userguide/ascend-device/enable-ascend-sharing.md#prerequisites) |
-| Cambricon MLU | [Prerequisites](../userguide/cambricon-device/enable-cambricon-mlu-sharing.md#prerequisites) |
-| Hygon HCU | [Prerequisites](../userguide/hygon-device/enable-hygon-hcu-sharing.md#prerequisites) |
-| Moore Threads GPU | [Prerequisites](../userguide/mthreads-device/enable-mthreads-gpu-sharing.md#prerequisites) |
-| Iluvatar GPU | [Prerequisites](../userguide/iluvatar-device/enable-iluvatar-gpu-sharing.md#prerequisites) |
-| Enflame GCU | [Prerequisites](../userguide/enflame-device/enable-enflame-gcu-sharing.md#prerequisites) |
 | AWS Neuron | [Prerequisites](../userguide/awsneuron-device/enable-awsneuron-managing.md#prerequisites) |
+| Biren GPU | [Device setup](../userguide/biren-device/enable-biren-sharing.md#using-biren-devices) |
+| Cambricon MLU | [Prerequisites](../userguide/cambricon-device/enable-cambricon-mlu-sharing.md#prerequisites) |
+| Enflame GCU | [Prerequisites](../userguide/enflame-device/enable-enflame-gcu-sharing.md#prerequisites) |
+| Huawei Ascend NPU | [Prerequisites](../userguide/ascend-device/enable-ascend-sharing.md#prerequisites) |
+| Hygon HCU | [Prerequisites](../userguide/hygon-device/enable-hygon-hcu-sharing.md#prerequisites) |
+| Iluvatar GPU | [Prerequisites](../userguide/iluvatar-device/enable-iluvatar-gpu-sharing.md#prerequisites) |
 | Kunlunxin XPU | [Whole-device scheduling](../userguide/kunlunxin-device/enable-kunlunxin-schedule.md#prerequisites) / [vXPU sharing](../userguide/kunlunxin-device/enable-kunlunxin-vxpu.md#prerequisites) |
 | MetaX GPU | [Whole-device scheduling](../userguide/metax-device/metax-gpu/enable-metax-gpu-schedule.md#prerequisites) / [sGPU sharing](../userguide/metax-device/metax-sgpu/enable-metax-gpu-sharing.md#prerequisites) |
-| Biren GPU | [Device setup](../userguide/biren-device/enable-biren-sharing.md#using-biren-devices) |
+| Moore Threads GPU | [Prerequisites](../userguide/mthreads-device/enable-mthreads-gpu-sharing.md#prerequisites) |
 | Vastai | [Device setup](../userguide/vastai/enable-vastai-sharing.md#using-vastai-devices) |
 
 ## Prepare NVIDIA GPU nodes {#preparing-your-gpu-nodes}

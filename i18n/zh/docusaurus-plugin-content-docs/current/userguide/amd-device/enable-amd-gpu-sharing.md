@@ -13,7 +13,7 @@ HAMi 通过以下资源在 Pod 之间共享 AMD GPU（Radeon 和 Instinct）：
 - `amd.com/gpumem-percentage`：每张 GPU 的设备显存占其 VRAM 的百分比（1-100）；同时设置 `amd.com/gpumem` 时以 `amd.com/gpumem` 为准
 - `amd.com/gpucores`：每张 GPU 的计算单元百分比（1-100）
 
-未申请显存和算力的 Pod 获得整张 GPU。
+未申请显存和算力的 Pod 获得整张 GPU。只设置 `amd.com/gpumem-percentage` 的 Pod，webhook 会为它补上一张 GPU。
 
 :::note
 
@@ -90,6 +90,7 @@ spec:
 - 用 `amd.com/use-gpu-uuid` 和 `amd.com/nouse-gpu-uuid` 按 UUID 选择或避开 GPU：[选择](./examples/specify-uuid-to-use.md)、[避开](./examples/specify-uuid-not-use.md)
 - 让同一个 Pod 的 GPU 位于同一个 NUMA 节点，或使用通过 XGMI 互联的 GPU：[numa-bind](./examples/numa-bind.md)、[link-bind](./examples/link-bind.md)
 - 选择节点上挑选 GPU 的方式：[调度策略](./examples/scheduler-policy.md)
+- 为 Pod 设置队列优先级：[任务优先级](./examples/task-priority.md)
 
 ### 调度行为
 
@@ -104,17 +105,17 @@ spec:
 - **整卡 Pod** 既没有 CU 掩码，也没有显存限制，并且不会加载 `libamvgpu`。
 - **不设置 `amd.com/gpucores` 的请求获得全部 CU。** 调度器会为它预留整张 GPU 的算力范围，因此只设置了 `amd.com/gpumem` 的 Pod 会占满该 GPU 的算力，下一个这样的 Pod 要等它结束。需要共享 GPU 的 Pod 都应设置 `amd.com/gpucores`。
 - **显存超分。** 插件 chart 中的 `dp.deviceMemoryScaling` 大于 1 时，会注册比 GPU 实际更多的 VRAM。此时 Pod 会得到 `HIP_OVERSUBSCRIBE=true`，`hipMalloc` 从托管内存分配，CDNA 上需要启用 XNACK。
-- **计算分区。** 在可以划分计算分区（`spx`、`dpx`、`qpx`、`cpx`）的 Instinct GPU 上，`dp.operatingMode=partition` 注册硬分区而不是 CU 切片，`-resource_naming_strategy=mixed` 会按模式命名分区。切换模式前先排空节点。参见插件仓库中的[配置](https://github.com/Project-HAMi/amd-device-plugin/blob/main/docs/user-guide/configuration.md)和 [MI355X 分区](https://github.com/Project-HAMi/amd-device-plugin/blob/main/docs/user-guide/mi355x-partitioning.md)。
+- **计算分区。** 在可以划分计算分区（`spx`、`dpx`、`qpx`、`cpx`）的 Instinct GPU 上，`dp.operatingMode=partition` 注册硬分区而不是 CU 切片，`-resource_naming_strategy=mixed` 会按模式命名分区。切换模式前先排空节点。参见[配置](./configuration.md#运行模式)。
 - **监控。** 在插件 chart 中设置 `monitor.enabled=true` 会运行 `k8s-vgpu-monitor`。它在 9394 端口上按容器提供 `hami_vgpu_memory_used_bytes` 和 `hami_vgpu_memory_limit_bytes`，按 GPU 提供 `hami_host_gpu_memory_used_bytes`、`hami_host_gpu_utilization_ratio`、`hami_host_gpu_temperature_celsius` 和 `hami_host_gpu_power_usage_watts`，指标名称与 NVIDIA monitor 一致。不报告按容器的利用率：内核不按进程统计计算时间。
 - **调度器指标**中的 AMD 核心以 GPU 的百分比表示。
 
 ### 已测试的配置和已知缺口
 
-插件以及 HAMi 中的 AMD 相关改动在一块真实的 AMD Instinct MI325X（单张 GPU，以虚拟功能形式呈现）上运行过，环境为 k3s、内核 6.8 和 7.0、ROCm 6.2 和 7.2，以及 PyTorch、TensorFlow、JAX 和 vLLM 示例 Pod。本指南中的显存限制、CU 掩码、命名空间配额和示例清单都在该 GPU 上检查过。以下内容没有在硬件上运行，只有单元测试或使用模拟 GPU 的调度器覆盖：
+插件以及 HAMi 中的 AMD 相关改动在一块真实的 AMD Instinct MI325X（单张 GPU，以虚拟功能形式呈现）上运行过，环境为 k3s、内核 6.8 和 7.0、ROCm 6.2 和 7.2，以及 PyTorch、TensorFlow、JAX 和 vLLM 示例 Pod。本指南中的显存限制、CU 掩码、队列优先级、命名空间配额和示例清单都在该 GPU 上检查过。带 XGMI 和 NUMA 的多 GPU、裸机 MI300、MI325 和 MI355 上的计算分区、RDNA 显卡以及真实硬件故障没有在硬件上运行过。详情见 [AMD GPU 测试状态](./verification-status.md)。
 
-- 单节点多 GPU：XGMI 链路、NUMA 放置、`numa-bind`、`link-bind` 和 `topology-aware` 的排序。
-- 裸机 MI300、MI325 和 MI355 上的计算分区（`dpx`、`qpx`、`cpx`）。
-- RDNA 显卡，以及对 Device Metrics Exporter 报告的真实硬件故障的反应。
-- XNACK，即大于 VRAM 的 `hipMalloc` 由主机内存提供。
+### 了解更多
 
-插件仓库中的 [STATUS.md](https://github.com/Project-HAMi/amd-device-plugin/blob/main/STATUS.md) 逐条列出每个已合并 PR 运行过什么、还有什么未完成。
+- [AMD GPU 共享的工作原理](./how-it-works.md)：请求流程、节点注册信息和显存库。
+- [配置 AMD device plugin](./configuration.md)：所有 chart 值、运行模式和计算分区、`dmem`、CDI 和指标。
+- [AMD GPU 共享故障排查](./troubleshooting.md)：现象、原因和术语表。
+- [AMD GPU 测试状态](./verification-status.md)：在真实 GPU 上验证了什么、没有验证什么。
