@@ -41,7 +41,7 @@ Re-running every merged pull request found these real problems. All are fixed.
 
 - **Several GPUs, XGMI, NUMA and policy order.** Only the scheduler decision was run, with extra GPUs written into the registration. A real multi-GPU Instinct node is needed.
 - **Compute partitions (`dpx`, `qpx`, `cpx`).** A virtual function keeps working in both operating modes and a flip is skipped with a log line, but the flip itself, XCP registration and pods on partitions need a bare-metal MI300, MI325 or MI355. Run the plugin with `OPERATING_MODE=partition` and `COMPUTE_PARTITION` set.
-- **RDNA cards.**
+- **RDNA cards.** Only an RX 9070 XT was used, for the init container case above.
 - **A real hardware fault** reported by the Device Metrics Exporter.
 - **XNACK**, a `hipMalloc` larger than VRAM that is served from host memory (XNACK is off on a virtual function).
 - **The two-GPU JAX example and the vLLM model download.** The model download needs a node that can reach Hugging Face.

@@ -42,7 +42,7 @@ translated: true
 
 - **多张 GPU、XGMI、NUMA 和策略顺序。**只运行了调度器的决策过程，并在注册信息中写入了额外的 GPU。需要一个真实的多 GPU Instinct 节点。
 - **计算分区（`dpx`、`qpx`、`cpx`）。**虚拟功能在两种运行模式下都能继续工作，切换会被跳过并输出一行日志，但切换本身、XCP 注册和分区上的 Pod 需要裸机 MI300、MI325 或 MI355。运行插件时设置 `OPERATING_MODE=partition` 和 `COMPUTE_PARTITION`。
-- **RDNA 显卡。**
+- **RDNA 显卡。** 仅在 RX 9070 XT 上验证过上述 init 容器的情况。
 - **Device Metrics Exporter 报告的真实硬件故障。**
 - **XNACK**，即大于显存的 `hipMalloc` 由主机内存提供（虚拟功能上 XNACK 是关闭的）。
 - **双 GPU 的 JAX 示例和 vLLM 模型下载。**模型下载需要一个能访问 Hugging Face 的节点。
