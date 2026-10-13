@@ -78,7 +78,7 @@ helm dependency build charts/hami
 oc new-project hami-system
 ```
 
-将以下内容保存为 `values-openshift.yaml`，并按集群配置调整节点标签、驱动根目录和 Toolkit 可执行文件路径。
+将以下内容保存为 `values-openshift.yaml`，并按集群配置调整节点标签和 Toolkit 可执行文件路径。
 
 根据 `oc version` 返回的 Kubernetes 服务端版本，填写 `scheduler.kubeScheduler.image.tag`。使用已发布的上游 Kubernetes 镜像标签，不要使用 OpenShift 版本号或带 OpenShift 专用后缀的版本号。
 
@@ -96,7 +96,6 @@ scheduler:
 
 devicePlugin:
   deviceListStrategy: cdi-annotations
-  nvidiaDriverRoot: /run/nvidia/driver
   nvidiaHookPath: /usr/local/nvidia/toolkit/nvidia-ctk
   nvidiaNodeSelector:
     gpu: null
@@ -107,11 +106,11 @@ devicePlugin:
 
 - `gpu: null` 移除 Chart 默认的 `gpu=on` 节点选择条件。省略此项时，Helm 会合并两个条件，节点必须同时具备两种标签。如果 HAMi 只管理部分 GPU 节点，在选择器中添加专用节点标签。
 - Chart 已容忍 `nvidia.com/gpu:NoSchedule` 污点。仅当 GPU 节点有其他污点时，覆盖 `devicePlugin.tolerations`。
-- 如果 device plugin 依赖 NVIDIA 运行时处理 `NVIDIA_VISIBLE_DEVICES`，先确认 `nvidia` RuntimeClass 已存在，再设置 `devicePlugin.runtimeClassName: nvidia`。此值也用于 HAMi 为 NVIDIA 工作负载添加的 RuntimeClass。
+- 如果 device plugin 依赖 NVIDIA 运行时处理 `NVIDIA_VISIBLE_DEVICES`，先确认 `nvidia` RuntimeClass 已存在，再设置 `devices.nvidia.runtimeClassName: nvidia`。此值也用于 HAMi 为 NVIDIA 工作负载添加的 RuntimeClass。
 
   GPU Operator v25.10.0 及以后版本启用 CDI 时，NVIDIA 要求此类 GPU 管理容器指定该 RuntimeClass；由 NRI 插件处理设备注入时无需设置。详见 [CDI 与 GPU 管理容器](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/cdi.html#cdi-and-gpu-management-containers)。
 
-- `nvidiaDriverRoot` 指向宿主机上的驱动安装根目录，不能填写单个库文件所在的目录。驱动直接安装在宿主机上时，使用 `/`。`nvidiaHookPath` 指向宿主机上的 `nvidia-ctk` 可执行文件。详见 [CDI 配置](./configure-cdi.md)。
+- `devicePlugin.nvidiaDriverRoot` 默认为 `auto`，从 GPU Operator 的 `driver-ready` 文件读取驱动根目录；文件不存在时使用 `/`。仅当自动检测结果与宿主机上的驱动安装根目录不符时，才覆盖此值。`devicePlugin.nvidiaHookPath` 指向宿主机上的 `nvidia-ctk` 可执行文件。详见 [CDI 配置](./configure-cdi.md)。
 - 如果现有环境使用 HAMi 的 `envvar` 注入，设置 `deviceListStrategy: envvar` 并省略 `nvidiaHookPath`。确认 NVIDIA 运行时能为 device plugin 和工作负载处理 `NVIDIA_VISIBLE_DEVICES`。排查方法见 [GPU Operator 运行时故障排查](../troubleshooting/troubleshooting.md#nvidia-toolkit-gpu-operator-25-10)。
 
   在 CRI-O 上关闭已有 GPU Operator 的 CDI 时，按 NVIDIA 的[关闭 CDI 步骤](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/26.3/cdi.html#disabling-cdi)操作：先将 GPU 节点的 `nvidia.com/gpu.deploy.operator-validator` 标签设为 `false`，再将 ClusterPolicy 的 `cdi.enabled` 设为 `false`，完成后将节点标签恢复为 `true`。保持 CDI 启用，或首次安装 GPU Operator 时就禁用 CDI，均无需执行此切换流程。
@@ -199,7 +198,7 @@ oc get pods -n hami-test -l job-name=hami-smoke -o yaml
 确认以下结果：
 
 - 日志包含 `Test PASSED`。
-- Pod 使用 `hami-scheduler` 调度器。如果设置了 `devicePlugin.runtimeClassName`，Pod 使用对应的 RuntimeClass。
+- Pod 使用 `hami-scheduler` 调度器。如果设置了 `devices.nvidia.runtimeClassName`，Pod 使用对应的 RuntimeClass。
 - Pod 运行在 HAMi 管理的 GPU 节点上。
 - Pod 注解包含 HAMi 分配信息。
 - 应用使用合适的受限 SCC。

@@ -77,7 +77,7 @@ Create a dedicated project:
 oc new-project hami-system
 ```
 
-Save the following as `values-openshift.yaml` and adjust the node labels, driver root, and Toolkit executable path for the cluster.
+Save the following as `values-openshift.yaml` and adjust the node labels and Toolkit executable path for the cluster.
 
 Set `scheduler.kubeScheduler.image.tag` to match the Kubernetes server version from `oc version`. Use a published upstream Kubernetes image tag, without the OpenShift release number or an OpenShift-specific suffix.
 
@@ -95,7 +95,6 @@ scheduler:
 
 devicePlugin:
   deviceListStrategy: cdi-annotations
-  nvidiaDriverRoot: /run/nvidia/driver
   nvidiaHookPath: /usr/local/nvidia/toolkit/nvidia-ctk
   nvidiaNodeSelector:
     gpu: null
@@ -106,11 +105,11 @@ devicePlugin:
 
 - `gpu: null` removes the Chart's default `gpu=on` selector. Without it, Helm merges both selectors and the device plugin requires both labels. Add a dedicated node label to the selector if HAMi should manage only some GPU nodes.
 - The Chart already tolerates `nvidia.com/gpu:NoSchedule`. Override `devicePlugin.tolerations` only if the GPU nodes have other taints.
-- If the device plugin relies on the NVIDIA runtime to process `NVIDIA_VISIBLE_DEVICES`, check that the `nvidia` RuntimeClass exists, then set `devicePlugin.runtimeClassName: nvidia`. HAMi also adds this RuntimeClass to NVIDIA workloads.
+- If the device plugin relies on the NVIDIA runtime to process `NVIDIA_VISIBLE_DEVICES`, check that the `nvidia` RuntimeClass exists, then set `devices.nvidia.runtimeClassName: nvidia`. HAMi also adds this RuntimeClass to NVIDIA workloads.
 
   With CDI enabled in GPU Operator v25.10.0 or later, NVIDIA requires this RuntimeClass for these GPU management containers unless the NRI plugin handles device injection. See [CDI and GPU management containers](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/cdi.html#cdi-and-gpu-management-containers).
 
-- `nvidiaDriverRoot` must point to the host driver installation root, not the directory of an individual library. For host-installed drivers, use `/`. `nvidiaHookPath` must point to the host `nvidia-ctk` executable. See [CDI configuration](./configure-cdi.md).
+- `devicePlugin.nvidiaDriverRoot` defaults to `auto`: it reads the driver root from GPU Operator's `driver-ready` file and falls back to `/` when the file is absent. Override it only if automatic detection does not match the host driver installation root. `devicePlugin.nvidiaHookPath` must point to the host `nvidia-ctk` executable. See [CDI configuration](./configure-cdi.md).
 - If the existing environment uses HAMi's `envvar` injection, set `deviceListStrategy: envvar` and omit `nvidiaHookPath`. Verify the NVIDIA runtime handles `NVIDIA_VISIBLE_DEVICES` for both the device plugin and workloads. Follow the [GPU Operator runtime troubleshooting guide](../troubleshooting/troubleshooting.md#nvidia-toolkit-gpu-operator-25-10) for that path.
 
   To disable CDI in an existing GPU Operator installation on CRI-O, follow NVIDIA's [Disabling CDI procedure](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/26.3/cdi.html#disabling-cdi): set the GPU nodes' `nvidia.com/gpu.deploy.operator-validator` label to `false`, set `cdi.enabled=false` in the ClusterPolicy, then restore the label to `true`. This sequence applies to an existing CDI-to-legacy transition; it is not needed when CDI remains enabled or is disabled from the initial GPU Operator installation.
@@ -198,7 +197,7 @@ oc get pods -n hami-test -l job-name=hami-smoke -o yaml
 Confirm the following:
 
 - The logs contain `Test PASSED`.
-- The Pod uses scheduler `hami-scheduler`. If `devicePlugin.runtimeClassName` is set, the Pod uses that RuntimeClass.
+- The Pod uses scheduler `hami-scheduler`. If `devices.nvidia.runtimeClassName` is set, the Pod uses that RuntimeClass.
 - The Pod runs on a GPU node that HAMi manages.
 - The Pod annotations contain HAMi allocation information.
 - The application uses an appropriate restricted SCC.
