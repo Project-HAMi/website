@@ -30,6 +30,7 @@ translated: true
 | `dp.hookInstaller.enabled` |  | `true` | 把镜像中的 `libamvgpu.so` 复制到每个节点的 `<dp.hostHookPath>/vgpu`。 |
 | `dp.hostHookPath` |  | `/usr/local` | hook 在宿主机上的目录。工作负载中始终位于 `/usr/local/vgpu/libamvgpu.so`。 |
 | `monitor.enabled`（顶层） |  | `false` | 运行 `k8s-vgpu-monitor`。 |
+| `monitor.metricsBindAddress`（顶层） | `-metrics_bind_address` | `:9394` | monitor 提供 `/metrics` 的地址；容器端口和抓取注解随之变化。 |
 
 ## 运行模式
 
@@ -94,7 +95,7 @@ kubelet 在准入 Pod 时调用插件，早于拉取镜像。如果镜像还不�
 ## 可选组件
 
 - **来自 AMD Device Metrics Exporter 的 GPU 健康状态。** 安装 [exporter](https://github.com/ROCm/device-metrics-exporter)，并在 `/var/lib/amd-metrics-exporter/` 启用它的 gRPC socket。插件随后也会使用 exporter 上报的每张 GPU 的健康状态，例如出现 ECC 错误之后。没有它时，插件仍会检查每张 GPU 的设备节点能否打开。
-- **GPU 指标。** `monitor.enabled=true` 会在每个 GPU 节点上运行 `k8s-vgpu-monitor`。它在 9394 端口以 HAMi NVIDIA vGPU monitor 的指标名称提供 Prometheus 指标：按容器提供 `hami_vgpu_memory_used_bytes` 和 `hami_vgpu_memory_limit_bytes`，按 GPU 提供 `hami_host_gpu_memory_used_bytes`、`hami_host_gpu_memory_total_bytes`、`hami_host_gpu_utilization_ratio`、`hami_host_gpu_temperature_celsius` 和 `hami_host_gpu_power_usage_watts`。容器显存来自 `dmem` cgroup 控制器，因此需要 systemd cgroup 驱动和带有该控制器的内核。不报告按容器的利用率，因为内核不按进程统计计算时间。
+- **GPU 指标。** `monitor.enabled=true` 会在每个 GPU 节点上运行 `k8s-vgpu-monitor`。它在 9394 端口以 HAMi NVIDIA vGPU monitor 的指标名称提供 Prometheus 指标：按容器提供 `hami_vgpu_memory_used_bytes` 和 `hami_vgpu_memory_limit_bytes`，按 GPU 提供 `hami_host_gpu_memory_used_bytes`、`hami_host_gpu_memory_total_bytes`、`hami_host_gpu_utilization_ratio`、`hami_host_gpu_temperature_celsius` 和 `hami_host_gpu_power_usage_watts`，另外按节点提供 `hami_vgpumonitor_collect_success`（最近一次采集完全成功为 1，任何部分失败为 0）。容器显存来自 `dmem` cgroup 控制器，因此需要 systemd cgroup 驱动和带有该控制器的内核。不报告按容器的利用率，因为内核不按进程统计计算时间。
 - **节点 labeller。** `k8s-ds-amdgpu-labeller.yaml` 部署上游的 labeller，它会添加 `amd.com/gpu.*` 节点标签，例如显存、CU 数量、设备 ID 和系列：
 
 ```bash

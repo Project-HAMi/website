@@ -39,13 +39,14 @@ sidebar_label: AMD Instinct vGPU
   {
     "id": "<device-id>",
     "index": 0,
-    "count": 1,
+    "count": 10,
     "devmem": 196608,
     "devcore": 304,
     "type": "AMD Instinct MI300X VF",
     "numa": 0,
-    "mode": "hami-core",
-    "health": true
+    "health": true,
+    "devicevendor": "amd",
+    "custominfo": { "pciBDF": "0000:83:00.0", "cuPerWGP": 1 }
   }
 ]
 ```
@@ -53,6 +54,9 @@ sidebar_label: AMD Instinct vGPU
 - `devmem`：设备总显存，单位 MiB（例如 MI300X 为 196608）。
 - `devcore`：CU 总数（例如 MI300X 为 304）。
 - `id`：设备标识。
+- `count`：可共享该 GPU 的 Pod 数量（`-split_count`，默认 10，gfx12 上为 2）。
+- `type`：AMD SMI 报告的产品名称（AMD SMI 未报告时为 `amd-gpu`）。
+- `custominfo`：附加字段，例如 PCI 地址、`cuPerWGP`、XGMI 对端和分区配置，参见[AMD GPU 共享的工作原理](../userguide/amd-device/how-it-works.md#插件发布的内容)。
 
 ### 4.2 Pod 分配（调度器 -> Pod 注解 -> Allocate）
 
@@ -115,7 +119,7 @@ cuCount = floor(percentage × devcore / 100)
 
 - **不虚拟化 `amd-smi` / `rocm-smi`。** 这两个工具读取的是 sysfs/drm，而不是 HIP，LD_AUDIT 拦截不到，因此容器内的工具可能显示物理资源。
 - **CU 掩码依赖工作负载配合，不是安全边界。** `HSA_CU_MASK` 是 ROCr 在初始化时读取的环境变量，进程如果在 ROCr 启动前清掉它，就能重新使用整块设备。显存限制由 LD_AUDIT 层在 HIP API 边界上强制执行，CU 划分则不同，只对不改动注入环境变量的工作负载有效。
-- **不支持同一节点混用多种 GPU 型号。** device plugin 从 `amd.com/gpu.product-name` 获取 GPU 型号，而这个标签无法描述多种型号。
+- **同一节点混用多种 GPU 型号尚未测试。** device plugin 根据每块 GPU 的 AMD SMI 产品名称注册其型号，而该节点只用一种 GPU 型号运行过。
 - **感知 WGP 的 CU 分配。** RDNA（GFX10+）设备在构造 `HSA_CU_MASK` 时需要按 WGP 成对对齐（[设置 CU](https://rocm.docs.amd.com/en/latest/reference/system-optimization/gpu-isolation.html)）。device plugin 按完整 WGP 分配并把请求向上取整（3 个 CU 变为 4 个），并把成对大小发布为 `custominfo.cuPerWGP`，读取该字段的调度器会预留相同的数量。调度器一侧需要比 v2.10.0 更新的 HAMi 版本。
 
 ## 7. 需要补充多 GPU 验证
