@@ -7,6 +7,13 @@ const vendorDevices = [
     href: "https://www.nvidia.com",
   },
   {
+    key: "amd",
+    name: "AMD",
+    label: { en: "AMD", zh: "AMD" },
+    logo: "img/ecosystem/amd.svg",
+    href: "https://www.amd.com",
+  },
+  {
     key: "aws",
     name: "AWS",
     label: { en: "AWS Neuron", zh: "AWS Neuron" },
@@ -75,13 +82,6 @@ const vendorDevices = [
     label: { en: "Vastai", zh: "瀚博半导体" },
     logo: "img/ecosystem/vaststream.jpg",
     href: "https://www.vastaitech.com",
-  },
-  {
-    key: "amd",
-    name: "AMD",
-    label: { en: "AMD", zh: "AMD" },
-    logo: "img/ecosystem/amd.svg",
-    href: "https://www.amd.com",
   },
   {
     key: "biren",

@@ -9,6 +9,7 @@ translated: true
 | 设备类型 | 制造商                    | 支持型号                | 状态   | 显存隔离 | 核心隔离 | 多卡切分支持 |
 | -------- | ------------------------- | ----------------------- | ------ | -------- | -------- | ------------ |
 | GPU      | 英伟达（NVIDIA）          | 全系列                  | 稳定   | 是       | 是       | 是           |
+| GPU      | AMD                       | Instinct / ROCm         | 稳定   | 是       | 是       | 否           |
 | MLU      | 寒武纪（Cambricon）       | 370、590                | 稳定   | 是       | 是       | 否           |
 | HCU      | 海光（Hygon）             | 全系列                  | 稳定   | 是       | 是       | 否           |
 | NPU      | 华为昇腾（Huawei Ascend） | 910B、910B3、910C、310P | 稳定   | 是       | 是       | 否           |
@@ -18,7 +19,6 @@ translated: true
 | GCU      | 燧原科技（Enflame）       | S60                     | 稳定   | 是       | 是       | 否           |
 | XPU      | 昆仑芯（Kunlunxin）       | P800                    | 稳定   | 是       | 否       | 否           |
 | GPU      | 瀚博（Vastai）            | VA16                    | 稳定   | 否       | 否       | 否           |
-| GPU      | AMD                       | Instinct / ROCm         | 稳定   | 是       | 是       | 否           |
 | Neuron   | AWS                       | Inf、Trn                | 稳定   | 否       | 是       | 否           |
 | GPU      | 壁仞（Biren）             | Biren166M               | 稳定   | 否       | 否       | 否           |
 | DPU      | 太初元碁（Teco）          | 检查中                  | 验证中 | 否       | 否       | 否           |
@@ -45,6 +45,7 @@ HAMi 只是使用这些设备的四种方式之一。另外三种自行完成调
 | 制造商                    | HAMi | HAMi-DRA | Volcano | KAI-scheduler |
 | ------------------------- | ---- | -------- | ------- | ------------- |
 | 英伟达（NVIDIA）          | [分配设备显存](nvidia-device/specify-device-memory-usage.md) | [动态资源分配](nvidia-device/dynamic-resource-allocation.md) | [使用 Volcano vGPU](volcano-vgpu/nvidia-gpu/how-to-use-volcano-vgpu.md) | [使用 KAI Scheduler](kai-scheduler/how-to-use-kai-scheduler.md) |
+| AMD                       | [启用 AMD GPU 共享](amd-device/enable-amd-gpu-sharing.md) | - | - | - |
 | 寒武纪（Cambricon）       | [启用寒武纪 MLU 共享](cambricon-device/enable-cambricon-mlu-sharing.md) | - | - | - |
 | 海光（Hygon）             | [启用海光 HCU 共享](hygon-device/enable-hygon-hcu-sharing.md) | - | - | - |
 | 华为昇腾（Huawei Ascend） | [启用昇腾共享](ascend-device/enable-ascend-sharing.md) | - | [Volcano 昇腾 vNPU](../installation/how-to-use-volcano-ascend.md) | - |
@@ -54,7 +55,6 @@ HAMi 只是使用这些设备的四种方式之一。另外三种自行完成调
 | 燧原科技（Enflame）       | [启用燧原 GCU 共享](enflame-device/enable-enflame-gcu-sharing.md) | - | - | - |
 | 昆仑芯（Kunlunxin）       | [启用昆仑芯调度](kunlunxin-device/enable-kunlunxin-schedule.md) | - | - | - |
 | 瀚博（Vastai）            | [启用瀚博设备共享](vastai/enable-vastai-sharing.md) | - | - | - |
-| AMD                       | [启用 AMD GPU 共享](amd-device/enable-amd-gpu-sharing.md) | - | - | - |
 | AWS                       | [管理 AWS Neuron 设备](awsneuron-device/enable-awsneuron-managing.md) | - | - | - |
 | 壁仞（Biren）             | [启用壁仞设备共享](biren-device/enable-biren-sharing.md) | - | - | - |
 | 太初元碁（Teco）          | - | - | - | - |
@@ -82,6 +82,21 @@ HAMi 只是使用这些设备的四种方式之一。另外三种自行完成调
 - [分配任务到特定类型](nvidia-device/examples/specify-card-type-to-use.md)
 - [将任务分配给特定的 GPU](nvidia-device/examples/specify-certain-card.md)
 - [将任务分配给 MIG 实例](nvidia-device/examples/dynamic-mig-example.md)
+
+### AMD
+
+- [启用 AMD GPU 共享](amd-device/enable-amd-gpu-sharing.md)
+- [分配整张 GPU](amd-device/examples/default-use.md)
+- [分配设备显存](amd-device/examples/use-memory.md)
+- [按百分比分配设备显存](amd-device/examples/use-memory-percentage.md)
+- [分配设备核心和显存资源](amd-device/examples/allocate-core-and-memory.md)
+- [将任务分配到指定类型的 GPU](amd-device/examples/specify-card-type-to-use.md)
+- [避开指定类型的 GPU](amd-device/examples/specify-card-type-not-use.md)
+- [按 UUID 将任务分配到指定 GPU](amd-device/examples/specify-uuid-to-use.md)
+- [按 UUID 避开指定 GPU](amd-device/examples/specify-uuid-not-use.md)
+- [在同一 NUMA 节点上分配 GPU](amd-device/examples/numa-bind.md)
+- [分配通过 XGMI 互联的 GPU](amd-device/examples/link-bind.md)
+- [选择 GPU 调度策略](amd-device/examples/scheduler-policy.md)
 
 ### 寒武纪（Cambricon）
 
@@ -121,11 +136,6 @@ HAMi 只是使用这些设备的四种方式之一。另外三种自行完成调
 ### 燧原科技（Enflame）
 
 - [启用燧原 GPU 共享](enflame-device/enable-enflame-gcu-sharing.md)
-
-### AMD
-
-- [启用 AMD GPU 共享](amd-device/enable-amd-gpu-sharing.md)
-- [分配设备核心和显存资源](amd-device/examples/allocate-core-and-memory.md)
 
 ### AWS Neuron
 

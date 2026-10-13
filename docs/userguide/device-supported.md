@@ -8,6 +8,7 @@ The table below lists the devices supported by HAMi. This matrix reflects HAMi v
 | Type   | Manufacturer  | Models                  | Status           | MemoryIsolation | CoreIsolation | MultiCard Partitioning |
 | ------ | ------------- | ----------------------- | ---------------- | --------------- | ------------- | ---------------------- |
 | GPU    | NVIDIA        | All                     | Stable           | Yes             | Yes           | Yes                    |
+| GPU    | AMD           | Instinct / ROCm         | Stable           | Yes             | Yes           | No                     |
 | MLU    | Cambricon     | 370, 590                | Stable           | Yes             | Yes           | No                     |
 | HCU    | Hygon         | All                     | Stable           | Yes             | Yes           | No                     |
 | NPU    | Huawei Ascend | 910B, 910B3, 910C, 310P | Stable           | Yes             | Yes           | No                     |
@@ -17,7 +18,6 @@ The table below lists the devices supported by HAMi. This matrix reflects HAMi v
 | GCU    | Enflame       | S60                     | Stable           | Yes             | Yes           | No                     |
 | XPU    | Kunlunxin     | P800                    | Stable           | Yes             | No            | No                     |
 | GPU    | Vastai        | VA16                    | Stable           | No              | No            | No                     |
-| GPU    | AMD           | Instinct / ROCm         | Stable           | Yes             | Yes           | No                     |
 | Neuron | AWS           | Inf, Trn                | Stable           | No              | Yes           | No                     |
 | GPU    | Biren         | Biren166M               | Stable           | No              | No            | No                     |
 | DPU    | Teco          | Checking                | Under Validation | No              | No            | No                     |
@@ -44,6 +44,7 @@ Each cell links to the guide for that device and component. A dash means there i
 | Manufacturer  | HAMi | HAMi-DRA | Volcano | KAI-scheduler |
 | ------------- | ---- | -------- | ------- | ------------- |
 | NVIDIA        | [Allocate device memory](nvidia-device/specify-device-memory-usage.md) | [Dynamic Resource Allocation](nvidia-device/dynamic-resource-allocation.md) | [Use Volcano vGPU](volcano-vgpu/nvidia-gpu/how-to-use-volcano-vgpu.md) | [Use KAI Scheduler](kai-scheduler/how-to-use-kai-scheduler.md) |
+| AMD           | [Enable AMD GPU sharing](amd-device/enable-amd-gpu-sharing.md) | - | - | - |
 | Cambricon     | [Enable Cambricon MLU sharing](cambricon-device/enable-cambricon-mlu-sharing.md) | - | - | - |
 | Hygon         | [Enable Hygon HCU sharing](hygon-device/enable-hygon-hcu-sharing.md) | - | - | - |
 | Huawei Ascend | [Enable Huawei Ascend sharing](ascend-device/enable-ascend-sharing.md) | - | [Volcano Ascend vNPU](../installation/how-to-use-volcano-ascend.md) | - |
@@ -53,7 +54,6 @@ Each cell links to the guide for that device and component. A dash means there i
 | Enflame       | [Enable Enflame GCU sharing](enflame-device/enable-enflame-gcu-sharing.md) | - | - | - |
 | Kunlunxin     | [Enable Kunlunxin scheduling](kunlunxin-device/enable-kunlunxin-schedule.md) | - | - | - |
 | Vastai        | [Enable Vastai sharing](vastai/enable-vastai-sharing.md) | - | - | - |
-| AMD           | [Enable AMD GPU sharing](amd-device/enable-amd-gpu-sharing.md) | - | - | - |
 | AWS           | [Manage AWS Neuron devices](awsneuron-device/enable-awsneuron-managing.md) | - | - | - |
 | Biren         | [Enable Biren sharing](biren-device/enable-biren-sharing.md) | - | - | - |
 | Teco          | - | - | - | - |
@@ -81,6 +81,21 @@ All vendor pages are listed here so this page reaches each of them.
 - [Assign task to a certain type](nvidia-device/examples/specify-card-type-to-use.md)
 - [Assign task to a certain GPU](nvidia-device/examples/specify-certain-card.md)
 - [Assign task to MIG instance](nvidia-device/examples/dynamic-mig-example.md)
+
+### AMD
+
+- [Enable AMD GPU Sharing](amd-device/enable-amd-gpu-sharing.md)
+- [Allocate a whole GPU](amd-device/examples/default-use.md)
+- [Allocate device memory](amd-device/examples/use-memory.md)
+- [Allocate device memory by percentage](amd-device/examples/use-memory-percentage.md)
+- [Allocate device core and memory resource](amd-device/examples/allocate-core-and-memory.md)
+- [Assign task to a certain GPU type](amd-device/examples/specify-card-type-to-use.md)
+- [Avoid a certain GPU type](amd-device/examples/specify-card-type-not-use.md)
+- [Assign task to a certain GPU by UUID](amd-device/examples/specify-uuid-to-use.md)
+- [Avoid a certain GPU by UUID](amd-device/examples/specify-uuid-not-use.md)
+- [Allocate GPUs on one NUMA node](amd-device/examples/numa-bind.md)
+- [Allocate XGMI-linked GPUs](amd-device/examples/link-bind.md)
+- [Choose a GPU scheduling policy](amd-device/examples/scheduler-policy.md)
 
 ### Cambricon
 
@@ -120,11 +135,6 @@ All vendor pages are listed here so this page reaches each of them.
 ### Enflame
 
 - [Enable Enflame GCU Sharing](enflame-device/enable-enflame-gcu-sharing.md)
-
-### AMD
-
-- [Enable AMD GPU Sharing](amd-device/enable-amd-gpu-sharing.md)
-- [Allocate device core and memory resource](amd-device/examples/allocate-core-and-memory.md)
 
 ### AWS Neuron
 

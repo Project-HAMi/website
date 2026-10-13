@@ -17,8 +17,8 @@ translated: true
 | 设备 | 前置条件与配置入口 |
 | --- | --- |
 | NVIDIA GPU | [准备 NVIDIA GPU 节点](#准备-nvidia-gpu-节点) |
-| 华为昇腾 NPU | [先决条件](../userguide/ascend-device/enable-ascend-sharing.md#先决条件) |
 | AMD GPU | [节点需求](../userguide/amd-device/enable-amd-gpu-sharing.md#节点需求) |
+| 华为昇腾 NPU | [先决条件](../userguide/ascend-device/enable-ascend-sharing.md#先决条件) |
 | 寒武纪 MLU | [节点需求](../userguide/cambricon-device/enable-cambricon-mlu-sharing.md#节点需求) |
 | 海光 HCU | [节点需求](../userguide/hygon-device/enable-hygon-hcu-sharing.md#节点需求) |
 | 摩尔线程 GPU | [节点需求](../userguide/mthreads-device/enable-mthreads-gpu-sharing.md#节点需求) |
