@@ -69,7 +69,9 @@ The device plugin checks for matching entries in this order:
 
 If more than one entry matches in step 1, 2, or 3, they are applied in list order. A later entry overrides only the fields it sets.
 
-Entries that set both `name` and `nodelabelselector`, and entries with an empty or invalid selector, are ignored and an error is logged. If `config.json` fails to load (e.g. invalid value type), no entries are applied and an error is logged.
+However, for resource settings (`devicesplitcount`, `devicememoryscaling`, etc.), null, 0, and false do not override non-zero values or true from earlier entries. Empty `operatingmode` and `filterdevices` values are also ignored.
+
+Entries that set both `name` and `nodelabelselector`, or neither of them, and entries with an empty or invalid selector, are ignored and an error is logged. If config.json fails to load (e.g. invalid value type), no entries are applied and an error is logged.
 
 :::note
 
@@ -77,9 +79,11 @@ The device plugin reads node labels when it starts. If you change the labels lat
 
 :::
 
-In the example below, nodes labeled `gpu.example.com/pool=mig` use MIG mode. Nodes with model t4 or l4 use hami-core mode with a split count of 4. All other nodes use a split count of 10.
+In the example below, nodes labeled `gpu.example.com/pool=mig` use mig mode. Nodes with model t4 or l4 use hami-core mode with a split count of 4. All other nodes use a split count of 10.
 
 If a node has both labels, both entries are applied in list order. The later entry overrides the settings, so it uses hami-core mode with a split count of 4.
+
+This JSON goes into the `config.json` key of the device plugin ConfigMap. For Helm, set it under `devicePlugin.nodeConfiguration.config`.
 
 <!-- prettier-ignore -->
 ```json
