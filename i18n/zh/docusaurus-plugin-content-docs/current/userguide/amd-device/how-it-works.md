@@ -29,7 +29,7 @@ HAMi 通过三个部分共享 AMD GPU。HAMi 调度器和 webhook 决定哪个 P
 
 | 资源 | 含义 | 由谁执行 |
 | --- | --- | --- |
-| `amd.com/gpu` | GPU 数量。Kubelet 为每一份共享看到一个设备，因此可分配数量等于 GPU 数乘以共享份数（10，gfx12 上为 2）。 | HAMi `Fit`，然后是插件 |
+| `amd.com/gpu` | GPU 数量。在 `cu` 模式下，kubelet 为每一份共享看到一个设备，因此可分配数量等于 GPU 数乘以共享份数（`dp.splitCount`，默认 10，gfx12 上为 2）。一个硬分区条目只计一次。 | HAMi `Fit`，然后是插件 |
 | `amd.com/gpucores` | 每张 GPU 的 CU 百分比，1 到 100。省略表示 100。 | HAMi 预留，插件设置 `HSA_CU_MASK` |
 | `amd.com/gpumem` | 每张 GPU 的显存，单位 MiB。省略表示全部。 | HAMi 预留，hook 和 `dmem` 限制执行 |
 | `amd.com/gpumem-percentage` | GPU 显存的占比，最大 100（HAMi 会换算成 MiB）。 | HAMi |
@@ -42,13 +42,13 @@ HAMi 调度器还支持这些 Pod 注解：`amd.com/use-gputype`、`amd.com/nous
 
 ## 插件发布的内容
 
-节点注解 `hami.io/node-amd-register` 是一个 JSON 列表，每张 GPU 一项：
+节点注解 `hami.io/node-amd-register` 是一个 JSON 列表，每个已注册设备一项（一张整卡，或它的一个硬分区）：
 
 | 字段 | 值 |
 | --- | --- |
 | `id` | AMD SMI UUID；XCP 分区为 `GPU-<unique_id>`。两种运行模式下相同。 |
 | `index`、`numa`、`type`、`health` | DRM card 次设备号、NUMA 节点、市场名称；如果无法打开 DRM 节点，或 exporter 报告 GPU 不健康，则 `health` 为 false。 |
-| `count` | 共享份数：`-split_count`，否则 gfx12 上为 2，其他为 10。 |
+| `count` | 共享份数：`-split_count`，否则 gfx12 上为 2，其他为 10。硬分区条目为 1。 |
 | `devmem`、`devcore` | 显存（MiB，乘以 `-device_memory_scaling`）和有效 CU 数。 |
 | `custominfo` | `pciBDF`、`cuPerWGP`（RDNA 上为 2）、`computeQueues`、`xgmiPeers`（可通过 XGMI 到达的 GPU 的 PCI 地址）以及分区配置。 |
 

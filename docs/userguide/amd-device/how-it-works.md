@@ -28,7 +28,7 @@ Every 30 seconds the plugin publishes the node annotation again, and every `-pul
 
 | Resource | Meaning | Enforced by |
 | --- | --- | --- |
-| `amd.com/gpu` | Number of GPUs. Kubelet sees one device per share, so allocatable is GPUs times the share count (10, or 2 on gfx12). | HAMi `Fit`, then the plugin |
+| `amd.com/gpu` | Number of GPUs. In `cu` mode kubelet sees one device per share, so allocatable is GPUs times the share count (`dp.splitCount`, by default 10, or 2 on gfx12). A hard partition entry counts once. | HAMi `Fit`, then the plugin |
 | `amd.com/gpucores` | Percent of each GPU's CUs, 1 to 100. Omitted means 100. | HAMi books it, the plugin sets `HSA_CU_MASK` |
 | `amd.com/gpumem` | VRAM per GPU in MiB. Omitted means all of it. | HAMi books it, the hook and the `dmem` cap enforce it |
 | `amd.com/gpumem-percentage` | Share of the GPU's memory, up to 100 (HAMi turns it into MiB). | HAMi |
@@ -41,13 +41,13 @@ Do not put whole-GPU pods and slices on one card when VRAM isolation matters: a 
 
 ## What the plugin publishes
 
-The node annotation `hami.io/node-amd-register` is a JSON list with one entry per GPU:
+The node annotation `hami.io/node-amd-register` is a JSON list with one entry per registered device (a whole GPU, or a hard partition of it):
 
 | Field | Value |
 | --- | --- |
 | `id` | AMD SMI UUID, or `GPU-<unique_id>` for an XCP partition. The same in both operating modes. |
 | `index`, `numa`, `type`, `health` | DRM card minor, NUMA node, market name, and false if the DRM node cannot be opened or the exporter reports the GPU unhealthy. |
-| `count` | Share count: `-split_count`, otherwise 2 on gfx12 and 10 elsewhere. |
+| `count` | Share count: `-split_count`, otherwise 2 on gfx12 and 10 elsewhere. 1 for a hard partition entry. |
 | `devmem`, `devcore` | VRAM in MiB (multiplied by `-device_memory_scaling`) and the active CUs. |
 | `custominfo` | `pciBDF`, `cuPerWGP` (2 on RDNA), `computeQueues`, `xgmiPeers` (the PCI addresses of the GPUs reachable over XGMI) and the partition profiles. |
 

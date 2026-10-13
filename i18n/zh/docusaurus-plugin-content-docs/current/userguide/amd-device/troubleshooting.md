@@ -20,7 +20,7 @@ translated: true
 | 插件 Pod 以用法提示退出。 | chart 和镜像来自不同的版本。 |
 | 重启后可分配的 `amd.com/gpu` 为 0。 | 等待一次注册（30 秒）。检查是否有其他插件占用了 `amd.com/gpu`。 |
 | kubelet 日志中出现 `device plugin already connected`。 | 有两个插件注册了 `amd.com/gpu`，例如上游的 ROCm 插件。移除其中一个。 |
-| 切片在没有显存限制的情况下运行。 | 镜像无法加载 hook（musl、静态链接，或 glibc 早于 2.34）。启用 `muslFailClosed` 时会改为拒绝该 Pod。 |
+| 切片没有进程内的显存限制。 | 镜像无法加载 hook（musl、静态链接，或 glibc 早于 2.34）。节点支持时，内核 `dmem` 限制仍然有效，因此只有 `dmem` 也不可用或已关闭（内核早于 6.14、没有 systemd cgroup 驱动，或 `dp.dmemBackend=false`）时，切片才完全没有限制。启用 `muslFailClosed` 时会拒绝此类 Pod，除非 `dmem` 已经限制了它。 |
 | 使用 `hipMallocAsync` 的 Pod 在超过限制时中止。 | 没有 hook 时只有 `dmem` 限制生效，ROCm 运行时会中止进程。 |
 | 只设置 `amd.com/gpumem` 的 Pod 占满了 GPU 的算力。 | 没有 `amd.com/gpucores` 的请求会预留全部 CU。请设置 `amd.com/gpucores`。 |
 | 节点上的 `hami.io/mutex.lock` 一直存在。 | 某次绑定没有完成。该锁在 HAMi 的锁超时（默认 5 分钟）后过期。 |

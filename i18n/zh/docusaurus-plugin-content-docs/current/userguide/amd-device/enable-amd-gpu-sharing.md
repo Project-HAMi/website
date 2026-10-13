@@ -50,7 +50,7 @@ kubectl get node <node> -o jsonpath='{.status.allocatable.amd\.com/gpu}'
 kubectl get node <node> -o jsonpath='{.metadata.annotations.hami\.io/node-amd-register}'
 ```
 
-`amd.com/gpu` 是 GPU 数量乘以共享份数（见[注意事项](#注意事项)）。该注解列出每张 GPU 的 UUID、产品名称、VRAM 和 CU 数量，以及 PCI 地址、`cuPerWGP`，对通过 XGMI 互联的 GPU 还有 `xgmiPeers`。被 exporter 报告为不健康的 GPU 不带 `health` 发布，调度器会以 `CardNotHealth` 拒绝它。
+在 `cu` 模式下，`amd.com/gpu` 是 GPU 数量乘以共享份数（见[注意事项](#注意事项)）。该注解列出每张 GPU 的 UUID、产品名称、VRAM 和 CU 数量，以及 PCI 地址、`cuPerWGP`，对通过 XGMI 互联的 GPU 还有 `xgmiPeers`。被 exporter 报告为不健康的 GPU 不带 `health` 发布，调度器会以 `CardNotHealth` 拒绝它。
 
 显存限制由 [amd-hami-core](https://github.com/Project-HAMi/amd-hami-core)（`libamvgpu`，由插件注入）执行；如果节点具有 `dmem` cgroup 控制器并使用 systemd cgroup 驱动，内核也会同时限制。
 

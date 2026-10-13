@@ -19,7 +19,7 @@ sidebar_label: Troubleshooting
 | The plugin pod stops with a usage message. | The chart and the image come from different releases. |
 | Allocatable `amd.com/gpu` is 0 right after a restart. | Wait one registration (30 seconds). Check that no other plugin owns `amd.com/gpu`. |
 | `kubelet` logs `device plugin already connected`. | Two plugins register `amd.com/gpu`, for example the upstream ROCm plugin. Remove one. |
-| A slice runs without a memory limit. | The image cannot load the hook (musl, static, or glibc older than 2.34). With `muslFailClosed` it is refused instead. |
+| A slice has no in-process memory limit. | The image cannot load the hook (musl, static, or glibc older than 2.34). The kernel `dmem` cap still limits it where the node supports it, so the slice has no cap at all only if `dmem` is also unavailable or off (kernel older than 6.14, no systemd cgroup driver, or `dp.dmemBackend=false`). With `muslFailClosed` such a pod is refused, unless `dmem` caps it. |
 | A pod that uses `hipMallocAsync` aborts above the limit. | Without the hook only the `dmem` cap applies, and the ROCm runtime aborts the process. |
 | A pod that sets only `amd.com/gpumem` blocks the GPU's compute. | A request without `amd.com/gpucores` books all CUs. Set `amd.com/gpucores`. |
 | `hami.io/mutex.lock` stays on the node. | A bind did not finish. The lock expires after the HAMi lock timeout (5 minutes by default). |

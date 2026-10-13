@@ -49,7 +49,7 @@ kubectl get node <node> -o jsonpath='{.status.allocatable.amd\.com/gpu}'
 kubectl get node <node> -o jsonpath='{.metadata.annotations.hami\.io/node-amd-register}'
 ```
 
-`amd.com/gpu` is the number of GPUs times their share count (see [Things to know](#things-to-know)). The annotation lists each GPU's UUID, product name, VRAM and CU count, plus the PCI address, `cuPerWGP`, and on GPUs linked over XGMI the `xgmiPeers`. A GPU that the exporter reports unhealthy is published without `health`, and the scheduler refuses it with `CardNotHealth`.
+In `cu` mode `amd.com/gpu` is the number of GPUs times their share count (see [Things to know](#things-to-know)). The annotation lists each GPU's UUID, product name, VRAM and CU count, plus the PCI address, `cuPerWGP`, and on GPUs linked over XGMI the `xgmiPeers`. A GPU that the exporter reports unhealthy is published without `health`, and the scheduler refuses it with `CardNotHealth`.
 
 Memory limits are enforced by [amd-hami-core](https://github.com/Project-HAMi/amd-hami-core) (`libamvgpu`, injected by the plugin) and, where the node has the `dmem` cgroup controller and the systemd cgroup driver, by the kernel as well.
 
