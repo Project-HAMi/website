@@ -76,7 +76,7 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 4,
+        "w": 3,
         "x": 0,
         "y": 1
       },
@@ -138,7 +138,7 @@
       "gridPos": {
         "h": 4,
         "w": 5,
-        "x": 4,
+        "x": 3,
         "y": 1
       },
       "id": 2,
@@ -199,7 +199,7 @@
       "gridPos": {
         "h": 4,
         "w": 5,
-        "x": 9,
+        "x": 8,
         "y": 1
       },
       "id": 3,
@@ -269,8 +269,8 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 5,
-        "x": 14,
+        "w": 4,
+        "x": 13,
         "y": 1
       },
       "id": 4,
@@ -308,6 +308,75 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
+      "description": "Allocated GPU cores as a share of total GPU core capacity. Green below 75%, amber 75-90%, red above 90%.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 75
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 17,
+        "y": 1
+      },
+      "id": 6,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "100 * sum(hami_gpu_core_allocated_ratio{node=~\"$node\"}) / clamp_min(sum(hami_gpu_core_limit_ratio{node=~\"$node\"}), 1)",
+          "instant": true,
+          "legendFormat": "__auto",
+          "refId": "A"
+        }
+      ],
+      "title": "GPU cores allocated %",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
       "description": "Number of containers sharing GPUs across the selected node(s).",
       "fieldConfig": {
         "defaults": {
@@ -330,8 +399,8 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 5,
-        "x": 19,
+        "w": 3,
+        "x": 21,
         "y": 1
       },
       "id": 5,

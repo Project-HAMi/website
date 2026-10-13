@@ -51,6 +51,7 @@ test("queries only use HAMi v2.10 metrics and selected DCGM metrics", () => {
   const allowedMetrics = new Set([
     "hami_container_device_utilization_ratio",
     "hami_gpu_core_allocated_ratio",
+    "hami_gpu_core_limit_ratio",
     "hami_gpu_memory_allocated_bytes",
     "hami_gpu_memory_limit_bytes",
     "hami_gpu_shared_count",
