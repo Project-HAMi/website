@@ -7,6 +7,7 @@ title: FAQ
 | **GPU Vendor** | **GPU Model** | **Granularity** | **Multi-GPU Support** |
 | --- | --- | --- | --- |
 | NVIDIA | Almost all mainstream consumer and data center GPUs | Core 1%, Memory 1M | Supported. Multi-GPU can still be split and shared using virtualization. |
+| AMD | Instinct and Radeon (ROCm) | Core 1% (whole WGPs on RDNA), Memory 1M | Implemented, but real multi-GPU validation is still required: multi-GPU runs so far used simulated GPUs on one real GPU. See the [AMD test status](../userguide/amd-device/verification-status.md). |
 | Huawei Ascend | 910A, 910B2, 910B3, 310P | Minimum granularity depends on the card type template. Refer to the [official templates](https://www.hiascend.com/document/detail/zh/mindx-dl/50rc1/AVI/cpaug/cpaug_0005.html). | Supported, but splitting is not supported when `npu > 1`. The entire card is exclusively allocated. |
 | Hygon | All | Core 1%, Memory 1M | Supported, but splitting is not supported when `hcu > 1`. The entire card is exclusively allocated. |
 | Cambricon | 370, 590 | Core 1%, Memory 256M | Supported, but splitting is not supported when `mlu > 1`. The entire card is exclusively allocated. |
