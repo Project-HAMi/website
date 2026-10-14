@@ -29,7 +29,8 @@ Save your current HAMi configuration in case you need to rollback:
 
 ```bash
 # Backup current values
-helm get values hami -n kube-system > hami-backup-values.yaml
+helm get values hami -n kube-system -o yaml > hami-backup-values.yaml
+cp hami-backup-values.yaml current-values.yaml
 
 # Backup ConfigMaps
 kubectl get configmap hami-scheduler-device -n kube-system -o yaml > hami-configmap-backup.yaml
@@ -37,6 +38,14 @@ kubectl get configmap hami-scheduler-device -n kube-system -o yaml > hami-config
 # Check current state
 kubectl get all -n kube-system -l app.kubernetes.io/instance=hami -o yaml > hami-state-backup.yaml
 ```
+
+If you use node configuration, also back up its ConfigMap. Use the external ConfigMap name instead of `hami-device-plugin` when one is configured:
+
+```bash
+kubectl get configmap hami-device-plugin -n kube-system -o yaml > node-config-backup.yaml
+```
+
+A Helm upgrade may overwrite manual changes to chart-managed ConfigMaps. Transfer only the settings you need into `current-values.yaml` or a separately managed node ConfigMap. Restoring the entire old ConfigMap can overwrite new chart defaults. See [Configuration](../userguide/configure.md) for the current field names.
 
 ### 3. Clear Running Workloads
 
@@ -72,6 +81,47 @@ kubectl logs -n kube-system -l app.kubernetes.io/component=hami-scheduler --tail
 kubectl logs -n kube-system -l app.kubernetes.io/component=hami-device-plugin --tail=50
 ```
 
+## Migrate device values {#device-values-migration}
+
+If your saved values contain root-level device fields or the NVIDIA fields below under `devicePlugin`, move them to their current paths in `current-values.yaml` before upgrading. Remove each old field after moving its value. The chart rejects the old fields even when their value is `0`, `false`, or empty.
+
+| Old Helm value                           | Current Helm value                            |
+| ---------------------------------------- | --------------------------------------------- |
+| `resourceName`                           | `devices.nvidia.resourceCountName`            |
+| `resourceMem`                            | `devices.nvidia.resourceMemoryName`           |
+| `resourceMemPercentage`                  | `devices.nvidia.resourceMemoryPercentageName` |
+| `resourceCores`                          | `devices.nvidia.resourceCoreName`             |
+| `resourcePriority`                       | `devices.nvidia.resourcePriorityName`         |
+| `mluResourceName`                        | `devices.cambricon.resourceCountName`         |
+| `mluResourceMem`                         | `devices.cambricon.resourceMemoryName`        |
+| `mluResourceCores`                       | `devices.cambricon.resourceCoreName`          |
+| `hcuResourceName`                        | `devices.hygon.resourceCountName`             |
+| `hcuResourceMem`                         | `devices.hygon.resourceMemoryName`            |
+| `hcuResourceCores`                       | `devices.hygon.resourceCoreName`              |
+| `metaxResourceName`                      | `devices.metax.resourceVCountName`            |
+| `metaxResourceCore`                      | `devices.metax.resourceVCoreName`             |
+| `metaxResourceMem`                       | `devices.metax.resourceVMemoryName`           |
+| `metaxsGPUTopologyAware`                 | `devices.metax.sgpuTopologyAware`             |
+| `enflameResourceNameDRSGCU`              | `devices.enflame.resourceNameDRSGCU`          |
+| `enflameResourceNameGCUMemory`           | `devices.enflame.resourceNameGCUMemory`       |
+| `enflameResourceNameGCUCore`             | `devices.enflame.resourceNameGCUCore`         |
+| `kunlunResourceName`                     | `devices.kunlun.resourceCountName`            |
+| `kunlunResourceVCountName`               | `devices.kunlun.resourceVCountName`           |
+| `kunlunResourceVMemoryName`              | `devices.kunlun.resourceVMemoryName`          |
+| `vastaiResourceName`                     | `devices.vastai.resourceCountName`            |
+| `birenResourceName`                      | `devices.biren.resourceCountName`             |
+| `devicePlugin.deviceSplitCount`          | `devices.nvidia.deviceSplitCount`             |
+| `devicePlugin.deviceMemoryScaling`       | `devices.nvidia.deviceMemoryScaling`          |
+| `devicePlugin.deviceCoreScaling`         | `devices.nvidia.deviceCoreScaling`            |
+| `devicePlugin.preConfiguredDeviceMemory` | `devices.nvidia.preConfiguredDeviceMemory`    |
+| `devicePlugin.enableNumaTopology`        | `devices.nvidia.enableNumaTopology`           |
+| `devicePlugin.runtimeClassName`          | `devices.nvidia.runtimeClassName`             |
+| `devicePlugin.createRuntimeClass`        | `devices.nvidia.createRuntimeClass`           |
+
+Other settings, including `scheduler.overwriteEnv`, `devicePlugin.enabled`, images, `devicePlugin.deviceListStrategy`, `devicePlugin.migStrategy`, `devicePlugin.disablecorelimit`, and `devicePlugin.nodeConfiguration`, keep their existing paths.
+
+Include every installation override you need in `current-values.yaml`. The upgrade command below uses `--reset-values`, which discards the release's previous values and applies the new chart defaults with your file. Avoid `--reuse-values` and `--reset-then-reuse-values` when migrating old fields: they can pass those fields to the new chart again.
+
 ## Upgrade Process
 
 ### Standard Upgrade (Recommended)
@@ -85,16 +135,13 @@ helm repo update hami-charts
 # Check available versions
 helm search repo hami-charts/hami --versions
 
-# Get current values (preserve custom configuration)
-helm get values hami -n kube-system > current-values.yaml
-
-# Perform upgrade
-helm upgrade hami hami-charts/hami -n kube-system -f current-values.yaml
+# Use the values file prepared above
+helm upgrade hami hami-charts/hami -n kube-system --reset-values -f current-values.yaml
 ```
 
 ### In-Place Upgrade (If Using Existing Installation)
 
-If you do not have a custom values file, you can upgrade directly:
+If the release has no custom values or manual ConfigMap edits to preserve, you can upgrade directly. Otherwise, use the prepared values file above:
 
 ```bash
 helm repo update hami-charts
@@ -115,6 +162,41 @@ helm repo update
 # Reinstall with new version
 helm install hami hami-charts/hami -n kube-system
 ```
+
+## ConfigMap changes {#configmap-changes}
+
+Changing the device configuration through Helm triggers rollouts of the scheduler and chart-managed NVIDIA device plugin. Device plugins deployed separately follow their own update and restart procedures.
+
+Changing only `devicePlugin.nodeConfiguration.config` or the contents of an external node ConfigMap does not trigger a device-plugin rollout. Restart the NVIDIA device plugin to load the change:
+
+```bash
+kubectl rollout restart daemonset/hami-device-plugin -n kube-system
+kubectl rollout status daemonset/hami-device-plugin -n kube-system
+```
+
+Manual edits to a Helm-managed ConfigMap are temporary. Back up the ConfigMap before editing it. For device configuration:
+
+```bash
+kubectl get configmap hami-scheduler-device -n kube-system -o yaml > device-config-backup.yaml
+kubectl edit configmap hami-scheduler-device -n kube-system
+```
+
+After editing, restart the scheduler and device plugins that read the changed settings. For the chart-managed NVIDIA components:
+
+```bash
+kubectl rollout restart deployment/hami-scheduler -n kube-system
+kubectl rollout restart daemonset/hami-device-plugin -n kube-system
+```
+
+For a node configuration edit, back up and edit the node ConfigMap, then restart the NVIDIA device plugin:
+
+```bash
+kubectl get configmap hami-device-plugin -n kube-system -o yaml > node-config-backup.yaml
+kubectl edit configmap hami-device-plugin -n kube-system
+kubectl rollout restart daemonset/hami-device-plugin -n kube-system
+```
+
+Replace the node ConfigMap name if you use an external ConfigMap. Manual edits do not update Helm values. Save persistent settings in your values file or separately managed node ConfigMap before the next upgrade.
 
 ## Post-Upgrade Verification
 

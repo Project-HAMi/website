@@ -71,7 +71,7 @@ kubectl get pods -n kube-system \
 helm upgrade hami hami-charts/hami \
   --namespace kube-system \
   --reuse-values \
-  --set devicePlugin.runtimeClassName=nvidia
+  --set devices.nvidia.runtimeClassName=nvidia
 
 kubectl rollout restart daemonset/hami-device-plugin -n kube-system
 kubectl rollout status daemonset/hami-device-plugin -n kube-system
@@ -80,8 +80,10 @@ kubectl rollout status daemonset/hami-device-plugin -n kube-system
 如果 HAMi 已开启 CDI，且日志显示驱动库缺失，请使用 GPU Operator 对应的路径：
 
 ```yaml
+devices:
+  nvidia:
+    runtimeClassName: nvidia
 devicePlugin:
-  runtimeClassName: nvidia
   deviceListStrategy: cdi-annotations
   nvidiaDriverRoot: /run/nvidia/driver
   nvidiaHookPath: /usr/local/nvidia/toolkit/nvidia-ctk
@@ -117,7 +119,7 @@ kubectl get pod <pod-name> -n <namespace> \
 helm get values hami -n kube-system | grep -A 5 'devicePlugin:'
 ```
 
-- 默认的 `devicePlugin.deviceListStrategy=envvar` 模式：使用问题一中的 Helm 命令设置 `devicePlugin.runtimeClassName=nvidia`，让 NVIDIA runtime 处理通过 `NVIDIA_VISIBLE_DEVICES` 返回的 UUID。
+- 默认的 `devicePlugin.deviceListStrategy=envvar` 模式：使用问题一中的 Helm 命令设置 `devices.nvidia.runtimeClassName=nvidia`，让 NVIDIA runtime 处理通过 `NVIDIA_VISIBLE_DEVICES` 返回的 UUID。
 - `devicePlugin.deviceListStrategy=cdi-annotations` 模式：同时应用问题一列出的四个 CDI 参数，然后在节点上检查 `/var/run/cdi/k8s.device-plugin.nvidia.com-gpu.json`，确认其中包含分配到的 GPU UUID。
 - Container Toolkit 直接安装在宿主机：确认当前容器运行时配置中存在 `nvidia` runtime；修正配置后重启容器运行时。
 
@@ -138,7 +140,7 @@ HAMi 支持两条设备注入路径：
 | `envvar`（默认） | HAMi 将分配到的 GPU UUID 写入 `NVIDIA_VISIBLE_DEVICES`。 | 使用 GPU Operator 25.10+ 时，Pod 必须使用 `nvidia` RuntimeClass。 |
 | `cdi-annotations` | HAMi 返回名为 `k8s.device-plugin.nvidia.com/gpu=GPU-...` 的 CDI 设备，并在节点上生成对应 CDI spec。 | 容器运行时必须开启 CDI，并能够读取当前的 HAMi CDI spec。 |
 
-HAMi Chart 会把 `devicePlugin.runtimeClassName` 同时应用到 Device Plugin，以及由 HAMi scheduler 修改的 NVIDIA 工作负载。因此，将其设为 `nvidia` 既能修复管理容器，也能保持工作负载的 runtime 路径一致。
+HAMi Chart 会把 `devices.nvidia.runtimeClassName` 同时应用到 Device Plugin，以及由 HAMi scheduler 修改的 NVIDIA 工作负载。因此，将其设为 `nvidia` 既能修复管理容器，也能保持工作负载的 runtime 路径一致。
 
 对于新集群，推荐使用 GPU Operator，因为它提供统一的驱动、Container Toolkit 和监控组件配置与升级入口。如果这些组件已经安装在宿主机，并由你自行维护容器运行时配置，也可以不使用 GPU Operator；这种情况请参考[前置条件](../installation/prerequisites.md)。
 

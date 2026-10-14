@@ -79,7 +79,7 @@ Configure the `nvidia` RuntimeClass for HAMi and restart the Device Plugin:
 helm upgrade hami hami-charts/hami \
   --namespace kube-system \
   --reuse-values \
-  --set devicePlugin.runtimeClassName=nvidia
+  --set devices.nvidia.runtimeClassName=nvidia
 
 kubectl rollout restart daemonset/hami-device-plugin -n kube-system
 kubectl rollout status daemonset/hami-device-plugin -n kube-system
@@ -88,8 +88,10 @@ kubectl rollout status daemonset/hami-device-plugin -n kube-system
 If the logs report missing driver libraries while HAMi CDI is enabled, use the GPU Operator paths:
 
 ```yaml
+devices:
+  nvidia:
+    runtimeClassName: nvidia
 devicePlugin:
-  runtimeClassName: nvidia
   deviceListStrategy: cdi-annotations
   nvidiaDriverRoot: /run/nvidia/driver
   nvidiaHookPath: /usr/local/nvidia/toolkit/nvidia-ctk
@@ -125,7 +127,7 @@ First determine which HAMi injection mode is configured:
 helm get values hami -n kube-system | grep -A 5 'devicePlugin:'
 ```
 
-- For the default `devicePlugin.deviceListStrategy=envvar` mode, set `devicePlugin.runtimeClassName=nvidia` by using the Helm command from Problem 1. This makes the NVIDIA runtime process the UUID returned through `NVIDIA_VISIBLE_DEVICES`.
+- For the default `devicePlugin.deviceListStrategy=envvar` mode, set `devices.nvidia.runtimeClassName=nvidia` by using the Helm command from Problem 1. This makes the NVIDIA runtime process the UUID returned through `NVIDIA_VISIBLE_DEVICES`.
 - For `devicePlugin.deviceListStrategy=cdi-annotations`, apply all four CDI values shown in Problem 1. Then inspect `/var/run/cdi/k8s.device-plugin.nvidia.com-gpu.json` on the node and verify that it contains the allocated GPU UUID.
 - For a host-installed Container Toolkit, confirm that the `nvidia` runtime is present in the active container runtime configuration. Restart the container runtime after correcting its configuration.
 
@@ -146,7 +148,7 @@ HAMi supports two device-injection paths:
 | `envvar` (default) | HAMi writes the allocated GPU UUID to `NVIDIA_VISIBLE_DEVICES`. | On GPU Operator 25.10+, the Pod must use the `nvidia` RuntimeClass. |
 | `cdi-annotations` | HAMi returns a CDI device named `k8s.device-plugin.nvidia.com/gpu=GPU-...` and generates its CDI specification on the node. | The container runtime must have CDI enabled and be able to read the current HAMi specification. |
 
-The HAMi chart applies `devicePlugin.runtimeClassName` both to the Device Plugin and to NVIDIA workloads mutated by the HAMi scheduler. This is why setting it to `nvidia` fixes the management container and keeps the workload runtime path consistent.
+The HAMi chart applies `devices.nvidia.runtimeClassName` both to the Device Plugin and to NVIDIA workloads mutated by the HAMi scheduler. This is why setting it to `nvidia` fixes the management container and keeps the workload runtime path consistent.
 
 For new clusters, GPU Operator is recommended because it provides one entry point for configuring and upgrading the driver, Container Toolkit, and monitoring components. If these components are already installed on the hosts and you maintain their runtime configuration yourself, GPU Operator is optional; follow [Prerequisites](../installation/prerequisites.md).
 
