@@ -1310,19 +1310,6 @@ BindingSucceed: Successfully binding node [hami-lab-v2]
 
 Gate: the public memory-slice proof is the main process reporting `2048 MiB` and then completing `vectorAdd`.
 
-## Check Memory Over-Allocation Behavior
-
-After confirming that a fractional workload sees its `2048 MiB` slice, check allocations below, at, and above that limit. The tested results below use a workload scheduled by `hami-scheduler` with `runtimeClassName: nvidia`, `nvidia.com/gpumem=2048`, and `nvidia.com/gpucores=50`.
-
-| Probe path                     | Visible GPU memory | 512 MiB | 2048 MiB | 3072 MiB |
-| ------------------------------ | -----------------: | ------- | -------- | -------- |
-| Main workload process          |           2048 MiB | allowed | allowed  | denied   |
-| Child process                  |           2048 MiB | allowed | allowed  | denied   |
-| `kubectl exec` non-login shell |           2048 MiB | allowed | allowed  | denied   |
-| Non-login user switch          |           2048 MiB | allowed | allowed  | denied   |
-
-The login-shell path was not used as a success path for this lab. It did not preserve the HAMi runtime environment in the captured behavior, exposed the full `4096 MiB` GPU, and allowed the `3072 MiB` probe. Treat that as a separate process-path caveat, not as proof of successful isolation.
-
 ## Clean Shutdown and Full Host Recovery
 
 Before shutting down the VM, confirm the expected ownership while it is running:
