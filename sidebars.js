@@ -195,6 +195,7 @@ module.exports = {
         "developers/scheduling",
         "developers/hami-core-design",
         "developers/dynamic-mig",
+        "developers/dynamic-mig-lifecycle",
         "developers/dynamic-mig-migration",
         "developers/gpu-topology-scheduling",
         "developers/kunlunxin-topology",
