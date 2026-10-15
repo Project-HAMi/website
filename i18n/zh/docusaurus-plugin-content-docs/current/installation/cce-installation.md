@@ -122,7 +122,7 @@ devicePlugin:
 按[通过 Helm 在线安装](./online-installation.md)部署，并在安装命令中传入 values 文件：
 
 ```bash
-helm install hami hami-charts/hami -n kube-system -f hami-cce-values.yaml
+helm install hami hami-charts/hami -n kube-system --version 2.10.0 -f hami-cce-values.yaml
 ```
 
 `hami-device-plugin` 和 `hami-scheduler` 运行后，确认 RuntimeClass 已创建，并且 HAMi 调度器已持有选主租约：

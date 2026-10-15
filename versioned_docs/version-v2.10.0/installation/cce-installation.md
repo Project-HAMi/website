@@ -121,7 +121,7 @@ devicePlugin:
 Follow [Online Installation from Helm](./online-installation.md) and add the values file to the installation command:
 
 ```bash
-helm install hami hami-charts/hami -n kube-system -f hami-cce-values.yaml
+helm install hami hami-charts/hami -n kube-system --version 2.10.0 -f hami-cce-values.yaml
 ```
 
 After `hami-device-plugin` and `hami-scheduler` are running, confirm that the RuntimeClass exists and that the HAMi scheduler holds its leader lease:
