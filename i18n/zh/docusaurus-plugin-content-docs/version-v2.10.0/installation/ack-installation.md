@@ -33,7 +33,7 @@ ACK 默认会安装 `ack-nvidia-device-plugin` 组件，即 DaemonSet `kube-syst
 
 ### 方法一：为 GPU 节点添加标签
 
-该方法只在带有标签的节点上禁用 ACK 自带的 Device Plugin。在 ACK 控制台编辑 GPU 节点池，添加以下**节点标签**：
+该方法只在带有标签的节点上禁用 ACK 自带的 Device Plugin。通过节点池管理这些标签：在 ACK 控制台编辑 GPU 节点池，添加以下**节点标签**：
 
 | 键                      | 值         | 作用                                |
 | ----------------------- | ---------- | ----------------------------------- |
@@ -42,7 +42,7 @@ ACK 默认会安装 `ack-nvidia-device-plugin` 组件，即 DaemonSet `kube-syst
 
 `disabled` 这个取值的说明见 ACK 文档[使用 DRA 调度 GPU](https://help.aliyun.com/zh/ack/ack-managed-and-ack-dedicated/user-guide/schedule-gpus-using-dra)。
 
-也可以使用 `kubectl` 为单个节点设置标签：
+如需使用 `kubectl` 为单个节点设置标签，只在新节点，或已排空且没有运行 GPU 负载的节点上执行：
 
 ```bash
 kubectl label node <node-name> ack.node.gpu.schedule=disabled gpu=on --overwrite
@@ -166,7 +166,7 @@ devicePlugin:
 按[通过 Helm 在线安装](./online-installation.md)部署，并在安装命令中传入 values 文件：
 
 ```bash
-helm install hami hami-charts/hami -n kube-system -f hami-ack-values.yaml
+helm install hami hami-charts/hami -n kube-system --version 2.10.0 -f hami-ack-values.yaml
 ```
 
 `hami-device-plugin` 和 `hami-scheduler` 运行后，确认 HAMi 调度器已持有选主租约：

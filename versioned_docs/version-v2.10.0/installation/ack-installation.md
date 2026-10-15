@@ -32,7 +32,7 @@ Use one of the following methods.
 
 ### Method 1: Label the GPU nodes
 
-This method disables ACK's Device Plugin on the labeled nodes only. Edit the GPU node pool in the ACK console and add the following **Node Labels**:
+This method disables ACK's Device Plugin on the labeled nodes only. Manage the labels through the node pool: edit the GPU node pool in the ACK console and add the following **Node Labels**:
 
 | Key                     | Value      | Purpose                                   |
 | ----------------------- | ---------- | ----------------------------------------- |
@@ -41,7 +41,7 @@ This method disables ACK's Device Plugin on the labeled nodes only. Edit the GPU
 
 The `disabled` value is described in ACK's [Schedule GPUs with DRA](https://www.alibabacloud.com/help/en/ack/ack-managed-and-ack-dedicated/user-guide/schedule-gpus-using-dra) guide.
 
-Alternatively, label an individual node with `kubectl`:
+To label a single node with `kubectl` instead, use it only on a new node, or on a drained node with no running GPU workloads:
 
 ```bash
 kubectl label node <node-name> ack.node.gpu.schedule=disabled gpu=on --overwrite
@@ -165,7 +165,7 @@ devicePlugin:
 Follow [Online Installation from Helm](./online-installation.md) and add the values file to the installation command:
 
 ```bash
-helm install hami hami-charts/hami -n kube-system -f hami-ack-values.yaml
+helm install hami hami-charts/hami -n kube-system --version 2.10.0 -f hami-ack-values.yaml
 ```
 
 After `hami-device-plugin` and `hami-scheduler` are running, confirm that the HAMi scheduler holds its leader lease:
