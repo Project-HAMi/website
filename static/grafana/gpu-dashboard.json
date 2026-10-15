@@ -1587,7 +1587,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "Time since each container's last kernel launch and the vGPU memory it holds, for pods in the selected namespace(s). Containers that have never run a kernel have no series and are not listed.",
+      "description": "Time since each container's last kernel launch and the vGPU memory allocated to it, for pods in the selected namespace(s). Containers that have never run a kernel have no series and are not listed.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1628,7 +1628,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Memory held"
+              "options": "Allocated memory"
             },
             "properties": [
               {
@@ -1723,7 +1723,7 @@
               "container": "Container",
               "vdevice_index": "vGPU",
               "Value #A": "Since last kernel",
-              "Value #B": "Memory held"
+              "Value #B": "Allocated memory"
             }
           }
         }
