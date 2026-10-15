@@ -50,9 +50,11 @@ Two families of metrics are relevant.
 
 Scheduler reservation metrics, emitted during the scheduler filter phase from the cached allocation:
 
-- `hami_vgpu_memory_allocated_bytes` per namespace, node, pod, container index, and device UUID.
+- `hami_vgpu_memory_allocated_bytes` per namespace, node, pod, and device UUID.
 - `hami_vgpu_core_allocated_ratio` per the same labels. For NVIDIA this value is a percentage in the range 0 to 100, not a 0 to 1 ratio.
 - `hami_gpu_memory_allocated_bytes` and `hami_node_gpu_memory_allocated_ratio` per device, which together recover a card's total memory.
+
+These reservation series are pod level, not container level. `PodManager` stores only each pod's collapsed device usage, one entry per device type, so the `container_index` label that these metrics carried up to and including v2.10.0 was always 0 and was dropped in [#2898](https://github.com/Project-HAMi/HAMi/pull/2898). This design targets current master and treats reservation data as pod level throughout. On v2.10.0 and earlier the label is present but constant, so the same pod-level treatment applies there.
 
 vGPUmonitor runtime metrics, emitted by the monitoring DaemonSet only while a container is running:
 
@@ -65,7 +67,9 @@ The reservation metrics are computed in the filter phase, so they record that a 
 
 ### Billing source
 
-Per-Pod charges are computed from the runtime metrics, which only exist while a container runs. The scheduler reservation metrics are used for the shared-card total, the unreserved idle fraction, and reconciliation, not for the per-Pod charge.
+Billing is gated on the runtime metrics. They exist only while a container runs, so a slice that was reserved during the filter phase but never became a running Pod is never charged. That gate applies to both policies.
+
+Within the gate, the two policies read their fractions from different places, because the reserved size of a slice is recorded only by the scheduler. The measured policy takes both fractions from the runtime metrics. The reservation policy takes them from the scheduler reservation metrics, and still bills only for the windows in which the runtime metrics show the container present. The scheduler reservation metrics also supply the card totals and the idle remainder used in reconciliation.
 
 ### Cost model
 
@@ -106,13 +110,19 @@ Measured policy. `core_fraction` comes from `hami_container_device_utilization_r
 
 In HAMi, `gpucores` of 0 or unset means no compute limit, not zero compute. Such a Pod is allowed to use the whole card's compute and competes with any co-located Pods. Its real compute share cannot be derived from the allocation alone.
 
-These Pods are an explicit class. Under the reservation policy they are either excluded from compute attribution and flagged as unattributable, or given a configurable fallback such as an equal split of the card's unreserved compute among the no-limit Pods sharing it. They are never silently billed as zero compute. Under the measured policy their compute share is taken from measured utilization over time, but only when the runtime actually collects that metric for no-limit containers. HAMi populates `hami_container_device_utilization_ratio` only under specific runtime settings and not reliably for Pods without an explicit core limit, so when the metric is unavailable for these Pods they are flagged as unattributable rather than billed as zero. The first milestone avoids this case entirely by using only explicit nonzero limits.
+These Pods are an explicit class. Under the reservation policy they are either excluded from compute attribution and flagged as unattributable, or given a configurable fallback such as an equal split of the card's unreserved compute among the no-limit Pods sharing it. They are never silently billed as zero compute. Under the measured policy their compute share is taken from measured utilization over time, but only when the runtime actually collects that metric for the container.
+
+The settings that gate collection are specific. `hami_container_device_utilization_ratio` is read from the shared region that the HAMi-core `utilization_watcher` thread writes, and that thread is started only when the container has an SM limit in range. The limit is `CUDA_DEVICE_SM_LIMIT`, which HAMi sets from `nvidia.com/gpucores`. A Pod with `gpucores: 0`, or with `gpucores` unset next to a partial memory limit, gets no watcher thread and reports 0 for the whole window. A Pod asking for all of a card's memory is not affected, because admission then injects `gpucores: 100`. Core enforcement is controlled separately by `GPU_CORE_UTILIZATION_POLICY`, injected from the chart value `gpuCorePolicy` when that is set to something other than `default`, the other values being `force` and `disable`. The exact bounds have changed between HAMi-core versions, so a deployment should confirm the metric is nonzero for its own no-limit workloads before trusting the measured policy. Where it reports 0, the Pod is flagged unattributable rather than billed as zero. The first milestone avoids this case entirely by using only explicit nonzero limits.
 
 ### Pod identity across the join
 
-The reservation and runtime metrics both omit the Pod UID, and their label sets differ. The scheduler reservation metrics carry `namespace`, `node`, `pod`, `container_index`, and `device_uuid`; the runtime metrics carry `namespace`, `pod`, `container`, `vdevice_index`, and `device_uuid`, with no `node`. Joining the two families, and joining either to workload and Pod-lifetime data from kube-state-metrics and cadvisor, therefore requires normalizing these labels with recording rules or scrape relabeling: reconciling the container identifier (`container_index` against `container`) and supplying `node` for the runtime series, or defining a separate join key per family. Once normalized the join is keyed on namespace, pod, container, and node. Adding a `pod_uid` label to HAMi metrics was considered and rejected: it would not remove the normalization step and would raise cardinality on these high-volume series.
+Neither family carries the Pod UID, and the two sit at different granularity. The reservation series are pod level: `namespace`, `node`, `pod`, `device_uuid`. The runtime series are container level: `namespace`, `pod`, `container`, `vdevice_index`, `device_uuid`, with no `node`.
 
-The one case this leaves open is a Pod recreated with the same name on the same node within a single scrape window. A `pod_uid` label is kept as a documented fallback if that case is shown to corrupt attribution in practice.
+There is therefore no container index to map, and kube-state-metrics is never asked for one. The join runs at pod level, per physical card. Runtime series are first summed over `container` and `vdevice_index` within each `(namespace, pod, device_uuid)` group, which gives one runtime value per Pod per card and matches the granularity at which the scheduler already collapses reservation data. That aggregated series joins the reservation series on `(namespace, pod, device_uuid)`. `node` is not part of the key, since `(namespace, pod)` already identifies a Pod in a cluster and the reservation series carry the node for reporting. kube-state-metrics then contributes workload ownership and Pod lifetime keyed on `(namespace, pod)`, which is the granularity it exposes, so no container-level mapping is required on that side either.
+
+Adding a `pod_uid` label to HAMi metrics was considered and rejected: it would not remove the pod-level aggregation above, and it would raise cardinality on these high-volume series.
+
+The one case this leaves open is a Pod recreated with the same name in the same namespace within a single scrape window. A `pod_uid` label is kept as a documented fallback if that case is shown to corrupt attribution in practice.
 
 ### Where attribution runs, and avoiding double counting
 
@@ -122,7 +132,7 @@ The attribution runs as OpenCost queries and recording rules against HAMi metric
 
 The accounting is encoded as Prometheus recording rules and unit-tested with `promtool` against synthetic series that mirror the milestone-1 workload: one card shared by four 25% Pods and a second card held whole by one control Pod. The test asserts the per-Pod fractions, the per-Pod cost, and the reconciliation identity on both cards, and it passes. This validates the queries and the model before any GPU time is spent.
 
-A reproduction harness with the manifests, queries, recording rules, the `promtool` test, and deploy and report scripts accompanies this design. The remaining step is a live run on a representative multi-tenant GPU cluster to record real utilization under both policies.
+The harness holding those manifests, queries, recording rules, the `promtool` test, and the deploy and report scripts is not part of this pull request. It currently lives in a branch of a HAMi fork, under [`opencost-repro/` on `Eshiv-Pandey/HAMi`](https://github.com/Eshiv-Pandey/HAMi/tree/docs/opencost-repro/opencost-repro), and is referenced here only as the provenance of the result above. Whether it belongs upstream, and where, is left to the discussion on the tracking issue. The remaining step is a live run on a representative multi-tenant GPU cluster to record real utilization under both policies.
 
 ## Remaining Work
 
