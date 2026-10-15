@@ -1472,12 +1472,123 @@
       "type": "table"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "Per-container device memory: CUDA context versus application buffer, for pods in the selected namespace(s).",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "lineWidth": 1
+          },
+          "mappings": [],
+          "min": 0,
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 63
+      },
+      "id": 34,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "horizontal",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "10.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "label_join(hami_vgpu_memory_context_bytes{namespace=~\"$namespace\"}, \"container_device\", \"/\", \"namespace\", \"pod\", \"container\", \"vdevice_index\")",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "label_join(hami_vgpu_memory_buffer_bytes{namespace=~\"$namespace\"}, \"container_device\", \"/\", \"namespace\", \"pod\", \"container\", \"vdevice_index\")",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "B"
+        }
+      ],
+      "title": "vGPU memory: context vs buffer",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": ["container_device", "Value #A", "Value #B"]
+            }
+          }
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "Value #A": "Context",
+              "Value #B": "Buffer"
+            }
+          }
+        }
+      ],
+      "type": "barchart"
+    },
+    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 63
+        "y": 71
       },
       "id": 104,
       "panels": [],
@@ -1517,7 +1628,7 @@
         "h": 5,
         "w": 8,
         "x": 0,
-        "y": 64
+        "y": 72
       },
       "id": 40,
       "options": {
@@ -1588,7 +1699,7 @@
         "h": 5,
         "w": 8,
         "x": 8,
-        "y": 64
+        "y": 72
       },
       "id": 44,
       "options": {
@@ -1640,7 +1751,7 @@
         "h": 5,
         "w": 8,
         "x": 16,
-        "y": 64
+        "y": 72
       },
       "id": 45,
       "options": {
@@ -1712,7 +1823,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 69
+        "y": 77
       },
       "id": 41,
       "options": {
@@ -1781,7 +1892,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 69
+        "y": 77
       },
       "id": 42,
       "options": {
@@ -1850,7 +1961,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 77
+        "y": 85
       },
       "id": 43,
       "options": {
