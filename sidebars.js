@@ -56,7 +56,11 @@ module.exports = {
         {
           type: "category",
           label: "Background",
-          items: ["core-concepts/gpu-stack", "core-concepts/gpu-driver"],
+          items: [
+            "core-concepts/gpu-stack",
+            "core-concepts/gpu-driver",
+            "core-concepts/device-plugin-and-dra",
+          ],
         },
         "key-features/device-sharing",
         "key-features/device-resource-isolation",
