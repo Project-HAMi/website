@@ -43,17 +43,24 @@ module.exports = {
     },
     {
       type: "category",
-      label: "Introduction",
+      label: "Concepts",
       collapsed: true,
       link: {
         type: "generated-index",
-        title: "Introduction",
-        description: "What HAMi is and what it does for you.",
+        title: "Concepts",
+        description: "What HAMi is and how it shares, isolates and schedules devices.",
       },
       items: [
         "core-concepts/introduction",
+        "core-concepts/architecture",
+        {
+          type: "category",
+          label: "Background",
+          items: ["core-concepts/gpu-stack", "core-concepts/gpu-driver"],
+        },
         "key-features/device-sharing",
         "key-features/device-resource-isolation",
+        "core-concepts/ecosystem-integrations",
       ],
     },
     {
@@ -187,11 +194,7 @@ module.exports = {
       },
       items: [
         "core-concepts/gpu-virtualization",
-        "core-concepts/architecture",
         "core-concepts/hami-architecture",
-        "core-concepts/gpu-stack",
-        "core-concepts/gpu-driver",
-        "core-concepts/ecosystem-integrations",
         "developers/build",
         "developers/protocol",
         "developers/scheduling",
