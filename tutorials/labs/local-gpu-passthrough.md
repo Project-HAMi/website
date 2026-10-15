@@ -9,7 +9,7 @@ lab:
   cost: local machine only
   authors:
     - Utkarsh56016
-  verified: "2026-09-30"
+  verified: "2026-10-14"
 tags:
   - local-setup
   - gpu-passthrough
@@ -22,6 +22,16 @@ This lab builds the tested local HAMi GPU passthrough environment from a Linux w
 
 The lab is phase-gated. Validate each layer before adding the next one: host feasibility, CPU-only VM, qcow2 rollback, managed PCI passthrough, guest NVIDIA driver, container runtime GPU access, kubeadm, Calico, plain CUDA, HAMi, fractional workload, and host recovery.
 
+```mermaid
+flowchart LR
+  GuestGPU["guest GPU visible"] --> Runtime["container runtime"]
+  Runtime --> Kubernetes["Kubernetes Ready"]
+  Kubernetes --> RuntimeClass["RuntimeClass nvidia"]
+  RuntimeClass --> Components["HAMi components"]
+  Components --> Pod["fractional Pod"]
+  Pod --> Proof["vectorAdd / logs / nvidia-smi"]
+```
+
 :::note
 
 This is a reproducible local lab path for one tested workstation and GPU. It is not a universal VFIO/libvirt troubleshooting guide for every laptop, workstation, firmware, or IOMMU topology.
@@ -32,23 +42,24 @@ This is a reproducible local lab path for one tested workstation and GPU. It is 
 
 Use this lab when you want a local, resettable place to test HAMi fractional GPU allocation against a real NVIDIA GPU without installing Kubernetes or HAMi on the host operating system.
 
-| Component           | Tested value                        |
-| ------------------- | ----------------------------------- |
-| Host VM stack       | QEMU/KVM, system libvirt, OVMF/UEFI |
-| VM/domain name      | `hami-lab-v2`                       |
-| Guest OS            | Ubuntu 24.04.5 LTS                  |
-| Guest kernel        | `6.8.0-142-generic`                 |
-| GPU                 | NVIDIA GeForce RTX 3050 Laptop GPU  |
-| GPU memory          | 4096 MiB                            |
-| Guest NVIDIA driver | 595.91.07                           |
-| containerd          | 2.2.1                               |
-| NVIDIA Toolkit      | 1.20.1                              |
-| Kubernetes          | v1.36.5                             |
-| Calico              | v3.32.2                             |
-| Helm                | v3.22.0                             |
-| HAMi chart/app      | 2.10.0                              |
-| RuntimeClass        | `nvidia`                            |
-| GPU node label      | `gpu=on`                            |
+| Component            | Tested value                        |
+| -------------------- | ----------------------------------- |
+| Host VM stack        | QEMU/KVM, system libvirt, OVMF/UEFI |
+| VM/domain name       | `hami-lab-v2`                       |
+| Guest OS             | Ubuntu 24.04.5 LTS                  |
+| Guest kernel         | `6.8.0-142-generic`                 |
+| GPU                  | NVIDIA GeForce RTX 3050 Laptop GPU  |
+| GPU memory           | 4096 MiB                            |
+| Guest NVIDIA driver  | 595.91.07                           |
+| containerd           | 2.2.1                               |
+| NVIDIA Toolkit       | 1.20.1                              |
+| Kubernetes           | v1.36.5                             |
+| Calico               | v3.32.2                             |
+| Measured V2 Pod CIDR | `192.168.0.0/16`                    |
+| Helm                 | v3.22.0                             |
+| HAMi chart/app       | 2.10.0                              |
+| RuntimeClass         | `nvidia`                            |
+| GPU node label       | `gpu=on`                            |
 
 The VM/GPU boundary matters because it keeps host state recoverable. The host runs libvirt and owns the base qcow2 files. The Ubuntu guest owns the NVIDIA driver, container runtime, Kubernetes, Calico, and HAMi stack. If a guest-layer experiment goes wrong, the active qcow2 overlay can be discarded without rewriting the preserved base disk.
 
@@ -75,6 +86,8 @@ export ISO="$HOME/Downloads/ubuntu-24.04.5-live-server-amd64.iso"
 export BASE=/var/lib/libvirt/images/hami-lab-v2-base.qcow2
 export WORK=/var/lib/libvirt/images/hami-lab-v2-work.qcow2
 ```
+
+The measured V2 cluster used `192.168.0.0/16` for Pods. That range contains the default libvirt network `192.168.122.0/24`, so Pod traffic to the guest's libvirt DNS resolver was not masqueraded correctly. This reader path uses the non-overlapping `10.244.0.0/16` range instead. Treat it as the recommended lab configuration, not as the CIDR measured in the V2 cluster.
 
 ## Host Feasibility Checks
 
@@ -226,7 +239,16 @@ Shut the VM down before changing its disk chain:
 
 ```bash
 ssh "${GUEST_USER}@${GUEST_IP}" 'sudo poweroff'
-virsh -c qemu:///system domstate "$DOMAIN"
+for attempt in $(seq 1 60); do
+  DOMAIN_STATE="$(virsh -c qemu:///system domstate "$DOMAIN")"
+  [ "$DOMAIN_STATE" = "shut off" ] && break
+  sleep 2
+done
+[ "$DOMAIN_STATE" = "shut off" ] || {
+  echo "Refusing disk changes: $DOMAIN did not shut off within 120 seconds" >&2
+  exit 1
+}
+printf '%s\n' "$DOMAIN_STATE"
 ```
 
 Output:
@@ -254,7 +276,12 @@ corrupt: false
 Switch the shut-off domain from the base disk to the overlay:
 
 ```bash
-virsh -c qemu:///system domstate "$DOMAIN"
+DOMAIN_STATE="$(virsh -c qemu:///system domstate "$DOMAIN")"
+printf '%s\n' "$DOMAIN_STATE"
+[ "$DOMAIN_STATE" = "shut off" ] || {
+  echo "Refusing disk changes: $DOMAIN is $DOMAIN_STATE" >&2
+  exit 1
+}
 virsh -c qemu:///system dumpxml "$DOMAIN" > hami-lab-v2-before-overlay.xml
 virsh -c qemu:///system detach-disk "$DOMAIN" vda --config
 virsh -c qemu:///system attach-disk "$DOMAIN" "$WORK" vda \
@@ -320,10 +347,16 @@ Shut the VM down and wait until libvirt reports `shut off` before touching the o
 
 ```bash
 ssh "${GUEST_USER}@${GUEST_IP}" 'sudo poweroff'
-until [ "$(virsh -c qemu:///system domstate "$DOMAIN")" = "shut off" ]; do
+for attempt in $(seq 1 60); do
+  DOMAIN_STATE="$(virsh -c qemu:///system domstate "$DOMAIN")"
+  [ "$DOMAIN_STATE" = "shut off" ] && break
   sleep 2
 done
-virsh -c qemu:///system domstate "$DOMAIN"
+[ "$DOMAIN_STATE" = "shut off" ] || {
+  echo "Refusing overlay reset: $DOMAIN did not shut off within 120 seconds" >&2
+  exit 1
+}
+printf '%s\n' "$DOMAIN_STATE"
 ```
 
 Output:
@@ -1230,11 +1263,12 @@ Memory enforcement depends on the process path. Use the container main process a
 
 This lab intentionally separates the process paths:
 
-| Process path                          | Status in this lab                                 |
-| ------------------------------------- | -------------------------------------------------- |
-| Container main process                | Validated below with `nvidia-smi` and `vectorAdd`. |
-| Later SSH session or login shell      | Not claimed as a success path in this lab.         |
-| Ad hoc `kubectl exec` troubleshooting | Useful for inspection, but not the memory proof.   |
+| Process path | Status in the tested environment |
+| --- | --- |
+| Startup, child, `kubectl exec` non-login, and `su` non-login paths | Reported 2048 MiB and denied the 3072 MiB allocation. |
+| Login shell and SSH-started process | Lost the HAMi allocation environment and exposed the full 4096 MiB. |
+
+The login-shell and SSH-started paths also allowed the 3072 MiB allocation after falling back to `/tmp/cudevshr.cache`. They are confirmed limitations in this environment, not alternate success paths. The procedure below keeps the workload's main process as the reproducible enforcement proof.
 
 Run `nvidia-smi` and `vectorAdd` from the container's main command:
 
@@ -1310,6 +1344,234 @@ BindingSucceed: Successfully binding node [hami-lab-v2]
 
 Gate: the public memory-slice proof is the main process reporting `2048 MiB` and then completing `vectorAdd`.
 
+## Check Memory Over-allocation Behavior
+
+The `vectorAdd` check proves that the fractional workload can run. This next check asks the CUDA Driver API to allocate below, at, and above the requested `2048 MiB` slice. It runs the allocation probe as the container's main process and writes, synchronizes, and frees successful allocations.
+
+This is a main-process check only. Do not use a login shell, SSH session, or later `kubectl exec` process as equivalent evidence: those paths can have a different runtime environment.
+
+Create the probe on the guest. The tested Ubuntu guest already provided `cc`; stop here and install a compiler if `cc --version` fails. The probe loads the CUDA Driver API dynamically, then reports the return code from each operation:
+
+```bash
+cc --version
+
+cat > cuda-mem-probe.c <<'EOF'
+#include <dlfcn.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef int CUresult;
+typedef int CUdevice;
+typedef void *CUcontext;
+typedef unsigned long long CUdeviceptr;
+#define CUDA_SUCCESS 0
+
+int main(int argc, char **argv) {
+  if (argc != 2) return 2;
+  size_t mib = strtoull(argv[1], NULL, 10);
+  size_t bytes = mib * 1024ULL * 1024ULL;
+  void *cuda = dlopen("libcuda.so.1", RTLD_NOW | RTLD_GLOBAL);
+  if (!cuda) { fprintf(stderr, "dlopen libcuda.so.1 failed: %s\n", dlerror()); return 2; }
+  CUresult (*cuInit)(unsigned int) = dlsym(cuda, "cuInit");
+  CUresult (*cuDeviceGet)(CUdevice *, int) = dlsym(cuda, "cuDeviceGet");
+  CUresult (*cuCtxCreate)(CUcontext *, unsigned int, CUdevice) = dlsym(cuda, "cuCtxCreate_v2");
+  CUresult (*cuMemAlloc)(CUdeviceptr *, size_t) = dlsym(cuda, "cuMemAlloc_v2");
+  CUresult (*cuMemsetD8)(CUdeviceptr, unsigned char, size_t) = dlsym(cuda, "cuMemsetD8_v2");
+  CUresult (*cuCtxSynchronize)(void) = dlsym(cuda, "cuCtxSynchronize");
+  CUresult (*cuMemFree)(CUdeviceptr) = dlsym(cuda, "cuMemFree_v2");
+  CUresult (*cuCtxDestroy)(CUcontext) = dlsym(cuda, "cuCtxDestroy_v2");
+  if (!cuInit || !cuDeviceGet || !cuCtxCreate || !cuMemAlloc || !cuMemsetD8 || !cuCtxSynchronize || !cuMemFree || !cuCtxDestroy) return 2;
+  CUdevice dev; CUcontext ctx; CUdeviceptr ptr = 0;
+  CUresult rc = cuInit(0); if (rc) { printf("probe requested_mib=%zu cuInit_rc=%d\n", mib, rc); return 1; }
+  rc = cuDeviceGet(&dev, 0); if (rc) { printf("probe requested_mib=%zu cuDeviceGet_rc=%d\n", mib, rc); return 1; }
+  rc = cuCtxCreate(&ctx, 0, dev); if (rc) { printf("probe requested_mib=%zu cuCtxCreate_rc=%d\n", mib, rc); return 1; }
+  rc = cuMemAlloc(&ptr, bytes); printf("probe requested_mib=%zu cuMemAlloc_rc=%d\n", mib, rc);
+  if (rc == CUDA_SUCCESS) {
+    CUresult set_rc = cuMemsetD8(ptr, 0, bytes);
+    CUresult sync_rc = cuCtxSynchronize();
+    CUresult free_rc = cuMemFree(ptr);
+    printf("probe requested_mib=%zu cuMemsetD8_rc=%d cuCtxSynchronize_rc=%d cuMemFree_rc=%d\n", mib, set_rc, sync_rc, free_rc);
+    if (set_rc || sync_rc || free_rc) rc = 1;
+  }
+  CUresult destroy_rc = cuCtxDestroy(ctx);
+  printf("probe requested_mib=%zu cuCtxDestroy_rc=%d\n", mib, destroy_rc);
+  return (rc == CUDA_SUCCESS && destroy_rc == CUDA_SUCCESS) ? 0 : 1;
+}
+EOF
+
+cc cuda-mem-probe.c -O2 -Wall -Wextra -Werror -o cuda-mem-probe -ldl
+kubectl create configmap hami-memory-probe \
+  --from-file=cuda-mem-probe=./cuda-mem-probe
+```
+
+Run one disposable Pod for each size. This manifest uses `imagePullPolicy: Never` because the earlier plain CUDA and fractional workload steps already cached `nvcr.io/nvidia/k8s/cuda-sample:vectoradd-cuda12.5.0` on the node. Do not continue if those steps did not pull and run that exact image successfully.
+
+The helper validates the scheduler, runtime class, HAMi allocation, visible memory, probe result, Pod phase, and container exit code before deleting a successful gate. If a gate fails, it retains the Pod, prints diagnostics, returns non-zero, and prevents the later allocation tests from running:
+
+```bash
+probe_diagnostics() {
+  local pod="$1"
+
+  echo "Probe gate failed; retaining ${pod} for diagnosis" >&2
+  kubectl get "pod/${pod}" -o wide >&2 || true
+  kubectl describe "pod/${pod}" >&2 || true
+  kubectl logs "${pod}" >&2 || true
+}
+
+run_probe() {
+  local requested_mib="$1"
+  local expected_phase="$2"
+  local expected_exit="$3"
+  local expected_alloc_rc="$4"
+  local pod="hami-memory-probe-${requested_mib}"
+  local existing_pod metadata logs scheduler runtime_class allocation phase exit_code
+
+  if ! existing_pod="$(kubectl get "pod/${pod}" --ignore-not-found -o name)"; then
+    echo "Kubernetes API query failed while checking ${pod}" >&2
+    return 1
+  fi
+  if [ -n "$existing_pod" ]; then
+    echo "Refusing to reuse existing Pod ${pod}" >&2
+    probe_diagnostics "$pod"
+    return 1
+  fi
+
+  kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ${pod}
+spec:
+  restartPolicy: Never
+  schedulerName: hami-scheduler
+  runtimeClassName: nvidia
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      operator: Exists
+      effect: NoSchedule
+  volumes:
+    - name: probe
+      configMap:
+        name: hami-memory-probe
+        defaultMode: 0755
+  containers:
+    - name: probe
+      image: nvcr.io/nvidia/k8s/cuda-sample:vectoradd-cuda12.5.0
+      imagePullPolicy: Never
+      command: ["/bin/sh", "-ec"]
+      args:
+        - |
+          nvidia-smi --query-gpu=name,driver_version,memory.total,memory.used --format=csv,noheader
+          exec /probe/cuda-mem-probe ${requested_mib}
+      volumeMounts:
+        - name: probe
+          mountPath: /probe
+          readOnly: true
+      resources:
+        limits:
+          nvidia.com/gpu: 1
+          nvidia.com/gpumem: 2048
+          nvidia.com/gpucores: 50
+EOF
+  if [ "$?" -ne 0 ]; then
+    probe_diagnostics "$pod"
+    return 1
+  fi
+
+  if ! kubectl wait "pod/${pod}" \
+    --for=jsonpath='{.status.phase}'="${expected_phase}" --timeout=5m; then
+    probe_diagnostics "$pod"
+    return 1
+  fi
+
+  if ! metadata="$(kubectl get "pod/${pod}" \
+    -o jsonpath='{.spec.schedulerName}{"\t"}{.spec.runtimeClassName}{"\t"}{.metadata.annotations.hami\.io/vgpu-devices-allocated}{"\t"}{.status.phase}{"\t"}{.status.containerStatuses[0].state.terminated.exitCode}')"; then
+    probe_diagnostics "$pod"
+    return 1
+  fi
+  IFS=$'\t' read -r scheduler runtime_class allocation phase exit_code <<<"$metadata"
+
+  if ! logs="$(kubectl logs "${pod}")"; then
+    probe_diagnostics "$pod"
+    return 1
+  fi
+
+  printf 'scheduler=%s\nruntimeClass=%s\nallocated=%s\nphase=%s\n' \
+    "$scheduler" "$runtime_class" "$allocation" "$phase"
+  printf '%s\n' "$logs"
+
+  if [ "$scheduler" != "hami-scheduler" ] || \
+    [ "$runtime_class" != "nvidia" ] || \
+    [ "$phase" != "$expected_phase" ] || \
+    [ "$exit_code" != "$expected_exit" ] || \
+    ! printf '%s\n' "$allocation" | grep -Eq ',NVIDIA,2048,50:;$' || \
+    ! printf '%s\n' "$logs" | grep -Fq ', 2048 MiB,' || \
+    ! printf '%s\n' "$logs" | grep -Fq "probe requested_mib=${requested_mib} cuMemAlloc_rc=${expected_alloc_rc}" || \
+    ! printf '%s\n' "$logs" | grep -Fq "probe requested_mib=${requested_mib} cuCtxDestroy_rc=0"; then
+    probe_diagnostics "$pod"
+    return 1
+  fi
+
+  if [ "$expected_alloc_rc" = "0" ]; then
+    if ! printf '%s\n' "$logs" | grep -Fq \
+      "probe requested_mib=${requested_mib} cuMemsetD8_rc=0 cuCtxSynchronize_rc=0 cuMemFree_rc=0"; then
+      probe_diagnostics "$pod"
+      return 1
+    fi
+  elif ! printf '%s\n' "$logs" | grep -Fq \
+    'Device 0 OOM 3221225472 / 2147483648'; then
+    probe_diagnostics "$pod"
+    return 1
+  fi
+
+  if ! kubectl delete "pod/${pod}" --wait=true; then
+    probe_diagnostics "$pod"
+    return 1
+  fi
+}
+
+run_probe 512 Succeeded 0 0 || exit 1
+run_probe 2048 Succeeded 0 0 || exit 1
+run_probe 3072 Failed 1 2 || exit 1
+```
+
+In the tested run, each Pod received a `2048 MiB` / `50`-core HAMi allocation and reported `2048 MiB` of visible memory. The results were:
+
+| Requested allocation | Pod result | Probe result |
+| --: | --- | --- |
+| 512 MiB | Succeeded | Allocation, write, synchronization, and free returned `0`. |
+| 2048 MiB | Succeeded | Allocation, write, synchronization, and free returned `0`. |
+| 3072 MiB | Failed | `cuMemAlloc_rc=2`; HAMi logged `Device 0 OOM 3221225472 / 2147483648`. |
+
+Output excerpts from the three runs:
+
+```text
+NVIDIA GeForce RTX 3050 Laptop GPU, 595.91.07, 2048 MiB, 0 MiB
+probe requested_mib=512 cuMemAlloc_rc=0
+probe requested_mib=512 cuMemsetD8_rc=0 cuCtxSynchronize_rc=0 cuMemFree_rc=0
+probe requested_mib=512 cuCtxDestroy_rc=0
+
+NVIDIA GeForce RTX 3050 Laptop GPU, 595.91.07, 2048 MiB, 0 MiB
+probe requested_mib=2048 cuMemAlloc_rc=0
+probe requested_mib=2048 cuMemsetD8_rc=0 cuCtxSynchronize_rc=0 cuMemFree_rc=0
+probe requested_mib=2048 cuCtxDestroy_rc=0
+
+NVIDIA GeForce RTX 3050 Laptop GPU, 595.91.07, 2048 MiB, 0 MiB
+[HAMI-core ERROR (pid:1 thread=123130178780032 allocator.c:52)]: Device 0 OOM 3221225472 / 2147483648
+probe requested_mib=3072 cuMemAlloc_rc=2
+probe requested_mib=3072 cuCtxDestroy_rc=0
+```
+
+The 3072 MiB result is the expected over-allocation behavior for this `2048 MiB` slice. The allocator compared the 3072 MiB request with the configured 2048 MiB limit, rather than exhausting the physical `4096 MiB` GPU.
+
+Remove the temporary probe artifacts when you are done:
+
+```bash
+kubectl delete configmap hami-memory-probe
+rm -f cuda-mem-probe.c cuda-mem-probe
+```
+
 ## Clean Shutdown and Full Host Recovery
 
 Before shutting down the VM, confirm the expected ownership while it is running:
@@ -1332,10 +1594,16 @@ Shut the guest down cleanly and wait for libvirt:
 
 ```bash
 ssh "${GUEST_USER}@${GUEST_IP}" 'sudo poweroff'
-until [ "$(virsh -c qemu:///system domstate "$DOMAIN")" = "shut off" ]; do
+for attempt in $(seq 1 60); do
+  DOMAIN_STATE="$(virsh -c qemu:///system domstate "$DOMAIN")"
+  [ "$DOMAIN_STATE" = "shut off" ] && break
   sleep 2
 done
-virsh -c qemu:///system domstate "$DOMAIN"
+[ "$DOMAIN_STATE" = "shut off" ] || {
+  echo "Host recovery blocked: $DOMAIN did not shut off within 120 seconds" >&2
+  exit 1
+}
+printf '%s\n' "$DOMAIN_STATE"
 ```
 
 Output:
@@ -1361,8 +1629,32 @@ Kernel driver in use: snd_hda_intel
 Restart the services that were stopped before passthrough:
 
 ```bash
-sudo systemctl restart nvidia-persistenced nbfc_service || true
-systemctl --user restart pipewire.socket pipewire.service pipewire-pulse.socket pipewire-pulse.service wireplumber.service
+if systemctl list-unit-files nvidia-persistenced.service --no-legend 2>/dev/null | grep -q .; then
+  if ! sudo systemctl restart nvidia-persistenced || \
+    ! sudo systemctl is-active --quiet nvidia-persistenced; then
+    echo "Warning: optional nvidia-persistenced service is not active" >&2
+  fi
+fi
+
+NBFC_RECOVERED=false
+if sudo systemctl restart nbfc_service && \
+  sudo systemctl is-active --quiet nbfc_service; then
+  NBFC_RECOVERED=true
+else
+  echo "Host recovery failed: nbfc_service is not active" >&2
+fi
+
+AUDIO_RECOVERED=false
+if systemctl --user restart pipewire.socket pipewire.service pipewire-pulse.socket pipewire-pulse.service wireplumber.service && \
+  systemctl --user is-active --quiet pipewire.socket pipewire.service pipewire-pulse.socket pipewire-pulse.service wireplumber.service; then
+  AUDIO_RECOVERED=true
+else
+  echo "Host recovery failed: one or more audio services are not active" >&2
+fi
+
+if [ "$NBFC_RECOVERED" != true ] || [ "$AUDIO_RECOVERED" != true ]; then
+  exit 1
+fi
 systemctl --user is-active pipewire.socket pipewire.service pipewire-pulse.socket pipewire-pulse.service wireplumber.service
 ```
 
