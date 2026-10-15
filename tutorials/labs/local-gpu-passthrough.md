@@ -81,13 +81,15 @@ Set these values in the shell where a step uses them. Host-only variables drive 
 export DOMAIN=hami-lab-v2
 export GUEST_USER=ubuntu # replace with your VM user
 export GUEST_IP=192.168.122.242 # replace with your VM IP
-export POD_CIDR=10.244.0.0/16
+export POD_CIDR=192.168.0.0/16
 export ISO="$HOME/Downloads/ubuntu-24.04.5-live-server-amd64.iso"
 export BASE=/var/lib/libvirt/images/hami-lab-v2-base.qcow2
 export WORK=/var/lib/libvirt/images/hami-lab-v2-work.qcow2
 ```
 
-The measured V2 cluster used `192.168.0.0/16` for Pods. That range contains the default libvirt network `192.168.122.0/24`, so Pod traffic to the guest's libvirt DNS resolver was not masqueraded correctly. This reader path uses the non-overlapping `10.244.0.0/16` range instead. Treat it as the recommended lab configuration, not as the CIDR measured in the V2 cluster.
+The commands and captured output in this lab were validated with the V2 cluster's `192.168.0.0/16` Pod CIDR. That range contains the default libvirt network `192.168.122.0/24`. During the additional process-path tests, Calico treated the libvirt resolver as in-pool traffic and did not apply normal egress masquerading, so CoreDNS timed out while forwarding external DNS queries to `192.168.122.1:53`.
+
+For a new lab, you may instead set `POD_CIDR=10.244.0.0/16` before running kubeadm and applying Calico. It is a non-overlapping alternative, but it was not exercised in the captured V2 run; do not compare its output with this lab as though it were the tested configuration.
 
 ## Host Feasibility Checks
 
@@ -412,15 +414,60 @@ flowchart LR
   Shutdown --> HostRecovered["host nvidia/snd_hda_intel"]
 ```
 
-Stop the observed host holders before starting the passthrough VM:
+Stop the observed host holders before starting the passthrough VM. If your host has a machine-specific fan-control service that must be paused, set `FAN_CONTROL_SERVICE` to its systemd unit name first. The tested laptop used `nbfc_service.service`; leave the variable unset when your host has no such service. When the block stops a fan-control service, it records the unit under `${XDG_STATE_HOME:-$HOME/.local/state}/hami-lab-v2` so recovery can run from a new host shell. It refuses to overwrite an earlier recovery marker.
 
 ```bash
+FAN_CONTROL_SERVICE="${FAN_CONTROL_SERVICE:-}"
+FAN_CONTROL_WAS_STOPPED=false
+FAN_CONTROL_WAS_ACTIVE=false
+HOST_RECOVERY_STATE_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/hami-lab-v2"
+FAN_CONTROL_STATE="$HOST_RECOVERY_STATE_DIR/fan-control-service"
+
+mkdir -p "$HOST_RECOVERY_STATE_DIR"
+if [ -e "$FAN_CONTROL_STATE" ]; then
+  echo "Recovery required before passthrough: $FAN_CONTROL_STATE already exists" >&2
+  exit 1
+fi
+
+if [ -n "$FAN_CONTROL_SERVICE" ]; then
+  if ! systemctl list-unit-files "$FAN_CONTROL_SERVICE" --no-legend 2>/dev/null | grep -q .; then
+    echo "Configured fan-control service does not exist: $FAN_CONTROL_SERVICE" >&2
+    exit 1
+  fi
+  if systemctl is-active --quiet "$FAN_CONTROL_SERVICE"; then
+    if ! (umask 077 && printf '%s\n' "$FAN_CONTROL_SERVICE" >"$FAN_CONTROL_STATE"); then
+      echo "Failed to record fan-control recovery state" >&2
+      exit 1
+    fi
+    FAN_CONTROL_WAS_ACTIVE=true
+  fi
+fi
+
 systemctl --user stop pipewire-pulse.service pipewire-pulse.socket pipewire.service pipewire.socket wireplumber.service
 sudo systemctl stop nvidia-persistenced
-sudo systemctl stop nbfc_service
+
+if [ "$FAN_CONTROL_WAS_ACTIVE" = true ]; then
+  sudo systemctl stop "$FAN_CONTROL_SERVICE"
+  if systemctl is-active --quiet "$FAN_CONTROL_SERVICE"; then
+    echo "Failed to stop fan-control service: $FAN_CONTROL_SERVICE" >&2
+    exit 1
+  fi
+  FAN_CONTROL_WAS_STOPPED=true
+fi
+
+for unit in pipewire.socket pipewire.service pipewire-pulse.socket pipewire-pulse.service wireplumber.service; do
+  printf '%s ' "$unit"
+  systemctl --user is-active "$unit" || true
+done
+if [ "$FAN_CONTROL_WAS_STOPPED" = true ]; then
+  printf '%s ' "${FAN_CONTROL_SERVICE%.service}"
+  systemctl is-active "$FAN_CONTROL_SERVICE" || true
+fi
+printf 'nvidia-persistenced '
+systemctl is-active nvidia-persistenced || true
 ```
 
-Output:
+Observed output from the tested host, where `FAN_CONTROL_SERVICE=nbfc_service.service`:
 
 ```text
 pipewire.socket inactive
@@ -775,7 +822,7 @@ Output:
 calico-v3.32.2.yaml: OK
 ```
 
-Set Calico's IPv4 pool to the non-overlapping Pod CIDR used by kubeadm. The upstream manifest leaves this option commented, which can overlap common libvirt guest networks.
+Set Calico's IPv4 pool to the same Pod CIDR used by kubeadm. The upstream manifest leaves this option commented; setting it explicitly keeps kubeadm and Calico aligned.
 
 ```bash
 python3 - "$POD_CIDR" <<'PY'
@@ -1626,7 +1673,7 @@ Kernel driver in use: nvidia
 Kernel driver in use: snd_hda_intel
 ```
 
-Restart the services that were stopped before passthrough:
+Restart the services that were stopped before passthrough. This block rereads the persisted fan-control state, so it can be run from a new host shell after an interruption. Do not delete the state file manually; it is removed only after the recorded service is active.
 
 ```bash
 if systemctl list-unit-files nvidia-persistenced.service --no-legend 2>/dev/null | grep -q .; then
@@ -1636,12 +1683,27 @@ if systemctl list-unit-files nvidia-persistenced.service --no-legend 2>/dev/null
   fi
 fi
 
-NBFC_RECOVERED=false
-if sudo systemctl restart nbfc_service && \
-  sudo systemctl is-active --quiet nbfc_service; then
-  NBFC_RECOVERED=true
-else
-  echo "Host recovery failed: nbfc_service is not active" >&2
+HOST_RECOVERY_STATE_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/hami-lab-v2"
+FAN_CONTROL_STATE="$HOST_RECOVERY_STATE_DIR/fan-control-service"
+FAN_CONTROL_RECOVERED=true
+if [ -e "$FAN_CONTROL_STATE" ]; then
+  FAN_CONTROL_RECOVERED=false
+  FAN_CONTROL_SERVICE=
+  if ! IFS= read -r FAN_CONTROL_SERVICE <"$FAN_CONTROL_STATE" || \
+    [ -z "$FAN_CONTROL_SERVICE" ]; then
+    echo "Host recovery failed: fan-control recovery state is unreadable" >&2
+  elif ! systemctl list-unit-files "$FAN_CONTROL_SERVICE" --no-legend 2>/dev/null | grep -q .; then
+    echo "Host recovery failed: recorded service does not exist: $FAN_CONTROL_SERVICE" >&2
+  elif sudo systemctl restart "$FAN_CONTROL_SERVICE" && \
+    sudo systemctl is-active --quiet "$FAN_CONTROL_SERVICE"; then
+    if rm -f -- "$FAN_CONTROL_STATE"; then
+      FAN_CONTROL_RECOVERED=true
+    else
+      echo "Host recovery failed: could not remove $FAN_CONTROL_STATE" >&2
+    fi
+  else
+    echo "Host recovery failed: $FAN_CONTROL_SERVICE is not active" >&2
+  fi
 fi
 
 AUDIO_RECOVERED=false
@@ -1652,7 +1714,7 @@ else
   echo "Host recovery failed: one or more audio services are not active" >&2
 fi
 
-if [ "$NBFC_RECOVERED" != true ] || [ "$AUDIO_RECOVERED" != true ]; then
+if [ "$FAN_CONTROL_RECOVERED" != true ] || [ "$AUDIO_RECOVERED" != true ]; then
   exit 1
 fi
 systemctl --user is-active pipewire.socket pipewire.service pipewire-pulse.socket pipewire-pulse.service wireplumber.service
