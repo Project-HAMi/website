@@ -233,3 +233,51 @@ The `hami-device-plugin` pod on each node exposes per-container vGPU metrics on 
 ## PaddlePaddle crashes with core_dump on vGPU?
 
 This is caused by `thread_local` allocator. Refer to [PaddlePaddle CoreDump Issue with thread_local Allocator on vGPU](./troubleshooting/paddle-threadlocal-coredump).
+
+## How to enable finer-grained GPU slicing such as 0.05 or 0.01?
+
+HAMi uses `deviceSplitCount` to control the maximum number of tasks that can be assigned to a single physical GPU. The default value is 10.
+
+It caps the number of tasks that can share one GPU. The actual memory and core allocation for each workload still comes from its own resource requests.
+
+To allow finer slices, override the value in your Helm `values.yaml`:
+
+```yaml
+devices:
+  nvidia:
+    deviceSplitCount: 20 # allows up to 20 tasks per GPU
+    # or
+    # deviceSplitCount: 100 # allows up to 100 tasks per GPU
+```
+
+Then request the target slice in the workload's resource limits. With deviceSplitCount: 20, requesting 5% of the memory and cores gives a 0.05 slice:
+
+```yaml
+resources:
+  limits:
+    nvidia.com/gpu: 1
+    nvidia.com/gpucores: 5
+    nvidia.com/gpumem-percentage: 5
+```
+
+With deviceSplitCount: 100, requesting 1% of the memory and cores gives a 0.01 slice:
+
+```yaml
+resources:
+  limits:
+    nvidia.com/gpu: 1
+    nvidia.com/gpucores: 1
+    nvidia.com/gpumem-percentage: 1
+```
+
+For per-node overrides, set `devicesplitcount` in the `devicePlugin.nodeConfiguration.config` JSON instead.
+
+The mapping between `deviceSplitCount` and the maximum number of tasks per GPU:
+
+| deviceSplitCount | Max tasks per GPU | Slice size |
+| ---------------- | ----------------- | ---------- |
+| 10 (default)     | 10                | 0.1        |
+| 20               | 20                | 0.05       |
+| 100              | 100               | 0.01       |
+
+> A very large `deviceSplitCount` increases the number of vGPU entries the device plugin manages per GPU. Choose a value that matches your actual concurrency needs.
