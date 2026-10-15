@@ -50,6 +50,7 @@ test("all Prometheus queries use the selectable datasource", () => {
 test("queries only use HAMi v2.10 metrics and selected DCGM metrics", () => {
   const allowedMetrics = new Set([
     "hami_container_device_utilization_ratio",
+    "hami_container_last_kernel_elapsed_seconds",
     "hami_gpu_core_allocated_ratio",
     "hami_gpu_core_limit_ratio",
     "hami_gpu_memory_allocated_bytes",
