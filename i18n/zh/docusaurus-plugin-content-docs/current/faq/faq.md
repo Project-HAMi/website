@@ -230,3 +230,51 @@ DCGM Exporter 不受影响，继续正常上报物理级计数器。HAMi 的每�
 ## PaddlePaddle 在vGPU上出现core_dump崩溃？
 
 该问题由`thread_local`分配器触发，详情查看：[PaddlePaddle thread_local 分配器导致 vGPU 环境 CoreDump](./troubleshooting/paddle-threadlocal-coredump)
+
+## 如何支持更细粒度的卡切分，例如 0.05 或 0.01？
+
+HAMi 通过 `deviceSplitCount` 控制单块物理 GPU 上可分配的最大任务数。默认值为 10。
+
+它限制的是单块 GPU 能被多少个任务共享。每个工作负载实际分到的显存和核心，仍由其自身的资源请求决定。
+
+要支持更细粒度的切分，可通过覆盖 Helm `values.yaml` 中的该参数来实现：
+
+```yaml
+devices:
+  nvidia:
+    deviceSplitCount: 20 # 单块 GPU 最多承载 20 个任务
+    # 或
+    # deviceSplitCount: 100 # 单块 GPU 最多承载 100 个任务
+```
+
+然后在工作负载自身的资源请求中声明目标切分。在 deviceSplitCount: 20 时，请求 5% 的显存和核心即可得到 0.05 卡：
+
+```yaml
+resources:
+  limits:
+    nvidia.com/gpu: 1
+    nvidia.com/gpucores: 5
+    nvidia.com/gpumem-percentage: 5
+```
+
+在 deviceSplitCount: 100 时，请求 1% 的显存和核心即可得到 0.01 卡：
+
+```yaml
+resources:
+  limits:
+    nvidia.com/gpu: 1
+    nvidia.com/gpucores: 1
+    nvidia.com/gpumem-percentage: 1
+```
+
+如果想要针对节点单独修改，请设置 `devicePlugin.nodeConfiguration.config` 下的 `devicesplitcount`。
+
+`deviceSplitCount`与单块 GPU 最大任务数的对应关系如下：
+
+| deviceSplitCount | 单块 GPU 最大任务数 | 切分大小 |
+| ---------------- | ------------------- | -------- |
+| 10（默认）       | 10                  | 0.1      |
+| 20               | 20                  | 0.05     |
+| 100              | 100                 | 0.01     |
+
+> deviceSplitCount 设置得越大，device-plugin 为单块 GPU 管理的 vGPU 条目越多。请根据实际并发需求选择合适的值。
