@@ -50,7 +50,9 @@ test("all Prometheus queries use the selectable datasource", () => {
 test("queries only use HAMi v2.10 metrics and selected DCGM metrics", () => {
   const allowedMetrics = new Set([
     "hami_container_device_utilization_ratio",
+    "hami_container_last_kernel_elapsed_seconds",
     "hami_gpu_core_allocated_ratio",
+    "hami_gpu_core_limit_ratio",
     "hami_gpu_memory_allocated_bytes",
     "hami_gpu_memory_limit_bytes",
     "hami_gpu_shared_count",
@@ -58,6 +60,8 @@ test("queries only use HAMi v2.10 metrics and selected DCGM metrics", () => {
     "hami_host_gpu_utilization_ratio",
     "hami_node_gpu_memory_allocated_ratio",
     "hami_node_gpu_overview",
+    "hami_vgpu_memory_buffer_bytes",
+    "hami_vgpu_memory_context_bytes",
     "hami_vgpu_memory_limit_bytes",
     "hami_vgpu_memory_used_bytes",
     "DCGM_FI_DEV_GPU_TEMP",
@@ -231,4 +235,57 @@ test("tables hide the internal zone label", () => {
     );
     assert.equal(organize.options.excludeByName.zone, true, title);
   }
+});
+
+test("cluster overview shows core allocation against core capacity", () => {
+  const panel = panelByTitle("GPU cores allocated %");
+  assert.equal(panel.type, "stat");
+  assert.equal(panel.fieldConfig.defaults.unit, "percent");
+  assert.equal(
+    panel.targets[0].expr,
+    '100 * sum(hami_gpu_core_allocated_ratio{node=~"$node"}) / clamp_min(sum(hami_gpu_core_limit_ratio{node=~"$node"}), 1)',
+  );
+  assert.equal(panel.gridPos.y, panelByTitle("GPU memory allocated %").gridPos.y);
+});
+
+test("vGPU memory panel shows context and buffer side by side per container", () => {
+  const panel = panelByTitle("vGPU memory: context vs buffer");
+  assert.equal(panel.type, "barchart");
+  assert.equal(panel.options.stacking, "none");
+  assert.equal(panel.fieldConfig.defaults.unit, "bytes");
+
+  const [context, buffer] = panel.targets.map((target) => target.expr);
+  assert.match(
+    context,
+    /^label_join\(hami_vgpu_memory_context_bytes\{namespace=~"\$namespace"\}, "container_device"/,
+  );
+  assert.match(
+    buffer,
+    /^label_join\(hami_vgpu_memory_buffer_bytes\{namespace=~"\$namespace"\}, "container_device"/,
+  );
+  assert.deepEqual(
+    panel.transformations.map((transformation) => transformation.id),
+    ["filterFieldsByName", "merge", "organize"],
+  );
+});
+
+test("table shows time since each container last ran a kernel", () => {
+  const panel = panelByTitle("Time since last kernel");
+  assert.equal(panel.type, "table");
+  assert.deepEqual(
+    panel.targets.map((target) => target.expr),
+    [
+      'hami_container_last_kernel_elapsed_seconds{namespace=~"$namespace"}',
+      'hami_vgpu_memory_limit_bytes{namespace=~"$namespace"} and on (namespace, pod, container, vdevice_index) hami_container_last_kernel_elapsed_seconds{namespace=~"$namespace"}',
+    ],
+  );
+  assert.match(panel.description, /never run a kernel/);
+  assert.deepEqual(panel.options.sortBy, [{ displayName: "Since last kernel", desc: true }]);
+
+  const unitOf = (name) =>
+    panel.fieldConfig.overrides
+      .find((override) => override.matcher.options === name)
+      ?.properties.find((property) => property.id === "unit")?.value;
+  assert.equal(unitOf("Since last kernel"), "dtdurations");
+  assert.equal(unitOf("Allocated memory"), "bytes");
 });
