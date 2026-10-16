@@ -4,7 +4,7 @@ sidebar_label: 指定核心
 translated: true
 ---
 
-通过指定资源 `mthreads.com/sgpu-core` 来分配部分设备核心资源。可选项，每个 `mthreads.com/sgpu-core` 单位等于 1/16 的设备核心。
+通过指定资源 `mthreads.com/sgpu-core` 来分配部分设备核心资源。可选项，每个 `mthreads.com/sgpu-core` 单位等于 1/16 的设备核心。MTT S4000 和 MTT S5000 每卡均提供 16 个算力核组，有效取值为 1 到 16。
 
 ```yaml
 resources:
