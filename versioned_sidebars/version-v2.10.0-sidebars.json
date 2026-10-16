@@ -54,7 +54,8 @@
             "installation/k3s-installation",
             "installation/gke-installation",
             "installation/tke-installation",
-            "installation/cce-installation"
+            "installation/cce-installation",
+            "installation/ack-installation"
           ]
         },
         {
