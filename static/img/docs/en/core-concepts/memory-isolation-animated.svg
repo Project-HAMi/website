@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 330" width="880" height="330" role="img">
+<title>Memory isolation under load: Pod A hits its limit, Pod B keeps running</title>
+<defs>
+  <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+    <rect width="8" height="8" fill="#F3F4F6"/>
+    <line x1="0" y1="0" x2="0" y2="8" stroke="#D1D5DB" stroke-width="3"/>
+  </pattern>
+  <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="#64748B"/>
+  </marker>
+  <marker id="arrowG" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="#10B05A"/>
+  </marker>
+  <marker id="arrowR" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="#EF4444"/>
+  </marker>
+  <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+    <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-color="#0F172A" flood-opacity="0.10"/>
+  </filter>
+</defs>
+<rect x="0" y="0" width="880" height="330" rx="18" fill="#FFFFFF"/>
+
+<style>
+  .f { opacity: 0; animation: show 8s infinite; }
+  .s0 { animation-name: s0; } .s1 { animation-name: s1; } .s2 { animation-name: s2; } .s3 { animation-name: s3; }
+  .t0 { animation-name: t0; } .t1 { animation-name: t1; } .t2 { animation-name: t2; }
+  @keyframes s0 { 0%, 3% { opacity: 0 } 4%, 96% { opacity: 1 } 97%, 100% { opacity: 0 } }
+  @keyframes s1 { 0%, 21% { opacity: 0 } 22%, 96% { opacity: 1 } 97%, 100% { opacity: 0 } }
+  @keyframes s2 { 0%, 39% { opacity: 0 } 40%, 96% { opacity: 1 } 97%, 100% { opacity: 0 } }
+  @keyframes s3 { 0%, 57% { opacity: 0 } 58%, 66% { opacity: 1 } 70% { opacity: .35 } 74%, 92% { opacity: 1 } 93%, 100% { opacity: 0 } }
+  @keyframes t0 { 0%, 3% { opacity: 0 } 4%, 21% { opacity: 1 } 22%, 100% { opacity: 0 } }
+  @keyframes t1 { 0%, 21% { opacity: 0 } 22%, 39% { opacity: 1 } 40%, 100% { opacity: 0 } }
+  @keyframes t2 { 0%, 39% { opacity: 0 } 40%, 92% { opacity: 1 } 93%, 100% { opacity: 0 } }
+  .pulse { animation: pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1 } 50% { opacity: .35 } }
+  @media (prefers-reduced-motion: reduce) {
+    .f, .pulse { animation: none !important; }
+    .s0, .s1, .s2, .s3, .t2 { opacity: 1; }
+    .t0, .t1 { opacity: 0; }
+  }
+</style>
+<rect x="24" y="20" width="832" height="290" rx="14" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+<line x1="53.6" y1="36" x2="53.6" y2="40" stroke="#64748B" stroke-width="2"/><line x1="53.6" y1="60" x2="53.6" y2="64" stroke="#64748B" stroke-width="2"/><line x1="44" y1="45.6" x2="48" y2="45.6" stroke="#64748B" stroke-width="2"/><line x1="68" y1="45.6" x2="72" y2="45.6" stroke="#64748B" stroke-width="2"/><line x1="58.0" y1="36" x2="58.0" y2="40" stroke="#64748B" stroke-width="2"/><line x1="58.0" y1="60" x2="58.0" y2="64" stroke="#64748B" stroke-width="2"/><line x1="44" y1="50.0" x2="48" y2="50.0" stroke="#64748B" stroke-width="2"/><line x1="68" y1="50.0" x2="72" y2="50.0" stroke="#64748B" stroke-width="2"/><line x1="62.4" y1="36" x2="62.4" y2="40" stroke="#64748B" stroke-width="2"/><line x1="62.4" y1="60" x2="62.4" y2="64" stroke="#64748B" stroke-width="2"/><line x1="44" y1="54.4" x2="48" y2="54.4" stroke="#64748B" stroke-width="2"/><line x1="68" y1="54.4" x2="72" y2="54.4" stroke="#64748B" stroke-width="2"/>
+<rect x="48" y="40" width="20" height="20" rx="4" fill="#fff" stroke="#64748B" stroke-width="2"/>
+<rect x="54.0" y="46.0" width="8.0" height="8.0" rx="2" fill="#64748B"/>
+<text x="80" y="56" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="700" fill="#1F2937" text-anchor="start">One GPU · two containers</text>
+<text x="48" y="106" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="700" fill="#1D4ED8" text-anchor="start">Pod A</text>
+<text x="48" y="126" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12.5" font-weight="400" fill="#6B7280" text-anchor="start">gpumem: 3000</text>
+<rect x="200" y="90" width="560" height="34" rx="8" fill="#fff" stroke="#D1D5DB" stroke-width="1"/>
+<g class="f s0">
+<rect x="201.0" y="92" width="122.44444444444444" height="30" rx="6" fill="#3B82F6"/>
+</g>
+<g class="f s1">
+<rect x="325.44444444444446" y="92" width="122.44444444444444" height="30" rx="6" fill="#3B82F6"/>
+</g>
+<g class="f s2">
+<rect x="449.8888888888889" y="92" width="97.55555555555556" height="30" rx="6" fill="#3B82F6"/>
+</g>
+<g class="f s3">
+<rect x="549.4444444444445" y="92" width="125.43111111111111" height="30" rx="6" fill="#FEE2E2" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="5 3"/>
+<text x="612.16" y="112" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="12" font-weight="700" fill="#B91C1C" text-anchor="middle">+1024</text>
+</g>
+<line x1="573.3333333333333" y1="82" x2="573.3333333333333" y2="132" stroke="#EF4444" stroke-width="2" stroke-dasharray="5 3"/>
+<text x="579.3333333333333" y="82" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="11.5" font-weight="600" fill="#B91C1C" text-anchor="start">limit 3000</text>
+<g class="f t0">
+<text x="770" y="112" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="13" font-weight="700" fill="#1D4ED8" text-anchor="start">1000 MiB</text>
+</g>
+<g class="f t1">
+<text x="770" y="112" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="13" font-weight="700" fill="#1D4ED8" text-anchor="start">2000 MiB</text>
+</g>
+<g class="f t2">
+<text x="770" y="112" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="13" font-weight="700" fill="#1D4ED8" text-anchor="start">2800 MiB</text>
+</g>
+<g class="f s0">
+<text x="200" y="144" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12.5" font-weight="400" fill="#1F2937" text-anchor="start">cuMemAlloc(1000 MiB) → OK</text>
+</g>
+<g class="f s1">
+<text x="200" y="163" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12.5" font-weight="400" fill="#1F2937" text-anchor="start">cuMemAlloc(1000 MiB) → OK</text>
+</g>
+<g class="f s2">
+<text x="200" y="182" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12.5" font-weight="400" fill="#1F2937" text-anchor="start">cuMemAlloc(800 MiB) → OK</text>
+</g>
+<g class="f s3">
+<text x="200" y="201" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12.5" font-weight="700" fill="#B91C1C" text-anchor="start">cuMemAlloc(1024 MiB) → CUDA_ERROR_OUT_OF_MEMORY</text>
+</g>
+<g class="f s3">
+<text x="200" y="222" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="12" font-weight="400" fill="#B91C1C" text-anchor="start">↳ allocation refused, the process handles the error</text>
+</g>
+<text x="48" y="270" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="700" fill="#B45309" text-anchor="start">Pod B</text>
+<text x="48" y="290" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12.5" font-weight="400" fill="#6B7280" text-anchor="start">gpumem: 4000</text>
+<rect x="200" y="254" width="560" height="34" rx="8" fill="#fff" stroke="#D1D5DB" stroke-width="1"/>
+<rect x="201" y="256" width="246.88888888888889" height="30" rx="6" fill="#F59E0B"/>
+<line x1="697.7777777777778" y1="250" x2="697.7777777777778" y2="292" stroke="#6B7280" stroke-width="1.5" stroke-dasharray="5 3"/>
+<text x="770" y="276" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="13" font-weight="700" fill="#B45309" text-anchor="start">2000 MiB</text>
+<circle class="pulse" cx="472.8888888888889" cy="271" r="6" fill="#10B05A"/>
+<text x="484.8888888888889" y="276" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="13" font-weight="700" fill="#047857" text-anchor="start">Running</text>
+</svg>
