@@ -97,7 +97,7 @@ HAMi 支持多节点多 GPU 分布式训练，单个 Pod 可使用同节点多�
 
 **简要说明：**
 
-同一节点只能启用一个 GPU 插件，避免资源冲突。
+默认情况下，每个节点只使用一个 GPU 管理插件，以避免资源冲突。但当 HAMi 使用不同的资源名称时，HAMi 与 NVIDIA 官方 device plugin 可以在同一节点上共存，详见下方[FAQ](#hami-如何与-nvidia-官方-device-plugin-共存)。
 
 ### 插件关系说明
 
@@ -107,6 +107,7 @@ HAMi 支持多节点多 GPU 分布式训练，单个 Pod 可使用同节点多�
   - 使用扩展资源名 `nvidia.com/gpu`；
   - 支持 HAMi 的 GPU 管理能力（如 vGPU 拆分、自定义调度）；
   - 适用于复杂资源管理场景。
+  - 可修改该资源名称以避免与 NVIDIA 官方 device plugin 冲突，详见下方[FAQ](#hami-如何与-nvidia-官方-device-plugin-共存)。
 
 - **Volcano 插件**
   - 使用扩展资源名 `volcano.sh/vgpu-number`；
@@ -120,7 +121,7 @@ HAMi 支持多节点多 GPU 分布式训练，单个 Pod 可使用同节点多�
 
 ### 是否可共存
 
-- **HAMi 与 NVIDIA 插件**：不建议共存，会产生资源冲突；
+- **HAMi 与 NVIDIA 插件**：使用相同的资源名称，不建议共存，会产生资源冲突；当 HAMi 使用不同的资源名称时，两者可以在同一节点上共存，详见下方[FAQ](#hami-如何与-nvidia-官方-device-plugin-共存)；
 - **HAMi 与 Volcano 插件**：理论上可共存，但推荐只启用一个；
 - **NVIDIA 与 Volcano 插件**：理论上可共存，但不建议混合使用。
 
@@ -278,3 +279,38 @@ resources:
 | 100              | 100                 | 0.01     |
 
 > deviceSplitCount 设置得越大，device-plugin 为单块 GPU 管理的 vGPU 条目越多。请根据实际并发需求选择合适的值。
+
+## HAMi 如何与 NVIDIA 官方 device plugin 共存？
+
+HAMi 和 NVIDIA 官方 device plugin 默认都使用相同的扩展资源名称`nvidia.com/gpu` 上报 GPU 资源，运行在同一节点上会产生资源归属冲突。要让两者共存，可通过修改 Helm `values.yaml` 中的以下参数，让 HAMi 使用自定义资源名称：
+
+```yaml
+# NVIDIA GPU Parameters
+devices:
+  nvidia:
+    resourceCountName: "hami.io/gpu"
+    resourceMemoryName: "hami.io/gpumem"
+    resourceMemoryPercentageName: "hami.io/gpumem-percentage"
+    resourceCoreName: "hami.io/gpucores"
+    resourcePriorityName: "hami.io/priority"
+```
+
+资源名称必须与 NVIDIA device plugin 使用的名称不同。两者的默认值均为 nvidia.com/gpu 及其相关名称，因此 HAMi 需要使用不同的名称。推荐使用 hami.io/gpu 及其相关名称作为约定命名。
+
+修改后，节点会同时上报两个资源名称。工作负载可通过请求其中任意一个资源名称来选择插件，请勿在同一工作负载中同时请求两者。
+
+```yaml
+# Use NVIDIA official device plugin
+resources:
+  limits:
+    nvidia.com/gpu: 1
+```
+
+```yaml
+# Use HAMi vGPU scheduling
+resources:
+  limits:
+    hami.io/gpu: 1
+```
+
+> Note: 同一个资源名称必须且只能由一个插件拥有，且同一工作负载不能同时请求两个资源名称。
