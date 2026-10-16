@@ -65,6 +65,7 @@ module.exports = {
         "key-features/device-sharing",
         "key-features/device-resource-isolation",
         "core-concepts/scheduling",
+        "core-concepts/observability",
         "core-concepts/ecosystem-integrations",
       ],
     },
