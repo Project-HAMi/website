@@ -23,7 +23,7 @@ HAMi 的设备共享能力包括：
 
 | 资源                           | 含义                                                           |
 | ------------------------------ | -------------------------------------------------------------- |
-| `nvidia.com/gpu`               | 物理 GPU 的数量。设为 `2` 时，Pod 会分别从两张卡上各得到一份。 |
+| `nvidia.com/gpu`               | 物理 GPU 的数量。设为 `2` 时，容器会分别从两张卡上各得到一份。 |
 | `nvidia.com/gpumem`            | 每张 GPU 上的显存，单位 MiB。                                  |
 | `nvidia.com/gpumem-percentage` | 每张 GPU 上的显存，按整卡的百分比计算。与 `gpumem` 二选一。    |
 | `nvidia.com/gpucores`          | 每张 GPU 上的算力，按整卡的百分比计算。                        |
@@ -37,6 +37,8 @@ HAMi 的设备共享能力包括：
 - **槽位**：device plugin 把每张卡上报 `deviceSplitCount` 次，默认 10。一个容器在它用到的每张卡上占一个槽位，所以一张卡最多给 10 个容器共享。
 - **显存**：一张卡上所有容器的显存加起来不能超过这张卡的显存。
 - **算力**：一张卡上所有容器的算力份额加起来最多 100%。
+
+以上额度基于默认的 `deviceMemoryScaling` 和 `deviceCoreScaling`，即 1。设置大于 1 时可以超额分配一张卡。详见[配置](../userguide/configure.md)。
 
 ## Time-slicing、MPS 和 HAMi
 

@@ -33,7 +33,7 @@ Pod 启动时，device plugin 把 `libvgpu.so` 和 `/etc/ld.so.preload` 挂进�
 - 每次分配显存前（例如 `cuMemAlloc`），HAMi-Core 把这次申请和容器已经使用的显存相加。总量超过限额时，调用返回 `CUDA_ERROR_OUT_OF_MEMORY`。只有这个容器会收到错误，同一张卡上的其他 Pod 照常运行。
 - 通过 NVML 查询显存时，返回的是限额，所以容器里的 `nvidia-smi` 把份额显示为总显存。
 
-![负载下的显存隔离：Pod A 碰到限额，Pod B 照常运行](/img/docs/zh/core-concepts/memory-isolation-animated.svg)
+![显存隔离：HAMi-Core 把每次分配和限额对照检查](/img/docs/zh/core-concepts/memory-isolation.svg)
 
 ## 算力
 
@@ -41,7 +41,7 @@ Pod 启动时，device plugin 把 `libvgpu.so` 和 `/etc/ld.so.preload` 挂进�
 - 一个后台线程采样 GPU 使用率并补充计数器。容器用量低于份额时多补，高于份额时少补。
 - `gpucores` 为 0 或 100 时，HAMi-Core 不限制 kernel 的提交。
 
-![限速开启时的算力限制：kernel 扣除令牌，用完后等待，补充后继续](/img/docs/zh/core-concepts/compute-isolation-animated.svg)
+![限速开启时的算力限制：kernel 扣除令牌，用完后等待，补充后继续](/img/docs/zh/core-concepts/compute-isolation.svg)
 
 限速有三种模式。集群级用 Helm 参数 `devices.nvidia.gpuCorePolicy` 设置，单个容器用环境变量 `GPU_CORE_UTILIZATION_POLICY` 设置，见[全局配置](../userguide/configure.md)。
 

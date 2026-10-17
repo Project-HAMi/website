@@ -27,13 +27,14 @@ See [Protocol design](../developers/protocol.md) for how the scheduler and devic
 
 ## Dynamic Resource Allocation
 
-DRA reached general availability in Kubernetes v1.34. It describes devices with three API objects:
+DRA reached general availability in Kubernetes v1.34. It describes devices and requests with these API objects:
 
-| Object          | Role                                                                |
-| --------------- | ------------------------------------------------------------------- |
+| Object | Role |
+| --- | --- |
 | `ResourceSlice` | Published by the DRA driver. Lists each device with its attributes. |
-| `DeviceClass`   | A named set of devices, selected by attributes.                     |
-| `ResourceClaim` | A Pod's request for devices, similar to a PersistentVolumeClaim.    |
+| `DeviceClass` | A named set of devices, selected by attributes. |
+| `ResourceClaim` | A Pod's request for devices, similar to a PersistentVolumeClaim. |
+| `ResourceClaimTemplate` | A template the Pod references. Kubernetes creates a `ResourceClaim` from it for each Pod. |
 
 The scheduler reads device attributes from `ResourceSlice` objects directly, so no annotation is needed.
 

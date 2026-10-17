@@ -28,13 +28,14 @@ HAMi 用两种方式补上这部分信息：
 
 ## 动态资源分配
 
-DRA 在 Kubernetes v1.34 进入 GA。它用三种 API 对象描述设备：
+DRA 在 Kubernetes v1.34 进入 GA。它用以下 API 对象描述设备和申请：
 
-| 对象            | 作用                                           |
-| --------------- | ---------------------------------------------- |
-| `ResourceSlice` | 由 DRA 驱动发布，列出每个设备及其属性。        |
-| `DeviceClass`   | 按属性筛选出的一组设备。                       |
-| `ResourceClaim` | Pod 对设备的申请，类似 PersistentVolumeClaim。 |
+| 对象                    | 作用                                                                 |
+| ----------------------- | -------------------------------------------------------------------- |
+| `ResourceSlice`         | 由 DRA 驱动发布，列出每个设备及其属性。                              |
+| `DeviceClass`           | 按属性筛选出的一组设备。                                             |
+| `ResourceClaim`         | Pod 对设备的申请，类似 PersistentVolumeClaim。                       |
+| `ResourceClaimTemplate` | Pod 引用的模板，Kubernetes 据此为每个 Pod 创建一个 `ResourceClaim`。 |
 
 调度器直接从 `ResourceSlice` 读取设备属性，不需要额外的注解。
 

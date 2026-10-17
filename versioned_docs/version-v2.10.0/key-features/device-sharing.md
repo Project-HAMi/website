@@ -22,7 +22,7 @@ HAMi's device sharing enables:
 
 | Resource | Meaning |
 | --- | --- |
-| `nvidia.com/gpu` | Number of physical GPUs. With `2`, the Pod gets a share of two different cards. |
+| `nvidia.com/gpu` | Number of physical GPUs. With `2`, the container gets a share of two different cards. |
 | `nvidia.com/gpumem` | Device memory on each GPU, in MiB. |
 | `nvidia.com/gpumem-percentage` | Device memory on each GPU, as a percentage of the card. Use it in place of `gpumem`. |
 | `nvidia.com/gpucores` | Compute on each GPU, as a percentage of the card. |
@@ -36,6 +36,8 @@ Each card has three budgets:
 - **Slots.** The device plugin reports each card `deviceSplitCount` times, 10 by default. Each container takes one slot on each card it uses, so up to 10 containers share a card.
 - **Memory.** The memory of all containers on a card must fit in the card.
 - **Compute.** The compute shares of all containers on a card add up to 100% at most.
+
+These budgets assume the default `deviceMemoryScaling` and `deviceCoreScaling` of 1. Values above 1 let a card be overcommitted. See [Configuration](../userguide/configure.md).
 
 ## Time-slicing, MPS, and HAMi
 
