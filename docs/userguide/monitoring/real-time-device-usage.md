@@ -3,6 +3,21 @@ title: Real-time device usage endpoint
 sidebar_label: Real-time device usage
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="usageMetrics" />
+
+Real-time usage metrics come from each GPU node: HAMi-core records what every container uses, and NVML reports each GPU. Where to read them depends on the setup:
+
+| Setup | Exported by | How to reach it |
+| --- | --- | --- |
+| HAMi | vGPU monitor in the device plugin DaemonSet, port 9394 | NodePort `31992` |
+| HAMi-DRA | Not available | — |
+| Volcano vGPU | `volcano-vgpu-monitor` in the device plugin DaemonSet, port 9394 | No Service; use the Pod IP |
+| KAI Scheduler | `kai-vgpu-monitor` from kai-resource-isolator, port 9394 | Off by default; see [KAI Scheduler](#kai-scheduler) |
+
+## HAMi
+
 You can get the real-time device memory and core utilization by visiting `<GPU-node-ip>:31992/metrics`, or add it to a prometheus endpoint, as the command below:
 
 ```bash
@@ -37,3 +52,23 @@ It also exposes per-container and per-vGPU metrics for each scheduled task:
 In v2.10.0, `hami_container_device_memory_bytes` no longer includes the `context_size`, `module_size`, `buffer_size`, and `offset` labels. Context, module, and buffer memory are exposed through `hami_vgpu_memory_context_bytes`, `hami_vgpu_memory_module_bytes`, and `hami_vgpu_memory_buffer_bytes`.
 
 :::
+
+## Volcano vGPU
+
+The monitor exports the older metric names, such as `HostCoreUtilization` and `vGPU_device_memory_usage_in_bytes`. See the [device plugin README](https://github.com/Project-HAMi/volcano-vgpu-device-plugin#monitor) for the list.
+
+```bash
+curl <volcano-device-plugin-pod-ip>:9394/metrics
+```
+
+## KAI Scheduler
+
+Enable the monitor when installing kai-resource-isolator. It exports the same `hami_*` container metrics as above; on the host it reports only GPU utilization and memory used.
+
+```bash
+helm upgrade --install kai-resource-isolator oci://docker.io/projecthami/kai-resource-isolator \
+  --namespace kai-resource-isolator --create-namespace \
+  --version 1.0.0-chart \
+  --set monitor.enabled=true \
+  --set monitor.serviceMonitor.enabled=true
+```

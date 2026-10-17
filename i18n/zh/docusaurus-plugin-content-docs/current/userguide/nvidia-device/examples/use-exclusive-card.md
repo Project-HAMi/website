@@ -4,6 +4,10 @@ sidebar_label: 使用独占 GPU
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="exclusive" />
+
 要以独占模式使用 GPU，这是 nvidia-k8s-device-plugin 的默认行为，你只需分配 `nvidia.com/gpu` 而无需其他资源字段。
 
 ```yaml

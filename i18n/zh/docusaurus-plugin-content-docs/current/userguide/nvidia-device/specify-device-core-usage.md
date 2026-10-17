@@ -4,6 +4,10 @@ sidebar_label: 指定核心
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="cores" />
+
 通过指定资源 `nvidia.com/gpucores` 来分配设备核心资源的百分比。可选项，每个单位的 `nvidia.com/gpucores` 等于设备核心的 1%。请使用纯整数，例如用 `50` 表示 50%。不要填写 `50%`，也不要使用 `500m` 等 Kubernetes CPU 资源数量。
 
 ```yaml

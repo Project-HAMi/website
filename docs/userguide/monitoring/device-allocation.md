@@ -3,7 +3,22 @@ title: Cluster device allocation endpoint
 sidebar_label: Cluster device allocation
 ---
 
-You can get the overview of cluster device allocation and limit by visiting `<scheduler-ip>:31993/metrics`, or add it to a prometheus endpoint, as the command below:
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="allocationMetrics" />
+
+Allocation metrics show what the scheduler has handed out to each GPU and each workload, not what is in use; for that, see [real-time device usage](./real-time-device-usage). Where they come from depends on the setup:
+
+| Setup | Exported by | How to reach it | Granularity |
+| --- | --- | --- | --- |
+| HAMi | `hami-scheduler`, port 9395 | Service port `31993`; a NodePort in v2.10.0, `ClusterIP` in later charts | GPU, Pod, quota |
+| HAMi-DRA | `hami-dra-monitor` Deployment, port 8080 | `ClusterIP` Service on 8080 | GPU, Pod |
+| Volcano vGPU | Volcano scheduler, port 8080 | `ClusterIP` Service `volcano-scheduler-service` on 8080 | GPU, Pod |
+| KAI Scheduler | Queue controller, port 8080 | `ClusterIP` Service `queue-controller` on 8080 | Queue only |
+
+## HAMi
+
+Scrape the scheduler on `31993`, or set `prometheus.enabled=true` in the HAMi chart to create a ServiceMonitor. The ServiceMonitor CRD from Prometheus Operator must already exist, or the chart skips it:
 
 ```bash
 curl <scheduler-ip>:31993/metrics
@@ -24,7 +39,16 @@ It contains the following metrics:
 | hami_vgpu_memory_allocated_bytes | vGPU memory allocated from a container | `{container_index="Ascend310P",device_uuid="aio-node74-arm-Ascend310P-0",node="aio-node74-arm",pod="ascend310p-pod",namespace="default",zone="vGPU"}` 3.221225472e+09 |
 | hami_resource_quota_used | resourcequota usage for a certain device | `{quota_name="nvidia.com/gpucores", namespace="default",limit="200",zone="vGPU"}` 100 |
 
-If you are using [HAMi DRA](../../installation/how-to-use-hami-dra), the metrics will be:
+## HAMi-DRA
+
+The [HAMi-DRA](../../installation/how-to-use-hami-dra) monitor is on by default, behind a `ClusterIP` Service. Port-forward it, or set `monitor.service.type=NodePort`:
+
+```bash
+kubectl port-forward svc/hami-dra-monitor 8080:8080 -n <namespace>
+curl localhost:8080/metrics
+```
+
+Memory is in MB and cores in percent:
 
 | Metrics | Description | Example |
 | --- | --- | --- |
@@ -35,8 +59,14 @@ If you are using [HAMi DRA](../../installation/how-to-use-hami-dra), the metrics
 | vGPUDeviceCoreAllocated | vGPU core allocated from a container | `{devicebrand="Tesla",deviceidx="0",devicename="hami-gpu-0",deviceproductname="Tesla P4",deviceuuid="GPU-82be-83fe-3068",nodeid="k8s-node01",podname="pod-0",podnamespace="default"}` 100 |
 | vGPUDeviceMemoryAllocated | vGPU memory allocated from a container | `{devicebrand="Tesla",deviceidx="0",devicename="hami-gpu-0",deviceproductname="Tesla P4",deviceuuid="GPU-82be-83fe-3068",nodeid="k8s-node01",podname="pod-0",podnamespace="default"}` 4000 |
 
-:::note
+## Volcano vGPU
 
-This is the overview of device allocation, it is NOT device real-time usage metrics. For that part, see real-time device usage.
+The Volcano scheduler exports `volcano_vgpu_device_*` metrics for each GPU and each Pod. The Helm chart and install YAML turn metrics on, and the Service carries `prometheus.io/scrape` annotations for annotation-based scraping. See [Monitor volcano-vgpu](../volcano-vgpu/nvidia-gpu/monitor) for the list.
 
-:::
+```bash
+curl <volcano-scheduler-service-ip>:8080/metrics
+```
+
+## KAI Scheduler
+
+KAI reports GPU allocation per queue only, for example `kai_queue_allocated_gpus` and `kai_queue_deserved_gpus` from the queue controller. It has no per-GPU or per-Pod allocation metric. Setting `prometheus.enabled` in the KAI config creates a ServiceMonitor for the queue controller. See the [KAI metrics reference](https://github.com/kai-scheduler/KAI-Scheduler/blob/main/docs/metrics/METRICS.md).
