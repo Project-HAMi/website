@@ -291,3 +291,34 @@ test("table shows time since each container last ran a kernel", () => {
   assert.equal(unitOf("Since last kernel"), "dtdurations");
   assert.equal(unitOf("Allocated memory"), "bytes");
 });
+
+test("quota table compares used with limit for each namespace and resource", () => {
+  const panel = panelByTitle("Resource quota: used vs limit");
+  assert.equal(panel.type, "table");
+
+  const used = 'hami_resource_quota_used{namespace=~"$namespace"}';
+  const limit = 'hami_resource_quota_limit{namespace=~"$namespace"}';
+  assert.deepEqual(
+    panel.targets.map((target) => target.expr),
+    [used, limit, `100 * ${used} / on (namespace, quota_name) clamp_min(${limit}, 1)`],
+  );
+
+  assert.deepEqual(
+    panel.transformations.map((transformation) => transformation.id),
+    ["filterFieldsByName", "merge", "organize"],
+  );
+  assert.deepEqual(panel.transformations[0].options.include.names, [
+    "namespace",
+    "quota_name",
+    "Value #A",
+    "Value #B",
+    "Value #C",
+  ]);
+
+  const unitOf = (name) =>
+    panel.fieldConfig.overrides
+      .find((override) => override.matcher.options === name)
+      ?.properties.find((property) => property.id === "unit")?.value;
+  assert.equal(panel.fieldConfig.defaults.unit, "none");
+  assert.equal(unitOf("Used %"), "percent");
+});
