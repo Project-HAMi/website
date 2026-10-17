@@ -100,11 +100,11 @@ The JSON uses a data source variable instead of a fixed Prometheus UID. Select t
 
 ## Dashboard variables
 
-| Variable    | Description                                                         |
-| ----------- | ------------------------------------------------------------------- |
-| Data source | Prometheus data source                                              |
-| Node        | Filters physical GPU and scheduler panels; supports multiple values |
-| Namespace   | Filters vGPU workload panels; supports multiple values              |
+| Variable | Description |
+| --- | --- |
+| Data source | Prometheus data source |
+| Node | Filters physical GPU and scheduler panels; supports multiple values |
+| Namespace | Filters vGPU workload panels and the resource quota table; supports multiple values |
 
 ## Dashboard rows
 
@@ -112,7 +112,7 @@ The JSON uses a data source variable instead of a fixed Prometheus UID. Select t
 | --- | --- |
 | Cluster overview | Physical GPU count, total memory, allocated memory and cores, and shared containers |
 | Physical GPUs (host) | Real-time memory usage and utilization, with allocation comparisons |
-| Scheduler / allocation | Device limits, allocation ratios, sharing, and GPU inventory |
+| Scheduler / allocation | Device limits, allocation ratios, sharing, GPU inventory, and resource quota |
 | vGPU / container workloads | Per-container vGPU memory, limits, utilization, context and buffer memory, and time since the last kernel |
 | NVIDIA hardware telemetry (optional DCGM Exporter) | XID errors, temperature, power usage, and SM clock |
 
