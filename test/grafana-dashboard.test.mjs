@@ -60,6 +60,8 @@ test("queries only use HAMi v2.10 metrics and selected DCGM metrics", () => {
     "hami_host_gpu_utilization_ratio",
     "hami_node_gpu_memory_allocated_ratio",
     "hami_node_gpu_overview",
+    "hami_resource_quota_limit",
+    "hami_resource_quota_used",
     "hami_vgpu_memory_buffer_bytes",
     "hami_vgpu_memory_context_bytes",
     "hami_vgpu_memory_limit_bytes",
