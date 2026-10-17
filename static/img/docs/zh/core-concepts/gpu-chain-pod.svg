@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1056 104" width="1056" height="104" role="img">
+<title>完整 GPU Pod 依赖链</title>
+<defs>
+  <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+    <rect width="8" height="8" fill="#F3F4F6"/>
+    <line x1="0" y1="0" x2="0" y2="8" stroke="#D1D5DB" stroke-width="3"/>
+  </pattern>
+  <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="#64748B"/>
+  </marker>
+  <marker id="arrowG" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="#10B05A"/>
+  </marker>
+  <marker id="arrowR" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="#EF4444"/>
+  </marker>
+  <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+    <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-color="#0F172A" flood-opacity="0.10"/>
+  </filter>
+</defs>
+<rect x="0" y="0" width="1056" height="104" rx="18" fill="#FFFFFF"/>
+<rect x="23.999999999999943" y="24" width="70" height="56" rx="10" fill="#fff" stroke="#64748B" stroke-width="1.8" filter="url(#shadow)"/>
+<text x="58.99999999999994" y="57.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1F2937" text-anchor="middle">Pod</text>
+<line x1="96.99999999999994" y1="52.0" x2="123.99999999999994" y2="52.0" stroke="#64748B" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="127.99999999999994" y="24" width="112.00000000000001" height="56" rx="10" fill="#fff" stroke="#64748B" stroke-width="1.8" filter="url(#shadow)"/>
+<text x="183.99999999999994" y="57.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1F2937" text-anchor="middle">containerd</text>
+<line x1="242.99999999999994" y1="52.0" x2="269.99999999999994" y2="52.0" stroke="#64748B" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="273.99999999999994" y="24" width="162.40000000000003" height="56" rx="10" fill="#fff" stroke="#64748B" stroke-width="1.8" filter="url(#shadow)"/>
+<text x="355.19999999999993" y="48.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1F2937" text-anchor="middle">NVIDIA Container</text>
+<text x="355.19999999999993" y="66.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1F2937" text-anchor="middle">Toolkit</text>
+<line x1="439.4" y1="52.0" x2="466.4" y2="52.0" stroke="#64748B" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="470.4" y="24" width="70" height="56" rx="10" fill="#fff" stroke="#64748B" stroke-width="1.8" filter="url(#shadow)"/>
+<text x="505.4" y="57.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1F2937" text-anchor="middle">CUDA</text>
+<line x1="543.4" y1="52.0" x2="570.4" y2="52.0" stroke="#64748B" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="574.4" y="24" width="112.0" height="56" rx="10" fill="#fff" stroke="#64748B" stroke-width="1.8" filter="url(#shadow)"/>
+<text x="630.4" y="57.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1F2937" text-anchor="middle">用户态驱动库</text>
+<line x1="689.4" y1="52.0" x2="716.4" y2="52.0" stroke="#64748B" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="720.4" y="24" width="103.60000000000001" height="56" rx="10" fill="#fff" stroke="#64748B" stroke-width="1.8" filter="url(#shadow)"/>
+<text x="772.1999999999999" y="57.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1F2937" text-anchor="middle">nvidia.ko</text>
+<line x1="827.0" y1="52.0" x2="854.0" y2="52.0" stroke="#64748B" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="858.0" y="24" width="70" height="56" rx="10" fill="#fff" stroke="#64748B" stroke-width="1.8" filter="url(#shadow)"/>
+<text x="893.0" y="57.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1F2937" text-anchor="middle">PCIe</text>
+<line x1="931.0" y1="52.0" x2="958.0" y2="52.0" stroke="#64748B" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="962.0" y="24" width="70" height="56" rx="10" fill="#fff" stroke="#64748B" stroke-width="1.8" filter="url(#shadow)"/>
+<text x="997.0" y="57.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1F2937" text-anchor="middle">GPU</text>
+</svg>

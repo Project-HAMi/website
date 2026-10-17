@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 214" width="880" height="214" role="img">
+<title>管理工具调用链</title>
+<defs>
+  <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+    <rect width="8" height="8" fill="#F3F4F6"/>
+    <line x1="0" y1="0" x2="0" y2="8" stroke="#D1D5DB" stroke-width="3"/>
+  </pattern>
+  <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="#64748B"/>
+  </marker>
+  <marker id="arrowG" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="#10B05A"/>
+  </marker>
+  <marker id="arrowR" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="#EF4444"/>
+  </marker>
+  <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+    <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-color="#0F172A" flood-opacity="0.10"/>
+  </filter>
+</defs>
+<rect x="0" y="0" width="880" height="214" rx="18" fill="#FFFFFF"/>
+<rect x="77.59999999999991" y="24" width="137.20000000000005" height="46" rx="10" fill="#fff" stroke="#64748B" stroke-width="1.8" filter="url(#shadow)"/>
+<text x="146.19999999999993" y="52.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1F2937" text-anchor="middle">nvidia-smi</text>
+<rect x="77.59999999999991" y="84" width="137.20000000000005" height="46" rx="10" fill="#fff" stroke="#64748B" stroke-width="1.8" filter="url(#shadow)"/>
+<text x="146.19999999999993" y="112.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1F2937" text-anchor="middle">DCGM</text>
+<rect x="77.59999999999991" y="144" width="137.20000000000005" height="46" rx="10" fill="#fff" stroke="#64748B" stroke-width="1.8" filter="url(#shadow)"/>
+<text x="146.19999999999993" y="172.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1F2937" text-anchor="middle">Device Plugin</text>
+<path d="M217.79999999999995 47.0 C 254.79999999999995 47.0, 244.79999999999995 107.0, 280.79999999999995 107.0" fill="none" stroke="#64748B" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M217.79999999999995 107.0 C 254.79999999999995 107.0, 244.79999999999995 107.0, 280.79999999999995 107.0" fill="none" stroke="#64748B" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M217.79999999999995 167.0 C 254.79999999999995 167.0, 244.79999999999995 107.0, 280.79999999999995 107.0" fill="none" stroke="#64748B" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="284.79999999999995" y="84.0" width="70" height="46" rx="10" fill="#fff" stroke="#64748B" stroke-width="1.8" filter="url(#shadow)"/>
+<text x="319.79999999999995" y="112.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1F2937" text-anchor="middle">NVML</text>
+<line x1="357.79999999999995" y1="107.0" x2="390.79999999999995" y2="107.0" stroke="#64748B" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="394.79999999999995" y="84.0" width="154.00000000000006" height="46" rx="10" fill="#fff" stroke="#64748B" stroke-width="1.8" filter="url(#shadow)"/>
+<text x="471.79999999999995" y="112.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1F2937" text-anchor="middle">libnvidia-ml.so</text>
+<line x1="551.8" y1="107.0" x2="584.8" y2="107.0" stroke="#64748B" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="588.8" y="84.0" width="103.60000000000001" height="46" rx="10" fill="#fff" stroke="#64748B" stroke-width="1.8" filter="url(#shadow)"/>
+<text x="640.5999999999999" y="112.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1F2937" text-anchor="middle">nvidia.ko</text>
+<line x1="695.4" y1="107.0" x2="728.4" y2="107.0" stroke="#64748B" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="732.4" y="84.0" width="70" height="46" rx="10" fill="#fff" stroke="#64748B" stroke-width="1.8" filter="url(#shadow)"/>
+<text x="767.4" y="112.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1F2937" text-anchor="middle">GPU</text>
+</svg>
