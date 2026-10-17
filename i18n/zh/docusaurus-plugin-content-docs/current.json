@@ -211,17 +211,21 @@
     "message": "配置、监控、排队并排查运行中的集群。",
     "description": "The generated-index page description for category Operate in sidebar docs"
   },
-  "sidebar.docs.category.Introduction": {
-    "message": "简介",
-    "description": "The label for category 'Introduction' in sidebar 'docs'"
+  "sidebar.docs.category.Concepts": {
+    "message": "概念",
+    "description": "The label for category 'Concepts' in sidebar 'docs'"
   },
-  "sidebar.docs.category.Introduction.link.generated-index.title": {
-    "message": "简介",
-    "description": "The generated-index page title for category Introduction in sidebar docs"
+  "sidebar.docs.category.Concepts.link.generated-index.title": {
+    "message": "概念",
+    "description": "The generated-index page title for category Concepts in sidebar docs"
   },
-  "sidebar.docs.category.Introduction.link.generated-index.description": {
-    "message": "HAMi 是什么，能为你做什么。",
-    "description": "The generated-index page description for category Introduction in sidebar docs"
+  "sidebar.docs.category.Concepts.link.generated-index.description": {
+    "message": "HAMi 如何共享、隔离和调度设备。",
+    "description": "The generated-index page description for category Concepts in sidebar docs"
+  },
+  "sidebar.docs.category.Background": {
+    "message": "背景知识",
+    "description": "The label for category 'Background' in sidebar 'docs'"
   },
   "sidebar.docs.category.Design and develop": {
     "message": "设计与开发",

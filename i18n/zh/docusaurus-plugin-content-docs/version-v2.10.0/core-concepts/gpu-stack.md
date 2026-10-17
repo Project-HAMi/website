@@ -1,5 +1,7 @@
 ---
 title: "GPU 软件栈全景"
+description: Kubernetes 中一张 GPU 依赖的五层软硬件，以及 HAMi 介入的位置。
+sidebar_label: GPU 软件栈
 ---
 
 当你在一台服务器上使用 GPU 时，你面对的并不是单一的软件或硬件，而是围绕 NVIDIA GPU 构建的一整套**软件栈**。从最底层的物理硬件到最上层的 Kubernetes 调度，大致可以分为 5 层：
@@ -12,63 +14,7 @@ title: "GPU 软件栈全景"
 
 下图展示了 GPU 软件栈的完整分层结构：
 
-```mermaid
-%% title: GPU 软件栈 5 层架构
-graph TB
-    subgraph L5["第 5 层：Kubernetes 调度"]
-        K8sScheduler["Kubernetes Scheduler"]
-        HAMiScheduler["HAMi Scheduler"]
-        Pod["Pod"]
-    end
-
-    subgraph L4["第 4 层：容器运行时"]
-        containerd["containerd"]
-        NVIDIAToolkit["NVIDIA Container Toolkit"]
-        Container["Container"]
-    end
-
-    subgraph L3["第 3 层：用户态库/工具"]
-        CUDA["CUDA Runtime / Toolkit"]
-        NVML["NVML (libnvidia-ml.so)"]
-        nvidia_smi["nvidia-smi"]
-        DCGM["DCGM"]
-        MIG["MIG"]
-    end
-
-    subgraph L2["第 2 层：内核驱动"]
-        nvidia_ko["nvidia.ko (Kernel Module)"]
-        nvidia_uvm["nvidia-uvm.ko"]
-        nvidia_modeset["nvidia-modeset.ko"]
-    end
-
-    subgraph L1["第 1 层：硬件"]
-        GPU["NVIDIA GPU"]
-        PCIe["PCIe Bus"]
-        NVLink["NVLink (可选)"]
-    end
-
-    %% 层间连接
-    Pod --> Container
-    K8sScheduler --> Pod
-    HAMiScheduler --> Pod
-
-    Container --> NVIDIAToolkit
-    NVIDIAToolkit --> containerd
-
-    Container --> CUDA
-    Container --> NVML
-    nvidia_smi --> NVML
-    DCGM --> NVML
-
-    CUDA --> nvidia_ko
-    NVML --> nvidia_ko
-
-    nvidia_ko --> nvidia_uvm
-    nvidia_ko --> nvidia_modeset
-    nvidia_ko --> GPU
-    GPU --- PCIe
-    GPU --- NVLink
-```
+![GPU 软件栈 5 层架构](/img/docs/zh/core-concepts/gpu-stack.svg)
 
 ## 各层详解
 
@@ -125,45 +71,19 @@ graph TB
 
 一个使用 GPU 的 Pod 从创建到运行，经历了以下依赖链：
 
-```mermaid
-%% title: 完整 GPU Pod 依赖链
-graph LR
-    Pod --> containerd
-    containerd --> NVIDIAToolkit["NVIDIA Container Toolkit"]
-    NVIDIAToolkit --> CUDA
-    CUDA --> Driver["用户态驱动库"]
-    Driver --> nvidia_ko["nvidia.ko"]
-    nvidia_ko --> PCIe
-    PCIe --> GPU
-```
+![完整 GPU Pod 依赖链](/img/docs/zh/core-concepts/gpu-chain-pod.svg)
 
 ### nvidia-smi 调用链
 
 `nvidia-smi` 查询 GPU 信息的完整路径：
 
-```mermaid
-%% title: nvidia-smi 调用链
-graph LR
-    SMI["nvidia-smi"] --> NVML
-    NVML --> lib["libnvidia-ml.so"]
-    lib --> nvidia_ko["nvidia.ko"]
-    nvidia_ko --> GPU
-```
+![nvidia-smi 调用链](/img/docs/zh/core-concepts/gpu-chain-nvidia-smi.svg)
 
 ### 管理工具调用链
 
 多个管理工具都通过 NVML 访问 GPU：
 
-```mermaid
-%% title: 管理工具调用链
-graph LR
-    nvidia_smi["nvidia-smi"] --> NVML
-    DCGM --> NVML
-    DevicePlugin["Device Plugin"] --> NVML
-    NVML --> lib["libnvidia-ml.so"]
-    lib --> nvidia_ko["nvidia.ko"]
-    nvidia_ko --> GPU
-```
+![管理工具调用链](/img/docs/zh/core-concepts/gpu-chain-management.svg)
 
 可以看到，无论是命令行工具、监控组件还是 Kubernetes 设备插件，最终都通过 NVML → 内核驱动 → GPU 这条路径来访问硬件。
 
@@ -171,31 +91,13 @@ graph LR
 
 在 Kubernetes 中，GPU 资源从硬件到 Pod 的调度流程：
 
-```mermaid
-%% title: Kubernetes GPU 调度链
-graph LR
-    GPU --> Driver["Driver"]
-    Driver --> DevicePlugin["Device Plugin"]
-    DevicePlugin --> kubelet
-    kubelet --> K8s["Kubernetes API"]
-    K8s --> Scheduler["K8s Scheduler"]
-    Scheduler --> Pod
-```
+![Kubernetes GPU 调度链](/img/docs/zh/core-concepts/gpu-chain-kubernetes.svg)
 
 ### HAMi 增强调度链
 
 HAMi 在原生调度链基础上，替换了 Device Plugin 和 Scheduler，实现 GPU 切分与共享：
 
-```mermaid
-%% title: HAMi 增强调度链
-graph LR
-    GPU --> Driver["Driver"]
-    Driver --> HAMiDP["HAMi Device Plugin"]
-    HAMiDP --> kubelet
-    kubelet --> K8s["Kubernetes API"]
-    K8s --> HAMiScheduler["HAMi Scheduler"]
-    HAMiScheduler --> Pod
-```
+![HAMi 增强调度链](/img/docs/zh/core-concepts/gpu-chain-hami.svg)
 
 ## 组件速查表
 

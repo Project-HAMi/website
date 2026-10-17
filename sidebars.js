@@ -26,10 +26,11 @@ const amdExamples = [
 
 module.exports = {
   docs: [
+    "core-concepts/introduction",
     {
       type: "category",
       label: "Get started",
-      collapsed: false,
+      collapsed: true,
       link: {
         type: "generated-index",
         title: "Get started",
@@ -43,17 +44,29 @@ module.exports = {
     },
     {
       type: "category",
-      label: "Introduction",
+      label: "Concepts",
       collapsed: true,
       link: {
         type: "generated-index",
-        title: "Introduction",
-        description: "What HAMi is and what it does for you.",
+        title: "Concepts",
+        description: "How HAMi shares, isolates and schedules devices.",
       },
       items: [
-        "core-concepts/introduction",
+        "core-concepts/architecture",
+        {
+          type: "category",
+          label: "Background",
+          items: [
+            "core-concepts/gpu-stack",
+            "core-concepts/gpu-driver",
+            "core-concepts/device-plugin-and-dra",
+          ],
+        },
         "key-features/device-sharing",
         "key-features/device-resource-isolation",
+        "core-concepts/scheduling",
+        "core-concepts/observability",
+        "core-concepts/ecosystem-integrations",
       ],
     },
     {
@@ -187,11 +200,7 @@ module.exports = {
       },
       items: [
         "core-concepts/gpu-virtualization",
-        "core-concepts/architecture",
         "core-concepts/hami-architecture",
-        "core-concepts/gpu-stack",
-        "core-concepts/gpu-driver",
-        "core-concepts/ecosystem-integrations",
         "developers/build",
         "developers/protocol",
         "developers/scheduling",
