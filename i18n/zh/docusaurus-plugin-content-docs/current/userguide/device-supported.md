@@ -1,5 +1,6 @@
 ---
 title: HAMi 支持的设备
+displayed_sidebar: docs
 translated: true
 ---
 
@@ -65,7 +66,7 @@ HAMi 只是使用这些设备的四种方式之一。另外三种自行完成调
 
 下面按厂商列出所有页面，方便从本页直达。
 
-### 英伟达（NVIDIA）
+### 英伟达（NVIDIA） {#nvidia}
 
 - [为容器分配设备显存](nvidia-device/specify-device-memory-usage.md)
 - [动态资源分配](nvidia-device/dynamic-resource-allocation.md)
@@ -83,7 +84,7 @@ HAMi 只是使用这些设备的四种方式之一。另外三种自行完成调
 - [将任务分配给特定的 GPU](nvidia-device/examples/specify-certain-card.md)
 - [将任务分配给 MIG 实例](nvidia-device/examples/dynamic-mig-example.md)
 
-### AMD
+### AMD {#amd}
 
 - [启用 AMD GPU 共享](amd-device/enable-amd-gpu-sharing.md)
 - [AMD GPU 共享的工作原理](amd-device/how-it-works.md)
@@ -103,18 +104,18 @@ HAMi 只是使用这些设备的四种方式之一。另外三种自行完成调
 - [选择 GPU 调度策略](amd-device/examples/scheduler-policy.md)
 - [设置 Pod 的队列优先级](amd-device/examples/task-priority.md)
 
-### AWS Neuron
+### AWS Neuron {#aws-neuron}
 
 - [启用 AWS-Neuron 设备共享](awsneuron-device/enable-awsneuron-managing.md)
 - [分配 AWS Neuron 核心资源](awsneuron-device/examples/allocate-neuron-core.md)
 - [分配 AWS Neuron 设备](awsneuron-device/examples/allocate-neuron-device.md)
 
-### 壁仞（Biren）
+### 壁仞（Biren） {#biren}
 
 - [启用壁仞设备共享](biren-device/enable-biren-sharing.md)
 - [申请壁仞设备](biren-device/examples/default-use.md)
 
-### 寒武纪（Cambricon）
+### 寒武纪（Cambricon） {#cambricon}
 
 - [启用寒武纪 MLU 共享](cambricon-device/enable-cambricon-mlu-sharing.md)
 - [为容器分配设备显存](cambricon-device/specify-device-memory-usage.md)
@@ -123,11 +124,11 @@ HAMi 只是使用这些设备的四种方式之一。另外三种自行完成调
 - [为容器分配设备核心和显存资源](cambricon-device/examples/allocate-core-and-memory.md)
 - [分配独占设备](cambricon-device/examples/allocate-exclusive.md)
 
-### 燧原科技（Enflame）
+### 燧原科技（Enflame） {#enflame}
 
 - [启用燧原 GPU 共享](enflame-device/enable-enflame-gcu-sharing.md)
 
-### 华为昇腾（Huawei Ascend）
+### 华为昇腾（Huawei Ascend） {#huawei-ascend}
 
 - [启用 Huawei Ascend 共享](ascend-device/enable-ascend-sharing.md)
 - [Huawei Ascend 设备模板](ascend-device/device-template.md)
@@ -136,7 +137,7 @@ HAMi 只是使用这些设备的四种方式之一。另外三种自行完成调
 - [分配独占设备](ascend-device/examples/allocate-exclusive.md)
 - [软切片（hami-vnpu-core）](ascend-device/examples/allocate-soft-slicing.md)
 
-### 海光（Hygon）
+### 海光（Hygon） {#hygon}
 
 - [启用 Hygon HCU 共享](hygon-device/enable-hygon-hcu-sharing.md)
 - [为容器分配设备显存](hygon-device/specify-device-memory-usage.md)
@@ -146,7 +147,7 @@ HAMi 只是使用这些设备的四种方式之一。另外三种自行完成调
 - [分配独占设备](hygon-device/examples/allocate-exclusive.md)
 - [将任务分配给特定的 HCU](hygon-device/examples/specify-certain-cards.md)
 
-### 天数智芯（Iluvatar）
+### 天数智芯（Iluvatar） {#iluvatar}
 
 - [启用天数智芯 GPU 共享](iluvatar-device/enable-iluvatar-gpu-sharing.md)
 - [为容器分配 BI-V150 切片](iluvatar-device/examples/allocate-bi-v150.md)
@@ -154,14 +155,14 @@ HAMi 只是使用这些设备的四种方式之一。另外三种自行完成调
 - [分配多个独占 BI-V150 设备](iluvatar-device/examples/allocate-exclusive-bi-v150.md)
 - [分配多个独占 MR-V100 设备](iluvatar-device/examples/allocate-exclusive-mr-v100.md)
 
-### 昆仑芯（Kunlunxin）
+### 昆仑芯（Kunlunxin） {#kunlunxin}
 
 - [启用昆仑芯 GPU 拓扑感知调度](kunlunxin-device/enable-kunlunxin-schedule.md)
 - [启用昆仑芯 VXPU](kunlunxin-device/enable-kunlunxin-vxpu.md)
 - [分配整个 xpu 卡](kunlunxin-device/examples/allocate-whole-xpu.md)
 - [分配 vxpu 设备](kunlunxin-device/examples/allocate-vxpu.md)
 
-### 沐曦（MetaX）
+### 沐曦（MetaX） {#metax}
 
 - [启用沐曦 GPU 共享](metax-device/metax-sgpu/enable-metax-gpu-sharing.md)
 - [为容器分配设备核心和显存资源](metax-device/metax-sgpu/examples/default-use.md)
@@ -174,7 +175,7 @@ HAMi 只是使用这些设备的四种方式之一。另外三种自行完成调
 - [使用 binpack 调度策略分配沐曦设备](metax-device/metax-gpu/examples/allocate-binpack.md)
 - [使用扩展调度策略分配沐曦设备](metax-device/metax-gpu/examples/allocate-spread.md)
 
-### 摩尔线程（Mthreads）
+### 摩尔线程（Mthreads） {#mthreads}
 
 - [启用 Mthreads GPU 共享](mthreads-device/enable-mthreads-gpu-sharing.md)
 - [为容器分配设备显存](mthreads-device/specify-device-memory-usage.md)
@@ -182,7 +183,7 @@ HAMi 只是使用这些设备的四种方式之一。另外三种自行完成调
 - [为容器分配设备核心和显存资源](mthreads-device/examples/allocate-core-and-memory.md)
 - [分配独占设备](mthreads-device/examples/allocate-exclusive.md)
 
-### 瀚博（Vastai）
+### 瀚博（Vastai） {#vastai}
 
 - [启用瀚博半导体设备共享](vastai/enable-vastai-sharing.md)
 - [申请瀚博半导体的设备](vastai/examples/default-use.md)
