@@ -4,6 +4,10 @@ sidebar_label: 集群设备分配
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="allocationMetrics" />
+
 你可以通过访问 `{scheduler node ip}:31993/metrics` 获取集群设备分配和限制的概览，或者将其添加到 Prometheus 端点，如下命令所示：
 
 ```bash

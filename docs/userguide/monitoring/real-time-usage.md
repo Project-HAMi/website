@@ -3,6 +3,10 @@ title: Real-time GPU Usage
 sidebar_label: Real-time Usage
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="usageMetrics" />
+
 Real-time monitoring allows you to track GPU utilization, memory usage, and resource allocation across your Kubernetes cluster as workloads run. HAMi provides tools to observe GPU behavior dynamically.
 
 ## Monitoring with kubectl

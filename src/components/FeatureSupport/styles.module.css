@@ -1,0 +1,350 @@
+.root {
+  --fs-yes: #0a7a3e;
+  --fs-part: #946200;
+  --fs-no: #6b7a89;
+  --fs-surface: var(--hami-color-surface, #fff);
+  --fs-line: var(--hami-color-border, #d5dee8);
+  --fs-ink: var(--hami-color-text, #15202b);
+  --fs-muted: #566779;
+  --fs-link: #0a7a3e;
+  --fs-hover: rgba(10, 122, 62, 0.06);
+  --fs-shadow: 0 10px 30px rgba(15, 23, 34, 0.1), 0 1px 3px rgba(15, 23, 34, 0.06);
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  row-gap: 6px;
+  margin: 0 0 1.5rem;
+  font-size: 0.92rem;
+}
+
+:global(html[data-theme="dark"]) .root {
+  --fs-yes: #3ddc84;
+  --fs-part: #f0bf5a;
+  --fs-no: #8593a3;
+  --fs-muted: #a3b0be;
+  --fs-link: #3ddc84;
+  --fs-hover: rgba(61, 220, 132, 0.08);
+  --fs-shadow: 0 14px 36px rgba(0, 0, 0, 0.45), 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.label {
+  margin-right: 14px;
+  color: var(--fs-muted);
+  font-size: 0.85rem;
+}
+
+.anchor {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* thin rule between names, drawn in the gap so the card's arrow still lines up with the name */
+.anchor + .anchor {
+  margin-left: 29px;
+}
+
+.anchor + .anchor::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -15px;
+  width: 1px;
+  height: 12px;
+  background: var(--fs-line);
+  transform: translateY(-50%);
+}
+
+/* tag: a name with its status glyph, no box */
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 0;
+  border: 0;
+  background: none;
+  color: var(--fs-ink);
+  font: inherit;
+  cursor: help;
+  text-decoration: underline dotted transparent;
+  text-underline-offset: 4px;
+  transition: text-decoration-color 0.15s ease;
+}
+
+.tagOff {
+  color: var(--fs-muted);
+}
+
+.tag:hover,
+.tag[aria-expanded="true"] {
+  text-decoration-color: var(--fs-muted);
+}
+
+.tag:focus-visible {
+  outline: 2px solid var(--ifm-color-primary);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+.glyph {
+  width: 12px;
+  height: 12px;
+  flex: none;
+}
+
+.yes {
+  color: var(--fs-yes);
+}
+
+.partial,
+.mixed {
+  color: var(--fs-part);
+}
+
+.no {
+  color: var(--fs-no);
+}
+
+.check {
+  fill: none;
+  stroke: var(--fs-surface);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* card */
+
+.card {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: -19px;
+  z-index: 30;
+  display: grid;
+  gap: 10px;
+  width: 320px;
+  max-width: calc(100vw - 24px);
+  padding: 15px 18px 14px;
+  border: 1px solid var(--fs-line);
+  border-radius: 10px;
+  background: var(--fs-surface);
+  color: var(--fs-ink);
+  box-shadow: var(--fs-shadow);
+  font-size: 0.88rem;
+  line-height: 1.55;
+  text-align: left;
+  transform: translateX(var(--shift, 0px));
+  animation: rise 0.14s ease-out;
+}
+
+/* bridges the gap so the pointer can travel from the tag into the card */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: -10px 0 auto;
+  height: 10px;
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.name {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.status {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.list {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: baseline;
+  gap: 8px 14px;
+  margin: 0;
+}
+
+.list dt {
+  color: var(--fs-muted);
+  font-size: 0.82rem;
+  font-weight: 400;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+.list dd {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  margin: 0;
+}
+
+.value {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.line {
+  display: block;
+  line-height: 1.65;
+}
+
+.line.code {
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.8rem;
+}
+
+.line .glyph {
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+/* CJK glyphs centre about 0.38em above the baseline, higher than the Latin x-height that
+   vertical-align: middle uses; dropping the 12px glyph 0.08em puts its centre there */
+.line.off {
+  font-size: 0.82rem;
+}
+
+.line.off .glyph {
+  vertical-align: -0.08em;
+}
+
+/* later lines line up with the text of the first one, past the glyph */
+.marked .line + .line {
+  padding-left: 18px;
+}
+
+.line code {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--fs-ink);
+  font-size: inherit;
+  overflow-wrap: anywhere;
+}
+
+.off {
+  color: var(--fs-muted);
+}
+
+.note {
+  margin: 0;
+  color: var(--fs-muted);
+  font-size: 0.84rem;
+}
+
+/* footer: one row per destination, flush to the card edges */
+.foot {
+  display: grid;
+  margin: 4px -18px -14px;
+  padding: 4px 0;
+  border-top: 1px solid var(--fs-line);
+}
+
+.go {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 18px;
+  color: var(--fs-ink);
+  font-size: 0.82rem;
+  line-height: 1.45;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.go:hover {
+  background: var(--fs-hover);
+  color: var(--fs-link);
+  text-decoration: none;
+}
+
+.go:focus-visible {
+  outline: 2px solid var(--ifm-color-primary);
+  outline-offset: -2px;
+}
+
+.arrow {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  fill: none;
+  stroke: var(--fs-muted);
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition:
+    transform 0.15s ease,
+    stroke 0.15s ease;
+}
+
+.go:hover .arrow {
+  stroke: currentColor;
+  transform: translateX(2px);
+}
+
+.go:hover .out {
+  transform: translate(1.5px, -1.5px);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translate(var(--shift, 0px), 4px);
+  }
+}
+
+/* when the names wrap, a rule would hang at the start of the second line */
+@media (max-width: 600px) {
+  .root {
+    column-gap: 18px;
+  }
+
+  .label {
+    margin-right: 0;
+  }
+
+  .anchor + .anchor {
+    margin-left: 0;
+  }
+
+  .anchor + .anchor::before {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    animation: none;
+  }
+
+  .tag,
+  .go,
+  .arrow {
+    transition: none;
+  }
+}
