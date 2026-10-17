@@ -13,10 +13,10 @@ Kubernetes has two ways to hand a device to a Pod: the device plugin API and Dyn
 A device plugin runs as a DaemonSet on each GPU node. It does three things:
 
 1. **Register** with kubelet under a resource name such as `nvidia.com/gpu`.
-2. **Report** how many devices the node has. kubelet publishes that number in the node's capacity.
+2. **Report** its devices, each with an ID and a health state. kubelet publishes the count in the node's capacity.
 3. **Allocate** a device when a Pod starts on the node. kubelet calls the plugin, and the plugin returns the device files, mounts, and environment variables for the container.
 
-The report in step 2 is a whole number. The scheduler learns that a node has 4 GPUs, and nothing about their memory or model. For a whole-card request that is enough. To place a 3000 MiB slice, the scheduler needs more.
+The scheduler sees only that count. It learns that a node has 4 GPUs, and nothing about their memory or model. For a whole-card request that is enough. To place a 3000 MiB slice, the scheduler needs more.
 
 HAMi fills the gap in two ways:
 
