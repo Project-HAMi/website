@@ -59,5 +59,5 @@ Pod 申请 HAMi 资源时，webhook 把它交给 HAMi 调度器，调度器选�
 
 ## 下一步
 
-- [架构](./architecture.md)：HAMi 的组件，以及一个 Pod 经过的路径
 - [选择你的方案](../get-started/choose-your-setup.md)，然后[快速部署](../get-started/deploy-with-helm.md)
+- [架构设计](./architecture.md)：HAMi 的组件，以及一个 Pod 经过的路径

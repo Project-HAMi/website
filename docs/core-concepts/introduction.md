@@ -58,5 +58,5 @@ When a Pod asks for HAMi resources, a webhook routes it to the HAMi scheduler, w
 
 ## Next steps
 
-- [Architecture](./architecture.md): the components and the path a Pod takes
 - [Choose your setup](../get-started/choose-your-setup.md), then [Quick Start](../get-started/deploy-with-helm.md)
+- [Architecture](./architecture.md): the components and the path a Pod takes

@@ -26,10 +26,11 @@ const amdExamples = [
 
 module.exports = {
   docs: [
+    "core-concepts/introduction",
     {
       type: "category",
       label: "Get started",
-      collapsed: false,
+      collapsed: true,
       link: {
         type: "generated-index",
         title: "Get started",
@@ -48,10 +49,9 @@ module.exports = {
       link: {
         type: "generated-index",
         title: "Concepts",
-        description: "What HAMi is and how it shares, isolates and schedules devices.",
+        description: "How HAMi shares, isolates and schedules devices.",
       },
       items: [
-        "core-concepts/introduction",
         "core-concepts/architecture",
         {
           type: "category",

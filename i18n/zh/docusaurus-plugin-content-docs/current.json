@@ -220,7 +220,7 @@
     "description": "The generated-index page title for category Concepts in sidebar docs"
   },
   "sidebar.docs.category.Concepts.link.generated-index.description": {
-    "message": "HAMi 是什么，以及它如何共享、隔离和调度设备。",
+    "message": "HAMi 如何共享、隔离和调度设备。",
     "description": "The generated-index page description for category Concepts in sidebar docs"
   },
   "sidebar.docs.category.Background": {
