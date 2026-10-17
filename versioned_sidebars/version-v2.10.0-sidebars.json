@@ -61,7 +61,10 @@
         {
           "type": "category",
           "label": "HAMi-DRA",
-          "items": ["installation/configure-cdi", "installation/how-to-use-hami-dra"]
+          "items": [
+            "installation/configure-cdi",
+            "installation/how-to-use-hami-dra"
+          ]
         },
         {
           "type": "category",
@@ -91,7 +94,9 @@
         {
           "type": "category",
           "label": "KAI-scheduler-HAMi",
-          "items": ["userguide/kai-scheduler/how-to-use-kai-scheduler"]
+          "items": [
+            "userguide/kai-scheduler/how-to-use-kai-scheduler"
+          ]
         }
       ]
     },
@@ -104,7 +109,9 @@
         "title": "Vendor guides",
         "description": "Start from the supported devices matrix, then follow the guide for your vendor."
       },
-      "items": ["userguide/device-supported"]
+      "items": [
+        "userguide/device-supported"
+      ]
     },
     {
       "type": "category",
@@ -138,7 +145,9 @@
               "type": "category",
               "label": "Examples",
               "key": "kueue-examples",
-              "items": ["userguide/kueue/examples/default-use"]
+              "items": [
+                "userguide/kueue/examples/default-use"
+              ]
             }
           ]
         },
@@ -197,6 +206,401 @@
         "contributor/ladder",
         "contributor/roadmap",
         "contributor/e2e-testing"
+      ]
+    }
+  ],
+  "amdDevice": [
+    {
+      "type": "doc",
+      "id": "userguide/device-supported",
+      "label": "← All supported devices",
+      "customProps": {
+        "anchor": "amd"
+      }
+    },
+    {
+      "type": "category",
+      "label": "AMD GPU",
+      "collapsible": false,
+      "items": [
+        "userguide/amd-device/enable-amd-gpu-sharing",
+        {
+          "type": "category",
+          "label": "Examples",
+          "key": "amd-examples",
+          "items": [
+            "userguide/amd-device/examples/allocate-core-and-memory"
+          ]
+        }
+      ]
+    }
+  ],
+  "ascendDevice": [
+    {
+      "type": "doc",
+      "id": "userguide/device-supported",
+      "label": "← All supported devices",
+      "customProps": {
+        "anchor": "huawei-ascend"
+      }
+    },
+    {
+      "type": "category",
+      "label": "Huawei Ascend NPU",
+      "collapsible": false,
+      "items": [
+        "userguide/ascend-device/enable-ascend-sharing",
+        "userguide/ascend-device/device-template",
+        {
+          "type": "category",
+          "label": "Examples",
+          "key": "ascend-examples",
+          "items": [
+            "userguide/ascend-device/examples/allocate-310p",
+            "userguide/ascend-device/examples/allocate-910b",
+            "userguide/ascend-device/examples/allocate-exclusive",
+            "userguide/ascend-device/examples/allocate-soft-slicing"
+          ]
+        }
+      ]
+    }
+  ],
+  "awsNeuronDevice": [
+    {
+      "type": "doc",
+      "id": "userguide/device-supported",
+      "label": "← All supported devices",
+      "customProps": {
+        "anchor": "aws-neuron"
+      }
+    },
+    {
+      "type": "category",
+      "label": "AWS Neuron",
+      "collapsible": false,
+      "items": [
+        "userguide/awsneuron-device/enable-awsneuron-managing",
+        {
+          "type": "category",
+          "label": "Examples",
+          "key": "awsneuron-examples",
+          "items": [
+            "userguide/awsneuron-device/examples/allocate-neuron-core",
+            "userguide/awsneuron-device/examples/allocate-neuron-device"
+          ]
+        }
+      ]
+    }
+  ],
+  "birenDevice": [
+    {
+      "type": "doc",
+      "id": "userguide/device-supported",
+      "label": "← All supported devices",
+      "customProps": {
+        "anchor": "biren"
+      }
+    },
+    {
+      "type": "category",
+      "label": "Biren GPU",
+      "collapsible": false,
+      "items": [
+        "userguide/biren-device/enable-biren-sharing",
+        {
+          "type": "category",
+          "label": "Examples",
+          "key": "biren-examples",
+          "items": [
+            "userguide/biren-device/examples/default-use"
+          ]
+        }
+      ]
+    }
+  ],
+  "cambriconDevice": [
+    {
+      "type": "doc",
+      "id": "userguide/device-supported",
+      "label": "← All supported devices",
+      "customProps": {
+        "anchor": "cambricon"
+      }
+    },
+    {
+      "type": "category",
+      "label": "Cambricon MLU",
+      "collapsible": false,
+      "items": [
+        "userguide/cambricon-device/enable-cambricon-mlu-sharing",
+        "userguide/cambricon-device/specify-device-memory-usage",
+        "userguide/cambricon-device/specify-device-core-usage",
+        "userguide/cambricon-device/specify-device-type-to-use",
+        {
+          "type": "category",
+          "label": "Examples",
+          "key": "cambricon-examples",
+          "items": [
+            "userguide/cambricon-device/examples/allocate-core-and-memory",
+            "userguide/cambricon-device/examples/allocate-exclusive"
+          ]
+        }
+      ]
+    }
+  ],
+  "enflameDevice": [
+    {
+      "type": "doc",
+      "id": "userguide/device-supported",
+      "label": "← All supported devices",
+      "customProps": {
+        "anchor": "enflame"
+      }
+    },
+    {
+      "type": "category",
+      "label": "Enflame GCU",
+      "collapsible": false,
+      "items": [
+        "userguide/enflame-device/enable-enflame-gcu-sharing"
+      ]
+    }
+  ],
+  "hygonDevice": [
+    {
+      "type": "doc",
+      "id": "userguide/device-supported",
+      "label": "← All supported devices",
+      "customProps": {
+        "anchor": "hygon"
+      }
+    },
+    {
+      "type": "category",
+      "label": "Hygon DCU",
+      "collapsible": false,
+      "items": [
+        "userguide/hygon-device/enable-hygon-dcu-sharing",
+        "userguide/hygon-device/specify-device-memory-usage",
+        "userguide/hygon-device/specify-device-core-usage",
+        "userguide/hygon-device/specify-device-uuid-to-use",
+        {
+          "type": "category",
+          "label": "Examples",
+          "key": "hygon-examples",
+          "items": [
+            "userguide/hygon-device/examples/allocate-core-and-memory",
+            "userguide/hygon-device/examples/allocate-exclusive",
+            "userguide/hygon-device/examples/specify-certain-cards"
+          ]
+        }
+      ]
+    }
+  ],
+  "iluvatarDevice": [
+    {
+      "type": "doc",
+      "id": "userguide/device-supported",
+      "label": "← All supported devices",
+      "customProps": {
+        "anchor": "iluvatar"
+      }
+    },
+    {
+      "type": "category",
+      "label": "Iluvatar GPU",
+      "collapsible": false,
+      "items": [
+        "userguide/iluvatar-device/enable-iluvatar-gpu-sharing",
+        {
+          "type": "category",
+          "label": "Examples",
+          "key": "iluvatar-examples",
+          "items": [
+            "userguide/iluvatar-device/examples/allocate-bi-v150",
+            "userguide/iluvatar-device/examples/allocate-mr-v100",
+            "userguide/iluvatar-device/examples/allocate-exclusive-bi-v150",
+            "userguide/iluvatar-device/examples/allocate-exclusive-mr-v100"
+          ]
+        }
+      ]
+    }
+  ],
+  "kunlunxinDevice": [
+    {
+      "type": "doc",
+      "id": "userguide/device-supported",
+      "label": "← All supported devices",
+      "customProps": {
+        "anchor": "kunlunxin"
+      }
+    },
+    {
+      "type": "category",
+      "label": "Kunlunxin XPU",
+      "collapsible": false,
+      "items": [
+        "userguide/kunlunxin-device/enable-kunlunxin-schedule",
+        "userguide/kunlunxin-device/enable-kunlunxin-vxpu",
+        {
+          "type": "category",
+          "label": "Examples",
+          "key": "kunlunxin-examples",
+          "items": [
+            "userguide/kunlunxin-device/examples/allocate-whole-xpu",
+            "userguide/kunlunxin-device/examples/allocate-vxpu"
+          ]
+        }
+      ]
+    }
+  ],
+  "metaxDevice": [
+    {
+      "type": "doc",
+      "id": "userguide/device-supported",
+      "label": "← All supported devices",
+      "customProps": {
+        "anchor": "metax"
+      }
+    },
+    {
+      "type": "category",
+      "label": "MetaX GPU",
+      "collapsible": false,
+      "items": [
+        {
+          "type": "category",
+          "label": "GPU (topology-aware)",
+          "key": "metax-gpu",
+          "items": [
+            "userguide/metax-device/metax-gpu/enable-metax-gpu-schedule",
+            "userguide/metax-device/metax-gpu/specify-binpack-task",
+            "userguide/metax-device/metax-gpu/specify-spread-task",
+            {
+              "type": "category",
+              "label": "Examples",
+              "key": "metax-gpu-examples",
+              "items": [
+                "userguide/metax-device/metax-gpu/examples/default-use",
+                "userguide/metax-device/metax-gpu/examples/allocate-binpack",
+                "userguide/metax-device/metax-gpu/examples/allocate-spread"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "category",
+          "label": "sGPU (shared)",
+          "key": "metax-sgpu",
+          "items": [
+            "userguide/metax-device/metax-sgpu/enable-metax-gpu-sharing",
+            {
+              "type": "category",
+              "label": "Examples",
+              "key": "metax-sgpu-examples",
+              "items": [
+                "userguide/metax-device/metax-sgpu/examples/default-use",
+                "userguide/metax-device/metax-sgpu/examples/allocate-exclusive",
+                "userguide/metax-device/metax-sgpu/examples/allocate-qos-policy"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "mthreadsDevice": [
+    {
+      "type": "doc",
+      "id": "userguide/device-supported",
+      "label": "← All supported devices",
+      "customProps": {
+        "anchor": "mthreads"
+      }
+    },
+    {
+      "type": "category",
+      "label": "Mthreads GPU",
+      "collapsible": false,
+      "items": [
+        "userguide/mthreads-device/enable-mthreads-gpu-sharing",
+        "userguide/mthreads-device/specify-device-memory-usage",
+        "userguide/mthreads-device/specify-device-core-usage",
+        {
+          "type": "category",
+          "label": "Examples",
+          "key": "mthreads-examples",
+          "items": [
+            "userguide/mthreads-device/examples/allocate-core-and-memory",
+            "userguide/mthreads-device/examples/allocate-exclusive"
+          ]
+        }
+      ]
+    }
+  ],
+  "nvidiaDevice": [
+    {
+      "type": "doc",
+      "id": "userguide/device-supported",
+      "label": "← All supported devices",
+      "customProps": {
+        "anchor": "nvidia"
+      }
+    },
+    {
+      "type": "category",
+      "label": "NVIDIA GPU",
+      "collapsible": false,
+      "items": [
+        "userguide/nvidia-device/specify-device-memory-usage",
+        "userguide/nvidia-device/specify-device-core-usage",
+        "userguide/nvidia-device/specify-device-type-to-use",
+        "userguide/nvidia-device/specify-device-uuid-to-use",
+        "userguide/nvidia-device/scheduling-policy",
+        "userguide/nvidia-device/numa-alignment",
+        "userguide/nvidia-device/dynamic-mig-support",
+        "userguide/nvidia-device/dynamic-resource-allocation",
+        "userguide/nvidia-device/using-resourcequota",
+        {
+          "type": "category",
+          "label": "Examples",
+          "key": "nvidia-examples",
+          "items": [
+            "userguide/nvidia-device/examples/use-exclusive-card",
+            "userguide/nvidia-device/examples/allocate-device-memory",
+            "userguide/nvidia-device/examples/allocate-device-memory2",
+            "userguide/nvidia-device/examples/allocate-device-core",
+            "userguide/nvidia-device/examples/specify-card-type-to-use",
+            "userguide/nvidia-device/examples/specify-certain-card",
+            "userguide/nvidia-device/examples/dynamic-mig-example"
+          ]
+        }
+      ]
+    }
+  ],
+  "vastaiDevice": [
+    {
+      "type": "doc",
+      "id": "userguide/device-supported",
+      "label": "← All supported devices",
+      "customProps": {
+        "anchor": "vastai"
+      }
+    },
+    {
+      "type": "category",
+      "label": "Vastai GPU",
+      "collapsible": false,
+      "items": [
+        "userguide/vastai/enable-vastai-sharing",
+        {
+          "type": "category",
+          "label": "Examples",
+          "key": "vastai-examples",
+          "items": [
+            "userguide/vastai/examples/default-use"
+          ]
+        }
       ]
     }
   ]
