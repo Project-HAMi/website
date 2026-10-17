@@ -9,7 +9,7 @@ lab:
   cost: 需要专属的昇腾 310P3 aarch64 硬件；HAMivNPUCore 软切分仅支持 ARM
   authors:
     - rootsongjc
-  verified: "2026-10-09"
+  verified: "2026-09-17"
 tags:
   - DRA
   - hami
@@ -66,7 +66,7 @@ flowchart TD
 | 操作系统 | 麒麟 Kylin Linux Advanced Server V10（Lance），aarch64，内核 4.19.90-52.48.v2207.ky10 |
 | Kubernetes | v1.35.7，单节点 |
 | 容器运行时 | containerd 1.7.29，已开启 CDI |
-| Feature gates | kube-apiserver / kube-scheduler / kubelet 均开启 `DRAConsumableCapacity=true` |
+| Feature gates | kube-apiserver / kube-controller-manager / kube-scheduler / kubelet 均开启 `DRAConsumableCapacity=true` |
 | 昇腾驱动 / 固件 | 25.5.1 / 7.8.0.6.201 |
 | HAMi-DRA | 0.2.3（chart 与镜像 tag 一致） |
 | Ascend DRA driver | chart `ascend-dra-driver-0.1.1`（app 0.1.0），镜像 `projecthami/ascend-dra-driver:uuid-fix-20260909`（开发构建，见步骤 2） |
@@ -271,8 +271,8 @@ kubectl get resourceslice
 ```
 
 ```text
-NAME                                       DRIVER                    NODE            AGE
-aio-node74-arm-ascend.project-hami.io-gktzs   ascend.project-hami.io   aio-node74-arm   3m
+NAME                                          NODE             DRIVER                   POOL             AGE
+aio-node74-arm-ascend.project-hami.io-gktzs   aio-node74-arm   ascend.project-hami.io   aio-node74-arm   3m
 ```
 
 展开查看（节选；完整对象用 `kubectl get resourceslice -o yaml`）：
@@ -596,7 +596,17 @@ pod b: /dev/davinci0  NPU_MEM_QUOTA=8192  NPU_PRIORITY=50  ASCEND_VISIBLE_DEVICE
 
 ## 步骤 8：验证隔离与配额强制
 
-在 Pod A 的容器内运行 PyTorch/torch_npu 张量分配测试（镜像内含完整 CANN 运行时）。先分配到接近配额，再尝试超限：
+在 Pod A 的容器内运行 PyTorch/torch_npu 张量分配测试（镜像内含完整 CANN 运行时）。先分配到接近配额，再尝试超限。每次分配约 2 GiB 的块，并保留引用让分配器无法回收：
+
+```bash
+kubectl exec -it ascend-share-a -n dra-ascend-e2e -- python3 -c "
+import torch, torch_npu
+blocks = []
+for i in range(8):  # 第 4 块约 2050 MB 的申请越过 8192 MB 配额
+    blocks.append(torch.ones(512 * 1024 * 1024, dtype=torch.float32, device='npu'))
+    print(f'block {i + 1} allocated')
+"
+```
 
 ```text
 # limiter（HAMivNPUCore 容器内管理器）注册进程
@@ -623,6 +633,8 @@ npu-smi info   # 进程列表（节选）
 | 4     0      | 44533        | python3        | 2156                 |
 | 4     0      | 49806        | python3        | 2156                 |
 ```
+
+6150 MB 与 2156 MB 度量的是不同的东西，这个差距是预期行为：limiter 按进程的虚拟显存申请在 8192 MB 的 `NPU_MEM_QUOTA` 上记账，torch 分配器会先保留地址空间、再逐步落到物理显存；而 `npu-smi` 只统计每个进程实际占用的物理显存。因此配额记账先于物理占用到达上限，这正是基于配额的隔离层应有的行为。
 
 `NPU_PRIORITY=50` 同样被注入，通过时间片调度约束算力。本实验验证了注入，但没有运行长时间的满载对照 workload，因此不对 310P 上时间片隔离的实际强度下结论；算力维度在调度层的记账由下一步完整覆盖。
 

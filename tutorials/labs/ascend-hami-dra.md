@@ -9,7 +9,7 @@ lab:
   cost: requires dedicated Ascend 310P3 aarch64 hardware; HAMivNPUCore soft slicing is ARM-only
   authors:
     - rootsongjc
-  verified: "2026-10-09"
+  verified: "2026-09-17"
 tags:
   - dra
   - hami
@@ -66,7 +66,7 @@ Three components, three responsibilities. Keep them apart throughout the lab:
 | OS | Kylin Linux Advanced Server V10 (Lance), aarch64, kernel 4.19.90-52.48.v2207.ky10 |
 | Kubernetes | v1.35.7, single node |
 | Container runtime | containerd 1.7.29, CDI enabled |
-| Feature gates | `DRAConsumableCapacity=true` on kube-apiserver, kube-scheduler, kubelet |
+| Feature gates | `DRAConsumableCapacity=true` on kube-apiserver, kube-controller-manager, kube-scheduler, kubelet |
 | Ascend driver / firmware | 25.5.1 / 7.8.0.6.201 |
 | HAMi-DRA | 0.2.3 (chart and image tag) |
 | Ascend DRA driver | chart `ascend-dra-driver-0.1.1` (app 0.1.0), image `projecthami/ascend-dra-driver:uuid-fix-20260909` (development build, see Step 2) |
@@ -271,8 +271,8 @@ kubectl get resourceslice
 ```
 
 ```text
-NAME                                       DRIVER                    NODE            AGE
-aio-node74-arm-ascend.project-hami.io-gktzs   ascend.project-hami.io   aio-node74-arm   3m
+NAME                                          NODE             DRIVER                   POOL             AGE
+aio-node74-arm-ascend.project-hami.io-gktzs   aio-node74-arm   ascend.project-hami.io   aio-node74-arm   3m
 ```
 
 Expand it (abridged; `kubectl get resourceslice -o yaml` for the full object):
@@ -596,7 +596,17 @@ In soft-slicing mode both containers see the same `/dev/davinci0`, not two vNPU 
 
 ## Step 8: Verify Isolation and Quota Enforcement
 
-Run a PyTorch/torch_npu tensor allocation test inside Pod A (the image carries the full CANN runtime). Allocate toward the quota, then past it:
+Run a PyTorch/torch_npu tensor allocation test inside Pod A (the image carries the full CANN runtime). Allocate toward the quota, then past it. One block of ~2 GiB at a time, keeping references so the allocator cannot reclaim them:
+
+```bash
+kubectl exec -it ascend-share-a -n dra-ascend-e2e -- python3 -c "
+import torch, torch_npu
+blocks = []
+for i in range(8):  # the 4th block's ~2050 MB request crosses the 8192 MB quota
+    blocks.append(torch.ones(512 * 1024 * 1024, dtype=torch.float32, device='npu'))
+    print(f'block {i + 1} allocated')
+"
+```
 
 ```text
 # the limiter (HAMivNPUCore's in-container manager) registers the process
@@ -623,6 +633,8 @@ npu-smi info   # process list, abridged
 | 4     0      | 44533        | python3        | 2156                 |
 | 4     0      | 49806        | python3        | 2156                 |
 ```
+
+The 6150 MB and the 2156 MB measure different things, and the gap is expected: the limiter debits each process's virtual allocations against the 8192 MB `NPU_MEM_QUOTA`, and the torch allocator reserves address space before physical memory is touched, while `npu-smi` shows only the physical memory each process has pinned on the device. Quota accounting therefore reaches the limit while physical usage is still well below it, which is the intended behavior of a quota-based isolation layer.
 
 `NPU_PRIORITY=50` was injected the same way and constrains compute through time-slice scheduling. This lab verified the injection but did not run a long-running saturated comparison workload, so it draws no conclusion about the effective strength of time-slice isolation on the 310P; the scheduling-side accounting of the compute dimension is fully covered in the next step.
 
