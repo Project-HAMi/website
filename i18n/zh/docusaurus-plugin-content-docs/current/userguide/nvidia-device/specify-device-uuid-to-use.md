@@ -4,6 +4,10 @@ sidebar_label: 指定设备
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="gpuUuid" />
+
 有时任务可能希望在某个特定的 GPU 上运行，可以在 pod 注释中填写`nvidia.com/use-gpuuuid`字段。HAMi 调度器将尝试匹配具有该 UUID 的设备。
 
 例如，具有以下注释的任务将被分配到 UUID 为`GPU-123456`的设备上

@@ -3,6 +3,10 @@ title: 实时 GPU 用量
 sidebar_label: 实时用量
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="usageMetrics" />
+
 实时监控允许你在 Kubernetes 集群中随工作负载运行时，跟踪 GPU 利用率、显存用量以及资源分配情况。HAMi 提供了动态观察 GPU 行为的工具。
 
 ## 使用 kubectl 进行监控

@@ -3,6 +3,10 @@ title: Cluster device allocation endpoint
 sidebar_label: Cluster device allocation
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="allocationMetrics" />
+
 You can get the overview of cluster device allocation and limit by visiting `<scheduler-ip>:31993/metrics`, or add it to a prometheus endpoint, as the command below:
 
 ```bash
