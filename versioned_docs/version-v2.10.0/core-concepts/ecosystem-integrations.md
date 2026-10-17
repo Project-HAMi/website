@@ -1,45 +1,14 @@
 ---
 title: Ecosystem Integrations
+description: How HAMi works with Volcano, Kueue, Koordinator, and KAI Scheduler.
+sidebar_label: Integrations
 ---
 
 HAMi doesn't replace your Kubernetes scheduler. It extends it. HAMi handles GPU virtualization, sharing, and runtime isolation, and it slots into the wider Kubernetes scheduling world so you can pair **GPU sharing** with **batch scheduling, job queuing, and colocation**.
 
 This page shows how HAMi works alongside the default scheduler and four ecosystem partners: **Volcano**, **Kueue**, **Koordinator**, and NVIDIA's **KAI Scheduler**.
 
-```mermaid
-%% title: HAMi Ecosystem Integrations
-flowchart TB
-    WL["AI Workloads<br/>(inference · training · batch)"]
-
-    subgraph Schedulers["Scheduling & Queueing Ecosystem"]
-        direction LR
-        KS["kube-scheduler<br/>(native)"]
-        VOL["Volcano<br/>gang & batch"]
-        KUE["Kueue<br/>queueing & fairness"]
-        KOO["Koordinator<br/>device scheduling"]
-        KAI["KAI Scheduler<br/>(NVIDIA) AI batch"]
-    end
-
-    subgraph HAMi["HAMi"]
-        direction TB
-        HSCHED["hami-scheduler<br/>vGPU allocation · kube-scheduler extender"]
-        HDP["hami-device-plugin<br/>vGPU resources"]
-        CORE["HAMi-core<br/>runtime GPU isolation"]
-    end
-
-    HW["Heterogeneous Accelerators<br/>NVIDIA · Huawei Ascend · Cambricon · Hygon · Mthreads · Iluvatar · …"]
-
-    WL --> Schedulers
-    KS -->|"GPU filter / score"| HSCHED
-    HSCHED --> KS
-    KS --> HDP
-    HDP --> CORE
-    VOL -.->|"volcano-vgpu-device-plugin"| CORE
-    KOO -.->|"HAMi-core isolation"| CORE
-    KAI -.->|"kai-resource-isolator (HAMi-core)"| CORE
-    KUE -.->|"queues workloads over<br/>vGPU ResourceFlavors"| KS
-    CORE --> HW
-```
+![HAMi Ecosystem Integrations](/img/docs/en/core-concepts/ecosystem-integrations.svg)
 
 ## How HAMi integrates
 

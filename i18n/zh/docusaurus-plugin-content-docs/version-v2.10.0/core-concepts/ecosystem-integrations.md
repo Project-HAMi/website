@@ -1,45 +1,14 @@
 ---
 title: 生态集成
+description: HAMi 如何与 Volcano、Kueue、Koordinator 和 KAI Scheduler 配合使用。
+sidebar_label: 集成
 ---
 
 HAMi 并不会取代你现有的 Kubernetes 调度器，而是在它基础上做扩展。HAMi 负责的是 GPU 的虚拟化、共享和运行时隔离，并把自己接进更大的 Kubernetes 调度生态里，这样你就能把 **GPU 共享** 和 **批调度、作业排队、混部** 这些能力组合起来用。
 
 这一页讲的是 HAMi 怎样和默认调度器，还有四个生态伙伴协同工作，分别是 **Volcano**、**Kueue**、**Koordinator**，以及 NVIDIA 的 **KAI Scheduler**。
 
-```mermaid
-%% title: HAMi 生态集成
-flowchart TB
-    WL["AI 工作负载<br/>（推理 · 训练 · 批处理）"]
-
-    subgraph Schedulers["调度与排队生态"]
-        direction LR
-        KS["kube-scheduler<br/>（原生）"]
-        VOL["Volcano<br/>成团与批调度"]
-        KUE["Kueue<br/>排队与公平份额"]
-        KOO["Koordinator<br/>设备调度"]
-        KAI["KAI Scheduler<br/>（NVIDIA）AI 批调度"]
-    end
-
-    subgraph HAMi["HAMi"]
-        direction TB
-        HSCHED["hami-scheduler<br/>vGPU 分配 · kube-scheduler 扩展器"]
-        HDP["hami-device-plugin<br/>vGPU 资源"]
-        CORE["HAMi-core<br/>运行时 GPU 隔离"]
-    end
-
-    HW["异构加速器<br/>NVIDIA · 昇腾 · 寒武纪 · 海光 · 摩尔线程 · 天数智芯 · …"]
-
-    WL --> Schedulers
-    KS -->|"GPU 过滤 / 打分"| HSCHED
-    HSCHED --> KS
-    KS --> HDP
-    HDP --> CORE
-    VOL -.->|"volcano-vgpu-device-plugin"| CORE
-    KOO -.->|"复用 HAMi-core 隔离"| CORE
-    KAI -.->|"kai-resource-isolator（HAMi-core）"| CORE
-    KUE -.->|"基于 vGPU ResourceFlavor<br/>为工作负载排队"| KS
-    CORE --> HW
-```
+![HAMi 生态集成](/img/docs/zh/core-concepts/ecosystem-integrations.svg)
 
 ## HAMi 的集成方式
 
