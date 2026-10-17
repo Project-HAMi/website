@@ -43,6 +43,12 @@
 "kserve":
   label: "KServe"
   permalink: "/kserve"
+"kitops":
+  label: "KitOps"
+  permalink: "/kitops"
+"modelkit":
+  label: "ModelKit"
+  permalink: "/modelkit"
 "nvidia":
   label: "nvidia"
   permalink: "/nvidia"
@@ -100,12 +106,6 @@
 "隔离":
   label: "隔离"
   permalink: "/isolation"
-"kitops":
-  label: "KitOps"
-  permalink: "/kitops"
-"modelkit":
-  label: "ModelKit"
-  permalink: "/modelkit"
 "service-mesh":
   label: "服务网格"
   permalink: "/service-mesh"
