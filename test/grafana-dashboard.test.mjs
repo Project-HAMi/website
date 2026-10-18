@@ -324,3 +324,17 @@ test("quota table compares used with limit for each namespace and resource", () 
   assert.equal(panel.fieldConfig.defaults.unit, "none");
   assert.equal(unitOf("Used %"), "percent");
 });
+
+test("MIG table joins each instance with its pod on mig_uuid", () => {
+  const panel = panelByTitle("MIG inventory and allocation");
+  assert.equal(panel.type, "table");
+  assert.equal(
+    panel.targets[0].expr,
+    'hami_node_gpu_mig_instance_info{node=~"$node"} * on (mig_uuid) group_left(namespace, pod, container) hami_mig_device_info{namespace=~"$namespace"}',
+  );
+
+  const namespaceVariable = dashboard.templating.list.find(
+    (variable) => variable.name === "namespace",
+  );
+  assert.match(namespaceVariable.query.query, /hami_mig_device_info/);
+});
