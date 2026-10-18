@@ -323,6 +323,11 @@ test("quota table compares used with limit for each namespace and resource", () 
       ?.properties.find((property) => property.id === "unit")?.value;
   assert.equal(panel.fieldConfig.defaults.unit, "none");
   assert.equal(unitOf("Used %"), "percent");
+
+  const namespaceVariable = dashboard.templating.list.find(
+    (variable) => variable.name === "namespace",
+  );
+  assert.match(namespaceVariable.query.query, /hami_resource_quota_used/);
 });
 
 test("MIG table joins each instance with its pod on mig_uuid", () => {
