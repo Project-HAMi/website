@@ -99,11 +99,11 @@ JSON 使用数据源变量，不绑定固定的 Prometheus UID。导入后选择
 
 ## Dashboard 变量
 
-| 变量        | 说明                                         |
-| ----------- | -------------------------------------------- |
-| Data source | Prometheus 数据源                            |
-| Node        | 筛选物理 GPU 和调度面板，支持多选            |
-| Namespace   | 筛选 vGPU 工作负载面板和资源配额表，支持多选 |
+| 变量        | 说明                                                    |
+| ----------- | ------------------------------------------------------- |
+| Data source | Prometheus 数据源                                       |
+| Node        | 筛选物理 GPU、调度和 MIG 面板，支持多选                 |
+| Namespace   | 筛选 vGPU 工作负载面板、资源配额表和 MIG 面板，支持多选 |
 
 ## Dashboard 区域
 
@@ -113,6 +113,7 @@ JSON 使用数据源变量，不绑定固定的 Prometheus UID。导入后选择
 | Physical GPUs (host) | 实时显存和利用率，以及分配量与实际用量的对比 |
 | Scheduler / allocation | 设备上限、分配比例、共享情况、GPU 清单和资源配额 |
 | vGPU / container workloads | 每个容器的 vGPU 显存、上限、利用率、context 和 buffer 显存，以及距上次 kernel 的时间 |
+| Dynamic MIG | 按 profile 统计的在用 MIG 实例数，以及 MIG 清单与分配表 |
 | NVIDIA hardware telemetry (optional DCGM Exporter) | XID 错误、温度、功耗和 SM 时钟频率 |
 
 ## DCGM Exporter（可选）
@@ -128,12 +129,13 @@ NVIDIA 硬件遥测区域需要以下 DCGM Exporter 指标：
 
 ## 故障排查
 
-| 现象                     | 检查项                                                |
-| ------------------------ | ----------------------------------------------------- |
-| 集群概览或 GPU 清单为空  | `hami-scheduler` 的 `31993` 采集目标                  |
-| 物理 GPU 面板为空        | 是否发现全部 vGPU monitor Service endpoint            |
-| 容器面板为空             | 是否有 vGPU 工作负载正在运行，以及 Namespace 是否正确 |
-| Node 或 Namespace 无选项 | 当前 Prometheus 数据源中是否包含对应标签              |
-| 硬件遥测区域为空         | 是否采集 DCGM Exporter，且指标中是否包含 `UUID` 标签  |
+| 现象                     | 检查项                                                               |
+| ------------------------ | -------------------------------------------------------------------- |
+| 集群概览或 GPU 清单为空  | `hami-scheduler` 的 `31993` 采集目标                                 |
+| 物理 GPU 面板为空        | 是否发现全部 vGPU monitor Service endpoint                           |
+| 容器面板为空             | 是否有 vGPU 工作负载正在运行，以及 Namespace 是否正确                |
+| Node 或 Namespace 无选项 | 当前 Prometheus 数据源中是否包含对应标签                             |
+| MIG 面板为空             | 节点是否以 `operatingmode: mig` 运行 HAMi，且有 MIG 工作负载正在运行 |
+| 硬件遥测区域为空         | 是否采集 DCGM Exporter，且指标中是否包含 `UUID` 标签                 |
 
 指标定义请参见[集群设备分配](device-allocation)和[实时设备使用](real-time-device-usage)。
