@@ -2012,12 +2012,66 @@
       "type": "table"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "Number of in-use MIG instances for each profile, for the selected node(s) and namespace(s).",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "mappings": [],
+          "min": 0,
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 88
+      },
+      "id": 51,
+      "options": {
+        "displayMode": "basic",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": false,
+        "valueMode": "color"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "count by (profile) (hami_node_gpu_mig_instance_info{node=~\"$node\"} * on (mig_uuid) group_left (namespace) hami_mig_device_info{namespace=~\"$namespace\"})",
+          "instant": true,
+          "legendFormat": "{{profile}}",
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "In-use MIG instances by profile",
+      "type": "bargauge"
+    },
+    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 88
+        "y": 96
       },
       "id": 104,
       "panels": [],
@@ -2057,7 +2111,7 @@
         "h": 5,
         "w": 8,
         "x": 0,
-        "y": 89
+        "y": 97
       },
       "id": 40,
       "options": {
@@ -2128,7 +2182,7 @@
         "h": 5,
         "w": 8,
         "x": 8,
-        "y": 89
+        "y": 97
       },
       "id": 44,
       "options": {
@@ -2180,7 +2234,7 @@
         "h": 5,
         "w": 8,
         "x": 16,
-        "y": 89
+        "y": 97
       },
       "id": 45,
       "options": {
@@ -2252,7 +2306,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 94
+        "y": 102
       },
       "id": 41,
       "options": {
@@ -2321,7 +2375,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 94
+        "y": 102
       },
       "id": 42,
       "options": {
@@ -2390,7 +2444,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 102
+        "y": 110
       },
       "id": 43,
       "options": {
