@@ -338,3 +338,13 @@ test("MIG table joins each instance with its pod on mig_uuid", () => {
   );
   assert.match(namespaceVariable.query.query, /hami_mig_device_info/);
 });
+
+test("MIG profile panel counts in-use instances for the selected nodes and namespaces", () => {
+  const panel = panelByTitle("In-use MIG instances by profile");
+  assert.equal(panel.type, "bargauge");
+  assert.equal(panel.targets[0].instant, true);
+  assert.equal(
+    panel.targets[0].expr,
+    'count by (profile) (hami_node_gpu_mig_instance_info{node=~"$node"} * on (mig_uuid) group_left (namespace) hami_mig_device_info{namespace=~"$namespace"})',
+  );
+});
