@@ -34,4 +34,4 @@ import LabCardGridAuto from '@site/src/components/labs/LabCardGridAuto';
 - **实验 17** 将模型打包为 KitOps ModelKit，通过 initContainer 从 Jozu Hub 拉取，并使用 SGLang（可选 vLLM）在 HAMi GPU 共享资源上提供服务。
 - **实验 18** 在两张共享 GPU 上同时运行吵闹邻居与安静租户负载，验证 HAMi 隔离能覆盖与不能覆盖的边界，并使用 Linkerd 让敏感流量绕开竞争。
 - **实验 19** 在 310P3 节点上安装 HAMi 2.10.0 与昇腾设备插件，验证模板硬切（`vir01`、`vir02`、`vir04`）、多 Pod 共卡、容量耗尽、整卡互斥和分配指标。
-- **实验 20** 在昇腾 310P3 节点上安装 HAMi DRA 0.2.3 与 Ascend DRA Driver，验证请求到 ResourceClaim 的转换、双 Pod NPU 共享、显存配额隔离与调度器容量记账。
+- **实验 21** 在昇腾 310P3 节点上安装 HAMi DRA 0.2.3 与 Ascend DRA Driver，验证请求到 ResourceClaim 的转换、双 Pod NPU 共享、显存配额隔离与调度器容量记账。

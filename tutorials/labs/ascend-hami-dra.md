@@ -1,7 +1,7 @@
 ---
-title: "Lab 20: Ascend NPU Sharing with HAMi DRA"
+title: "Lab 21: Ascend NPU Sharing with HAMi DRA"
 description: "Install HAMi DRA 0.2.3 and the Ascend DRA driver on an Ascend 310P3 node, watch the webhook turn huawei.com/Ascend310P requests into ResourceClaims, and verify two-Pod NPU sharing, memory quota enforcement, and scheduler capacity accounting."
-sidebar_label: "Lab 20: Ascend + HAMi DRA"
+sidebar_label: "Lab 21: Ascend + HAMi DRA"
 lab:
   level: Advanced
   duration: about 120 minutes
@@ -56,7 +56,7 @@ Three components, three responsibilities. Keep them apart throughout the lab:
 - Ascend driver 25.5 or newer on an ARM (aarch64) host, with device-share mode enabled on each NPU used for soft slicing.
 - The `ascend` RuntimeClass present (Pods need `runtimeClassName: ascend`).
 - cert-manager (HAMi-DRA uses it to issue webhook certificates).
-- Manifests from [`tutorials/labs/examples/20-ascend-hami-dra/`](https://github.com/Project-HAMi/website/tree/master/tutorials/labs/examples/20-ascend-hami-dra) (`ascend-values.yaml` and `pod.yaml`); both are also inlined in the steps below, so nothing has to be cloned.
+- Manifests from [`tutorials/labs/examples/21-ascend-hami-dra/`](https://github.com/Project-HAMi/website/tree/master/tutorials/labs/examples/21-ascend-hami-dra) (`ascend-values.yaml` and `pod.yaml`); both are also inlined in the steps below, so nothing has to be cloned.
 
 ### Verification environment
 
@@ -369,7 +369,7 @@ spec:
           huawei.com/Ascend310P-core: "50"
 ```
 
-Three choices in this manifest: the `hami.io/webhook: ignore` label keeps the coexisting HAMi core webhook away; `runtimeClassName: ascend` routes containerd through the Ascend Docker Runtime; the `vllm-ascend` image ships CANN, torch_npu, and npu-smi so the container can be inspected from inside later. The uuid shown here is the verification server's; if you apply `tutorials/labs/examples/20-ascend-hami-dra/pod.yaml` from the repo instead of copying this block, replace its `REPLACE_WITH_YOUR_NPU_UUID` placeholder with a uuid from your own `kubectl get resourceslice` output (Step 3) before applying.
+Three choices in this manifest: the `hami.io/webhook: ignore` label keeps the coexisting HAMi core webhook away; `runtimeClassName: ascend` routes containerd through the Ascend Docker Runtime; the `vllm-ascend` image ships CANN, torch_npu, and npu-smi so the container can be inspected from inside later. The uuid shown here is the verification server's; if you apply `tutorials/labs/examples/21-ascend-hami-dra/pod.yaml` from the repo instead of copying this block, replace its `REPLACE_WITH_YOUR_NPU_UUID` placeholder with a uuid from your own `kubectl get resourceslice` output (Step 3) before applying.
 
 ```bash
 kubectl apply -f pod.yaml

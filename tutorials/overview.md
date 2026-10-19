@@ -34,4 +34,4 @@ Each lab lists its own prerequisites.
 - **Lab 17** packages a model as a KitOps ModelKit, pulls it from Jozu Hub through an initContainer, and serves it with SGLang and optionally vLLM on HAMi GPU shares.
 - **Lab 18** stages a noisy neighbor next to a quiet tenant on two shared GPUs, proves what HAMi isolation covers and what it does not, and routes around the contention with Linkerd.
 - **Lab 19** installs HAMi 2.10.0 and the Ascend device plugin on a 310P3 node, then verifies template-based hard slicing (`vir01`, `vir02`, and `vir04`), multi-Pod sharing, capacity exhaustion, whole-card exclusion, and allocation metrics.
-- **Lab 20** installs HAMi DRA 0.2.3 and the Ascend DRA driver on an Ascend 310P3 node and verifies the request-to-ResourceClaim conversion, two-Pod NPU sharing, memory quota enforcement, and scheduler capacity accounting.
+- **Lab 21** installs HAMi DRA 0.2.3 and the Ascend DRA driver on an Ascend 310P3 node and verifies the request-to-ResourceClaim conversion, two-Pod NPU sharing, memory quota enforcement, and scheduler capacity accounting.

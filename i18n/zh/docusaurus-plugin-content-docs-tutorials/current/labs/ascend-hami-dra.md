@@ -1,7 +1,7 @@
 ---
-title: "实验 20：用 HAMi DRA 共享昇腾 NPU"
+title: "实验 21：用 HAMi DRA 共享昇腾 NPU"
 description: "在昇腾 310P3 节点上安装 HAMi DRA 0.2.3 与 Ascend DRA Driver，观察 webhook 如何把 huawei.com/Ascend310P 请求转换成 ResourceClaim，并验证双 Pod NPU 共享、显存配额隔离与调度器容量记账。"
-sidebar_label: "实验 20：昇腾 + HAMi DRA"
+sidebar_label: "实验 21：昇腾 + HAMi DRA"
 lab:
   level: Advanced
   duration: 约 120 分钟
@@ -56,7 +56,7 @@ flowchart TD
 - ARM（aarch64）宿主机，昇腾驱动 25.5 或更高，用于软切分的每块 NPU 都开启 device-share 模式。
 - `ascend` RuntimeClass 存在（Pod 需要 `runtimeClassName: ascend`）。
 - cert-manager（HAMi-DRA 用它签发 webhook 证书）。
-- 清单文件来自 [`tutorials/labs/examples/20-ascend-hami-dra/`](https://github.com/Project-HAMi/website/tree/master/tutorials/labs/examples/20-ascend-hami-dra)（`ascend-values.yaml` 与 `pod.yaml`），下文步骤中均已内联，无需克隆仓库。
+- 清单文件来自 [`tutorials/labs/examples/21-ascend-hami-dra/`](https://github.com/Project-HAMi/website/tree/master/tutorials/labs/examples/21-ascend-hami-dra)（`ascend-values.yaml` 与 `pod.yaml`），下文步骤中均已内联，无需克隆仓库。
 
 ### 验证环境
 
@@ -369,7 +369,7 @@ spec:
           huawei.com/Ascend310P-core: "50"
 ```
 
-manifest 里的三个选择：`hami.io/webhook: ignore` 标签让共存的 HAMi core webhook 不碰这个 Pod；`runtimeClassName: ascend` 让 containerd 走 Ascend Docker Runtime；`vllm-ascend` 镜像内含 CANN、torch_npu 与 npu-smi，方便稍后从容器内部检查设备。这里的 uuid 是验证服务器上的；若直接使用仓库里的 `tutorials/labs/examples/20-ascend-hami-dra/pod.yaml` 而非复制上面的代码块，请先把其中的 `REPLACE_WITH_YOUR_NPU_UUID` 占位符替换为你自己 `kubectl get resourceslice`（步骤 3）输出中的 uuid 再 apply。
+manifest 里的三个选择：`hami.io/webhook: ignore` 标签让共存的 HAMi core webhook 不碰这个 Pod；`runtimeClassName: ascend` 让 containerd 走 Ascend Docker Runtime；`vllm-ascend` 镜像内含 CANN、torch_npu 与 npu-smi，方便稍后从容器内部检查设备。这里的 uuid 是验证服务器上的；若直接使用仓库里的 `tutorials/labs/examples/21-ascend-hami-dra/pod.yaml` 而非复制上面的代码块，请先把其中的 `REPLACE_WITH_YOUR_NPU_UUID` 占位符替换为你自己 `kubectl get resourceslice`（步骤 3）输出中的 uuid 再 apply。
 
 ```bash
 kubectl apply -f pod.yaml
