@@ -354,3 +354,18 @@ test("MIG profile panel counts in-use instances for the selected nodes and names
     'count by (profile) (hami_node_gpu_mig_instance_info{node=~"$node"} * on (mig_uuid) group_left (namespace) hami_mig_device_info{namespace=~"$namespace"})',
   );
 });
+
+test("core panel compares used with allocated cores per pod on a 0-100 scale", () => {
+  const panel = panelByTitle("vGPU cores: used vs allocated");
+  assert.equal(panel.type, "timeseries");
+  assert.deepEqual(
+    panel.targets.map((target) => target.expr),
+    [
+      'sum by (device_uuid, namespace, pod) (hami_container_device_utilization_ratio{namespace=~"$namespace"})',
+      'sum by (device_uuid, namespace, pod) (hami_vgpu_core_allocated_ratio{namespace=~"$namespace"})',
+    ],
+  );
+  assert.equal(panel.fieldConfig.defaults.unit, "percent");
+  assert.equal(panel.fieldConfig.defaults.min, 0);
+  assert.equal(panel.fieldConfig.defaults.max, 100);
+});
