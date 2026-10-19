@@ -146,17 +146,7 @@ The Pods in this lab additionally carry the label `hami.io/webhook: ignore`. On 
 
 cert-manager is a dependency; the verification cluster already had v1.21.1. On a clean cluster install cert-manager first.
 
-From the official Helm repository:
-
-```bash
-helm repo add hami-dra https://project-hami.github.io/HAMi-DRA
-helm repo update
-helm search repo hami-dra   # confirm 0.2.3
-helm install hami-dra hami-dra/hami-dra -n hami-system \
-  --version 0.2.3 -f ascend-values.yaml
-```
-
-`ascend-values.yaml` enables only the Ascend conversion:
+Save `ascend-values.yaml` first; it enables only the Ascend conversion:
 
 ```yaml
 deviceVendors:
@@ -174,6 +164,16 @@ monitor:
 certs:
   certManager:
     enabled: true
+```
+
+Then install from the official Helm repository. On a clean cluster `--create-namespace` creates `hami-system`; Step 2 changes into the driver repository directory, so keep this file's location in mind:
+
+```bash
+helm repo add hami-dra https://project-hami.github.io/HAMi-DRA
+helm repo update
+helm search repo hami-dra   # confirm 0.2.3
+helm install hami-dra hami-dra/hami-dra -n hami-system --create-namespace \
+  --version 0.2.3 -f ascend-values.yaml
 ```
 
 Verify the webhook came up:
@@ -346,6 +346,8 @@ The request syntax is unchanged HAMi syntax:
 - Card selection: `hami.io/use-Ascend310P-uuid`, the value copied from the ResourceSlice `uuid`
 - Model selection: `hami.io/use-nputype`, matched against `productName` (not used in this lab)
 
+Save the following manifest as `pod.yaml`; later steps derive Pods B and C from it with `sed`:
+
 ```yaml
 apiVersion: v1
 kind: Pod
@@ -501,7 +503,7 @@ Three layers, from the cluster down to the node.
 
 ```bash
 kubectl exec -it ascend-share-a -n dra-ascend-e2e -- env | grep -E "NPU_|ASCEND_"
-kubectl exec -it ascend-share-a -n dra-ascend-e2e -- ls /dev/davinci* /dev/davinci_manager /dev/devmm_svm
+kubectl exec -it ascend-share-a -n dra-ascend-e2e -- sh -c 'ls /dev/davinci* /dev/davinci_manager /dev/devmm_svm'
 ```
 
 ```text
@@ -786,8 +788,8 @@ Claim deletion is the HAMi-DRA validating webhook's job. If the webhook is down 
 ```bash
 kubectl delete pod ascend-share-a ascend-share-b ascend-share-c \
   ascend-ctrl-a ascend-ctrl-b -n dra-ascend-e2e --ignore-not-found
-kubectl get resourceclaim -A | grep ascend310p | awk '{print $1, $2}' | \
-  xargs -n2 kubectl delete resourceclaim -n 2>/dev/null || true
+kubectl get resourceclaim -n dra-ascend-e2e | grep ascend310p | awk '{print $1}' | \
+  xargs -r kubectl delete resourceclaim -n dra-ascend-e2e 2>/dev/null || true
 kubectl delete ns dra-ascend-e2e --ignore-not-found
 
 helm uninstall ascend-dra-driver -n ascend-dra-driver

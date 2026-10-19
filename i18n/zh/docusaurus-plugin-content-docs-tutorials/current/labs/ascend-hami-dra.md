@@ -146,17 +146,7 @@ kubectl label ns dra-ascend-e2e hami.io/webhook=ignore
 
 cert-manager 是前置依赖；验证集群已有 v1.21.1。干净集群先安装 cert-manager。
 
-官方 Helm 仓库方式：
-
-```bash
-helm repo add hami-dra https://project-hami.github.io/HAMi-DRA
-helm repo update
-helm search repo hami-dra   # 确认 0.2.3
-helm install hami-dra hami-dra/hami-dra -n hami-system \
-  --version 0.2.3 -f ascend-values.yaml
-```
-
-`ascend-values.yaml` 只开启昇腾转换：
+先把 `ascend-values.yaml` 保存下来；它只开启昇腾转换：
 
 ```yaml
 deviceVendors:
@@ -174,6 +164,16 @@ monitor:
 certs:
   certManager:
     enabled: true
+```
+
+再从官方 Helm 仓库安装。干净集群上 `--create-namespace` 会创建 `hami-system`；步骤 2 会切换进 driver 仓库目录，请留意这个文件保存在哪里：
+
+```bash
+helm repo add hami-dra https://project-hami.github.io/HAMi-DRA
+helm repo update
+helm search repo hami-dra   # 确认 0.2.3
+helm install hami-dra hami-dra/hami-dra -n hami-system --create-namespace \
+  --version 0.2.3 -f ascend-values.yaml
 ```
 
 确认 webhook 正常：
@@ -346,6 +346,8 @@ ResourceSlice device 与物理卡的对应关系（共享实验期间用 `npu-sm
 - 选卡：`hami.io/use-Ascend310P-uuid`，值从 ResourceSlice 的 `uuid` 抄写
 - 选型：`hami.io/use-nputype`，与 `productName` 匹配（本实验未使用）
 
+把下面的清单保存为 `pod.yaml`；后续步骤用 `sed` 从它派生 Pod B 和 Pod C：
+
 ```yaml
 apiVersion: v1
 kind: Pod
@@ -501,7 +503,7 @@ status:
 
 ```bash
 kubectl exec -it ascend-share-a -n dra-ascend-e2e -- env | grep -E "NPU_|ASCEND_"
-kubectl exec -it ascend-share-a -n dra-ascend-e2e -- ls /dev/davinci* /dev/davinci_manager /dev/devmm_svm
+kubectl exec -it ascend-share-a -n dra-ascend-e2e -- sh -c 'ls /dev/davinci* /dev/davinci_manager /dev/devmm_svm'
 ```
 
 ```text
@@ -786,8 +788,8 @@ claim 的删除由 HAMi-DRA validating webhook 负责。如果 Pod 删除时 web
 ```bash
 kubectl delete pod ascend-share-a ascend-share-b ascend-share-c \
   ascend-ctrl-a ascend-ctrl-b -n dra-ascend-e2e --ignore-not-found
-kubectl get resourceclaim -A | grep ascend310p | awk '{print $1, $2}' | \
-  xargs -n2 kubectl delete resourceclaim -n 2>/dev/null || true
+kubectl get resourceclaim -n dra-ascend-e2e | grep ascend310p | awk '{print $1}' | \
+  xargs -r kubectl delete resourceclaim -n dra-ascend-e2e 2>/dev/null || true
 kubectl delete ns dra-ascend-e2e --ignore-not-found
 
 helm uninstall ascend-dra-driver -n ascend-dra-driver

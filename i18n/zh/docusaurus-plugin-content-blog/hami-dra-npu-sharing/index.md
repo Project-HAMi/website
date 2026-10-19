@@ -151,7 +151,7 @@ Webhook 在准入阶段把三个 HAMi 资源条目换成 ResourceClaim 的 `coun
 | `capacity.requests.cores: "50"` | `-core: 50` | 百分比直传 |
 | CEL 选择器 | `use-Ascend310P-uuid` 注解 | `uuid in ["..."]`，值来自 ResourceSlice |
 
-两个 Pod 各请求 8192 MiB 显存加 50 算力、指向同一块卡时，两个 claim 落到同一个 device 上，各自带独立 shareID，调度器在分配第二个之前已把第一个的消费记账。容量记满后新请求被调度器直接拒绝（claim 停在 pending），Pod 删除后 claim 自动回收、记账恢复。容器内的强制执行依旧是 HAMi-core：`libvnpu.so` 拦截超限的显存申请并转为容器内 OOM，容器视角的设备被虚拟化为申请的 8 GiB 而非整卡 21 GiB。完整过程见[实验 21](/zh/tutorials/labs/ascend-hami-dra)。
+两个 Pod 各请求 8192 MiB 显存加 50 算力、指向同一块卡时，两个 claim 落到同一个 device 上，各自带独立 shareID，调度器在分配第二个之前已把第一个的消费记账。算力记满后（两个 claim 占满 100/100 cores，显存尚有余量），下一个相同请求被调度器直接拒绝（claim 停在 pending），Pod 删除后 claim 自动回收、记账恢复。容器内的强制执行依旧是 HAMi-core：`libvnpu.so` 拦截超限的显存申请并转为容器内 OOM，容器视角的设备被虚拟化为申请的 8 GiB 而非整卡 21 GiB。完整过程见[实验 21](/zh/tutorials/labs/ascend-hami-dra)。
 
 ## 设备支持的时间线，与“为什么是现在”
 
