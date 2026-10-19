@@ -112,7 +112,7 @@ JSON 使用数据源变量，不绑定固定的 Prometheus UID。导入后选择
 | Cluster overview | 物理 GPU 数量、总显存、已分配的显存和核心，以及共享容器数 |
 | Physical GPUs (host) | 实时显存和利用率，以及分配量与实际用量的对比 |
 | Scheduler / allocation | 设备上限、分配比例、共享情况、GPU 清单和资源配额 |
-| vGPU / container workloads | 每个容器的 vGPU 显存、上限、利用率、context 和 buffer 显存，以及距上次 kernel 的时间 |
+| vGPU / container workloads | 每个容器的 vGPU 显存、上限、利用率、context 和 buffer 显存、距上次 kernel 的时间，以及每个 Pod 的核心实际用量与分配量的对比 |
 | Dynamic MIG | 按 profile 统计的在用 MIG 实例数，以及 MIG 清单与分配表 |
 | NVIDIA hardware telemetry (optional DCGM Exporter) | XID 错误、温度、功耗和 SM 时钟频率 |
 
