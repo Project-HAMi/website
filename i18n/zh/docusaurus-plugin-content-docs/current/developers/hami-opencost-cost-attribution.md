@@ -113,7 +113,9 @@ sum(pod_cost_per_hour over pods on the card) + idle_cost_per_hour
 
 这些 Pod 需要作为单独的一类处理。在预留策略下，可以将它们排除在算力分摊之外并标记为无法分摊，也可以采用可配置的回退方案，例如在共享该卡且未设置算力限制的 Pod 之间，均分该卡尚未预留的算力。绝不会在未作说明的情况下按零算力计费。在实测策略下，算力份额根据一段时间内的实测利用率确定，但前提是运行时确实为该容器采集了这一指标。
 
-是否采集该指标由具体配置决定。`hami_container_device_utilization_ratio` 从 HAMi-core 的 `utilization_watcher` 线程写入的共享区域读取，而该线程仅在容器的 SM 限制处于有效范围内时启动。该限制由 `CUDA_DEVICE_SM_LIMIT` 指定，HAMi 根据 `nvidia.com/gpucores` 设置它。若 Pod 设置了 `gpucores: 0`，或者在只申请部分显存的同时未设置 `gpucores`，则不会启动 watcher 线程，整个时间窗口内都会上报 0。申请整张卡全部显存的 Pod 不受此影响，因为准入阶段会为其注入 `gpucores: 100`。算力限制的执行由 `GPU_CORE_UTILIZATION_POLICY` 单独控制；当 Helm chart 的 `gpuCorePolicy` 值不是 `default` 时，会将该值注入此环境变量，其他可选值为 `force` 和 `disable`。SM 限制的具体有效边界在不同 HAMi-core 版本之间发生过变化，因此部署环境在采用实测策略前，应确认其自身未设置算力限制的工作负载能够产生非零指标。如果指标始终上报 0，则将该 Pod 标记为无法分摊，而不是按零算力计费。第一个里程碑仅使用显式的非零限制，以完全避开这一情况。
+`hami_container_device_utilization_ratio` 从 HAMi-core 的 `utilization_watcher` 线程写入的共享区域读取。HAMi 根据分配的 `gpucores` 值设置 `CUDA_DEVICE_SM_LIMIT`。在当前 HAMi master 使用的 HAMi-core 版本中，[`do_init_device_sm_limits`](https://github.com/Project-HAMi/HAMi-core/blob/a55248ecc6e2530602875054e2d334645d08f35b/src/multiprocess/multiprocess_memory_limit.c#L281-L295) 会将为零或未设置的 `CUDA_DEVICE_SM_LIMIT` 转换为 100。[`init_utilization_watcher`](https://github.com/Project-HAMi/HAMi-core/blob/a55248ecc6e2530602875054e2d334645d08f35b/src/multiprocess/multiprocess_utilization_watcher.c#L273-L344) 会在至少一个设备的有效 SM 限制大于 0 且不超过 100 时启动 watcher。watcher 先采集利用率，再跳过限制为 100 的设备的算力节流。因此，设置了 `gpucores: 0` 的 Pod 不会仅因没有算力限制而失去利用率采集。
+
+算力限制的执行由 `GPU_CORE_UTILIZATION_POLICY` 单独控制；当 Helm chart 的 `gpuCorePolicy` 值不是 `default` 时，会将该值注入此环境变量，其他可选值为 `force` 和 `disable`。采用实测策略前，应验证所部署 HAMi-core 版本的采集功能。仅凭利用率读数为零，无法断定采集不可用；空闲工作负载也可能上报零。如果采集不可用，则将该 Pod 标记为无法分摊，而不是按零算力计费。第一个里程碑仍仅涵盖显式设置非零限制的场景。
 
 ### 关联数据时的 Pod 身份识别
 
