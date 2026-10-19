@@ -1,0 +1,23 @@
+---
+title: Allocate device memory by percentage
+---
+
+To request device memory as a share of the GPU, set `amd.com/gpumem-percentage` (1-100). If `amd.com/gpumem` is also set, `amd.com/gpumem` wins.
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: amd-gpu-memory-percentage
+spec:
+  containers:
+    - name: rocm
+      image: rocm/dev-ubuntu-24.04:7.2.4
+      command: ["bash", "-c", "sleep infinity"]
+      securityContext:
+        allowPrivilegeEscalation: false
+      resources:
+        limits:
+          amd.com/gpu: 1
+          amd.com/gpumem-percentage: 25 # share of the GPU's device memory, 1-100 (optional; amd.com/gpumem wins if both are set)
+```

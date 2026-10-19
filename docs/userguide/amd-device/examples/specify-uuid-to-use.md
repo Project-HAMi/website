@@ -1,0 +1,26 @@
+---
+title: Assign task to a certain GPU by UUID
+---
+
+To run a pod only on certain GPUs, set `amd.com/use-gpu-uuid` in the pod annotations. The UUIDs are listed in the node annotation `hami.io/node-amd-register`.
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: amd-gpu-uuid-to-use
+  annotations:
+    amd.com/use-gpu-uuid: "<GPU UUID>" # replace with comma-separated UUIDs from the node annotation hami.io/node-amd-register; run only on these GPUs
+spec:
+  containers:
+    - name: rocm
+      image: rocm/dev-ubuntu-24.04:7.2.4
+      command: ["bash", "-c", "sleep infinity"]
+      securityContext:
+        # runs as the image's user (root) on purpose: GPU device access needs the node's video and render group ids, which differ per node. For non-root add runAsUser and supplementalGroups for those groups.
+        allowPrivilegeEscalation: false
+      resources:
+        limits:
+          amd.com/gpu: 1
+          amd.com/gpumem: 4096
+```

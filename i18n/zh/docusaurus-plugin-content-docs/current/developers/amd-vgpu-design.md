@@ -7,6 +7,8 @@ sidebar_label: AMD Instinct vGPU
 
 本提案为 AMD ROCm GPU 增加 Pod 级别的**显存限制**和**计算单元（Compute Unit，CU）划分**，让多个 Pod 可以共享同一块 Instinct GPU。
 
+**状态。** 本设计已经实现。device plugin 是 [amd-device-plugin](https://github.com/Project-HAMi/amd-device-plugin)，显存库是 [amd-hami-core](https://github.com/Project-HAMi/amd-hami-core)。安装和使用请参见[启用 AMD GPU 共享](../userguide/amd-device/enable-amd-gpu-sharing.md)。下文第 6 到 8 节描述的是提案时的状态，并在实现有变化的地方做了更新。
+
 ## 2. 目标
 
 - 支持按显存（`amd.com/gpumem`，单位 MiB）和算力（`amd.com/gpucores`，百分比）进行细粒度分配。
@@ -22,7 +24,7 @@ sidebar_label: AMD Instinct vGPU
 
 **WGP 成对约束与落地范围。** ROCm 文档说明，并不是所有 CU 掩码在所有设备上都合法：如果 GPU 上两个 CU 组成一个 Work Group Processor（WGP），并且 kernel 以 WGP 模式运行，那么只禁用一对 CU 中的一个是非法的（[设置 CU](https://rocm.docs.amd.com/en/latest/reference/system-optimization/gpu-isolation.html)）。WGP 是 **RDNA**（GFX10+）架构中的概念，HIP 在 RDNA 硬件模型下对它做了说明（[HIP 硬件实现](https://rocm.docs.amd.com/projects/HIP/en/latest/understand/hardware_implementation.html)）。**CDNA** 设备（例如 Instinct MI300X，`gfx942`）的 CU 彼此独立，不受这条成对规则约束。
 
-本设计的目标是支持**所有 AMD ROCm GPU 类型**。第一阶段先在**非 WGP** 设备（CDNA / Instinct）上实现，这类设备选择 CU 范围时不需要考虑成对对齐。支持 WGP 的设备（RDNA）后续再跟进，届时必须按相邻的 CU 对来选择掩码，保证 `HSA_CU_MASK` 在硬件上合法。
+本设计的目标是支持**所有 AMD ROCm GPU 类型**。第一版先在**非 WGP** 设备（CDNA / Instinct）上实现，这类设备选择 CU 范围时不需要考虑成对对齐。支持 WGP 的设备（RDNA）现在也已支持：它们按相邻的 CU 对来选择掩码，保证 `HSA_CU_MASK` 在硬件上合法（见第 6 节）。
 
 ## 4. 协议（调度器 `<->` device plugin）
 
@@ -37,13 +39,14 @@ sidebar_label: AMD Instinct vGPU
   {
     "id": "<device-id>",
     "index": 0,
-    "count": 1,
+    "count": 10,
     "devmem": 196608,
     "devcore": 304,
     "type": "AMD Instinct MI300X VF",
     "numa": 0,
-    "mode": "hami-core",
-    "health": true
+    "health": true,
+    "devicevendor": "amd",
+    "custominfo": { "pciBDF": "0000:83:00.0", "cuPerWGP": 1 }
   }
 ]
 ```
@@ -51,6 +54,9 @@ sidebar_label: AMD Instinct vGPU
 - `devmem`：设备总显存，单位 MiB（例如 MI300X 为 196608）。
 - `devcore`：CU 总数（例如 MI300X 为 304）。
 - `id`：设备标识。
+- `count`：可共享该 GPU 的 Pod 数量（`-split_count`，默认 10，gfx12 上为 2）。
+- `type`：AMD SMI 报告的产品名称（AMD SMI 未报告时为 `amd-gpu`）。
+- `custominfo`：附加字段，例如 PCI 地址、`cuPerWGP`、XGMI 对端和分区配置，参见[AMD GPU 共享的工作原理](../userguide/amd-device/how-it-works.md#插件发布的内容)。
 
 ### 4.2 Pod 分配（调度器 -> Pod 注解 -> Allocate）
 
@@ -113,12 +119,12 @@ cuCount = floor(percentage × devcore / 100)
 
 - **不虚拟化 `amd-smi` / `rocm-smi`。** 这两个工具读取的是 sysfs/drm，而不是 HIP，LD_AUDIT 拦截不到，因此容器内的工具可能显示物理资源。
 - **CU 掩码依赖工作负载配合，不是安全边界。** `HSA_CU_MASK` 是 ROCr 在初始化时读取的环境变量，进程如果在 ROCr 启动前清掉它，就能重新使用整块设备。显存限制由 LD_AUDIT 层在 HIP API 边界上强制执行，CU 划分则不同，只对不改动注入环境变量的工作负载有效。
-- **不支持同一节点混用多种 GPU 型号。** device plugin 从 `amd.com/gpu.product-name` 获取 GPU 型号，而这个标签无法描述多种型号。
-- **感知 WGP 的 CU 分配分阶段实现。** 先在非 WGP 设备（CDNA / Instinct）上提供 CU 划分。RDNA（GFX10+）设备在构造 `HSA_CU_MASK` 时需要按 WGP 成对对齐（[设置 CU](https://rocm.docs.amd.com/en/latest/reference/system-optimization/gpu-isolation.html)），会在后续版本中支持。
+- **同一节点混用多种 GPU 型号尚未测试。** device plugin 根据每块 GPU 的 AMD SMI 产品名称注册其型号，而该节点只用一种 GPU 型号运行过。
+- **感知 WGP 的 CU 分配。** RDNA（GFX10+）设备在构造 `HSA_CU_MASK` 时需要按 WGP 成对对齐（[设置 CU](https://rocm.docs.amd.com/en/latest/reference/system-optimization/gpu-isolation.html)）。device plugin 按完整 WGP 分配并把请求向上取整（3 个 CU 变为 4 个），并把成对大小发布为 `custominfo.cuPerWGP`，读取该字段的调度器会预留相同的数量。调度器一侧需要比 v2.10.0 更新的 HAMi 版本。
 
 ## 7. 需要补充多 GPU 验证
 
-目前的 MI300X VF 测试节点只有一块 GPU。它能验证单设备场景，但无法确认在多块 GPU 时，重新排序后的可见设备列表与 `HSA_CU_MASK` 各项之间的对应关系。
+MI300X 和 MI325X VF 测试节点都只有一块 GPU。它们能验证单设备场景，但无法确认在多块 GPU 时，重新排序后的可见设备列表与 `HSA_CU_MASK` 各项之间的对应关系。多 GPU 调度（`amd.com/numa-bind`、`amd.com/link-bind`、`topology-aware` 策略）目前只用注册了模拟 GPU 的调度器运行过。
 
 在这个节点上，ROCr 接受容器内的设备索引：
 
@@ -136,4 +142,4 @@ cuCount = floor(percentage × devcore / 100)
 
 ## 8. 待讨论问题
 
-- **device plugin 的分层方式。** [HAMi#1707](https://github.com/Project-HAMi/HAMi/issues/1707) 中提议基于 ROCm/k8s-device-plugin 构建 AMD vGPU device plugin，而后者已经在上报整卡资源 `amd.com/gpu`。由于 kubelet 不允许两个插件注册同一种资源，比较自然的做法是**扩展 ROCm 插件**：由同一个插件管理 `amd.com/gpu`，同时上报细粒度的 `amd.com/gpumem` / `amd.com/gpucores`（这一项是可选的，对 HAMi 来说不是必需的，但可能对其他调度器有用）。
+- **device plugin 的分层方式（已解决）。** 项目提供了自己的插件 amd-device-plugin，由它持有 `amd.com/gpu` 并同时上报细分资源。它不能与上游 ROCm 插件运行在同一批节点上，因为 kubelet 会拒绝第二次注册。以下为最初的讨论。[HAMi#1707](https://github.com/Project-HAMi/HAMi/issues/1707) 中提议基于 ROCm/k8s-device-plugin 构建 AMD vGPU device plugin，而后者已经在上报整卡资源 `amd.com/gpu`。由于 kubelet 不允许两个插件注册同一种资源，比较自然的做法是**扩展 ROCm 插件**：由同一个插件管理 `amd.com/gpu`，同时上报细粒度的 `amd.com/gpumem` / `amd.com/gpucores`（这一项是可选的，对 HAMi 来说不是必需的，但可能对其他调度器有用）。

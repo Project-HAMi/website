@@ -77,7 +77,7 @@ Expected: You see valid `nvidia-smi` output. If this fails, do NOT continue. Fix
 ### 2. Verify execution
 
 ```bash
-kubectl wait --for=condition=Succeeded pod/cuda-test --timeout=60s
+kubectl wait --for=jsonpath='{.status.phase}'=Succeeded pod/cuda-test --timeout=60s
 kubectl logs cuda-test
 ```
 

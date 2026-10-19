@@ -1,0 +1,584 @@
+.root {
+  --rc-ink: #15202b;
+  --rc-text-muted: #566779;
+  --rc-hami-text: #087a36;
+  --rc-line: rgba(21, 32, 43, 0.2);
+  --rc-hami: #0a9a45;
+  --rc-hami-bg: rgba(var(--hami-primary-rgb), 0.09);
+  --rc-k8s: #6d7f90;
+  --rc-k8s-bg: rgba(21, 32, 43, 0.045);
+  --rc-k8s-token: #5f7894;
+  --rc-wire-ink: rgba(21, 32, 43, 0.55);
+  --rc-page: var(--ifm-background-color);
+  --rc-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  margin: 44px 0 0;
+}
+
+:global(html[data-theme="dark"]) .root {
+  --rc-ink: #eef2f6;
+  --rc-text-muted: #8593a3;
+  --rc-hami-text: #35e37b;
+  --rc-line: rgba(238, 242, 246, 0.22);
+  --rc-hami: #35e37b;
+  --rc-hami-bg: rgba(var(--hami-primary-rgb), 0.1);
+  --rc-k8s: #8593a3;
+  --rc-k8s-bg: rgba(238, 242, 246, 0.05);
+  --rc-k8s-token: #b4c3d6;
+  --rc-wire-ink: rgba(238, 242, 246, 0.6);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 136px repeat(6, minmax(0, 1fr));
+  grid-template-rows: auto auto auto;
+  row-gap: 12px;
+}
+
+/* headers */
+
+.laneHead {
+  grid-column: 1;
+  grid-row: calc(var(--lane) + 2);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+}
+
+.laneName {
+  color: var(--rc-ink);
+  font-family: var(--hami-font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.laneSub {
+  color: var(--rc-text-muted);
+  font-size: 0.85rem;
+}
+
+.stepHead {
+  grid-row: 1;
+  grid-column: calc(var(--step) + 2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 0 4px 10px;
+  border: 0;
+  background: none;
+  color: var(--rc-ink);
+  font-family: var(--hami-font-display);
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+.stepHead:focus-visible {
+  outline: 2px solid var(--hami-primary);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+.stepIndex {
+  color: var(--rc-text-muted);
+  font-family: var(--hami-font-mono);
+  font-size: 0.7rem;
+  font-weight: 400;
+}
+
+/* cells */
+
+.cell {
+  grid-row: calc(var(--lane) + 2);
+  grid-column: calc(var(--step) + 2);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+  padding: 148px 12px 34px;
+  text-align: center;
+  cursor: default;
+}
+
+.bg {
+  position: absolute;
+  inset: 0;
+}
+
+.hami .bg {
+  background: var(--rc-hami-bg);
+}
+
+.k8s .bg {
+  background: var(--rc-k8s-bg);
+}
+
+.runStart .bg {
+  left: 4px;
+  border-top-left-radius: 16px;
+  border-bottom-left-radius: 16px;
+}
+
+.runEnd .bg {
+  right: 4px;
+  border-top-right-radius: 16px;
+  border-bottom-right-radius: 16px;
+}
+
+.owner {
+  position: absolute;
+  bottom: 12px;
+  left: 18px;
+  font-family: var(--hami-font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.hami .owner {
+  color: var(--rc-hami-text);
+}
+
+.k8s .owner {
+  color: var(--rc-text-muted);
+}
+
+/* track overlay: a continuous line-art path the request draws as it travels */
+
+.track {
+  grid-column: 2 / -1;
+  grid-row: calc(var(--lane) + 2);
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.trackSvg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.wireBase,
+.wireInk,
+.frameBase,
+.frameInk,
+.iconBase,
+.iconInk {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.wireBase {
+  stroke: var(--rc-line);
+  stroke-width: 1.25;
+  opacity: 0;
+  transition: opacity 0.8s ease 0.2s;
+}
+
+.visible .wireBase {
+  opacity: 1;
+}
+
+.wireInk {
+  stroke: var(--rc-wire-ink);
+  stroke-width: 1.5;
+}
+
+.station {
+  --c: var(--rc-hami);
+}
+
+.station_k8s {
+  --c: var(--rc-k8s-token);
+}
+
+.frameBase {
+  fill: var(--c);
+  fill-opacity: 0;
+  stroke: var(--c);
+  stroke-opacity: 0.28;
+  stroke-width: 1.25;
+  transition: fill-opacity 0.6s ease 0.3s;
+}
+
+.inked .frameBase {
+  fill-opacity: 0.08;
+}
+
+.frameInk {
+  stroke: var(--c);
+  stroke-width: 1.5;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.7s cubic-bezier(0.45, 0, 0.2, 1);
+}
+
+.iconBase {
+  stroke: var(--c);
+  stroke-width: 1.5;
+  opacity: 0.3;
+}
+
+.iconInk {
+  stroke: var(--c);
+  stroke-width: 1.6;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition:
+    stroke-dashoffset 0.55s cubic-bezier(0.45, 0, 0.2, 1),
+    opacity 0s;
+}
+
+.stationDetour .frameBase {
+  stroke-opacity: 0.22;
+}
+
+.stationDetour .iconBase,
+.stationDetour .iconInk {
+  stroke-width: 1.4;
+}
+
+/* Undrawn ink is hidden: a zero-length dash with round caps still paints a dot. */
+.frameInk,
+.iconInk {
+  opacity: 0;
+}
+
+.inked .frameInk,
+.inked .iconInk {
+  stroke-dashoffset: 0;
+  opacity: 1;
+}
+
+:global(html[data-theme="dark"]) .inked .frameInk {
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--c) 45%, transparent));
+}
+
+.detourLabel {
+  fill: var(--rc-text-muted);
+  font-family: var(--hami-font-mono);
+  font-size: 10.5px;
+  transition: fill 0.4s ease;
+}
+
+.inked .detourLabel {
+  fill: var(--rc-ink);
+}
+
+.fading .wireInk,
+.fading .frameInk,
+.fading .iconInk {
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.fading .frameBase {
+  fill-opacity: 0;
+  transition: fill-opacity 0.8s ease;
+}
+
+.resetting * {
+  transition: none !important;
+}
+
+.stationGroup {
+  transition: opacity 0.3s ease;
+}
+
+.token {
+  --token: var(--rc-hami);
+  transition: opacity 0.18s linear;
+}
+
+.token[data-owner="k8s"] {
+  --token: var(--rc-k8s-token);
+}
+
+.tokenHalo {
+  fill: var(--token);
+  opacity: 0.22;
+  transition: fill 0.35s ease;
+}
+
+.tokenCore {
+  fill: var(--token);
+  filter: drop-shadow(0 0 5px var(--token));
+  transition: fill 0.35s ease;
+}
+
+.name {
+  color: var(--rc-ink);
+  font-family: var(--hami-font-display);
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.via {
+  margin-top: 4px;
+  color: var(--rc-text-muted);
+  font-family: var(--hami-font-mono);
+  font-size: 0.72rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.stepHead.dim,
+.stationGroup.dim,
+.cell.dim > :not(.bg) {
+  opacity: 0.4;
+}
+
+.cell > * {
+  transition: opacity 0.3s ease;
+}
+
+/* caption */
+
+.caption {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 3.6em;
+  max-width: 720px;
+  margin: 26px auto 0;
+  color: var(--rc-text-muted);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  text-align: center;
+}
+
+.note {
+  animation: fadeIn 0.35s ease both;
+}
+
+.caption a {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* entrance */
+
+.root:not(.visible) .cell,
+.root:not(.visible) .stepHead,
+.root:not(.visible) .laneHead {
+  opacity: 0;
+}
+
+.visible .cell,
+.visible .stepHead,
+.visible .laneHead {
+  animation: rise 0.6s var(--rc-ease) backwards;
+  animation-delay: calc(var(--step, 0) * 70ms + var(--lane, 0) * 60ms);
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+}
+
+/* narrow: steps run downwards, the two modes sit side by side */
+
+/* lanes without detours start their stations 62px higher, matching DETOUR_BAND */
+@media (min-width: 768px) {
+  .compact {
+    padding-top: 86px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1100px) {
+  .grid {
+    grid-template-columns: 100px repeat(6, minmax(0, 1fr));
+  }
+
+  .cell {
+    padding-right: 6px;
+    padding-left: 6px;
+  }
+
+  .name {
+    font-size: 0.86rem;
+  }
+
+  .via {
+    font-size: 0.68rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .grid {
+    grid-template-columns: 64px repeat(2, minmax(0, 1fr));
+    grid-template-rows: none;
+    column-gap: 8px;
+    row-gap: 0;
+  }
+
+  .laneHead {
+    grid-column: calc(var(--lane) + 2);
+    grid-row: 1;
+    padding: 0 0 12px 12px;
+  }
+
+  .laneName {
+    font-size: 0.98rem;
+  }
+
+  .stepHead {
+    grid-column: 1;
+    grid-row: calc(var(--step) + 2);
+    align-items: flex-start;
+    padding: 18px 0 0;
+    font-size: 0.8rem;
+    text-align: left;
+  }
+
+  .cell {
+    grid-column: calc(var(--lane) + 2);
+    grid-row: calc(var(--step) + 2);
+    align-items: flex-start;
+    padding: 16px 10px 16px 34px;
+    text-align: left;
+  }
+
+  .runStart .bg {
+    left: 0;
+    top: 3px;
+    border-radius: 14px 14px 0 0;
+  }
+
+  .runEnd .bg {
+    right: 0;
+    bottom: 3px;
+    border-bottom-left-radius: 14px;
+    border-bottom-right-radius: 14px;
+  }
+
+  .runStart.runEnd .bg {
+    border-radius: 14px;
+  }
+
+  .runEnd:not(.runStart) .bg {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+
+  .runStart:not(.runEnd) .bg {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .owner,
+  .track {
+    display: none;
+  }
+
+  .seg {
+    position: absolute;
+    top: 26px;
+    left: 17px;
+    width: 1.5px;
+    height: 100%;
+    background: var(--rc-line);
+    transform-origin: top center;
+  }
+
+  .dot {
+    position: absolute;
+    top: 26px;
+    left: 17px;
+    z-index: 1;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .hami .dot {
+    background: var(--rc-hami);
+    box-shadow: 0 0 0 4px rgba(var(--hami-primary-rgb), 0.16);
+  }
+
+  .k8s .dot {
+    border: 1.5px solid var(--rc-k8s);
+    background: var(--rc-page);
+  }
+
+  .visible .seg {
+    animation: drawDown 0.5s var(--rc-ease) backwards;
+    animation-delay: calc(var(--step) * 70ms + 0.35s);
+  }
+
+  .caption {
+    justify-content: flex-start;
+    text-align: left;
+  }
+}
+
+@media (max-width: 400px) {
+  .grid {
+    grid-template-columns: 54px repeat(2, minmax(0, 1fr));
+    column-gap: 6px;
+  }
+
+  .stepHead {
+    font-size: 0.7rem;
+  }
+
+  .cell {
+    padding: 14px 6px 14px 28px;
+  }
+
+  .seg,
+  .dot {
+    left: 14px;
+  }
+
+  .name {
+    font-size: 0.88rem;
+  }
+}
+
+@keyframes drawDown {
+  from {
+    transform: scaleY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .visible .cell,
+  .visible .stepHead,
+  .visible .laneHead,
+  .visible .seg,
+  .note {
+    animation: none;
+  }
+
+  .frameInk,
+  .iconInk {
+    stroke-dashoffset: 0;
+    opacity: 1;
+    transition: none;
+  }
+
+  .wireInk {
+    display: none;
+  }
+}

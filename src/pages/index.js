@@ -25,8 +25,10 @@ import styles from "./styles.module.css";
 import ContributorsList from "../components/contributorsList";
 import LogoWall from "../components/logoWall";
 import BeforeAfterComparison from "../components/BeforeAfterComparison";
+import RuntimeComparison from "../components/RuntimeComparison";
 import adoptersData from "../data/adopters.json";
 import ecosystemData from "../data/ecosystem.json";
+import technicalPartnersData from "../data/technicalPartners";
 import heroStats from "../data/home/heroStats";
 import valueCards from "../data/home/valueCards";
 import vendorDevices from "../data/home/vendorDevices";
@@ -135,148 +137,10 @@ const heroDiagramCopy = {
     zh: "显存 / 核心利用趋势",
   },
 };
-const runtimeModesData = {
-  hami: {
-    key: "hami",
-    label: { en: "HAMi (Device Plugin)", zh: "HAMi (Device Plugin 模式)" },
-    title: { en: "HAMi Runtime Mechanism (Device Plugin)", zh: "HAMi 运行时机制 (Device Plugin)" },
-    entryLabel: { en: "Request Entry / Runtime Interface", zh: "请求入口 / 运行时接口" },
-    entryValue: {
-      en: "PodSpec + Extended Resources (nvidia.com/gpu + gpumem / gpucores)",
-      zh: "PodSpec + 扩展资源 (nvidia.com/gpu + gpumem / gpucores)",
-    },
-    lanes: [
-      {
-        key: "control",
-        tone: "control",
-        title: { en: "Control Plane", zh: "控制面" },
-        summary: { en: "Decision path", zh: "决策路径" },
-        steps: [
-          {
-            key: "webhook",
-            emphasis: "secondary",
-            label: { en: "MutatingWebhook", zh: "MutatingWebhook" },
-            note: { en: "Admission Entry", zh: "准入入口" },
-          },
-          {
-            key: "scheduler",
-            emphasis: "primary",
-            label: { en: "HAMi Scheduler", zh: "HAMi Scheduler" },
-            note: { en: "Policy / Topology", zh: "策略 / 拓扑" },
-          },
-          {
-            key: "binding",
-            emphasis: "primary",
-            label: { en: "Device Binding Decision", zh: "设备绑定决策" },
-            note: { en: "Target GPU Selected", zh: "完成目标设备选择" },
-          },
-        ],
-      },
-      {
-        key: "data",
-        tone: "data",
-        title: { en: "Data Plane", zh: "数据面" },
-        summary: { en: "Enforcement Path", zh: "执行路径" },
-        steps: [
-          {
-            key: "injection",
-            emphasis: "primary",
-            label: { en: "Device Plugin Injection", zh: "Device Plugin 注入" },
-            note: { en: "Device Attached", zh: "完成设备注入" },
-          },
-          {
-            key: "isolation",
-            emphasis: "primary",
-            label: { en: "HAMi Core", zh: "HAMi Core" },
-            note: { en: "Memory / Core Isolation", zh: "显存 / 核心隔离" },
-          },
-          {
-            key: "runtime",
-            emphasis: "secondary",
-            label: { en: "Container Workload", zh: "容器工作负载" },
-            note: { en: "Execution Starts", zh: "开始运行" },
-          },
-        ],
-      },
-    ],
-    resources: {
-      type: "extended",
-      label: { en: "Resource Semantics", zh: "资源语义" },
-    },
-  },
-  "hami-dra": {
-    key: "hami-dra",
-    label: { en: "HAMi-DRA Mode", zh: "HAMi-DRA 模式" },
-    title: { en: "HAMi-DRA Runtime Mechanism (DRA Mode)", zh: "HAMi-DRA 运行时机制 (DRA 模式)" },
-    entryLabel: { en: "Request Entry / Runtime Interface", zh: "请求入口 / 运行时接口" },
-    entryValue: {
-      en: "PodSpec + ResourceClaim / ResourceSlice + CDI",
-      zh: "PodSpec + ResourceClaim / ResourceSlice + CDI 声明",
-    },
-    lanes: [
-      {
-        key: "control",
-        tone: "control",
-        title: { en: "Control Plane", zh: "控制面" },
-        summary: { en: "Decision path", zh: "决策路径" },
-        steps: [
-          {
-            key: "webhook",
-            emphasis: "secondary",
-            label: { en: "HAMi-DRA Webhook", zh: "HAMi-DRA Webhook" },
-            note: { en: "Auto-Conversion & Admission", zh: "资源改写与准入" },
-          },
-          {
-            key: "scheduler",
-            emphasis: "primary",
-            label: { en: "Native Kube-Scheduler", zh: "原生 Kube-Scheduler" },
-            note: { en: "K8s DRA Plugin Scheduling", zh: "K8s 原生 DRA 调度" },
-          },
-          {
-            key: "binding",
-            emphasis: "primary",
-            label: { en: "ResourceClaim Allocation", zh: "ResourceClaim 绑定" },
-            note: { en: "DeviceClass & Slice Selected", zh: "完成设备切片选择" },
-          },
-        ],
-      },
-      {
-        key: "data",
-        tone: "data",
-        title: { en: "Data Plane", zh: "数据面" },
-        summary: { en: "Enforcement Path", zh: "执行路径" },
-        steps: [
-          {
-            key: "injection",
-            emphasis: "primary",
-            label: { en: "HAMi-DRA Driver + CDI", zh: "HAMi-DRA Driver + CDI 注入" },
-            note: { en: "CDI Spec & Preload", zh: "CDI 设备与预加载注入" },
-          },
-          {
-            key: "isolation",
-            emphasis: "primary",
-            label: { en: "HAMi Core", zh: "HAMi Core" },
-            note: { en: "Memory / Core Isolation", zh: "显存 / 核心隔离" },
-          },
-          {
-            key: "runtime",
-            emphasis: "secondary",
-            label: { en: "Container Workload", zh: "容器工作负载" },
-            note: { en: "Execution Starts", zh: "开始运行" },
-          },
-        ],
-      },
-    ],
-    resources: {
-      type: "dra",
-      label: { en: "Resource Semantics", zh: "资源语义" },
-    },
-  },
-};
 const architectureSectionCopy = {
   lead: {
-    en: "From request to isolation, HAMi turns GPU slicing and heterogeneous scheduling into usable Kubernetes runtime paths.",
-    zh: "从请求到隔离执行，HAMi 将 GPU 切分与异构调度组织成可落地的 Kubernetes 运行时链路。",
+    en: "HAMi runs in Device Plugin or DRA mode. Both are used the same way. The difference is who schedules: HAMi, or Kubernetes.",
+    zh: "HAMi 支持 Device Plugin 和 DRA 两种模式，用法相同，区别在于调度：前者由 HAMi 完成，后者交给 Kubernetes。",
   },
 };
 
@@ -321,40 +185,11 @@ function pickLocalizedOrRaw(locale, value) {
   return typeof value === "string" ? value : pickLocalized(locale, value);
 }
 
-function RuntimeLaneCard({ lane, locale }) {
-  return (
-    <section className={styles.runtimeLane} data-runtime-part={lane.key}>
-      <header className={styles.runtimeLaneHeader}>
-        <h3>{pickLocalized(locale, lane.title)}</h3>
-        <span className={styles.runtimeLaneKicker}>{pickLocalized(locale, lane.summary)}</span>
-      </header>
-      <div className={styles.runtimeLaneFlow}>
-        {lane.steps.map((step, index) => (
-          <React.Fragment key={step.key}>
-            <article
-              className={clsx(styles.runtimeStepCard, styles[`runtimeStepCard_${step.emphasis}`])}
-            >
-              <span className={styles.runtimeStepLabel}>{pickLocalized(locale, step.label)}</span>
-              <span className={styles.runtimeStepNote}>{pickLocalized(locale, step.note)}</span>
-            </article>
-            {index < lane.steps.length - 1 && (
-              <div className={styles.runtimeArrow} aria-hidden="true">
-                <span className={styles.runtimeArrowLine} />
-              </div>
-            )}
-          </React.Fragment>
-        ))}
-      </div>
-    </section>
-  );
-}
-
 export default function Home() {
   const { i18n } = useDocusaurusContext();
   const { withBaseUrl } = useBaseUrlUtils();
   const isZh = i18n.currentLocale === "zh";
   const [starsCount, setStarsCount] = useState(3100);
-  const [archMode, setArchMode] = useState("hami");
   // Static: Docker Hub's API sends no CORS header, so it cannot be read from the browser.
   const dockerPulls = 325000;
   const kubernetesLogo = withBaseUrl("img/kubernetes-logo.svg");
@@ -746,99 +581,7 @@ export default function Home() {
               {pickLocalized(i18n.currentLocale, architectureSectionCopy.lead)}
             </p>
 
-            <div className={styles.architectureOverview}>
-              <div className={styles.archModeToggleRow}>
-                <div className={styles.archModeToggle}>
-                  <button
-                    type="button"
-                    className={clsx(
-                      styles.archModeBtn,
-                      archMode === "hami" && styles.archModeBtnActive,
-                    )}
-                    onClick={() => setArchMode("hami")}
-                  >
-                    {pickLocalized(i18n.currentLocale, runtimeModesData.hami.label)}
-                  </button>
-                  <button
-                    type="button"
-                    className={clsx(
-                      styles.archModeBtn,
-                      archMode === "hami-dra" && styles.archModeBtnActive,
-                    )}
-                    onClick={() => setArchMode("hami-dra")}
-                  >
-                    {pickLocalized(i18n.currentLocale, runtimeModesData["hami-dra"].label)}
-                  </button>
-                </div>
-              </div>
-
-              <article
-                ref={addRevealRef}
-                data-reveal-scale="1"
-                className={clsx(styles.runtimeMechanism, styles.reveal)}
-                aria-label={pickLocalized(
-                  i18n.currentLocale,
-                  (runtimeModesData[archMode] || runtimeModesData.hami).title,
-                )}
-              >
-                {(() => {
-                  const activeMode = runtimeModesData[archMode] || runtimeModesData.hami;
-                  return (
-                    <div
-                      className={styles.runtimeDiagramFrame}
-                      role="img"
-                      aria-label={pickLocalized(i18n.currentLocale, activeMode.title)}
-                    >
-                      <h3 className={styles.runtimeDiagramTitle}>
-                        {pickLocalized(i18n.currentLocale, activeMode.title)}
-                      </h3>
-                      <section className={styles.runtimeStage} data-runtime-part="entry">
-                        <span className={styles.runtimeSectionLabel}>
-                          {pickLocalized(i18n.currentLocale, activeMode.entryLabel)}
-                        </span>
-                        <div className={styles.runtimeStageCard}>
-                          {pickLocalized(i18n.currentLocale, activeMode.entryValue)}
-                        </div>
-                      </section>
-                      <div className={styles.runtimeStageConnector} aria-hidden="true">
-                        <span className={styles.runtimeConnectorLine} />
-                      </div>
-                      <section
-                        className={styles.runtimePipelineSection}
-                        data-runtime-part="pipeline"
-                      >
-                        <div className={styles.runtimeLaneGrid}>
-                          <RuntimeLaneCard lane={activeMode.lanes[0]} locale={i18n.currentLocale} />
-                          <RuntimeLaneCard lane={activeMode.lanes[1]} locale={i18n.currentLocale} />
-                        </div>
-                      </section>
-                      <section className={styles.runtimeResources} data-runtime-part="resources">
-                        <span className={styles.runtimeResourcesLabel}>
-                          {pickLocalized(i18n.currentLocale, activeMode.resources.label)}
-                        </span>
-                        <div className={styles.runtimeResourcesValue}>
-                          {activeMode.key === "hami" ? (
-                            <>
-                              <code>nvidia.com/gpu</code>
-                              <span className={styles.runtimeResourcesDivider}>+</span>
-                              <code>gpumem</code>
-                              <span className={styles.runtimeResourcesSlash}>/</span>
-                              <code>gpucores</code>
-                            </>
-                          ) : (
-                            <>
-                              <code>ResourceClaim</code>
-                              <span className={styles.runtimeResourcesDivider}></span>
-                              <code>(DeviceClass + memory/cores)</code>
-                            </>
-                          )}
-                        </div>
-                      </section>
-                    </div>
-                  );
-                })()}
-              </article>
-            </div>
+            <RuntimeComparison isZh={isZh} />
           </div>
         </section>
 
@@ -954,6 +697,20 @@ export default function Home() {
           ref={addRevealRef}
           className={clsx(styles.section, styles.sectionAlt, styles.reveal)}
         >
+          <div className="container">
+            <h2 className={styles.sectionTitle}>{isZh ? "技术合作伙伴" : "Technical Partners"}</h2>
+            <p className={styles.sectionLead}>
+              {isZh
+                ? "这些组织为我们提供硬件、资源与顶级支持。这是 HAMi 维护者与这些组织之间的深度技术合作。如果您有意达成这一级别的合作，请联系我们。"
+                : "These organizations provide us with hardware, resources, and top tier support. This is a deep technical partnership between the HAMi maintainers and these organizations. If you are interested in this level of commitment, please contact us."}
+            </p>
+            <div className={styles.supportersWrap}>
+              <ContributorsList items={technicalPartnersData} />
+            </div>
+          </div>
+        </section>
+
+        <section ref={addRevealRef} className={clsx(styles.section, styles.reveal)}>
           <div className="container">
             <h2 className={styles.sectionTitle}>{isZh ? "贡献组织" : "Contributors"}</h2>
             <p className={styles.sectionLead}>

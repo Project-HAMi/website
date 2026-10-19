@@ -7,6 +7,7 @@ title: 常见问题
 | **GPU 厂商** | **GPU 型号** | **粒度** | **多 GPU 支持** |
 | --- | --- | --- | --- |
 | NVIDIA | 几乎所有主流消费级和数据中心 GPU | 核心 1%，显存 1M | 支持。多 GPU 仍可通过虚拟化进行拆分和共享。 |
+| AMD | Instinct 和 Radeon（ROCm） | 核心 1%（RDNA 上按整个 WGP），显存 1M | 已实现，但仍需真实多 GPU 验证：目前的多 GPU 运行使用的是单块真实 GPU 上的模拟 GPU。参见 [AMD 测试状态](../userguide/amd-device/verification-status.md)。 |
 | 昇腾 | 910A、910B2、910B3、310P | 最小粒度取决于卡类型模板。参考[官方模板](https://www.hiascend.com/document/detail/zh/mindx-dl/50rc1/AVI/cpaug/cpaug_0005.html)。 | 支持，但当 `npu > 1` 时不支持拆分，整卡独占。 |
 | 海光 | 全部 | 核心 1%，显存 1M | 支持，但当 `hcu > 1` 时不支持拆分，整卡独占。 |
 | 寒武纪 | 370、590 | 核心 1%，显存 256M | 支持，但当 `mlu > 1` 时不支持拆分，整卡独占。 |
@@ -96,7 +97,7 @@ HAMi 支持多节点多 GPU 分布式训练，单个 Pod 可使用同节点多�
 
 **简要说明：**
 
-同一节点只能启用一个 GPU 插件，避免资源冲突。
+默认情况下，每个节点只使用一个 GPU 管理插件，以避免资源冲突。但当 HAMi 使用不同的资源名称时，HAMi 与 NVIDIA 官方 device plugin 可以在同一节点上共存，详见下方[FAQ](#hami-如何与-nvidia-官方-device-plugin-共存)。
 
 ### 插件关系说明
 
@@ -106,6 +107,7 @@ HAMi 支持多节点多 GPU 分布式训练，单个 Pod 可使用同节点多�
   - 使用扩展资源名 `nvidia.com/gpu`；
   - 支持 HAMi 的 GPU 管理能力（如 vGPU 拆分、自定义调度）；
   - 适用于复杂资源管理场景。
+  - 可修改该资源名称以避免与 NVIDIA 官方 device plugin 冲突，详见下方[FAQ](#hami-如何与-nvidia-官方-device-plugin-共存)。
 
 - **Volcano 插件**
   - 使用扩展资源名 `volcano.sh/vgpu-number`；
@@ -119,7 +121,7 @@ HAMi 支持多节点多 GPU 分布式训练，单个 Pod 可使用同节点多�
 
 ### 是否可共存
 
-- **HAMi 与 NVIDIA 插件**：不建议共存，会产生资源冲突；
+- **HAMi 与 NVIDIA 插件**：使用相同的资源名称，不建议共存，会产生资源冲突；当 HAMi 使用不同的资源名称时，两者可以在同一节点上共存，详见下方[FAQ](#hami-如何与-nvidia-官方-device-plugin-共存)；
 - **HAMi 与 Volcano 插件**：理论上可共存，但推荐只启用一个；
 - **NVIDIA 与 Volcano 插件**：理论上可共存，但不建议混合使用。
 
@@ -229,3 +231,86 @@ DCGM Exporter 不受影响，继续正常上报物理级计数器。HAMi 的每�
 ## PaddlePaddle 在vGPU上出现core_dump崩溃？
 
 该问题由`thread_local`分配器触发，详情查看：[PaddlePaddle thread_local 分配器导致 vGPU 环境 CoreDump](./troubleshooting/paddle-threadlocal-coredump)
+
+## 如何支持更细粒度的卡切分，例如 0.05 或 0.01？
+
+HAMi 通过 `deviceSplitCount` 控制单块物理 GPU 上可分配的最大任务数。默认值为 10。
+
+它限制的是单块 GPU 能被多少个任务共享。每个工作负载实际分到的显存和核心，仍由其自身的资源请求决定。
+
+要支持更细粒度的切分，可通过覆盖 Helm `values.yaml` 中的该参数来实现：
+
+```yaml
+devices:
+  nvidia:
+    deviceSplitCount: 20 # 单块 GPU 最多承载 20 个任务
+    # 或
+    # deviceSplitCount: 100 # 单块 GPU 最多承载 100 个任务
+```
+
+然后在工作负载自身的资源请求中声明目标切分。在 deviceSplitCount: 20 时，请求 5% 的显存和核心即可得到 0.05 卡：
+
+```yaml
+resources:
+  limits:
+    nvidia.com/gpu: 1
+    nvidia.com/gpucores: 5
+    nvidia.com/gpumem-percentage: 5
+```
+
+在 deviceSplitCount: 100 时，请求 1% 的显存和核心即可得到 0.01 卡：
+
+```yaml
+resources:
+  limits:
+    nvidia.com/gpu: 1
+    nvidia.com/gpucores: 1
+    nvidia.com/gpumem-percentage: 1
+```
+
+如果想要针对节点单独修改，请设置 `devicePlugin.nodeConfiguration.config` 下的 `devicesplitcount`。
+
+`deviceSplitCount`与单块 GPU 最大任务数的对应关系如下：
+
+| deviceSplitCount | 单块 GPU 最大任务数 | 切分大小 |
+| ---------------- | ------------------- | -------- |
+| 10（默认）       | 10                  | 0.1      |
+| 20               | 20                  | 0.05     |
+| 100              | 100                 | 0.01     |
+
+> deviceSplitCount 设置得越大，device-plugin 为单块 GPU 管理的 vGPU 条目越多。请根据实际并发需求选择合适的值。
+
+## HAMi 如何与 NVIDIA 官方 device plugin 共存？
+
+HAMi 和 NVIDIA 官方 device plugin 默认都使用相同的扩展资源名称`nvidia.com/gpu` 上报 GPU 资源，运行在同一节点上会产生资源归属冲突。要让两者共存，可通过修改 Helm `values.yaml` 中的以下参数，让 HAMi 使用自定义资源名称：
+
+```yaml
+# NVIDIA GPU Parameters
+devices:
+  nvidia:
+    resourceCountName: "hami.io/gpu"
+    resourceMemoryName: "hami.io/gpumem"
+    resourceMemoryPercentageName: "hami.io/gpumem-percentage"
+    resourceCoreName: "hami.io/gpucores"
+    resourcePriorityName: "hami.io/priority"
+```
+
+资源名称必须与 NVIDIA device plugin 使用的名称不同。两者的默认值均为 nvidia.com/gpu 及其相关名称，因此 HAMi 需要使用不同的名称。推荐使用 hami.io/gpu 及其相关名称作为约定命名。
+
+修改后，节点会同时上报两个资源名称。工作负载可通过请求其中任意一个资源名称来选择插件，请勿在同一工作负载中同时请求两者。
+
+```yaml
+# Use NVIDIA official device plugin
+resources:
+  limits:
+    nvidia.com/gpu: 1
+```
+
+```yaml
+# Use HAMi vGPU scheduling
+resources:
+  limits:
+    hami.io/gpu: 1
+```
+
+> Note: 同一个资源名称必须且只能由一个插件拥有，且同一工作负载不能同时请求两个资源名称。
