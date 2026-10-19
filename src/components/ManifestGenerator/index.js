@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import CodeBlock from "@theme/CodeBlock";
 import Translate, { translate } from "@docusaurus/Translate";
 import clsx from "clsx";
+import { formatPodManifest } from "@site/src/utils/manifest";
 import styles from "./styles.module.css";
 
 const VENDORS = {
@@ -287,7 +288,7 @@ export default function ManifestGenerator() {
     let annotations = [];
     let limits = [];
 
-    limits.push(`      ${v.resourceKey}: ${deviceCount}`);
+    limits.push(`${v.resourceKey}: ${deviceCount}`);
 
     const omitMultiDeviceMem =
       deviceCount > 1 &&
@@ -297,19 +298,19 @@ export default function ManifestGenerator() {
 
     if (v.memKey && !omitMultiDeviceMem) {
       if (memMode === "value" && v.memUnit !== "%") {
-        limits.push(`      ${v.memKey}: ${memValue}`);
+        limits.push(`${v.memKey}: ${memValue}`);
       } else if (memMode === "percentage" && v.memPctKey) {
-        limits.push(`      ${v.memPctKey}: ${memValue}`);
+        limits.push(`${v.memPctKey}: ${memValue}`);
       } else if (v.memUnit === "%") {
-        limits.push(`      ${v.memPctKey || v.memKey}: ${memValue}`);
+        limits.push(`${v.memPctKey || v.memKey}: ${memValue}`);
       }
     }
 
     if (v.coreKey && coreMode !== "none" && !omitMultiDeviceCore) {
       if (coreMode === "value") {
-        limits.push(`      ${v.coreKey}: ${coreValue}`);
+        limits.push(`${v.coreKey}: ${coreValue}`);
       } else if (coreMode === "percentage" && v.corePctKey) {
-        limits.push(`      ${v.corePctKey}: ${coreValue}`);
+        limits.push(`${v.corePctKey}: ${coreValue}`);
       }
     }
 
@@ -322,32 +323,7 @@ export default function ManifestGenerator() {
       }
     }
 
-    const podName = `hami-${vendor.toLowerCase().replace(/_/g, "-")}-pod`;
-    let code = `apiVersion: v1
-kind: Pod
-metadata:
-  name: ${podName}
-`;
-
-    if (annotations.length > 0) {
-      code += `  annotations:\n${annotations.join("\n")}\n`;
-    }
-
-    code += `spec:\n`;
-    if (vendor.startsWith("ASCEND_")) {
-      // runtimeClassName is off by default and the name is configurable in the Ascend setup.
-      // Emit it as a YAML comment so users can enable it if their cluster is configured for it.
-      code += `  # runtimeClassName: ascend  # enable if your cluster uses the Ascend runtime class\n`;
-    }
-    code += `  containers:
-    - name: hami-container
-      image: ubuntu:22.04
-      command: ["sleep", "infinity"]
-      resources:
-        limits:
-${limits.join("\n")}`;
-
-    return code;
+    return formatPodManifest(vendor, annotations, limits);
   }, [
     vendor,
     deviceCount,
