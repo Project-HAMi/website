@@ -83,7 +83,7 @@ feature-gates=DRAConsumableCapacity=true
 feature-gates=DRAConsumableCapacity=true
 ```
 
-You should see the gate on every control-plane component listed. If any of them misses it, capacity requests are rejected or accounting silently does not happen.
+You should see the gate on every control-plane component listed. On the verification cluster, two of the four components carry the gate as a command-line flag (the two lines above); kube-controller-manager and kubelet were enabled and verified through their configuration files (`grep featureGates /var/lib/kubelet/config.yaml` for kubelet, the controller-manager manifest under `/etc/kubernetes/manifests/`). If any component misses it, capacity requests are rejected or accounting silently does not happen.
 
 ### Check containerd CDI
 
@@ -241,7 +241,7 @@ NAME                                          NODE             DRIVER           
 aio-node74-arm-ascend.project-hami.io-gktzs   aio-node74-arm   ascend.project-hami.io   aio-node74-arm   23d
 ```
 
-All driver Pods Running, one DeviceClass named `hami-vnpu-core.project-hami.io`, and one ResourceSlice per node with driver `ascend.project-hami.io`.
+The AGE columns come from a later re-check of the same still-running cluster: the objects date from the mid-September driver install, which is consistent with the 09-17 workload captures in Step 8; they do not mean the lab was verified three weeks after the install. All driver Pods Running, one DeviceClass named `hami-vnpu-core.project-hami.io`, and one ResourceSlice per node with driver `ascend.project-hami.io`.
 
 ## Step 3: Inspect the DeviceClass and the ResourceSlice
 
@@ -636,7 +636,7 @@ npu-smi info   # process list, abridged
 | 4     0      | 49806        | python3        | 2156                 |
 ```
 
-The 6150 MB and the 2156 MB measure different things, and the gap is expected: the limiter debits each process's virtual allocations against the 8192 MB `NPU_MEM_QUOTA`, and the torch allocator reserves address space before physical memory is touched, while `npu-smi` shows only the physical memory each process has pinned on the device. Quota accounting therefore reaches the limit while physical usage is still well below it, which is the intended behavior of a quota-based isolation layer.
+The 6150 MB and the 2156 MB measure different things, and the gap is expected: the limiter debits each process's virtual allocations against the 8192 MB `NPU_MEM_QUOTA`, and the torch allocator reserves address space before physical memory is touched, while `npu-smi` shows only the physical memory each process has pinned on the device. Quota accounting therefore reaches the limit while physical usage is still well below it, which is the intended behavior of a quota-based isolation layer. The torch error's "2.00 GiB already allocated" is per-process: it reports only the failing process's own allocator, while the limiter's `Used: 6150 MB` debits every process in the container. The capture itself shows both processes (PID 381 registers at 10:18, PID 1139 appears at 10:22), matching the two `python3` entries in the `npu-smi` list, so the two numbers describe the same moment.
 
 `NPU_PRIORITY=50` was injected the same way and constrains compute through time-slice scheduling. This lab verified the injection but did not run a long-running saturated comparison workload, so it draws no conclusion about the effective strength of time-slice isolation on the 310P; the scheduling-side accounting of the compute dimension is fully covered in the next step.
 

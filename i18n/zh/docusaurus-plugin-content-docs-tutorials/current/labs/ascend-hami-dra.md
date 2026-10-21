@@ -83,7 +83,7 @@ feature-gates=DRAConsumableCapacity=true
 feature-gates=DRAConsumableCapacity=true
 ```
 
-列出的每个控制面组件都应带此 gate。任何一处缺失，容量请求会被拒绝，或者记账静默失效。
+列出的每个控制面组件都应带此 gate。验证集群上四个组件中有两个以命令行 flag 形式带此 gate（即上面两行）；kube-controller-manager 与 kubelet 通过各自的配置文件开启并核对（kubelet 用 `grep featureGates /var/lib/kubelet/config.yaml`，controller-manager 看 `/etc/kubernetes/manifests/` 下的 manifest）。任何一处缺失，容量请求会被拒绝，或者记账静默失效。
 
 ### 检查 containerd CDI
 
@@ -241,7 +241,7 @@ NAME                                          NODE             DRIVER           
 aio-node74-arm-ascend.project-hami.io-gktzs   aio-node74-arm   ascend.project-hami.io   aio-node74-arm   23d
 ```
 
-driver Pod 全部 Running，一个名为 `hami-vnpu-core.project-hami.io` 的 DeviceClass，每个节点一条 driver 为 `ascend.project-hami.io` 的 ResourceSlice。
+AGE 列来自后续对同一仍在运行集群的复查：对象自 9 月中旬 driver 安装起一直存在，与步骤 8 中 09-17 的 workload 捕获并不矛盾，也不代表实验在安装三周后才验证。driver Pod 全部 Running，一个名为 `hami-vnpu-core.project-hami.io` 的 DeviceClass，每个节点一条 driver 为 `ascend.project-hami.io` 的 ResourceSlice。
 
 ## 步骤 3：查看 DeviceClass 与 ResourceSlice
 
@@ -636,7 +636,7 @@ npu-smi info   # 进程列表（节选）
 | 4     0      | 49806        | python3        | 2156                 |
 ```
 
-6150 MB 与 2156 MB 度量的是不同的东西，这个差距是预期行为：limiter 按进程的虚拟显存申请在 8192 MB 的 `NPU_MEM_QUOTA` 上记账，torch 分配器会先保留地址空间、再逐步落到物理显存；而 `npu-smi` 只统计每个进程实际占用的物理显存。因此配额记账先于物理占用到达上限，这正是基于配额的隔离层应有的行为。
+6150 MB 与 2156 MB 度量的是不同的东西，这个差距是预期行为：limiter 按进程的虚拟显存申请在 8192 MB 的 `NPU_MEM_QUOTA` 上记账，torch 分配器会先保留地址空间、再逐步落到物理显存；而 `npu-smi` 只统计每个进程实际占用的物理显存。因此配额记账先于物理占用到达上限，这正是基于配额的隔离层应有的行为。torch 报错里的“2.00 GiB already allocated”则是单进程视角：只统计当前进程自己的分配器，而 limiter 的 `Used: 6150 MB` 是容器内所有进程的累计记账。捕获里也能看到两个进程（PID 381 于 10:18 注册，PID 1139 于 10:22 出现），与 `npu-smi` 里两条 `python3` 记录对应，两个数字描述的是同一时刻。
 
 `NPU_PRIORITY=50` 同样被注入，通过时间片调度约束算力。本实验验证了注入，但没有运行长时间的满载对照 workload，因此不对 310P 上时间片隔离的实际强度下结论；算力维度在调度层的记账由下一步完整覆盖。
 
