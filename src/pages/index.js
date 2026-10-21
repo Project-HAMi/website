@@ -762,11 +762,7 @@ export default function Home() {
                     href={DOCKER_IMAGE_URL}
                     target="_blank"
                     rel="noreferrer"
-                    data-source={
-                      isZh
-                        ? "数据来源：Docker Hub。"
-                        : "Source: Docker Hub."
-                    }
+                    data-source={isZh ? "数据来源：Docker Hub。" : "Source: Docker Hub."}
                     aria-label={isZh ? "查看 Docker 下载数据来源" : "View Docker pulls data source"}
                   >
                     <FontAwesomeIcon icon={faCircleInfo} />
