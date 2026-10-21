@@ -191,7 +191,7 @@ export default function Home() {
   const isZh = i18n.currentLocale === "zh";
   const [starsCount, setStarsCount] = useState(3100);
   // Static: Docker Hub's API sends no CORS header, so it cannot be read from the browser.
-  const dockerPulls = 325000;
+  const dockerPulls = 700000;
   const kubernetesLogo = withBaseUrl("img/kubernetes-logo.svg");
   const hamiLogo = withBaseUrl("img/hami-graph-color.svg");
   const hamiHorizontalLogoLight = withBaseUrl("img/hami-horizontal-color-black.svg");
@@ -756,19 +756,23 @@ export default function Home() {
                   <span className={styles.communityMetricIcon} aria-hidden="true">
                     <FontAwesomeIcon icon={faBoxOpen} />
                   </span>
-                  <strong>{isZh ? "镜像下载" : "Docker Pulls"}</strong>
+                  <strong>{isZh ? "累计下载量" : "Total Image Pulls"}</strong>
                   <a
                     className={styles.metricSourceHint}
                     href={DOCKER_IMAGE_URL}
                     target="_blank"
                     rel="noreferrer"
-                    data-source={isZh ? "数据来源：Docker Hub" : "Source: Docker Hub"}
+                    data-source={
+                      isZh
+                        ? "数据来源：Docker Hub。"
+                        : "Source: Docker Hub."
+                    }
                     aria-label={isZh ? "查看 Docker 下载数据来源" : "View Docker pulls data source"}
                   >
                     <FontAwesomeIcon icon={faCircleInfo} />
                   </a>
                 </div>
-                <span>{formatCompactNumber(dockerPullsDisplay)}</span>
+                <span>{formatCompactNumber(dockerPullsDisplay)}+</span>
               </article>
               <article className={styles.communityMetricCard}>
                 <div className={styles.communityMetricHead}>
