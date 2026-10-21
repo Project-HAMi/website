@@ -61,9 +61,11 @@
 
 :global(.footer .footer__title),
 :global(.footer.footer--dark .footer__title) {
-  color: #0f1722;
-  font-size: 0.94rem;
-  letter-spacing: 0.01em;
+  color: #6b7f95;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
 }
 
 :global(.footer .footer__link-item),
@@ -73,10 +75,8 @@
   color: #32506f;
   font-size: 0.9rem;
   line-height: 1.55;
-  text-decoration-line: underline;
-  text-decoration-color: rgba(50, 80, 111, 0.42);
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.16em;
+  text-decoration: none;
+  transition: color var(--ifm-transition-fast) ease;
   white-space: normal;
   overflow-wrap: anywhere;
 }
@@ -85,10 +85,13 @@
 :global(.footer.footer--dark .footer__link-item:hover),
 :global(.footer a:hover),
 :global(.footer.footer--dark a:hover) {
-  color: #0f1722;
-  text-decoration-line: underline;
-  text-decoration-color: currentColor;
-  text-decoration-thickness: 1px;
+  color: var(--ifm-color-primary-dark, #0ebd54);
+  text-decoration: none;
+}
+
+/* External-link arrows duplicate the leading brand icons; drop them. */
+:global(.footer .footer__link-item svg[class*="iconExternalLink"]) {
+  display: none;
 }
 
 :global(.footer .footer__copyright),
@@ -107,8 +110,11 @@
 
 :global(html[data-theme="dark"] .footer .footer__title),
 :global(html[data-theme="dark"] .footer.footer--dark .footer__title) {
-  color: #f5f7fa;
-  font-size: 0.94rem;
+  color: #7d8ea3;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
 }
 
 :global(html[data-theme="dark"] .footer .footer__link-item),
@@ -118,20 +124,16 @@
   color: #a9b4c2;
   font-size: 0.9rem;
   line-height: 1.55;
-  text-decoration-line: underline;
-  text-decoration-color: rgba(169, 180, 194, 0.45);
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.16em;
+  text-decoration: none;
+  transition: color var(--ifm-transition-fast) ease;
 }
 
 :global(html[data-theme="dark"] .footer .footer__link-item:hover),
 :global(html[data-theme="dark"] .footer.footer--dark .footer__link-item:hover),
 :global(html[data-theme="dark"] .footer a:hover),
 :global(html[data-theme="dark"] .footer.footer--dark a:hover) {
-  color: #ffffff;
-  text-decoration-line: underline;
-  text-decoration-color: currentColor;
-  text-decoration-thickness: 1px;
+  color: var(--hami-color-primary, #10d05d);
+  text-decoration: none;
 }
 
 :global(html[data-theme="dark"] .footer .footer__copyright),
@@ -192,11 +194,29 @@
 .footerItemLabel {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: 0.55rem;
 }
 
+/* Fixed icon box keeps labels column-aligned across varying glyph widths. */
 .footerItemIcon {
-  width: 0.95rem;
+  width: 1.05rem;
+  height: 1.05rem;
+  flex: 0 0 1.05rem;
+  color: #7d93ab;
+  transition: color var(--ifm-transition-fast) ease;
+}
+
+:global(.footer .footer__link-item:hover) .footerItemIcon {
+  color: var(--ifm-color-primary-dark, #0ebd54);
+}
+
+[data-theme="dark"] .footerItemIcon {
+  color: #6e8199;
+}
+
+[data-theme="dark"] :global(.footer .footer__link-item:hover) .footerItemIcon,
+[data-theme="dark"] :global(.footer.footer--dark .footer__link-item:hover) .footerItemIcon {
+  color: var(--hami-color-primary, #10d05d);
 }
 
 .cncfLogo {
