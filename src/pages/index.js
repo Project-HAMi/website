@@ -147,6 +147,9 @@ const architectureSectionCopy = {
 const DEVSTATS_URL = "https://hami.devstats.cncf.io/d/18/overall-project-statistics-table?orgId=1";
 const GITHUB_REPO_URL = "https://github.com/Project-HAMi/HAMi";
 const DOCKER_IMAGE_URL = "https://hub.docker.com/r/projecthami/hami";
+// The survey form is region-specific: Feishu for zh, Google Forms for everyone else.
+const SURVEY_URL_EN = "https://forms.gle/CTXZmG1WUgE9vPBm8";
+const SURVEY_URL_ZH = "https://dynamia-ai.feishu.cn/share/base/form/shrcnI1cfFqgx3jWQ76U3HUhwhQ";
 
 function formatCompactNumber(value) {
   if (!Number.isFinite(value)) return "--";
@@ -678,16 +681,16 @@ export default function Home() {
               </h3>
               <p className={styles.adoptersCtaText}>
                 {isZh
-                  ? "请按照贡献者指南流程提交贵组织信息。"
-                  : "Submit your organization through the contributor guide process."}
+                  ? "填写社区问卷，告诉我们贵组织的使用情况，即可加入采用者列表。"
+                  : "Fill out the community survey to tell us how your organization uses HAMi and join the list."}
               </p>
               <a
                 className={clsx("button", "button--primary", styles.adoptersCtaButton)}
-                href="https://github.com/Project-HAMi/HAMi/issues/4"
+                href={isZh ? SURVEY_URL_ZH : SURVEY_URL_EN}
                 target="_blank"
                 rel="noreferrer"
               >
-                {isZh ? "查看提交说明 →" : "See submission instructions →"}
+                {isZh ? "填写问卷，加入采用者列表 →" : "Fill out the survey to join →"}
               </a>
             </article>
           </div>
@@ -821,6 +824,14 @@ export default function Home() {
               <Link className={clsx("button", "button--outline")} to={withBaseUrl("/community")}>
                 {isZh ? "加入社区" : "Join Community"}
               </Link>
+              <a
+                className={clsx("button", "button--outline")}
+                href={isZh ? SURVEY_URL_ZH : SURVEY_URL_EN}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {isZh ? "填写社区问卷" : "Community Survey"}
+              </a>
             </div>
           </div>
         </section>

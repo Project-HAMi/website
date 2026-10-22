@@ -61,11 +61,11 @@
 
 :global(.footer .footer__title),
 :global(.footer.footer--dark .footer__title) {
-  color: #6b7f95;
-  font-size: 0.72rem;
+  color: #566c85;
+  font-size: 0.86rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.09em;
+  letter-spacing: 0.08em;
 }
 
 :global(.footer .footer__link-item),
@@ -110,11 +110,11 @@
 
 :global(html[data-theme="dark"] .footer .footer__title),
 :global(html[data-theme="dark"] .footer.footer--dark .footer__title) {
-  color: #7d8ea3;
-  font-size: 0.72rem;
+  color: #93a4b8;
+  font-size: 0.86rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.09em;
+  letter-spacing: 0.08em;
 }
 
 :global(html[data-theme="dark"] .footer .footer__link-item),
