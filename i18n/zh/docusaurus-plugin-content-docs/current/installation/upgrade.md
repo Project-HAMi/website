@@ -2,6 +2,12 @@
 title: 升级 HAMi
 ---
 
+:::warning 适用版本
+
+本文仅适用于从 HAMi v2.10 升级到新版 Chart，不建议从其他版本直接按本文操作。如果当前使用的是更早版本，请先参考 [v2.10 升级文档](/zh/docs/installation/upgrade)，将 HAMi 升级至 v2.10，再按本文继续升级。
+
+:::
+
 ## 升级影响
 
 :::info 现有工作负载与 HAMi-core
