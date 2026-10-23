@@ -65,6 +65,7 @@
   "devDependencies": {
     "@docusaurus/faster": "^3.10.1",
     "@swc/core": "^1.16.18",
+    "js-yaml": "4.3.2",
     "markdownlint-cli": "^0.49.0",
     "prettier": "^3.9.10",
     "swc-loader": "^0.2.7"
