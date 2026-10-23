@@ -75,15 +75,27 @@ Three components, three responsibilities. Keep them apart throughout the lab:
 ### Check the feature gate
 
 ```bash
-ps -ef | grep -E "kube-apiserver|kube-controller-manager|kube-scheduler|kubelet" | grep -o "feature-gates=.*"
+ps -ef | grep -E "kube-apiserver|kube-controller-manager|kube-scheduler" | grep -o "feature-gates=.*"
 ```
 
 ```text
-feature-gates=DRAConsumableCapacity=true
-feature-gates=DRAConsumableCapacity=true
+.../pki/apiserver.key --feature-gates=DRAConsumableCapacity=true
+.../pki/sa.key --service-cluster-ip-range=10.96.0.0/12 --use-service-account-credentials=true --feature-gates=DRAConsumableCapacity=true
+.../scheduler.conf --leader-elect=true --feature-gates=DRAConsumableCapacity=true
 ```
 
-You should see the gate on every control-plane component listed. On the verification cluster, two of the four components carry the gate as a command-line flag (the two lines above); kube-controller-manager and kubelet were enabled and verified through their configuration files (`grep featureGates /var/lib/kubelet/config.yaml` for kubelet, the controller-manager manifest under `/etc/kubernetes/manifests/`). If any component misses it, capacity requests are rejected or accounting silently does not happen.
+All three control-plane components (kube-apiserver, kube-controller-manager, kube-scheduler) carry the gate as a command-line flag, one line each in the capture above. Kubelet is the exception: it reads feature gates from `/var/lib/kubelet/config.yaml` instead of the command line:
+
+```bash
+grep -A2 featureGates /var/lib/kubelet/config.yaml
+```
+
+```text
+featureGates:
+  DRAConsumableCapacity: true
+```
+
+Two look-alikes in `ps` are not this gate: the Ascend DRA driver's kubelet plugin carries its own `--feature-gates=HAMivNPUCore=true`, and a coexisting HAMi core installation runs its own kube-scheduler fork (configured through `--config`, no DRA gate). If any of the four components misses the gate, capacity requests are rejected or accounting silently does not happen.
 
 ### Check containerd CDI
 

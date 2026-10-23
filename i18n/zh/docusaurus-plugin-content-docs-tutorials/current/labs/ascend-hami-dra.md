@@ -75,15 +75,27 @@ flowchart TD
 ### 检查 feature gate
 
 ```bash
-ps -ef | grep -E "kube-apiserver|kube-controller-manager|kube-scheduler|kubelet" | grep -o "feature-gates=.*"
+ps -ef | grep -E "kube-apiserver|kube-controller-manager|kube-scheduler" | grep -o "feature-gates=.*"
 ```
 
 ```text
-feature-gates=DRAConsumableCapacity=true
-feature-gates=DRAConsumableCapacity=true
+.../pki/apiserver.key --feature-gates=DRAConsumableCapacity=true
+.../pki/sa.key --service-cluster-ip-range=10.96.0.0/12 --use-service-account-credentials=true --feature-gates=DRAConsumableCapacity=true
+.../scheduler.conf --leader-elect=true --feature-gates=DRAConsumableCapacity=true
 ```
 
-列出的每个控制面组件都应带此 gate。验证集群上四个组件中有两个以命令行 flag 形式带此 gate（即上面两行）；kube-controller-manager 与 kubelet 通过各自的配置文件开启并核对（kubelet 用 `grep featureGates /var/lib/kubelet/config.yaml`，controller-manager 看 `/etc/kubernetes/manifests/` 下的 manifest）。任何一处缺失，容量请求会被拒绝，或者记账静默失效。
+三个控制面组件（kube-apiserver、kube-controller-manager、kube-scheduler）都以命令行 flag 形式带此 gate，上面的捕获每个组件各一行。kubelet 是例外：它从 `/var/lib/kubelet/config.yaml` 读取 feature gate，而不是命令行：
+
+```bash
+grep -A2 featureGates /var/lib/kubelet/config.yaml
+```
+
+```text
+featureGates:
+  DRAConsumableCapacity: true
+```
+
+`ps` 里还有两个容易混淆的项，但都不是这个 gate：昇腾 DRA driver 的 kubelet plugin 自带 `--feature-gates=HAMivNPUCore=true`，共存的 HAMi core 安装还运行着自己的 kube-scheduler fork（通过 `--config` 配置，没有 DRA gate）。四个组件任何一处缺失，容量请求会被拒绝，或者记账静默失效。
 
 ### 检查 containerd CDI
 
