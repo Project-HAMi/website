@@ -102,9 +102,9 @@ Enflame、Kunlun、Vastai 和 Biren 的标准资源名现在由对应的设备�
 
 | v2.10 字段         | 最新版字段                         |
 | ------------------ | ---------------------------------- |
-| `hcuResourceName`  | `devices.hygon.resourceCountName`  |
-| `hcuResourceMem`   | `devices.hygon.resourceMemoryName` |
-| `hcuResourceCores` | `devices.hygon.resourceCoreName`   |
+| `dcuResourceName`  | `devices.hygon.resourceCountName`  |
+| `dcuResourceMem`   | `devices.hygon.resourceMemoryName` |
+| `dcuResourceCores` | `devices.hygon.resourceCoreName`   |
 
 #### MetaX
 
@@ -193,7 +193,7 @@ helm repo update
 helm template "${release}" hami-charts/hami \
   --namespace "${namespace}" \
   --version 2.11.0 \
-  --values my-values.yaml \
+  --values my-values.yaml
 ```
 
 ## 执行升级
