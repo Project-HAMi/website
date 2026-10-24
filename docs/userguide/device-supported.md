@@ -176,6 +176,7 @@ All vendor pages are listed here so this page reaches each of them.
 
 ### Mthreads {#mthreads}
 
+- [Use HAMi with Mthreads MTT S5000](mthreads-device/how-to-use-mthreads-s5000.md)
 - [Enable Mthreads GPU sharing](mthreads-device/enable-mthreads-gpu-sharing.md)
 - [Allocate device memory to container](mthreads-device/specify-device-memory-usage.md)
 - [Allocate device core to container](mthreads-device/specify-device-core-usage.md)

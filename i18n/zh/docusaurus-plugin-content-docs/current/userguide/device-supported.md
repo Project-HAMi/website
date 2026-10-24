@@ -177,6 +177,7 @@ HAMi 只是使用这些设备的四种方式之一。另外三种自行完成调
 
 ### 摩尔线程（Mthreads） {#mthreads}
 
+- [在 Mthreads MTT S5000 上使用 HAMi](mthreads-device/how-to-use-mthreads-s5000.md)
 - [启用 Mthreads GPU 共享](mthreads-device/enable-mthreads-gpu-sharing.md)
 - [为容器分配设备显存](mthreads-device/specify-device-memory-usage.md)
 - [分配设备核心给容器](mthreads-device/specify-device-core-usage.md)
