@@ -67,4 +67,4 @@ kubectl rollout status daemonset/hami-device-plugin -n kube-system
 
 A ready deployment confirms component startup. Run the [NVIDIA example](../get-started/deploy-with-helm.md#demo) or the verification steps in the [device guide](./prerequisites.md#device-prerequisites) to check allocation and workload behavior. Device plugins installed separately have their own resource names and namespaces.
 
-For subsequent changes, use [Upgrade](./upgrade.md). See [Chart operations](../userguide/chart-operations.md) for profiling and cache cleanup, or [Troubleshooting](../troubleshooting/troubleshooting.md) for failures.
+For subsequent changes, use [Upgrade](./upgrade.md). See [Configuration](../userguide/configure.md) for profiling and cache cleanup, or [Troubleshooting](../troubleshooting/troubleshooting.md) for failures.

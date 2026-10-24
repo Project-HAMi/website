@@ -24,7 +24,7 @@ Keep installation overrides in a values file and supply it to Helm with `--value
 | NVIDIA node overrides | `devicePlugin.nodeConfiguration` | Apply per-node settings or reference a separately managed ConfigMap. |
 | Platform and security | `platform.openshift`, `openshift.securityContextConstraints`, `selinux` | Configure platform-specific permissions and host directory labels. |
 
-For driver and runtime choices, follow [Prerequisites](../installation/prerequisites.md) and [NVIDIA driver discovery](../installation/online-installation.md#nvidia-driver-discovery). For profiling and cleanup, see [Chart operations](./chart-operations.md).
+For driver and runtime choices, follow [Prerequisites](../installation/prerequisites.md) and [NVIDIA driver discovery](../installation/online-installation.md#nvidia-driver-discovery). For profiling and cleanup, see [Scheduler profiling](#scheduler-profiling) and [vGPU cache garbage collection](#vgpu-cache-garbage-collection) below.
 
 ## Device configuration {#device-configuration}
 
@@ -132,6 +132,46 @@ The chart chooses the first available source in this order:
 
 `device-config.content` replaces the complete document for all vendors. It does not merge with `devices.*`. Prefer individual values for targeted changes. Lists such as the MIG allowlist, Ascend `configs`, and Iluvatar `configs` replace the whole default list; entries do not merge by model or chip name.
 
+## Scheduler profiling {#scheduler-profiling}
+
+Profiling is disabled by default. To enable it, include `--profiling` in the scheduler's extra arguments while retaining any other arguments you need:
+
+```yaml
+scheduler:
+  profilingBindAddress: "127.0.0.1:6060"
+  extender:
+    extraArgs:
+      - --debug
+      - -v=4
+      - --profiling
+```
+
+The dedicated profiling listener serves plain HTTP and defaults to loopback. The scheduler Service does not expose its port. Access it using port-forwarding:
+
+```bash
+kubectl -n kube-system port-forward pod/<scheduler-pod> 6060:6060
+```
+
+Then open `http://127.0.0.1:6060/debug/pprof/` locally.
+
+Previously, enabling profiling exposed pprof on the scheduler's cluster-facing HTTP server. Those routes are now available only on the dedicated profiling listener. Operators using the old endpoint must switch to port-forwarding or explicitly set `scheduler.profilingBindAddress` to a non-loopback address. Changing this address does not expose pprof through the scheduler Service; the old Service endpoint still returns 404 for pprof routes. For non-loopback access, reach the Pod IP and profiling port through an appropriately restricted network path, or use the Pod port-forward shown above. Non-loopback binding logs a security warning: pprof has no authentication and can expose process diagnostics. Restrict network access if you choose to expose it. With profiling disabled, the bind address is ignored and no profiling listener is started.
+
+## vGPU cache garbage collection {#vgpu-cache-garbage-collection}
+
+The chart passes `devicePlugin.vgpuCache.gracePeriod` to the Device Plugin as `HAMI_VGPU_CACHE_GRACE_PERIOD`. Use a Go duration string such as `"30s"`, `"5m"`, or `"1h"`. The grace period is measured from the modification time of each cache directory or adjacent `.limits` file. An omitted or empty value uses `"5m"`. An invalid duration string logs a warning and uses `"5m"`; negative durations prevent Device Plugin startup. `"0s"` removes the grace period, **not** garbage collection: deletion still requires live Pod confirmation and the existing safety checks.
+
+```yaml
+devicePlugin:
+  monitor:
+    resyncInterval: "30s"
+  vgpuCache:
+    gracePeriod: "5m"
+```
+
+**Migration:** `devicePlugin.monitor.resyncInterval` / `HAMI_RESYNC_INTERVAL` no longer controls Device Plugin directory GC. If you previously used a custom monitor resync value to tune cleanup, set `devicePlugin.vgpuCache.gracePeriod` explicitly to retain that GC grace period. For deployments without Helm, set `HAMI_VGPU_CACHE_GRACE_PERIOD` on the Device Plugin container. Without the new setting, GC uses `5m`, regardless of monitor resync. The monitor retains its existing resync and mmap-release behavior and does not delete directories.
+
+This setting does not change the GC scan interval, confirmation retry backoff, or the five-failure limit for directory deletion.
+
 ## NVIDIA node configuration {#node-configuration}
 
 NVIDIA node settings are stored in `config.json` of the `hami-device-plugin` ConfigMap. Matching node settings override the corresponding global device parameters. Set the complete JSON with `devicePlugin.nodeConfiguration.config`, or reference a separately managed ConfigMap with `devicePlugin.nodeConfiguration.externalConfigName`; the external ConfigMap takes priority.
@@ -186,7 +226,18 @@ devicePlugin:
     externalConfigName: hami-node-config
 ```
 
-Changing only the node JSON does not trigger a device-plugin rollout. See [Reload configuration](./chart-operations.md#configuration-reload) for restart commands.
+### Reload configuration {#configuration-reload}
+
+A Helm change to the generated device configuration updates the Pod templates of the scheduler and chart-managed NVIDIA device plugin. With the default `devicePlugin.updateStrategy.type: RollingUpdate`, the device-plugin Pods are replaced automatically. If the strategy is `OnDelete`, existing device-plugin Pods must be deleted manually for the DaemonSet to recreate them with the new configuration. Plugins deployed separately follow their own procedures.
+
+Changing only `devicePlugin.nodeConfiguration.config` or the contents of an external node ConfigMap does not update the Pod template. Changing `devicePlugin.nodeConfiguration.externalConfigName` does update it because the mounted ConfigMap name changes. With the default `RollingUpdate` strategy, restart the NVIDIA device plugin to load changes to the ConfigMap contents:
+
+```bash
+kubectl rollout restart daemonset/hami-device-plugin -n kube-system
+kubectl rollout status daemonset/hami-device-plugin -n kube-system --timeout=5m
+```
+
+These commands use the default resource name and namespace. Substitute the names used by the installation. Back up separately managed ConfigMaps before changing them. Keep persistent settings in Helm values or an external ConfigMap; a later Helm operation can overwrite manual edits to a chart-managed ConfigMap.
 
 ### Which entries apply to a node
 

@@ -67,4 +67,4 @@ kubectl rollout status daemonset/hami-device-plugin -n kube-system
 
 组件就绪仅说明启动完成。运行 [NVIDIA 示例](../get-started/deploy-with-helm.md#demo)或[设备指南](./prerequisites.md#device-prerequisites)中的验证步骤，检查设备分配和工作负载行为。单独部署的设备插件使用其自身的资源名称和命名空间。
 
-后续配置修改按[升级指南](./upgrade.md)操作。性能分析和缓存清理见 [Chart 运维](../userguide/chart-operations.md)，异常排查见[故障排查](../troubleshooting/troubleshooting.md)。
+后续配置修改按[升级指南](./upgrade.md)操作。性能分析和缓存清理见 [配置指南](../userguide/configure.md)，异常排查见[故障排查](../troubleshooting/troubleshooting.md)。
