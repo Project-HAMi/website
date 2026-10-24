@@ -1,8 +1,12 @@
 ---
 title: "Understanding GPU Drivers"
+description: How to check the NVIDIA driver and what each kernel module does.
+sidebar_label: GPU drivers
 ---
 
 Before using a GPU, you first need to verify that the GPU driver is properly loaded into the kernel. This document explains how to check GPU driver status and understand the architecture of NVIDIA kernel modules.
+
+The driver is layer 2 of the [GPU software stack](./gpu-stack.md).
 
 ## Checking GPU Driver Status
 
@@ -28,20 +32,7 @@ Each line represents a loaded kernel module. The columns are: module name, memor
 
 The NVIDIA driver consists of multiple kernel modules with dependencies between them:
 
-```mermaid
-%% title: NVIDIA Kernel Module Hierarchy
-flowchart TB
-    subgraph LinuxKernel["Linux Kernel"]
-        NVIDIA["nvidia - Core GPU Driver"]
-        UVM["nvidia_uvm - Unified Virtual Memory"]
-        MODESET["nvidia_modeset - Display Mode Management"]
-        ECC["ecc - ECC Error Handling"]
-        MODESET --> NVIDIA
-        UVM --> NVIDIA
-        ECC --> NVIDIA
-    end
-    NVIDIA --> GPU["NVIDIA GPU"]
-```
+![NVIDIA driver modules and the path from user space to the GPU](/img/docs/en/core-concepts/gpu-driver.svg)
 
 ### Module Descriptions
 
@@ -49,30 +40,13 @@ flowchart TB
 | --- | --- | --- |
 | **nvidia** | `nvidia.ko` | The core GPU driver module, responsible for GPU hardware initialization, video memory management, command queue scheduling, and other fundamental functions. All other NVIDIA modules depend on it. |
 | **nvidia_uvm** | `nvidia_uvm.ko` | Unified Virtual Memory, enabling CPU and GPU to share the same address space. CUDA programs using `cudaMallocManaged` depend on this module, which automatically migrates data between CPU and GPU. |
-| **nvidia_modeset** | `nvidia_modeset.ko` | Display mode setting module, responsible for managing display output (resolution, refresh rate, etc.). Depends on `nvidia_drm` (DRM subsystem interface) to function. |
-| **ecc** | `ecc.ko` | ECC (Error-Correcting Code) error handling module, used for memory error detection and correction on data center GPUs (such as A100, H100). Consumer-grade GPUs typically do not load this module. |
+| **nvidia_modeset** | `nvidia_modeset.ko` | Display mode setting module, responsible for managing display output (resolution, refresh rate, etc.). `nvidia_drm` depends on it. |
+| **nvidia_drm** | `nvidia_drm.ko` | DRM subsystem interface, connecting the driver to the Linux Direct Rendering Manager. |
+| **ecc** | `ecc.ko` | A general Linux kernel module. It is not part of the NVIDIA driver. |
 
 ## Linux Driver Architecture
 
 GPU drivers follow the standard Linux layered architecture: user space communicates with kernel space modules through libraries, which ultimately operate the hardware.
-
-```mermaid
-%% title: Linux GPU Driver Architecture
-flowchart TB
-    subgraph User["User Space"]
-        CLI["CLI Tools (nvidia-smi)"]
-        Lib["User-Space Library (libnvidia-ml.so)"]
-    end
-    subgraph Kernel["Kernel Space"]
-        Module["Kernel Module (nvidia.ko)"]
-    end
-    subgraph Hardware["Hardware"]
-        HW["GPU Device"]
-    end
-    CLI --> Lib
-    Lib --> Module
-    Module --> HW
-```
 
 Call chain:
 

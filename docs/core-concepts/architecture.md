@@ -1,30 +1,32 @@
 ---
 title: Architecture
+description: The four HAMi components and the path a Pod takes through them.
 ---
 
 The overall architecture of HAMi is shown as below:
 
-![Architecture](/img/docs/common/core-concepts/architect.jpg)
+![HAMi components and the path of a Pod](/img/docs/en/core-concepts/hami-architecture-flow.svg)
 
 HAMi consists of the following components:
 
-- HAMi MutatingWebhook
-- HAMi scheduler-extender
-- Device-plugin (HAMi-device-plugin)
-- In-container resource control (HAMi-Core)
+| Component | Runs as | What it does |
+| --- | --- | --- |
+| MutatingWebhook | Part of the `hami-scheduler` Deployment | Checks each new Pod. If the Pod asks for HAMi resources and names no other scheduler, sets `schedulerName` to `hami-scheduler`. Other Pods pass through unchanged. |
+| HAMi scheduler | `hami-scheduler` Deployment, next to `kube-scheduler` as a scheduler extender | Keeps a view of every GPU in the cluster. Filters nodes, picks a card, and writes the choice to the Pod's annotations. |
+| HAMi device plugin | DaemonSet on each GPU node | Reports the node's cards to kubelet and to the scheduler. When a Pod starts, mounts the chosen card and HAMi-Core into the container and passes the limits as environment variables. |
+| HAMi-Core (`libvgpu.so`) | Library loaded inside the container | Intercepts CUDA and NVML calls. Rejects memory allocations past the limit and can throttle kernel launches to the compute share. |
 
-## HAMi MutatingWebhook {#hami-mutatingwebhook}
+## The path of a Pod
 
-HAMi MutatingWebhook checks if this task can be handled by HAMi. It scans the resource field of each pod submitted. If each resource the pod requires is either 'CPU', 'Memory' or a HAMi-resource, then it will set the schedulerName field of this pod to 'hami-scheduler'.
+Take a Pod that asks for `nvidia.com/gpumem: 3000`:
 
-## HAMi Scheduler {#hami-scheduler}
+1. **Admission.** The webhook sees a HAMi resource and routes the Pod to `hami-scheduler`.
+2. **Scheduling.** The HAMi scheduler reads each card's memory and compute from node annotations. It keeps the nodes with a card that has 3000 MiB free, picks one card by policy, and records the card's UUID and the Pod's share in Pod annotations.
+3. **Start.** kubelet on the chosen node starts the Pod and calls the device plugin's `Allocate`.
+4. **Injection.** The device plugin reads the annotations, mounts the card, `libvgpu.so`, and `/etc/ld.so.preload` into the container, and sets `CUDA_DEVICE_MEMORY_LIMIT_0=3000m`.
+5. **Enforcement.** When any process in the container starts, the dynamic linker loads HAMi-Core first. From then on, HAMi-Core checks memory allocations and kernel launches against the limits. See [Device resource isolation](../key-features/device-resource-isolation.md).
 
-The HAMi scheduler is responsible for assigning tasks to the appropriate nodes and devices. At the same time, the scheduler needs to maintain a global view of heterogeneous computing devices for monitoring.
+## Learn more
 
-## Device Plugin {#device-plugin}
-
-The device-plugin layer obtains the scheduling result from the annotations field of the task and maps the corresponding device to the container.
-
-## HAMi-Core {#hami-core}
-
-The in-container resource control is responsible for monitoring the resource usage within the container and providing hard isolation capabilities.
+- [GPU virtualization principles](./gpu-virtualization.md): a detailed walk through registration, scheduling, and injection
+- [Protocol design](../developers/protocol.md): the annotations the scheduler and device plugin exchange

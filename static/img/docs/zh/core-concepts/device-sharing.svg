@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 388" width="960" height="388" role="img">
+<title>三个 Pod 按槽位、显存和算力共享一张 GPU</title>
+<defs>
+  <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+    <rect width="8" height="8" fill="#F3F4F6"/>
+    <line x1="0" y1="0" x2="0" y2="8" stroke="#D1D5DB" stroke-width="3"/>
+  </pattern>
+  <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="#64748B"/>
+  </marker>
+  <marker id="arrowG" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="#10B05A"/>
+  </marker>
+  <marker id="arrowR" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="#EF4444"/>
+  </marker>
+  <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+    <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-color="#0F172A" flood-opacity="0.10"/>
+  </filter>
+</defs>
+<rect x="0" y="0" width="960" height="388" rx="18" fill="#FFFFFF"/>
+<rect x="24" y="24" width="300" height="104" rx="10" fill="#DBEAFE" stroke="#3B82F6" stroke-width="2" filter="url(#shadow)"/>
+<text x="42" y="50" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="700" fill="#3B82F6" text-anchor="start">Pod A</text>
+<text x="42" y="74" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12.5" font-weight="400" fill="#1F2937" text-anchor="start">nvidia.com/gpu: 1</text>
+<text x="42" y="92" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12.5" font-weight="400" fill="#1F2937" text-anchor="start">nvidia.com/gpumem: 4096</text>
+<text x="42" y="110" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12.5" font-weight="400" fill="#1F2937" text-anchor="start">nvidia.com/gpucores: 30</text>
+<rect x="24" y="142" width="300" height="104" rx="10" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2" filter="url(#shadow)"/>
+<text x="42" y="168" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="700" fill="#F59E0B" text-anchor="start">Pod B</text>
+<text x="42" y="192" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12.5" font-weight="400" fill="#1F2937" text-anchor="start">nvidia.com/gpu: 1</text>
+<text x="42" y="210" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12.5" font-weight="400" fill="#1F2937" text-anchor="start">nvidia.com/gpumem-percentage: 50</text>
+<text x="42" y="228" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12.5" font-weight="400" fill="#1F2937" text-anchor="start">nvidia.com/gpucores: 40</text>
+<rect x="24" y="260" width="300" height="104" rx="10" fill="#EDE9FE" stroke="#8B5CF6" stroke-width="2" filter="url(#shadow)"/>
+<text x="42" y="286" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="700" fill="#8B5CF6" text-anchor="start">Pod C</text>
+<text x="42" y="310" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12.5" font-weight="400" fill="#1F2937" text-anchor="start">nvidia.com/gpu: 1</text>
+<text x="42" y="328" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12.5" font-weight="400" fill="#1F2937" text-anchor="start">nvidia.com/gpumem: 2048</text>
+<text x="42" y="346" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12.5" font-weight="400" fill="#1F2937" text-anchor="start">nvidia.com/gpucores: 20</text>
+<rect x="360" y="24" width="576" height="340" rx="14" fill="#F8FAFC" stroke="#D1D5DB" stroke-width="1.5" filter="url(#shadow)"/>
+<line x1="390.72" y1="42" x2="390.72" y2="46" stroke="#10B05A" stroke-width="2"/><line x1="390.72" y1="70" x2="390.72" y2="74" stroke="#10B05A" stroke-width="2"/><line x1="380" y1="52.72" x2="384" y2="52.72" stroke="#10B05A" stroke-width="2"/><line x1="408" y1="52.72" x2="412" y2="52.72" stroke="#10B05A" stroke-width="2"/><line x1="396.0" y1="42" x2="396.0" y2="46" stroke="#10B05A" stroke-width="2"/><line x1="396.0" y1="70" x2="396.0" y2="74" stroke="#10B05A" stroke-width="2"/><line x1="380" y1="58.0" x2="384" y2="58.0" stroke="#10B05A" stroke-width="2"/><line x1="408" y1="58.0" x2="412" y2="58.0" stroke="#10B05A" stroke-width="2"/><line x1="401.28" y1="42" x2="401.28" y2="46" stroke="#10B05A" stroke-width="2"/><line x1="401.28" y1="70" x2="401.28" y2="74" stroke="#10B05A" stroke-width="2"/><line x1="380" y1="63.28" x2="384" y2="63.28" stroke="#10B05A" stroke-width="2"/><line x1="408" y1="63.28" x2="412" y2="63.28" stroke="#10B05A" stroke-width="2"/>
+<rect x="384" y="46" width="24" height="24" rx="4" fill="#fff" stroke="#10B05A" stroke-width="2"/>
+<rect x="391.2" y="53.2" width="9.600000000000001" height="9.600000000000001" rx="2" fill="#10B05A"/>
+<text x="420" y="64" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="700" fill="#1F2937" text-anchor="start">一张 GPU · 16384 MiB</text>
+<text x="384" y="122" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="700" fill="#1F2937" text-anchor="start">槽位</text>
+<text x="384" y="140" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="11" font-weight="400" fill="#6B7280" text-anchor="start">已用 3 / 10</text>
+<rect x="480.0" y="104" width="37.8" height="34" rx="6" fill="#3B82F6" stroke="#3B82F6" stroke-width="1.5"/>
+<rect x="523.8" y="104" width="37.8" height="34" rx="6" fill="#F59E0B" stroke="#F59E0B" stroke-width="1.5"/>
+<rect x="567.6" y="104" width="37.8" height="34" rx="6" fill="#8B5CF6" stroke="#8B5CF6" stroke-width="1.5"/>
+<rect x="611.4" y="104" width="37.8" height="34" rx="6" fill="#fff" stroke="#D1D5DB" stroke-width="1.5" stroke-dasharray="4 3"/>
+<rect x="655.2" y="104" width="37.8" height="34" rx="6" fill="#fff" stroke="#D1D5DB" stroke-width="1.5" stroke-dasharray="4 3"/>
+<rect x="699.0" y="104" width="37.8" height="34" rx="6" fill="#fff" stroke="#D1D5DB" stroke-width="1.5" stroke-dasharray="4 3"/>
+<rect x="742.8" y="104" width="37.8" height="34" rx="6" fill="#fff" stroke="#D1D5DB" stroke-width="1.5" stroke-dasharray="4 3"/>
+<rect x="786.5999999999999" y="104" width="37.8" height="34" rx="6" fill="#fff" stroke="#D1D5DB" stroke-width="1.5" stroke-dasharray="4 3"/>
+<rect x="830.4" y="104" width="37.8" height="34" rx="6" fill="#fff" stroke="#D1D5DB" stroke-width="1.5" stroke-dasharray="4 3"/>
+<rect x="874.2" y="104" width="37.8" height="34" rx="6" fill="#fff" stroke="#D1D5DB" stroke-width="1.5" stroke-dasharray="4 3"/>
+<text x="384" y="194" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="700" fill="#1F2937" text-anchor="start">显存</text>
+<text x="384" y="212" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="11" font-weight="400" fill="#6B7280" text-anchor="start">MiB</text>
+<rect x="480" y="176" width="105.0" height="42" rx="6" fill="#3B82F6"/>
+<text x="532.5" y="203" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">4096</text>
+<rect x="588.0" y="176" width="213.0" height="42" rx="6" fill="#F59E0B"/>
+<text x="694.5" y="203" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">8192 (50%)</text>
+<rect x="804.0" y="176" width="51.0" height="42" rx="6" fill="#8B5CF6"/>
+<text x="829.5" y="203" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">2048</text>
+<rect x="858.0" y="176" width="54.0" height="42" rx="6" fill="#DCFCE7" stroke="#10B05A" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="885.0" y="203" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="12" font-weight="600" fill="#047857" text-anchor="middle">2048</text>
+<text x="384" y="272" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="700" fill="#1F2937" text-anchor="start">算力</text>
+<text x="384" y="290" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="11" font-weight="400" fill="#6B7280" text-anchor="start">占整卡的百分比</text>
+<rect x="480" y="254" width="126.6" height="42" rx="6" fill="#3B82F6"/>
+<text x="543.3" y="281" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">30%</text>
+<rect x="609.6" y="254" width="169.8" height="42" rx="6" fill="#F59E0B"/>
+<text x="694.5" y="281" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">40%</text>
+<rect x="782.4000000000001" y="254" width="83.4" height="42" rx="6" fill="#8B5CF6"/>
+<text x="824.1000000000001" y="281" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">20%</text>
+<rect x="868.8000000000001" y="254" width="43.19999999999993" height="42" rx="6" fill="#DCFCE7" stroke="#10B05A" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="890.4000000000001" y="281" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="12" font-weight="600" fill="#047857" text-anchor="middle">10%</text>
+<text x="384" y="346" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="12.5" font-weight="400" fill="#6B7280" text-anchor="start" font-style="italic">一张卡同时有空闲的槽位、足够的显存和算力时，Pod 才能放上去。</text>
+</svg>

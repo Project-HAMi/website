@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1089 104" width="1089" height="104" role="img">
+<title>Complete GPU Pod dependency chain</title>
+<defs>
+  <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+    <rect width="8" height="8" fill="#F3F4F6"/>
+    <line x1="0" y1="0" x2="0" y2="8" stroke="#D1D5DB" stroke-width="3"/>
+  </pattern>
+  <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="#64748B"/>
+  </marker>
+  <marker id="arrowG" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="#10B05A"/>
+  </marker>
+  <marker id="arrowR" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="#EF4444"/>
+  </marker>
+  <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+    <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-color="#0F172A" flood-opacity="0.10"/>
+  </filter>
+</defs>
+<rect x="0" y="0" width="1089" height="104" rx="18" fill="#FFFFFF"/>
+<rect x="23.700000000000045" y="24" width="70" height="56" rx="10" fill="#fff" stroke="#64748B" stroke-width="1.8" filter="url(#shadow)"/>
+<text x="58.700000000000045" y="57.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1F2937" text-anchor="middle">Pod</text>
+<line x1="96.70000000000005" y1="52.0" x2="123.70000000000005" y2="52.0" stroke="#64748B" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="127.70000000000005" y="24" width="112.00000000000001" height="56" rx="10" fill="#fff" stroke="#64748B" stroke-width="1.8" filter="url(#shadow)"/>
+<text x="183.70000000000005" y="57.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1F2937" text-anchor="middle">containerd</text>
+<line x1="242.70000000000005" y1="52.0" x2="269.70000000000005" y2="52.0" stroke="#64748B" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="273.70000000000005" y="24" width="162.40000000000003" height="56" rx="10" fill="#fff" stroke="#64748B" stroke-width="1.8" filter="url(#shadow)"/>
+<text x="354.9000000000001" y="48.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1F2937" text-anchor="middle">NVIDIA Container</text>
+<text x="354.9000000000001" y="66.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1F2937" text-anchor="middle">Toolkit</text>
+<line x1="439.1000000000001" y1="52.0" x2="466.1000000000001" y2="52.0" stroke="#64748B" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="470.1000000000001" y="24" width="70" height="56" rx="10" fill="#fff" stroke="#64748B" stroke-width="1.8" filter="url(#shadow)"/>
+<text x="505.1000000000001" y="57.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1F2937" text-anchor="middle">CUDA</text>
+<line x1="543.1000000000001" y1="52.0" x2="570.1000000000001" y2="52.0" stroke="#64748B" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="574.1000000000001" y="24" width="145.60000000000002" height="56" rx="10" fill="#fff" stroke="#64748B" stroke-width="1.8" filter="url(#shadow)"/>
+<text x="646.9000000000001" y="48.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1F2937" text-anchor="middle">User-Space</text>
+<text x="646.9000000000001" y="66.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1F2937" text-anchor="middle">Driver Library</text>
+<line x1="722.7000000000002" y1="52.0" x2="749.7000000000002" y2="52.0" stroke="#64748B" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="753.7000000000002" y="24" width="103.60000000000001" height="56" rx="10" fill="#fff" stroke="#64748B" stroke-width="1.8" filter="url(#shadow)"/>
+<text x="805.5000000000001" y="57.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1F2937" text-anchor="middle">nvidia.ko</text>
+<line x1="860.3000000000002" y1="52.0" x2="887.3000000000002" y2="52.0" stroke="#64748B" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="891.3000000000002" y="24" width="70" height="56" rx="10" fill="#fff" stroke="#64748B" stroke-width="1.8" filter="url(#shadow)"/>
+<text x="926.3000000000002" y="57.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1F2937" text-anchor="middle">PCIe</text>
+<line x1="964.3000000000002" y1="52.0" x2="991.3000000000002" y2="52.0" stroke="#64748B" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="995.3000000000002" y="24" width="70" height="56" rx="10" fill="#fff" stroke="#64748B" stroke-width="1.8" filter="url(#shadow)"/>
+<text x="1030.3000000000002" y="57.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1F2937" text-anchor="middle">GPU</text>
+</svg>
