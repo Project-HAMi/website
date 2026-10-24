@@ -1,146 +1,243 @@
 ---
-title: Upgrade
+title: Upgrade HAMi
 ---
 
-## Overview
+:::warning Supported Source Version
 
-Upgrading HAMi to a new version should be done carefully to avoid disrupting GPU workloads. This guide covers the upgrade process, compatibility considerations, and best practices.
+This guide only applies to upgrades from HAMi v2.10 to the new Chart. Following these instructions directly from other versions is not recommended. If you are running an earlier version, first follow the [v2.10 upgrade guide](/docs/installation/upgrade) to upgrade HAMi to v2.10, then continue with this guide.
+
+:::
+
+## Upgrade Impact
+
+:::info Existing Workloads and HAMi-core
+
+Upgrading HAMi replaces hami-scheduler and hami-device-plugin and regenerates the device configuration, **but does not affect running GPU workloads, so there is no need to stop or migrate existing tasks for the upgrade**. However, workloads using HAMi-core do not automatically switch to the new version. HAMi-core is injected when a Pod is created, and running processes do not reload the library. For workloads that need the new HAMi-core version, perform a rolling restart or recreate the Pods after the upgrade.
+
+:::
+
+:::warning Pause New Task Submissions During the Upgrade
+
+During the upgrade, we recommend pausing submission of new HAMi GPU workloads until hami-scheduler, hami-device-plugin, and the admission webhook have finished updating. Rolling updates may cause brief unavailability or configuration version mismatches, which may lead to scheduling failures or injection errors for new tasks.
+
+:::
+
+Device plugins from other vendors are outside the scope of this guide. See [Devices Supported by HAMi](../userguide/device-supported.md).
 
 ## Before You Upgrade
 
-### 1. Check Compatibility
+### Configure Variables
 
-Verify that your target HAMi version is compatible with your current Kubernetes version and NVIDIA driver:
+Set the variables needed for deployment. Adjust the following example to match your environment.
 
 ```bash
-# Current HAMi version
-helm list -n kube-system | grep hami
-
-# Kubernetes version
-kubectl version
-
-# NVIDIA driver version (on GPU nodes)
-nvidia-smi | grep "Driver Version"
+export namespace=kube-system
+export release=hami
 ```
 
-### 2. Backup Current Configuration
+### Check the HAMi Version
 
-Save your current HAMi configuration in case you need to rollback:
+Before upgrading, confirm that the currently installed version is HAMi 2.10:
 
 ```bash
-# Backup current values
-helm get values hami -n kube-system > hami-backup-values.yaml
-
-# Backup ConfigMaps
-kubectl get configmap hami-scheduler-device -n kube-system -o yaml > hami-configmap-backup.yaml
-
-# Check current state
-kubectl get all -n kube-system -l app.kubernetes.io/instance=hami -o yaml > hami-state-backup.yaml
+helm list -n "${namespace}" --filter "^${release}$"
 ```
 
-### 3. Clear Running Workloads
+### Back Up Helm Values
 
-**CRITICAL:** Before upgrading, stop or reschedule all GPU workloads. Upgrading with running tasks can cause segmentation faults and unpredictable behavior.
-
-**Gracefully drain GPU workloads:**
+Before upgrading, save the user configuration for the current release:
 
 ```bash
-# Find pods using GPU
-kubectl get pods --all-namespaces -o json | jq -r '.items[] | select(.spec.containers[]?.resources.limits | select(. != null) | select(has("nvidia.com/gpu"))) | "\(.metadata.namespace) \(.metadata.name)"'
-
-# Delete or reschedule these pods
-kubectl delete pods <pod-name> -n <namespace> --grace-period=30
+helm get values "${release}" -n "${namespace}" -o yaml > previous-values.yaml
 ```
 
-Or reschedule to non-GPU nodes if available:
+## Migrate and Create Values
+
+When upgrading from v2.10 to the latest Chart, all device-related fields move under `devices.<vendor>`. First create `my-values.yaml` from the backed-up values, migrate the fields, and validate rendering before performing the upgrade.
+
+### Create values.yaml
+
+Create `my-values.yaml` from `previous-values.yaml` as a starting point for preparing the upgrade configuration:
 
 ```bash
-# Add node selector to force scheduling away from GPU nodes
-kubectl patch deployment <deployment-name> -n <namespace> -p '{"spec":{"template":{"spec":{"nodeSelector":{"gpu":"false"}}}}}'
+cp previous-values.yaml my-values.yaml
 ```
 
-### 4. Verify HAMi Components Are Running
+After copying the file, update the device fields as described in the next section. Do not use the entire old configuration directly for the upgrade. Include any other custom settings that you need to retain in `my-values.yaml`. Do not restore the entire old ConfigMap after the upgrade, as this would overwrite the new default configuration.
 
-Before proceeding, ensure all HAMi components are healthy:
+### Migrate Device Fields
 
-```bash
-# Check pod status
-kubectl get pods -n kube-system -l app.kubernetes.io/instance=hami
+The standard resource names for Enflame, Kunlun, Vastai, and Biren are now automatically added to the scheduler extender from the corresponding device fields. For these four device types, `customresources` contains only additional resources and defaults to an empty list. Remove any standard resource entries copied from the old values.
 
-# Check for errors
-kubectl logs -n kube-system -l app.kubernetes.io/component=hami-scheduler --tail=50
-kubectl logs -n kube-system -l app.kubernetes.io/component=hami-device-plugin --tail=50
+Before migrating, review the old values file and any device configuration that was manually modified in the old `hami-scheduler-device` ConfigMap (the actual name varies with the release and naming overrides). Use the defaults from the Chart version installed before the upgrade as the baseline. Include only settings that differ from those defaults and still need to be retained after the upgrade in the new values.
+
+- For device fields in the old values, use the vendor-specific mappings below to migrate them to the new paths and remove the old paths.
+- For configuration modified directly in the ConfigMap, find the corresponding Helm values fields before migrating. Do not copy the entire ConfigMap contents into values. The old fields in the tables below refer to old Helm values paths, not ConfigMap field paths.
+- Remove device fields that match the old version's defaults from `my-values.yaml`. There is no need to add them at the corresponding new paths; let the new Chart use its defaults.
+
+Do not decide whether a value needs migration solely because it is `0`, `false`, or an empty string; compare it with the old version's defaults. The new values must not contain any of the old fields listed below, or the new Chart will refuse to render.
+
+#### NVIDIA
+
+This includes NVIDIA resource fields and NVIDIA Device Plugin configuration fields:
+
+| v2.10 Field                              | Latest Field                                  |
+| ---------------------------------------- | --------------------------------------------- |
+| `resourceName`                           | `devices.nvidia.resourceCountName`            |
+| `resourceMem`                            | `devices.nvidia.resourceMemoryName`           |
+| `resourceMemPercentage`                  | `devices.nvidia.resourceMemoryPercentageName` |
+| `resourceCores`                          | `devices.nvidia.resourceCoreName`             |
+| `resourcePriority`                       | `devices.nvidia.resourcePriorityName`         |
+| `devicePlugin.deviceSplitCount`          | `devices.nvidia.deviceSplitCount`             |
+| `devicePlugin.deviceMemoryScaling`       | `devices.nvidia.deviceMemoryScaling`          |
+| `devicePlugin.deviceCoreScaling`         | `devices.nvidia.deviceCoreScaling`            |
+| `devicePlugin.preConfiguredDeviceMemory` | `devices.nvidia.preConfiguredDeviceMemory`    |
+| `devicePlugin.enableNumaTopology`        | `devices.nvidia.enableNumaTopology`           |
+| `devicePlugin.runtimeClassName`          | `devices.nvidia.runtimeClassName`             |
+| `devicePlugin.createRuntimeClass`        | `devices.nvidia.createRuntimeClass`           |
+
+#### Cambricon
+
+| v2.10 Field        | Latest Field                           |
+| ------------------ | -------------------------------------- |
+| `mluResourceName`  | `devices.cambricon.resourceCountName`  |
+| `mluResourceMem`   | `devices.cambricon.resourceMemoryName` |
+| `mluResourceCores` | `devices.cambricon.resourceCoreName`   |
+
+#### Hygon
+
+| v2.10 Field        | Latest Field                       |
+| ------------------ | ---------------------------------- |
+| `dcuResourceName`  | `devices.hygon.resourceCountName`  |
+| `dcuResourceMem`   | `devices.hygon.resourceMemoryName` |
+| `dcuResourceCores` | `devices.hygon.resourceCoreName`   |
+
+#### MetaX
+
+| v2.10 Field              | Latest Field                        |
+| ------------------------ | ----------------------------------- |
+| `metaxResourceName`      | `devices.metax.resourceVCountName`  |
+| `metaxResourceCore`      | `devices.metax.resourceVCoreName`   |
+| `metaxResourceMem`       | `devices.metax.resourceVMemoryName` |
+| `metaxsGPUTopologyAware` | `devices.metax.sgpuTopologyAware`   |
+
+#### Enflame
+
+| v2.10 Field                    | Latest Field                            |
+| ------------------------------ | --------------------------------------- |
+| `enflameResourceNameDRSGCU`    | `devices.enflame.resourceNameDRSGCU`    |
+| `enflameResourceNameGCUMemory` | `devices.enflame.resourceNameGCUMemory` |
+| `enflameResourceNameGCUCore`   | `devices.enflame.resourceNameGCUCore`   |
+
+#### Kunlunxin
+
+| v2.10 Field                 | Latest Field                         |
+| --------------------------- | ------------------------------------ |
+| `kunlunResourceName`        | `devices.kunlun.resourceCountName`   |
+| `kunlunResourceVCountName`  | `devices.kunlun.resourceVCountName`  |
+| `kunlunResourceVMemoryName` | `devices.kunlun.resourceVMemoryName` |
+
+#### Vastai
+
+| v2.10 Field          | Latest Field                       |
+| -------------------- | ---------------------------------- |
+| `vastaiResourceName` | `devices.vastai.resourceCountName` |
+
+#### Biren
+
+| v2.10 Field         | Latest Field                      |
+| ------------------- | --------------------------------- |
+| `birenResourceName` | `devices.biren.resourceCountName` |
+
+### Migration Example
+
+Suppose the previous installation used `override-values.yaml` with the following contents:
+
+```yaml
+resourceName: nvidia.com/gpu
+devicePlugin:
+  deviceSplitCount: 20
+  disablecorelimit: "true"
 ```
 
-## Upgrade Process
+Here, `resourceName` matches the v2.10 default and does not need to be retained. `deviceSplitCount` was changed from the default of `10` to `20` and needs to be migrated. `disablecorelimit` is a custom setting whose path has not changed, so retain it as is.
 
-### Standard Upgrade (Recommended)
+Also suppose that the following field in `data.device-config.yaml` in the `hami-scheduler-device` ConfigMap was changed from the default of `0` to `4096` (only the relevant snippet is shown):
 
-For most cases, use the standard upgrade process:
-
-```bash
-# Update Helm repository
-helm repo update hami-charts
-
-# Check available versions
-helm search repo hami-charts/hami --versions
-
-# Get current values (preserve custom configuration)
-helm get values hami -n kube-system > current-values.yaml
-
-# Perform upgrade
-helm upgrade hami hami-charts/hami -n kube-system -f current-values.yaml
+```yaml
+nvidia:
+  defaultMemory: 4096
 ```
 
-### In-Place Upgrade (If Using Existing Installation)
+The v2.10 Chart template hardcoded `defaultMemory` to `0`, so it could not be changed through a dedicated values field. [HAMi#3152](https://github.com/Project-HAMi/HAMi/pull/3152) exposed these settings as values fields, so this manual change can now be migrated to `devices.nvidia.defaultMemory`.
 
-If you do not have a custom values file, you can upgrade directly:
+The resulting `my-values.yaml` is:
 
-```bash
-helm repo update hami-charts
-helm upgrade hami hami-charts/hami -n kube-system
+```yaml
+devices:
+  nvidia:
+    deviceSplitCount: 20
+    defaultMemory: 4096
+devicePlugin:
+  disablecorelimit: "true"
 ```
 
-### Uninstall and Reinstall (For Major Version Changes)
+This file retains only the settings that need overrides: migrated device fields, custom configuration extracted from the ConfigMap, and custom settings whose paths have not changed. Neither the old path for `resourceName` nor its corresponding new path needs to be included; the new Chart provides the default.
 
-For major version upgrades with breaking changes, uninstall first:
+`scheduler.overwriteEnv` and other `devicePlugin` settings still use their original paths, including `enabled`, image settings, `deviceListStrategy`, `migStrategy`, `disablecorelimit`, and `nodeConfiguration`. Retain any custom values at their original paths.
+
+If you previously used `device-config.content` or `files/device-config.yaml` in the Chart, they replace the entire generated device configuration rather than merging with `devices.*`. To switch to managing configuration through `devices.*`, first review and migrate the settings that need to be retained, then remove the existing full configuration override.
+
+### Validate the Migrated Configuration
+
+Update the Helm repository and render the configuration using the new Chart version:
 
 ```bash
-# Uninstall current version
-helm uninstall hami -n kube-system
-
-# Update repository
+helm repo add hami-charts https://project-hami.github.io/HAMi/
 helm repo update
 
-# Reinstall with new version
-helm install hami hami-charts/hami -n kube-system
+helm template "${release}" hami-charts/hami \
+  --namespace "${namespace}" \
+  --version 2.11.0 \
+  --values my-values.yaml
 ```
+
+## Perform the Upgrade
+
+Render the release again using the migrated values and the Chart defaults:
+
+```bash
+helm upgrade "${release}" hami-charts/hami \
+  --namespace "${namespace}" \
+  --version 2.11.0 \
+  --reset-values \
+  --values my-values.yaml
+```
+
+`--reset-values` discards the old values stored in the release. All overrides that need to be retained must be included in `my-values.yaml` or supplied through other `--values` files.
+
+Do not use `--reuse-values` or `--reset-then-reuse-values` for this migration. They carry removed fields from the old values into the new Chart, causing rendering to fail.
 
 ## Post-Upgrade Verification
 
-After the upgrade completes, verify that HAMi is functioning correctly:
-
-### 1. Check Pod Status
+### Check Workloads
 
 ```bash
-kubectl get pods -n kube-system -l app.kubernetes.io/instance=hami
+kubectl get pods -n "${namespace}" \
+  -l "app.kubernetes.io/instance=${release}"
+kubectl rollout status deployment -n "${namespace}" \
+  -l "app.kubernetes.io/instance=${release},app.kubernetes.io/component=hami-scheduler" \
+  --timeout=5m
+kubectl rollout status daemonset -n "${namespace}" \
+  -l "app.kubernetes.io/instance=${release},app.kubernetes.io/component=hami-device-plugin" \
+  --timeout=5m
 ```
 
-All pods should be in `Running` state.
+Pods should be in the `Running` state, and the Deployment and DaemonSet should have completed their rolling updates.
 
-### 2. Verify Component Health
+### Test Device Allocation
 
-```bash
-# Check scheduler logs for errors
-kubectl logs -n kube-system -l app.kubernetes.io/component=hami-scheduler | grep -i "error\|warning" | head -20
-
-# Check device plugin logs
-kubectl logs -n kube-system -l app.kubernetes.io/component=hami-device-plugin | grep -i "error" | head -20
-```
-
-### 3. Test GPU Allocation
-
-Deploy a test pod to verify GPU resources are properly allocated:
+Use a small Pod to verify GPU allocation:
 
 ```bash
 kubectl apply -f - <<EOF
@@ -160,149 +257,51 @@ spec:
   restartPolicy: Never
 EOF
 
-# Check if pod runs successfully
 kubectl logs gpu-test-pod
-
-# Clean up
 kubectl delete pod gpu-test-pod
 ```
 
-### 4. Verify Node GPU Status
+Then check node resources and HAMi annotations:
 
 ```bash
-# Check GPU allocatable resources on each node
 kubectl describe nodes | grep -A 5 "Allocated resources"
-
-# Check HAMi annotations on nodes
 kubectl get nodes -o yaml | grep -A 10 "hami.io"
 ```
 
-## Troubleshooting
+## Rollback
 
-### Pods Stuck in Pending State
-
-If pods remain in pending state after upgrade:
+First, view the release history:
 
 ```bash
-# Check pod events
-kubectl describe pod <pod-name>
-
-# Check scheduler logs
-kubectl logs -n kube-system -l app.kubernetes.io/component=hami-scheduler | grep -i "pending\|error"
-
-# Verify GPU availability
-kubectl describe nodes | grep -i "gpu"
+helm history "${release}" -n "${namespace}"
 ```
 
-**Solution:** Restart the HAMi device plugin:
+Roll back to the previous version:
 
 ```bash
-kubectl rollout restart daemonset/hami-device-plugin -n kube-system
+helm rollback "${release}" -n "${namespace}"
 ```
 
-### GPU Not Recognized After Upgrade
-
-If GPUs are not being detected:
+You can also specify a revision:
 
 ```bash
-# Verify NVIDIA driver is still loaded on nodes
-kubectl debug node/<node-name> -it --image=ubuntu
-
-# Inside the debug container
-lspci | grep -i gpu
-nvidia-smi
-exit
-
-# Restart device plugin on affected node
-kubectl delete pods -n kube-system -l app.kubernetes.io/component=hami-device-plugin --field-selector spec.nodeName=<node-name>
+helm rollback "${release}" <revision-number> -n "${namespace}"
 ```
 
-### Segmentation Fault During Upgrade
-
-If you see segmentation faults:
-
-1. **Root Cause:** Running workloads during upgrade (as warned above)
-2. **Immediate Action:** Restart affected pods:
-
-   ```bash
-   kubectl delete pods <affected-pod-name> -n <namespace>
-   ```
-
-3. **Prevention:** Always clear workloads before upgrading
-
-### Helm Chart Configuration Changed
-
-If your custom values are no longer compatible:
-
-```bash
-# Compare old and new values
-helm show values hami-charts/hami > new-defaults.yaml
-diff current-values.yaml new-defaults.yaml
-
-# Update your values file with deprecated keys removed
-# Then retry the upgrade
-helm upgrade hami hami-charts/hami -n kube-system -f current-values.yaml
-```
-
-## Rollback Procedures
-
-If something goes wrong during upgrade, you can rollback to the previous version:
-
-### Rollback Using Helm
-
-```bash
-# View revision history
-helm history hami -n kube-system
-
-# Rollback to previous release
-helm rollback hami -n kube-system
-
-# Or rollback to specific revision
-helm rollback hami <revision-number> -n kube-system
-```
-
-### Manual Rollback
-
-If helm rollback does not work:
-
-```bash
-# Get previous HAMi version from backup
-helm install hami hami-charts/hami -n kube-system --version <previous-version> -f hami-backup-values.yaml
-
-# Or restore from kubectl backup
-kubectl apply -f hami-state-backup.yaml
-```
-
-## Version Compatibility Matrix
-
-| HAMi Version | Min Kubernetes | Max Kubernetes | NVIDIA Driver | Notes         |
-| ------------ | -------------- | -------------- | ------------- | ------------- |
-| v2.8.x       | 1.23           | 1.28           | ≥450.x        | Latest stable |
-| v2.7.x       | 1.21           | 1.27           | ≥450.x        |               |
-| v2.6.x       | 1.20           | 1.26           | ≥450.x        |               |
-
-For earlier versions, refer to the [releases page](https://github.com/Project-HAMi/HAMi/releases).
-
-## Best Practices
-
-1. **Test in Staging First** - Always test upgrades in a non-production environment first
-2. **Maintain Backups** - Keep ConfigMap and state backups before upgrading
-3. **Schedule Maintenance Windows** - Upgrade during low-usage periods
-4. **Monitor After Upgrade** - Watch logs and metrics for 30 minutes post-upgrade
-5. **Document Changes** - Keep notes of what was upgraded and when
-6. **Have Rollback Plan** - Always know how to quickly rollback if needed
+If workloads still behave abnormally after rollback, first restore the GPU workloads from before the maintenance window, then check the scheduler, device plugin, and node logs.
 
 ## Getting Help
 
-If you encounter issues during upgrade:
+If you encounter issues during the upgrade:
 
 1. Check the [troubleshooting guide](../troubleshooting/troubleshooting.md)
-2. Review HAMi scheduler and device plugin logs
-3. Check [GitHub issues](https://github.com/Project-HAMi/HAMi/issues)
+2. Review scheduler and device plugin logs
+3. Check [GitHub Issues](https://github.com/Project-HAMi/HAMi/issues)
 4. Ask in the [community discussions](https://github.com/Project-HAMi/HAMi/discussions)
 
 ## See Also
 
 - [Installation Guide](./online-installation.md)
 - [Uninstallation Guide](./uninstall.md)
+- [Devices Supported by HAMi](../userguide/device-supported.md)
 - [HAMi Documentation](../core-concepts/introduction.md)
