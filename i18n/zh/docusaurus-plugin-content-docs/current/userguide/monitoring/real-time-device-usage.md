@@ -4,6 +4,21 @@ sidebar_label: 实时设备使用
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="usageMetrics" />
+
+实时用量指标来自各 GPU 节点：HAMi-core 记录每个容器的实际用量，NVML 提供整卡数据。不同模式下，从不同的地方读取：
+
+| 模式 | 由谁暴露 | 访问方式 |
+| --- | --- | --- |
+| HAMi | 设备插件 DaemonSet 中的 vGPU monitor，端口 9394 | NodePort `31992` |
+| HAMi-DRA | 暂不提供 | — |
+| Volcano vGPU | 设备插件 DaemonSet 中的 `volcano-vgpu-monitor`，端口 9394 | 没有 Service，需访问 Pod IP |
+| KAI Scheduler | kai-resource-isolator 的 `kai-vgpu-monitor`，端口 9394 | 默认关闭，见 [KAI Scheduler](#kai-scheduler) |
+
+## HAMi
+
 你可以通过访问 `{GPU 节点 IP}:31992/metrics` 获取实时设备显存和核心使用情况，或者将其添加到 Prometheus 端点，如下命令所示：
 
 ```bash
@@ -38,3 +53,23 @@ curl {GPU 节点 IP}:31992/metrics
 在 v2.10.0 中，`hami_container_device_memory_bytes` 不再包含 `context_size`、`module_size`、`buffer_size` 和 `offset` 标签。context、module 和 buffer 显存分别通过 `hami_vgpu_memory_context_bytes`、`hami_vgpu_memory_module_bytes` 和 `hami_vgpu_memory_buffer_bytes` 指标提供。
 
 :::
+
+## Volcano vGPU
+
+该 monitor 使用旧的指标名，例如 `HostCoreUtilization` 和 `vGPU_device_memory_usage_in_bytes`。指标列表见[设备插件 README](https://github.com/Project-HAMi/volcano-vgpu-device-plugin#monitor)。
+
+```bash
+curl {volcano 设备插件 Pod IP}:9394/metrics
+```
+
+## KAI Scheduler
+
+安装 kai-resource-isolator 时开启 monitor。它暴露与上文相同的 `hami_*` 容器指标；整卡指标只有 GPU 利用率和已用显存。
+
+```bash
+helm upgrade --install kai-resource-isolator oci://docker.io/projecthami/kai-resource-isolator \
+  --namespace kai-resource-isolator --create-namespace \
+  --version 1.0.0-chart \
+  --set monitor.enabled=true \
+  --set monitor.serviceMonitor.enabled=true
+```

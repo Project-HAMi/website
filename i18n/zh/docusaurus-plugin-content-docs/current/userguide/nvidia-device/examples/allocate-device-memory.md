@@ -4,6 +4,10 @@ sidebar_label: 分配显存
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="memMib" />
+
 要分配特定大小的 GPU 设备显存，你只需在 `nvidia.com/gpu` 之外分配 `nvidia.com/gpumem`。
 
 ```yaml
