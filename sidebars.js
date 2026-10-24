@@ -145,6 +145,7 @@ module.exports = {
       },
       items: [
         "userguide/configure",
+        "userguide/chart-operations",
         "userguide/interactive-manifest-generator",
         {
           type: "category",
