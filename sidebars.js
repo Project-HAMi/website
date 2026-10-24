@@ -213,6 +213,7 @@ module.exports = {
         "developers/init-container-design",
         "developers/sidecar-container-design",
         "developers/gpu-limit-delivery-design",
+        "developers/hami-opencost-cost-attribution",
       ],
     },
     {
