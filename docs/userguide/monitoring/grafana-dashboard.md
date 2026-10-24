@@ -113,7 +113,7 @@ The JSON uses a data source variable instead of a fixed Prometheus UID. Select t
 | Cluster overview | Physical GPU count, total memory, allocated memory and cores, and shared containers |
 | Physical GPUs (host) | Real-time memory usage and utilization, with allocation comparisons |
 | Scheduler / allocation | Device limits, allocation ratios, sharing, GPU inventory, and resource quota |
-| vGPU / container workloads | Per-container vGPU memory, limits, utilization, context and buffer memory, and time since the last kernel |
+| vGPU / container workloads | Per-container vGPU memory, limits, utilization, context and buffer memory, time since the last kernel, and used versus allocated cores per pod |
 | Dynamic MIG | In-use MIG instances by profile, and MIG inventory and allocation table |
 | NVIDIA hardware telemetry (optional DCGM Exporter) | XID errors, temperature, power usage, and SM clock |
 
