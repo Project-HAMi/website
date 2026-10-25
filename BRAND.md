@@ -31,7 +31,7 @@ Suggested diagram mapping: green for HAMi components, blue for observability, in
 
 ## Fonts
 
-The font stacks are declared in `custom.css` as `--hami-font-display`, `--hami-font-body` and `--hami-font-mono`. The site does not bundle or load the named web fonts, so in practice browsers render the fallbacks. Reference the same stacks in SVGs and graphics.
+The font stacks are declared in `custom.css` as `--hami-font-display`, `--hami-font-body` and `--hami-font-mono`. The site does not bundle or load the named web fonts, so in practice browsers render the fallbacks. Code blocks currently use the Infima default monospace stack instead of `--hami-font-mono`. Reference the same stacks in SVGs and graphics.
 
 | Role            | Font          | Fallback                              |
 | --------------- | ------------- | ------------------------------------- |
