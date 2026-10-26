@@ -47,7 +47,7 @@ HAMi 是 CNCF 沙箱项目，专注于异构 AI 算力虚拟化中间件。其�
 - **KAI Scheduler** = 决定「谁在什么时候用什么 GPU」（调度层）
 - **HAMi** = 确保「用了就只有这么多，不能多占」（隔离层）
 
-两者结合，才能实现真正意义上的生产级 GPU 共享。HAMi 支持 NVIDIA GPU、华为昇腾 NPU、寒武纪 MLU、海光 HCU、昆仑芯 XPU 等多种异构加速卡，是云原生 GPU 虚拟化领域覆盖最广的开源方案。详细的异构加速卡支持信息请参考 [HAMi 官方文档](/zh/docs/userguide/device-supported)。
+两者结合，才能实现真正意义上的生产级 GPU 共享。HAMi 支持 NVIDIA GPU、华为昇腾 NPU、寒武纪 MLU、海光 DCU、昆仑芯 XPU 等多种异构加速卡，是云原生 GPU 虚拟化领域覆盖最广的开源方案。详细的异构加速卡支持信息请参考 [HAMi 官方文档](/zh/docs/userguide/device-supported)。
 
 ## 集成架构：HAMi + KAI Scheduler 如何协作
 

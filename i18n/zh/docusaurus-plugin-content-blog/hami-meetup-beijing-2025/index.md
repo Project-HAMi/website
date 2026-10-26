@@ -33,17 +33,17 @@ HAMi 社区 Maintainer 李孟轩介绍了项目在异构算力调度领域的技
 - 计划推出轻量化方案 HAMi-DRA，基于 Kubernetes DRA 架构简化调度链路
 - 建立设备能力矩阵，评估不同设备在显存隔离、算力控制等方面的支持情况
 
-### HCU 软件虚拟化从基础到实践
+### DCU 软件虚拟化从基础到实践
 
-![HCU 实践](dcu-practice-implementation.webp)
+![DCU 实践](dcu-practice-implementation.webp)
 
-海光信息研发工程师王忠勤分享了 HCU 在云原生环境中的虚拟化实践。他介绍了如何基于 hy-smi 工具实现 vHCU 在算力与显存维度的精细化切分，以及 HCU-Device-Plugin 与 HAMi 调度器的协同架构。
+海光信息研发工程师王忠勤分享了 DCU 在云原生环境中的虚拟化实践。他介绍了如何基于 hy-smi 工具实现 vDCU 在算力与显存维度的精细化切分，以及 DCU-Device-Plugin 与 HAMi 调度器的协同架构。
 
 **关键内容：**
 
-- vHCU 的资源隔离与运行时一致性实现
+- vDCU 的资源隔离与运行时一致性实现
 - 标准化设备插件框架与多种运行模式支持
-- HCU-Exporter 在物理 HCU 与 vHCU 监控中的应用
+- DCU-Exporter 在物理 DCU 与 vDCU 监控中的应用
 
 ### 贝壳 × HAMi：vGPU 推理集群实践
 
@@ -98,7 +98,7 @@ HAMi 社区 Maintainer 李孟轩介绍了项目在异构算力调度领域的技
 
 ![交流环节](meetup-networking-session.webp)
 
-现场围绕 GPU/HCU/XPU 虚拟化、推理与训练混部策略、国产加速器适配成本等问题展开了热烈讨论。
+现场围绕 GPU/DCU/XPU 虚拟化、推理与训练混部策略、国产加速器适配成本等问题展开了热烈讨论。
 
 ## PPT 分享
 
