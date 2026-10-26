@@ -9,7 +9,7 @@ HAMi shares AMD GPUs (Radeon and Instinct) between pods with the following resou
 
 - `amd.com/gpu`: number of GPUs
 - `amd.com/gpumem`: device memory in MiB per GPU
-- `amd.com/gpumem-percentage`: device memory per GPU as a percentage of its VRAM (1-100); `amd.com/gpumem` wins if both are set
+- `amd.com/gpumem-percentage`: device memory per GPU as a percentage of its VRAM (1-100); `amd.com/gpumem` takes precedence for the memory request when set to a positive integer
 - `amd.com/gpucores`: compute units per GPU as a percentage (1-100)
 
 A pod that asks for no memory or cores gets the whole GPU. A pod that sets only `amd.com/gpumem-percentage` gets one GPU added by the webhook.
