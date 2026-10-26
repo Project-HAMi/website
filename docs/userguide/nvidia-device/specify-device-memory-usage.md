@@ -5,7 +5,7 @@ sidebar_label: Allocate device memory
 
 Allocate a certain size of device memory by specifying resources such as `nvidia.com/gpumem`. This resource is optional. With the default `memoryFactor: 1`, each unit of `nvidia.com/gpumem` equals 1 MiB.
 
-Use a plain integer without suffixes such as `Mi`, `Gi`, or `G`. For example, request `16384` for 16 GiB with the default memory factor. Kubernetes quantity suffixes do not express HAMi memory units.
+Use a non-negative integer without suffixes such as `Mi`, `Gi`, or `G`. For example, request `16384` for 16 GiB with the default memory factor. Kubernetes quantity suffixes do not express HAMi memory units.
 
 ```yaml
 resources:
@@ -25,6 +25,10 @@ resources:
 
 :::note
 
-`nvidia.com/gpumem` and `nvidia.com/gpumem-percentage` cannot be assigned together
+Prefer specifying memory using one of these resources. If both values are valid and `nvidia.com/gpumem` is set to a positive integer, the memory request is determined by `nvidia.com/gpumem`. If `nvidia.com/gpumem` is omitted or 0 and `nvidia.com/gpumem-percentage` is 1–100, the memory request is calculated from the percentage.
+
+If `nvidia.com/gpumem-percentage` is 100 and `nvidia.com/gpucores` is not specified, HAMi automatically sets `nvidia.com/gpucores: 100`, even when `nvidia.com/gpumem` is also set to a positive integer.
+
+The `nvidia.com/gpumem-percentage` value must still pass validation even when `nvidia.com/gpumem` is set to a positive integer.
 
 :::

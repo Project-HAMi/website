@@ -24,6 +24,6 @@ spec:
 
 :::note
 
-`nvidia.com/gpumem` can't be used together with `nvidia.com/gpumem-percentage`
+Prefer specifying memory using one of these resources. If both values are valid and `nvidia.com/gpumem` is set to a positive integer, the memory request is determined by `nvidia.com/gpumem`. The percentage can still affect other scheduling behavior; see [Allocate device memory](../specify-device-memory-usage.md) for details.
 
 :::
