@@ -6,7 +6,7 @@ Huawei Ascend templates describe the memory, AI cores, and optional AI CPU cores
 
 ## Configure templates
 
-Use `devices.ascend.configs` in the HAMi values file. The Chart writes this list to `vnpus.configs` in the global device ConfigMap shared with the Ascend plugin. Do not manually edit that ConfigMap; see [Global device configuration](../configure.md#device-config-overrides).
+Use `devices.ascend.configs` in the HAMi values file. The Chart writes this list to `vnpus.configs` in the global device ConfigMap. HAMi and the Ascend plugin can share that ConfigMap directly only when they run in the same namespace. If the plugin runs in another namespace, create a separate plugin ConfigMap there and keep its Ascend settings consistent with HAMi’s Helm values. Do not manually edit that ConfigMap; see [Global device configuration](../configure.md#device-config-overrides).
 
 Keep the defaults for supported models. The [values source](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/values.yaml) contains the complete chip definitions and templates; the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md) explains each field. An override replaces the entire `configs` list, so retain every model the cluster needs. If resource names change, also update `devices.ascend.customresources` and keep the plugin configuration consistent.
 

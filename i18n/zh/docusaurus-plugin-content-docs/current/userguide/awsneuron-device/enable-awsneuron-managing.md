@@ -122,6 +122,6 @@ kubectl get node <节点名称> -o yaml | grep -A 10 "hami.io/node-register-<卡
 
 ## 注意事项
 
-1. AWS Neuron 共享仅对申请单个设备 (即`aws.amazon.com/neuroncore`=1) 的容器生效。
+1. `aws.amazon.com/neuroncore` 支持正整数核心数量，不限于 `1`。实际分配取决于所选节点的每卡核心数量和可用核心。
 
 2. 容器内执行`neuron-ls`显示的是设备总内存，这属于正常现象。实际运行任务时会对设备显存进行正确限制。

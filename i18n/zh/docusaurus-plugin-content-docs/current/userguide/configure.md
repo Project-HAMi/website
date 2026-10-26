@@ -70,7 +70,7 @@ RuntimeClass 和驱动需先按[前置条件](../installation/prerequisites.md)�
 | `deviceSplitCount` | `10` | 每张物理 GPU 的共享数量上限；MIG 模式由实际实例容量限制。 |
 | `deviceMemoryScaling` | `1` | 上报显存容量的倍率；大于 `1` 允许显存超分配，不增加物理显存，不适用于 MIG。 |
 | `defaultMemory` | `0` | 未申请正值的绝对显存或显存百分比时，每卡默认分配的显存，单位 MiB；`0` 表示整卡显存。 |
-| `defaultCores` | `0` | 未填写算力请求时的默认算力百分比；`0` 不预留算力。启用 Webhook 时，未指定显存或申请全部显存的整卡请求会补入 `100` 算力。 |
+| `defaultCores` | `0` | 未填写算力请求时的默认算力百分比；`0` 不预留算力。启用 Webhook 时，未指定显存或申请全部显存的整卡请求会将算力请求自动设为 `100`（即 100%）。 |
 
 驱动路径、插件镜像、监控、缓存清理及其他共享参数，按需查阅 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values)中的 `devicePlugin.*` 和 `devices.nvidia.*`。MIG 和 NUMA 配置分别见[动态 MIG 支持](./nvidia-device/dynamic-mig-support.md)与 [NUMA 对齐](./nvidia-device/numa-alignment.md)。
 
