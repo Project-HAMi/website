@@ -42,7 +42,7 @@ devices:
     defaultCores: 50
 ```
 
-`deviceSplitCount` controls the advertised virtual-device count per physical GPU. `defaultMemory` is the fallback allocation in MiB when neither absolute nor percentage memory is requested; `defaultCores` is the fallback core percentage. `defaultMemory: 0` uses the full GPU memory when no memory request is provided; `defaultCores: 0` leaves core usage unconstrained. `deviceCoreScaling` and `deviceMemoryScaling` accept fractional values, and node settings can override sharing parameters.
+`deviceSplitCount` controls the advertised virtual-device count per physical GPU. `defaultMemory` is the fallback allocation in MiB when neither absolute nor percentage memory has a positive request; omitted values and explicit `0` values are treated as unset. `defaultCores` is the fallback core percentage. `defaultMemory: 0` uses the full GPU memory when this fallback applies; `defaultCores: 0` leaves core usage unconstrained. `deviceCoreScaling` and `deviceMemoryScaling` accept fractional values, and node settings can override sharing parameters.
 
 Each `migProfileAllowlist` entry contains `models` and `profiles` lists. This example replaces the whole default allowlist; include other models you need:
 
@@ -313,7 +313,7 @@ scheduler:
     gpuSchedulerPolicy: spread
 ```
 
-`binpack` favors consolidation; `spread` favors distribution. GPU policy also supports `mutex`, selecting a GPU with no other workloads. Per-Pod policy annotations below override these defaults.
+`binpack` favors consolidation; `spread` favors distribution. Node policy accepts either of these values. GPU policy also supports `numa`, `mutex`, and `topology-aware`, as described below. Combine GPU policies with commas, such as `binpack,numa` or `mutex,topology-aware`. Per-Pod policy annotations below override these defaults.
 
 ## Pod Configs: Annotations
 
@@ -324,7 +324,7 @@ scheduler:
 | `nvidia.com/nouse-gputype` | String | If set, devices allocated by this pod will NOT be in the types defined in this string. | `"Tesla V100-PCIE-32GB, NVIDIA A10"` |
 | `nvidia.com/use-gputype` | String | If set, devices allocated by this pod MUST be one of the types defined in this string. | `"Tesla V100-PCIE-32GB, NVIDIA A10"` |
 | `hami.io/node-scheduler-policy` | String | GPU node scheduling policy: `"binpack"` allocates the pod to used GPU nodes for execution. `"spread"` allocates the pod to different GPU nodes for execution. | `"binpack"` or `"spread"` |
-| `hami.io/gpu-scheduler-policy` | String | GPU scheduling policy: `"binpack"` allocates the pod to the same GPU card for execution. `"spread"` allocates the pod to different GPU cards for execution. `"mutex"` allocates the pod only to a GPU card with no other workloads, giving it exclusive use of that card. | `"binpack"`, `"spread"` or `"mutex"` |
+| `hami.io/gpu-scheduler-policy` | String | GPU scheduling policy: `binpack` favors consolidation; `spread` favors distribution; `numa` orders GPUs by NUMA group without requiring all allocated GPUs to share one NUMA node; `mutex` selects only GPUs with no other workloads; `topology-aware` considers GPU interconnect topology on supported devices. Policies can be combined with commas. | `"binpack"`, `"spread"`, `"numa"`, `"mutex"`, `"topology-aware"`, or `"binpack,numa"` |
 | `hami.io/device-scoring-weights` | String | Relative weights of virtual-device slot, device-core, and device-memory utilization in physical-device scoring. All three weights are required, must be non-negative integers, and at least one must be positive. | `"slot=1,core=1,memory=3"` |
 | `nvidia.com/vgpu-mode` | String | The type of vGPU instance this pod wishes to use. | `"hami-core"` or `"mig"` |
 

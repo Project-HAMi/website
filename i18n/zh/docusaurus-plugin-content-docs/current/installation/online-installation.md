@@ -52,6 +52,8 @@ CDI 配置必须引用宿主机驱动布局，容器内部布局可能与之不�
 
 ## 验证安装 {#verify-installation}
 
+以下命令使用 `kube-system` 命名空间、`hami` release 和默认资源名称。自定义安装时，使用实际的命名空间、release 标签值和 Chart 渲染的资源名称。例如，使用默认命名配置的 `gpu` release 会创建 `gpu-hami-scheduler` 和 `gpu-hami-device-plugin`。
+
 检查调度器和所选设备的设备插件 Pod：
 
 ```bash

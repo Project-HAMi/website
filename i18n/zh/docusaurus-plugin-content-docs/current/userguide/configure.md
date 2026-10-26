@@ -42,7 +42,7 @@ devices:
     defaultCores: 50
 ```
 
-`deviceSplitCount` 控制每张物理 GPU 上报的虚拟设备数量。未请求绝对显存或显存百分比时，`defaultMemory` 提供默认显存分配量，单位为 MiB；`defaultCores` 提供默认算力百分比。`defaultMemory: 0` 在未请求显存时使用整张 GPU 的显存；`defaultCores: 0` 不限制默认算力使用。`deviceCoreScaling` 和 `deviceMemoryScaling` 支持小数，节点配置可以覆盖共享参数。
+`deviceSplitCount` 控制每张物理 GPU 上报的虚拟设备数量。绝对显存和显存百分比均未指定正值时，`defaultMemory` 提供默认显存分配量，单位为 MiB；未填写或显式填写 `0` 均视为未指定。`defaultCores` 提供默认算力百分比。`defaultMemory: 0` 在触发上述默认分配时使用整张 GPU 的显存；`defaultCores: 0` 不限制默认算力使用。`deviceCoreScaling` 和 `deviceMemoryScaling` 支持小数，节点配置可以覆盖共享参数。
 
 `migProfileAllowlist` 的每个条目包含 `models` 和 `profiles` 列表。以下示例完整替换默认列表，使用其他型号时也需要包含其条目：
 
@@ -307,7 +307,7 @@ scheduler:
     gpuSchedulerPolicy: spread
 ```
 
-`binpack` 倾向集中分配，`spread` 倾向分散分配。GPU 策略还支持 `mutex`，选择没有其他工作负载的 GPU。下方 Pod 策略注解会覆盖这些默认值。
+`binpack` 倾向集中分配，`spread` 倾向分散分配。节点策略接受这两个值之一。GPU 策略还支持下表中的 `numa`、`mutex` 和 `topology-aware`。使用逗号组合 GPU 策略，例如 `binpack,numa` 或 `mutex,topology-aware`。下方 Pod 策略注解会覆盖这些默认值。
 
 ## Pod 配置：注解
 
@@ -318,7 +318,7 @@ scheduler:
 | `nvidia.com/nouse-gputype` | 字符串 | 如果设置了此字段，则该 Pod 分配的设备**不能**是此字符串中定义的 GPU 类型。 | `"Tesla V100-PCIE-32GB, NVIDIA A10"` |
 | `nvidia.com/use-gputype` | 字符串 | 如果设置了此字段，则该 Pod 分配的设备**必须**是此字符串中定义的 GPU 类型之一。 | `"Tesla V100-PCIE-32GB, NVIDIA A10"` |
 | `hami.io/node-scheduler-policy` | 字符串 | GPU 节点调度策略：`"binpack"` 表示将 Pod 分配到已有负载的 GPU 节点上执行，`"spread"` 表示分配到不同的 GPU 节点上执行。 | `"binpack"` 或 `"spread"` |
-| `hami.io/gpu-scheduler-policy` | 字符串 | GPU 卡调度策略：`"binpack"` 表示将 Pod 分配到同一块 GPU 卡上执行，`"spread"` 表示分配到不同的 GPU 卡上执行。 | `"binpack"` 或 `"spread"` |
+| `hami.io/gpu-scheduler-policy` | 字符串 | GPU 卡调度策略：`binpack` 倾向集中分配；`spread` 倾向分散分配；`numa` 按 NUMA 分组排序 GPU，但不要求分配的所有 GPU 位于同一个 NUMA 节点；`mutex` 仅选择没有其他工作负载的 GPU；`topology-aware` 在支持的设备上考虑 GPU 互连拓扑。可使用逗号组合策略。 | `"binpack"`、`"spread"`、`"numa"`、`"mutex"`、`"topology-aware"` 或 `"binpack,numa"` |
 | `hami.io/device-scoring-weights` | 字符串 | 物理设备评分中虚拟设备槽位、设备核心和设备显存利用率的相对权重。必须提供全部三个权重，值必须为非负整数，并且至少有一个权重大于零。 | `"slot=1,core=1,memory=3"` |
 | `nvidia.com/vgpu-mode` | 字符串 | 指定该 Pod 希望使用的 vGPU 实例类型。 | `"hami-core"` 或 `"mig"` |
 

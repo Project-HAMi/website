@@ -52,6 +52,8 @@ CDI specifications must reference the host driver layout, which can differ from 
 
 ## Verify installation {#verify-installation}
 
+The commands below use release `hami` in namespace `kube-system` with the default resource names. For a custom installation, use the actual namespace, release label, and resource names rendered by the chart. For example, release `gpu` with the default naming settings creates `gpu-hami-scheduler` and `gpu-hami-device-plugin`.
+
 Check the scheduler and the device plugin Pods for the selected devices:
 
 ```bash
