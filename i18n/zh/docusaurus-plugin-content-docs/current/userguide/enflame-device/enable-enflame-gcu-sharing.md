@@ -26,11 +26,7 @@ DRS 是类似 NVIDIA MIG / Ascend VNPU 的硬切分方案。
 
 :::
 
-- 在安装 HAMi 时配置参数 `devices.enflame.enabled=true`
-
-```bash
-helm install hami hami-charts/hami --set devices.enflame.enabled=true -n kube-system
-```
+按[在线安装指南](../../installation/online-installation.md)部署 HAMi，保持 `devices.enflame.enabled=true`（默认值）。此配置将厂商资源加入内置 scheduler extender，厂商插件或工具包仍需单独安装。完整参数见 [Chart values 表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md)中的 `devices.enflame.*`。
 
 > **说明：** 默认资源名称包括：
 >
@@ -38,7 +34,7 @@ helm install hami hami-charts/hami --set devices.enflame.enabled=true -n kube-sy
 > - `enflame.com/gcu-memory`（按显存请求，单位 MiB）
 > - `enflame.com/gcu-core`（按算力百分比请求）
 >
-> 你可以通过修改 `hami-scheduler-device` 配置来修改这些资源名称。
+> 通过 Helm values 中的 `devices.enflame.resourceNameDRSGCU`、`resourceNameGCUMemory` 和 `resourceNameGCUCore` 修改资源名称，并与厂商插件保持一致。不要手工修改全局 ConfigMap，见[全局设备配置](../configure.md#device-config-overrides)。
 
 ## 运行 GCU 任务
 

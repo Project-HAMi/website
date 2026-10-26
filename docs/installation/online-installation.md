@@ -44,11 +44,9 @@ The chart detects the Kubernetes server version and selects the matching kube-sc
 
 ### NVIDIA driver discovery {#nvidia-driver-discovery}
 
-When `devicePlugin.nvidiaDriverRoot=auto`, the device plugin reads `/run/nvidia/validations/driver-ready`. If the file is absent, HAMi assumes a host-installed driver and uses `/` for both the driver and device roots. When HAMi starts before GPU Operator validation completes, wait for GPU Operator to become ready and restart the HAMi device plugin DaemonSet.
+Keep `devicePlugin.nvidiaDriverRoot=auto` for automatic discovery. The plugin reads GPU Operator's `/run/nvidia/validations/driver-ready`; if the file is absent, it assumes the driver is installed on the host. If HAMi starts before GPU Operator validation completes, wait for GPU Operator to become ready and restart the HAMi device plugin DaemonSet.
 
-The detected roots only describe the host paths that the device plugin returns to the runtime: `NVIDIA_DRIVER_ROOT` is used in generated CDI specifications and `NVIDIA_DEV_ROOT` is used for `DeviceSpec.HostPath` when `devicePlugin.passDeviceSpecsEnabled=true`. The device plugin itself initializes NVML and discovers GPUs through the driver libraries and device nodes that the NVIDIA Container Toolkit injects into its container, so the chart mounts only the GPU Operator validation directory read-only. This requires the device plugin Pod to run with the NVIDIA runtime, either because it is the node's default container runtime or through `devices.nvidia.runtimeClassName`.
-
-CDI specifications must reference the host driver layout, which can differ from the layout inside the device plugin container. When `devicePlugin.deviceListStrategy` includes a `cdi-*` strategy, the chart additionally mounts the host root read-only at `/host`; the device plugin uses that mount directly for host-installed drivers, or appends the GPU Operator path suffix (`/run/nvidia/driver`) for GPU Operator installations. Set `devicePlugin.nvidiaDriverRoot` explicitly to mount only the driver root instead.
+The device plugin Pod must use the NVIDIA runtime to load driver libraries and discover GPUs. Set NVIDIA as the node's default runtime or configure `devices.nvidia.runtimeClassName`. For CDI settings and prerequisites, see [Configure CDI](./configure-cdi.md). Driver-path overrides and their mount behavior are documented in the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md).
 
 ## Verify installation {#verify-installation}
 
@@ -69,4 +67,4 @@ kubectl rollout status daemonset/hami-device-plugin -n kube-system
 
 A ready deployment confirms component startup. Run the [NVIDIA example](../get-started/deploy-with-helm.md#demo) or the verification steps in the [device guide](./prerequisites.md#device-prerequisites) to check allocation and workload behavior. Device plugins installed separately have their own resource names and namespaces.
 
-For subsequent changes, use [Upgrade](./upgrade.md). See [Configuration](../userguide/configure.md) for profiling and cache cleanup, or [Troubleshooting](../troubleshooting/troubleshooting.md) for failures.
+For subsequent changes, use [Upgrade](./upgrade.md). See [Configuration](../userguide/configure.md) for configuration options, or [Troubleshooting](../troubleshooting/troubleshooting.md) for failures.

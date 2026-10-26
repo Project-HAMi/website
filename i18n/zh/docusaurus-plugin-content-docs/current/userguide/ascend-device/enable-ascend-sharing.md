@@ -4,13 +4,13 @@ sidebar_label: Huawei Ascend 共享
 translated: true
 ---
 
-Huawei Ascend 设备插件为 HAMi 提供 NPU 切片支持，支持两种模式：
+Huawei Ascend 设备插件为 HAMi 提供 NPU 切片支持，支持模板切片、hami-core 软切片和 ENPU 运行时切片。下文示例覆盖模板和 hami-core 模式；ENPU 的前置条件和示例见[插件 ENPU 指南](https://github.com/Project-HAMi/ascend-device-plugin/blob/main/examples/enpu/README.md)。
 
-## 1. 基于模板的硬切片（vNPU）
+## 基于模板的硬切片（vNPU）
 
 基于虚拟化模板支持显存切片，自动使用最小可用模板。有关详细信息，请查看[设备模板](./device-template.md)。
 
-## 2. 基于运行时拦截的软切片（hami-vnpu-core）
+## 基于运行时拦截的软切片（hami-vnpu-core）
 
 该模式基于 `libvnpu.so` 拦截和 `limiter` 令牌调度实现软切片机制，支持细粒度的资源共享。
 
@@ -44,88 +44,37 @@ npu-smi set -t device-share -i <id> -d <value>
 
 ## 启用 Huawei Ascend-sharing 支持
 
-由于与 HAMi 的依赖关系，你需要在 HAMi 安装期间设置以下参数：
-
-```yaml
-devices.ascend.enabled=true
-```
-
-有关更多详细信息，参阅 `values.yaml` 中的 `devices` 部分：
+将以下内容加入 HAMi values 文件，然后按[在线安装指南](../../installation/online-installation.md)部署：
 
 ```yaml
 devices:
   ascend:
     enabled: true
-    image: "ascend-device-plugin:master"
-    imagePullPolicy: IfNotPresent
-    extraArgs: []
-    nodeSelector:
-      ascend: "on"
-    tolerations: []
-    resources:
-      - huawei.com/Ascend910A
-      - huawei.com/Ascend910A-memory
-      - huawei.com/Ascend910B
-      - huawei.com/Ascend910B-memory
-      - huawei.com/Ascend310P
-      - huawei.com/Ascend310P-memory
 ```
 
-如果你希望 HAMi 自动将 `runtimeClassName` 配置添加到请求 Huawei Ascend 资源的 Pod（默认禁用），请在 HAMi 的 `values.yaml` 中将 `devices.ascend.runtimeClassName` 设置为非空字符串，并确保其与 `RuntimeClass` 资源的名称匹配：
+此配置启用 Ascend 调度支持。HAMi Chart 不会部署 `ascend-device-plugin`；插件镜像、节点选择器等部署配置应在插件自己的清单中设置。
 
-```yaml
-devices:
-  ascend:
-    runtimeClassName: ascend
-```
+没有特殊需求时保留默认值。全局模式和设备模板分别通过 `devices.ascend.hamiVnpuMode`、`devices.ascend.configs` 配置。需要为 Ascend Pod 指定 RuntimeClass 时，将 `devices.ascend.runtimeClassName` 设为已有 RuntimeClass 的名称。完整参数见 [Chart values 表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md)，配置示例见 [values 源码](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/values.yaml)。自定义资源名称时，还需同步修改 `devices.ascend.customresources`；列表覆盖会替换整个列表。
 
 ## 部署步骤
 
-### 1. 标记节点
+按插件的 [HAMi 集成指南](https://github.com/Project-HAMi/ascend-device-plugin/blob/main/docs/hami.md)部署，使用同一插件发布版本的清单和镜像。该指南包含 `ascend=on` 节点标签、运行时和插件部署步骤。
 
-```bash
-kubectl label node {ascend-node} ascend=on
-```
+:::warning
 
-### 2. 部署 RuntimeClass
+HAMi 与插件部署在同一命名空间时，使用 HAMi Chart 生成的全局设备 ConfigMap。不要再次应用 `ascend-device-configmap.yaml`，也不要手工修改其中的 `device-config.yaml`，以免覆盖其他厂商的配置。全局参数统一通过 Helm values 中的 `devices.ascend.*` 管理，见[全局设备配置](../configure.md#device-config-overrides)。
 
-```bash
-kubectl apply -f https://raw.githubusercontent.com/Project-HAMi/ascend-device-plugin/main/ascend-runtimeclass.yaml
-```
-
-### 3. 部署 ConfigMap
-
-此 ConfigMap 用于全局配置，例如 resourceName、模式和模板。通过在顶层设置 `hamiVnpuCore: true`，可使所有节点启用基于 `hami-vnpu-core` 的软切片。
-
-```bash
-kubectl apply -f https://raw.githubusercontent.com/Project-HAMi/ascend-device-plugin/main/ascend-device-configmap.yaml
-```
-
-:::note
-
-如果 ConfigMap 已存在，可跳过此步骤。
+插件部署在其他命名空间时，需要在该命名空间准备设备 ConfigMap，并保持其中的 Ascend 配置与 HAMi 的 Helm values 一致。自定义 HAMi release 名称可能改变生成的 ConfigMap 名称，需要同步调整插件的卷引用。
 
 :::
 
-#### （可选）节点自定义配置
-
-`hami-device-node-config` ConfigMap 用于为集群内特定节点启用或覆盖 `hami-vnpu-core`。节点级别的设置优先级高于全局 `hamiVnpuCore` 开关。
-
-```bash
-kubectl apply -f https://raw.githubusercontent.com/Project-HAMi/ascend-device-plugin/main/ascend-device-node-configmap.yaml
-```
-
-### 4. 部署 ascend-device-plugin
-
-```bash
-kubectl apply -f https://raw.githubusercontent.com/Project-HAMi/ascend-device-plugin/main/ascend-device-plugin.yaml
-```
+插件独立使用的 `hami-device-node-config` ConfigMap 采用 `node-config.yaml` 数据键。需要按节点覆盖模式时，在其中设置 `hamiVnpuMode`；未覆盖的节点继承全局模式。它与 NVIDIA 插件的 `devicePlugin.nodeConfiguration` 不同，应使用所选 Ascend 插件版本提供的节点 ConfigMap 清单。
 
 ## 运行 Huawei Ascend 作业
 
 若要独占使用整张卡或申请多张卡，只需设置对应的 resourceName 即可。若多个任务需要共享同一 NPU，则需将资源请求设置为 `1` 并配置对应的 `ResourceMemoryName`。
 
-### Huawei Ascend 910B（硬切片）
+### Huawei Ascend 910B3（硬切片）
 
 ```yaml
 apiVersion: v1
@@ -139,9 +88,9 @@ spec:
       command: ["bash", "-c", "sleep 86400"]
       resources:
         limits:
-          huawei.com/Ascend910B: "1"
-          # 如果不指定 Ascend910B-memory，将使用整张 NPU
-          huawei.com/Ascend910B-memory: "4096"
+          huawei.com/Ascend910B3: "1"
+          # 如果不指定 Ascend910B3-memory，将使用整张 NPU
+          huawei.com/Ascend910B3-memory: "4096"
 ```
 
 ### Huawei Ascend 310P（硬切片）
@@ -228,8 +177,5 @@ spec:
 
 ## 注意事项
 
-1. 硬切片模式下，Huawei Ascend 910B 仅支持两种分片策略：1/4 和 1/2。Huawei Ascend 310P 支持三种分片策略：1/7、2/7、4/7。显存请求将自动与最接近的分片策略对齐。
-
-2. 不支持在初始化容器中使用 Huawei Ascend-sharing。
-
-3. `huawei.com/Ascend910B-memory` 仅在 `huawei.com/Ascend910B=1` 时有效。 `huawei.com/Ascend310P-memory` 仅在 `huawei.com/Ascend310P=1` 时有效。
+- 模板模式使用各卡型配置的设备模板，见[设备模板](./device-template.md)。
+- 模板共享需要将设备数量设为 1。软切片的多卡申请见上文 hami-core 示例。

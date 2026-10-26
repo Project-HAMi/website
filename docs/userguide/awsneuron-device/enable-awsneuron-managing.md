@@ -8,7 +8,7 @@ AWS Neuron devices are specialized hardware accelerators designed by AWS to opti
 
 HAMi now integrates with the [Neuron scheduler extension](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/containers/kubernetes-getting-started.html#deploy-neuron-scheduler-extension), providing the following capabilities:
 
-- **Neuron sharing**: HAMi now supports sharing on aws.amazon.com/neuron by allocating device cores(aws.amazon.com/neuroncore), each Neuron core equals 1/2 of a neuron device.
+- **Neuron sharing**: Request whole devices with `aws.amazon.com/neuron`, or individual NeuronCores with `aws.amazon.com/neuroncore`.
 
 - **Topology awareness**: When allocating multiple aws-neuron devices in a container, HAMi ensures these devices are connected to minimize the communication cost between neuron devices. For details about how these devices are connected, refer to [Container Device Allocation On Different Instance Types](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/containers/kubernetes-getting-started.html#container-device-allocation-on-different-instance-types).
 
@@ -21,22 +21,13 @@ HAMi now integrates with the [Neuron scheduler extension](https://awsdocs-neuron
 
 - Deploy neuron-device-plugin on EC2 neuron nodes according to the AWS document: [Neuron Device Plugin](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/containers/kubernetes-getting-started.html#neuron-device-plugin)
 
-- Deploy HAMi
-
-```bash
-helm install hami hami-charts/hami -n kube-system
-```
+Follow [Online installation](../../installation/online-installation.md) to deploy HAMi. The Neuron device plugin is installed separately. HAMi uses `devices.awsneuron.*` for resource names; if you change them, update `devices.awsneuron.customresources` and keep them consistent with the plugin. See the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md).
 
 ## Device Granularity
 
-HAMi divides each AWS Neuron device into 2 units for resource allocation. You can allocate half of a neuron device.
+`aws.amazon.com/neuron` requests whole devices; `aws.amazon.com/neuroncore` requests individual NeuronCores. HAMi derives the number of cores per device from the node's reported device and core capacities, so one core is not always half a device. If both resources are requested, the whole-device count takes precedence.
 
-### Neuron Allocation
-
-- Each unit of `aws.amazon.com/neuroncore` represents 1/2 of neuron device
-- Don't assign `aws.amazon.com/neuron` like other devices, only assigning `aws.amazon.com/neuroncore` is enough
-- When the number of `aws.amazon.com/neuroncore`>=2, it is equivalent to setting `aws.amazon.com/neuron=1/2 * neuronCoreNumber`
-- The topology awareness scheduling is automatically enabled when tasks require multiple neuron devices.
+Topology-aware allocation applies when a task needs multiple devices.
 
 ## Running Neuron jobs
 
@@ -67,7 +58,7 @@ spec:
           memory: 1Gi
 ```
 
-Allocate 1/2 Neuron device:
+Allocate one NeuronCore:
 
 ```yaml
 apiVersion: v1

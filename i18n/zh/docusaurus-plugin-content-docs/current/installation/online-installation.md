@@ -44,11 +44,9 @@ Chart 自动检测 Kubernetes 服务端版本，并选择匹配的 kube-schedule
 
 ### NVIDIA 驱动发现 {#nvidia-driver-discovery}
 
-`devicePlugin.nvidiaDriverRoot=auto` 时，设备插件读取 `/run/nvidia/validations/driver-ready`。文件不存在时，HAMi 按宿主机安装驱动处理，驱动根目录与设备根目录均使用 `/`。若 HAMi 早于 GPU Operator 完成验证启动，等待 GPU Operator 就绪后重启 HAMi 设备插件 DaemonSet。
+保留 `devicePlugin.nvidiaDriverRoot=auto` 即可自动探测驱动路径。插件读取 GPU Operator 的 `/run/nvidia/validations/driver-ready`；文件不存在时，按宿主机安装驱动处理。若 HAMi 早于 GPU Operator 完成验证启动，等待 GPU Operator 就绪后重启 HAMi 设备插件 DaemonSet。
 
-探测结果描述设备插件返回给运行时的宿主机路径：`NVIDIA_DRIVER_ROOT` 用于生成的 CDI 配置；`devicePlugin.passDeviceSpecsEnabled=true` 时，`NVIDIA_DEV_ROOT` 用于 `DeviceSpec.HostPath`。插件自身通过 NVIDIA Container Toolkit 注入容器的驱动库和设备节点初始化 NVML、发现 GPU。为此 Chart 仅以只读方式挂载 GPU Operator 验证目录。设备插件 Pod 必须使用 NVIDIA runtime，可将其设为节点默认运行时，或通过 `devices.nvidia.runtimeClassName` 指定。
-
-CDI 配置必须引用宿主机驱动布局，容器内部布局可能与之不同。`devicePlugin.deviceListStrategy` 包含 `cdi-*` 策略时，Chart 还会将宿主机根目录只读挂载到 `/host`。宿主机安装驱动时直接使用此挂载；GPU Operator 安装驱动时再拼接 `/run/nvidia/driver`。显式设置 `devicePlugin.nvidiaDriverRoot` 可改为仅挂载驱动根目录。
+设备插件 Pod 必须使用 NVIDIA runtime，才能加载驱动库并发现 GPU。可将 NVIDIA 设为节点默认运行时，或配置 `devices.nvidia.runtimeClassName`。CDI 的配置和前置条件见[配置 CDI](./configure-cdi.md)，驱动路径覆盖及挂载行为见 [Chart values 表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md)。
 
 ## 验证安装 {#verify-installation}
 
@@ -69,4 +67,4 @@ kubectl rollout status daemonset/hami-device-plugin -n kube-system
 
 组件就绪仅说明启动完成。运行 [NVIDIA 示例](../get-started/deploy-with-helm.md#demo)或[设备指南](./prerequisites.md#device-prerequisites)中的验证步骤，检查设备分配和工作负载行为。单独部署的设备插件使用其自身的资源名称和命名空间。
 
-后续配置修改按[升级指南](./upgrade.md)操作。性能分析和缓存清理见 [配置指南](../userguide/configure.md)，异常排查见[故障排查](../troubleshooting/troubleshooting.md)。
+后续配置修改按[升级指南](./upgrade.md)操作。配置项说明见[配置指南](../userguide/configure.md)，异常排查见[故障排查](../troubleshooting/troubleshooting.md)。

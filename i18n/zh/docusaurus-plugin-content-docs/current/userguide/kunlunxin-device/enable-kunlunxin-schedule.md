@@ -29,7 +29,7 @@ sidebar_label: 拓扑感知调度
 ## 启用拓扑感知调度
 
 - 在 P800 节点上部署昆仑芯设备插件。（联系你的设备供应商获取相应的软件包和文档。）
-- 按照 `README.md` 中的说明部署 HAMi。
+- 按[在线安装指南](../../installation/online-installation.md)部署 HAMi。HAMi 侧配置使用 [Chart values 表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md)中的 `devices.kunlun.*`，资源名称需与单独部署的厂商插件保持一致。 保持 `devices.kunlun.enabled=true`（默认值）。
 
 ## 运行昆仑芯作业
 

@@ -21,7 +21,7 @@ translated: true
 ### 开启复用沐曦设备
 
 - 部署 MetaX GPU Operator (联系你的设备提供方获取)
-- 根据 README.md 部署 HAMi
+- 按[在线安装指南](../../../installation/online-installation.md)部署 HAMi。HAMi 侧配置使用 [Chart values 表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md)中的 `devices.metax.*`，资源名称需与单独部署的厂商插件保持一致。
 
 ### 运行沐曦任务
 

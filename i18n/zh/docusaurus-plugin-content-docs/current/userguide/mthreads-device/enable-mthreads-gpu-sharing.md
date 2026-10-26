@@ -39,11 +39,9 @@ translated: true
 
 :::
 
-- 在安装 HAMi 时配置参数 `devices.mthreads.enabled=true`
+按[在线安装指南](../../installation/online-installation.md)部署 HAMi，保持 `devices.mthreads.enabled=true`（默认值）。此配置将厂商资源加入内置 scheduler extender，厂商插件或工具包仍需单独安装。完整参数见 [Chart values 表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md)中的 `devices.mthreads.*`。
 
-```bash
-helm install hami hami-charts/hami --set scheduler.kubeScheduler.image.tag={your kubernetes version} --set devices.mthreads.enabled=true -n kube-system
-```
+自定义资源名称时，保持 `devices.mthreads.customresources` 与 `resourceCountName` 一致。仅在集群需要不同的单卡显存容量时设置 `devices.mthreads.memoryPerCard`，默认配置见 [values 源码](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/values.yaml)。
 
 ## 运行 GPU 任务
 

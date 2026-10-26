@@ -20,6 +20,8 @@ title: 启用昆仑芯 VXPU
 
 ## 启用 XPU 共享支持
 
+按[在线安装指南](../../installation/online-installation.md)安装 HAMi。 保持 `devices.kunlun.enabled=true`（默认值）。 厂商设备插件按下文单独部署。HAMi 侧的资源名称和设备参数位于 [Chart values 表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md)中的 `devices.kunlun.*`，资源名称需与插件保持一致。
+
 - 部署 [vxpu-device-plugin]
 
 ```yaml

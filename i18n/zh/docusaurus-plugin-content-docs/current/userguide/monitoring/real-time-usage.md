@@ -3,115 +3,56 @@ title: 实时 GPU 用量
 sidebar_label: 实时用量
 ---
 
-实时监控允许你在 Kubernetes 集群中随工作负载运行时，跟踪 GPU 利用率、显存用量以及资源分配情况。HAMi 提供了动态观察 GPU 行为的工具。
+通过 HAMi 指标观察 GPU 利用率和显存使用量。节点 Capacity、Allocatable 和分配注解描述资源清单或分配结果，不代表实时使用量。
 
-## 使用 kubectl 进行监控
+## GPU 与容器指标
 
-### 查看节点 GPU 资源
+按 [Grafana Dashboard 指南](./grafana-dashboard.md)配置 Prometheus 和仪表盘，同时采集两个 HAMi 指标来源：
 
-查看节点当前 GPU 容量与可分配资源：
+| 来源                         | 用途                          |
+| ---------------------------- | ----------------------------- |
+| HAMi scheduler               | 设备清单、容量和分配情况      |
+| 各 GPU 节点上的 vGPU monitor | 物理 GPU 和容器 vGPU 的使用量 |
 
-```bash
-kubectl get node <node-name> -o json | jq '.status.allocatable' | grep -i gpu
-```
+需要 NVIDIA 硬件遥测时，可按该指南添加 DCGM Exporter。其他厂商的设备插件和监控组件需单独部署，使用对应厂商的监控说明。
 
-### 查看 Pod GPU 分配情况
+## 查看资源分配
 
-查看某个 Pod 分配了哪些 GPU：
+以下示例使用 NVIDIA 默认资源名称。将命名空间、Pod、容器和节点名称替换为实际值。
 
-```bash
-kubectl get pod <pod-name> -o json | jq '.metadata.annotations' | grep -i gpu
-```
-
-或者查看所有 GPU 相关信息：
+查看节点可分配资源和已注册的 GPU 清单：
 
 ```bash
-kubectl describe pod <pod-name>
+kubectl get node <node-name> -o jsonpath='{.status.allocatable}'
+kubectl get node <node-name> -o jsonpath='{.metadata.annotations.hami\.io/node-nvidia-register}'
 ```
 
-## 在容器内部监控
-
-### 查看 Pod 内已分配 GPU
-
-在运行中的容器内，可以查看当前可见的 GPU：
+查看 Pod 的资源请求、分配注解和事件：
 
 ```bash
-kubectl exec -it <pod-name> -- nvidia-smi
+kubectl describe pod <pod-name> -n <namespace>
+kubectl get pod <pod-name> -n <namespace> -o jsonpath='{.metadata.annotations.hami\.io/vgpu-devices-allocated}'
 ```
 
-该命令会显示容器视角下的虚拟 GPU 配置，包括已分配的显存和计算核心。
+这些信息用于解释调度和分配结果。实际利用率和显存使用量应查看监控指标。
 
-### 实时 GPU 用量
+## 检查 NVIDIA 设备可见性
 
-在工作负载运行时监控 GPU 用量：
+工作负载镜像中提供 `nvidia-smi` 时，可查看容器内可见的设备：
 
 ```bash
-kubectl exec -it <pod-name> -- watch -n 1 nvidia-smi
+kubectl exec -n <namespace> <pod-name> -c <container-name> -- nvidia-smi
 ```
 
-该命令每秒刷新一次 GPU 指标，包括：
+输出取决于运行时和共享模式，不能代替 HAMi 的分配信息，也不能完整反映容器的算力配额。在宿主机执行 `nvidia-smi` 可查看物理 GPU。
 
-- GPU 利用率百分比
-- 显存用量与上限
-- 运行中的进程
+## 检查组件状态
 
-## 节点级监控
-
-### 查看节点上所有 GPU
-
-通过 SSH 登录节点并运行：
+以下命令适用于 `kube-system` 中的默认 `hami` release：
 
 ```bash
-nvidia-smi
+kubectl get pods -n kube-system -l app.kubernetes.io/instance=hami
+kubectl logs -n kube-system -l app.kubernetes.io/instance=hami,app.kubernetes.io/component=hami-device-plugin -c device-plugin --tail=100
 ```
 
-持续监控：
-
-```bash
-watch -n 1 nvidia-smi
-```
-
-### 检查 HAMi 设备插件状态
-
-验证 HAMi 设备插件是否正常运行并上报资源：
-
-```bash
-kubectl get pods -n kube-system | grep hami
-kubectl logs -n kube-system -l app.kubernetes.io/component=hami-scheduler -f
-```
-
-## 资源注解追踪
-
-HAMi 将 GPU 信息存储在节点注解中，可以这样查看：
-
-```bash
-kubectl get node <node-name> -o yaml | grep -A 10 "hami.io/node"
-```
-
-这将显示详细 GPU 信息，包括：
-
-- GPU UUID
-- 显存容量
-- 计算核心数量
-- 设备型号
-
-## 与监控工具集成
-
-在生产环境中，建议将 HAMi 与以下工具集成：
-
-- **Prometheus**：抓取 kubelet 指标以获取 GPU 资源数据
-- **Grafana**：可视化 GPU 用量趋势
-- **Kubernetes Dashboard**：在 Web UI 中查看 GPU 资源
-
-参考 Kubernetes 官方文档配置相关监控。
-
-## 故障排查
-
-如果你发现 GPU 分配不一致的问题：
-
-1. 检查 Pod 的资源 request/limit 是否与 HAMi 注解匹配
-2. 确认 HAMi 调度器是否正在运行
-3. 查看设备插件日志是否有错误
-4. 确保节点已正确打上 GPU 相关标签
-
-更多细节请参考[故障排查指南](../../troubleshooting/troubleshooting.md)。
+其他部署使用实际 release 标签和命名空间。单独安装的厂商插件有各自的标签和容器名称。排查分配失败时，还应查看 Pod 事件和 scheduler 日志，见[故障排查指南](../../troubleshooting/troubleshooting.md)。

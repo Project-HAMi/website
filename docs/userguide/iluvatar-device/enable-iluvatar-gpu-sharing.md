@@ -31,37 +31,15 @@ Install only gpu-manager. Do not install the gpu-admission package.
 
 :::
 
-- Set `devices.iluvatar.enabled=true` when installing HAMi
-
-```bash
-helm install hami hami-charts/hami --set scheduler.kubeScheduler.image.tag={your kubernetes version} --set devices.iluvatar.enabled=true -n kube-system
-```
-
-The currently supported GPU models and resource names are defined in [device-configmap.yaml](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/templates/scheduler/device-configmap.yaml):
+Add the following to the HAMi values file and follow [Online installation](../../installation/online-installation.md):
 
 ```yaml
-iluvatars:
-  - chipName: MR-V100
-    commonWord: MR-V100
-    resourceCountName: iluvatar.ai/MR-V100-vgpu
-    resourceMemoryName: iluvatar.ai/MR-V100.vMem
-    resourceCoreName: iluvatar.ai/MR-V100.vCore
-  - chipName: MR-V50
-    commonWord: MR-V50
-    resourceCountName: iluvatar.ai/MR-V50-vgpu
-    resourceMemoryName: iluvatar.ai/MR-V50.vMem
-    resourceCoreName: iluvatar.ai/MR-V50.vCore
-  - chipName: BI-V150
-    commonWord: BI-V150
-    resourceCountName: iluvatar.ai/BI-V150-vgpu
-    resourceMemoryName: iluvatar.ai/BI-V150.vMem
-    resourceCoreName: iluvatar.ai/BI-V150.vCore
-  - chipName: BI-V100
-    commonWord: BI-V100
-    resourceCountName: iluvatar.ai/BI-V100-vgpu
-    resourceMemoryName: iluvatar.ai/BI-V100.vMem
-    resourceCoreName: iluvatar.ai/BI-V100.vCore
+devices:
+  iluvatar:
+    enabled: true
 ```
+
+This enables Iluvatar scheduling; install gpu-manager separately as described above. Supported models and resource names are configured through `devices.iluvatar.configs`. If you customize them, also update `devices.iluvatar.customresources`. Both lists are replaced in full when overridden. See the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md) and [complete defaults](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/values.yaml); do not edit the generated global ConfigMap.
 
 ## Device Granularity
 

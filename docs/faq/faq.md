@@ -130,32 +130,16 @@ These three Device Plugins all manage GPU resources but differ in usage scenario
 
 ## Why do Node Capacity and Allocatable show only `nvidia.com/gpu` and not `nvidia.com/gpucores` or `nvidia.com/gpumem`?
 
-### TL;DR
+By default, the NVIDIA device plugin registers `nvidia.com/gpu`, while HAMi records per-device memory and core information in the `hami.io/node-nvidia-register` node annotation for scheduling. Node Capacity and Allocatable are not real-time utilization metrics.
 
-Device Plugins can only report a single resource type. GPU memory and compute information is stored as node annotations for use by the scheduler.
+To also report memory and core resources in Node Capacity and Allocatable, set the following in HAMi values:
 
----
+```yaml
+devicePlugin:
+  reportNodeCapacity: true
+```
 
-### Design Constraints of Device Plugins
-
-- Device Plugin interfaces (e.g., Registration and ListAndWatch) only allow reporting and managing a single resource type per plugin instance.
-- This design simplifies resource association management but restricts plugins from reporting multiple resource metrics (e.g., GPU compute power and memory).
-
-### HAMi’s Implementation
-
-- HAMi stores detailed GPU resource information (e.g., compute power, memory, model) as **node annotations** for use by the scheduler.
-- Example annotation:
-
-  ```text
-  hami.io/node-nvidia-register: [{"id":"GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec","count":10,"devmem":32768,"devcore":100,"type":"NVIDIA-Tesla V100-PCIE-32GB","numa":1,"mode":"hami-core","health":true},{"id":"GPU-0fc3eda5-e98b-a25b-5b0d-cf5c855d1448","index":1,"count":10,"devmem":32768,"devcore":100,"type":"NVIDIA-Tesla V100-PCIE-32GB","numa":1,"mode":"hami-core","health":true}]
-  ```
-
-### Follow-Up
-
-**Why does the Node Capacity show `volcano.sh/vgpu-number` and `volcano.sh/vgpu-memory` when using `volcano-vgpu-device-plugin`?**
-
-- volcano-vgpu-device-plugin creates **[three independent Device Plugin instances](https://github.com/Project-HAMi/volcano-vgpu-device-plugin/blob/2bf6dfe37f7b716f05d0d3210f89898087c06d99/pkg/plugin/vgpu/mig-strategy.go#L65-L85)**, each registering with kubelet for volcano.sh/vgpu-number, volcano.sh/vgpu-memory, and volcano.sh/vgpu-cores resources respectively. After kubelet receives the registration, it automatically writes the resources into Capacity and Allocatable.
-- The `volcano.sh/vgpu-memory` resource is subject to a Kubernetes extended resources quantity limit of **32,767 maximum**. For GPUs with large memory (e.g., A100 80GB), configure the `--gpu-memory-factor` parameter to avoid exceeding the limit.
+A matching node configuration's `reportnodecapacity` overrides this setting. See the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md) and [node configuration](../userguide/configure.md#node-configuration).
 
 ## Why don’t some domestic vendors require a runtime for installation?
 
@@ -237,21 +221,15 @@ This is caused by `thread_local` allocator. Refer to [PaddlePaddle CoreDump Issu
 
 ## How to enable finer-grained GPU slicing such as 0.05 or 0.01?
 
-HAMi uses `deviceSplitCount` to control the maximum number of tasks that can be assigned to a single physical GPU. The default value is 10.
-
-It caps the number of tasks that can share one GPU. The actual memory and core allocation for each workload still comes from its own resource requests.
-
-To allow finer slices, override the value in your Helm `values.yaml`:
+`devices.nvidia.deviceSplitCount` controls the maximum number of sharing tasks per physical GPU; it does not divide the GPU into fixed fractions. The default is 10. Increase it only when more tasks need to share a card. For example, to allow up to 20 tasks:
 
 ```yaml
 devices:
   nvidia:
-    deviceSplitCount: 20 # allows up to 20 tasks per GPU
-    # or
-    # deviceSplitCount: 100 # allows up to 100 tasks per GPU
+    deviceSplitCount: 20
 ```
 
-Then request the target slice in the workload's resource limits. With deviceSplitCount: 20, requesting 5% of the memory and cores gives a 0.05 slice:
+Each workload must request its own memory and compute. A request for 5% of each is:
 
 ```yaml
 resources:
@@ -261,27 +239,7 @@ resources:
     nvidia.com/gpumem-percentage: 5
 ```
 
-With deviceSplitCount: 100, requesting 1% of the memory and cores gives a 0.01 slice:
-
-```yaml
-resources:
-  limits:
-    nvidia.com/gpu: 1
-    nvidia.com/gpucores: 1
-    nvidia.com/gpumem-percentage: 1
-```
-
-For per-node overrides, set `devicesplitcount` in the `devicePlugin.nodeConfiguration.config` JSON instead.
-
-The mapping between `deviceSplitCount` and the maximum number of tasks per GPU:
-
-| deviceSplitCount | Max tasks per GPU | Slice size |
-| ---------------- | ----------------- | ---------- |
-| 10 (default)     | 10                | 0.1        |
-| 20               | 20                | 0.05       |
-| 100              | 100               | 0.01       |
-
-> A very large `deviceSplitCount` increases the number of vGPU entries the device plugin manages per GPU. Choose a value that matches your actual concurrency needs.
+Node-specific limits use `devicesplitcount` in [node configuration](../userguide/configure.md#node-configuration). A larger sharing limit creates more vGPU entries; choose it based on actual concurrency needs.
 
 ## How does HAMi coexist with the NVIDIA official device plugin?
 
