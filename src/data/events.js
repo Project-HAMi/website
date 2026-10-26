@@ -350,6 +350,48 @@ const events = [
     externalUrl: "https://events.linuxfoundation.org/open-source-summit-europe/",
     talkUrl: "https://osselceu2026.sched.com/event/a533a839491960839042f705cbe3acd4",
   },
+  {
+    slug: "containerdays-singapore",
+    title: {
+      en: "From Zero to Shared GPUs: Hands-on GPU Scheduling in Kubernetes with HAMi",
+      zh: "从零到 GPU 共享：基于 HAMi 的 Kubernetes GPU 调度动手实践",
+    },
+    date: "2026-10-27",
+    startTime: "12:30",
+    endTime: "13:15",
+    timeZone: "SGT",
+    speaker: "Reza Jelveh, Jimmy Song",
+    location: {
+      en: "Suntec Singapore Convention & Exhibition Centre, Singapore",
+      zh: "新加坡 新达城新加坡会展中心",
+    },
+    address: {
+      addressLocality: "Singapore",
+      addressCountry: "SG",
+      streetAddress: "1 Raffles Boulevard, Suntec City, 039593",
+    },
+    room: "Workshop Room",
+    description: {
+      en: "This hands-on workshop at ContainerDays Singapore 2026 is led by Jimmy Song (VP of Open Source Ecosystem) and Reza Jelveh (Global Market & Solution Architecture at Dynamia AI), both HAMi contributors. It takes you from a bare cluster to a working GPU sharing setup. HAMi is a CNCF Incubation project for heterogeneous GPU virtualization in Kubernetes, supporting 10+ GPU/NPU vendors. Attendees set up HAMi on their laptop, with or without a GPU, and trace how the device plugin intercepts GPU requests, allocates vGPU resources, and integrates with the scheduler. We follow the HAMi architecture and GPU virtualization model (project-hami.io/docs/core-concepts/gpu-virtualization), then explore the DRA integration path. You will deploy HAMi, schedule fractional GPU workloads, and understand how scheduler policies like binpack, spread, and topology awareness change allocation behavior, and how third-party schedulers (KAI Scheduler, Volcano) compose with HAMi's isolation layer. Lab guide: github.com/Project-HAMi/hami-workshop. Bring a laptop with Go, kind, and a GitHub account.",
+      zh: "本工作坊由宋净超（Jimmy Song，密瓜智能开源生态 VP）与 Reza Jelveh（密瓜智能 Global Market & Solution Architecture）两位 HAMi 贡献者主讲。ContainerDays 新加坡 2026 动手实践，带你从空集群一路搭建到可用的 GPU 共享环境。HAMi 是 CNCF 孵化项目，为 Kubernetes 提供异构 GPU 虚拟化，支持 10 余家 GPU/NPU 厂商。学员在笔记本上部署 HAMi（有无 GPU 均可），追踪 device plugin 如何拦截 GPU 请求、分配 vGPU 资源并与调度器协同。课程沿 HAMi 架构与 GPU 虚拟化模型展开，随后探索 DRA 集成路径。你将部署 HAMi、调度分数 GPU 工作负载，理解 binpack、spread、拓扑感知等调度策略如何改变分配行为，并了解第三方调度器（KAI Scheduler、Volcano）如何与 HAMi 的隔离层组合。实验手册：github.com/Project-HAMi/hami-workshop。请携带笔记本电脑，预装 Go 与 kind，并备好 GitHub 账号。",
+    },
+    resources: {
+      communityFlyer: {
+        en: "Community Flyer",
+        zh: "社区宣传册",
+        url: "/resources/events/flyers/community-flyer.pdf",
+      },
+      talkSlides: {
+        en: "Workshop Slides",
+        zh: "工作坊讲义",
+        url: "/resources/events/2026-containerdays-singapore/containerdays-singapore-2026-workshop.pdf",
+      },
+    },
+    cta: {
+      discordUrl: "https://go.dynamia.ai/hami-chat",
+    },
+    externalUrl: "https://www.containerdays.io/containerdays-singapore-2026/",
+  },
 ];
 
 export default events;
