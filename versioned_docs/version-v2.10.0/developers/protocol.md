@@ -59,7 +59,7 @@ During this process, the following annotations are managed on the Pod:
 | NVIDIA        | `hami.io/vgpu-devices-to-allocate`          |
 | Cambricon MLU | `hami.io/cambricon-mlu-devices-to-allocate` |
 | Moore Threads | `hami.io/mthreads-vgpu-devices-to-allocate` |
-| Hygon HCU     | `hami.io/hcu-devices-to-allocate`           |
+| Hygon DCU     | `hami.io/dcu-devices-to-allocate`           |
 
 For example, when a GPU task requesting 3000 MiB of device memory is dispatched, the scheduler sets the annotations to:
 

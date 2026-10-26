@@ -58,7 +58,7 @@ hami.io/node-handshake: Requesting_2024-01-23 04:30:04
 | NVIDIA     | `hami.io/vgpu-devices-to-allocate`          |
 | 寒武纪 MLU | `hami.io/cambricon-mlu-devices-to-allocate` |
 | 摩尔线程   | `hami.io/mthreads-vgpu-devices-to-allocate` |
-| 海光 HCU   | `hami.io/hcu-devices-to-allocate`           |
+| 海光 DCU   | `hami.io/dcu-devices-to-allocate`           |
 
 以下是一个请求 3000 MiB 设备显存的 GPU 任务在 Pod 上生成的注解示例：
 
