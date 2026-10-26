@@ -1,0 +1,26 @@
+---
+title: Avoid a certain GPU type
+---
+
+To keep a pod off GPUs of a certain type, set `amd.com/nouse-gputype` in the pod annotations. It matches when the registered product name contains the text.
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: amd-gpu-type-not-use
+  annotations:
+    amd.com/nouse-gputype: "Radeon" # never run on GPUs whose registered product name contains this text, comma separated
+spec:
+  containers:
+    - name: rocm
+      image: rocm/dev-ubuntu-24.04:7.2.4
+      command: ["bash", "-c", "sleep infinity"]
+      securityContext:
+        # runs as the image's user (root) on purpose: GPU device access needs the node's video and render group ids, which differ per node. For non-root add runAsUser and supplementalGroups for those groups.
+        allowPrivilegeEscalation: false
+      resources:
+        limits:
+          amd.com/gpu: 1
+          amd.com/gpumem: 4096
+```

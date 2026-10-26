@@ -2,6 +2,13 @@
   padding-bottom: var(--hami-space-64);
 }
 
+.heroActions {
+  margin-top: var(--hami-space-24);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
 .hero {
   padding: var(--hami-space-64) 0 var(--hami-space-32);
   background:

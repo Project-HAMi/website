@@ -7,6 +7,7 @@ title: FAQ
 | **GPU Vendor** | **GPU Model** | **Granularity** | **Multi-GPU Support** |
 | --- | --- | --- | --- |
 | NVIDIA | Almost all mainstream consumer and data center GPUs | Core 1%, Memory 1M | Supported. Multi-GPU can still be split and shared using virtualization. |
+| AMD | Instinct and Radeon (ROCm) | Core 1% (whole WGPs on RDNA), Memory 1M | Implemented, but real multi-GPU validation is still required: multi-GPU runs so far used simulated GPUs on one real GPU. See the [AMD test status](../userguide/amd-device/verification-status.md). |
 | Huawei Ascend | 910A, 910B2, 910B3, 310P | Minimum granularity depends on the card type template. Refer to the [official templates](https://www.hiascend.com/document/detail/zh/mindx-dl/50rc1/AVI/cpaug/cpaug_0005.html). | Supported, but splitting is not supported when `npu > 1`. The entire card is exclusively allocated. |
 | Hygon | All | Core 1%, Memory 1M | Supported, but splitting is not supported when `hcu > 1`. The entire card is exclusively allocated. |
 | Cambricon | 370, 590 | Core 1%, Memory 256M | Supported, but splitting is not supported when `mlu > 1`. The entire card is exclusively allocated. |
@@ -99,7 +100,7 @@ A single Pod cannot span multiple nodes. If cross-host resource coordination is 
 
 ### TL;DR
 
-Use only one GPU management plugin per node in a cluster to ensure clarity and stability in resource allocation.
+Use only one GPU management plugin per node by default. HAMi and the NVIDIA official device plugin can coexist when HAMi advertises distinct resource names, as described in [the FAQ](#how-does-hami-coexist-with-the-nvidia-official-device-plugin).
 
 ### Their Relationship
 
@@ -109,6 +110,7 @@ These three Device Plugins all manage GPU resources but differ in usage scenario
   - Reports GPU resources to Kubernetes using the extended resource name `nvidia.com/gpu`.
   - Supports HAMi’s GPU resource management features, including custom vGPU splitting and scheduling.
   - Designed for complex resource management scenarios such as vGPU overcommitment and customized scheduling.
+  - The resource name can be changed to avoid conflicts with the NVIDIA official device plugin, as described in [the FAQ](#how-does-hami-coexist-with-the-nvidia-official-device-plugin).
 
 - **Volcano vGPU Device Plugin**
   - Reports vGPU resources using the extended resource name `volcano.sh/vgpu-number`.
@@ -122,7 +124,7 @@ These three Device Plugins all manage GPU resources but differ in usage scenario
 
 ### Coexistence
 
-- **HAMi Device Plugin and NVIDIA Official Device Plugin**: Should not coexist to avoid resource conflicts.
+- **HAMi Device Plugin and NVIDIA Official Device Plugin**: Should not use the same resource names. They can coexist on the same node when HAMi advertises distinct resource names, as described in [the FAQ](#how-does-hami-coexist-with-the-nvidia-official-device-plugin).
 - **HAMi Device Plugin and Volcano vGPU Device Plugin**: Can theoretically coexist; use only one to avoid conflicts.
 - **NVIDIA Official Device Plugin and Volcano vGPU Device Plugin**: Can theoretically coexist, but mixed usage is not advised.
 
@@ -232,3 +234,86 @@ The `hami-device-plugin` pod on each node exposes per-container vGPU metrics on 
 ## PaddlePaddle crashes with core_dump on vGPU?
 
 This is caused by `thread_local` allocator. Refer to [PaddlePaddle CoreDump Issue with thread_local Allocator on vGPU](./troubleshooting/paddle-threadlocal-coredump).
+
+## How to enable finer-grained GPU slicing such as 0.05 or 0.01?
+
+HAMi uses `deviceSplitCount` to control the maximum number of tasks that can be assigned to a single physical GPU. The default value is 10.
+
+It caps the number of tasks that can share one GPU. The actual memory and core allocation for each workload still comes from its own resource requests.
+
+To allow finer slices, override the value in your Helm `values.yaml`:
+
+```yaml
+devices:
+  nvidia:
+    deviceSplitCount: 20 # allows up to 20 tasks per GPU
+    # or
+    # deviceSplitCount: 100 # allows up to 100 tasks per GPU
+```
+
+Then request the target slice in the workload's resource limits. With deviceSplitCount: 20, requesting 5% of the memory and cores gives a 0.05 slice:
+
+```yaml
+resources:
+  limits:
+    nvidia.com/gpu: 1
+    nvidia.com/gpucores: 5
+    nvidia.com/gpumem-percentage: 5
+```
+
+With deviceSplitCount: 100, requesting 1% of the memory and cores gives a 0.01 slice:
+
+```yaml
+resources:
+  limits:
+    nvidia.com/gpu: 1
+    nvidia.com/gpucores: 1
+    nvidia.com/gpumem-percentage: 1
+```
+
+For per-node overrides, set `devicesplitcount` in the `devicePlugin.nodeConfiguration.config` JSON instead.
+
+The mapping between `deviceSplitCount` and the maximum number of tasks per GPU:
+
+| deviceSplitCount | Max tasks per GPU | Slice size |
+| ---------------- | ----------------- | ---------- |
+| 10 (default)     | 10                | 0.1        |
+| 20               | 20                | 0.05       |
+| 100              | 100               | 0.01       |
+
+> A very large `deviceSplitCount` increases the number of vGPU entries the device plugin manages per GPU. Choose a value that matches your actual concurrency needs.
+
+## How does HAMi coexist with the NVIDIA official device plugin?
+
+HAMi and the NVIDIA official device plugin both report GPU resources using the same extended resource name, `nvidia.com/gpu`, by default. Running both on the same node causes a resource ownership conflict. To make them coexist, modify HAMi's resource names in your Helm `values.yaml`:
+
+```yaml
+# NVIDIA GPU Parameters
+devices:
+  nvidia:
+    resourceCountName: "hami.io/gpu"
+    resourceMemoryName: "hami.io/gpumem"
+    resourceMemoryPercentageName: "hami.io/gpumem-percentage"
+    resourceCoreName: "hami.io/gpucores"
+    resourcePriorityName: "hami.io/priority"
+```
+
+The resource names must differ from the ones the NVIDIA device plugin uses. Both plugins default to nvidia.com/gpu and its related names, so HAMi needs distinct names. Using hami.io/gpu and its related names is the recommended convention.
+
+After the change, the node advertises both resource names. Workloads can choose which plugin to use by requesting one of the two resource names. Do not request both in the same workload.
+
+```yaml
+# Use NVIDIA official device plugin
+resources:
+  limits:
+    nvidia.com/gpu: 1
+```
+
+```yaml
+# Use HAMi vGPU scheduling
+resources:
+  limits:
+    hami.io/gpu: 1
+```
+
+> Note: A single resource name must be owned by exactly one plugin, and a workload must not request both resource names at the same time.

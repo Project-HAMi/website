@@ -1,5 +1,6 @@
 ---
 title: Device supported by HAMi
+displayed_sidebar: docs
 ---
 
 The table below lists the devices supported by HAMi. This matrix reflects HAMi v2.10.0, the latest released version.
@@ -9,7 +10,7 @@ The table below lists the devices supported by HAMi. This matrix reflects HAMi v
 | ------ | ------------- | ----------------------- | ---------------- | --------------- | ------------- | ---------------------- |
 | GPU    | NVIDIA        | All                     | Stable           | Yes             | Yes           | Yes                    |
 | MLU    | Cambricon     | 370, 590                | Stable           | Yes             | Yes           | No                     |
-| HCU    | Hygon         | All                     | Stable           | Yes             | Yes           | No                     |
+| DCU    | Hygon         | All                     | Stable           | Yes             | Yes           | No                     |
 | NPU    | Huawei Ascend | 910B, 910B3, 910C, 310P | Stable           | Yes             | Yes           | No                     |
 | GPU    | Iluvatar      | All                     | Stable           | Yes             | Yes           | No                     |
 | GPU    | Mthreads      | MTT S4000               | Stable           | Yes             | Yes           | No                     |
@@ -45,7 +46,7 @@ Each cell links to the guide for that device and component. A dash means there i
 | ------------- | ---- | -------- | ------- | ------------- |
 | NVIDIA        | [Allocate device memory](nvidia-device/specify-device-memory-usage.md) | [Dynamic Resource Allocation](nvidia-device/dynamic-resource-allocation.md) | [Use Volcano vGPU](volcano-vgpu/nvidia-gpu/how-to-use-volcano-vgpu.md) | [Use KAI Scheduler](kai-scheduler/how-to-use-kai-scheduler.md) |
 | Cambricon     | [Enable Cambricon MLU sharing](cambricon-device/enable-cambricon-mlu-sharing.md) | - | - | - |
-| Hygon         | [Enable Hygon HCU sharing](hygon-device/enable-hygon-hcu-sharing.md) | - | - | - |
+| Hygon         | [Enable Hygon DCU sharing](hygon-device/enable-hygon-dcu-sharing.md) | - | - | - |
 | Huawei Ascend | [Enable Huawei Ascend sharing](ascend-device/enable-ascend-sharing.md) | - | [Volcano Ascend vNPU](../installation/how-to-use-volcano-ascend.md) | - |
 | Iluvatar      | [Enable Iluvatar GPU sharing](iluvatar-device/enable-iluvatar-gpu-sharing.md) | - | - | - |
 | Mthreads      | [Enable Mthreads GPU sharing](mthreads-device/enable-mthreads-gpu-sharing.md) | - | - | - |
@@ -64,7 +65,7 @@ Each linked guide covers device-specific setup, configuration notes, and known l
 
 All vendor pages are listed here so this page reaches each of them.
 
-### NVIDIA
+### NVIDIA {#nvidia}
 
 - [Allocate device memory to container](nvidia-device/specify-device-memory-usage.md)
 - [Dynamic Resource Allocation](nvidia-device/dynamic-resource-allocation.md)
@@ -82,7 +83,7 @@ All vendor pages are listed here so this page reaches each of them.
 - [Assign task to a certain GPU](nvidia-device/examples/specify-certain-card.md)
 - [Assign task to MIG instance](nvidia-device/examples/dynamic-mig-example.md)
 
-### Cambricon
+### Cambricon {#cambricon}
 
 - [Enable Cambricon MLU Sharing](cambricon-device/enable-cambricon-mlu-sharing.md)
 - [Allocate device memory](cambricon-device/specify-device-memory-usage.md)
@@ -91,17 +92,17 @@ All vendor pages are listed here so this page reaches each of them.
 - [Allocate device core and memory to container](cambricon-device/examples/allocate-core-and-memory.md)
 - [Allocate exclusive device](cambricon-device/examples/allocate-exclusive.md)
 
-### Hygon
+### Hygon {#hygon}
 
-- [Enable Hygon HCU sharing](hygon-device/enable-hygon-hcu-sharing.md)
+- [Enable Hygon DCU sharing](hygon-device/enable-hygon-dcu-sharing.md)
 - [Allocate device memory](hygon-device/specify-device-memory-usage.md)
 - [Allocate device core to container](hygon-device/specify-device-core-usage.md)
 - [Assign to certain device](hygon-device/specify-device-uuid-to-use.md)
 - [Allocate device core and memory resource](hygon-device/examples/allocate-core-and-memory.md)
 - [Allocate exclusive device](hygon-device/examples/allocate-exclusive.md)
-- [Assign task to certain HCU cards](hygon-device/examples/specify-certain-cards.md)
+- [Assign task to certain DCU cards](hygon-device/examples/specify-certain-cards.md)
 
-### Mthreads
+### Mthreads {#mthreads}
 
 - [Enable Mthreads GPU sharing](mthreads-device/enable-mthreads-gpu-sharing.md)
 - [Allocate device memory to container](mthreads-device/specify-device-memory-usage.md)
@@ -109,7 +110,7 @@ All vendor pages are listed here so this page reaches each of them.
 - [Allocate device core and memory resource](mthreads-device/examples/allocate-core-and-memory.md)
 - [Allocate exclusive device](mthreads-device/examples/allocate-exclusive.md)
 
-### Iluvatar
+### Iluvatar {#iluvatar}
 
 - [Enable Iluvatar GPU Sharing](iluvatar-device/enable-iluvatar-gpu-sharing.md)
 - [Allocate BI-V150 slice](iluvatar-device/examples/allocate-bi-v150.md)
@@ -117,39 +118,39 @@ All vendor pages are listed here so this page reaches each of them.
 - [Allocate exclusive BI-V150 device](iluvatar-device/examples/allocate-exclusive-bi-v150.md)
 - [Allocate exclusive MR-V100 device](iluvatar-device/examples/allocate-exclusive-mr-v100.md)
 
-### Enflame
+### Enflame {#enflame}
 
 - [Enable Enflame GCU Sharing](enflame-device/enable-enflame-gcu-sharing.md)
 
-### AMD
+### AMD {#amd}
 
 - [Enable AMD GPU Sharing](amd-device/enable-amd-gpu-sharing.md)
 - [Allocate device core and memory resource](amd-device/examples/allocate-core-and-memory.md)
 
-### AWS Neuron
+### AWS Neuron {#aws-neuron}
 
 - [Enable AWS-Neuron device Sharing](awsneuron-device/enable-awsneuron-managing.md)
 - [Allocate AWS Neuron core](awsneuron-device/examples/allocate-neuron-core.md)
 - [Allocate AWS Neuron device](awsneuron-device/examples/allocate-neuron-device.md)
 
-### Vastai
+### Vastai {#vastai}
 
 - [Enable Vastai Sharing](vastai/enable-vastai-sharing.md)
 - [Allocate Vastai Device](vastai/examples/default-use.md)
 
-### Biren
+### Biren {#biren}
 
 - [Enable Biren Sharing](biren-device/enable-biren-sharing.md)
 - [Allocate Biren Device](biren-device/examples/default-use.md)
 
-### Kunlunxin
+### Kunlunxin {#kunlunxin}
 
 - [Enable Kunlunxin GPU Topology-Aware Scheduling](kunlunxin-device/enable-kunlunxin-schedule.md)
 - [Enable Kunlunxin VXPU](kunlunxin-device/enable-kunlunxin-vxpu.md)
 - [Allocate a whole xpu card](kunlunxin-device/examples/allocate-whole-xpu.md)
 - [Allocate vxpu device](kunlunxin-device/examples/allocate-vxpu.md)
 
-### MetaX
+### MetaX {#metax}
 
 - [Enable MetaX GPU sharing](metax-device/metax-sgpu/enable-metax-gpu-sharing.md)
 - [Allocate device core and memory resource](metax-device/metax-sgpu/examples/default-use.md)
@@ -162,7 +163,7 @@ All vendor pages are listed here so this page reaches each of them.
 - [Binpack schedule policy](metax-device/metax-gpu/examples/allocate-binpack.md)
 - [Spread schedule policy](metax-device/metax-gpu/examples/allocate-spread.md)
 
-### Huawei Ascend
+### Huawei Ascend {#huawei-ascend}
 
 - [Enable Huawei Ascend sharing](ascend-device/enable-ascend-sharing.md)
 - [Huawei Ascend device template](ascend-device/device-template.md)
