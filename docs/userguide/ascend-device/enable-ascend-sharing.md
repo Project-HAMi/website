@@ -2,13 +2,13 @@
 title: Enable Huawei Ascend sharing
 ---
 
-The Huawei Ascend device plugin supports NPU-slicing for HAMi. It supports template-based slicing, hami-core soft slicing, and ENPU runtime slicing. The examples below cover template and hami-core modes; ENPU prerequisites and examples are in the [plugin ENPU guide](https://github.com/Project-HAMi/ascend-device-plugin/blob/main/examples/enpu/README.md).
+The Huawei Ascend device plugin supports NPU-slicing for HAMi. It supports two modes:
 
-## Template-based Hard Slicing (vNPU)
+## 1. Template-based Hard Slicing (vNPU)
 
 Memory slicing is supported based on virtualization template, the least available template is automatically used. For detailed information, check [device-template](./device-template.md).
 
-## Soft Slicing with Runtime Interception (hami-vnpu-core)
+## 2. Soft Slicing with Runtime Interception (hami-vnpu-core)
 
 This mode implements a soft slicing mechanism based on `libvnpu.so` interception and `limiter` token scheduling, enabling fine-grained resource sharing.
 
@@ -175,5 +175,8 @@ spec:
 
 ## Notes
 
-- Template mode uses the templates configured for each chip model; see [Device templates](./device-template.md).
-- Template-based sharing requires a device-count request of 1. For multiple devices with soft slicing, use the hami-core examples above.
+1. For hard slicing, the default 910B3 configuration provides 16 and 32 GiB templates. The 4096 MiB request above selects the 16 GiB template. Supported templates depend on the card model and driver; see [Device templates](./device-template.md).
+
+1. Huawei Ascend-sharing in init containers is not supported.
+
+1. `huawei.com/Ascend910B3-memory` only works when `huawei.com/Ascend910B3=1`. `huawei.com/Ascend310P-memory` only works when `huawei.com/Ascend310P=1`.

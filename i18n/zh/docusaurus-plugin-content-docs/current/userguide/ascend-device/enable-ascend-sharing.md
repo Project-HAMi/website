@@ -4,13 +4,13 @@ sidebar_label: Huawei Ascend 共享
 translated: true
 ---
 
-Huawei Ascend 设备插件为 HAMi 提供 NPU 切片支持，支持模板切片、hami-core 软切片和 ENPU 运行时切片。下文示例覆盖模板和 hami-core 模式；ENPU 的前置条件和示例见[插件 ENPU 指南](https://github.com/Project-HAMi/ascend-device-plugin/blob/main/examples/enpu/README.md)。
+Huawei Ascend 设备插件为 HAMi 提供 NPU 切片支持，支持两种模式：
 
-## 基于模板的硬切片（vNPU）
+## 1. 基于模板的硬切片（vNPU）
 
 基于虚拟化模板支持显存切片，自动使用最小可用模板。有关详细信息，请查看[设备模板](./device-template.md)。
 
-## 基于运行时拦截的软切片（hami-vnpu-core）
+## 2. 基于运行时拦截的软切片（hami-vnpu-core）
 
 该模式基于 `libvnpu.so` 拦截和 `limiter` 令牌调度实现软切片机制，支持细粒度的资源共享。
 
@@ -177,5 +177,8 @@ spec:
 
 ## 注意事项
 
-- 模板模式使用各卡型配置的设备模板，见[设备模板](./device-template.md)。
-- 模板共享需要将设备数量设为 1。软切片的多卡申请见上文 hami-core 示例。
+1. 硬切片模式下，默认 910B3 配置提供 16、32 GiB 两种模板，上文的 4096 MiB 请求会选择 16 GiB 模板。支持的模板取决于卡型和驱动，见[设备模板](./device-template.md)。
+
+2. 不支持在初始化容器中使用 Huawei Ascend-sharing。
+
+3. `huawei.com/Ascend910B3-memory` 仅在 `huawei.com/Ascend910B3=1` 时有效。 `huawei.com/Ascend310P-memory` 仅在 `huawei.com/Ascend310P=1` 时有效。

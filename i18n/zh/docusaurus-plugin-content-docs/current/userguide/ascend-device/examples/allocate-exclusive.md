@@ -18,5 +18,5 @@ spec:
       command: ["bash", "-c", "sleep 86400"]
       resources:
         limits:
-          huawei.com/Ascend910B3: 2 # 请求 2 个完整的 Huawei Ascend 910B 设备
+          huawei.com/Ascend910B3: 2 # 请求 2 个完整的 Huawei Ascend 910B3 设备
 ```

@@ -1,5 +1,5 @@
 ---
-title: Allocate 910B slice
+title: Allocate 910B3 slice
 ---
 
 To allocate a certain size of device memory, assign `huawei.com/Ascend910B3-memory` alongside `huawei.com/Ascend910B3`.
@@ -18,12 +18,12 @@ spec:
       resources:
         limits:
           huawei.com/Ascend910B3: 1 # requesting 1 NPU
-          huawei.com/Ascend910B3-memory: 16384 # Request 16 GiB of device memory
+          huawei.com/Ascend910B3-memory: 2000 # Request 2000 MiB of device memory
 ```
 
 :::note
 
-In template mode, the selected device template determines both memory and compute. This 910B3 example uses the default `vir05_1c_16g` template. Use the resource name for the actual model in `devices.ascend.configs`.
+With the default 910B3 templates, this 2000 MiB request selects `vir05_1c_16g`, which provides 16384 MiB of memory and 5 AI cores. Memory and compute are determined by the selected template.
 
 :::
 

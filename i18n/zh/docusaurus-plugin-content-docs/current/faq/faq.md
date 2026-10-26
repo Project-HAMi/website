@@ -127,16 +127,30 @@ HAMi 支持多节点多 GPU 分布式训练，单个 Pod 可使用同节点多�
 
 ## 为什么 Node Capacity 中只有 `nvidia.com/gpu` 而没有 `nvidia.com/gpucores` 或 `nvidia.com/gpumem`？
 
-默认情况下，NVIDIA 设备插件注册 `nvidia.com/gpu`，HAMi 通过节点注解 `hami.io/node-nvidia-register` 记录每张卡的显存和核心信息供调度使用。Node Capacity 和 Allocatable 不代表实时使用量。
+**简要说明：**
 
-需要同时上报显存和核心资源时，在 HAMi values 中设置：
+Kubernetes 的 Device Plugin 每次只能上报一种资源类型。HAMi 将核心数和显存信息以 Node 注解方式记录供调度器使用。
 
-```yaml
-devicePlugin:
-  reportNodeCapacity: true
-```
+### Device Plugin 的设计限制
 
-匹配的节点配置中的 `reportnodecapacity` 可以覆盖此设置。完整说明见 [Chart values 表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md)和[节点配置](../userguide/configure.md#node-configuration)。
+- Device Plugin 接口（如 Registration、ListAndWatch）仅允许每个插件实例上报一个资源；
+- 这简化了资源管理，但限制了同时上报多个指标（如核心和显存）。
+
+### HAMi 的实现
+
+- HAMi 将 GPU 详细信息（如算力、显存、型号）存储为 **节点注解**，供调度器解析；
+- 示例：
+
+  ```text
+  hami.io/node-nvidia-register: [{"id":"GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec","count":10,"devmem":32768,"devcore":100,"type":"NVIDIA-Tesla V100-PCIE-32GB","numa":1,"mode":"hami-core","health":true},{"id":"GPU-0fc3eda5-e98b-a25b-5b0d-cf5c855d1448","index":1,"count":10,"devmem":32768,"devcore":100,"type":"NVIDIA-Tesla V100-PCIE-32GB","numa":1,"mode":"hami-core","health":true}]
+  ```
+
+### 后续问题说明
+
+**为什么使用 `volcano-vgpu-device-plugin` 时 Node Capacity 中会出现 `volcano.sh/vgpu-number` 和 `volcano.sh/vgpu-memory`？**
+
+- `volcano-vgpu-device-plugin` 创建了[三个独立的 Device Plugin 实例](https://github.com/Project-HAMi/volcano-vgpu-device-plugin/blob/2bf6dfe37f7b716f05d0d3210f89898087c06d99/pkg/plugin/vgpu/mig-strategy.go#L65-L85)，分别向 kubelet 注册 `volcano.sh/vgpu-number`、`volcano.sh/vgpu-memory`、`volcano.sh/vgpu-cores` 三种资源。kubelet 接收注册后，自动将资源写入 Capacity 和 Allocatable。
+- **提示**：`volcano.sh/vgpu-memory` 资源受 Kubernetes 扩展资源数量限制（最大 32767）。对于大显存 GPU（如 A100 80GB），需要配置 --gpu-memory-factor 参数避免超限。
 
 ## 为什么某些国产厂商不需要单独安装运行时？
 
@@ -220,15 +234,21 @@ DCGM Exporter 不受影响，继续正常上报物理级计数器。HAMi 的每�
 
 ## 如何支持更细粒度的卡切分，例如 0.05 或 0.01？
 
-`devices.nvidia.deviceSplitCount` 控制单张物理 GPU 的最大共享任务数，不会将 GPU 自动等分。默认值为 10，仅在需要更多任务共享单卡时调大。例如，允许最多 20 个任务共享：
+HAMi 通过 `deviceSplitCount` 控制单块物理 GPU 上可分配的最大任务数。默认值为 10。
+
+它限制的是单块 GPU 能被多少个任务共享。每个工作负载实际分到的显存和核心，仍由其自身的资源请求决定。
+
+要支持更细粒度的切分，可通过覆盖 Helm `values.yaml` 中的该参数来实现：
 
 ```yaml
 devices:
   nvidia:
-    deviceSplitCount: 20
+    deviceSplitCount: 20 # 单块 GPU 最多承载 20 个任务
+    # 或
+    # deviceSplitCount: 100 # 单块 GPU 最多承载 100 个任务
 ```
 
-每个工作负载仍需自行声明显存和算力。申请各 5% 的示例：
+然后在工作负载自身的资源请求中声明目标切分。在 deviceSplitCount: 20 时，请求 5% 的显存和核心即可得到 0.05 卡：
 
 ```yaml
 resources:
@@ -238,7 +258,27 @@ resources:
     nvidia.com/gpumem-percentage: 5
 ```
 
-按节点设置上限时，使用[节点配置](../userguide/configure.md#node-configuration)中的 `devicesplitcount`。共享上限越大，插件管理的 vGPU 条目越多，应按实际并发需求设置。
+在 deviceSplitCount: 100 时，请求 1% 的显存和核心即可得到 0.01 卡：
+
+```yaml
+resources:
+  limits:
+    nvidia.com/gpu: 1
+    nvidia.com/gpucores: 1
+    nvidia.com/gpumem-percentage: 1
+```
+
+如果想要针对节点单独修改，请设置 `devicePlugin.nodeConfiguration.config` 下的 `devicesplitcount`。
+
+`deviceSplitCount`与单块 GPU 最大任务数的对应关系如下：
+
+| deviceSplitCount | 单块 GPU 最大任务数 | 切分大小 |
+| ---------------- | ------------------- | -------- |
+| 10（默认）       | 10                  | 0.1      |
+| 20               | 20                  | 0.05     |
+| 100              | 100                 | 0.01     |
+
+> deviceSplitCount 设置得越大，device-plugin 为单块 GPU 管理的 vGPU 条目越多。请根据实际并发需求选择合适的值。
 
 ## HAMi 如何与 NVIDIA 官方 device plugin 共存？
 

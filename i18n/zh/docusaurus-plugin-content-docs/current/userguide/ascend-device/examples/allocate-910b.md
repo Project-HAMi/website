@@ -1,5 +1,5 @@
 ---
-title: 为容器分配 Huawei Ascend-910B 切片
+title: 为容器分配 Huawei Ascend-910B3 切片
 translated: true
 ---
 
@@ -19,12 +19,12 @@ spec:
       resources:
         limits:
           huawei.com/Ascend910B3: 1 # 请求 1 个 NPU
-          huawei.com/Ascend910B3-memory: 16384 # 申请 16 GiB 设备显存
+          huawei.com/Ascend910B3-memory: 2000 # 申请 2000 MiB 设备显存
 ```
 
 :::note
 
-模板模式下，显存和算力由所选设备模板共同决定。本例使用默认 910B3 配置中的 `vir05_1c_16g` 模板。其他型号应使用 `devices.ascend.configs` 中对应的资源名称。
+使用默认 910B3 模板时，本例的 2000 MiB 请求会选择 `vir05_1c_16g`，获得 16384 MiB 显存和 5 个 AI Core。显存和算力由所选模板共同决定。
 
 :::
 
