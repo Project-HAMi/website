@@ -12,9 +12,31 @@ The plugin needs `NODE_NAME` and RBAC to patch nodes, `nodes/status` and pods an
 HAMi and `amd-device-plugin` use separate Charts and values files:
 
 - HAMi: use `devices.amd.*` for scheduler resource names and defaults. See the [HAMi Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md).
-- AMD plugin: use `dp.*` for the plugin and `monitor.*` for its monitor. See the [plugin Chart values reference](https://github.com/Project-HAMi/amd-device-plugin/blob/main/helm/amd-gpu/README.md) for complete defaults, flags, and environment variables.
+- AMD plugin: use `dp.*` for the plugin and `monitor.*` for its monitor. See the [plugin Chart values reference](https://github.com/Project-HAMi/amd-device-plugin/blob/main/helm/amd-gpu/README.md) for the full list of Chart values.
 
-Common plugin settings are `dp.splitCount` (sharing limit), `dp.operatingMode` (operating mode), and `monitor.enabled` (metrics). Keep the remaining defaults unless the deployment requires an override. Mode changes and optional features have the prerequisites described below.
+The following table maps the plugin Chart values to command-line flags and environment variables. Mode changes and optional features have the prerequisites described below.
+
+| Helm value | Flag or variable | Default | Description |
+| --- | --- | --- | --- |
+| `dp.image.repository`, `dp.image.tag` |  | `ghcr.io/project-hami/amd-device-plugin`, the chart `appVersion` | The image. |
+| `dp.splitCount` | `-split_count` | `0` | How many pods may share one GPU. `0` picks it per GPU: 2 on gfx12, otherwise 10. Any other value applies to every GPU. A negative value exits with an error. |
+| `dp.operatingMode` | `OPERATING_MODE` | `cu` | `cu` slices whole GPUs by CU. `partition` uses the hardware compute partitions of Instinct GPUs. |
+| `dp.computePartition` | `COMPUTE_PARTITION` | empty | In partition mode, the compute partition (`spx`, `dpx`, `qpx` or `cpx`) that idle GPUs are switched to at startup. |
+| `dp.allocatorPolicy` | `-allocator_policy` | `besteffort` | How kubelet picks GPUs for multi-GPU pods: `besteffort` (the same as `binpack`, the closest GPUs) or `spread` (the farthest GPUs). |
+| `dp.dmemBackend` | `-dmem_backend` | `true` | Also cap a slice's VRAM with the kernel `dmem` cgroup controller. |
+| `dp.excludeGPUs` | `-exclude_gpus` | empty | GPUs this node keeps for itself, as PCI addresses (`0000:06:00.0`) or DRM cards (`card1`). With none left, the stale registration is cleared. |
+| `dp.deviceMemoryScaling` | `-device_memory_scaling` | `1` | Multiplies the VRAM each GPU registers. Above `1`, pods get `HIP_OVERSUBSCRIBE=true` and `hipMalloc` is served from managed memory (needs XNACK on CDNA). |
+| `dp.reportNodeCapacity` | `-report_node_capacity` | `false` | Publish the healthy GPUs' memory (`amd.com/gpumem`, MiB) and compute units (`amd.com/gpucores`) as node capacity and allocatable. Turning it off removes the entries again. |
+| `dp.cdi.enabled`, `dp.cdi.specDir` | `-cdi_spec_dir` | off, `/var/run/cdi` | Inject GPUs through CDI. |
+| `dp.muslFailClosed.*` | `-musl_fail_closed`, `-ctr_path`, `-containerd_socket` | off | Refuse a slice whose image cannot load the memory hook. Experimental. |
+|  | `-resource_naming_strategy` | `single` | `single` or `mixed`, see below. |
+| `dp.hipLogLevel` | `LIBHIP_LOG_LEVEL` in pods | `0` | Log level of the memory hook in pods (1 error, 2 warn, 3 info, 4 debug). `0` keeps the library default. |
+| `dp.logVerbosity` | `-v` | `2` | Log verbosity. 4 adds topology parsing and 5 adds annotation decoding. |
+| `dp.healthPulse` | `-pulse` | `10` (chart), `0` (flag) | Seconds between GPU health checks. `0` disables them. |
+| `dp.hookInstaller.enabled` |  | `true` | Copy `libamvgpu.so` from the image to `<dp.hostHookPath>/vgpu` on each node. |
+| `dp.hostHookPath` |  | `/usr/local` | Host directory for the hook. Workloads always see it at `/usr/local/vgpu/libamvgpu.so`. |
+| `monitor.enabled` (top level) |  | `false` | Run `k8s-vgpu-monitor`. |
+| `monitor.metricsBindAddress` (top level) | `-metrics_bind_address` | `:9394` | Address the monitor serves `/metrics` on; the container port and the scrape annotation follow it. |
 
 ## Operating modes
 

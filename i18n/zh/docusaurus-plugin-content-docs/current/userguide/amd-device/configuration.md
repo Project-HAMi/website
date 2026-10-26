@@ -13,9 +13,31 @@ translated: true
 HAMi 与 `amd-device-plugin` 使用不同的 Chart 和 values 文件：
 
 - HAMi：通过 `devices.amd.*` 设置调度器使用的资源名称和默认值，见 [HAMi Chart values 表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md)。
-- AMD 插件：通过 `dp.*` 配置插件，通过 `monitor.*` 配置监控，完整默认值、参数和环境变量见[插件 Chart values 表](https://github.com/Project-HAMi/amd-device-plugin/blob/main/helm/amd-gpu/README.md)。
+- AMD 插件：通过 `dp.*` 配置插件，通过 `monitor.*` 配置监控，完整 Chart values 见[插件 Chart values 表](https://github.com/Project-HAMi/amd-device-plugin/blob/main/helm/amd-gpu/README.md)。
 
-常用配置为 `dp.splitCount`（共享数量上限）、`dp.operatingMode`（运行模式）和 `monitor.enabled`（监控指标）。没有特殊需求时保留其他默认值。模式切换和可选功能的前置条件见下文。
+下表列出插件 Chart values 与命令行参数、环境变量的对应关系。模式切换和可选功能的前置条件见下文。
+
+| Helm value | 参数或变量 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `dp.image.repository`、`dp.image.tag` |  | `ghcr.io/project-hami/amd-device-plugin`、chart 的 `appVersion` | 镜像。 |
+| `dp.splitCount` | `-split_count` | `0` | 一张 GPU 可以被多少个 Pod 共享。`0` 按每张 GPU 选择：gfx12 上为 2，其他为 10。其他值对所有 GPU 生效。负值会报错退出。 |
+| `dp.operatingMode` | `OPERATING_MODE` | `cu` | `cu` 按 CU 切分整张 GPU。`partition` 使用 Instinct GPU 的硬件计算分区。 |
+| `dp.computePartition` | `COMPUTE_PARTITION` | 空 | 在 partition 模式下，启动时把空闲 GPU 切换到的计算分区（`spx`、`dpx`、`qpx` 或 `cpx`）。 |
+| `dp.allocatorPolicy` | `-allocator_policy` | `besteffort` | kubelet 为多 GPU Pod 选择 GPU 的方式：`besteffort`（与 `binpack` 相同，选最近的 GPU）或 `spread`（选最远的 GPU）。 |
+| `dp.dmemBackend` | `-dmem_backend` | `true` | 同时用内核 `dmem` cgroup 控制器限制切片的显存。 |
+| `dp.excludeGPUs` | `-exclude_gpus` | 空 | 本节点自己保留的 GPU，写成 PCI 地址（`0000:06:00.0`）或 DRM card（`card1`）。一张都不剩时，过期的注册信息会被清除。 |
+| `dp.deviceMemoryScaling` | `-device_memory_scaling` | `1` | 对每张 GPU 注册的显存做倍数放大。大于 `1` 时，Pod 会得到 `HIP_OVERSUBSCRIBE=true`，`hipMalloc` 从托管内存分配（CDNA 上需要 XNACK）。 |
+| `dp.reportNodeCapacity` | `-report_node_capacity` | `false` | 把健康 GPU 的显存（`amd.com/gpumem`，MiB）和计算单元（`amd.com/gpucores`）发布为节点容量和可分配量。关闭后这些条目会被移除。 |
+| `dp.cdi.enabled`、`dp.cdi.specDir` | `-cdi_spec_dir` | 关闭、`/var/run/cdi` | 通过 CDI 注入 GPU。 |
+| `dp.muslFailClosed.*` | `-musl_fail_closed`、`-ctr_path`、`-containerd_socket` | 关闭 | 拒绝镜像无法加载显存 hook 的切片。实验性功能。 |
+|  | `-resource_naming_strategy` | `single` | `single` 或 `mixed`，见下文。 |
+| `dp.hipLogLevel` | Pod 中的 `LIBHIP_LOG_LEVEL` | `0` | Pod 中显存 hook 的日志级别（1 错误、2 警告、3 信息、4 调试）。`0` 保持库的默认值。 |
+| `dp.logVerbosity` | `-v` | `2` | 日志详细程度。4 增加拓扑解析，5 增加注解解码。 |
+| `dp.healthPulse` | `-pulse` | `10`（chart）、`0`（参数） | GPU 健康检查的间隔秒数。`0` 表示关闭。 |
+| `dp.hookInstaller.enabled` |  | `true` | 把镜像中的 `libamvgpu.so` 复制到每个节点的 `<dp.hostHookPath>/vgpu`。 |
+| `dp.hostHookPath` |  | `/usr/local` | hook 在宿主机上的目录。工作负载中始终位于 `/usr/local/vgpu/libamvgpu.so`。 |
+| `monitor.enabled`（顶层） |  | `false` | 运行 `k8s-vgpu-monitor`。 |
+| `monitor.metricsBindAddress`（顶层） | `-metrics_bind_address` | `:9394` | monitor 提供 `/metrics` 的地址；容器端口和抓取注解随之变化。 |
 
 ## 运行模式
 
