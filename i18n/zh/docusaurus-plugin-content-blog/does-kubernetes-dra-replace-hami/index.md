@@ -94,7 +94,7 @@ DRA 里没有任何东西替代这一层。DRA 驱动的职责止步于容器设
 
 如果这套模式听着眼熟，那确实应该眼熟：HAMi 的传统流水线也是从变更型 Webhook 起步的。而这背后的回报远不止于向后兼容：因为 Webhook 发出的是一份标准 ResourceClaim，并把调度交给它的所有者，**HAMi-DRA 可以不着一处补丁地落入跑着 Volcano、KAI Scheduler 或任何其他调度器的集群。** 传统流水线不得不把自己的扩展器注入调度路径，这意味着每个第三方调度器都需要 HAMi 专属的集成。DRA 抹掉了这种耦合：请求是一个任何 DRA 感知调度器都认得的对象，于是 HAMi 再也不必改动上游。拦截点在迁移中存活了下来；变的只是写进 Pod 里的内容。
 
-伴随 HAMi v2.9，HAMi-DRA v0.2.0 被宣布为生产就绪，发布线随后推进到 v0.2.1。它的平台清单也越过了 NVIDIA，扩展到昇腾（Ascend）与燧原（Enflame），海光 DCU 则通过海光自家的 k8s-dcu-dra-driver 提供文档。
+伴随 HAMi v2.9，HAMi-DRA v0.2.0 被宣布为生产就绪，发布线随后推进到 v0.2.1。它的平台清单也越过了 NVIDIA，扩展到昇腾（Ascend）与燧原（Enflame），海光 HCU 则通过海光自家的 k8s-dcu-dra-driver 提供文档。
 
 HAMi 本身自 v2.8 起把 [DRA 模式列为一种安装选项](/zh/docs/installation/how-to-use-hami-dra)，可观测性故事也一并延续：DRA monitor 组件默认开启，通过 Prometheus（端口 31995）暴露逐容器的设备指标，于是那些基于 HAMi exporter 搭建的仪表盘能熬过这次切换。孵化公告也把「监控 DRA 消费」作为一等关切交给了团队。
 
@@ -116,7 +116,7 @@ helm install hami-dra hami-dra/hami-dra
 
 - **Kubernetes v1.34 或更高，并启用 `DRAConsumableCapacity`。** 在 v1.34 与 v1.35 上该门控是 alpha 且默认关闭，需在控制面设置，这就把不开放 API server 标志的托管集群挡在了门外。该门控在 v1.36 升入 beta 并默认开启，悄悄移除了最大的采纳障碍。
 - **支持 CDI 的运行时。** 启用 CDI 的 containerd 或 CRI-O，外加 NVIDIA 驱动 440 或更高。
-- **面向你所选芯片的 DRA 驱动。** NVIDIA 是成熟路径；昇腾、燧原与海光 DCU 正在路上。HAMi 的传统模式覆盖的清单要长得多（截至 v2.9 有 12+ 个设备家族，含寒武纪 MLU、天数、摩尔线程、昆仑芯、AWS Neuron、Vastai 等，通过各厂商的设备插件接入）。在驱动清单补齐之前，异构集群仍需留在设备插件路径上。
+- **面向你所选芯片的 DRA 驱动。** NVIDIA 是成熟路径；昇腾、燧原与海光 HCU 正在路上。HAMi 的传统模式覆盖的清单要长得多（截至 v2.9 有 12+ 个设备家族，含寒武纪 MLU、天数、摩尔线程、昆仑芯、AWS Neuron、Vastai 等，通过各厂商的设备插件接入）。在驱动清单补齐之前，异构集群仍需留在设备插件路径上。
 
 :::warning 重要提醒
 
@@ -196,7 +196,7 @@ spec:
 | 准入 Webhook | 必需，把 Pod 引到扩展器 | 可选，HAMi-DRA 翻译遗留 YAML |
 | Kubernetes 版本 | 任何受支持版本 | v1.34+ 需特性门控；v1.36 起默认开启 |
 | 运行时前置条件 | 标准容器运行时 | 支持 CDI 的 containerd 或 CRI-O，NVIDIA 驱动 440+ |
-| 厂商覆盖 | 12+ 个设备家族 | NVIDIA 成熟；昇腾、燧原、海光 DCU 路上 |
+| 厂商覆盖 | 12+ 个设备家族 | NVIDIA 成熟；昇腾、燧原、海光 HCU 路上 |
 | 强制执行 | HAMi-core（`libvgpu.so`） | 同一 HAMi-core，不变 |
 | 可观测性 | HAMi exporters | DRA monitor，Prometheus 端口 31995 |
 | 生产历练 | 16 个版本，DaoCloud 10000+ GPU | HAMi-DRA v0.2.1，自 v2.9 起生产就绪 |

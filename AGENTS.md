@@ -360,7 +360,7 @@ Each device vendor has a dedicated section under `userguide/<Vendor>-device/`:
 
 - **NVIDIA** - Most comprehensive with MIG, DRA, and Volcano vGPU support
 - **Cambricon (MLU)** - Chinese chipmaker
-- **Hygon (DCU)** - Chinese GPU
+- **Hygon (HCU)** - Chinese GPU
 - **Mthreads** - Moore Threads GPU
 - **Iluvatar** - Chinese AI GPU
 - **Enflame (GCU)** - Chinese AI accelerator

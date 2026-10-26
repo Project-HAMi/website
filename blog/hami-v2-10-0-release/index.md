@@ -120,7 +120,7 @@ resources:
 
 > **Note**: Unlike NVIDIA/AMD, you do **not** specify a memory or core size per Pod for Biren; you get a full card or an SVI partition (2- or 4-way). The `biren-device-plugin` DaemonSet is deployed into the `biren-gpu` namespace.
 
-With AMD and Biren joining the lineup, HAMi now covers an even broader range of accelerators including NVIDIA, Huawei Ascend, Cambricon, Hygon DCU, Biren, Enflame, MetaX, Kunlunxin, Iluvatar, AWS Neuron, and Vastai Technologies.
+With AMD and Biren joining the lineup, HAMi now covers an even broader range of accelerators including NVIDIA, Huawei Ascend, Cambricon, Hygon HCU, Biren, Enflame, MetaX, Kunlunxin, Iluvatar, AWS Neuron, and Vastai Technologies.
 
 ## More Flexible Ascend Management
 
@@ -175,7 +175,7 @@ Requirements worth noting: **Volcano ≥ 1.14** is needed, with **≥ 1.16 requi
 - **DRA moved to its own chart** ([#2038](https://github.com/Project-HAMi/HAMi/pull/2038), [@archlitchi](https://github.com/archlitchi)): DRA components are removed from the main HAMi Helm chart. DRA now lives in its [own dedicated chart/repo](https://github.com/Project-HAMi/HAMi-dra), so clusters not using DRA no longer pull those components.
 - **Handshake annotation optimization** ([#2052](https://github.com/Project-HAMi/HAMi/pull/2052), [@archlitchi](https://github.com/archlitchi)): node cleanup now fully removes handshake annotation keys instead of writing timestamped `Deleted_*` markers, keeping health/reset reporting consistent.
 - **ubi8 compile image** ([#1958](https://github.com/Project-HAMi/HAMi/pull/1958), [@spencercjh](https://github.com/spencercjh)): the HAMi and HAMi-core build stages moved to `nvidia/cuda:13.3.0-cudnn-devel-ubi8`, broadening GLIBC compatibility so built artifacts run across a wider range of target distributions.
-- **mock-device-plugin NPU templates** ([mock-device-plugin #18](https://github.com/Project-HAMi/mock-device-plugin/pull/18), [@Wangmin362](https://github.com/Wangmin362)): the mock plugin now supports both new nested and legacy flat `vnpus` config formats and registers Ascend AI-core and Hygon DCU cores resources, enabling hardware-less testing of NPU vNPU scheduling.
+- **mock-device-plugin NPU templates** ([mock-device-plugin #18](https://github.com/Project-HAMi/mock-device-plugin/pull/18), [@Wangmin362](https://github.com/Wangmin362)): the mock plugin now supports both new nested and legacy flat `vnpus` config formats and registers Ascend AI-core and Hygon HCU cores resources, enabling hardware-less testing of NPU vNPU scheduling.
 
 ## Contributors
 

@@ -10,7 +10,7 @@ translated: true
 | -------- | ------------------------- | ----------------------- | ------ | -------- | -------- | ------------ |
 | GPU      | 英伟达（NVIDIA）          | 全系列                  | 稳定   | 是       | 是       | 是           |
 | MLU      | 寒武纪（Cambricon）       | 370、590                | 稳定   | 是       | 是       | 否           |
-| DCU      | 海光（Hygon）             | 全系列                  | 稳定   | 是       | 是       | 否           |
+| HCU      | 海光（Hygon）             | 全系列                  | 稳定   | 是       | 是       | 否           |
 | NPU      | 华为昇腾（Huawei Ascend） | 910B、910B3、910C、310P | 稳定   | 是       | 是       | 否           |
 | GPU      | 天数智芯（Iluvatar）      | 全部                    | 稳定   | 是       | 是       | 否           |
 | GPU      | 摩尔线程（Mthreads）      | MTT S4000               | 稳定   | 是       | 是       | 否           |
@@ -46,7 +46,7 @@ HAMi 只是使用这些设备的四种方式之一。另外三种自行完成调
 | ------------------------- | ---- | -------- | ------- | ------------- |
 | 英伟达（NVIDIA）          | [分配设备显存](nvidia-device/specify-device-memory-usage.md) | [动态资源分配](nvidia-device/dynamic-resource-allocation.md) | [使用 Volcano vGPU](volcano-vgpu/nvidia-gpu/how-to-use-volcano-vgpu.md) | [使用 KAI Scheduler](kai-scheduler/how-to-use-kai-scheduler.md) |
 | 寒武纪（Cambricon）       | [启用寒武纪 MLU 共享](cambricon-device/enable-cambricon-mlu-sharing.md) | - | - | - |
-| 海光（Hygon）             | [启用海光 DCU 共享](hygon-device/enable-hygon-dcu-sharing.md) | - | - | - |
+| 海光（Hygon）             | [启用海光 HCU 共享](hygon-device/enable-hygon-hcu-sharing.md) | - | - | - |
 | 华为昇腾（Huawei Ascend） | [启用昇腾共享](ascend-device/enable-ascend-sharing.md) | - | [Volcano 昇腾 vNPU](../installation/how-to-use-volcano-ascend.md) | - |
 | 天数智芯（Iluvatar）      | [启用天数 GPU 共享](iluvatar-device/enable-iluvatar-gpu-sharing.md) | - | - | - |
 | 摩尔线程（Mthreads）      | [启用摩尔线程 GPU 共享](mthreads-device/enable-mthreads-gpu-sharing.md) | - | - | - |
@@ -94,13 +94,13 @@ HAMi 只是使用这些设备的四种方式之一。另外三种自行完成调
 
 ### 海光（Hygon）
 
-- [启用 Hygon DCU 共享](hygon-device/enable-hygon-dcu-sharing.md)
+- [启用 Hygon HCU 共享](hygon-device/enable-hygon-hcu-sharing.md)
 - [为容器分配设备显存](hygon-device/specify-device-memory-usage.md)
 - [分配设备核心给容器](hygon-device/specify-device-core-usage.md)
 - [分配到特定设备](hygon-device/specify-device-uuid-to-use.md)
 - [为容器分配设备核心和显存资源](hygon-device/examples/allocate-core-and-memory.md)
 - [分配独占设备](hygon-device/examples/allocate-exclusive.md)
-- [将任务分配给特定的 DCU](hygon-device/examples/specify-certain-cards.md)
+- [将任务分配给特定的 HCU](hygon-device/examples/specify-certain-cards.md)
 
 ### 摩尔线程（Mthreads）
 

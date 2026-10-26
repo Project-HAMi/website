@@ -120,7 +120,7 @@ resources:
 
 > **注意**：与 NVIDIA/AMD 不同，壁仞**不能**按 Pod 指定显存或算力大小，你得到的是整卡或一个 SVI 分区（2 个分区或 4 个分区）。`biren-device-plugin` DaemonSet 部署在 `biren-gpu` 命名空间。
 
-AMD 与壁仞的加入，使 HAMi 已覆盖更广泛的加速器，包括 NVIDIA、华为昇腾、寒武纪、海光 DCU、壁仞、燧原、沐曦、昆仑芯、天数智芯、AWS Neuron 与瀚博半导体。
+AMD 与壁仞的加入，使 HAMi 已覆盖更广泛的加速器，包括 NVIDIA、华为昇腾、寒武纪、海光 HCU、壁仞、燧原、沐曦、昆仑芯、天数智芯、AWS Neuron 与瀚博半导体。
 
 ## 更灵活的昇腾管理
 
@@ -175,7 +175,7 @@ Volcano 现在可以结合 Ascend device plugin 与 `hami-vnpu-core`，调度并
 - **DRA 迁移到独立 chart**（[#2038](https://github.com/Project-HAMi/HAMi/pull/2038)，[@archlitchi](https://github.com/archlitchi)）：DRA 组件从主 HAMi Helm chart 中移除。DRA 现在拥有[独立的 chart/仓库](https://github.com/Project-HAMi/HAMi-dra)，不使用 DRA 的集群不再需要拉取这些组件。
 - **握手注解优化**（[#2052](https://github.com/Project-HAMi/HAMi/pull/2052)，[@archlitchi](https://github.com/archlitchi)）：节点清理时现在会完整移除握手注解键，而不是写入带时间戳的 `Deleted_*` 标记，使健康/重置上报保持一致。
 - **ubi8 编译镜像**（[#1958](https://github.com/Project-HAMi/HAMi/pull/1958)，[@spencercjh](https://github.com/spencercjh)）：HAMi 与 HAMi-core 的构建阶段迁移到 `nvidia/cuda:13.3.0-cudnn-devel-ubi8`，扩大了 GLIBC 兼容范围，使构建产物能在更广泛的目标发行版上运行。
-- **mock-device-plugin NPU 模板**（[mock-device-plugin #18](https://github.com/Project-HAMi/mock-device-plugin/pull/18)，[@Wangmin362](https://github.com/Wangmin362)）：mock 插件现在同时支持新版嵌套格式与旧版扁平 `vnpus` 配置，并注册了昇腾 AI-core 与海光 DCU cores 资源，支持在无硬件环境下测试 NPU vNPU 调度。
+- **mock-device-plugin NPU 模板**（[mock-device-plugin #18](https://github.com/Project-HAMi/mock-device-plugin/pull/18)，[@Wangmin362](https://github.com/Wangmin362)）：mock 插件现在同时支持新版嵌套格式与旧版扁平 `vnpus` 配置，并注册了昇腾 AI-core 与海光 HCU cores 资源，支持在无硬件环境下测试 NPU vNPU 调度。
 
 ## 贡献者
 

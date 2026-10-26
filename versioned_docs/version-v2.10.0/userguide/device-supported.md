@@ -9,7 +9,7 @@ The table below lists the devices supported by HAMi. This matrix reflects HAMi v
 | ------ | ------------- | ----------------------- | ---------------- | --------------- | ------------- | ---------------------- |
 | GPU    | NVIDIA        | All                     | Stable           | Yes             | Yes           | Yes                    |
 | MLU    | Cambricon     | 370, 590                | Stable           | Yes             | Yes           | No                     |
-| DCU    | Hygon         | All                     | Stable           | Yes             | Yes           | No                     |
+| HCU    | Hygon         | All                     | Stable           | Yes             | Yes           | No                     |
 | NPU    | Huawei Ascend | 910B, 910B3, 910C, 310P | Stable           | Yes             | Yes           | No                     |
 | GPU    | Iluvatar      | All                     | Stable           | Yes             | Yes           | No                     |
 | GPU    | Mthreads      | MTT S4000               | Stable           | Yes             | Yes           | No                     |
@@ -45,7 +45,7 @@ Each cell links to the guide for that device and component. A dash means there i
 | ------------- | ---- | -------- | ------- | ------------- |
 | NVIDIA        | [Allocate device memory](nvidia-device/specify-device-memory-usage.md) | [Dynamic Resource Allocation](nvidia-device/dynamic-resource-allocation.md) | [Use Volcano vGPU](volcano-vgpu/nvidia-gpu/how-to-use-volcano-vgpu.md) | [Use KAI Scheduler](kai-scheduler/how-to-use-kai-scheduler.md) |
 | Cambricon     | [Enable Cambricon MLU sharing](cambricon-device/enable-cambricon-mlu-sharing.md) | - | - | - |
-| Hygon         | [Enable Hygon DCU sharing](hygon-device/enable-hygon-dcu-sharing.md) | - | - | - |
+| Hygon         | [Enable Hygon HCU sharing](hygon-device/enable-hygon-hcu-sharing.md) | - | - | - |
 | Huawei Ascend | [Enable Huawei Ascend sharing](ascend-device/enable-ascend-sharing.md) | - | [Volcano Ascend vNPU](../installation/how-to-use-volcano-ascend.md) | - |
 | Iluvatar      | [Enable Iluvatar GPU sharing](iluvatar-device/enable-iluvatar-gpu-sharing.md) | - | - | - |
 | Mthreads      | [Enable Mthreads GPU sharing](mthreads-device/enable-mthreads-gpu-sharing.md) | - | - | - |
@@ -93,13 +93,13 @@ All vendor pages are listed here so this page reaches each of them.
 
 ### Hygon
 
-- [Enable Hygon DCU sharing](hygon-device/enable-hygon-dcu-sharing.md)
+- [Enable Hygon HCU sharing](hygon-device/enable-hygon-hcu-sharing.md)
 - [Allocate device memory](hygon-device/specify-device-memory-usage.md)
 - [Allocate device core to container](hygon-device/specify-device-core-usage.md)
 - [Assign to certain device](hygon-device/specify-device-uuid-to-use.md)
 - [Allocate device core and memory resource](hygon-device/examples/allocate-core-and-memory.md)
 - [Allocate exclusive device](hygon-device/examples/allocate-exclusive.md)
-- [Assign task to certain DCU cards](hygon-device/examples/specify-certain-cards.md)
+- [Assign task to certain HCU cards](hygon-device/examples/specify-certain-cards.md)
 
 ### Mthreads
 

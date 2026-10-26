@@ -1,10 +1,10 @@
 ---
-title: 将任务分配给特定的 DCU
-sidebar_label: 指定 DCU
+title: 将任务分配给特定的 HCU
+sidebar_label: 指定 HCU
 translated: true
 ---
 
-要将任务分配给特定的 DCU，只需在注释字段中分配 `hygon.com/use-gpuuuid`
+要将任务分配给特定的 HCU，只需在注释字段中分配 `hygon.com/use-gpuuuid`
 
 ```yaml
 apiVersion: v1
@@ -12,7 +12,7 @@ kind: Pod
 metadata:
   name: gpu-pod
   annotations:
-    hygon.com/use-gpuuuid: "DCU-123,DCU-456" # 指定以逗号分隔的 DCU UUID
+    hygon.com/use-gpuuuid: "HCU-123,HCU-456" # 指定以逗号分隔的 HCU UUID
 spec:
   containers:
     - name: ubuntu-container
@@ -20,5 +20,5 @@ spec:
       command: ["bash", "-c", "sleep 86400"]
       resources:
         limits:
-          hygon.com/dcunum: 1 # 请求一个 DCU 卡
+          hygon.com/hcunum: 1 # 请求一个 HCU 卡
 ```

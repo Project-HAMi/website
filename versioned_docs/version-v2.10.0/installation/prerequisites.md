@@ -19,7 +19,7 @@ Before installing HAMi, prepare the Kubernetes cluster and device nodes as descr
 | Huawei Ascend NPU | [Prerequisites](../userguide/ascend-device/enable-ascend-sharing.md#prerequisites) |
 | AMD GPU | [Prerequisites](../userguide/amd-device/enable-amd-gpu-sharing.md#prerequisites) |
 | Cambricon MLU | [Prerequisites](../userguide/cambricon-device/enable-cambricon-mlu-sharing.md#prerequisites) |
-| Hygon DCU | [Prerequisites](../userguide/hygon-device/enable-hygon-dcu-sharing.md#prerequisites) |
+| Hygon HCU | [Prerequisites](../userguide/hygon-device/enable-hygon-hcu-sharing.md#prerequisites) |
 | Moore Threads GPU | [Prerequisites](../userguide/mthreads-device/enable-mthreads-gpu-sharing.md#prerequisites) |
 | Iluvatar GPU | [Prerequisites](../userguide/iluvatar-device/enable-iluvatar-gpu-sharing.md#prerequisites) |
 | Enflame GCU | [Prerequisites](../userguide/enflame-device/enable-enflame-gcu-sharing.md#prerequisites) |
