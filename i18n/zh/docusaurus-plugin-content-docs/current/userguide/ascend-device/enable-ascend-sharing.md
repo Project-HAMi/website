@@ -48,7 +48,7 @@ npu-smi info -t multi-die-policy
 
 业务镜像需包含 CANN，以及可执行的 `/usr/bin/systemd-detect-virt` 和依赖库。插件会将 ENPU 运行时安装到节点的 `/usr/local/enpu/vcann-rt`；已有文件内容与镜像不一致时会拒绝启动，不能通过反复重启绕过。
 
-本页部署普通 ENPU 切片，不需要 enpu-manager。内存换出（mem-swap）还需要支持该功能的运行时和 enpu-manager，不能仅靠 Pod 注解启用。
+本页部署普通 ENPU 切片，不需要 enpu-manager。NPU 显存换出（`npu-mem-swap`）将 NPU 显存（HBM）中的数据换出到宿主机内存，用于显存超分。该功能还需要配套支持它的运行时和 enpu-manager，不能仅靠 Pod 注解启用。
 
 ## 配置 Ascend 调度支持
 

@@ -46,7 +46,7 @@ The query must report `INDEP_POLICY`. The plugin checks this prerequisite withou
 
 Workload images must contain CANN and an executable `/usr/bin/systemd-detect-virt` with its shared-library dependencies. The plugin installs ENPU runtime files under `/usr/local/enpu/vcann-rt` on the node. It refuses startup if existing files differ from its image; restarting does not bypass this check.
 
-This guide deploys ordinary ENPU slicing, which does not require enpu-manager. Memory swapping (mem-swap) additionally requires a runtime and enpu-manager supporting that feature; Pod annotations alone do not enable it.
+This guide deploys ordinary ENPU slicing, which does not require enpu-manager. NPU memory swapping (`npu-mem-swap`) moves NPU device-memory (HBM) data to host memory to support device-memory oversubscription. It additionally requires a runtime and enpu-manager supporting that feature; Pod annotations alone do not enable it.
 
 ## Configure Ascend scheduling
 
