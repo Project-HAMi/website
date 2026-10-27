@@ -392,6 +392,42 @@ const events = [
     },
     externalUrl: "https://www.containerdays.io/containerdays-singapore-2026/",
   },
+  {
+    slug: "containerdays-singapore-10x",
+    title: {
+      en: "10x Your Neocloud's GPU Utilization with HAMi",
+      zh: "用 HAMi 将 Neocloud 的 GPU 利用率提升 10 倍",
+    },
+    date: "2026-10-27",
+    endDate: "2026-10-28",
+    location: {
+      en: "Suntec Singapore Convention & Exhibition Centre, Singapore",
+      zh: "新加坡 新达城新加坡国际会议展览中心",
+    },
+    address: {
+      streetAddress: "1 Raffles Blvd",
+      addressLocality: "Singapore",
+      postalCode: "039593",
+      addressCountry: "SG",
+    },
+    description: {
+      en: "DRA gives Kubernetes a way to request fractional GPUs, but it does not solve the utilization problem by itself - the device still needs virtualization and a scheduler that knows how to share it. Hardware-agnostic GPU virtualization provides that layer: one scheduling layer shares NVIDIA, AMD, Ascend, and domestic NPUs under a single pool - fractional GPUs, mixed vendors, whatever hardware the supply chain delivers. This talk covers how vGPU interception enforces memory and compute limits, how the scheduler allocates heterogeneous devices, how DRA fits (and where it falls short), and production patterns from cloud providers running 10,000+ GPUs. No vendor pitch. A concrete blueprint for turning a GPU box into a GPU cloud.",
+      zh: "DRA 让 Kubernetes 能够申请细粒度 GPU，但它本身并不能解决利用率问题 - 设备仍然需要虚拟化，以及一个懂得如何共享它的调度器。与硬件无关的 GPU 虚拟化提供了这一层：一个调度层将 NVIDIA、AMD、Ascend 以及国产 NPU 纳入同一个资源池 - 细粒度 GPU、混合厂商，供应链给什么硬件就用什么硬件。本次演讲涵盖：vGPU 拦截如何强制执行显存与算力限制、调度器如何分配异构设备、DRA 如何融入其中（以及它在哪些地方力有不逮），以及来自运行 10,000+ GPU 的云厂商的生产实践。没有厂商推销。一份把一台 GPU 服务器变成 GPU 云的落地蓝图。",
+    },
+    resources: {
+      communityFlyer: {
+        en: "Community Flyer",
+        zh: "社区宣传册",
+        url: "/resources/events/flyers/community-flyer.pdf",
+      },
+      talkSlides: {
+        en: "Talk Slides",
+        zh: "演讲幻灯片",
+        url: "/resources/events/2026-containerdays-singapore/containerdays-singapore-2026-10x.pdf",
+      },
+    },
+    externalUrl: "https://www.containerdays.io/containerdays-singapore-2026/",
+  },
 ];
 
 export default events;
