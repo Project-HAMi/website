@@ -103,9 +103,11 @@ scheduler:
     imageNew:
       registry: swr.<地域>.myhuaweicloud.com
       repository: <组织名称>/kube-webhook-certgen
+devices:
+  nvidia:
+    runtimeClassName: nvidia
+    createRuntimeClass: true
 devicePlugin:
-  runtimeClassName: nvidia
-  createRuntimeClass: true
   image:
     registry: swr.<地域>.myhuaweicloud.com
     repository: <组织名称>/hami
@@ -115,7 +117,7 @@ devicePlugin:
       repository: <组织名称>/hami
 ```
 
-`global.imagePullSecrets` 使用 `default-secret` 拉取镜像。CCE 会在每个命名空间下创建该 Secret，其中包含从 SWR 拉取镜像的凭证，因此镜像仓库可以保持私有。见[集群系统密钥说明](https://support.huaweicloud.com/usermanual-cce/cce_10_0388.html)。`devicePlugin.runtimeClassName` 和 `devicePlugin.createRuntimeClass` 会创建 `nvidia` RuntimeClass，并将其用于 HAMi 的 Device Plugin。HAMi 也会为申请 vGPU 资源的 Pod 设置该 RuntimeClass。
+`global.imagePullSecrets` 使用 `default-secret` 拉取镜像。CCE 会在每个命名空间下创建该 Secret，其中包含从 SWR 拉取镜像的凭证，因此镜像仓库可以保持私有。见[集群系统密钥说明](https://support.huaweicloud.com/usermanual-cce/cce_10_0388.html)。`devices.nvidia.runtimeClassName` 和 `devices.nvidia.createRuntimeClass` 会创建 `nvidia` RuntimeClass，并将其用于 HAMi 的设备插件。HAMi 也会为申请 vGPU 资源的 Pod 设置该 RuntimeClass。
 
 ## 安装 HAMi
 
@@ -140,7 +142,7 @@ NAME             HOLDER                                                         
 hami-scheduler   hami-scheduler-57478c9db5-ttlrj_845424a5-33aa-4881-a744-9baa9090c26c   26s
 ```
 
-然后确认 HAMi 已注册 GPU。`devicePlugin.deviceSplitCount` 默认为 10，因此一张 GPU 会上报 10 个 `nvidia.com/gpu`：
+然后确认 HAMi 已注册 GPU。`devices.nvidia.deviceSplitCount` 默认为 10，因此一张 GPU 会上报 10 个 `nvidia.com/gpu`：
 
 ```bash
 kubectl get node <node-name> -o jsonpath='{.status.allocatable.nvidia\.com/gpu}{"\n"}'
@@ -178,7 +180,7 @@ E1011 04:44:38.399747   44144 factory.go:135] Incompatible strategy detected aut
 E1011 04:44:38.399767   44144 factory.go:136] If this is a GPU node, did you configure the NVIDIA Container Toolkit?
 ```
 
-此时容器使用默认的 `runc` 运行时，找不到 NVIDIA 驱动。按[准备 HAMi values 文件](#prepare-the-hami-values)设置 `devicePlugin.runtimeClassName` 和 `devicePlugin.createRuntimeClass`。
+此时容器使用默认的 `runc` 运行时，找不到 NVIDIA 驱动。按[准备 HAMi values 文件](#prepare-the-hami-values)设置 `devices.nvidia.runtimeClassName` 和 `devices.nvidia.createRuntimeClass`。
 
 ### Device Plugin 日志中出现 NUMA 错误
 

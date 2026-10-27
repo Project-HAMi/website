@@ -3,115 +3,56 @@ title: Real-time GPU Usage
 sidebar_label: Real-time Usage
 ---
 
-Real-time monitoring allows you to track GPU utilization, memory usage, and resource allocation across your Kubernetes cluster as workloads run. HAMi provides tools to observe GPU behavior dynamically.
+Use HAMi metrics to observe GPU utilization and memory usage. Node Capacity, Allocatable, and allocation annotations describe resource inventory or assignments; they do not measure real-time usage.
 
-## Monitoring with kubectl
+## GPU and container metrics
 
-### Check Node GPU Resources
+Follow the [Grafana dashboard guide](./grafana-dashboard.md) to configure Prometheus and dashboards. Collect both HAMi metric sources:
 
-View current GPU capacity and allocatable resources on a node:
+| Source                        | Purpose                                     |
+| ----------------------------- | ------------------------------------------- |
+| HAMi scheduler                | Device inventory, capacity, and allocations |
+| vGPU monitor on each GPU node | Physical GPU and container vGPU usage       |
 
-```bash
-kubectl get node <node-name> -o json | jq '.status.allocatable' | grep -i gpu
-```
+For NVIDIA hardware telemetry, optionally add DCGM Exporter as described in that guide. Other vendors' device plugins and monitors are deployed separately; use the monitoring instructions for the selected vendor.
 
-### Inspect Pod GPU Allocation
+## Inspect allocations
 
-See which GPUs are allocated to a specific pod:
+The following examples use NVIDIA's default resource names. Substitute the actual namespace, Pod, container, and node names.
 
-```bash
-kubectl get pod <pod-name> -o json | jq '.metadata.annotations' | grep -i gpu
-```
-
-Or view all GPU-related information:
+Check the node's allocatable resources and registered GPU inventory:
 
 ```bash
-kubectl describe pod <pod-name>
+kubectl get node <node-name> -o jsonpath='{.status.allocatable}'
+kubectl get node <node-name> -o jsonpath='{.metadata.annotations.hami\.io/node-nvidia-register}'
 ```
 
-## Monitoring Inside Containers
-
-### Check Allocated GPU Inside Pod
-
-Inside a running container, you can check which GPUs are visible:
+Inspect the Pod's resource requests, allocation annotation, and events:
 
 ```bash
-kubectl exec -it <pod-name> -- nvidia-smi
+kubectl describe pod <pod-name> -n <namespace>
+kubectl get pod <pod-name> -n <namespace> -o jsonpath='{.metadata.annotations.hami\.io/vgpu-devices-allocated}'
 ```
 
-This shows the virtual GPU configuration as seen by the container, including allocated memory and cores.
+These values help explain placement and allocation. Use the monitor metrics for actual utilization and memory usage.
 
-### Real-time GPU Usage
+## Check NVIDIA device visibility
 
-To monitor GPU usage while a workload runs:
+If `nvidia-smi` is available in the workload image, check the devices visible to a container:
 
 ```bash
-kubectl exec -it <pod-name> -- watch -n 1 nvidia-smi
+kubectl exec -n <namespace> <pod-name> -c <container-name> -- nvidia-smi
 ```
 
-This updates the GPU metrics every second, showing:
+The output depends on the runtime and sharing mode. It does not replace HAMi's allocation information or provide a complete view of a container's compute quota. Running `nvidia-smi` on the host shows the physical GPUs.
 
-- GPU utilization percentage
-- Memory usage and limits
-- Running processes
+## Check component status
 
-## Node-Level Monitoring
-
-### Monitor All GPUs on a Node
-
-SSH into the node and run:
+For the default `hami` release in `kube-system`:
 
 ```bash
-nvidia-smi
+kubectl get pods -n kube-system -l app.kubernetes.io/instance=hami
+kubectl logs -n kube-system -l app.kubernetes.io/instance=hami,app.kubernetes.io/component=hami-device-plugin -c device-plugin --tail=100
 ```
 
-For continuous monitoring:
-
-```bash
-watch -n 1 nvidia-smi
-```
-
-### Check HAMi Device Plugin Status
-
-Verify the HAMi device plugin is running and reporting resources:
-
-```bash
-kubectl get pods -n kube-system | grep hami
-kubectl logs -n kube-system -l app.kubernetes.io/component=hami-scheduler -f
-```
-
-## Resource Annotation Tracking
-
-HAMi stores GPU information in node annotations. View them with:
-
-```bash
-kubectl get node <node-name> -o yaml | grep -A 10 "hami.io/node"
-```
-
-This shows detailed GPU information including:
-
-- GPU UUIDs
-- Memory capacity
-- Compute core count
-- Device models
-
-## Integration with Monitoring Tools
-
-For production environments, integrate HAMi with tools like:
-
-- **Prometheus**: Scrape kubelet metrics for GPU resource data
-- **Grafana**: Visualize GPU utilization trends over time
-- **Kubernetes Dashboard**: View GPU resources in the web UI
-
-Refer to the Kubernetes documentation for setting up monitoring with these tools.
-
-## Troubleshooting
-
-If you notice GPU allocation inconsistencies:
-
-1. Check pod resource requests/limits match HAMi annotations
-2. Verify the HAMi scheduler is running
-3. Check device plugin logs for errors
-4. Ensure nodes have the required GPU labels
-
-For more details, see the [troubleshooting guide](../../troubleshooting/troubleshooting.md).
+Use the actual release labels and namespace for other deployments. Vendor plugins installed separately have their own labels and container names. For allocation failures, also inspect the Pod events and scheduler logs; see [Troubleshooting](../../troubleshooting/troubleshooting.md).

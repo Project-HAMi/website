@@ -27,37 +27,15 @@ title: 启用天数智芯 GPU 共享
 
   > **注意：** 仅安装 gpu-manager，不要安装 gpu-admission 包。
 
-- 安装 HAMi 时设置 `devices.iluvatar.enabled=true`
-
-```bash
-helm install hami hami-charts/hami --set scheduler.kubeScheduler.image.tag={your kubernetes version} --set devices.iluvatar.enabled=true -n kube-system
-```
-
-**说明：** 当前支持的 GPU 型号及资源名称定义如下（位于 [https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/templates/scheduler/device-configmap.yaml](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/templates/scheduler/device-configmap.yaml)）：
+将以下内容加入 HAMi values 文件，再按[在线安装指南](../../installation/online-installation.md)部署：
 
 ```yaml
-iluvatars:
-  - chipName: MR-V100
-    commonWord: MR-V100
-    resourceCountName: iluvatar.ai/MR-V100-vgpu
-    resourceMemoryName: iluvatar.ai/MR-V100.vMem
-    resourceCoreName: iluvatar.ai/MR-V100.vCore
-  - chipName: MR-V50
-    commonWord: MR-V50
-    resourceCountName: iluvatar.ai/MR-V50-vgpu
-    resourceMemoryName: iluvatar.ai/MR-V50.vMem
-    resourceCoreName: iluvatar.ai/MR-V50.vCore
-  - chipName: BI-V150
-    commonWord: BI-V150
-    resourceCountName: iluvatar.ai/BI-V150-vgpu
-    resourceMemoryName: iluvatar.ai/BI-V150.vMem
-    resourceCoreName: iluvatar.ai/BI-V150.vCore
-  - chipName: BI-V100
-    commonWord: BI-V100
-    resourceCountName: iluvatar.ai/BI-V100-vgpu
-    resourceMemoryName: iluvatar.ai/BI-V100.vMem
-    resourceCoreName: iluvatar.ai/BI-V100.vCore
+devices:
+  iluvatar:
+    enabled: true
 ```
+
+此配置启用天数智芯调度支持；gpu-manager 仍需按上文单独安装。支持的型号和资源名称通过 `devices.iluvatar.configs` 配置；自定义时还需同步修改 `devices.iluvatar.customresources`。这两个列表都会被整体替换。完整参数见 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md)，默认配置见 [values 源码](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/values.yaml)，不要修改生成的全局 ConfigMap。
 
 ## 设备粒度
 

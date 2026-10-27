@@ -37,11 +37,9 @@ You can remove `mt-mutating-webhook` and `mt-gpu-scheduler` after installation (
 
 :::
 
-- Set `devices.mthreads.enabled=true` when installing HAMi
+Follow [Online installation](../../installation/online-installation.md) to deploy HAMi. Keep `devices.mthreads.enabled=true` (the default). This registers the vendor resources with the bundled scheduler extender; the vendor plugin or toolkit must be installed separately. See the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md) for `devices.mthreads.*`.
 
-```bash
-helm install hami hami-charts/hami --set scheduler.kubeScheduler.image.tag={your kubernetes version} --set devices.mthreads.enabled=true -n kube-system
-```
+If you customize resource names, keep `devices.mthreads.customresources` consistent with `resourceCountName`. Set `devices.mthreads.memoryPerCard` only when the cluster needs different per-card memory capacities; use the defaults in the [values source](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/values.yaml).
 
 ## Running Mthreads jobs
 

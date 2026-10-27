@@ -1,8 +1,8 @@
 ---
-title: Allocate 910B slice
+title: Allocate 910B3 slice
 ---
 
-To allocate a certain size of device memory, assign `huawei.com/Ascend910B-memory` alongside `huawei.com/Ascend910B`.
+To allocate a certain size of device memory, assign `huawei.com/Ascend910B3-memory` alongside `huawei.com/Ascend910B3`.
 
 ```yaml
 apiVersion: v1
@@ -17,13 +17,13 @@ spec:
       command: ["bash", "-c", "sleep 86400"]
       resources:
         limits:
-          huawei.com/Ascend910B: 1 # requesting 1 NPU
-          huawei.com/Ascend910B-memory: 2000 # requesting 2000m device memory
+          huawei.com/Ascend910B3: 1 # requesting 1 NPU
+          huawei.com/Ascend910B3-memory: 2000 # Request 2000 MiB of device memory
 ```
 
 :::note
 
-Compute resource of Ascend910B is also limited with `huawei.com/Ascend910B-memory`, equal to the percentage of device memory allocated.
+With the default 910B3 templates, this 2000 MiB request selects `vir05_1c_16g`, which provides 16384 MiB of memory and 5 AI cores. Memory and compute are determined by the selected template.
 
 :::
 
@@ -38,9 +38,9 @@ metadata:
   name: ascend-pod
   annotations:
     # Use specific Huawei Ascend devices (comma-separated list)
-    hami.io/use-Ascend910B-uuid: "device-uuid-1,device-uuid-2"
+    hami.io/use-Ascend910B3-uuid: "device-uuid-1,device-uuid-2"
     # Or exclude specific Huawei Ascend devices (comma-separated list)
-    hami.io/no-use-Ascend910B-uuid: "device-uuid-3,device-uuid-4"
+    hami.io/no-use-Ascend910B3-uuid: "device-uuid-3,device-uuid-4"
 spec:
   # ... rest of pod spec
 ```

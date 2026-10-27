@@ -24,19 +24,19 @@ HAMi v2.10.0 已包含显存、算力、类型和 UUID 相关功能。以下功�
 ### 节点需求 {#节点需求}
 
 - 带有 ROCm 支持的 AMD GPU 的 Linux amd64 节点，已安装 `amdgpu` 内核驱动，并存在 `/dev/kfd` 和 `/dev/dri`。驱动安装请参见 [ROCm 安装指南](https://rocm.docs.amd.com/projects/install-on-linux/en/latest/)。
-- 已安装 HAMi 调度器的 Kubernetes 集群。如果集群中没有 NVIDIA GPU，安装 HAMi 时关闭其自带的 device plugin：
+- 已安装 HAMi 调度器的 Kubernetes 集群。如果集群中没有 NVIDIA GPU，按[在线安装指南](../../installation/online-installation.md)部署，并在 HAMi values 中关闭 NVIDIA 插件：
 
-```bash
-helm repo add hami-charts https://project-hami.github.io/HAMi/
-helm install hami hami-charts/hami -n kube-system --set devicePlugin.enabled=false
-```
+  ```yaml
+  devicePlugin:
+    enabled: false
+  ```
 
 - 同一批节点上不能有其他插件注册 `amd.com/gpu`，例如上游的 ROCm device plugin。kubelet 不能由两个插件提供同一个资源：它会拒绝第二次注册（`device plugin already connected`），先注册的插件继续提供服务。
 
 ### 部署
 
 1. 按上面的方式安装 HAMi chart。它会向调度器注册 AMD 资源（`values.yaml` 中的 `devices.amd.*`）。如果要给所有申请 AMD GPU 的 Pod 设置 runtime class，设置 `devices.amd.runtimeClassName`；Pod 自己设置了 `runtimeClassName` 时保持不变，不申请 GPU 的 Pod 不受影响（需要比 v2.10.0 更新的 HAMi 版本，[Project-HAMi/HAMi#3194](https://github.com/Project-HAMi/HAMi/pull/3194)）。
-2. 在 AMD 节点上安装 [amd-device-plugin](https://github.com/Project-HAMi/amd-device-plugin)。它把每张 GPU 发布到节点注解 `hami.io/node-amd-register`，为 Pod 分配 CU 切片和显存限制；当 DRM 设备无法打开，或 AMD Device Metrics Exporter 报告 GPU 不健康时，将该 GPU 标记为不健康。在所需插件版本的源码目录中执行（最新版本为 v0.0.3）：
+2. 在 AMD 节点上安装 [amd-device-plugin](https://github.com/Project-HAMi/amd-device-plugin)。它把每张 GPU 发布到节点注解 `hami.io/node-amd-register`，为 Pod 分配 CU 切片和显存限制；当 DRM 设备无法打开，或 AMD Device Metrics Exporter 报告 GPU 不健康时，将该 GPU 标记为不健康。在所需插件版本的源码目录中执行：
 
 ```bash
 helm upgrade --install amd-gpu ./helm/amd-gpu --namespace kube-system --create-namespace
