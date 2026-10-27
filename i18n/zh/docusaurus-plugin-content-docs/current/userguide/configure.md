@@ -42,7 +42,40 @@ scheduler:
 
 `nodeSchedulerPolicy` 控制节点选择，默认 `binpack`；`gpuSchedulerPolicy` 控制节点内的设备选择，默认 `spread`。`binpack` 倾向集中分配，`spread` 倾向分散分配。Pod 注解可以覆盖这些默认值，其他策略及组合方式见[调度策略](./nvidia-device/scheduling-policy.md)。
 
-镜像、CPU 和内存资源、Webhook 范围、证书、服务端口和监控通常可以保留默认配置。需要调整时，在 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values)中查找 `global.*`、`scheduler.*` 和 `prometheus.*`；性能分析参数也在该表中说明。
+镜像、CPU 和内存资源、Webhook 范围、证书、服务端口和监控通常可以保留默认配置。需要调整时，在 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values)中查找 `global.*`、`scheduler.*` 和 `prometheus.*`。
+
+### Scheduler 性能分析 {#scheduler-profiling}
+
+需要排查性能问题时，将 `--profiling` 加入 `scheduler.extender.extraArgs`。该列表会整体替换，需保留部署中已有的其他参数：
+
+```yaml
+scheduler:
+  profilingBindAddress: "127.0.0.1:6060"
+  extender:
+    extraArgs:
+      - --debug
+      - -v=4
+      - --profiling
+```
+
+配置生效后，scheduler 在 `127.0.0.1:6060` 提供独立的 HTTP pprof 服务。pprof 没有身份认证，应保持回环监听，通过端口转发访问。将 `<namespace>` 替换为 HAMi 所在命名空间，`<scheduler-pod>` 替换为目标 scheduler Pod 名称：
+
+```bash
+kubectl -n <namespace> port-forward pod/<scheduler-pod> 6060:6060
+```
+
+保持端口转发运行，在已[安装 Go](https://go.dev/doc/install)的本地终端执行以下命令：
+
+```bash
+# 采集 120 秒的 CPU profile
+go tool pprof 'http://127.0.0.1:6060/debug/pprof/profile?seconds=120'
+# 查看最近一次 GC 后仍在使用的堆内存
+go tool pprof http://127.0.0.1:6060/debug/pprof/heap
+# 查看进程启动以来的累计内存分配
+go tool pprof http://127.0.0.1:6060/debug/pprof/allocs
+```
+
+每条命令会进入 pprof 交互界面；使用 `top` 查看热点，使用 `quit` 退出。源码查看和分析示例见[调度器性能分析](../developers/profiling-scheduler.md)。
 
 ## 各厂商 Device Plugin 与设备参数的 Chart 配置 {#device-configuration}
 
@@ -73,6 +106,12 @@ RuntimeClass 和驱动需先按[前置条件](../installation/prerequisites.md)�
 | `defaultCores` | `0` | 未填写算力请求时的默认算力百分比；`0` 不预留算力。启用 Webhook 时，未指定显存或申请全部显存的整卡请求会将算力请求自动设为 `100`（即 100%）。 |
 
 驱动路径、插件镜像、监控、缓存清理及其他共享参数，按需查阅 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values)中的 `devicePlugin.*` 和 `devices.nvidia.*`。MIG 和 NUMA 配置分别见[动态 MIG 支持](./nvidia-device/dynamic-mig-support.md)与 [NUMA 对齐](./nvidia-device/numa-alignment.md)。
+
+#### vGPU 缓存清理 {#vgpu-cache-garbage-collection}
+
+Pod 删除后，NVIDIA Device Plugin 会自动清理对应的 vGPU 缓存。`devicePlugin.vgpuCache.gracePeriod` 默认为 `5m`，表示从缓存目录最后修改时间起，至少等待多久才允许清理；按需使用 `30s`、`5m`、`1h` 等时长。
+
+`0s` 只取消等待期，删除前仍需向 API Server 确认 Pod 已不存在；它不会关闭清理，也不保证立即删除。此设置独立于 GC 扫描周期和 monitor 的 `HAMI_RESYNC_INTERVAL`，后者用于 Pod 缓存重同步和失效内存映射的清理等待期。完整约束见 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values)。
 
 ### 其他厂商
 
@@ -174,8 +213,8 @@ devicePlugin:
 仅修改节点 JSON 或外部 ConfigMap 内容，**不会自动更新插件 Pod**。节点标签变化后也需要重启插件，以重新匹配配置。默认 `RollingUpdate` 策略下执行：
 
 ```bash
-kubectl -n kube-system rollout restart daemonset/hami-device-plugin
-kubectl -n kube-system rollout status daemonset/hami-device-plugin --timeout=5m
+kubectl -n <namespace> rollout restart daemonset/hami-device-plugin
+kubectl -n <namespace> rollout status daemonset/hami-device-plugin --timeout=5m
 ```
 
 命令中的资源名和命名空间按实际部署替换。使用 `OnDelete` 时需按维护安排手动删除旧插件 Pod。重新加载节点配置不表示已有业务容器的资源限制也已改变。

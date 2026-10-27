@@ -42,7 +42,40 @@ Multiple replicas require `leaderElect` and enough matching nodes and resources.
 
 `nodeSchedulerPolicy` controls node selection and defaults to `binpack`. `gpuSchedulerPolicy` controls device selection within a node and defaults to `spread`. `binpack` favors consolidation, while `spread` favors distribution. Pod annotations can override these defaults. For other policies and combinations, see [Scheduling policies](./nvidia-device/scheduling-policy.md).
 
-Images, CPU and memory resources, webhook scope, certificates, service ports, and monitoring can usually keep their defaults. When changes are needed, look up `global.*`, `scheduler.*`, and `prometheus.*` in the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values). Profiling settings are also documented there.
+Images, CPU and memory resources, webhook scope, certificates, service ports, and monitoring can usually keep their defaults. When changes are needed, look up `global.*`, `scheduler.*`, and `prometheus.*` in the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values).
+
+### Scheduler profiling {#scheduler-profiling}
+
+To investigate performance issues, append `--profiling` to `scheduler.extender.extraArgs`. The list is replaced in full, so preserve any other arguments used by your deployment:
+
+```yaml
+scheduler:
+  profilingBindAddress: "127.0.0.1:6060"
+  extender:
+    extraArgs:
+      - --debug
+      - -v=4
+      - --profiling
+```
+
+After the configuration takes effect, the scheduler serves pprof over dedicated HTTP on `127.0.0.1:6060`. pprof has no authentication: keep the loopback binding and access it through port forwarding. Replace `<namespace>` with the HAMi namespace and `<scheduler-pod>` with the target scheduler Pod name:
+
+```bash
+kubectl -n <namespace> port-forward pod/<scheduler-pod> 6060:6060
+```
+
+Keep port forwarding running and execute these commands in a local terminal with [Go installed](https://go.dev/doc/install):
+
+```bash
+# Capture a 120-second CPU profile
+go tool pprof 'http://127.0.0.1:6060/debug/pprof/profile?seconds=120'
+# Inspect heap memory still in use as of the most recent garbage collection
+go tool pprof http://127.0.0.1:6060/debug/pprof/heap
+# Inspect cumulative allocations since process startup
+go tool pprof http://127.0.0.1:6060/debug/pprof/allocs
+```
+
+Each command opens the pprof interactive shell; use `top` to inspect hotspots and `quit` to exit. See [Profiling the scheduler](../developers/profiling-scheduler.md) for source inspection and analysis examples.
 
 ## Vendor device plugins and device parameters: Chart values {#device-configuration}
 
@@ -73,6 +106,12 @@ Prepare the RuntimeClass and drivers according to [Prerequisites](../installatio
 | `defaultCores` | `0` | Default core percentage when no core request is specified. `0` reserves no cores. With the webhook enabled, whole-GPU requests that omit memory or request all memory receive a `100` (100%) core request. |
 
 For driver paths, plugin images, monitoring, cache cleanup, and other sharing parameters, consult `devicePlugin.*` and `devices.nvidia.*` in the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values). See [Dynamic MIG support](./nvidia-device/dynamic-mig-support.md) and [NUMA alignment](./nvidia-device/numa-alignment.md) for those configurations.
+
+#### vGPU cache garbage collection {#vgpu-cache-garbage-collection}
+
+The NVIDIA device plugin automatically removes vGPU caches left by deleted Pods. `devicePlugin.vgpuCache.gracePeriod` defaults to `5m`: a cache directory must be at least this old, measured from its last modification time, before cleanup. Use durations such as `30s`, `5m`, or `1h` when an override is needed.
+
+`0s` removes only the age grace period; deletion still requires confirmation from the API server that the Pod no longer exists. It neither disables cleanup nor guarantees immediate deletion. This setting is independent of the GC scan interval and the monitor's `HAMI_RESYNC_INTERVAL`, which controls Pod cache resync and the grace period for removing stale memory mappings. See the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values) for all constraints.
 
 ### Other vendors
 
@@ -174,8 +213,8 @@ The ConfigMap must be in the same namespace as the plugin Pods and contain a `co
 Changing only the node JSON or external ConfigMap contents **does not automatically update plugin Pods**. Changes to node labels also require a plugin restart to match the configuration again. With the default `RollingUpdate` strategy, run:
 
 ```bash
-kubectl -n kube-system rollout restart daemonset/hami-device-plugin
-kubectl -n kube-system rollout status daemonset/hami-device-plugin --timeout=5m
+kubectl -n <namespace> rollout restart daemonset/hami-device-plugin
+kubectl -n <namespace> rollout status daemonset/hami-device-plugin --timeout=5m
 ```
 
 Replace the resource name and namespace with those of your deployment. With `OnDelete`, delete the old plugin Pods manually during maintenance. Reloading node configuration does not mean that existing workload containers' resource limits have changed.
