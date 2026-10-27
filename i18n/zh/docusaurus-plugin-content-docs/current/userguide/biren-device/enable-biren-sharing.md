@@ -14,7 +14,7 @@ HAMi 现在支持共享 `birentech.com/gpu` (壁仞科技) 设备，并提供以
 
 ### 启用壁仞设备共享
 
-按[在线安装指南](../../installation/online-installation.md)安装 HAMi。 保持 `devices.biren.enabled=true`（默认值）。 厂商设备插件按下文单独部署。HAMi 侧的资源名称和设备参数位于 [Chart values 表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md)中的 `devices.biren.*`，资源名称需与插件保持一致。
+按[在线安装指南](../../installation/online-installation.md)安装 HAMi。保持 `devices.biren.enabled=true`（默认值）。厂商设备插件按下文单独部署。HAMi 侧的资源名称和设备参数位于 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md)中的 `devices.biren.*`，资源名称需与插件保持一致。
 
 #### 给节点打标签
 

@@ -20,7 +20,7 @@ HAMi 现已集成[Neuron scheduler extension](https://awsdocs-neuron.readthedocs
 
 - 按照 AWS 官方文档在 Neuron 节点部署 neuron-device-plugin：[Neuron 设备插件部署指南](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/containers/kubernetes-getting-started.html#neuron-device-plugin)
 
-按[在线安装指南](../../installation/online-installation.md)部署 HAMi，Neuron 设备插件需单独安装。HAMi 侧资源名称通过 `devices.awsneuron.*` 配置；自定义时还需同步修改 `devices.awsneuron.customresources`，并与插件保持一致。完整参数见 [Chart values 表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md)。
+按[在线安装指南](../../installation/online-installation.md)部署 HAMi，Neuron 设备插件需单独安装。HAMi 侧资源名称通过 `devices.awsneuron.*` 配置；自定义时还需同步修改 `devices.awsneuron.customresources`，并与插件保持一致。完整参数见 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md)。
 
 ## 设备分配粒度
 

@@ -97,7 +97,7 @@ ENPU also uses `deviceSplitCount`, capped at `100`. Each container can request a
 
 Follow [Online installation](../../installation/online-installation.md), passing `--values hami-ascend-values.yaml`. The following steps assume release `hami`; replace `<namespace>` in commands with the actual HAMi namespace. An Ascend-only cluster can additionally set `devicePlugin.enabled: false` to disable the NVIDIA plugin; retain it where needed in a mixed GPU cluster.
 
-When customizing resource names, also update `devices.ascend.customresources` and workload Pods. See the [HAMi chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values) for all fields. For an existing installation, follow [Upgrade](../../installation/upgrade.md).
+When customizing resource names, also update `devices.ascend.customresources` and workload Pods. See the [HAMi Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values) for all fields. For an existing installation, follow [Upgrade](../../installation/upgrade.md).
 
 ## Deploy the Ascend device plugin
 
@@ -148,6 +148,15 @@ The plugin chart creates RBAC, a ServiceAccount, a DaemonSet, a RuntimeClass, an
 For a custom HAMi release name, set `existingDeviceConfigMapName` to the actual generated ConfigMap name. The ConfigMap must be in the plugin's namespace. With this reuse configuration, plugin chart fields used to generate a device ConfigMap, such as `hamiVnpuMode` and `deviceSplitCount`, do not override HAMi's configuration.
 
 :::
+
+After updating the shared device ConfigMap through the HAMi Helm release, restart the Ascend device plugin to load the new configuration. Updating HAMi alone does not restart this separately deployed plugin. Before changing slicing modes, stop or reschedule affected workloads. For the default DaemonSet name, run:
+
+```bash
+kubectl -n <namespace> rollout restart daemonset/hami-ascend-device-plugin
+kubectl -n <namespace> rollout status daemonset/hami-ascend-device-plugin --timeout=5m
+```
+
+Use the actual namespace and DaemonSet name. After the restart, verify the plugin logs and node resources before starting new workloads.
 
 ### Configure mode and device count per node {#node-configuration}
 

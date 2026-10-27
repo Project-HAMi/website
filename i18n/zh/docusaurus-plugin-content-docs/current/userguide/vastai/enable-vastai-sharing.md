@@ -14,7 +14,7 @@ HAMi 现在支持共享 `vastaitech.com/va`（瀚博半导体）设备，并提�
 
 ### 启用瀚博半导体设备共享
 
-按[在线安装指南](../../installation/online-installation.md)安装 HAMi。 保持 `devices.vastai.enabled=true`（默认值）。 厂商设备插件按下文单独部署。HAMi 侧的资源名称和设备参数位于 [Chart values 表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md)中的 `devices.vastai.*`，资源名称需与插件保持一致。
+按[在线安装指南](../../installation/online-installation.md)安装 HAMi。保持 `devices.vastai.enabled=true`（默认值）。厂商设备插件按下文单独部署。HAMi 侧的资源名称和设备参数位于 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md)中的 `devices.vastai.*`，资源名称需与插件保持一致。
 
 #### 给节点打标签
 

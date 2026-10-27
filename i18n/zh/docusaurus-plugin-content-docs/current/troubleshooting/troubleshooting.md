@@ -140,7 +140,7 @@ HAMi 支持两条设备注入路径：
 | `envvar`（默认） | HAMi 将分配到的 GPU UUID 写入 `NVIDIA_VISIBLE_DEVICES`。 | 使用 GPU Operator 25.10+ 时，Pod 必须使用 `nvidia` RuntimeClass。 |
 | `cdi-annotations` | HAMi 返回名为 `k8s.device-plugin.nvidia.com/gpu=GPU-...` 的 CDI 设备，并在节点上生成对应 CDI spec。 | 容器运行时必须开启 CDI，并能够读取当前的 HAMi CDI spec。 |
 
-HAMi Chart 会把 `devices.nvidia.runtimeClassName` 同时应用到 Device Plugin，以及由 HAMi scheduler 修改的 NVIDIA 工作负载。因此，将其设为 `nvidia` 既能修复管理容器，也能保持工作负载的 runtime 路径一致。
+HAMi Chart 会把 `devices.nvidia.runtimeClassName` 同时应用到设备插件，以及由 HAMi 调度器修改的 NVIDIA 工作负载。因此，将其设为 `nvidia` 既能修复管理容器，也能保持工作负载的 runtime 路径一致。
 
 对于新集群，推荐使用 GPU Operator，因为它提供统一的驱动、Container Toolkit 和监控组件配置与升级入口。如果这些组件已经安装在宿主机，并由你自行维护容器运行时配置，也可以不使用 GPU Operator；这种情况请参考[前置条件](../installation/prerequisites.md)。
 

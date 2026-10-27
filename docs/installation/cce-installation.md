@@ -116,7 +116,7 @@ devicePlugin:
       repository: <organization>/hami
 ```
 
-`global.imagePullSecrets` uses `default-secret`, which CCE creates in every namespace with the credentials for pulling images from SWR, so the repositories can stay private. See [Cluster Secrets](https://support.huaweicloud.com/intl/en-us/usermanual-cce/cce_10_0388.html). `devices.nvidia.runtimeClassName` and `devices.nvidia.createRuntimeClass` create the `nvidia` RuntimeClass and use it for HAMi's Device Plugin. HAMi also sets it on the Pods that request vGPU resources.
+`global.imagePullSecrets` uses `default-secret`, which CCE creates in every namespace with the credentials for pulling images from SWR, so the repositories can stay private. See [Cluster Secrets](https://support.huaweicloud.com/intl/en-us/usermanual-cce/cce_10_0388.html). `devices.nvidia.runtimeClassName` and `devices.nvidia.createRuntimeClass` create the `nvidia` RuntimeClass and use it for HAMi's device plugin. HAMi also sets it on the Pods that request vGPU resources.
 
 ## Install HAMi
 

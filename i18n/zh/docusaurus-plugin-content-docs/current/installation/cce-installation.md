@@ -117,7 +117,7 @@ devicePlugin:
       repository: <组织名称>/hami
 ```
 
-`global.imagePullSecrets` 使用 `default-secret` 拉取镜像。CCE 会在每个命名空间下创建该 Secret，其中包含从 SWR 拉取镜像的凭证，因此镜像仓库可以保持私有。见[集群系统密钥说明](https://support.huaweicloud.com/usermanual-cce/cce_10_0388.html)。`devices.nvidia.runtimeClassName` 和 `devices.nvidia.createRuntimeClass` 会创建 `nvidia` RuntimeClass，并将其用于 HAMi 的 Device Plugin。HAMi 也会为申请 vGPU 资源的 Pod 设置该 RuntimeClass。
+`global.imagePullSecrets` 使用 `default-secret` 拉取镜像。CCE 会在每个命名空间下创建该 Secret，其中包含从 SWR 拉取镜像的凭证，因此镜像仓库可以保持私有。见[集群系统密钥说明](https://support.huaweicloud.com/usermanual-cce/cce_10_0388.html)。`devices.nvidia.runtimeClassName` 和 `devices.nvidia.createRuntimeClass` 会创建 `nvidia` RuntimeClass，并将其用于 HAMi 的设备插件。HAMi 也会为申请 vGPU 资源的 Pod 设置该 RuntimeClass。
 
 ## 安装 HAMi
 

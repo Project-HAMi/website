@@ -7,8 +7,8 @@ sidebar_label: 配置
 
 | 配置对象 | 修改位置 |
 | --- | --- |
-| [Scheduler 及配套组件](#scheduler-configuration) | Helm values 中的 `scheduler.*` 等 |
-| [各厂商 Device Plugin 与设备参数](#device-configuration) | Helm values 中的 `devicePlugin.*`、`devices.<vendor>.*`，以及独立部署的厂商插件配置 |
+| [调度器及配套组件](#scheduler-configuration) | Helm values 中的 `scheduler.*` 等 |
+| [各厂商设备插件与设备参数](#device-configuration) | Helm values 中的 `devicePlugin.*`、`devices.<vendor>.*`，以及独立部署的厂商插件配置 |
 | [节点 ConfigMap](#node-configuration) | `devicePlugin.nodeConfiguration` |
 | [Pod 的 labels 与 annotations](#pod-configuration) | 业务 Pod 的 `metadata` |
 | [容器环境变量](#container-environment) | 业务容器的 `env` |
@@ -21,9 +21,9 @@ helm show values hami-charts/hami --version <chart-version>
 
 将所需配置合并到 `my-values.yaml`，通过 `--values my-values.yaml` 传入 Helm。映射可以局部覆盖，列表会整体替换；合并示例时，同一顶层键只保留一份。首次部署见[安装指南](../installation/online-installation.md)，已有部署的配置更新见[升级指南](../installation/upgrade.md)。
 
-## Scheduler 及配套组件的 Chart 配置 {#scheduler-configuration}
+## 调度器及配套组件的 Chart 配置 {#scheduler-configuration}
 
-Scheduler 的常见调整包括部署位置、副本数和默认调度策略。例如，将两个副本部署到带有 `hami.io/scheduler=true` 标签的节点：
+调度器的常见调整包括部署位置、副本数和默认调度策略。例如，将两个副本部署到带有 `hami.io/scheduler=true` 标签的节点：
 
 ```yaml
 scheduler:
@@ -36,7 +36,7 @@ scheduler:
     gpuSchedulerPolicy: spread
 ```
 
-多副本必须启用 `leaderElect`，并准备足够的匹配节点和资源。`nodeSelector` 控制 scheduler Pod 的部署位置，不是业务 GPU Pod 的节点选择条件。
+多副本必须启用 `leaderElect`，并准备足够的匹配节点和资源。`nodeSelector` 控制调度器 Pod 的部署位置，不是业务 GPU Pod 的节点选择条件。
 
 ### 默认调度策略 {#scheduling-policies}
 
@@ -44,7 +44,7 @@ scheduler:
 
 镜像、CPU 和内存资源、Webhook 范围、证书、服务端口和监控通常可以保留默认配置。需要调整时，在 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values)中查找 `global.*`、`scheduler.*` 和 `prometheus.*`。
 
-### Scheduler 性能分析 {#scheduler-profiling}
+### 调度器性能分析 {#scheduler-profiling}
 
 需要排查性能问题时，将 `--profiling` 加入 `scheduler.extender.extraArgs`。该列表会整体替换，需保留部署中已有的其他参数：
 
@@ -58,7 +58,7 @@ scheduler:
       - --profiling
 ```
 
-配置生效后，scheduler 在 `127.0.0.1:6060` 提供独立的 HTTP pprof 服务。pprof 没有身份认证，应保持回环监听，通过端口转发访问。将 `<namespace>` 替换为 HAMi 所在命名空间，`<scheduler-pod>` 替换为目标 scheduler Pod 名称：
+配置生效后，调度器在 `127.0.0.1:6060` 提供独立的 HTTP pprof 服务。pprof 没有身份认证，应保持回环监听，通过端口转发访问。将 `<namespace>` 替换为 HAMi 所在命名空间，`<scheduler-pod>` 替换为目标调度器 Pod 名称：
 
 ```bash
 kubectl -n <namespace> port-forward pod/<scheduler-pod> 6060:6060
@@ -77,9 +77,9 @@ go tool pprof http://127.0.0.1:6060/debug/pprof/allocs
 
 每条命令会进入 pprof 交互界面；使用 `top` 查看热点，使用 `quit` 退出。源码查看和分析示例见[调度器性能分析](../developers/profiling-scheduler.md)。
 
-## 各厂商 Device Plugin 与设备参数的 Chart 配置 {#device-configuration}
+## 各厂商设备插件与设备参数的 Chart 配置 {#device-configuration}
 
-`devicePlugin.*` 管理 HAMi Chart 部署的 **NVIDIA Device Plugin 和 vGPU monitor**。`devices.<vendor>.*` 配置各厂商的调度支持和设备参数，不能据此认为 Chart 会部署对应厂商的插件。
+`devicePlugin.*` 管理 HAMi Chart 部署的 **NVIDIA 设备插件和 vGPU monitor**。`devices.<vendor>.*` 配置各厂商的调度支持和设备参数，不能据此认为 Chart 会部署对应厂商的插件。
 
 ### NVIDIA
 
@@ -109,7 +109,7 @@ RuntimeClass 和驱动需先按[前置条件](../installation/prerequisites.md)�
 
 #### vGPU 缓存清理 {#vgpu-cache-garbage-collection}
 
-Pod 删除后，NVIDIA Device Plugin 会自动清理对应的 vGPU 缓存。`devicePlugin.vgpuCache.gracePeriod` 默认为 `5m`，表示从缓存目录最后修改时间起，至少等待多久才允许清理；按需使用 `30s`、`5m`、`1h` 等时长。
+Pod 删除后，NVIDIA 设备插件会自动清理对应的 vGPU 缓存。`devicePlugin.vgpuCache.gracePeriod` 默认为 `5m`，表示从缓存目录最后修改时间起，至少等待多久才允许清理；按需使用 `30s`、`5m`、`1h` 等时长。
 
 `0s` 只取消等待期，删除前仍需向 API Server 确认 Pod 已不存在；它不会关闭清理，也不保证立即删除。此设置独立于 GC 扫描周期和 monitor 的 `HAMI_RESYNC_INTERVAL`，后者用于 Pod 缓存重同步和失效内存映射的清理等待期。完整约束见 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values)。
 
@@ -158,7 +158,7 @@ devices:
 
 如需替换完整文件，可使用 `device-config.content`，具体规则见 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values)。它不与 `devices.*` 合并，且需保持资源名一致，因为 kube-scheduler 的 extender 资源列表仍由 values 生成。
 
-通过 Helm 修改生成的设备配置会更新 scheduler 和 NVIDIA 插件的 Pod 模板。默认 `RollingUpdate` 自动更新插件 Pod；使用 `OnDelete` 时需手动删除旧 Pod。独立部署的厂商插件按各自流程更新。
+通过 Helm 修改生成的设备配置会更新调度器和 NVIDIA 插件的 Pod 模板。默认 `RollingUpdate` 自动更新插件 Pod；使用 `OnDelete` 时需手动删除旧 Pod。独立部署的厂商插件按各自流程更新。
 
 ## 节点 ConfigMap 配置 {#node-configuration}
 

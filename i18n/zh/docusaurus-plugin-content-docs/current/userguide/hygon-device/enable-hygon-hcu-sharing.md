@@ -31,7 +31,7 @@ translated: true
 
 ## 开启 HCU 复用
 
-按[在线安装指南](../../installation/online-installation.md)安装 HAMi。 厂商设备插件按下文单独部署。HAMi 侧的资源名称和设备参数位于 [Chart values 表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md)中的 `devices.hygon.*`，资源名称需与插件保持一致。
+按[在线安装指南](../../installation/online-installation.md)安装 HAMi。厂商设备插件按下文单独部署。HAMi 侧的资源名称和设备参数位于 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md)中的 `devices.hygon.*`，资源名称需与插件保持一致。
 
 - 部署 Hygon 官方提供的 [k8s-hcu-device-plugin](https://github.com/HYGON-AI/k8s-hcu-device-plugin)，部署步骤参见该仓库的 README。
 

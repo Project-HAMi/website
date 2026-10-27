@@ -23,7 +23,7 @@ translated: true
 
 ## 开启 MLU 复用
 
-- 按[在线安装指南](../../installation/online-installation.md)部署 HAMi。HAMi 侧配置使用 [Chart values 表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md)中的 `devices.cambricon.*`，资源名称需与单独部署的厂商插件保持一致。
+- 按[在线安装指南](../../installation/online-installation.md)部署 HAMi。HAMi 侧配置使用 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md)中的 `devices.cambricon.*`，资源名称需与单独部署的厂商插件保持一致。
 
 - 使用以下指令，为 MLU 节点打上 label
 

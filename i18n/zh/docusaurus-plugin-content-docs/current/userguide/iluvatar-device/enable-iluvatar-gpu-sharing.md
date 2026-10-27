@@ -35,7 +35,7 @@ devices:
     enabled: true
 ```
 
-此配置启用天数智芯调度支持；gpu-manager 仍需按上文单独安装。支持的型号和资源名称通过 `devices.iluvatar.configs` 配置；自定义时还需同步修改 `devices.iluvatar.customresources`。这两个列表都会被整体替换。完整参数见 [Chart values 表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md)，默认配置见 [values 源码](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/values.yaml)，不要修改生成的全局 ConfigMap。
+此配置启用天数智芯调度支持；gpu-manager 仍需按上文单独安装。支持的型号和资源名称通过 `devices.iluvatar.configs` 配置；自定义时还需同步修改 `devices.iluvatar.customresources`。这两个列表都会被整体替换。完整参数见 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md)，默认配置见 [values 源码](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/values.yaml)，不要修改生成的全局 ConfigMap。
 
 ## 设备粒度
 

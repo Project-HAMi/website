@@ -9,7 +9,7 @@ Huawei Ascend 设备插件为 HAMi 提供三种 NPU 切片模式：`template`（
 ## 前置条件 {#先决条件}
 
 - 安装 Ascend 驱动和 [ascend-docker-runtime](https://gitcode.com/Ascend/mind-cluster/tree/master/component/ascend-docker-runtime)，并在节点的容器运行时中注册 `ascend` handler。后文创建的 RuntimeClass 会引用此 handler。
-- 使用支持所选模式的 HAMi scheduler 和 Ascend Device Plugin 版本。本页描述 Next 开发版本，所列字段可能尚未包含在已发布的 Chart 或镜像中。
+- 使用支持所选模式的 HAMi 调度器和 Ascend 设备插件版本。本页描述 Next 开发版本，所列字段可能尚未包含在已发布的 Chart 或镜像中。
 - 确认节点上能执行 `npu-smi`。插件默认可访问 `/usr/local/Ascend/driver/tools/npu-smi` 和 `/usr/local/sbin/npu-smi`；使用其他路径时，需补充对应的主机路径挂载。
 
 ### template 模式
@@ -101,7 +101,7 @@ ENPU 同样使用 `deviceSplitCount`，有效数量不超过 `100`。每个容�
 
 自定义资源名时，需同步修改 `devices.ascend.customresources` 和业务 Pod。完整字段见 [HAMi Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values)。已有部署的配置变更见[升级指南](../../installation/upgrade.md)。
 
-## 部署 Ascend Device Plugin
+## 部署 Ascend 设备插件
 
 以下步骤用于首次安装独立插件，与 HAMi 部署在同一命名空间。如果已有插件由其他 Helm release 或清单管理，应修改已有部署，避免创建重复 DaemonSet。
 
@@ -151,6 +151,15 @@ nodeConfig: |
 
 :::
 
+通过 HAMi Helm release 更新共享设备 ConfigMap 后，需重启 Ascend 设备插件以加载新配置。仅更新 HAMi 不会重启这个独立部署的插件。切换切片模式前，先停止或重新调度受影响的工作负载。使用默认 DaemonSet 名称时执行：
+
+```bash
+kubectl -n <namespace> rollout restart daemonset/hami-ascend-device-plugin
+kubectl -n <namespace> rollout status daemonset/hami-ascend-device-plugin --timeout=5m
+```
+
+命名空间和 DaemonSet 名称按实际部署替换。重启后检查插件日志和节点资源，再启动新的工作负载。
+
 ### 按节点配置模式和设备数量 {#node-configuration}
 
 同一集群使用多种模式时，将插件 values 中的 `nodeConfig` 替换为实际节点列表。例如：
@@ -188,7 +197,7 @@ kubectl describe node <ascend-node>
 
 ## 运行 Huawei Ascend 作业
 
-示例默认使用 scheduler `hami-scheduler` 和 RuntimeClass `ascend`，按实际部署修改。PyTorch 示例使用 AscendHub 的 910B、310P 镜像，内置 CANN 9.0.0；vLLM 示例使用官方 `v0.23.0` 镜像，内置 CANN 9.1.0。使用前确认镜像中的 CANN 与节点驱动、切片运行时兼容。vLLM 示例还需准备包含模型文件的 PVC。
+示例默认使用调度器 `hami-scheduler` 和 RuntimeClass `ascend`，按实际部署修改。PyTorch 示例使用 AscendHub 的 910B、310P 镜像，内置 CANN 9.0.0；vLLM 示例使用官方 `v0.23.0` 镜像，内置 CANN 9.1.0。使用前确认镜像中的 CANN 与节点驱动、切片运行时兼容。vLLM 示例还需准备包含模型文件的 PVC。
 
 ### template 模式
 

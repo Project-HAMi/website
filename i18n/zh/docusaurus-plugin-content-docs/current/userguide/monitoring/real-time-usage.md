@@ -11,7 +11,7 @@ sidebar_label: 实时用量
 
 | 来源                         | 用途                          |
 | ---------------------------- | ----------------------------- |
-| HAMi scheduler               | 设备清单、容量和分配情况      |
+| HAMi 调度器                  | 设备清单、容量和分配情况      |
 | 各 GPU 节点上的 vGPU monitor | 物理 GPU 和容器 vGPU 的使用量 |
 
 需要 NVIDIA 硬件遥测时，可按该指南添加 DCGM Exporter。其他厂商的设备插件和监控组件需单独部署，使用对应厂商的监控说明。
@@ -55,4 +55,4 @@ kubectl get pods -n kube-system -l app.kubernetes.io/instance=hami
 kubectl logs -n kube-system -l app.kubernetes.io/instance=hami,app.kubernetes.io/component=hami-device-plugin -c device-plugin --tail=100
 ```
 
-其他部署使用实际 release 标签和命名空间。单独安装的厂商插件有各自的标签和容器名称。排查分配失败时，还应查看 Pod 事件和 scheduler 日志，见[故障排查指南](../../troubleshooting/troubleshooting.md)。
+其他部署使用实际 release 标签和命名空间。单独安装的厂商插件有各自的标签和容器名称。排查分配失败时，还应查看 Pod 事件和调度器日志，见[故障排查指南](../../troubleshooting/troubleshooting.md)。

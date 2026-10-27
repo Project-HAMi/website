@@ -39,7 +39,7 @@ translated: true
 
 :::
 
-按[在线安装指南](../../installation/online-installation.md)部署 HAMi，保持 `devices.mthreads.enabled=true`（默认值）。此配置将厂商资源加入内置 scheduler extender，厂商插件或工具包仍需单独安装。完整参数见 [Chart values 表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md)中的 `devices.mthreads.*`。
+按[在线安装指南](../../installation/online-installation.md)部署 HAMi，保持 `devices.mthreads.enabled=true`（默认值）。此配置将厂商资源加入内置调度器 extender，厂商插件或工具包仍需单独安装。完整参数见 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md)中的 `devices.mthreads.*`。
 
 自定义资源名称时，保持 `devices.mthreads.customresources` 与 `resourceCountName` 一致。仅在集群需要不同的单卡显存容量时设置 `devices.mthreads.memoryPerCard`，默认配置见 [values 源码](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/values.yaml)。
 
