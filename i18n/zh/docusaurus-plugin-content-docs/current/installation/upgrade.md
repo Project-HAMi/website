@@ -132,11 +132,13 @@ Enflame、Kunlun、Vastai 和 Biren 的标准资源名现在由对应的设备�
 
 #### Hygon
 
-| v2.10 字段         | 最新版字段                         |
-| ------------------ | ---------------------------------- |
-| `dcuResourceName`  | `devices.hygon.resourceCountName`  |
-| `dcuResourceMem`   | `devices.hygon.resourceMemoryName` |
-| `dcuResourceCores` | `devices.hygon.resourceCoreName`   |
+[HAMi#2969](https://github.com/Project-HAMi/HAMi/pull/2969) 将 Hygon 设备的 DCU 命名统一改为 HCU，涉及资源名称、配置和注解。建议将 HCU（原 DCU）device plugin 升级到 Hygon 官方提供的最新版本 [k8s-hcu-device-plugin](https://github.com/HYGON-AI/k8s-hcu-device-plugin)。更新信息和配置说明见[启用 Hygon HCU 共享](../userguide/hygon-device/enable-hygon-hcu-sharing.md)。
+
+| v2.10 字段         | v2.10 默认值          | 最新版字段                         | 最新版默认值         |
+| ------------------ | --------------------- | ---------------------------------- | -------------------- |
+| `dcuResourceName`  | `hygon.com/dcunum`    | `devices.hygon.resourceCountName`  | `hygon.com/hcunum`   |
+| `dcuResourceMem`   | `hygon.com/dcumem`    | `devices.hygon.resourceMemoryName` | `hygon.com/hcumem`   |
+| `dcuResourceCores` | `hygon.com/dcucores`  | `devices.hygon.resourceCoreName`   | `hygon.com/hcucores` |
 
 #### MetaX
 

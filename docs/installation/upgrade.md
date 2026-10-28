@@ -132,11 +132,13 @@ This includes NVIDIA resource fields and NVIDIA Device Plugin configuration fiel
 
 #### Hygon
 
-| v2.10 Field        | Latest Field                       |
-| ------------------ | ---------------------------------- |
-| `dcuResourceName`  | `devices.hygon.resourceCountName`  |
-| `dcuResourceMem`   | `devices.hygon.resourceMemoryName` |
-| `dcuResourceCores` | `devices.hygon.resourceCoreName`   |
+[HAMi#2969](https://github.com/Project-HAMi/HAMi/pull/2969) renamed DCU to HCU for Hygon devices across resource names, configuration, and annotations. We recommend upgrading the HCU (formerly DCU) device plugin to the latest official version of [k8s-hcu-device-plugin](https://github.com/HYGON-AI/k8s-hcu-device-plugin) provided by Hygon. For details about the changes and configuration, see [Enable Hygon HCU Sharing](../userguide/hygon-device/enable-hygon-hcu-sharing.md).
+
+| v2.10 Field        | v2.10 Default Value   | Latest Field                       | Latest Default Value |
+| ------------------ | --------------------- | ---------------------------------- | -------------------- |
+| `dcuResourceName`  | `hygon.com/dcunum`    | `devices.hygon.resourceCountName`  | `hygon.com/hcunum`   |
+| `dcuResourceMem`   | `hygon.com/dcumem`    | `devices.hygon.resourceMemoryName` | `hygon.com/hcumem`   |
+| `dcuResourceCores` | `hygon.com/dcucores`  | `devices.hygon.resourceCoreName`   | `hygon.com/hcucores` |
 
 #### MetaX
 
