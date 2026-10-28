@@ -52,7 +52,7 @@ HAMi and the HAMi logo are trademarks of The Linux Foundation. See the [trademar
 
 ## Diagrams
 
-Mermaid is the preferred format, so visuals stay easy to update. The site themes it through `custom.css`: add `class NodeA accent` (or `info`, `run`, `ok`, `bad`) and the node picks up the light or dark colors automatically.
+Mermaid is the preferred format, so visuals stay easy to update. For complex architecture diagrams that mermaid cannot style well, use [draw.io](https://www.drawio.com) (open source) and commit the editable source with the exported SVG. The site themes it through `custom.css`: add `class NodeA accent` (or `info`, `run`, `ok`, `bad`) and the node picks up the light or dark colors automatically.
 
 | Class    | Light fill / stroke   | Dark fill / stroke    | Meaning     |
 | -------- | --------------------- | --------------------- | ----------- |
@@ -68,4 +68,4 @@ For hand-written SVG:
 
 - Use the colors above, the same font stacks, and the diagram panel tokens in `custom.css` (`--hami-diagram-*`). Light: heading `#15324d`, body `#1a3956`, muted `#5a748f`, connectors `#39c6f4` at low opacity. Dark: heading `#f0f6fd`, body `#d8eefb`, muted `#9eb6ce`, connectors `#39c6f4` at low opacity.
 - The site defaults to dark, so check a new SVG in both themes. A light-only SVG shows as a white card on the dark site.
-- No animated or decorative generated imagery.
+- No animated or decorative imagery, and no AI-generated raster images. Keep diagrams as editable source (mermaid, SVG or draw.io).
