@@ -76,6 +76,6 @@ spec:
 ## 注意事项
 
 - 注解 `hami.io/node-scheduler-policy` 用于控制 Pod 被调度到哪个节点。
-- 只有节点级别的策略（`binpack`、`spread`）可以通过注解按 Pod 覆盖。节点内的 GPU 级别策略通过 `scheduler.defaultSchedulerPolicy.gpuSchedulerPolicy` 在全局进行配置。
+- 注解 `hami.io/gpu-scheduler-policy` 用于覆盖节点内的 GPU 级别策略，默认值由 `scheduler.defaultSchedulerPolicy.gpuSchedulerPolicy` 配置。
 - `numa-first`（NUMA 亲和性）尚未实现，作为待办事项记录在 [Roadmap](/docs/contributor/roadmap) 中。
 - 有关 scheduler 配置选项的完整列表，请参见[配置 HAMi](/docs/userguide/configure)。

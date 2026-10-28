@@ -75,6 +75,6 @@ spec:
 ## Notes
 
 - The annotation `hami.io/node-scheduler-policy` controls which node the pod is placed on.
-- Only node-level policies (`binpack`, `spread`) can be overridden per-pod via annotations. GPU-level policy within a node is configured globally via `scheduler.defaultSchedulerPolicy.gpuSchedulerPolicy`.
+- The annotation `hami.io/gpu-scheduler-policy` overrides the GPU-level policy within a node, whose default is `scheduler.defaultSchedulerPolicy.gpuSchedulerPolicy`.
 - `numa-first` (NUMA affinity) is not yet implemented and is tracked as an open item in the [Roadmap](/docs/contributor/roadmap).
 - See [Configure HAMi](/docs/userguide/configure) for the full list of scheduler configuration options.
