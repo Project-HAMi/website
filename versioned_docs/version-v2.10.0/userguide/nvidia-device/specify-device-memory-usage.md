@@ -25,10 +25,10 @@ resources:
 
 :::note
 
-Prefer specifying memory using one of these resources. If both are set and `nvidia.com/gpumem` is a positive integer, it takes precedence when determining the memory request. If `nvidia.com/gpumem` is omitted or 0, a valid `nvidia.com/gpumem-percentage` is used to calculate the memory request.
+Prefer specifying memory using one of these resources. If both are set and `nvidia.com/gpumem` is a positive integer, it takes precedence when determining the memory request. If `nvidia.com/gpumem` is omitted or 0, a `nvidia.com/gpumem-percentage` value from 1 to 100 is used to calculate the memory request.
 
 If `nvidia.com/gpumem-percentage` is 100 and `nvidia.com/gpucores` is not specified, HAMi automatically sets `nvidia.com/gpucores: 100`, even when `nvidia.com/gpumem` is also set to a positive integer.
 
-`nvidia.com/gpumem-percentage` must be between 0 and 100, inclusive. Requests with values outside this range are rejected, even when `nvidia.com/gpumem` is also set to a positive integer.
+`nvidia.com/gpumem-percentage` must be between 0 and 100, inclusive; 0 is treated as unset. Requests with values outside this range are rejected, even when `nvidia.com/gpumem` is also set to a positive integer.
 
 :::
