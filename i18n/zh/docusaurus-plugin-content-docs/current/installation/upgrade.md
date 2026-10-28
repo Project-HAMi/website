@@ -33,6 +33,7 @@ HAMi 升级会替换 hami-scheduler 和 hami-device-plugin，并重新生成设�
 ```bash
 export namespace=kube-system
 export release=hami
+export hami_chart_dir="${HOME}/hami-upgrade/HAMi"
 ```
 
 ### 确认 HAMi 版本
@@ -51,6 +52,22 @@ helm list -n "${namespace}" --filter "^${release}$"
 helm get values "${release}" -n "${namespace}" -o yaml > previous-values.yaml
 ```
 
+### 获取 Chart
+
+包含迁移变更的 Chart 尚未发布到 Helm 仓库。请将 HAMi 仓库默认分支的 HEAD 克隆到 `${hami_chart_dir}`，后续校验和升级均使用该目录中的 Chart：
+
+```bash
+mkdir -p "${hami_chart_dir}"
+git clone --depth 1 https://github.com/Project-HAMi/HAMi.git "${hami_chart_dir}"
+git -C "${hami_chart_dir}" rev-parse HEAD
+```
+
+:::warning 未发布的 Chart 与镜像版本
+
+HEAD 中的 Chart 是开发版本，不是已发布版本，其 `version` 和 `appVersion` 可能仍沿用上一版本。
+
+:::
+
 ## 迁移并创建 values
 
 从 v2.10 升级到最新版 Chart 时，设备相关字段统一迁移到 `devices.<vendor>`。请先基于备份的 values 创建 `my-values.yaml`，完成字段迁移和渲染校验，再执行升级。
@@ -62,6 +79,15 @@ helm get values "${release}" -n "${namespace}" -o yaml > previous-values.yaml
 ```bash
 cp previous-values.yaml my-values.yaml
 ```
+
+本文使用 `latest` 标签的 HAMi 镜像，请在 `my-values.yaml` 中加入：
+
+```yaml
+global:
+  imageTag: latest
+```
+
+如果旧 values 中单独设置过 `scheduler.extender.image.tag`、`devicePlugin.image.tag` 或 `devicePlugin.monitor.image.tag`，请删除这些覆盖。
 
 复制后，请按下节说明整理设备字段，不要直接将旧配置全部用于升级。其他仍需保留的自定义设置也应写入 `my-values.yaml`。升级后不要直接恢复整个旧 ConfigMap，以免覆盖新版默认配置。
 
@@ -190,15 +216,11 @@ devicePlugin:
 
 ### 校验迁移后的配置
 
-更新 Helm 仓库，并使用新版本 Chart 渲染一次配置：
+使用升级前准备中获取的本地 Chart，渲染迁移后的配置：
 
 ```bash
-helm repo add hami-charts https://project-hami.github.io/HAMi/
-helm repo update
-
-helm template "${release}" hami-charts/hami \
+helm template "${release}" "${hami_chart_dir}/charts/hami" \
   --namespace "${namespace}" \
-  --version 2.11.0 \
   --values my-values.yaml
 ```
 
@@ -207,9 +229,8 @@ helm template "${release}" hami-charts/hami \
 使用迁移后的 values 和 Chart 默认值重新渲染 release：
 
 ```bash
-helm upgrade "${release}" hami-charts/hami \
+helm upgrade "${release}" "${hami_chart_dir}/charts/hami" \
   --namespace "${namespace}" \
-  --version 2.11.0 \
   --reset-values \
   --values my-values.yaml
 ```

@@ -33,6 +33,7 @@ Set the variables needed for deployment. Adjust the following example to match y
 ```bash
 export namespace=kube-system
 export release=hami
+export hami_chart_dir="${HOME}/hami-upgrade/HAMi"
 ```
 
 ### Check the HAMi Version
@@ -51,6 +52,22 @@ Before upgrading, save the user configuration for the current release:
 helm get values "${release}" -n "${namespace}" -o yaml > previous-values.yaml
 ```
 
+### Obtain the Chart
+
+The Chart containing the migration changes has not yet been published to the Helm repository. Clone the HEAD of the HAMi repository's default branch into `${hami_chart_dir}`. The validation and upgrade commands below use the Chart from this directory:
+
+```bash
+mkdir -p "${hami_chart_dir}"
+git clone --depth 1 https://github.com/Project-HAMi/HAMi.git "${hami_chart_dir}"
+git -C "${hami_chart_dir}" rev-parse HEAD
+```
+
+:::warning Unreleased Chart and image versions
+
+The HEAD Chart is development code, not a published release. Its `version` and `appVersion` may still refer to the previous release.
+
+:::
+
 ## Migrate and Create Values
 
 When upgrading from v2.10 to the latest Chart, all device-related fields move under `devices.<vendor>`. First create `my-values.yaml` from the backed-up values, migrate the fields, and validate rendering before performing the upgrade.
@@ -64,6 +81,17 @@ cp previous-values.yaml my-values.yaml
 ```
 
 After copying the file, update the device fields as described in the next section. Do not use the entire old configuration directly for the upgrade. Include any other custom settings that you need to retain in `my-values.yaml`. Do not restore the entire old ConfigMap after the upgrade, as this would overwrite the new default configuration.
+
+This guide uses HAMi images tagged `latest`. Add the following to `my-values.yaml`:
+
+```yaml
+global:
+  imageTag: latest
+```
+
+If the old values explicitly set `scheduler.extender.image.tag`, `devicePlugin.image.tag`, or `devicePlugin.monitor.image.tag`, remove those overrides to inherit `global.imageTag`.
+
+The `latest` tag is mutable and does not identify a fixed version. Validate it in a test environment before use.
 
 ### Migrate Device Fields
 
@@ -190,15 +218,11 @@ If you previously used `device-config.content` or `files/device-config.yaml` in 
 
 ### Validate the Migrated Configuration
 
-Update the Helm repository and render the configuration using the new Chart version:
+Render the migrated configuration using the local Chart obtained during preparation:
 
 ```bash
-helm repo add hami-charts https://project-hami.github.io/HAMi/
-helm repo update
-
-helm template "${release}" hami-charts/hami \
+helm template "${release}" "${hami_chart_dir}/charts/hami" \
   --namespace "${namespace}" \
-  --version 2.11.0 \
   --values my-values.yaml
 ```
 
@@ -207,9 +231,8 @@ helm template "${release}" hami-charts/hami \
 Render the release again using the migrated values and the Chart defaults:
 
 ```bash
-helm upgrade "${release}" hami-charts/hami \
+helm upgrade "${release}" "${hami_chart_dir}/charts/hami" \
   --namespace "${namespace}" \
-  --version 2.11.0 \
   --reset-values \
   --values my-values.yaml
 ```
