@@ -29,6 +29,27 @@ helm show values hami-charts/hami --version <chart-version>
 
 Create `my-values.yaml` containing the overrides needed for the installation. For NVIDIA, start with the file prepared in the prerequisites guide. See [Configuration](../userguide/configure.md) for sharing limits, scheduling policies, and configuration precedence.
 
+### Image sources for networks in China {#image-source}
+
+The chart uses upstream image registries by default (`global.imageSource=upstream`). If pulls from these registries are slow or fail on networks in China, set `global.imageSource=cn`. Check that the selected chart version includes `global.imageSource` in the `helm show values` output above before using it.
+
+:::warning DaoCloud mirror availability
+
+The DaoCloud public mirror (`m.daocloud.io`) may experience congestion or rate limiting. Selecting `cn` does not guarantee faster or successful image pulls. If pulls still fail, use an accessible upstream registry or copy the required images to a registry you control and configure the corresponding image registry and repository values.
+
+:::
+
+Merge the following into `my-values.yaml`, preserving any other `global` settings:
+
+```yaml
+global:
+  imageSource: cn
+```
+
+Alternatively, append `--set global.imageSource=cn` to the installation command below.
+
+For supported default image references, `cn` selects Alibaba Cloud mirrors for kube-scheduler and the default pinned certgen image, and [DaoCloud mirrors](https://github.com/DaoCloud/public-image-mirror) for HAMi, mock-device-plugin, and Lupine server/client images. Custom repositories are not automatically rewritten. See the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md) for image overrides and exceptions.
+
 ## Deploy HAMi {#deploy-hami}
 
 These examples use release `hami` in namespace `kube-system`. Substitute the actual release and namespace where needed. Replace `<chart-version>` with the version selected above:

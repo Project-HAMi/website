@@ -29,6 +29,27 @@ helm show values hami-charts/hami --version <chart-version>
 
 创建 `my-values.yaml`，写入此次安装需要的覆盖配置。NVIDIA 环境从前置条件中准备的配置文件开始。共享限制、调度策略和配置优先级见[配置指南](../userguide/configure.md)。
 
+### 中国网络环境下的镜像源 {#image-source}
+
+Chart 默认使用上游镜像仓库（`global.imageSource=upstream`）。在中国网络环境下，若从上游仓库拉取镜像缓慢或失败，可设置 `global.imageSource=cn`。使用前，先通过上面的 `helm show values` 命令确认所选 Chart 版本包含 `global.imageSource`。
+
+:::warning DaoCloud 镜像服务的可用性
+
+DaoCloud 公共镜像服务（`m.daocloud.io`）可能出现拥堵或限流。选择 `cn` 不保证镜像拉取更快或一定成功。如果仍然拉取失败，可改用能够访问的上游仓库，或将所需镜像复制到自有仓库，并配置对应的镜像 registry 和 repository 参数。
+
+:::
+
+将以下配置合并到 `my-values.yaml`，保留已有的其他 `global` 配置：
+
+```yaml
+global:
+  imageSource: cn
+```
+
+也可在后文的安装命令中追加 `--set global.imageSource=cn`。
+
+对于受支持的默认镜像引用，`cn` 为 kube-scheduler 和默认固定摘要的 certgen 镜像选择阿里云镜像源，为 HAMi、mock-device-plugin 和 Lupine 服务端、客户端镜像选择 [DaoCloud 镜像源](https://github.com/DaoCloud/public-image-mirror)。自定义仓库不会自动改写。镜像覆盖配置和例外情况见 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md)。
+
 ## 部署 HAMi {#deploy-hami}
 
 以下示例使用 `kube-system` 命名空间和 `hami` release。按实际情况替换名称，将 `<chart-version>` 替换为上一步选择的版本：
