@@ -9,19 +9,26 @@ title: 离线安装
 你需要将以下镜像保存为 tar 包，并拷贝到集群中：
 
 ```yaml
-projecthami/hami:{HAMi 版本} docker.io/jettech/kube-webhook-certgen:v1.5.2 liangjw/kube-webhook-certgen:v1.1.1 registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:{你的 kubernetes 版本}
+docker.io/projecthami/hami:{HAMi 版本} registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.6.9 registry.k8s.io/kube-scheduler:{你的 kubernetes 版本}
 ```
+
+:::note 中国镜像源
+
+中国开发者在联网环境中准备离线镜像时，可以尝试从 `m.daocloud.io/docker.io/projecthami/hami`、`registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler` 和 `registry.cn-hangzhou.aliyuncs.com/google_containers/kube-webhook-certgen` 拉取对应镜像。
+
+`m.daocloud.io` 不保证稳定性和可用性，不能作为稳定可靠的镜像源依赖。拉取失败时，请改用上游仓库或其他可用镜像源。
+
+:::
 
 加载镜像，将其打上你们内部镜像仓库的 tag，并推送到内部仓库。
 
 ```bash
 docker load -i {HAMi_image}.tar
-docker tag projecthami/hami:{HAMi 版本} {your_inner_registry}/hami:{HAMi 版本}
+docker tag docker.io/projecthami/hami:{HAMi 版本} {your_inner_registry}/hami:{HAMi 版本}
 docker push {your_inner_registry}/hami:{HAMi 版本}
-docker tag docker.io/jettech/kube-webhook-certgen:v1.5.2 {your inner_registry}/kube-webhook-certgen:v1.5.2
-docker push {your inner_registry}/kube-webhook-certgen:v1.5.2
-docker tag liangjw/kube-webhook-certgen:v1.1.1 {your_inner_registry}/kube-webhook-certgen:v1.1.1
-docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:{你的 kubernetes 版本} {your_inner_registry}/kube-scheduler:{你的 kubernetes 版本}
+docker tag registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.6.9 {your_inner_registry}/kube-webhook-certgen:v1.6.9
+docker push {your_inner_registry}/kube-webhook-certgen:v1.6.9
+docker tag registry.k8s.io/kube-scheduler:{你的 kubernetes 版本} {your_inner_registry}/kube-scheduler:{你的 kubernetes 版本}
 docker push {your_inner_registry}/kube-scheduler:{你的 kubernetes 版本}
 ```
 

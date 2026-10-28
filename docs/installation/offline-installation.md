@@ -9,19 +9,26 @@ If your cluster can’t directly access the internet, you can install HAMi offli
 You need to save the following images into a tarball file and copy it into the cluster.
 
 ```yaml
-projecthami/hami:{HAMi version} docker.io/jettech/kube-webhook-certgen:v1.5.2 liangjw/kube-webhook-certgen:v1.1.1 registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:{your kubernetes version}
+docker.io/projecthami/hami:{HAMi version} registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.6.9 registry.k8s.io/kube-scheduler:{your kubernetes version}
 ```
+
+:::note China mirrors
+
+When preparing offline images in an internet-connected environment, developers in China can try pulling the corresponding images from `m.daocloud.io/docker.io/projecthami/hami`, `registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler`, and `registry.cn-hangzhou.aliyuncs.com/google_containers/kube-webhook-certgen`.
+
+`m.daocloud.io` does not guarantee stability or availability and should not be relied on as a stable mirror. If a pull fails, use the upstream registry or another available mirror.
+
+:::
 
 Load the images, tag them with your internal registry, and push them to your registry.
 
 ```shell
 docker load -i {HAMi_image}.tar
-docker tag projecthami/hami:{HAMi version} {your_inner_registry}/hami:{HAMi version}
+docker tag docker.io/projecthami/hami:{HAMi version} {your_inner_registry}/hami:{HAMi version}
 docker push {your_inner_registry}/hami:{HAMi version}
-docker tag docker.io/jettech/kube-webhook-certgen:v1.5.2 {your_inner_registry}/kube-webhook-certgen:v1.5.2
-docker push {your_inner_registry}/kube-webhook-certgen:v1.5.2
-docker tag liangjw/kube-webhook-certgen:v1.1.1 {your_inner_registry}/kube-webhook-certgen:v1.1.1
-docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:{your kubernetes version} {your_inner_registry}/kube-scheduler:{your kubernetes version}
+docker tag registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.6.9 {your_inner_registry}/kube-webhook-certgen:v1.6.9
+docker push {your_inner_registry}/kube-webhook-certgen:v1.6.9
+docker tag registry.k8s.io/kube-scheduler:{your kubernetes version} {your_inner_registry}/kube-scheduler:{your kubernetes version}
 docker push {your_inner_registry}/kube-scheduler:{your kubernetes version}
 ```
 
