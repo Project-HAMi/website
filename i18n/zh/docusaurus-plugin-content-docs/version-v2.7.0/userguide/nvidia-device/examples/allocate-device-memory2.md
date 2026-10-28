@@ -23,7 +23,7 @@ spec:
 
 :::note
 
-建议选择一种方式指定显存。若同时设置合法值且 `nvidia.com/gpumem` 设置为大于 0 的整数，显存申请量以 `nvidia.com/gpumem` 为准。百分比还可能影响其他调度行为，详见[显存分配说明](../specify-device-memory-usage.md)。
+建议选择一种方式指定显存。若同时设置这两个参数，且 `nvidia.com/gpumem` 为大于 0 的整数，则显存申请量以 `nvidia.com/gpumem` 为准。详见[显存分配说明](../specify-device-memory-usage.md)。
 
 :::
 s

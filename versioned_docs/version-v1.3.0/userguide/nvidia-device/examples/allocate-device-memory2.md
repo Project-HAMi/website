@@ -24,6 +24,6 @@ spec:
 
 :::note
 
-Prefer specifying memory using one of these resources. If both values are valid and `nvidia.com/gpumem` is set to a positive integer, the memory request is determined by `nvidia.com/gpumem`. The percentage can still affect other scheduling behavior; see [Allocate device memory](../specify-device-memory-usage.md) for details.
+Prefer specifying memory using one of these resources. If both are set and `nvidia.com/gpumem` is a positive integer, it takes precedence when determining the memory request. See [Allocate device memory](../specify-device-memory-usage.md) for details.
 
 :::

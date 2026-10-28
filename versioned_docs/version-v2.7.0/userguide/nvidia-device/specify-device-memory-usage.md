@@ -28,9 +28,7 @@ Optional, each unit of `nvidia.com/gpumem-percentage` equals to 1% percentage of
 
 :::note
 
-Prefer specifying memory using one of these resources. If both values are valid and `nvidia.com/gpumem` is set to a positive integer, the memory request is determined by `nvidia.com/gpumem`. If `nvidia.com/gpumem` is omitted or 0 and `nvidia.com/gpumem-percentage` is 1–100, the memory request is calculated from the percentage.
-
-In this version, the percentage can still affect GPU selection through device scoring, so setting both resources does not mean that the percentage is completely ignored.
+Prefer specifying memory using one of these resources. If both are set and `nvidia.com/gpumem` is a positive integer, it takes precedence when determining the memory request. If `nvidia.com/gpumem` is omitted or 0, a valid `nvidia.com/gpumem-percentage` is used to calculate the memory request.
 
 If `nvidia.com/gpumem-percentage` is 100 and `nvidia.com/gpucores` is not specified, HAMi automatically sets `nvidia.com/gpucores: 100`, even when `nvidia.com/gpumem` is also set to a positive integer.
 

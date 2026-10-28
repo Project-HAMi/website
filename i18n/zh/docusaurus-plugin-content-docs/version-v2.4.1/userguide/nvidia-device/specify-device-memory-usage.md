@@ -28,8 +28,6 @@ Optional, each unit of `nvidia.com/gpumem-percentage` equals to 1% percentage of
 
 :::note
 
-建议选择一种方式指定显存。若同时设置合法值且 `nvidia.com/gpumem` 设置为大于 0 的整数，显存申请量以 `nvidia.com/gpumem` 为准；若 `nvidia.com/gpumem` 未设置或为 0，且 `nvidia.com/gpumem-percentage` 为 1–100，则按百分比计算显存申请量。
-
-在此版本中，百分比仍可能通过设备评分影响 GPU 选择，因此同时设置两个参数并不意味着百分比会被完全忽略。
+建议选择一种方式指定显存。若同时设置这两个参数，且 `nvidia.com/gpumem` 为大于 0 的整数，则显存申请量以 `nvidia.com/gpumem` 为准；若它未设置或为 0，则使用有效的 `nvidia.com/gpumem-percentage` 计算显存申请量。
 
 :::
