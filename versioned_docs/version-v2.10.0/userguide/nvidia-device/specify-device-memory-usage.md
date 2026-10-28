@@ -29,6 +29,6 @@ Prefer specifying memory using one of these resources. If both are set and `nvid
 
 If `nvidia.com/gpumem-percentage` is 100 and `nvidia.com/gpucores` is not specified, HAMi automatically sets `nvidia.com/gpucores: 100`, even when `nvidia.com/gpumem` is also set to a positive integer.
 
-The `nvidia.com/gpumem-percentage` value must still pass validation even when `nvidia.com/gpumem` is set to a positive integer.
+`nvidia.com/gpumem-percentage` must be between 0 and 100, inclusive. Requests with values outside this range are rejected, even when `nvidia.com/gpumem` is also set to a positive integer.
 
 :::

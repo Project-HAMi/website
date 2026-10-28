@@ -30,6 +30,6 @@ resources:
 
 如果 `nvidia.com/gpumem-percentage` 为 100 且未指定 `nvidia.com/gpucores`，HAMi 会自动补上 `nvidia.com/gpucores: 100`，即使同时将 `nvidia.com/gpumem` 设置为大于 0 的整数。
 
-即使将 `nvidia.com/gpumem` 设置为大于 0 的整数，`nvidia.com/gpumem-percentage` 仍须通过合法性校验。
+`nvidia.com/gpumem-percentage` 的取值范围为 0–100（含边界）。超出此范围的请求会被拒绝，即使同时将 `nvidia.com/gpumem` 设置为大于 0 的整数。
 
 :::
