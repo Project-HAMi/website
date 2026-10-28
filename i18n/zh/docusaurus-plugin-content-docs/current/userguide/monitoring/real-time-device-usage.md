@@ -4,10 +4,25 @@ sidebar_label: 实时设备使用
 translated: true
 ---
 
-你可以通过访问 `{GPU 节点 IP}:31992/metrics` 获取实时设备显存和核心使用情况，或者将其添加到 Prometheus 端点，如下命令所示：
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="usageMetrics" />
+
+实时用量指标来自各 GPU 节点：HAMi-core 记录每个容器的实际用量，NVML 提供每张卡的数据。不同模式下，从不同的地方读取：
+
+| 模式 | 由谁暴露 | 访问方式 |
+| --- | --- | --- |
+| HAMi | 设备插件 DaemonSet 中的 vGPU monitor，端口 9394 | Pod IP 或 ServiceMonitor；NodePort `31992` 会随机落到某个节点 |
+| HAMi-DRA | 暂不提供 | — |
+| Volcano vGPU | 设备插件 DaemonSet 中的 `volcano-vgpu-monitor`，端口 9394 | 没有 Service，需访问 Pod IP |
+| KAI Scheduler | kai-resource-isolator 的 monitor DaemonSet，端口 9394 | 默认关闭；Pod IP 或 ServiceMonitor，见 [KAI Scheduler](#kai-scheduler) |
+
+## HAMi
+
+每个 GPU 节点的设备插件 Pod 在 9394 端口提供本节点的指标。NodePort `31992` 会在所有这些 Pod 之间负载均衡，返回的是随机某个节点的数据，不一定是你访问的那个节点。请按 Pod IP 抓取，或者在 HAMi chart 中设置 `prometheus.enabled=true` 创建 ServiceMonitor：
 
 ```bash
-curl {GPU 节点 IP}:31992/metrics
+curl {设备插件 Pod IP}:9394/metrics
 ```
 
 它包含以下主机级指标：
@@ -38,3 +53,23 @@ curl {GPU 节点 IP}:31992/metrics
 在 v2.10.0 中，`hami_container_device_memory_bytes` 不再包含 `context_size`、`module_size`、`buffer_size` 和 `offset` 标签。context、module 和 buffer 显存分别通过 `hami_vgpu_memory_context_bytes`、`hami_vgpu_memory_module_bytes` 和 `hami_vgpu_memory_buffer_bytes` 指标提供。
 
 :::
+
+## Volcano vGPU
+
+该 monitor 使用旧的指标名，例如 `HostCoreUtilization` 和 `vGPU_device_memory_usage_in_bytes`。指标列表见[设备插件 README](https://github.com/Project-HAMi/volcano-vgpu-device-plugin#monitor)。
+
+```bash
+curl {volcano 设备插件 Pod IP}:9394/metrics
+```
+
+## KAI Scheduler
+
+安装 kai-resource-isolator 时开启 monitor，需要 1.1.0-chart 及以上，更早的 chart 没有 monitor。它使用与上文相同的 `hami_*` 指标名。容器级指标只覆盖带 `gpu-fraction` 或 `gpu-memory` 注解的 Pod，主机级指标只有 GPU 利用率和已用显存。它的 Service 同样会在节点间负载均衡，请按 Pod IP 抓取或使用 ServiceMonitor，后者需要集群中已有 Prometheus Operator 的 CRD。
+
+```bash
+helm upgrade --install kai-resource-isolator oci://docker.io/projecthami/kai-resource-isolator \
+  --namespace kai-resource-isolator --create-namespace \
+  --version 1.1.0-chart \
+  --set monitor.enabled=true \
+  --set monitor.serviceMonitor.enabled=true
+```
