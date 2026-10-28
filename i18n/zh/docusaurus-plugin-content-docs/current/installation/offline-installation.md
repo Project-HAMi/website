@@ -16,7 +16,7 @@ docker.io/projecthami/hami:{HAMi 版本} registry.k8s.io/ingress-nginx/kube-webh
 
 中国开发者在联网环境中准备离线镜像时，可以尝试从 `m.daocloud.io/docker.io/projecthami/hami`、`registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler` 和 `registry.cn-hangzhou.aliyuncs.com/google_containers/kube-webhook-certgen` 拉取对应镜像。
 
-`m.daocloud.io` 不保证稳定性和可用性，不能作为稳定可靠的镜像源依赖。拉取失败时，请改用上游仓库或其他可用镜像源。
+[m.daocloud.io](https://m.daocloud.io) 不保证稳定性和可用性，不能作为稳定可靠的镜像源依赖。拉取失败时，请改用上游仓库或其他可用镜像源。
 
 :::
 

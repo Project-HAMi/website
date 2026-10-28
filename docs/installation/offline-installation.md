@@ -16,7 +16,7 @@ docker.io/projecthami/hami:{HAMi version} registry.k8s.io/ingress-nginx/kube-web
 
 When preparing offline images in an internet-connected environment, developers in China can try pulling the corresponding images from `m.daocloud.io/docker.io/projecthami/hami`, `registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler`, and `registry.cn-hangzhou.aliyuncs.com/google_containers/kube-webhook-certgen`.
 
-`m.daocloud.io` does not guarantee stability or availability and should not be relied on as a stable mirror. If a pull fails, use the upstream registry or another available mirror.
+[m.daocloud.io](https://m.daocloud.io) does not guarantee stability or availability and should not be relied on as a stable mirror. If a pull fails, use the upstream registry or another available mirror.
 
 :::
 
