@@ -39,6 +39,8 @@ DaoCloud 公共镜像服务（`m.daocloud.io`）可能出现拥堵或限流。�
 
 :::
 
+使用 `global.imageSource=cn` 时，需保持 `global.imageRegistry` 为空（默认值）。非空的 `global.imageRegistry` 优先级更高，会禁用镜像源选择。
+
 将以下配置合并到 `my-values.yaml`，保留已有的其他 `global` 配置：
 
 ```yaml

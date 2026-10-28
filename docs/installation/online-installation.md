@@ -39,6 +39,8 @@ The DaoCloud public mirror (`m.daocloud.io`) may experience congestion or rate l
 
 :::
 
+To use `global.imageSource=cn`, keep `global.imageRegistry` empty (the default). A non-empty `global.imageRegistry` takes precedence and disables image-source selection.
+
 Merge the following into `my-values.yaml`, preserving any other `global` settings:
 
 ```yaml
