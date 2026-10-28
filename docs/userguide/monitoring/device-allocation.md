@@ -22,7 +22,8 @@ It contains the following metrics:
 | hami_node_gpu_overview | Per-device overview. Labels contain capacity and device metadata; the sample value is allocated memory in bytes | `{device_cores="100",device_index="0",device_memory_limit="32768",device_type="NVIDIA-Tesla V100-PCIE-32GB",device_uuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",node="aio-node67",zone="vGPU"}` 1.073741824e+10 |
 | hami_vgpu_core_allocated_ratio | vGPU core allocated from a container | `{container_index="Ascend310P",device_uuid="aio-node74-arm-Ascend310P-0",node="aio-node74-arm",pod="ascend310p-pod",namespace="default",zone="vGPU"}` 50 |
 | hami_vgpu_memory_allocated_bytes | vGPU memory allocated from a container | `{container_index="Ascend310P",device_uuid="aio-node74-arm-Ascend310P-0",node="aio-node74-arm",pod="ascend310p-pod",namespace="default",zone="vGPU"}` 3.221225472e+09 |
-| hami_resource_quota_used | resourcequota usage for a certain device | `{quota_name="nvidia.com/gpucores", namespace="default",limit="200",zone="vGPU"}` 100 |
+| hami_resource_quota_used | resourcequota usage for a certain device (the `limit` label is deprecated in v2.11.0, removed in v2.12.0; use `hami_resource_quota_limit` instead) | `{quota_name="nvidia.com/gpucores", namespace="default",limit="200",zone="vGPU"}` 100 |
+| hami_resource_quota_limit | resourcequota limit for a certain device | `{quota_name="nvidia.com/gpucores", namespace="default",zone="vGPU"}` 200 |
 
 If you are using [HAMi DRA](../../installation/how-to-use-hami-dra), the metrics will be:
 
