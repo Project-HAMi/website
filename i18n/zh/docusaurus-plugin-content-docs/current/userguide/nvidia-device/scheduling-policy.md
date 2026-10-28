@@ -5,6 +5,10 @@ translated: true
 sidebar_label: 调度策略
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features={["nodePolicy", "gpuPolicy"]} />
+
 HAMi 支持多种 GPU 调度策略，以应对复杂的工作负载场景。Pod 可以通过 pod 注解（annotation）来选择调度策略。
 
 ## 可用策略

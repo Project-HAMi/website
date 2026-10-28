@@ -4,6 +4,10 @@ title: Scheduling Policies
 sidebar_label: Scheduling Policies
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features={["nodePolicy", "gpuPolicy"]} />
+
 HAMi supports multiple GPU scheduling policies to handle complex workload scenarios. A pod can select a scheduling policy using pod annotations.
 
 ## Available Policies

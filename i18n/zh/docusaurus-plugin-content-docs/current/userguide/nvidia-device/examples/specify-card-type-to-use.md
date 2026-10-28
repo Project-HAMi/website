@@ -4,6 +4,10 @@ sidebar_label: 指定卡类型
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="gpuType" />
+
 要将任务分配到特定的 GPU 类型，只需在注释字段中分配 `nvidia.com/use-gputype`。
 
 ```yaml

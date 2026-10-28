@@ -3,6 +3,10 @@ title: Allocate certain device memory to container
 sidebar_label: Allocate certain device memory
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="memMib" />
+
 To allocate a certain size of GPU device memory, you need only to assign `nvidia.com/gpumem` besides `nvidia.com/gpu`.
 
 ```yaml

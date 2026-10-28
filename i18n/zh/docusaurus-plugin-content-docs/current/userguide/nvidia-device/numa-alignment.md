@@ -3,6 +3,10 @@ title: 对齐 GPU 与 CPU 的 NUMA 位置
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="numa" />
+
 在多路服务器上，CPU 与同一 NUMA 节点上的 GPU 通信更快。kubelet 的 Topology Manager 可以对齐容器的 CPU 和 vGPU 副本，但在 NUMA refit 之前，它可能与 HAMi 调度器选择的 GPU 不一致：容器实际运行在一块 GPU 上，而 HAMi 的注解和账目记录的是另一块。
 
 NUMA 对齐分两部分解决这个问题：
