@@ -66,6 +66,6 @@ Add a caption with `%% title: <text>` as the first line inside the mermaid fence
 
 For hand-written SVG:
 
-- Use the colors above, the same font stacks, and the diagram panel tokens in `custom.css` (`--hami-diagram-*`): heading `#15324d`, body `#1a3956`, muted `#5a748f`, connectors `#39c6f4` at low opacity.
-- Keep the palette consistent in light and dark mode. The site defaults to dark.
+- Use the colors above, the same font stacks, and the diagram panel tokens in `custom.css` (`--hami-diagram-*`). Light: heading `#15324d`, body `#1a3956`, muted `#5a748f`, connectors `#39c6f4` at low opacity. Dark: heading `#f0f6fd`, body `#d8eefb`, muted `#9eb6ce`, connectors `#39c6f4` at low opacity.
+- The site defaults to dark, so check a new SVG in both themes. A light-only SVG shows as a white card on the dark site.
 - No animated or decorative generated imagery.
