@@ -80,8 +80,6 @@ Create `my-values.yaml` from `previous-values.yaml` as a starting point for prep
 cp previous-values.yaml my-values.yaml
 ```
 
-After copying the file, update the device fields as described in the next section. Do not use the entire old configuration directly for the upgrade. Include any other custom settings that you need to retain in `my-values.yaml`. Do not restore the entire old ConfigMap after the upgrade, as this would overwrite the new default configuration.
-
 This guide uses HAMi images tagged `latest`. Add the following to `my-values.yaml`:
 
 ```yaml
@@ -89,9 +87,9 @@ global:
   imageTag: latest
 ```
 
-If the old values explicitly set `scheduler.extender.image.tag`, `devicePlugin.image.tag`, or `devicePlugin.monitor.image.tag`, remove those overrides to inherit `global.imageTag`.
+If the old values explicitly set `scheduler.extender.image.tag`, `devicePlugin.image.tag`, or `devicePlugin.monitor.image.tag`, remove those overrides.
 
-The `latest` tag is mutable and does not identify a fixed version. Validate it in a test environment before use.
+After copying the file, update the device fields as described in the next section. Do not use the entire old configuration directly for the upgrade. Include any other custom settings that you need to retain in `my-values.yaml`. Do not restore the entire old ConfigMap after the upgrade, as this would overwrite the new default configuration.
 
 ### Migrate Device Fields
 
