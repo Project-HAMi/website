@@ -4,7 +4,7 @@ title: Upgrade HAMi
 
 :::warning Supported Source Version
 
-This guide only applies to upgrades from HAMi v2.10 to the new Chart. Following these instructions directly from other versions is not recommended. If you are running an earlier version, first follow the [v2.10 upgrade guide](/docs/installation/upgrade) to upgrade HAMi to v2.10, then continue with this guide.
+This guide only applies to upgrades from HAMi v2.10 to the new Chart. Following these instructions directly from other versions is not recommended. If you are running an earlier version, first follow the [v2.10 upgrade guide](../../versioned_docs/version-v2.10.0/installation/upgrade.md) to upgrade HAMi to v2.10, then continue with this guide.
 
 :::
 
@@ -44,13 +44,25 @@ Before upgrading, confirm that the currently installed version is HAMi 2.10:
 helm list -n "${namespace}" --filter "^${release}$"
 ```
 
-### Back Up Helm Values
+### Back Up the Current Configuration
 
 Before upgrading, save the user configuration for the current release:
 
 ```bash
 helm get values "${release}" -n "${namespace}" -o yaml > previous-values.yaml
 ```
+
+Manual changes to the device ConfigMap are not recorded in Helm values. Before upgrading, also save its `data.device-config.yaml` to migrate those changes and check the configuration after a rollback.
+
+The following command uses `hami-scheduler-device` as an example. If you changed the release name or configured naming overrides, replace it with the actual ConfigMap name:
+
+```bash
+kubectl get configmap hami-scheduler-device -n "${namespace}" \
+  --allow-missing-template-keys=false \
+  -o jsonpath='{.data.device-config\.yaml}' > previous-device-config.yaml
+```
+
+Confirm that `previous-device-config.yaml` contains the current device configuration and retain this backup. During migration, extract only the settings that need to be retained. Do not restore the entire backup as the new configuration.
 
 ### Obtain the Chart
 
@@ -80,12 +92,24 @@ Create `my-values.yaml` from `previous-values.yaml` as a starting point for prep
 cp previous-values.yaml my-values.yaml
 ```
 
-This guide uses HAMi images tagged `latest`. Add the following to `my-values.yaml`:
+This guide uses HAMi images tagged `latest`. The Chart defaults to the `IfNotPresent` pull policy, so changing only the tag will continue to use old images cached on the nodes. Set the tag in `my-values.yaml` and change the pull policy for the scheduler extender, HAMi device plugin, and monitor to `Always`:
 
 ```yaml
 global:
   imageTag: latest
+scheduler:
+  extender:
+    image:
+      pullPolicy: Always
+devicePlugin:
+  image:
+    pullPolicy: Always
+  monitor:
+    image:
+      pullPolicy: Always
 ```
+
+With `Always`, the container runtime queries the image registry to resolve the tag when a container starts. The `latest` tag remains mutable, so containers started at different times are not guaranteed to use the same build. Updating the tag in the registry does not automatically restart existing Pods.
 
 If the old values explicitly set `scheduler.extender.image.tag`, `devicePlugin.image.tag`, or `devicePlugin.monitor.image.tag`, remove those overrides.
 
@@ -95,13 +119,13 @@ After copying the file, update the device fields as described in the next sectio
 
 The standard resource names for Enflame, Kunlun, Vastai, and Biren are now automatically added to the scheduler extender from the corresponding device fields. For these four device types, `customresources` contains only additional resources and defaults to an empty list. Remove any standard resource entries copied from the old values.
 
-Before migrating, review the old values file and any device configuration that was manually modified in the old `hami-scheduler-device` ConfigMap (the actual name varies with the release and naming overrides). Use the defaults from the Chart version installed before the upgrade as the baseline. Include only settings that differ from those defaults and still need to be retained after the upgrade in the new values.
+Before migrating, review `previous-values.yaml` and any manually modified device configuration in `previous-device-config.yaml`. Use the defaults from the Chart version installed before the upgrade as the baseline. Include only settings that differ from those defaults and still need to be retained after the upgrade in the new values.
 
 - For device fields in the old values, use the vendor-specific mappings below to migrate them to the new paths and remove the old paths.
 - For configuration modified directly in the ConfigMap, find the corresponding Helm values fields before migrating. Do not copy the entire ConfigMap contents into values. The old fields in the tables below refer to old Helm values paths, not ConfigMap field paths.
 - Remove device fields that match the old version's defaults from `my-values.yaml`. There is no need to add them at the corresponding new paths; let the new Chart use its defaults.
 
-Do not decide whether a value needs migration solely because it is `0`, `false`, or an empty string; compare it with the old version's defaults. The new values must not contain any of the old fields listed below, or the new Chart will refuse to render.
+Do not decide whether a value needs migration solely because it is `0`, `false`, or an empty string; compare it with the old version's defaults. Remove the old fields listed below after migration. The Chart rejects old fields covered by its validation checks, but fields not covered may be silently ignored. Successful rendering alone does not confirm that migration is complete.
 
 #### NVIDIA
 
@@ -134,11 +158,13 @@ This includes NVIDIA resource fields and NVIDIA Device Plugin configuration fiel
 
 [HAMi#2969](https://github.com/Project-HAMi/HAMi/pull/2969) renamed DCU to HCU for Hygon devices across resource names, configuration, and annotations. We recommend upgrading the HCU (formerly DCU) device plugin to the latest official version of [k8s-hcu-device-plugin](https://github.com/HYGON-AI/k8s-hcu-device-plugin) provided by Hygon. For details about the changes and configuration, see [Enable Hygon HCU Sharing](../userguide/hygon-device/enable-hygon-hcu-sharing.md).
 
-| v2.10 Field        | v2.10 Default Value   | Latest Field                       | Latest Default Value |
-| ------------------ | --------------------- | ---------------------------------- | -------------------- |
-| `dcuResourceName`  | `hygon.com/dcunum`    | `devices.hygon.resourceCountName`  | `hygon.com/hcunum`   |
-| `dcuResourceMem`   | `hygon.com/dcumem`    | `devices.hygon.resourceMemoryName` | `hygon.com/hcumem`   |
-| `dcuResourceCores` | `hygon.com/dcucores`  | `devices.hygon.resourceCoreName`   | `hygon.com/hcucores` |
+| v2.10 Field | v2.10 Default Value | Latest Field | Latest Default Value |
+| --- | --- | --- | --- |
+| `dcuResourceName` | `hygon.com/dcunum` | `devices.hygon.resourceCountName` | `hygon.com/hcunum` |
+| `dcuResourceMem` | `hygon.com/dcumem` | `devices.hygon.resourceMemoryName` | `hygon.com/hcumem` |
+| `dcuResourceCores` | `hygon.com/dcucores` | `devices.hygon.resourceCoreName` | `hygon.com/hcucores` |
+
+After removing old fields that match the v2.10 defaults, the Chart uses the new `hygon.com/hcu*` resource names. During the upgrade, check the resource names actually exposed by the HCU device plugin and update resource requests in subsequently submitted workloads to match the Chart configuration. Helm rendering validation alone does not confirm that Hygon device migration is complete.
 
 #### MetaX
 
@@ -148,6 +174,8 @@ This includes NVIDIA resource fields and NVIDIA Device Plugin configuration fiel
 | `metaxResourceCore`      | `devices.metax.resourceVCoreName`   |
 | `metaxResourceMem`       | `devices.metax.resourceVMemoryName` |
 | `metaxsGPUTopologyAware` | `devices.metax.sgpuTopologyAware`   |
+
+In v2.10, `metaxsGPUTopologyAware` uses a string and defaults to `"false"`. The new field, `devices.metax.sgpuTopologyAware`, uses a boolean and defaults to `false`. The Chart still accepts the strings `"true"` and `"false"`, but unquoted boolean values are recommended when migrating. If the old value is the default `"false"`, simply remove the old field. If it is `"true"`, set the new field to `true`.
 
 #### Enflame
 
@@ -239,7 +267,7 @@ helm upgrade "${release}" "${hami_chart_dir}/charts/hami" \
 
 `--reset-values` discards the old values stored in the release. All overrides that need to be retained must be included in `my-values.yaml` or supplied through other `--values` files.
 
-Do not use `--reuse-values` or `--reset-then-reuse-values` for this migration. They carry removed fields from the old values into the new Chart, causing rendering to fail.
+Do not use `--reuse-values` or `--reset-then-reuse-values` for this migration. These options carry removed fields from the old values into the new Chart, which may cause rendering to fail. They do not make old fields that are not covered by validation take effect again.
 
 ## Post-Upgrade Verification
 
@@ -310,6 +338,8 @@ You can also specify a revision:
 ```bash
 helm rollback "${release}" <revision-number> -n "${namespace}"
 ```
+
+Helm rollback uses the manifests saved in the release history, which do not include records of direct changes to ConfigMaps in the cluster. If you manually modified the device configuration before upgrading, compare it with `previous-device-config.yaml` after rollback and restore the necessary fields. Do not overwrite the entire ConfigMap. Retain the migrated `my-values.yaml` and use its prepared configuration when upgrading again.
 
 If workloads still behave abnormally after rollback, first restore the GPU workloads from before the maintenance window, then check the scheduler, device plugin, and node logs.
 

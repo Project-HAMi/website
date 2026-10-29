@@ -4,7 +4,7 @@ title: 升级 HAMi
 
 :::warning 适用版本
 
-本文仅适用于从 HAMi v2.10 升级到新版 Chart，不建议从其他版本直接按本文操作。如果当前使用的是更早版本，请先参考 [v2.10 升级文档](/zh/docs/installation/upgrade)，将 HAMi 升级至 v2.10，再按本文继续升级。
+本文仅适用于从 HAMi v2.10 升级到新版 Chart，不建议从其他版本直接按本文操作。如果当前使用的是更早版本，请先参考 [v2.10 升级文档](../../version-v2.10.0/installation/upgrade.md)，将 HAMi 升级至 v2.10，再按本文继续升级。
 
 :::
 
@@ -44,13 +44,25 @@ export hami_chart_dir="${HOME}/hami-upgrade/HAMi"
 helm list -n "${namespace}" --filter "^${release}$"
 ```
 
-### 备份 Helm values
+### 备份当前配置
 
 升级前保存当前 release 的用户配置：
 
 ```bash
 helm get values "${release}" -n "${namespace}" -o yaml > previous-values.yaml
 ```
+
+直接修改过的设备 ConfigMap 不会记录在 Helm values 中。升级前还应保存其中的 `data.device-config.yaml`，用于迁移手工修改和回滚后核对配置。
+
+以下命令以 `hami-scheduler-device` 为例；如果修改过 release 名称或名称覆盖配置，请替换为实际的 ConfigMap 名称：
+
+```bash
+kubectl get configmap hami-scheduler-device -n "${namespace}" \
+  --allow-missing-template-keys=false \
+  -o jsonpath='{.data.device-config\.yaml}' > previous-device-config.yaml
+```
+
+确认 `previous-device-config.yaml` 包含当前设备配置，并保留这份备份。迁移时只提取仍需保留的设置，不要将整份备份作为新版配置恢复。
 
 ### 获取 Chart
 
@@ -80,12 +92,24 @@ HEAD 中的 Chart 是开发版本，不是已发布版本，其 `version` 和 `a
 cp previous-values.yaml my-values.yaml
 ```
 
-本文使用 `latest` 标签的 HAMi 镜像，请在 `my-values.yaml` 中加入：
+本文使用 `latest` 标签的 HAMi 镜像。Chart 默认使用 `IfNotPresent` 拉取策略，仅修改标签会继续使用节点上缓存的旧镜像。请在 `my-values.yaml` 中设置标签，并将 scheduler extender、HAMi device plugin 和 monitor 的拉取策略改为 `Always`：
 
 ```yaml
 global:
   imageTag: latest
+scheduler:
+  extender:
+    image:
+      pullPolicy: Always
+devicePlugin:
+  image:
+    pullPolicy: Always
+  monitor:
+    image:
+      pullPolicy: Always
 ```
+
+`Always` 会在容器启动时向镜像仓库解析标签对应的镜像。`latest` 仍是可变标签，不能保证不同时间启动的容器使用同一构建；远端标签更新也不会自动重启已有 Pod。
 
 如果旧 values 中单独设置过 `scheduler.extender.image.tag`、`devicePlugin.image.tag` 或 `devicePlugin.monitor.image.tag`，请删除这些覆盖。
 
@@ -95,13 +119,13 @@ global:
 
 Enflame、Kunlun、Vastai 和 Biren 的标准资源名现在由对应的设备字段自动加入 scheduler extender。这四类设备的 `customresources` 只保留额外资源，默认为空列表。旧 values 中复制过去的标准资源项应删除。
 
-迁移前，先核对旧 values 文件，以及旧的 `hami-scheduler-device` ConfigMap（实际名称随 release 和命名覆盖配置而变化）中曾手工修改过的设备配置。以升级前所用 Chart 版本的默认配置为基准，只将与默认值不同、升级后仍需保留的设置写入新 values。
+迁移前，先核对 `previous-values.yaml`，以及 `previous-device-config.yaml` 中曾手工修改过的设备配置。以升级前所用 Chart 版本的默认配置为基准，只将与默认值不同、升级后仍需保留的设置写入新 values。
 
 - 对于旧 values 中的设备字段，按下方各厂商的字段映射迁移到新路径，并删除旧路径。
 - 对于直接修改过的 ConfigMap 配置，找到对应的 Helm values 字段后再迁移，不要将 ConfigMap 的内容整体复制到 values 中。下方表格中的旧字段指旧 Helm values 路径，不是 ConfigMap 字段路径。
 - 与旧版本默认值相同的设备字段应从 `my-values.yaml` 中删除，不必写入对应的新路径，让新 Chart 使用其默认配置。
 
-不要仅凭值是否为 `0`、`false` 或空字符串判断是否需要迁移；应与旧版本默认值比较。新 values 中也不能残留下表列出的旧字段，否则新 Chart 会拒绝渲染。
+不要仅凭值是否为 `0`、`false` 或空字符串判断是否需要迁移；应与旧版本默认值比较。迁移后应删除下表列出的旧字段。Chart 会拒绝校验列表中的旧字段，但未被校验覆盖的旧字段可能被静默忽略，因此不能仅凭渲染成功判断迁移是否完成。
 
 #### NVIDIA
 
@@ -134,11 +158,13 @@ Enflame、Kunlun、Vastai 和 Biren 的标准资源名现在由对应的设备�
 
 [HAMi#2969](https://github.com/Project-HAMi/HAMi/pull/2969) 将 Hygon 设备的 DCU 命名统一改为 HCU，涉及资源名称、配置和注解。建议将 HCU（原 DCU）device plugin 升级到 Hygon 官方提供的最新版本 [k8s-hcu-device-plugin](https://github.com/HYGON-AI/k8s-hcu-device-plugin)。更新信息和配置说明见[启用 Hygon HCU 共享](../userguide/hygon-device/enable-hygon-hcu-sharing.md)。
 
-| v2.10 字段         | v2.10 默认值          | 最新版字段                         | 最新版默认值         |
-| ------------------ | --------------------- | ---------------------------------- | -------------------- |
-| `dcuResourceName`  | `hygon.com/dcunum`    | `devices.hygon.resourceCountName`  | `hygon.com/hcunum`   |
-| `dcuResourceMem`   | `hygon.com/dcumem`    | `devices.hygon.resourceMemoryName` | `hygon.com/hcumem`   |
-| `dcuResourceCores` | `hygon.com/dcucores`  | `devices.hygon.resourceCoreName`   | `hygon.com/hcucores` |
+| v2.10 字段 | v2.10 默认值 | 最新版字段 | 最新版默认值 |
+| --- | --- | --- | --- |
+| `dcuResourceName` | `hygon.com/dcunum` | `devices.hygon.resourceCountName` | `hygon.com/hcunum` |
+| `dcuResourceMem` | `hygon.com/dcumem` | `devices.hygon.resourceMemoryName` | `hygon.com/hcumem` |
+| `dcuResourceCores` | `hygon.com/dcucores` | `devices.hygon.resourceCoreName` | `hygon.com/hcucores` |
+
+删除与 v2.10 默认值相同的旧字段后，Chart 会使用新的 `hygon.com/hcu*` 资源名。升级时应核对 HCU device plugin 实际暴露的资源名，并同步调整后续提交的工作负载中的资源请求，使其与 Chart 配置一致。仅通过 Helm 渲染校验不能确认 Hygon 设备迁移完成。
 
 #### MetaX
 
@@ -148,6 +174,8 @@ Enflame、Kunlun、Vastai 和 Biren 的标准资源名现在由对应的设备�
 | `metaxResourceCore`      | `devices.metax.resourceVCoreName`   |
 | `metaxResourceMem`       | `devices.metax.resourceVMemoryName` |
 | `metaxsGPUTopologyAware` | `devices.metax.sgpuTopologyAware`   |
+
+`metaxsGPUTopologyAware` 在 v2.10 中使用字符串，默认值为 `"false"`；新字段 `devices.metax.sgpuTopologyAware` 使用布尔值，默认值为 `false`。Chart 仍兼容字符串形式的 `"true"` 和 `"false"`，迁移时建议使用不带引号的布尔值。旧值为默认的 `"false"` 时，删除旧字段即可；旧值为 `"true"` 时，将新字段设为 `true`。
 
 #### Enflame
 
@@ -239,7 +267,7 @@ helm upgrade "${release}" "${hami_chart_dir}/charts/hami" \
 
 `--reset-values` 会丢弃 release 中保存的旧 values。所有需要保留的覆盖都必须写入 `my-values.yaml`，或通过其他 `--values` 文件传入。
 
-这次迁移不要使用 `--reuse-values` 或 `--reset-then-reuse-values`。旧 values 中的已删除字段会被带入新 Chart，导致渲染失败。
+这次迁移不要使用 `--reuse-values` 或 `--reset-then-reuse-values`。这些选项会将旧 values 中的已删除字段带入新 Chart，可能导致渲染失败；未被校验覆盖的旧字段也不会因此恢复生效。
 
 ## 升级后验证
 
@@ -310,6 +338,8 @@ helm rollback "${release}" -n "${namespace}"
 ```bash
 helm rollback "${release}" <revision-number> -n "${namespace}"
 ```
+
+Helm 回滚使用历史 release 中保存的清单，不包含直接修改集群 ConfigMap 的记录。如果升级前手工修改过设备配置，回滚后应对照 `previous-device-config.yaml` 核对并恢复必要字段，不要直接覆盖整个 ConfigMap。保留迁移后的 `my-values.yaml`，再次升级时继续使用其中已整理的配置。
 
 如果回滚后仍有工作负载异常，先恢复维护窗口前的 GPU 工作负载，再检查 scheduler、device plugin 和节点日志。
 
