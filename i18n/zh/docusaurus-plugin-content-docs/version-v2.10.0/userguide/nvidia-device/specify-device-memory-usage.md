@@ -6,7 +6,7 @@ translated: true
 
 通过指定资源如 `nvidia.com/gpumem` 来分配一定大小的设备显存。该资源为可选项。在默认配置 `memoryFactor: 1` 下，每个 `nvidia.com/gpumem` 单位等于 1 MiB。
 
-请使用纯整数，不要添加 `Mi`、`Gi` 或 `G` 等后缀。例如，在默认显存系数下，申请 16 GiB 应填写 `16384`。Kubernetes 的资源数量后缀不表示 HAMi 的显存单位。
+请使用非负整数，不要添加 `Mi`、`Gi` 或 `G` 等后缀。例如，在默认显存系数下，申请 16 GiB 应填写 `16384`。Kubernetes 的资源数量后缀不表示 HAMi 的显存单位。
 
 ```yaml
 resources:
@@ -26,6 +26,10 @@ resources:
 
 :::note
 
-`nvidia.com/gpumem` 和 `nvidia.com/gpumem-percentage` 不能同时分配
+建议选择一种方式指定显存。若同时设置这两个参数，且 `nvidia.com/gpumem` 为大于 0 的整数，则显存申请量以 `nvidia.com/gpumem` 为准；若它未设置或为 0，则使用取值为 1–100 的 `nvidia.com/gpumem-percentage` 计算显存申请量。
+
+如果 `nvidia.com/gpumem-percentage` 为 100 且未指定 `nvidia.com/gpucores`，HAMi 会自动补上 `nvidia.com/gpucores: 100`，即使同时将 `nvidia.com/gpumem` 设置为大于 0 的整数。
+
+`nvidia.com/gpumem-percentage` 的取值范围为 0–100（含边界），其中 0 视为未设置。超出此范围的请求会被拒绝，即使同时将 `nvidia.com/gpumem` 设置为大于 0 的整数。
 
 :::
