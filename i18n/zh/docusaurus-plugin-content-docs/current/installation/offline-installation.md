@@ -25,14 +25,18 @@ title: 离线安装
 
 :::
 
-加载镜像，将其打上你们内部镜像仓库的 tag，并推送到内部仓库。
+加载镜像，将其打上你们内部镜像仓库的 tag，并推送到内部仓库。以下示例假设每个镜像分别保存为一个 tar 包，请将文件占位符替换为实际文件名。
 
 ```bash
 docker load -i {HAMi_image}.tar
 docker tag docker.io/projecthami/hami:{HAMi 版本} {your_inner_registry}/hami:{HAMi 版本}
 docker push {your_inner_registry}/hami:{HAMi 版本}
+
+docker load -i {certgen_image}.tar
 docker tag registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.6.9 {your_inner_registry}/kube-webhook-certgen:v1.6.9
 docker push {your_inner_registry}/kube-webhook-certgen:v1.6.9
+
+docker load -i {kube_scheduler_image}.tar
 docker tag registry.k8s.io/kube-scheduler:{你的 kubernetes 版本} {your_inner_registry}/kube-scheduler:{你的 kubernetes 版本}
 docker push {your_inner_registry}/kube-scheduler:{你的 kubernetes 版本}
 ```

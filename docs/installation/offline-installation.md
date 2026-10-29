@@ -25,14 +25,18 @@ When preparing offline images in an internet-connected environment, developers i
 
 :::
 
-Load the images, tag them with your internal registry, and push them to your registry.
+Load the images, tag them with your internal registry, and push them to your registry. The example below assumes each image is saved in a separate tar archive; replace the archive placeholders with the actual filenames.
 
 ```bash
 docker load -i {HAMi_image}.tar
 docker tag docker.io/projecthami/hami:{HAMi version} {your_inner_registry}/hami:{HAMi version}
 docker push {your_inner_registry}/hami:{HAMi version}
+
+docker load -i {certgen_image}.tar
 docker tag registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.6.9 {your_inner_registry}/kube-webhook-certgen:v1.6.9
 docker push {your_inner_registry}/kube-webhook-certgen:v1.6.9
+
+docker load -i {kube_scheduler_image}.tar
 docker tag registry.k8s.io/kube-scheduler:{your kubernetes version} {your_inner_registry}/kube-scheduler:{your kubernetes version}
 docker push {your_inner_registry}/kube-scheduler:{your kubernetes version}
 ```
