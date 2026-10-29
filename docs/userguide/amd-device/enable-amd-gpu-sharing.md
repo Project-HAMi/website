@@ -9,8 +9,10 @@ HAMi shares AMD GPUs (Radeon and Instinct) between pods with the following resou
 
 - `amd.com/gpu`: number of GPUs
 - `amd.com/gpumem`: device memory in MiB per GPU
-- `amd.com/gpumem-percentage`: device memory per GPU as a percentage of its VRAM (1-100); `amd.com/gpumem` wins if both are set
+- `amd.com/gpumem-percentage`: device memory per GPU as a percentage of its VRAM (0-100); `amd.com/gpumem` takes precedence for the memory request when set to a positive integer
 - `amd.com/gpucores`: compute units per GPU as a percentage (1-100)
+
+When `amd.com/gpumem` is omitted or 0, a percentage of 0 requests the full GPU memory.
 
 A pod that asks for no memory or cores gets the whole GPU. A pod that sets only `amd.com/gpumem-percentage` gets one GPU added by the webhook.
 
@@ -23,19 +25,19 @@ HAMi v2.10.0 has the memory, core, type and UUID features. These need a newer HA
 ### Prerequisites
 
 - Linux amd64 nodes with ROCm-supported AMD GPUs, the `amdgpu` kernel driver, `/dev/kfd` and `/dev/dri`. See the [ROCm installation guide](https://rocm.docs.amd.com/projects/install-on-linux/en/latest/) for the driver.
-- Kubernetes with the HAMi scheduler. If the cluster has no NVIDIA GPUs, install HAMi without its own device plugin:
+- Kubernetes with the HAMi scheduler. If the cluster has no NVIDIA GPUs, follow [Online installation](../../installation/online-installation.md) with the NVIDIA plugin disabled in HAMi values:
 
-```bash
-helm repo add hami-charts https://project-hami.github.io/HAMi/
-helm install hami hami-charts/hami -n kube-system --set devicePlugin.enabled=false
-```
+  ```yaml
+  devicePlugin:
+    enabled: false
+  ```
 
 - No other plugin may register `amd.com/gpu` on the same nodes, such as the upstream ROCm device plugin. Kubelet cannot serve one resource from two plugins: it refuses the second registration (`device plugin already connected`) and the plugin that registered first keeps serving.
 
 ### Deploy
 
 1. Install the HAMi chart as above. It registers the AMD resources with the scheduler (`devices.amd.*` in `values.yaml`). To set a runtime class on every pod that requests an AMD GPU, set `devices.amd.runtimeClassName`; a pod that sets its own `runtimeClassName` keeps it, and a pod without a GPU is left alone (needs a HAMi release newer than v2.10.0, [Project-HAMi/HAMi#3194](https://github.com/Project-HAMi/HAMi/pull/3194)).
-2. Install [amd-device-plugin](https://github.com/Project-HAMi/amd-device-plugin) on the AMD nodes. It publishes each GPU in the node annotation `hami.io/node-amd-register`, hands out CU slices and memory limits to the pods, and marks a GPU unhealthy when its DRM device cannot be opened or the AMD Device Metrics Exporter reports it unhealthy. From a checkout of the plugin release you want (the latest is v0.0.3):
+2. Install [amd-device-plugin](https://github.com/Project-HAMi/amd-device-plugin) on the AMD nodes. It publishes each GPU in the node annotation `hami.io/node-amd-register`, hands out CU slices and memory limits to the pods, and marks a GPU unhealthy when its DRM device cannot be opened or the AMD Device Metrics Exporter reports it unhealthy. From a checkout of the plugin release you want:
 
 ```bash
 helm upgrade --install amd-gpu ./helm/amd-gpu --namespace kube-system --create-namespace

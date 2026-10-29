@@ -1100,12 +1100,161 @@
       "type": "table"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "Resource quota used and limit per namespace and resource, for the selected namespace(s). Memory in MiB, cores in %. Limit and Used % are empty when no limit is set for that resource.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Used %"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "max",
+                "value": 100
+              },
+              {
+                "id": "min",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 46
+      },
+      "id": 25,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": ["sum"],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "10.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "hami_resource_quota_used{namespace=~\"$namespace\"}",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "hami_resource_quota_limit{namespace=~\"$namespace\"}",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "100 * hami_resource_quota_used{namespace=~\"$namespace\"} / on (namespace, quota_name) clamp_min(hami_resource_quota_limit{namespace=~\"$namespace\"}, 1)",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "C"
+        }
+      ],
+      "title": "Resource quota: used vs limit",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": ["namespace", "quota_name", "Value #A", "Value #B", "Value #C"]
+            }
+          }
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "namespace": 0,
+              "quota_name": 1,
+              "Value #A": 2,
+              "Value #B": 3,
+              "Value #C": 4
+            },
+            "renameByName": {
+              "namespace": "Namespace",
+              "quota_name": "Resource",
+              "Value #A": "Used",
+              "Value #B": "Limit",
+              "Value #C": "Used %"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 46
+        "y": 54
       },
       "id": 103,
       "panels": [],
@@ -1170,7 +1319,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 47
+        "y": 55
       },
       "id": 30,
       "options": {
@@ -1215,6 +1364,106 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
+      "description": "Per-pod GPU compute utilization versus allocated cores (0-100%), for pods in the selected namespace(s).",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            }
+          },
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "unit": "percent"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/^allocated/"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [10, 10],
+                  "fill": "dash"
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 55
+      },
+      "id": 36,
+      "options": {
+        "legend": {
+          "calcs": ["lastNotNull"],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum by (device_uuid, namespace, pod) (hami_container_device_utilization_ratio{namespace=~\"$namespace\"})",
+          "legendFormat": "used {{namespace}}/{{pod}} ({{device_uuid}})",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum by (device_uuid, namespace, pod) (hami_vgpu_core_allocated_ratio{namespace=~\"$namespace\"})",
+          "legendFormat": "allocated {{namespace}}/{{pod}} ({{device_uuid}})",
+          "refId": "B"
+        }
+      ],
+      "title": "vGPU cores: used vs allocated",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
       "description": "Per-container GPU compute utilization inside the vGPU (0-100%).",
       "fieldConfig": {
         "defaults": {
@@ -1250,7 +1499,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 47
+        "y": 63
       },
       "id": 31,
       "options": {
@@ -1319,7 +1568,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 55
+        "y": 63
       },
       "id": 32,
       "options": {
@@ -1412,7 +1661,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 55
+        "y": 71
       },
       "id": 33,
       "options": {
@@ -1501,7 +1750,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 63
+        "y": 71
       },
       "id": 34,
       "options": {
@@ -1642,8 +1891,8 @@
       "gridPos": {
         "h": 8,
         "w": 12,
-        "x": 12,
-        "y": 63
+        "x": 0,
+        "y": 79
       },
       "id": 35,
       "options": {
@@ -1736,7 +1985,193 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 71
+        "y": 87
+      },
+      "id": 105,
+      "panels": [],
+      "title": "Dynamic MIG",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "Each in-use MIG instance with its node, GPU, profile, placement on the GPU, and the pod using it, for the selected node(s) and namespace(s).",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 88
+      },
+      "id": 50,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": ["sum"],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "10.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "hami_node_gpu_mig_instance_info{node=~\"$node\"} * on (mig_uuid) group_left(namespace, pod, container) hami_mig_device_info{namespace=~\"$namespace\"}",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "MIG inventory and allocation",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "container",
+                "mig_uuid",
+                "namespace",
+                "node",
+                "placement_size",
+                "placement_start",
+                "pod",
+                "profile",
+                "device_index",
+                "device_uuid"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "node": 0,
+              "device_index": 1,
+              "device_uuid": 2,
+              "profile": 3,
+              "placement_start": 4,
+              "placement_size": 5,
+              "namespace": 6,
+              "pod": 7,
+              "container": 8,
+              "mig_uuid": 9
+            },
+            "renameByName": {
+              "container": "Container",
+              "device_index": "Index",
+              "node": "Node",
+              "profile": "Profile",
+              "placement_start": "Placement start",
+              "placement_size": "Placement size",
+              "namespace": "Namespace",
+              "pod": "Pod",
+              "mig_uuid": "MIG UUID",
+              "device_uuid": "GPU UUID"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "Number of in-use MIG instances for each profile, for the selected node(s) and namespace(s).",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "mappings": [],
+          "min": 0,
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 96
+      },
+      "id": 51,
+      "options": {
+        "displayMode": "basic",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": false,
+        "valueMode": "color"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "count by (profile) (hami_node_gpu_mig_instance_info{node=~\"$node\"} * on (mig_uuid) group_left (namespace) hami_mig_device_info{namespace=~\"$namespace\"})",
+          "instant": true,
+          "legendFormat": "{{profile}}",
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "In-use MIG instances by profile",
+      "type": "bargauge"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 104
       },
       "id": 104,
       "panels": [],
@@ -1776,7 +2211,7 @@
         "h": 5,
         "w": 8,
         "x": 0,
-        "y": 72
+        "y": 105
       },
       "id": 40,
       "options": {
@@ -1847,7 +2282,7 @@
         "h": 5,
         "w": 8,
         "x": 8,
-        "y": 72
+        "y": 105
       },
       "id": 44,
       "options": {
@@ -1899,7 +2334,7 @@
         "h": 5,
         "w": 8,
         "x": 16,
-        "y": 72
+        "y": 105
       },
       "id": 45,
       "options": {
@@ -1971,7 +2406,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 77
+        "y": 110
       },
       "id": 41,
       "options": {
@@ -2040,7 +2475,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 77
+        "y": 110
       },
       "id": 42,
       "options": {
@@ -2109,7 +2544,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 85
+        "y": 118
       },
       "id": 43,
       "options": {
@@ -2189,7 +2624,7 @@
           "type": "prometheus",
           "uid": "${datasource}"
         },
-        "definition": "label_values(hami_vgpu_memory_used_bytes, namespace)",
+        "definition": "label_values({__name__=~\"hami_vgpu_memory_used_bytes|hami_mig_device_info|hami_resource_quota_used\"}, namespace)",
         "hide": 0,
         "includeAll": true,
         "label": "Namespace",
@@ -2198,7 +2633,7 @@
         "options": [],
         "query": {
           "qryType": 1,
-          "query": "label_values(hami_vgpu_memory_used_bytes, namespace)",
+          "query": "label_values({__name__=~\"hami_vgpu_memory_used_bytes|hami_mig_device_info|hami_resource_quota_used\"}, namespace)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 2,

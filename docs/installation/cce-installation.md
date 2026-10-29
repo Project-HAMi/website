@@ -102,9 +102,11 @@ scheduler:
     imageNew:
       registry: swr.<region>.myhuaweicloud.com
       repository: <organization>/kube-webhook-certgen
+devices:
+  nvidia:
+    runtimeClassName: nvidia
+    createRuntimeClass: true
 devicePlugin:
-  runtimeClassName: nvidia
-  createRuntimeClass: true
   image:
     registry: swr.<region>.myhuaweicloud.com
     repository: <organization>/hami
@@ -114,7 +116,7 @@ devicePlugin:
       repository: <organization>/hami
 ```
 
-`global.imagePullSecrets` uses `default-secret`, which CCE creates in every namespace with the credentials for pulling images from SWR, so the repositories can stay private. See [Cluster Secrets](https://support.huaweicloud.com/intl/en-us/usermanual-cce/cce_10_0388.html). `devicePlugin.runtimeClassName` and `devicePlugin.createRuntimeClass` create the `nvidia` RuntimeClass and use it for HAMi's Device Plugin. HAMi also sets it on the Pods that request vGPU resources.
+`global.imagePullSecrets` uses `default-secret`, which CCE creates in every namespace with the credentials for pulling images from SWR, so the repositories can stay private. See [Cluster Secrets](https://support.huaweicloud.com/intl/en-us/usermanual-cce/cce_10_0388.html). `devices.nvidia.runtimeClassName` and `devices.nvidia.createRuntimeClass` create the `nvidia` RuntimeClass and use it for HAMi's device plugin. HAMi also sets it on the Pods that request vGPU resources.
 
 ## Install HAMi
 
@@ -139,7 +141,7 @@ NAME             HOLDER                                                         
 hami-scheduler   hami-scheduler-57478c9db5-ttlrj_845424a5-33aa-4881-a744-9baa9090c26c   26s
 ```
 
-Then confirm that HAMi registered the GPU. With the default `devicePlugin.deviceSplitCount` of 10, a single GPU is reported as 10 `nvidia.com/gpu` resources:
+Then confirm that HAMi registered the GPU. With the default `devices.nvidia.deviceSplitCount` of 10, a single GPU is reported as 10 `nvidia.com/gpu` resources:
 
 ```bash
 kubectl get node <node-name> -o jsonpath='{.status.allocatable.nvidia\.com/gpu}{"\n"}'
@@ -177,7 +179,7 @@ E1011 04:44:38.399747   44144 factory.go:135] Incompatible strategy detected aut
 E1011 04:44:38.399767   44144 factory.go:136] If this is a GPU node, did you configure the NVIDIA Container Toolkit?
 ```
 
-The container runs with the default `runc` runtime and cannot find the NVIDIA driver. Set `devicePlugin.runtimeClassName` and `devicePlugin.createRuntimeClass` as described in [Prepare the HAMi values](#prepare-the-hami-values).
+The container runs with the default `runc` runtime and cannot find the NVIDIA driver. Set `devices.nvidia.runtimeClassName` and `devices.nvidia.createRuntimeClass` as described in [Prepare the HAMi values](#prepare-the-hami-values).
 
 ### NUMA error in Device Plugin logs
 

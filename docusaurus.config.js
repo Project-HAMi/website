@@ -365,12 +365,16 @@ module.exports = {
           title: "Documentation",
           items: [
             {
-              label: "Concepts",
-              to: "/docs/core-concepts/gpu-virtualization",
+              label: "Supported Devices",
+              to: "/docs/userguide/device-supported",
             },
             {
               label: "Quick Start",
               to: "/docs/get-started/deploy-with-helm",
+            },
+            {
+              label: "Concepts",
+              to: "/docs/core-concepts/gpu-virtualization",
             },
             {
               label: "Tutorials",
@@ -379,7 +383,7 @@ module.exports = {
           ],
         },
         {
-          title: "Community",
+          title: "Join Community",
           items: [
             {
               label: "Discord",
@@ -393,6 +397,10 @@ module.exports = {
               label: "WeChat Group",
               href: "/community?wechat=group",
             },
+            {
+              label: "Community Survey",
+              href: "https://forms.gle/CTXZmG1WUgE9vPBm8",
+            },
           ],
         },
         {
@@ -403,8 +411,16 @@ module.exports = {
               href: "/community?wechat=official",
             },
             {
+              label: "Xiaohongshu",
+              href: "https://xhslink.cn/o/7BNNFxIwz40",
+            },
+            {
               label: "LinkedIn",
               href: "https://www.linkedin.com/company/project-hami-io/",
+            },
+            {
+              label: "YouTube",
+              href: "https://www.youtube.com/@hami-community",
             },
             {
               label: "X",

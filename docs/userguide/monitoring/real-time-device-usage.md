@@ -24,7 +24,7 @@ It also exposes per-container and per-vGPU metrics for each scheduled task:
 | Metrics | Description | Example |
 | --- | --- | --- |
 | hami_container_device_utilization_ratio | Container device SM utilization ratio | `{container="cuda",device_uuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",namespace="default",pod="vgpu-share",vdevice_index="0",zone="vGPU"}` 0 |
-| hami_container_device_memory_bytes | Container device memory usage in bytes | `{container="cuda",device_uuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",namespace="default",pod="vgpu-share",vdevice_index="0",zone="vGPU"}` 0 |
+| hami_container_device_memory_bytes | Container device memory usage in bytes (deprecated in v2.11.0, removed in v2.12.0; use `hami_vgpu_memory_used_bytes` instead) | `{container="cuda",device_uuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",namespace="default",pod="vgpu-share",vdevice_index="0",zone="vGPU"}` 0 |
 | hami_container_last_kernel_elapsed_seconds | Seconds since last kernel execution in container | `{container="cuda",device_uuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",namespace="default",pod="vgpu-share",vdevice_index="0",zone="vGPU"}` 3664 |
 | hami_vgpu_memory_used_bytes | vGPU device memory usage in bytes | `{container="cuda",device_uuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",namespace="default",pod="vgpu-share",vdevice_index="0",zone="vGPU"}` 0 |
 | hami_vgpu_memory_limit_bytes | vGPU device memory limit in bytes | `{container="cuda",device_uuid="GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec",namespace="default",pod="vgpu-share",vdevice_index="0",zone="vGPU"}` 2.097152e+10 |

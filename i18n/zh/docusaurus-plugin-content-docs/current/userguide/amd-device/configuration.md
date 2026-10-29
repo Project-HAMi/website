@@ -10,6 +10,13 @@ translated: true
 
 ## Values 和参数
 
+HAMi 与 `amd-device-plugin` 使用不同的 Chart 和 values 文件：
+
+- HAMi：通过 `devices.amd.*` 设置调度器使用的资源名称和默认值，见 [HAMi Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md)。
+- AMD 插件：通过 `dp.*` 配置插件，通过 `monitor.*` 配置监控，完整 Chart values 见[插件 Chart values 参数表](https://github.com/Project-HAMi/amd-device-plugin/blob/main/helm/amd-gpu/README.md)。
+
+下表列出插件 Chart values 与命令行参数、环境变量的对应关系。模式切换和可选功能的前置条件见下文。
+
 | Helm value | 参数或变量 | 默认值 | 说明 |
 | --- | --- | --- | --- |
 | `dp.image.repository`、`dp.image.tag` |  | `ghcr.io/project-hami/amd-device-plugin`、chart 的 `appVersion` | 镜像。 |

@@ -97,6 +97,9 @@
 "软切分":
   label: "软切分"
   permalink: "/soft-slicing"
+"NPU 共享":
+  label: "NPU 共享"
+  permalink: "/npu-sharing"
 "Release":
   label: "Release"
   permalink: "/release"

@@ -58,8 +58,13 @@ test("queries only use HAMi v2.10 metrics and selected DCGM metrics", () => {
     "hami_gpu_shared_count",
     "hami_host_gpu_memory_used_bytes",
     "hami_host_gpu_utilization_ratio",
+    "hami_mig_device_info",
     "hami_node_gpu_memory_allocated_ratio",
+    "hami_node_gpu_mig_instance_info",
     "hami_node_gpu_overview",
+    "hami_resource_quota_limit",
+    "hami_resource_quota_used",
+    "hami_vgpu_core_allocated_ratio",
     "hami_vgpu_memory_buffer_bytes",
     "hami_vgpu_memory_context_bytes",
     "hami_vgpu_memory_limit_bytes",
@@ -288,4 +293,79 @@ test("table shows time since each container last ran a kernel", () => {
       ?.properties.find((property) => property.id === "unit")?.value;
   assert.equal(unitOf("Since last kernel"), "dtdurations");
   assert.equal(unitOf("Allocated memory"), "bytes");
+});
+
+test("quota table compares used with limit for each namespace and resource", () => {
+  const panel = panelByTitle("Resource quota: used vs limit");
+  assert.equal(panel.type, "table");
+
+  const used = 'hami_resource_quota_used{namespace=~"$namespace"}';
+  const limit = 'hami_resource_quota_limit{namespace=~"$namespace"}';
+  assert.deepEqual(
+    panel.targets.map((target) => target.expr),
+    [used, limit, `100 * ${used} / on (namespace, quota_name) clamp_min(${limit}, 1)`],
+  );
+
+  assert.deepEqual(
+    panel.transformations.map((transformation) => transformation.id),
+    ["filterFieldsByName", "merge", "organize"],
+  );
+  assert.deepEqual(panel.transformations[0].options.include.names, [
+    "namespace",
+    "quota_name",
+    "Value #A",
+    "Value #B",
+    "Value #C",
+  ]);
+
+  const unitOf = (name) =>
+    panel.fieldConfig.overrides
+      .find((override) => override.matcher.options === name)
+      ?.properties.find((property) => property.id === "unit")?.value;
+  assert.equal(panel.fieldConfig.defaults.unit, "none");
+  assert.equal(unitOf("Used %"), "percent");
+
+  const namespaceVariable = dashboard.templating.list.find(
+    (variable) => variable.name === "namespace",
+  );
+  assert.match(namespaceVariable.query.query, /hami_resource_quota_used/);
+});
+
+test("MIG table joins each instance with its pod on mig_uuid", () => {
+  const panel = panelByTitle("MIG inventory and allocation");
+  assert.equal(panel.type, "table");
+  assert.equal(
+    panel.targets[0].expr,
+    'hami_node_gpu_mig_instance_info{node=~"$node"} * on (mig_uuid) group_left(namespace, pod, container) hami_mig_device_info{namespace=~"$namespace"}',
+  );
+
+  const namespaceVariable = dashboard.templating.list.find(
+    (variable) => variable.name === "namespace",
+  );
+  assert.match(namespaceVariable.query.query, /hami_mig_device_info/);
+});
+
+test("MIG profile panel counts in-use instances for the selected nodes and namespaces", () => {
+  const panel = panelByTitle("In-use MIG instances by profile");
+  assert.equal(panel.type, "bargauge");
+  assert.equal(panel.targets[0].instant, true);
+  assert.equal(
+    panel.targets[0].expr,
+    'count by (profile) (hami_node_gpu_mig_instance_info{node=~"$node"} * on (mig_uuid) group_left (namespace) hami_mig_device_info{namespace=~"$namespace"})',
+  );
+});
+
+test("core panel compares used with allocated cores per pod on a 0-100 scale", () => {
+  const panel = panelByTitle("vGPU cores: used vs allocated");
+  assert.equal(panel.type, "timeseries");
+  assert.deepEqual(
+    panel.targets.map((target) => target.expr),
+    [
+      'sum by (device_uuid, namespace, pod) (hami_container_device_utilization_ratio{namespace=~"$namespace"})',
+      'sum by (device_uuid, namespace, pod) (hami_vgpu_core_allocated_ratio{namespace=~"$namespace"})',
+    ],
+  );
+  assert.equal(panel.fieldConfig.defaults.unit, "percent");
+  assert.equal(panel.fieldConfig.defaults.min, 0);
+  assert.equal(panel.fieldConfig.defaults.max, 100);
 });

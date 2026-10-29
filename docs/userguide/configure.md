@@ -1,157 +1,283 @@
 ---
-title: Global Config
+title: Configuration
 sidebar_label: Configuration
 ---
 
-## Device Configs: ConfigMap
+This guide covers common HAMi settings and where to change them. For the complete list of parameters, defaults, and constraints, use the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values). Configuration examples are available in [values.yaml](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/values.yaml).
 
-:::note
+| Configuration scope | Where to configure it |
+| --- | --- |
+| [Scheduler and supporting components](#scheduler-configuration) | Helm values such as `scheduler.*` |
+| [Vendor device plugins and device parameters](#device-configuration) | Helm values under `devicePlugin.*` and `devices.<vendor>.*`, plus separately deployed vendor plugin configurations |
+| [Node ConfigMap](#node-configuration) | `devicePlugin.nodeConfiguration` |
+| [Pod labels and annotations](#pod-configuration) | The workload Pod's `metadata` |
+| [Container environment variables](#container-environment) | The workload container's `env` |
 
-All the configurations listed below are managed within the hami-scheduler-device ConfigMap.
-
-:::
-
-You can update these configurations using one of the following methods:
-
-1. Directly edit the ConfigMap: If HAMi has already been successfully installed, you can manually update the hami-scheduler-device ConfigMap using the kubectl edit command.
-
-   ```bash
-   kubectl edit configmap hami-scheduler-device -n <namespace>
-   ```
-
-   After making changes, restart the related HAMi components to apply the updated configurations.
-
-2. Modify Helm Chart: Update the corresponding values in the [ConfigMap](https://raw.githubusercontent.com/Project-HAMi/HAMi/refs/heads/master/charts/hami/templates/scheduler/device-configmap.yaml), then reapply the Helm Chart to regenerate the ConfigMap.
-
-   | Argument | Type | Description | Default |
-   | --- | --- | --- | --- |
-   | `nvidia.deviceMemoryScaling` | Float | The ratio for NVIDIA device memory scaling, can be greater than 1 (enables virtual device memory, experimental feature). For an NVIDIA GPU with _M_ memory, if set to _S_, vGPUs split from this GPU will get `S * M` memory in Kubernetes. | `1` |
-   | `nvidia.deviceSplitCount` | Integer | Maximum jobs assigned to a single GPU device. | `10` |
-   | `nvidia.migstrategy` | String | "none" for ignoring MIG features, "mixed" for allocating MIG devices by separate resources. | `"none"` |
-   | `nvidia.disablecorelimit` | String | "true" to disable core limit, "false" to enable core limit. | `"false"` |
-   | `nvidia.defaultMemory` | Integer | The default device memory of the current job, in MB. '0' means using 100% of the device memory. | `0` |
-   | `nvidia.defaultCores` | Integer | Percentage of GPU cores reserved for the current job. `0` allows any GPU with enough memory; `100` reserves the entire GPU exclusively. | `0` |
-   | `nvidia.defaultGPUNum` | Integer | Default number of GPUs. If set to `0`, it will be filtered out. If `nvidia.com/gpu` is not set in the pod resource, the webhook checks `nvidia.com/gpumem`, `resource-mem-percentage`, and `nvidia.com/gpucores`, adding `nvidia.com/gpu` with this default value if any of them are set. | `1` |
-   | `nvidia.memoryFactor` | Integer | During resource requests, the actual value of `nvidia.com/gpumem` will be multiplied by this factor. If `mock-device-plugin` is deployed, the actual value `nvidia.com/gpumem` in `node.status.capacity` will also be amplified by the corresponding multiple. | `1` |
-   | `nvidia.resourceCountName` | String | vGPU number resource name. | `"nvidia.com/gpu"` |
-   | `nvidia.resourceMemoryName` | String | vGPU memory size resource name. | `"nvidia.com/gpumem"` |
-   | `nvidia.resourceMemoryPercentageName` | String | vGPU memory fraction resource name. | `"nvidia.com/gpumem-percentage"` |
-   | `nvidia.resourceCoreName` | String | vGPU core resource name. | `"nvidia.com/gpucores"` |
-   | `nvidia.resourcePriorityName` | String | vGPU job priority name. | `"nvidia.com/priority"` |
-
-## Node Configs: ConfigMap
-
-HAMi allows configuring per-node behavior for device plugin. Edit the ConfigMap:
-
-```sh
-kubectl -n <namespace> edit cm hami-device-plugin
-```
-
-- `name`: Name of the node, or `"*"`. `"*"` is used as a fallback when no node name or label selector matches. It is not a wildcard.
-- `nodelabelselector`: Kubernetes label selector for matching nodes. Supports matchLabels and matchExpressions. Specify either name or `nodelabelselector` for each entry, not both.
-- `operatingmode`: Operating mode of the node, can be "hami-core" or "mig", default: "hami-core".
-- `devicememoryscaling`: Overcommit ratio of device memory.
-- `devicecorescaling`: Overcommit ratio of device core.
-- `devicesplitcount`: Allowed number of tasks sharing a device.
-- `filterdevices`: Devices that are not registered to HAMi.
-  - `uuid`: UUIDs of devices to ignore
-  - `index`: Indexes of devices to ignore.
-  - A device is ignored by HAMi if it is in the `uuid` or `index` list.
-
-### Which entries apply to a node
-
-The device plugin checks for matching entries in this order:
-
-1. Entries whose `name` equals the node name.
-2. If there are none, every entry whose `nodelabelselector` matches the node labels.
-3. If there are none, entries whose `name` is `"*"`.
-4. Otherwise, the global settings in Device Configs above.
-
-If more than one entry matches in step 1, 2, or 3, they are applied in list order. A later entry overrides only the fields it sets.
-
-However, for resource settings (`devicesplitcount`, `devicememoryscaling`, etc.), null, 0, and false do not override non-zero values or true from earlier entries. Empty `operatingmode` and `filterdevices` values are also ignored.
-
-Entries that set both `name` and `nodelabelselector`, or neither of them, and entries with an empty or invalid selector, are ignored and an error is logged. If config.json fails to load (e.g. invalid value type), no entries are applied and an error is logged.
-
-:::note
-
-The device plugin reads node labels when it starts. If you change the labels later, restart the device plugin. Select labels that the node has from the moment it registers, such as labels set by a node group or by kubelet `--node-labels`. Avoid labels that a controller adds after the node registers.
-
-:::
-
-In the example below, nodes labeled `gpu.example.com/pool=mig` use mig mode. Nodes with model t4 or l4 use hami-core mode with a split count of 4. All other nodes use a split count of 10.
-
-If a node has both labels, both entries are applied in list order. The later entry overrides the settings, so it uses hami-core mode with a split count of 4.
-
-This JSON goes into the `config.json` key of the device plugin ConfigMap. For Helm, set it under `devicePlugin.nodeConfiguration.config`.
-
-<!-- prettier-ignore -->
-```json
-{
-  "nodeconfig": [
-    {
-      "nodelabelselector": {
-        "matchLabels": {
-          "gpu.example.com/pool": "mig"
-        }
-      },
-      "operatingmode": "mig"
-    },
-    {
-      "nodelabelselector": {
-        "matchExpressions": [
-          {
-            "key": "gpu.example.com/model",
-            "operator": "In",
-            "values": [
-              "t4",
-              "l4"
-            ]
-          }
-        ]
-      },
-      "operatingmode": "hami-core",
-      "devicesplitcount": 4
-    },
-    {
-      "name": "*",
-      "devicesplitcount": 10
-    }
-  ]
-}
-```
-
-## Chart Configs: arguments
-
-You can customize your vGPU support by setting the following arguments using `--set`, for example
+This page describes the Next development version, and the source links above point to the development branch. For a released chart, select the matching documentation version and inspect that chart's defaults:
 
 ```bash
-helm install hami hami-charts/hami --set devicePlugin.deviceMemoryScaling=5 -n kube-system
+helm show values hami-charts/hami --version <chart-version>
 ```
 
-| Argument | Type | Description | Default |
-| --- | --- | --- | --- |
-| `devicePlugin.service.schedulerPort` | Integer | Scheduler webhook service nodePort. | `31998` |
-| `scheduler.defaultSchedulerPolicy.nodeSchedulerPolicy` | String | GPU node scheduling policy: `"binpack"` allocates jobs to the same GPU node as much as possible. `"spread"` allocates jobs to different GPU nodes as much as possible. | `"binpack"` |
-| `scheduler.defaultSchedulerPolicy.gpuSchedulerPolicy` | String | GPU scheduling policy: `"binpack"` allocates jobs to the same GPU as much as possible. `"spread"` allocates jobs to different GPUs as much as possible. `"mutex"` allocates jobs only to GPUs with no other workloads. | `"spread"` |
-| `devicePlugin.deviceListStrategy` | String | Controls how the device plugin advertises allocated GPU devices to the container runtime: `"envvar"` (via `NVIDIA_VISIBLE_DEVICES`), `"volume-mounts"` (via mounted files, avoids env-var override risk in multi-tenant clusters), or `"cdi-annotations"` (via CDI annotations). | `"envvar"` |
+Merge the settings you need into `my-values.yaml` and pass it to Helm with `--values my-values.yaml`. Maps support partial overrides; lists are replaced in full. When combining examples, keep only one occurrence of each top-level key. See [Installation](../installation/online-installation.md) for a new deployment and [Upgrade](../installation/upgrade.md) for configuration changes to an existing deployment.
 
-## Pod Configs: Annotations
+## Scheduler and supporting components: Chart values {#scheduler-configuration}
 
-| Argument | Type | Description | Example |
-| --- | --- | --- | --- |
-| `nvidia.com/use-gpuuuid` | String | If set, devices allocated by this pod must be one of the UUIDs defined in this string. | `"GPU-AAA,GPU-BBB"` |
-| `nvidia.com/nouse-gpuuuid` | String | If set, devices allocated by this pod will NOT be in the UUIDs defined in this string. | `"GPU-AAA,GPU-BBB"` |
-| `nvidia.com/nouse-gputype` | String | If set, devices allocated by this pod will NOT be in the types defined in this string. | `"Tesla V100-PCIE-32GB, NVIDIA A10"` |
-| `nvidia.com/use-gputype` | String | If set, devices allocated by this pod MUST be one of the types defined in this string. | `"Tesla V100-PCIE-32GB, NVIDIA A10"` |
-| `hami.io/node-scheduler-policy` | String | GPU node scheduling policy: `"binpack"` allocates the pod to used GPU nodes for execution. `"spread"` allocates the pod to different GPU nodes for execution. | `"binpack"` or `"spread"` |
-| `hami.io/gpu-scheduler-policy` | String | GPU scheduling policy: `"binpack"` allocates the pod to the same GPU card for execution. `"spread"` allocates the pod to different GPU cards for execution. `"mutex"` allocates the pod only to a GPU card with no other workloads, giving it exclusive use of that card. | `"binpack"`, `"spread"` or `"mutex"` |
-| `hami.io/device-scoring-weights` | String | Relative weights of virtual-device slot, device-core, and device-memory utilization in physical-device scoring. All three weights are required, must be non-negative integers, and at least one must be positive. | `"slot=1,core=1,memory=3"` |
-| `nvidia.com/vgpu-mode` | String | The type of vGPU instance this pod wishes to use. | `"hami-core"` or `"mig"` |
+Common scheduler changes include placement, replica count, and default scheduling policies. For example, deploy two replicas on nodes labeled `hami.io/scheduler=true`:
 
-## Container Configs: Env
+```yaml
+scheduler:
+  nodeSelector:
+    hami.io/scheduler: "true"
+  leaderElect: true
+  replicas: 2
+  defaultSchedulerPolicy:
+    nodeSchedulerPolicy: binpack
+    gpuSchedulerPolicy: spread
+```
 
-| Argument | Type | Description | Default |
-| --- | --- | --- | --- |
-| `GPU_CORE_UTILIZATION_POLICY` | String | Defines GPU core utilization policy: <ul><li>`"default"`: Default utilization policy.</li><li>`"force"`: Limits core utilization below `"nvidia.com/gpucores"`.</li><li>`"disable"`: Ignores the utilization limitation set by `"nvidia.com/gpucores"` during job execution.</li></ul> | `"default"` |
-| `CUDA_DISABLE_CONTROL` | Boolean | If `"true"`, HAMi-core will not be used inside the container, leading to no resource isolation and limitation (for debugging purposes). | `false` |
+Multiple replicas require `leaderElect` and enough matching nodes and resources. `nodeSelector` controls where scheduler Pods run; it does not select nodes for GPU workloads.
+
+### Default scheduling policies {#scheduling-policies}
+
+`nodeSchedulerPolicy` controls node selection and defaults to `binpack`. `gpuSchedulerPolicy` controls device selection within a node and defaults to `spread`. `binpack` favors consolidation, while `spread` favors distribution. Pod annotations can override these defaults. For other policies and combinations, see [Scheduling policies](./nvidia-device/scheduling-policy.md).
+
+Images, CPU and memory resources, webhook scope, certificates, service ports, and monitoring can usually keep their defaults. When changes are needed, look up `global.*`, `scheduler.*`, and `prometheus.*` in the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values).
+
+### Scheduler profiling {#scheduler-profiling}
+
+To investigate performance issues, append `--profiling` to `scheduler.extender.extraArgs`. The list is replaced in full, so preserve any other arguments used by your deployment:
+
+```yaml
+scheduler:
+  profilingBindAddress: "127.0.0.1:6060"
+  extender:
+    extraArgs:
+      - --debug
+      - -v=4
+      - --profiling
+```
+
+After the configuration takes effect, the scheduler serves pprof over dedicated HTTP on `127.0.0.1:6060`. pprof has no authentication: keep the loopback binding and access it through port forwarding. Replace `<namespace>` with the HAMi namespace and `<scheduler-pod>` with the target scheduler Pod name:
+
+```bash
+kubectl -n <namespace> port-forward pod/<scheduler-pod> 6060:6060
+```
+
+Keep port forwarding running and execute these commands in a local terminal with [Go installed](https://go.dev/doc/install):
+
+```bash
+# Capture a 120-second CPU profile
+go tool pprof 'http://127.0.0.1:6060/debug/pprof/profile?seconds=120'
+# Inspect heap memory still in use as of the most recent garbage collection
+go tool pprof http://127.0.0.1:6060/debug/pprof/heap
+# Inspect cumulative allocations since process startup
+go tool pprof http://127.0.0.1:6060/debug/pprof/allocs
+```
+
+Each command opens the pprof interactive shell; use `top` to inspect hotspots and `quit` to exit. See [Profiling the scheduler](../developers/profiling-scheduler.md) for source inspection and analysis examples.
+
+## Vendor device plugins and device parameters: Chart values {#device-configuration}
+
+`devicePlugin.*` manages the **NVIDIA device plugin and vGPU monitor** deployed by the HAMi chart. `devices.<vendor>.*` configures vendor scheduling support and device parameters; these settings do not imply that the chart deploys the corresponding vendor plugin.
+
+### NVIDIA
+
+Common changes include plugin placement, RuntimeClass, and the number of containers that can share a GPU. For example, use an existing `nvidia` RuntimeClass, deploy the plugin on nodes labeled `gpu=on`, and allow up to `20` containers to share each GPU:
+
+```yaml
+devicePlugin:
+  enabled: true
+  nvidiaNodeSelector:
+    gpu: "on"
+devices:
+  nvidia:
+    runtimeClassName: nvidia
+    deviceSplitCount: 20
+```
+
+Prepare the RuntimeClass and drivers according to [Prerequisites](../installation/prerequisites.md). Other common sharing parameters are under `devices.nvidia`:
+
+| Field | Default | Purpose |
+| --- | --- | --- |
+| `deviceSplitCount` | `10` | Maximum number of containers sharing each physical GPU. MIG mode is limited by actual instance capacity. |
+| `deviceMemoryScaling` | `1` | Multiplier for advertised GPU memory. Values above `1` allow memory overcommit without increasing physical memory. Does not apply to MIG. |
+| `defaultMemory` | `0` | Default memory per GPU, in MiB, when neither absolute nor percentage memory has a positive request. `0` allocates the full GPU memory. |
+| `defaultCores` | `0` | Default core percentage when no core request is specified. `0` reserves no cores. With the webhook enabled, whole-GPU requests that omit memory or request all memory receive a `100` (100%) core request. |
+
+For driver paths, plugin images, monitoring, cache cleanup, and other sharing parameters, consult `devicePlugin.*` and `devices.nvidia.*` in the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values). See [Dynamic MIG support](./nvidia-device/dynamic-mig-support.md) and [NUMA alignment](./nvidia-device/numa-alignment.md) for those configurations.
+
+#### vGPU cache garbage collection {#vgpu-cache-garbage-collection}
+
+The NVIDIA device plugin automatically removes vGPU caches left by deleted Pods. `devicePlugin.vgpuCache.gracePeriod` defaults to `5m`: a cache directory must be at least this old, measured from its last modification time, before cleanup. Use durations such as `30s`, `5m`, or `1h` when an override is needed.
+
+`0s` removes only the age grace period; deletion still requires confirmation from the API server that the Pod no longer exists. It neither disables cleanup nor guarantees immediate deletion. This setting is independent of the GC scan interval and the monitor's `HAMI_RESYNC_INTERVAL`, which controls Pod cache resync and the grace period for removing stale memory mappings. See the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values) for all constraints.
+
+### Other vendors
+
+Other vendor plugins generally require a separate deployment. The table below lists their HAMi chart configuration prefixes. Use the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values) for field definitions and the corresponding device guide for the plugin's own images, arguments, and node configuration.
+
+| Vendor and device guide | HAMi chart configuration prefix |
+| --- | --- |
+| [Ascend](./ascend-device/enable-ascend-sharing.md) | `devices.ascend.*` |
+| [Cambricon](./cambricon-device/enable-cambricon-mlu-sharing.md) | `devices.cambricon.*` |
+| [Hygon](./hygon-device/enable-hygon-hcu-sharing.md) | `devices.hygon.*` |
+| [MThreads](./mthreads-device/enable-mthreads-gpu-sharing.md) | `devices.mthreads.*` |
+| [Iluvatar](./iluvatar-device/enable-iluvatar-gpu-sharing.md) | `devices.iluvatar.*` |
+| [MetaX](./metax-device/metax-sgpu/enable-metax-gpu-sharing.md) | `devices.metax.*` |
+| [Enflame](./enflame-device/enable-enflame-gcu-sharing.md) | `devices.enflame.*` |
+| [Kunlunxin](./kunlunxin-device/enable-kunlunxin-schedule.md) | `devices.kunlun.*` |
+| [AMD](./amd-device/enable-amd-gpu-sharing.md) | `devices.amd.*` |
+| [AWS Neuron prerequisites](../installation/prerequisites.md#device-prerequisites) | `devices.awsneuron.*` |
+| [Vastai](./vastai/enable-vastai-sharing.md) | `devices.vastai.*` |
+| [Biren](./biren-device/enable-biren-sharing.md) | `devices.biren.*` |
+
+For example, an Ascend-only cluster can disable the NVIDIA plugin and enable Ascend scheduling support:
+
+```yaml
+devicePlugin:
+  enabled: false
+devices:
+  ascend:
+    enabled: true
+```
+
+This does not deploy the Ascend plugin; install it separately using the device guide. When changing vendor resource names or chip definitions, also check `customresources` so HAMi, the vendor plugin, and workload Pods use consistent resource names. Device model and template lists are replaced in full, not merged by model.
+
+### Device ConfigMap generation and updates {#device-config-overrides}
+
+With the default release name `hami`, the chart writes global device parameters to `device-config.yaml` in the `hami-scheduler-device` ConfigMap.
+
+:::warning Do not manually edit the global device ConfigMap
+
+Do not edit the global `device-config.yaml` through `kubectl edit`, `kubectl patch`, or a cluster management UI. Change `devices.<vendor>.*` in Helm values, then update the deployment through Helm.
+
+Manual edits do not update Helm values or trigger the component rollouts associated with chart configuration changes. A later Helm upgrade or rollback may also overwrite those edits.
+
+:::
+
+To replace the complete file, use `device-config.content` as described in the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values). It does not merge with `devices.*`. Keep resource names consistent, because kube-scheduler's extender resource list is still generated from values.
+
+Changing the generated device configuration through Helm updates the scheduler and NVIDIA plugin Pod templates. The default `RollingUpdate` strategy updates plugin Pods automatically; with `OnDelete`, delete the old Pods manually. Separately deployed vendor plugins follow their own update procedures.
+
+## Node ConfigMap configuration {#node-configuration}
+
+NVIDIA node configuration overrides operating modes, sharing parameters, and device filters for specific nodes. It uses a different ConfigMap from the global device configuration:
+
+| ConfigMap with the default release name | Data key | Configuration source |
+| --- | --- | --- |
+| `hami-scheduler-device` | `device-config.yaml` | Global chart values such as `devices.*` |
+| `hami-device-plugin` | `config.json` | `devicePlugin.nodeConfiguration.config` |
+
+### Configure nodes through values
+
+The following is a simplified version of the [node configuration example in values.yaml](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/values.yaml). Replace `gpu-node-1` with the actual node name:
+
+```yaml
+devicePlugin:
+  nodeConfiguration:
+    config: |
+      {
+        "nodeconfig": [
+          {
+            "name": "gpu-node-1",
+            "operatingmode": "hami-core",
+            "devicesplitcount": 20,
+            "filterdevices": {
+              "uuid": [],
+              "index": []
+            }
+          }
+        ]
+      }
+```
+
+This example uses `hami-core` mode and allows up to `20` containers to share each GPU on the node. Add device UUIDs or indexes to `filterdevices.uuid` or `filterdevices.index` to exclude them. Devices matching either list are not registered with HAMi. Other parameters retain their global settings.
+
+`config` replaces the entire `config.json`; include multiple nodes in the same `nodeconfig` list. Matching precedence is: node name (`name`) → label selector (`nodelabelselector`) → `name: "*"` → global configuration. Each entry must specify either a name or a label selector. Multiple entries matching at the same level apply in list order; zero, `false`, and `null` resource values do not clear existing nonzero values or `true`.
+
+For more node fields, label selector examples, and override rules, see `devicePlugin.nodeConfiguration.config` in the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values) and its linked source example.
+
+### External ConfigMaps and reloading {#configuration-reload}
+
+If another operations tool manages node configuration, reference an existing ConfigMap through values:
+
+```yaml
+devicePlugin:
+  nodeConfiguration:
+    externalConfigName: hami-node-config
+```
+
+The ConfigMap must be in the same namespace as the plugin Pods and contain a `config.json` data entry. `externalConfigName` takes precedence over `config`.
+
+Changing only the node JSON or external ConfigMap contents **does not automatically update plugin Pods**. Changes to node labels also require a plugin restart to match the configuration again. With the default `RollingUpdate` strategy, run:
+
+```bash
+kubectl -n <namespace> rollout restart daemonset/hami-device-plugin
+kubectl -n <namespace> rollout status daemonset/hami-device-plugin --timeout=5m
+```
+
+Replace the resource name and namespace with those of your deployment. With `OnDelete`, delete the old plugin Pods manually during maintenance. Reloading node configuration does not mean that existing workload containers' resource limits have changed.
+
+## Pod configuration: labels and annotations {#pod-configuration}
+
+Set labels and annotations in the Pod's `metadata`. For Deployments, StatefulSets, Jobs, and similar workloads, use **`spec.template.metadata`**. Annotation values must be strings.
+
+| Location | Key | Purpose or example |
+| --- | --- | --- |
+| Label | `hami.io/webhook` | `"ignore"` skips the HAMi webhook, including automatic scheduler and device-default injection. |
+| Annotation | `hami.io/node-scheduler-policy` | `"binpack"` or `"spread"` overrides the global node policy. |
+| Annotation | `hami.io/gpu-scheduler-policy` | Overrides the device policy within a node, for example `"binpack"` or `"spread"`. |
+| Annotation | `nvidia.com/use-gpuuuid` / `nvidia.com/nouse-gpuuuid` | GPU UUIDs to allow or exclude, separated by commas. |
+| Annotation | `nvidia.com/use-gputype` / `nvidia.com/nouse-gputype` | GPU models to allow or exclude, such as `"A100,Tesla V100"`. |
+| Annotation | `nvidia.com/vgpu-mode` | Selects `"hami-core"` or `"mig"` mode. |
+| Annotation | `hami.io/overwrite-env` | `"true"` hides NVIDIA or Ascend devices from containers that request none, overriding the global default. |
+
+For example, this Deployment fragment prefers distributing Pods across nodes and selects A100 GPUs:
+
+```yaml
+spec:
+  template:
+    metadata:
+      annotations:
+        hami.io/node-scheduler-policy: "spread"
+        nvidia.com/use-gputype: "A100"
+    spec:
+      containers:
+        - name: worker
+          image: ubuntu:22.04
+          command: ["sleep", "infinity"]
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+              nvidia.com/gpumem: 4096
+              nvidia.com/gpucores: 50
+```
+
+The example assumes default resource names, `memoryFactor: 1`, and an enabled webhook. Replace the image and command with those of your workload. Resource quantities must still be requested in the container's `resources`; annotations do not replace resource requests.
+
+See [Scheduling policies](./nvidia-device/scheduling-policy.md) for additional policies and the vendor device guides for vendor-specific annotations. `nvidia.com/*` annotations do not apply to other vendors. HAMi components manage the device allocation and binding-status annotations they write; do not copy them to new Pods or edit them manually.
+
+## Container configuration: environment variables {#container-environment}
+
+These variables apply to **workload containers using NVIDIA HAMi-core mode**. Set them in the container's `env`, not in the plugin's `devicePlugin.extraEnvs`.
+
+| Environment variable | Purpose |
+| --- | --- |
+| `GPU_CORE_UTILIZATION_POLICY` | `default` enforces core limits based on competition on the GPU; `force` always enforces the requested core limit; `disable` disables runtime core limiting. Core values of `0` and `100` are not throttled. |
+| `CUDA_DISABLE_CONTROL` | `"true"` disables HAMi-core control and its runtime resource isolation and limits. Do not use it for shared workloads that depend on isolation. |
+| `LIBCUDA_LOG_LEVEL` | `"0"` and `"1"` log errors only; `"2"` adds warnings and messages, `"3"` adds info, and `"4"` adds debug logs. |
+
+For example, add the following settings to a workload container:
+
+```yaml
+env:
+  - name: GPU_CORE_UTILIZATION_POLICY
+    value: "force"
+  - name: LIBCUDA_LOG_LEVEL
+    value: "3"
+```
+
+This example assumes the global `devices.nvidia.gpuCorePolicy` remains `default`. If it is set to `force` or `disable`, the webhook injects the same environment variable, so inspect the admitted Pod configuration. Request GPU memory and cores through `resources.limits`; manually changing runtime limits does not update the scheduler's resource accounting.
+
+For global core policies, log levels, whole-GPU hook behavior, and limit delivery, see `devices.nvidia.*` and `devicePlugin.monitor.disableHAMiCoreForWholeGPU` in the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values). When starting processes through SSH, `su -`, or similar tools, keep the default `limitDelivery: file` so processes that do not inherit the container's environment can still read limits from the read-only file.
