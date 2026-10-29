@@ -10,8 +10,10 @@ HAMi 通过以下资源在 Pod 之间共享 AMD GPU（Radeon 和 Instinct）：
 
 - `amd.com/gpu`：GPU 数量
 - `amd.com/gpumem`：每张 GPU 的设备显存，单位 MiB
-- `amd.com/gpumem-percentage`：每张 GPU 的设备显存占其 VRAM 的百分比（1-100）；同时将 `amd.com/gpumem` 设置为大于 0 的整数时，显存申请量以 `amd.com/gpumem` 为准
+- `amd.com/gpumem-percentage`：每张 GPU 的设备显存占其 VRAM 的百分比（0-100）；同时将 `amd.com/gpumem` 设置为大于 0 的整数时，显存申请量以 `amd.com/gpumem` 为准
 - `amd.com/gpucores`：每张 GPU 的计算单元百分比（1-100）
+
+当 `amd.com/gpumem` 未设置或为 0 时，百分比 0 表示申请整卡显存。
 
 未申请显存和算力的 Pod 获得整张 GPU。只设置 `amd.com/gpumem-percentage` 的 Pod，webhook 会为它补上一张 GPU。
 
