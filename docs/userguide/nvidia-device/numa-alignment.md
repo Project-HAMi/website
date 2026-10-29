@@ -2,6 +2,10 @@
 title: Align GPU and CPU NUMA placement
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="numa" />
+
 On large multi-socket servers, CPUs communicate faster with GPUs attached to the same NUMA node. Kubelet's Topology Manager can align the CPUs and the vGPU replica it hands to a container, but until the NUMA refit landed, that could diverge from the GPU the HAMi scheduler had selected: the container ran on one GPU while HAMi's annotations and accounting recorded another.
 
 NUMA alignment closes that gap in two parts:

@@ -3,6 +3,10 @@ title: Allocate device memory to container
 sidebar_label: Allocate device memory
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features={["memMib", "memPercent"]} />
+
 Allocate a certain size of device memory by specifying resources such as `nvidia.com/gpumem`. This resource is optional. With the default `memoryFactor: 1`, each unit of `nvidia.com/gpumem` equals 1 MiB.
 
 Use a non-negative integer without suffixes such as `Mi`, `Gi`, or `G`. For example, request `16384` for 16 GiB with the default memory factor. Kubernetes quantity suffixes do not express HAMi memory units.

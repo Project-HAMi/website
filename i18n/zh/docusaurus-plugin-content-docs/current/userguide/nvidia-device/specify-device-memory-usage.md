@@ -4,6 +4,10 @@ sidebar_label: 指定显存
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features={["memMib", "memPercent"]} />
+
 通过指定资源如 `nvidia.com/gpumem` 来分配一定大小的设备显存。该资源为可选项。在默认配置 `memoryFactor: 1` 下，每个 `nvidia.com/gpumem` 单位等于 1 MiB。
 
 请使用非负整数，不要添加 `Mi`、`Gi` 或 `G` 等后缀。例如，在默认显存系数下，申请 16 GiB 应填写 `16384`。Kubernetes 的资源数量后缀不表示 HAMi 的显存单位。
