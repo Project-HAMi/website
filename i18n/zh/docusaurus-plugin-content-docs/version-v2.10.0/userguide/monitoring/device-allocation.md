@@ -24,7 +24,7 @@ curl {scheduler node ip}:31993/metrics
 | hami_vgpu_core_allocated_ratio | 分配给某个容器的 vGPU 核心数量 | `{container_index="Ascend310P",device_uuid="aio-node74-arm-Ascend310P-0",node="aio-node74-arm",pod="ascend310p-pod",namespace="default",zone="vGPU"}` 50 |
 | hami_vgpu_memory_allocated_bytes | 分配给某个容器的 vGPU 显存 | `{container_index="Ascend310P",device_uuid="aio-node74-arm-Ascend310P-0",node="aio-node74-arm",pod="ascend310p-pod",namespace="default",zone="vGPU"}` 3.221225472e+09 |
 | hami_resource_quota_used | resourcequota 的使用情况 | `{quota_name="nvidia.com/gpucores", namespace="default",limit="200",zone="vGPU"}` 100 |
-| hami_resource_quota_limit | resourcequota 的限额 | `{quota_name="nvidia.com/gpucores", namespace="default",zone="vGPU"}` 200 |
+| hami_resource_quota_limit | resourcequota 的限额（仅在配额设置了限额时暴露） | `{quota_name="nvidia.com/gpucores", namespace="default",zone="vGPU"}` 200 |
 
 如果你在使用 [HAMi DRA](../../installation/how-to-use-hami-dra), 它将暴露如下指标 :
 
