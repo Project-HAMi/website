@@ -65,6 +65,7 @@
   "devDependencies": {
     "@docusaurus/faster": "^3.10.1",
     "@swc/core": "^1.16.20",
+    "js-yaml": "^4.3.2",
     "markdownlint-cli": "^0.50.0",
     "prettier": "^3.9.10",
     "swc-loader": "^0.2.7"
@@ -94,6 +95,6 @@
       "tinypool": "2.2.0"
     },
     "postcss-selector-parser": "7.1.6",
-    "js-yaml": "4.3.2"
+    "js-yaml": "$js-yaml"
   }
 }
