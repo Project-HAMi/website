@@ -16,6 +16,8 @@ sidebar_label: 实时用量
 
 需要 NVIDIA 硬件遥测时，可按该指南添加 DCGM Exporter。其他厂商的设备插件和监控组件需单独部署，使用对应厂商的监控说明。
 
+使用 Lupine 远程 GPU 时，请参阅[远程 GPU 监控](../nvidia-device/remote-gpu-monitoring.md)，了解监控端点和支持的指标。
+
 ## 查看资源分配
 
 以下示例使用 NVIDIA 默认资源名称。将命名空间、Pod、容器和节点名称替换为实际值。

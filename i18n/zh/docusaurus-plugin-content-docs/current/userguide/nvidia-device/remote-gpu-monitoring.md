@@ -36,14 +36,6 @@ curl -fsS http://127.0.0.1:31993/metrics | grep -E '^hami_(remote_gpumonitor_col
 
 ## 指标
 
-本地和远程 monitor 使用相同的指标名称、HELP 文本、单位和标签，并附加 `zone="vGPU"`。
+远程监控支持[实时设备使用情况](../monitoring/real-time-device-usage.md#hami)中列出的主机显存和利用率指标，以及容器显存、显存限额和 SM 利用率指标。这些指标与本地 monitor 使用相同的名称、单位和标签，并附加 `zone="vGPU"`。远程 monitor 不提供该页面列出的部分其他指标，例如显存控制器利用率和最近内核时间。
 
-| 指标 | 标签 | 单位 |
-| --- | --- | --- |
-| `hami_host_gpu_memory_used_bytes` | node、device_index、device_uuid、device_type | 字节 |
-| `hami_host_gpu_utilization_ratio` | node、device_index、device_uuid、device_type | 0–100 百分比 |
-| `hami_vgpu_memory_used_bytes` | namespace、pod、container、vdevice_index、device_uuid | 字节 |
-| `hami_container_device_memory_bytes` | 相同的容器标签 | 字节 |
-| `hami_vgpu_memory_limit_bytes` | 相同的容器标签 | 字节 |
-| `hami_container_device_utilization_ratio` | 相同的容器标签 | 0–100 百分比 |
-| `hami_remote_gpumonitor_collect_success` | node | 成功为 1，失败为 0 |
+远程 monitor 还提供带 `node` 标签的 `hami_remote_gpumonitor_collect_success`：`1` 表示采集和归属成功，`0` 表示采集失败。
