@@ -46,7 +46,7 @@ The session showed how the HAMi components close that gap: the mutating webhook 
 
 ## Will Everyone Build an AI Factory?
 
-Saiyam Pathak (vCluster Labs) explored the path from a single GPU on a personal computer to an enterprise AI Factory. His live demo ran multiple teams' isolated Kubernetes clusters and inference workloads on the same GPU, using open source projects including vCluster and HAMi.
+Saiyam Pathak (vCluster Labs) explored the path from a single GPU on a personal computer to an enterprise AI Factory. His live demo ran multiple teams' isolated Kubernetes clusters and inference workloads on the same GPU, using open-source projects including vCluster and HAMi.
 
 ![Saiyam Pathak presenting on AI Factory architecture](/img/containerdays-singapore-2026-recap/saiyam-pathak.jpg)
 
@@ -54,7 +54,7 @@ The takeaway: an AI Factory is not just a pile of GPUs. It is a software platfor
 
 ## From Cloud-Native to AI-Native
 
-Xu Chen (DaoCloud) discussed Southeast Asia's shift from cloud-native application modernization toward AI-native platforms, covering open cloud-native AI platforms and the role of open source ecosystems. HAMi was included in the stack as the project for sharing and managing heterogeneous compute devices in Kubernetes, alongside other cloud-native components for AI workloads.
+Xu Chen (DaoCloud) discussed Southeast Asia's shift from cloud-native application modernization toward AI-native platforms, covering open cloud-native AI platforms and the role of open-source ecosystems. HAMi was included in the stack as the project for sharing and managing heterogeneous compute devices in Kubernetes, alongside other cloud-native components for AI workloads.
 
 ![Xu Chen presenting on cloud-native to AI-native transformation](/img/containerdays-singapore-2026-recap/xu-chen.jpg)
 

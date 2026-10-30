@@ -18,7 +18,7 @@ Workshop **From Zero to Shared GPUs: Hands-on GPU Scheduling in Kubernetes with 
 
 ![ContainerDays 新加坡 2026 的 Workshop 现场](/img/containerdays-singapore-2026-recap/workshop-demo.jpg)
 
-一组实验直观展示了调度中的关键问题：三个各申请 15,000 MB 显存与 30% 计算资源的 Pod 被分配到两张模拟 GPU 上，而一个申请 45,000 MB 显存的 Pod 始终处于 Pending 状态。即使两张卡的剩余显存之和能够满足请求，调度器也必须判断单张设备能否满足任务需求，而不仅是检查节点的空闲容量。
+一组实验直观展示了调度中的关键问题：三个各申请 15,000 MB 显存与 30% 计算资源的 Pod 被分配到两张模拟 GPU 上，而一个申请 45,000 MB 显存的 Pod 始终处于 Pending 状态。即使两张卡的剩余显存之和能够满足请求，调度器也必须判断单个设备能否满足任务需求，而不仅是检查节点的空闲容量。
 
 实验随后对比了 **binpack** 与 **spread** 两种放置策略的效果，并介绍了 HAMi 与 **KAI Scheduler**、**Volcano** 以及 **Kubernetes DRA** 的协作方式：无论选择哪种调度体系，都可以由 HAMi-core 提供运行时资源限制。模拟 GPU 适合验证调度逻辑，运行时隔离仍需在真实硬件上验证。
 
