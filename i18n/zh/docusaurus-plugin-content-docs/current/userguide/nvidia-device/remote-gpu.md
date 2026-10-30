@@ -89,7 +89,7 @@ kubectl logs remote-gpu-pod -c cuda-container
 kubectl delete -f examples/remotegpu/default_use.yaml
 ```
 
-示例使用 `nvidia/cuda:13.0.2-devel-ubuntu24.04`，请求两张远程 GPU，每张限额 3000 MiB。程序编译 `sm_80` 内核，并检查每张 GPU 计算 `35 + 7` 都返回 `42`。更换 GPU 代际时需要调整编译架构。此处通过实际计算检查功能；未注入驱动时该镜像不包含 `nvidia-smi`。
+示例使用 `nvidia/cuda:13.0.2-devel-ubuntu24.04`，请求两张远程 GPU，每张限额 3000 MiB。程序编译 `sm_80` 内核，并检查每张 GPU 计算 `35 + 7` 都返回 `42`。更换 GPU 代际时需要调整编译架构。此处通过实际计算检查远程 CUDA 调用；启用自动客户端库交付时，HAMi 还会交付兼容 Lupine 的 `nvidia-smi`。
 
 ## 运行 vLLM 示例
 
@@ -133,7 +133,7 @@ kubectl delete -f examples/remotegpu/vllm_deployment.yaml
 
 HAMi 添加 `hami-lupine-client` init container 和存放客户端库的 `emptyDir`。完整库目录位于 `/opt/lupine/lib`。CUDA/NVML 库和 `libnghttp2.so.14` 以单文件方式挂载到 `/usr/local/nvidia/lib64`，该目录已经在示例镜像的库搜索路径中。目录内其他文件会保留，HAMi 不注入或修改 `LD_LIBRARY_PATH`。
 
-客户端镜像必须包含 `/opt/lupine/lib`、`sh` 和 `cp`。init container 从 Debian/Ubuntu multiarch 目录或常见的 `/usr/lib64`、`/lib64`、`/usr/lib`、`/lib` 查找 `libnghttp2.so.14`，缺失时会报错并初始化失败。这用于补齐示例中已知缺失的依赖，并不打包全部依赖；工作负载镜像仍需提供兼容的 glibc、OpenSSL 和 libstdc++。
+客户端镜像必须包含 `/opt/lupine/lib`、`sh`、`cp` 和 `nvidia-smi`。HAMi 在 `/usr/bin/nvidia-smi` 挂载包装脚本，仅为该命令设置 `LD_LIBRARY_PATH`，以加载 Lupine NVML。init container 从 Debian/Ubuntu multiarch 目录或常见的 `/usr/lib64`、`/lib64`、`/usr/lib`、`/lib` 查找 `libnghttp2.so.14`，缺失时会报错并初始化失败。这用于补齐示例中已知缺失的依赖，并不打包全部依赖；工作负载镜像仍需提供兼容的 glibc、OpenSSL 和 libstdc++。
 
 启用显存限制时，另一个 init container 交付 HAMi-core，并将其加入 `LD_PRELOAD`。HAMi-core 将 CUDA 调用转发到 Lupine，后者按需加载。HAMi 还向远程 GPU 工作负载注入 `LUPINE_SERVER`、`LUPINE_WORKLOAD_ID` 和 `NVIDIA_VISIBLE_DEVICES=void`。
 

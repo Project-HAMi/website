@@ -20,7 +20,28 @@ devices:
           memory: 64Mi
 ```
 
+## 外部 Lupine 服务端
+
 对于外部管理的 Lupine 服务端，需要单独部署 monitor，并参照 `remotemonitorrole.yaml` 创建允许 `get`、`list`、`watch` Pod 的 ClusterRole，参照 `remotemonitor.yaml` 创建 ServiceAccount 和 ClusterRoleBinding。这些 chart 模板受 chart 管理服务端的配置条件控制：可启用相关设置来渲染模板，或自行创建等价资源。启动参数包括 `--node=<GPU 服务端节点名>`、`--lupine-metrics-url=http://<服务端>:<端口>/metrics` 和 `--metrics-bind-address=:31993`。chart 只为自身管理的服务端 DaemonSet 创建 monitor；使用 hostNetwork 时应确保监听端口空闲。
+
+## 验证采集
+
+对于安装在 `kube-system` 命名空间、名为 `hami` 的 release，检查服务端 Pod 和 monitor 容器：
+
+```bash
+kubectl get pods -n kube-system -l app.kubernetes.io/component=hami-lupine-server
+kubectl logs -n kube-system -l app.kubernetes.io/component=hami-lupine-server -c remote-gpu-monitor --tail=100
+kubectl port-forward -n kube-system service/hami-remote-monitor 31993:31993
+```
+
+在另一个终端查询 monitor：
+
+```bash
+curl -fsS http://127.0.0.1:31993/readyz
+curl -fsS http://127.0.0.1:31993/metrics | grep -E '^hami_(remote_gpumonitor_collect_success|vgpu_memory_used_bytes|container_device_utilization_ratio)'
+```
+
+如果命名空间、release 名或端口不同，请替换为实际配置。`hami_remote_gpumonitor_collect_success` 为 `1` 表示采集成功。启动远程 GPU 工作负载后可查看容器使用量；缺少使用指标不代表使用量为零。Prometheus 和 dashboard 配置请参考[实时 GPU 使用情况](../monitoring/real-time-usage.md)。
 
 ## 身份与归属
 
