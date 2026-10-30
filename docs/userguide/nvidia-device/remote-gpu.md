@@ -7,7 +7,7 @@ HAMi can schedule a workload on a client node while its CUDA calls execute on a 
 
 ## Prerequisites
 
-- Use a HAMi chart and images that include remote GPU client delivery. This guide describes the unreleased version; do not assume an older release includes these settings. See [Building HAMi](../../developers/build.md) when building from source.
+- Use a HAMi chart and images that include remote GPU client delivery. See [Building HAMi](../../developers/build.md) when building from source.
 - GPU server nodes need NVIDIA drivers and the NVIDIA container runtime. Workload client nodes must be separate from the GPU server nodes.
 - Client Pods must reach the server node's InternalIP over TCP, on port `14833` by default.
 - Enable the HAMi admission webhook and use compatible Lupine client/server builds and workload ABIs.
