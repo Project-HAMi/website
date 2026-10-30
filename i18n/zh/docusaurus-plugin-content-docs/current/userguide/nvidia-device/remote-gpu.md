@@ -146,3 +146,5 @@ hami.io/remote-gpu-client-injection: "disabled"
 此配置关闭该 Pod 的自动 Lupine 库交付。服务端地址、工作负载身份注入及已配置的 HAMi-core 显存限制仍然生效。关闭交付后，工作负载也需要自行提供上述 NCCL 显式挂载等配置所用的库。
 
 显存限额要求 Lupine 服务端支持客户端使用的 NVML RPC，包括 `nvmlDeviceGetProcessUtilization`，并使用包含 NVML 缺失符号保护的 HAMi-core（上游提交 `a3bae57` 或之后版本）。如果 `nvmlDeviceGetP2PStatus` 不可用，vLLM 可能记录 NVLink 检测错误后继续启动；应通过就绪状态和实际推理请求判断工作负载健康情况。
+
+容器和 GPU 指标请参阅[远程 GPU 监控](./remote-gpu-monitoring.md)。
