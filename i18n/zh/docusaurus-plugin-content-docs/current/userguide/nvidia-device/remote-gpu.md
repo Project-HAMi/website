@@ -7,7 +7,7 @@ HAMi 可以将工作负载调度到客户端节点，通过 [Lupine](https://git
 
 ## 前提条件
 
-- 使用包含远程 GPU 客户端自动交付功能的 HAMi chart 和镜像。本文对应未发布版本，旧版本可能不包含这些配置。源码构建请参考[构建 HAMi](../../developers/build.md)。
+- 使用包含远程 GPU 客户端自动交付功能的 HAMi chart 和镜像。源码构建请参考[构建 HAMi](../../developers/build.md)。
 - GPU 服务端节点需要 NVIDIA 驱动及 NVIDIA 容器运行时。运行工作负载的客户端节点与 GPU 服务端节点分离。
 - 客户端 Pod 能通过 TCP 访问服务端节点的 InternalIP 及配置端口，默认端口为 `14833`。
 - 启用 HAMi admission webhook，Lupine 客户端、服务端和工作负载 ABI 需要兼容。
