@@ -20,7 +20,28 @@ devices:
           memory: 64Mi
 ```
 
+## External Lupine servers
+
 For externally managed Lupine servers, deploy the binary separately with the read-only Pod RBAC based on `remotemonitorrole.yaml` (ClusterRole) and `remotemonitor.yaml` (ServiceAccount and ClusterRoleBinding). These chart templates are conditional on a chart-managed server, so render them with those settings enabled or create equivalent resources yourself. Pass `--node=<GPU server node>`, `--lupine-metrics-url=http://<server>:<port>/metrics` and `--metrics-bind-address=:31993`. The chart only creates monitors for its own server DaemonSet. The metrics listen port must be free on host-network nodes.
+
+## Verify collection
+
+For a release named `hami` in `kube-system`, check the server Pods and monitor container:
+
+```bash
+kubectl get pods -n kube-system -l app.kubernetes.io/component=hami-lupine-server
+kubectl logs -n kube-system -l app.kubernetes.io/component=hami-lupine-server -c remote-gpu-monitor --tail=100
+kubectl port-forward -n kube-system service/hami-remote-monitor 31993:31993
+```
+
+In another terminal, query the monitor:
+
+```bash
+curl -fsS http://127.0.0.1:31993/readyz
+curl -fsS http://127.0.0.1:31993/metrics | grep -E '^hami_(remote_gpumonitor_collect_success|vgpu_memory_used_bytes|container_device_utilization_ratio)'
+```
+
+Use the configured namespace, release name and port if they differ. A `hami_remote_gpumonitor_collect_success` value of `1` indicates a successful scrape. Start a remote GPU workload to see container usage; missing usage metrics do not mean zero usage. See [real-time GPU usage](../monitoring/real-time-usage.md) for Prometheus and dashboard guidance.
 
 ## Identity and attribution
 

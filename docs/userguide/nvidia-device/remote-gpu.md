@@ -89,7 +89,7 @@ kubectl logs remote-gpu-pod -c cuda-container
 kubectl delete -f examples/remotegpu/default_use.yaml
 ```
 
-The example uses `nvidia/cuda:13.0.2-devel-ubuntu24.04`, requests two remote GPUs and limits each to 3000 MiB. It compiles an `sm_80` kernel and checks that each GPU returns `42` for `35 + 7`. Change the compilation architecture when targeting a different GPU generation. GPU computation is the check; the image does not include `nvidia-smi` without driver injection.
+The example uses `nvidia/cuda:13.0.2-devel-ubuntu24.04`, requests two remote GPUs and limits each to 3000 MiB. It compiles an `sm_80` kernel and checks that each GPU returns `42` for `35 + 7`. Change the compilation architecture when targeting a different GPU generation. Use the computation result to verify the remote CUDA path. HAMi also delivers a Lupine-compatible `nvidia-smi` when automatic client library delivery is enabled.
 
 ## Run the vLLM example
 
@@ -133,7 +133,7 @@ This is a standard `volumeMounts` entry using `subPath: libnccl.so.2`, without a
 
 HAMi adds the `hami-lupine-client` init container and an `emptyDir` containing the client libraries. The full library directory is available at `/opt/lupine/lib`. Individual CUDA/NVML libraries and `libnghttp2.so.14` are mounted into `/usr/local/nvidia/lib64`, already present in the example images' library search paths. Other files in that directory are preserved. HAMi does not inject or change `LD_LIBRARY_PATH`.
 
-The client image must provide `/opt/lupine/lib`, `sh` and `cp`. The init container locates `libnghttp2.so.14` in Debian/Ubuntu multiarch directories or common `/usr/lib64`, `/lib64`, `/usr/lib` and `/lib` directories. A missing library fails initialization with a diagnostic. This accommodates known missing dependencies in the examples; it does not bundle every dependency. The workload image must still provide compatible glibc, OpenSSL and libstdc++.
+The client image must provide `/opt/lupine/lib`, `sh`, `cp` and `nvidia-smi`. HAMi mounts a wrapper at `/usr/bin/nvidia-smi`; the wrapper sets `LD_LIBRARY_PATH` for that command only so it can load Lupine NVML. The init container locates `libnghttp2.so.14` in Debian/Ubuntu multiarch directories or common `/usr/lib64`, `/lib64`, `/usr/lib` and `/lib` directories. A missing library fails initialization with a diagnostic. This accommodates known missing dependencies in the examples; it does not bundle every dependency. The workload image must still provide compatible glibc, OpenSSL and libstdc++.
 
 When memory enforcement is enabled, a separate init container delivers HAMi-core, which is added to `LD_PRELOAD`. HAMi-core forwards CUDA calls to Lupine, whose libraries load on demand. HAMi also supplies `LUPINE_SERVER`, `LUPINE_WORKLOAD_ID` and `NVIDIA_VISIBLE_DEVICES=void` to remote GPU workloads.
 
