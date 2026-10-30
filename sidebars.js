@@ -358,6 +358,8 @@ module.exports = {
   ]),
   nvidiaDevice: vendorSidebar("NVIDIA GPU", "nvidia", [
     ...vendorPages("nvidia-device", [
+      "remote-gpu",
+      "remote-gpu-monitoring",
       "specify-device-memory-usage",
       "specify-device-core-usage",
       "specify-device-type-to-use",

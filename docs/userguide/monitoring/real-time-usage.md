@@ -16,6 +16,8 @@ Follow the [Grafana dashboard guide](./grafana-dashboard.md) to configure Promet
 
 For NVIDIA hardware telemetry, optionally add DCGM Exporter as described in that guide. Other vendors' device plugins and monitors are deployed separately; use the monitoring instructions for the selected vendor.
 
+For Lupine-served GPUs, see [remote GPU monitoring](../nvidia-device/remote-gpu-monitoring.md) for its endpoint and supported metrics.
+
 ## Inspect allocations
 
 The following examples use NVIDIA's default resource names. Substitute the actual namespace, Pod, container, and node names.

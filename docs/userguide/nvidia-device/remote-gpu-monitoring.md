@@ -36,14 +36,6 @@ A `hami_remote_gpumonitor_collect_success` value of `1` indicates a successful s
 
 ## Metrics
 
-The local and remote monitors use the same metric names, HELP text, units and labels. Both attach `zone="vGPU"`.
+Remote monitoring supports the host memory and utilization metrics and the container memory, memory limit and SM utilization metrics listed in [real-time device usage](../monitoring/real-time-device-usage.md#hami). These metrics use the same names, units and labels as the local monitor and include `zone="vGPU"`. Other metrics on that page, such as memory controller utilization and last-kernel time, are not provided by the remote monitor.
 
-| Metric | Labels | Unit |
-| --- | --- | --- |
-| `hami_host_gpu_memory_used_bytes` | node, device_index, device_uuid, device_type | bytes |
-| `hami_host_gpu_utilization_ratio` | node, device_index, device_uuid, device_type | 0–100 percent |
-| `hami_vgpu_memory_used_bytes` | namespace, pod, container, vdevice_index, device_uuid | bytes |
-| `hami_container_device_memory_bytes` | same container labels | bytes |
-| `hami_vgpu_memory_limit_bytes` | same container labels | bytes |
-| `hami_container_device_utilization_ratio` | same container labels | 0–100 percent |
-| `hami_remote_gpumonitor_collect_success` | node | 1 for success, 0 for failure |
+The remote monitor also exposes `hami_remote_gpumonitor_collect_success`, with the `node` label: `1` means the scrape and attribution succeeded, and `0` means collection failed.

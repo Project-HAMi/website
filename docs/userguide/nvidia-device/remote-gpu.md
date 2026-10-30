@@ -14,6 +14,8 @@ HAMi can schedule a workload on a client node while its CUDA calls execute on a 
 
 Automatic library delivery currently targets the supplied amd64 Ubuntu 24.04 CUDA and vLLM example images. Other images may need additional integration; see [Library delivery and compatibility](#library-delivery-and-compatibility).
 
+For mirror selection and disconnected clusters, see [online installation](../../installation/online-installation.md) and [offline installation](../../installation/offline-installation.md).
+
 ## Configure the server
 
 Enable remote mode in the device plugin node configuration:

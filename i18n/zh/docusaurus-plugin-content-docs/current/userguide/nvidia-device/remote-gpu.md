@@ -14,6 +14,8 @@ HAMi 可以将工作负载调度到客户端节点，通过 [Lupine](https://git
 
 当前自动库交付面向仓库提供的 amd64 Ubuntu 24.04 CUDA/vLLM 示例镜像，其他镜像可能需要额外适配，详见[库交付与兼容性](#库交付与兼容性)。
 
+镜像源和离线部署的配置请参阅[在线安装](../../installation/online-installation.md)及[离线安装](../../installation/offline-installation.md)。
+
 ## 配置服务端
 
 在 device plugin 节点配置中启用远程功能：
