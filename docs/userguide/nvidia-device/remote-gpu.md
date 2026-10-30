@@ -146,3 +146,5 @@ hami.io/remote-gpu-client-injection: "disabled"
 This disables automatic Lupine library delivery for that Pod. Server endpoint injection, workload identity and configured HAMi-core memory enforcement still apply. Disabling delivery also means the workload must supply any libraries used by explicit mounts such as the NCCL mount above.
 
 GPU memory quotas require compatible Lupine NVML RPC support, including `nvmlDeviceGetProcessUtilization`, and HAMi-core with missing NVML symbol guards (upstream commit `a3bae57` or later). An unavailable `nvmlDeviceGetP2PStatus` can produce a vLLM NVLink detection error while startup continues; check readiness and an actual inference request to determine workload health.
+
+For container and GPU metrics, see [Remote GPU monitoring](./remote-gpu-monitoring.md).
