@@ -2,147 +2,294 @@
 title: 升级 HAMi
 ---
 
-## 概述
+:::warning 适用版本
 
-将 HAMi 升级到新版本需要谨慎操作，以避免影响 GPU 工作负载。本指南涵盖升级流程、兼容性注意事项以及最佳实践。
+本文仅适用于从 HAMi v2.10 升级到新版 Chart，不建议从其他版本直接按本文操作。如果当前使用的是更早版本，请先参考 [v2.10 升级文档](../../version-v2.10.0/installation/upgrade.md)，将 HAMi 升级至 v2.10，再按本文继续升级。
+
+:::
+
+## 升级影响
+
+:::info 现有工作负载与 HAMi-core
+
+HAMi 升级会替换 hami-scheduler 和 hami-device-plugin，并重新生成设备配置，**但不会影响正在运行的 GPU 工作负载，无需因此停止或迁移现有任务**。不过，正在使用 HAMi-core 的工作负载不会自动切换到新版本。HAMi-core 在 Pod 创建时注入，运行中的进程不会重新加载该库。需要使用新版 HAMi-core 的工作负载，应在升级完成后执行滚动重启或重新创建 Pod。
+
+:::
+
+:::warning 升级期间暂停提交新任务
+
+升级期间建议暂停提交新的 HAMi GPU 工作负载，待 hami-scheduler、hami-device-plugin 和 admission webhook 完成更新后再恢复。组件滚动切换时可能出现短暂不可用或配置版本不一致，新任务可能因此调度失败或注入异常。
+
+:::
+
+其他厂商的 device plugin 不在本文档讨论范围内，请参阅 [HAMi 支持的设备](../userguide/device-supported.md)。
 
 ## 升级前准备
 
-### 1. 检查兼容性
+### 配置变量
 
-确认目标 HAMi 版本与你当前的 Kubernetes 版本以及 NVIDIA 驱动兼容：
-
-```bash
-# 当前 HAMi 版本
-helm list -n kube-system | grep hami
-
-# Kubernetes 版本
-kubectl version --short
-
-# NVIDIA 驱动版本（在 GPU 节点上执行）
-nvidia-smi | grep "Driver Version"
-```
-
-### 2. 备份当前配置
-
-在可能需要回滚时，请保存当前 HAMi 配置：
+配置所需的变量来方便部署。接下来给出示例，请按照实际环境修改。
 
 ```bash
-# 备份当前 values
-helm get values hami -n kube-system > hami-backup-values.yaml
-
-# 备份 ConfigMap
-kubectl get configmap hami-scheduler-device -n kube-system -o yaml > hami-configmap-backup.yaml
-
-# 备份当前状态
-kubectl get all -n kube-system -l app.kubernetes.io/instance=hami -o yaml > hami-state-backup.yaml
+export namespace=kube-system
+export release=hami
+export hami_chart_dir="${HOME}/hami-upgrade/HAMi"
 ```
 
-### 3. 清理运行中的工作负载
+### 确认 HAMi 版本
 
-**关键提醒：** 升级前必须停止或重新调度所有 GPU 工作负载。在存在运行任务的情况下升级，可能导致段错误（segmentation fault）或不可预测行为。
-
-**优雅清理 GPU 工作负载：**
+升级前确认当前安装的是 HAMi 2.10：
 
 ```bash
-# 查找使用 GPU 的 Pod
-kubectl get pods --all-namespaces -o json | jq -r '.items[] | select(.spec.containers[]?.resources.limits | select(. != null) | select(has("nvidia.com/gpu"))) | "\(.metadata.namespace) \(.metadata.name)"'
-
-# 删除或重新调度这些 Pod
-kubectl delete pods <pod-name> -n <namespace> --grace-period=30
+helm list -n "${namespace}" --filter "^${release}$"
 ```
 
-或在可用情况下调度到非 GPU 节点：
+### 备份当前配置
+
+升级前保存当前 release 的用户配置：
 
 ```bash
-# 添加 nodeSelector 强制调度到非 GPU 节点
-kubectl patch deployment <deployment-name> -n <namespace> -p '{"spec":{"template":{"spec":{"nodeSelector":{"gpu":"false"}}}}}'
+helm get values "${release}" -n "${namespace}" -o yaml > previous-values.yaml
 ```
 
-### 4. 确认 HAMi 组件运行正常
+直接修改过的设备 ConfigMap 不会记录在 Helm values 中。升级前还应保存其中的 `data.device-config.yaml`，用于迁移手工修改和回滚后核对配置。
 
-升级前确认所有 HAMi 组件健康：
+以下命令以 `hami-scheduler-device` 为例；如果修改过 release 名称或名称覆盖配置，请替换为实际的 ConfigMap 名称：
 
 ```bash
-# 查看 Pod 状态
-kubectl get pods -n kube-system -l app.kubernetes.io/instance=hami
-
-# 查看错误日志
-kubectl logs -n kube-system -l app.kubernetes.io/component=hami-scheduler --tail=50
-kubectl logs -n kube-system -l app.kubernetes.io/component=hami-device-plugin --tail=50
+kubectl get configmap hami-scheduler-device -n "${namespace}" \
+  --allow-missing-template-keys=false \
+  -o jsonpath='{.data.device-config\.yaml}' > previous-device-config.yaml
 ```
 
-## 升级流程
+确认 `previous-device-config.yaml` 包含当前设备配置，并保留这份备份。迁移时只提取仍需保留的设置，不要将整份备份作为新版配置恢复。
 
-### 标准升级（推荐）
+### 获取 Chart
 
-大多数场景建议使用标准升级方式：
+包含迁移变更的 Chart 尚未发布到 Helm 仓库。请使用 HAMi 提交 [`bf61e91`](https://github.com/Project-HAMi/HAMi/commit/bf61e91763b51105f821c573002baca4e0025329) 或包含该变更的后续提交，以确保包含旧字段校验的补充。以下命令以 `bf61e91` 为例，后续校验和升级均使用 `${hami_chart_dir}` 中的 Chart：
 
 ```bash
-# 更新 Helm 仓库
-helm repo update hami-charts
-
-# 查看可用版本
-helm search repo hami-charts/hami --versions
-
-# 获取当前配置（保留自定义配置）
-helm get values hami -n kube-system > current-values.yaml
-
-# 执行升级
-helm upgrade hami hami-charts/hami -n kube-system -f current-values.yaml
+git clone https://github.com/Project-HAMi/HAMi.git "${hami_chart_dir}"
+git -C "${hami_chart_dir}" checkout bf61e91763b51105f821c573002baca4e0025329
 ```
 
-### 原地升级（使用现有安装）
+:::warning 未发布的 Chart 与镜像版本
 
-如果没有自定义 values 文件，可以直接升级：
+该提交中的 Chart 是开发版本，不是已发布版本，其 `version` 和 `appVersion` 可能仍沿用上一版本。固定 Chart 提交不会固定后文使用的 `latest` 镜像标签。
+
+:::
+
+## 迁移并创建 values
+
+从 v2.10 升级到最新版 Chart 时，设备相关字段统一迁移到 `devices.<vendor>`。请先基于备份的 values 创建 `my-values.yaml`，完成字段迁移和渲染校验，再执行升级。
+
+### 创建 values.yaml
+
+从 `previous-values.yaml` 创建 `my-values.yaml`，作为整理升级配置的起点：
 
 ```bash
-helm repo update hami-charts
-helm upgrade hami hami-charts/hami -n kube-system
+cp previous-values.yaml my-values.yaml
 ```
 
-### 卸载后重装（适用于大版本升级）
+本文使用 `latest` 标签的 HAMi 镜像。Chart 默认使用 `IfNotPresent` 拉取策略，仅修改标签会继续使用节点上缓存的旧镜像。请在 `my-values.yaml` 中设置标签，并将 scheduler extender、HAMi device plugin 和 monitor 的拉取策略改为 `Always`：
 
-对于存在破坏性变更的大版本升级，建议先卸载：
+```yaml
+global:
+  imageTag: latest
+scheduler:
+  extender:
+    image:
+      pullPolicy: Always
+devicePlugin:
+  image:
+    pullPolicy: Always
+  monitor:
+    image:
+      pullPolicy: Always
+```
+
+`Always` 会在容器启动时向镜像仓库解析标签对应的镜像。`latest` 仍是可变标签，不能保证不同时间启动的容器使用同一构建；远端标签更新也不会自动重启已有 Pod。
+
+如果旧 values 中单独设置过 `scheduler.extender.image.tag`、`devicePlugin.image.tag` 或 `devicePlugin.monitor.image.tag`，请删除这些覆盖。
+
+复制后，请按下节说明整理设备字段，不要直接将旧配置全部用于升级。其他仍需保留的自定义设置也应写入 `my-values.yaml`。升级后不要直接恢复整个旧 ConfigMap，以免覆盖新版默认配置。
+
+### 迁移设备字段
+
+Enflame、Kunlun、Vastai 和 Biren 的标准资源名现在由对应的设备字段自动加入 scheduler extender。这四类设备的 `customresources` 只保留额外资源，默认为空列表。旧 values 中复制过去的标准资源项应删除。
+
+迁移前，先核对 `previous-values.yaml`，以及 `previous-device-config.yaml` 中曾手工修改过的设备配置。以升级前所用 Chart 版本的默认配置为基准，只将与默认值不同、升级后仍需保留的设置写入新 values。
+
+- 对于旧 values 中的设备字段，按下方各厂商的字段映射迁移到新路径，并删除旧路径。
+- 对于直接修改过的 ConfigMap 配置，找到对应的 Helm values 字段后再迁移，不要将 ConfigMap 的内容整体复制到 values 中。下方表格中的旧字段指旧 Helm values 路径，不是 ConfigMap 字段路径。
+- 与旧版本默认值相同的设备字段应从 `my-values.yaml` 中删除，不必写入对应的新路径，让新 Chart 使用其默认配置。
+
+不要仅凭值是否为 `0`、`false` 或空字符串判断是否需要迁移；应与旧版本默认值比较。迁移后应删除下表列出的旧字段。Chart 会拒绝校验列表中的旧字段，但未被校验覆盖的旧字段可能被静默忽略，因此不能仅凭渲染成功判断迁移是否完成。
+
+#### NVIDIA
+
+包含 NVIDIA 资源字段和 NVIDIA Device Plugin 配置字段：
+
+| v2.10 字段                               | 最新版字段                                    |
+| ---------------------------------------- | --------------------------------------------- |
+| `resourceName`                           | `devices.nvidia.resourceCountName`            |
+| `resourceMem`                            | `devices.nvidia.resourceMemoryName`           |
+| `resourceMemPercentage`                  | `devices.nvidia.resourceMemoryPercentageName` |
+| `resourceCores`                          | `devices.nvidia.resourceCoreName`             |
+| `resourcePriority`                       | `devices.nvidia.resourcePriorityName`         |
+| `devicePlugin.deviceSplitCount`          | `devices.nvidia.deviceSplitCount`             |
+| `devicePlugin.deviceMemoryScaling`       | `devices.nvidia.deviceMemoryScaling`          |
+| `devicePlugin.deviceCoreScaling`         | `devices.nvidia.deviceCoreScaling`            |
+| `devicePlugin.preConfiguredDeviceMemory` | `devices.nvidia.preConfiguredDeviceMemory`    |
+| `devicePlugin.enableNumaTopology`        | `devices.nvidia.enableNumaTopology`           |
+| `devicePlugin.runtimeClassName`          | `devices.nvidia.runtimeClassName`             |
+| `devicePlugin.createRuntimeClass`        | `devices.nvidia.createRuntimeClass`           |
+
+#### Cambricon
+
+| v2.10 字段         | 最新版字段                             |
+| ------------------ | -------------------------------------- |
+| `mluResourceName`  | `devices.cambricon.resourceCountName`  |
+| `mluResourceMem`   | `devices.cambricon.resourceMemoryName` |
+| `mluResourceCores` | `devices.cambricon.resourceCoreName`   |
+
+#### Hygon
+
+[HAMi#2969](https://github.com/Project-HAMi/HAMi/pull/2969) 将 Hygon 设备的 DCU 命名统一改为 HCU，涉及资源名称、配置和注解。建议将 HCU（原 DCU）device plugin 升级到 Hygon 官方提供的最新版本 [k8s-hcu-device-plugin](https://github.com/HYGON-AI/k8s-hcu-device-plugin)。更新信息和配置说明见[启用 Hygon HCU 共享](../userguide/hygon-device/enable-hygon-hcu-sharing.md)。
+
+| v2.10 字段 | v2.10 默认值 | 最新版字段 | 最新版默认值 |
+| --- | --- | --- | --- |
+| `dcuResourceName` | `hygon.com/dcunum` | `devices.hygon.resourceCountName` | `hygon.com/hcunum` |
+| `dcuResourceMem` | `hygon.com/dcumem` | `devices.hygon.resourceMemoryName` | `hygon.com/hcumem` |
+| `dcuResourceCores` | `hygon.com/dcucores` | `devices.hygon.resourceCoreName` | `hygon.com/hcucores` |
+
+删除与 v2.10 默认值相同的旧字段后，Chart 会使用新的 `hygon.com/hcu*` 资源名。升级时应核对 HCU device plugin 实际暴露的资源名，并同步调整后续提交的工作负载中的资源请求，使其与 Chart 配置一致。仅通过 Helm 渲染校验不能确认 Hygon 设备迁移完成。
+
+#### MetaX
+
+| v2.10 字段               | 最新版字段                          |
+| ------------------------ | ----------------------------------- |
+| `metaxResourceName`      | `devices.metax.resourceVCountName`  |
+| `metaxResourceCore`      | `devices.metax.resourceVCoreName`   |
+| `metaxResourceMem`       | `devices.metax.resourceVMemoryName` |
+| `metaxsGPUTopologyAware` | `devices.metax.sgpuTopologyAware`   |
+
+`metaxsGPUTopologyAware` 在 v2.10 中使用字符串，默认值为 `"false"`；新字段 `devices.metax.sgpuTopologyAware` 使用布尔值，默认值为 `false`。Chart 仍兼容字符串形式的 `"true"` 和 `"false"`，迁移时建议使用不带引号的布尔值。旧值为默认的 `"false"` 时，删除旧字段即可；旧值为 `"true"` 时，将新字段设为 `true`。
+
+#### Enflame
+
+| v2.10 字段                     | 最新版字段                              |
+| ------------------------------ | --------------------------------------- |
+| `enflameResourceNameDRSGCU`    | `devices.enflame.resourceNameDRSGCU`    |
+| `enflameResourceNameGCUMemory` | `devices.enflame.resourceNameGCUMemory` |
+| `enflameResourceNameGCUCore`   | `devices.enflame.resourceNameGCUCore`   |
+
+#### Kunlunxin
+
+| v2.10 字段                  | 最新版字段                           |
+| --------------------------- | ------------------------------------ |
+| `kunlunResourceName`        | `devices.kunlun.resourceCountName`   |
+| `kunlunResourceVCountName`  | `devices.kunlun.resourceVCountName`  |
+| `kunlunResourceVMemoryName` | `devices.kunlun.resourceVMemoryName` |
+
+#### Vastai
+
+| v2.10 字段           | 最新版字段                         |
+| -------------------- | ---------------------------------- |
+| `vastaiResourceName` | `devices.vastai.resourceCountName` |
+
+#### Biren
+
+| v2.10 字段          | 最新版字段                        |
+| ------------------- | --------------------------------- |
+| `birenResourceName` | `devices.biren.resourceCountName` |
+
+### 迁移示例
+
+假设之前安装时使用了 `override-values.yaml`，内容如下：
+
+```yaml
+resourceName: nvidia.com/gpu
+devicePlugin:
+  deviceSplitCount: 20
+  disablecorelimit: "true"
+```
+
+其中，`resourceName` 与 v2.10 默认值相同，不需要保留；`deviceSplitCount` 从默认的 `10` 改为了 `20`，需要迁移；`disablecorelimit` 是自定义设置，但路径不变，需要原样保留。
+
+此外，曾在 `hami-scheduler-device` ConfigMap 的 `data.device-config.yaml` 中，将以下字段从默认的 `0` 改为 `4096`（这里只展示相关片段）：
+
+```yaml
+nvidia:
+  defaultMemory: 4096
+```
+
+v2.10 的 Chart 模板将 `defaultMemory` 固定为 `0`，当时无法通过单独的 values 字段修改它。[HAMi#3152](https://github.com/Project-HAMi/HAMi/pull/3152) 将这类配置开放为 values 字段，现在可以将这项手工修改迁移到 `devices.nvidia.defaultMemory`。
+
+整理后的 `my-values.yaml` 如下：
+
+```yaml
+devices:
+  nvidia:
+    deviceSplitCount: 20
+    defaultMemory: 4096
+devicePlugin:
+  disablecorelimit: "true"
+```
+
+这份文件只保留需要覆盖的设置：迁移后的设备字段、从 ConfigMap 中提取的自定义配置，以及路径不变的自定义设置。`resourceName` 的旧路径和对应的新路径都不需要写入，交由新 Chart 提供默认值。
+
+`scheduler.overwriteEnv` 和其他 `devicePlugin` 设置仍使用原路径，包括 `enabled`、镜像、`deviceListStrategy`、`migStrategy`、`disablecorelimit` 和 `nodeConfiguration`；如有自定义值，同样保留在原路径下。
+
+如果之前使用了 `device-config.content` 或 Chart 内的 `files/device-config.yaml`，它们会整体替代自动生成的设备配置，不会与 `devices.*` 合并。若要改用 `devices.*` 管理配置，需要先整理并迁移其中仍需保留的设置，再移除原有的整份配置覆盖。
+
+### 校验迁移后的配置
+
+使用升级前准备中获取的本地 Chart，渲染迁移后的配置：
 
 ```bash
-# 卸载当前版本
-helm uninstall hami -n kube-system
-
-# 更新仓库
-helm repo update
-
-# 安装新版本
-helm install hami hami-charts/hami -n kube-system
+helm template "${release}" "${hami_chart_dir}/charts/hami" \
+  --namespace "${namespace}" \
+  --values my-values.yaml
 ```
+
+## 执行升级
+
+使用迁移后的 values 和 Chart 默认值重新渲染 release：
+
+```bash
+helm upgrade "${release}" "${hami_chart_dir}/charts/hami" \
+  --namespace "${namespace}" \
+  --reset-values \
+  --values my-values.yaml
+```
+
+`--reset-values` 会丢弃 release 中保存的旧 values。所有需要保留的覆盖都必须写入 `my-values.yaml`，或通过其他 `--values` 文件传入。
+
+这次迁移不要使用 `--reuse-values` 或 `--reset-then-reuse-values`。这些选项会将旧 values 中的已删除字段带入新 Chart，可能导致渲染失败；未被校验覆盖的旧字段也不会因此恢复生效。
 
 ## 升级后验证
 
-升级完成后，请验证 HAMi 是否正常运行：
-
-### 1. 检查 Pod 状态
+### 检查工作负载
 
 ```bash
-kubectl get pods -n kube-system -l app.kubernetes.io/instance=hami
+kubectl get pods -n "${namespace}" \
+  -l "app.kubernetes.io/instance=${release}"
+kubectl rollout status deployment -n "${namespace}" \
+  -l "app.kubernetes.io/instance=${release},app.kubernetes.io/component=hami-scheduler" \
+  --timeout=5m
+kubectl rollout status daemonset -n "${namespace}" \
+  -l "app.kubernetes.io/instance=${release},app.kubernetes.io/component=hami-device-plugin" \
+  --timeout=5m
 ```
 
-所有 Pod 应处于 `Running` 状态。
+Pod 应处于 `Running` 状态，Deployment 和 DaemonSet 应完成滚动更新。
 
-### 2. 检查组件健康状态
+### 测试设备分配
+
+用一个小型 Pod 验证 GPU 分配：
 
 ```bash
-# 检查 scheduler 日志错误
-kubectl logs -n kube-system -l app.kubernetes.io/component=hami-scheduler | grep -i "error\|warning" | head -20
-
-# 检查 device plugin 日志
-kubectl logs -n kube-system -l app.kubernetes.io/component=hami-device-plugin | grep -i "error" | head -20
-```
-
-### 3. 测试 GPU 分配
-
-部署测试 Pod 验证 GPU 是否正常分配：
-
-```bash id="gpu-test"
 kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Pod
@@ -160,138 +307,40 @@ spec:
   restartPolicy: Never
 EOF
 
-# 查看运行结果
 kubectl logs gpu-test-pod
-
-# 清理测试 Pod
 kubectl delete pod gpu-test-pod
 ```
 
-### 4. 检查节点 GPU 状态
+随后检查节点资源和 HAMi 注解：
 
 ```bash
-# 查看每个节点 GPU 资源分配情况
 kubectl describe nodes | grep -A 5 "Allocated resources"
-
-# 查看 HAMi 节点注解
 kubectl get nodes -o yaml | grep -A 10 "hami.io"
 ```
 
-## 故障排查
+## 回滚
 
-### Pod 一直处于 Pending
-
-如果升级后 Pod 一直 Pending：
+先查看 release 历史：
 
 ```bash
-# 查看 Pod 事件
-kubectl describe pod <pod-name>
-
-# 查看 scheduler 日志
-kubectl logs -n kube-system -l app.kubernetes.io/component=hami-scheduler | grep -i "pending\|error"
-
-# 检查 GPU 资源
-kubectl describe nodes | grep -i "gpu"
+helm history "${release}" -n "${namespace}"
 ```
 
-**解决方法：** 重启 HAMi device plugin：
+回滚到上一个版本：
 
 ```bash
-kubectl rollout restart daemonset/hami-device-plugin -n kube-system
+helm rollback "${release}" -n "${namespace}"
 ```
 
-### GPU 在升级后未被识别
-
-如果 GPU 未被识别：
+也可以指定 revision：
 
 ```bash
-# 在节点上检查 NVIDIA 驱动
-kubectl debug node/<node-name> -it --image=ubuntu
-
-# 在调试容器中执行
-lspci | grep -i gpu
-nvidia-smi
-exit
-
-# 重启对应节点的 device plugin
-kubectl delete pods -n kube-system -l app.kubernetes.io/component=hami-device-plugin --field-selector spec.nodeName=<node-name>
+helm rollback "${release}" <revision-number> -n "${namespace}"
 ```
 
-### 升级过程中出现 Segmentation Fault
+Helm 回滚使用历史 release 中保存的清单，不包含直接修改集群 ConfigMap 的记录。如果升级前手工修改过设备配置，回滚后应对照 `previous-device-config.yaml` 核对并恢复必要字段，不要直接覆盖整个 ConfigMap。保留迁移后的 `my-values.yaml`，再次升级时继续使用其中已整理的配置。
 
-如果出现段错误：
-
-1. **根本原因：** 升级期间仍有运行中的工作负载（如前所述）
-2. **立即处理：**
-
-   ```bash
-   kubectl delete pods <affected-pod-name> -n <namespace>
-   ```
-
-3. **避免方法：** 升级前必须清理所有 GPU 任务
-
-### Helm Chart 配置变更
-
-如果自定义 values 不兼容新版本：
-
-```bash
-# 对比新旧配置
-helm show values hami-charts/hami > new-defaults.yaml
-diff current-values.yaml new-defaults.yaml
-
-# 更新 values（移除废弃字段）
-# 然后重新升级
-helm upgrade hami hami-charts/hami -n kube-system -f current-values.yaml
-```
-
-## 回滚流程
-
-如果升级失败，可以回滚到旧版本：
-
-### 使用 Helm 回滚
-
-```bash
-# 查看历史版本
-helm history hami -n kube-system
-
-# 回滚到上一个版本
-helm rollback hami -n kube-system
-
-# 或回滚到指定版本
-helm rollback hami <revision-number> -n kube-system
-```
-
-### 手动回滚
-
-如果 Helm rollback 不可用：
-
-```bash
-# 使用备份重新安装旧版本
-helm install hami hami-charts/hami -n kube-system --version <previous-version> -f hami-backup-values.yaml
-
-# 或恢复 kubectl 备份状态
-kubectl apply -f hami-state-backup.yaml
-```
-
-## 版本兼容矩阵
-
-| HAMi 版本 | 最低 Kubernetes | 最高 Kubernetes | NVIDIA 驱动 | 说明       |
-| --------- | --------------- | --------------- | ----------- | ---------- |
-| v2.9.x    | 1.24            | 1.29            | ≥450.x      | 最新稳定版 |
-| v2.8.x    | 1.23            | 1.28            | ≥450.x      |            |
-| v2.7.x    | 1.21            | 1.27            | ≥450.x      |            |
-| v2.6.x    | 1.20            | 1.26            | ≥450.x      |            |
-
-更早版本请参考[发布页面](https://github.com/Project-HAMi/HAMi/releases)。
-
-## 最佳实践
-
-1. **先在测试环境升级**：不要直接在生产环境升级
-2. **保留完整备份**：ConfigMap 和状态必须备份
-3. **选择维护窗口**：在低峰期升级
-4. **持续监控**：升级后至少观察 30 分钟日志与指标
-5. **记录变更**：记录升级版本与时间
-6. **准备回滚方案**：必须提前规划回滚路径
+如果回滚后仍有工作负载异常，先恢复维护窗口前的 GPU 工作负载，再检查 scheduler、device plugin 和节点日志。
 
 ## 获取帮助
 
@@ -306,4 +355,5 @@ kubectl apply -f hami-state-backup.yaml
 
 - [安装指南](./online-installation.md)
 - [卸载指南](./uninstall.md)
+- [HAMi 支持的设备](../userguide/device-supported.md)
 - [HAMi 文档](../core-concepts/introduction.md)
