@@ -66,11 +66,11 @@ Confirm that `previous-device-config.yaml` contains the current device configura
 
 ### Obtain the Chart
 
-The Chart containing the migration changes has not yet been published to the Helm repository. Use HAMi commit [`bf61e91`](https://github.com/Project-HAMi/HAMi/commit/bf61e91763b51105f821c573002baca4e0025329) or a later commit that includes this change to ensure the additional validation for old fields is available. The following commands use `bf61e91` as an example. All subsequent validation and upgrade commands use the Chart in `${hami_chart_dir}`:
+The Chart containing the migration changes has not yet been published to the Helm repository. Use HAMi commit [`def0bf8`](https://github.com/Project-HAMi/HAMi/commit/def0bf82074ca7aff940800c18d5d3402eef5cff) or a later commit that includes it. The following commands use `def0bf8` as an example. All subsequent validation and upgrade commands use the Chart in `${hami_chart_dir}`:
 
 ```bash
 git clone https://github.com/Project-HAMi/HAMi.git "${hami_chart_dir}"
-git -C "${hami_chart_dir}" checkout bf61e91763b51105f821c573002baca4e0025329
+git -C "${hami_chart_dir}" checkout def0bf82074ca7aff940800c18d5d3402eef5cff
 ```
 
 :::warning Unreleased Chart and image versions
@@ -81,7 +81,7 @@ The Chart at this commit is development code, not a published release. Its `vers
 
 ## Migrate and Create Values
 
-When upgrading from v2.10 to the latest Chart, all device-related fields move under `devices.<vendor>`. First create `my-values.yaml` from the backed-up values, migrate the fields, and validate rendering before performing the upgrade.
+When upgrading from v2.10, review changes to Chart values field paths, types, defaults, and configuration semantics. The following guidance covers Chart values changes from v2.10.0 to the example commit `def0bf8`. First create `my-values.yaml` from the backed-up values, complete the migration and rendering validation below, then perform the upgrade. If you use a later commit, also review subsequent values changes.
 
 ### Create values.yaml
 
@@ -112,7 +112,38 @@ With `Always`, the container runtime queries the image registry to resolve the t
 
 If the old values explicitly set `scheduler.extender.image.tag`, `devicePlugin.image.tag`, or `devicePlugin.monitor.image.tag`, remove those overrides.
 
-After copying the file, update the device fields as described in the next section. Do not use the entire old configuration directly for the upgrade. Include any other custom settings that you need to retain in `my-values.yaml`. Do not restore the entire old ConfigMap after the upgrade, as this would overwrite the new default configuration.
+After copying the file, update the other fields and device fields as described below. Do not use the entire old configuration directly for the upgrade. Include any other custom settings that you need to retain in `my-values.yaml`. Do not restore the entire old ConfigMap after the upgrade, as this would overwrite the new default configuration.
+
+### Migrate Other Fields
+
+First review the non-device configuration in `previous-values.yaml`. Add custom settings that need to be migrated to `my-values.yaml` and remove deleted paths. Even when a field path is unchanged, its type, default, or meaning may have changed. Adjust the values as described below.
+
+#### Images and Scheduler
+
+| Field | Values Change | Migration |
+| --- | --- | --- |
+| `scheduler.patch.image` | The path has been removed, and the new Chart rejects rendering if it is present | Remove the old path and migrate custom settings that need to be retained to `scheduler.patch.imageNew`. Settings matching the old defaults do not need migration. If `imageNew` is already configured, review and merge the settings to avoid overwriting existing configuration |
+| `scheduler.kubeScheduler.image`, `scheduler.patch.imageNew` | The default images are now `registry.k8s.io/kube-scheduler` and `registry.k8s.io/ingress-nginx/kube-webhook-certgen`, respectively. The certgen version is also updated and pinned by digest | Check registry access and custom image overrides. For a China mirror, see [Online Installation](./online-installation.md). Do not change only the registry while retaining a mismatched repository or digest |
+| `scheduler.service.type` | The default changes from `NodePort` to `ClusterIP` | If external scrapers, custom webhook URLs, or other callers depend on NodePort, explicitly set `NodePort` and retain the required ports. Use the new default when only in-cluster access is needed |
+| `scheduler.service.httpTargetPort` | The default changes from `443` to `9443`; `scheduler.service.httpPort` still defaults to `443` | Remove the old override if a custom container port is unnecessary. If retaining a custom value, ensure it differs from `scheduler.extenderPort` |
+| `scheduler.service.monitorTargetPort` | The default changes from the numeric port `9395` to the named port `metrics` | Remove the old override if a fixed port is unnecessary. For a custom metrics port, check that it matches `scheduler.metricsBindAddress` |
+
+- The `podSecurityPolicy.enabled` path is unchanged. Certificate Jobs no longer allow it to be enabled on Kubernetes `1.25` and later. If the old values set it to `true`, change it to `false`.
+- `scheduler.patch.imageNew` configures the webhook certificate Job image and does not inherit `global.imageTag`. Do not copy the `latest` setting for HAMi images from above into this field.
+
+#### Device Plugin and Monitor
+
+| Field | Values Change | Migration |
+| --- | --- | --- |
+| `devicePlugin.monitor.resyncInterval` | The path is retained but no longer controls cache directory cleanup | Configure `devicePlugin.vgpuCache.gracePeriod` with the value previously used for the cleanup grace period. Also retain `resyncInterval` if you need to preserve the monitor's resync and memory mapping release behavior |
+| `devicePlugin.nvidiaDriverRoot` | The default changes from `null` to `auto`, which detects paths from GPU Operator driver readiness information. If that information is absent, it assumes a host-installed driver | Check how the driver is installed. In `auto` mode, the device plugin must receive driver libraries and devices through the NVIDIA runtime. Retain the appropriate overrides for deployments using explicit driver paths |
+| `devicePlugin.passDeviceSpecsEnabled` | The default changes from `false` to `true` | Explicitly set `false` to retain the previous behavior of not returning device specifications to kubelet. This field has no effect when using only CDI strategies |
+| `devicePlugin.tolerations` | The defaults now include a toleration for the `nvidia.com/gpu:NoSchedule` taint | Review which nodes the DaemonSet can run on. An existing custom list replaces the default list, so merge this toleration into your custom list if needed |
+| `devicePlugin.monitor.metricsBindAddress`, `devicePlugin.monitor.probes.enabled` | Monitor liveness and readiness probes are enabled by default and access `/metrics` through the Pod IP. Loopback listening addresses are not allowed | Move listening address settings from the old `monitor.extraArgs` to `metricsBindAddress` and ensure the probes and Service can reach that address. Probes can be disabled for troubleshooting, but this does not disable loopback address validation |
+| `devicePlugin.extraEnvs`, `devicePlugin.monitor.extraEnvs` | Empty defaults change from `{}` to `[]`; custom environment variables still require a list of Kubernetes EnvVar entries | Remove empty overrides. Specify custom entries as a list containing `name` and either `value` or `valueFrom`, rather than a key-value map |
+
+- `devicePlugin.vgpuCache.gracePeriod` defaults to `5m`. It is the minimum age of a cache directory since its last modification before cleanup, not the cleanup scan interval.
+- `devicePlugin.monitor.resyncInterval` still controls the monitor's Pod informer resync and the grace period for releasing memory mappings when a Pod no longer exists. The two settings are independent.
 
 ### Migrate Device Fields
 
@@ -124,7 +155,7 @@ Before migrating, review `previous-values.yaml` and any manually modified device
 - For configuration modified directly in the ConfigMap, find the corresponding Helm values fields before migrating. Do not copy the entire ConfigMap contents into values. The old fields in the tables below refer to old Helm values paths, not ConfigMap field paths.
 - Remove device fields that match the old version's defaults from `my-values.yaml`. There is no need to add them at the corresponding new paths; let the new Chart use its defaults.
 
-Do not decide whether a value needs migration solely because it is `0`, `false`, or an empty string; compare it with the old version's defaults. Remove the old fields listed below after migration. The Chart rejects old fields covered by its validation checks, but fields not covered may be silently ignored. Successful rendering alone does not confirm that migration is complete.
+Do not decide whether a value needs migration solely because it is `0`, `false`, or an empty string; compare it with the old version's defaults. After migration, remove old fields marked as removed or replaced in the tables. For fields that remain compatible, follow their respective guidance. The Chart rejects old fields covered by its validation checks, but fields not covered may be silently ignored. Successful rendering alone does not confirm that migration is complete.
 
 #### NVIDIA
 
@@ -145,6 +176,14 @@ This includes NVIDIA resource fields and NVIDIA Device Plugin configuration fiel
 | `devicePlugin.runtimeClassName`          | `devices.nvidia.runtimeClassName`             |
 | `devicePlugin.createRuntimeClass`        | `devices.nvidia.createRuntimeClass`           |
 
+To preserve the effects of your previous configuration, also review the defaults for these NVIDIA values:
+
+| Field | Default and Configuration |
+| --- | --- |
+| `devicePlugin.monitor.disableHAMiCoreForWholeGPU` | New field that defaults to `true`. When memory and core scaling are both `1`, non-MIG containers meeting the whole-GPU criteria bypass HAMi-core by default, and the monitor collects their metrics directly through NVML. Explicitly set `false` if whole-GPU workloads must continue loading HAMi-core |
+| `devices.nvidia.limitDelivery` | Defaults to `file`. In addition to environment variables, limit files are mounted read-only at `/overrideEnv` in the container. Check whether the application uses this path. Set `env` to deliver limits only through environment variables |
+| `devices.nvidia.adoptExistingMIGInstances` | By default, HAMi does not adopt MIG instances it has no record of creating. If you previously relied on adopting existing instances, first check their ownership. Enable this only when HAMi exclusively manages the node's MIG layout. See [Dynamic MIG Lifecycle](../developers/dynamic-mig-lifecycle.md) |
+
 #### Cambricon
 
 | v2.10 Field        | Latest Field                           |
@@ -162,6 +201,8 @@ This includes NVIDIA resource fields and NVIDIA Device Plugin configuration fiel
 | `dcuResourceName` | `hygon.com/dcunum` | `devices.hygon.resourceCountName` | `hygon.com/hcunum` |
 | `dcuResourceMem` | `hygon.com/dcumem` | `devices.hygon.resourceMemoryName` | `hygon.com/hcumem` |
 | `dcuResourceCores` | `hygon.com/dcucores` | `devices.hygon.resourceCoreName` | `hygon.com/hcucores` |
+
+If you used a development version after v2.10, also migrate `hcuResourceName`, `hcuResourceMem`, and `hcuResourceCores` to the corresponding `devices.hygon.*` paths in the table. The new Chart rejects these old fields as well.
 
 After removing old fields that match the v2.10 defaults, the Chart uses the new `hygon.com/hcu*` resource names. During the upgrade, check the resource names actually exposed by the HCU device plugin and update resource requests in subsequently submitted workloads to match the Chart configuration. Helm rendering validation alone does not confirm that Hygon device migration is complete.
 
@@ -203,6 +244,17 @@ In v2.10, `metaxsGPUTopologyAware` uses a string and defaults to `"false"`. The 
 | v2.10 Field         | Latest Field                      |
 | ------------------- | --------------------------------- |
 | `birenResourceName` | `devices.biren.resourceCountName` |
+
+#### Ascend
+
+| Old Configuration | New Configuration or Action |
+| --- | --- |
+| `devices.ascend.hamiVnpuCore: true` | Migration to `devices.ascend.hamiVnpuMode: hami-core` is recommended; `false` corresponds to `template`. The old boolean field remains supported, and an explicitly set `hamiVnpuMode` takes precedence |
+| `devices.ascend.enpu` (development field introduced after v2.10) | Removed. Use `devices.ascend.hamiVnpuMode: enpu` instead. Retaining the old field causes validation to fail |
+| `devices.ascend.vnpuDeviceSplitCount` (development field introduced after v2.10) | Replaced by `devices.ascend.deviceSplitCount`, which must be a positive integer. It applies to hami-core and ENPU modes, defaults to `10`, and requires an Ascend device plugin that supports `vnpus.deviceSplitCount` |
+| Manually modified `vnpus.configs` | Migrate to `devices.ascend.configs`; the supplied list replaces the entire default list. Use the corresponding `devices.ascend.*` fields and `scheduler.overwriteEnv` for global mode, runtime, and environment variable override settings. Do not restore the entire old `vnpus` configuration |
+
+Upgrade and check the configuration of the Ascend device plugin separately; the HAMi Chart does not deploy it. For modes and compatible version requirements, see [Enable Ascend Sharing](../userguide/ascend-device/enable-ascend-sharing.md).
 
 ### Migration Example
 
@@ -307,8 +359,8 @@ spec:
   restartPolicy: Never
 EOF
 
-kubectl logs gpu-test-pod
-kubectl delete pod gpu-test-pod
+kubectl logs -n default gpu-test-pod
+kubectl delete pod -n default gpu-test-pod
 ```
 
 Then check node resources and HAMi annotations:
@@ -353,6 +405,7 @@ If you encounter issues during the upgrade:
 
 ## See Also
 
+- [Changelog](/changelog)
 - [Installation Guide](./online-installation.md)
 - [Uninstallation Guide](./uninstall.md)
 - [Devices Supported by HAMi](../userguide/device-supported.md)
