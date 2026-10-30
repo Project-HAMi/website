@@ -66,17 +66,16 @@ kubectl get configmap hami-scheduler-device -n "${namespace}" \
 
 ### 获取 Chart
 
-包含迁移变更的 Chart 尚未发布到 Helm 仓库。请将 HAMi 仓库默认分支的 HEAD 克隆到 `${hami_chart_dir}`，后续校验和升级均使用该目录中的 Chart：
+包含迁移变更的 Chart 尚未发布到 Helm 仓库。请使用 HAMi 提交 [`bf61e91`](https://github.com/Project-HAMi/HAMi/commit/bf61e91763b51105f821c573002baca4e0025329) 或包含该变更的后续提交，以确保包含旧字段校验的补充。以下命令以 `bf61e91` 为例，后续校验和升级均使用 `${hami_chart_dir}` 中的 Chart：
 
 ```bash
-mkdir -p "${hami_chart_dir}"
-git clone --depth 1 https://github.com/Project-HAMi/HAMi.git "${hami_chart_dir}"
-git -C "${hami_chart_dir}" rev-parse HEAD
+git clone https://github.com/Project-HAMi/HAMi.git "${hami_chart_dir}"
+git -C "${hami_chart_dir}" checkout bf61e91763b51105f821c573002baca4e0025329
 ```
 
 :::warning 未发布的 Chart 与镜像版本
 
-HEAD 中的 Chart 是开发版本，不是已发布版本，其 `version` 和 `appVersion` 可能仍沿用上一版本。
+该提交中的 Chart 是开发版本，不是已发布版本，其 `version` 和 `appVersion` 可能仍沿用上一版本。固定 Chart 提交不会固定后文使用的 `latest` 镜像标签。
 
 :::
 

@@ -66,17 +66,16 @@ Confirm that `previous-device-config.yaml` contains the current device configura
 
 ### Obtain the Chart
 
-The Chart containing the migration changes has not yet been published to the Helm repository. Clone the HEAD of the HAMi repository's default branch into `${hami_chart_dir}`. The validation and upgrade commands below use the Chart from this directory:
+The Chart containing the migration changes has not yet been published to the Helm repository. Use HAMi commit [`bf61e91`](https://github.com/Project-HAMi/HAMi/commit/bf61e91763b51105f821c573002baca4e0025329) or a later commit that includes this change to ensure the additional validation for old fields is available. The following commands use `bf61e91` as an example. All subsequent validation and upgrade commands use the Chart in `${hami_chart_dir}`:
 
 ```bash
-mkdir -p "${hami_chart_dir}"
-git clone --depth 1 https://github.com/Project-HAMi/HAMi.git "${hami_chart_dir}"
-git -C "${hami_chart_dir}" rev-parse HEAD
+git clone https://github.com/Project-HAMi/HAMi.git "${hami_chart_dir}"
+git -C "${hami_chart_dir}" checkout bf61e91763b51105f821c573002baca4e0025329
 ```
 
 :::warning Unreleased Chart and image versions
 
-The HEAD Chart is development code, not a published release. Its `version` and `appVersion` may still refer to the previous release.
+The Chart at this commit is development code, not a published release. Its `version` and `appVersion` may still refer to the previous release. Pinning the Chart commit does not pin the `latest` image tag used below.
 
 :::
 
