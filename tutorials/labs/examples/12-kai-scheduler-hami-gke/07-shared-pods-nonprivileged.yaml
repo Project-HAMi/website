@@ -1,0 +1,104 @@
+# Same proof as 04-shared-pods.yaml, but via the Optional alternative: runtimeClassName: nvidia-ctk
+# (Step 5 + 05-privileged-free-toolkit-daemonset.yaml + 06-configmap-visible-devices-policy.yaml)
+# instead of securityContext.privileged: true and the hostPath-injecting Kyverno policies.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kai-hami-lab12-nonpriv-a
+  labels:
+    kai.scheduler/queue: default-queue
+  annotations:
+    gpu-memory: "4096"
+spec:
+  schedulerName: kai-scheduler
+  runtimeClassName: nvidia-ctk
+  restartPolicy: Never
+  nodeSelector:
+    hami.run/lab-12: "true"
+  containers:
+    - name: gpu-workload
+      image: nvidia/cuda:12.4.1-devel-ubuntu22.04
+      command: ["/bin/bash", "-lc"]
+      args:
+        - |
+          nvcc -O2 /lab-source/memory-limit.cu -o /tmp/memory-limit-test
+          printf 'limit=%s\n' "$CUDA_DEVICE_MEMORY_LIMIT"
+          nvidia-smi --query-gpu=uuid,memory.total --format=csv,noheader || echo "(nvidia-smi unavailable here; continuing -- CUDA/NVML access is unaffected)"
+          echo "test_start=$(date -u +%FT%TZ)"
+          HOLD_SECONDS=30 /tmp/memory-limit-test
+          echo "test_end=$(date -u +%FT%TZ)"
+          (HOLD_SECONDS=3600 /tmp/memory-limit-test \
+            > /tmp/monitor-hold.log 2>&1) &
+          for attempt in $(seq 1 30); do
+            grep -q 'allocate another 2 GiB: out of memory' \
+              /tmp/monitor-hold.log && break
+            sleep 1
+          done
+          grep -q 'allocate another 2 GiB: out of memory' \
+            /tmp/monitor-hold.log
+          touch /tmp/memory-test-passed
+          exec sleep infinity
+      readinessProbe:
+        exec:
+          command: ["test", "-f", "/tmp/memory-test-passed"]
+        periodSeconds: 2
+        failureThreshold: 150
+      volumeMounts:
+        - name: lab-source
+          mountPath: /lab-source
+          readOnly: true
+  volumes:
+    - name: lab-source
+      configMap:
+        name: kai-hami-lab12-source
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kai-hami-lab12-nonpriv-b
+  labels:
+    kai.scheduler/queue: default-queue
+  annotations:
+    gpu-memory: "4096"
+spec:
+  schedulerName: kai-scheduler
+  runtimeClassName: nvidia-ctk
+  restartPolicy: Never
+  nodeSelector:
+    hami.run/lab-12: "true"
+  containers:
+    - name: gpu-workload
+      image: nvidia/cuda:12.4.1-devel-ubuntu22.04
+      command: ["/bin/bash", "-lc"]
+      args:
+        - |
+          nvcc -O2 /lab-source/memory-limit.cu -o /tmp/memory-limit-test
+          printf 'limit=%s\n' "$CUDA_DEVICE_MEMORY_LIMIT"
+          nvidia-smi --query-gpu=uuid,memory.total --format=csv,noheader || echo "(nvidia-smi unavailable here; continuing -- CUDA/NVML access is unaffected)"
+          echo "test_start=$(date -u +%FT%TZ)"
+          HOLD_SECONDS=30 /tmp/memory-limit-test
+          echo "test_end=$(date -u +%FT%TZ)"
+          (HOLD_SECONDS=3600 /tmp/memory-limit-test \
+            > /tmp/monitor-hold.log 2>&1) &
+          for attempt in $(seq 1 30); do
+            grep -q 'allocate another 2 GiB: out of memory' \
+              /tmp/monitor-hold.log && break
+            sleep 1
+          done
+          grep -q 'allocate another 2 GiB: out of memory' \
+            /tmp/monitor-hold.log
+          touch /tmp/memory-test-passed
+          exec sleep infinity
+      readinessProbe:
+        exec:
+          command: ["test", "-f", "/tmp/memory-test-passed"]
+        periodSeconds: 2
+        failureThreshold: 150
+      volumeMounts:
+        - name: lab-source
+          mountPath: /lab-source
+          readOnly: true
+  volumes:
+    - name: lab-source
+      configMap:
+        name: kai-hami-lab12-source
