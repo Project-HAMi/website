@@ -1,7 +1,5 @@
 ---
 title: "GPU Software Stack Overview"
-description: The five layers a GPU depends on in Kubernetes, and where HAMi plugs in.
-sidebar_label: GPU software stack
 ---
 
 When you use a GPU on a server, you are not dealing with a single piece of software or hardware. Instead, you are working with an entire **software stack** built around NVIDIA GPUs. From the lowest-level physical hardware to the highest-level Kubernetes scheduling, it can be roughly divided into 5 layers:
@@ -14,7 +12,63 @@ Understanding this layered structure is the foundation for troubleshooting GPU i
 
 The diagram below illustrates the complete layered structure of the GPU software stack:
 
-![GPU Software Stack 5-Layer Architecture](/img/docs/en/core-concepts/gpu-stack.svg)
+```mermaid
+%% title: GPU Software Stack 5-Layer Architecture
+graph TB
+    subgraph L5["Layer 5: Kubernetes Scheduling"]
+        K8sScheduler["Kubernetes Scheduler"]
+        HAMiScheduler["HAMi Scheduler"]
+        Pod["Pod"]
+    end
+
+    subgraph L4["Layer 4: Container Runtime"]
+        containerd["containerd"]
+        NVIDIAToolkit["NVIDIA Container Toolkit"]
+        Container["Container"]
+    end
+
+    subgraph L3["Layer 3: User-Space Libraries/Tools"]
+        CUDA["CUDA Runtime / Toolkit"]
+        NVML["NVML (libnvidia-ml.so)"]
+        nvidia_smi["nvidia-smi"]
+        DCGM["DCGM"]
+        MIG["MIG"]
+    end
+
+    subgraph L2["Layer 2: Kernel Driver"]
+        nvidia_ko["nvidia.ko (Kernel Module)"]
+        nvidia_uvm["nvidia-uvm.ko"]
+        nvidia_modeset["nvidia-modeset.ko"]
+    end
+
+    subgraph L1["Layer 1: Hardware"]
+        GPU["NVIDIA GPU"]
+        PCIe["PCIe Bus"]
+        NVLink["NVLink (Optional)"]
+    end
+
+    %% Inter-layer connections
+    Pod --> Container
+    K8sScheduler --> Pod
+    HAMiScheduler --> Pod
+
+    Container --> NVIDIAToolkit
+    NVIDIAToolkit --> containerd
+
+    Container --> CUDA
+    Container --> NVML
+    nvidia_smi --> NVML
+    DCGM --> NVML
+
+    CUDA --> nvidia_ko
+    NVML --> nvidia_ko
+
+    nvidia_ko --> nvidia_uvm
+    nvidia_ko --> nvidia_modeset
+    nvidia_ko --> GPU
+    GPU --- PCIe
+    GPU --- NVLink
+```
 
 ## Layer Details
 
@@ -71,19 +125,45 @@ Understanding the key call chains within the GPU software stack helps with troub
 
 From creation to execution, a GPU-using Pod goes through the following dependency chain:
 
-![Complete GPU Pod Dependency Chain](/img/docs/en/core-concepts/gpu-chain-pod.svg)
+```mermaid
+%% title: Complete GPU Pod Dependency Chain
+graph LR
+    Pod --> containerd
+    containerd --> NVIDIAToolkit["NVIDIA Container Toolkit"]
+    NVIDIAToolkit --> CUDA
+    CUDA --> Driver["User-Space Driver Library"]
+    Driver --> nvidia_ko["nvidia.ko"]
+    nvidia_ko --> PCIe
+    PCIe --> GPU
+```
 
 ### nvidia-smi Call Chain
 
 The complete path for `nvidia-smi` to query GPU information:
 
-![nvidia-smi Call Chain](/img/docs/en/core-concepts/gpu-chain-nvidia-smi.svg)
+```mermaid
+%% title: nvidia-smi Call Chain
+graph LR
+    SMI["nvidia-smi"] --> NVML
+    NVML --> lib["libnvidia-ml.so"]
+    lib --> nvidia_ko["nvidia.ko"]
+    nvidia_ko --> GPU
+```
 
 ### Management Tool Call Chain
 
 Multiple management tools all access the GPU through NVML:
 
-![Management Tool Call Chain](/img/docs/en/core-concepts/gpu-chain-management.svg)
+```mermaid
+%% title: Management Tool Call Chain
+graph LR
+    nvidia_smi["nvidia-smi"] --> NVML
+    DCGM --> NVML
+    DevicePlugin["Device Plugin"] --> NVML
+    NVML --> lib["libnvidia-ml.so"]
+    lib --> nvidia_ko["nvidia.ko"]
+    nvidia_ko --> GPU
+```
 
 As you can see, whether it is a command-line tool, a monitoring component, or a Kubernetes device plugin, they all ultimately access the hardware through the NVML -> kernel driver -> GPU path.
 
@@ -91,13 +171,31 @@ As you can see, whether it is a command-line tool, a monitoring component, or a 
 
 In Kubernetes, the flow of GPU resources from hardware to Pod:
 
-![Kubernetes GPU Scheduling Chain](/img/docs/en/core-concepts/gpu-chain-kubernetes.svg)
+```mermaid
+%% title: Kubernetes GPU Scheduling Chain
+graph LR
+    GPU --> Driver["Driver"]
+    Driver --> DevicePlugin["Device Plugin"]
+    DevicePlugin --> kubelet
+    kubelet --> K8s["Kubernetes API"]
+    K8s --> Scheduler["K8s Scheduler"]
+    Scheduler --> Pod
+```
 
 ### HAMi Enhanced Scheduling Chain
 
 Building on the native scheduling chain, HAMi replaces the Device Plugin and Scheduler to implement GPU partitioning and sharing:
 
-![HAMi Enhanced Scheduling Chain](/img/docs/en/core-concepts/gpu-chain-hami.svg)
+```mermaid
+%% title: HAMi Enhanced Scheduling Chain
+graph LR
+    GPU --> Driver["Driver"]
+    Driver --> HAMiDP["HAMi Device Plugin"]
+    HAMiDP --> kubelet
+    kubelet --> K8s["Kubernetes API"]
+    K8s --> HAMiScheduler["HAMi Scheduler"]
+    HAMiScheduler --> Pod
+```
 
 ## Component Quick Reference
 

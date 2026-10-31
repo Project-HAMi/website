@@ -1,10 +1,9 @@
 {
   "docs": [
-    "core-concepts/introduction",
     {
       "type": "category",
       "label": "Get started",
-      "collapsed": true,
+      "collapsed": false,
       "link": {
         "type": "generated-index",
         "title": "Get started",
@@ -18,29 +17,17 @@
     },
     {
       "type": "category",
-      "label": "Concepts",
+      "label": "Introduction",
       "collapsed": true,
       "link": {
         "type": "generated-index",
-        "title": "Concepts",
-        "description": "How HAMi shares, isolates and schedules devices."
+        "title": "Introduction",
+        "description": "What HAMi is and what it does for you."
       },
       "items": [
-        "core-concepts/architecture",
-        {
-          "type": "category",
-          "label": "Background",
-          "items": [
-            "core-concepts/gpu-stack",
-            "core-concepts/gpu-driver",
-            "core-concepts/device-plugin-and-dra"
-          ]
-        },
+        "core-concepts/introduction",
         "key-features/device-sharing",
-        "key-features/device-resource-isolation",
-        "core-concepts/scheduling",
-        "core-concepts/observability",
-        "core-concepts/ecosystem-integrations"
+        "key-features/device-resource-isolation"
       ]
     },
     {
@@ -171,7 +158,11 @@
       },
       "items": [
         "core-concepts/gpu-virtualization",
+        "core-concepts/architecture",
         "core-concepts/hami-architecture",
+        "core-concepts/gpu-stack",
+        "core-concepts/gpu-driver",
+        "core-concepts/ecosystem-integrations",
         "developers/build",
         "developers/protocol",
         "developers/scheduling",
