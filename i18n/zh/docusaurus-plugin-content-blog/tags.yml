@@ -13,6 +13,9 @@
 "CNCF":
   label: "CNCF"
   permalink: "/cncf"
+"ContainerDays":
+  label: "ContainerDays"
+  permalink: "/container-days"
 "DRA":
   label: "DRA"
   permalink: "/dra"
@@ -61,6 +64,9 @@
 "China":
   label: "China"
   permalink: "/china"
+"Singapore":
+  label: "Singapore"
+  permalink: "/singapore"
 "KAI Scheduler":
   label: "KAI Scheduler"
   permalink: "/kai-scheduler"
