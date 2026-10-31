@@ -1,8 +1,12 @@
 ---
 title: "理解 GPU 驱动"
+description: 如何检查 NVIDIA 驱动，以及各个内核模块的作用。
+sidebar_label: GPU 驱动
 ---
 
 在使用 GPU 之前，首先需要确认 GPU 驱动是否正确加载到内核中。本文介绍如何检查 GPU 驱动状态以及理解 NVIDIA 内核模块的架构。
+
+驱动是 [GPU 软件栈](./gpu-stack.md)的第 2 层。
 
 ## 检查 GPU 驱动状态
 
@@ -28,20 +32,7 @@ ecc                   45056  0
 
 NVIDIA 驱动由多个内核模块组成，它们之间存在依赖关系：
 
-```mermaid
-%% title: NVIDIA 内核模块层级
-flowchart TB
-    subgraph LinuxKernel["Linux Kernel"]
-        NVIDIA["nvidia - 核心 GPU 驱动"]
-        UVM["nvidia_uvm - 统一虚拟内存"]
-        MODESET["nvidia_modeset - 显示模式管理"]
-        ECC["ecc - ECC 错误处理"]
-        MODESET --> NVIDIA
-        UVM --> NVIDIA
-        ECC --> NVIDIA
-    end
-    NVIDIA --> GPU["NVIDIA GPU"]
-```
+![NVIDIA 驱动模块，以及从用户态到 GPU 的调用路径](/img/docs/zh/core-concepts/gpu-driver.svg)
 
 ### 各模块的作用
 
@@ -49,30 +40,13 @@ flowchart TB
 | --- | --- | --- |
 | **nvidia** | `nvidia.ko` | 核心 GPU 驱动模块，负责 GPU 硬件初始化、显存管理、命令队列调度等基础功能。所有其他 NVIDIA 模块都依赖它。 |
 | **nvidia_uvm** | `nvidia_uvm.ko` | Unified Virtual Memory（统一虚拟内存），使 CPU 和 GPU 共享同一地址空间。CUDA 程序使用 `cudaMallocManaged` 时依赖此模块，驱动自动在 CPU 和 GPU 之间迁移数据。 |
-| **nvidia_modeset** | `nvidia_modeset.ko` | 显示模式设置模块，负责管理显示输出（分辨率、刷新率等）。依赖 `nvidia_drm`（DRM 子系统接口）工作。 |
-| **ecc** | `ecc.ko` | ECC（Error-Correcting Code）错误处理模块，用于数据中心级 GPU（如 A100、H100）的内存错误检测与纠正。消费级 GPU 通常不加载此模块。 |
+| **nvidia_modeset** | `nvidia_modeset.ko` | 显示模式设置模块，负责管理显示输出（分辨率、刷新率等）。`nvidia_drm` 依赖它。 |
+| **nvidia_drm** | `nvidia_drm.ko` | DRM 子系统接口，把驱动接入 Linux 的 Direct Rendering Manager。 |
+| **ecc** | `ecc.ko` | Linux 内核的通用模块，不属于 NVIDIA 驱动。 |
 
 ## Linux 驱动架构
 
 GPU 驱动遵循标准的 Linux 分层架构：用户态（User Space）通过库调用内核态（Kernel Space）的模块，最终操作硬件。
-
-```mermaid
-%% title: Linux GPU 驱动架构
-flowchart TB
-    subgraph User["用户态"]
-        CLI["CLI 工具 (nvidia-smi)"]
-        Lib["用户态库 (libnvidia-ml.so)"]
-    end
-    subgraph Kernel["内核态"]
-        Module["Kernel Module (nvidia.ko)"]
-    end
-    subgraph Hardware["硬件"]
-        HW["GPU Device"]
-    end
-    CLI --> Lib
-    Lib --> Module
-    Module --> HW
-```
 
 调用链路：
 
