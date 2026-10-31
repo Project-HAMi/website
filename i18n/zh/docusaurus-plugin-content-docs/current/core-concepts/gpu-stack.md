@@ -95,7 +95,7 @@ sidebar_label: GPU 软件栈
 
 ### HAMi 增强调度链
 
-HAMi 在原生调度链基础上，替换了 Device Plugin 和 Scheduler，实现 GPU 切分与共享：
+HAMi 在原生调度链基础上，替换了 Device Plugin，并增加调度器扩展（scheduler extender），实现 GPU 切分与共享：
 
 ![HAMi 增强调度链](/img/docs/zh/core-concepts/gpu-chain-hami.svg)
 

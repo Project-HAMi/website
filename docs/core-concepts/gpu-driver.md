@@ -39,9 +39,9 @@ The NVIDIA driver consists of multiple kernel modules with dependencies between 
 | Module | File | Description |
 | --- | --- | --- |
 | **nvidia** | `nvidia.ko` | The core GPU driver module, responsible for GPU hardware initialization, video memory management, command queue scheduling, and other fundamental functions. All other NVIDIA modules depend on it. |
-| **nvidia_uvm** | `nvidia_uvm.ko` | Unified Virtual Memory, enabling CPU and GPU to share the same address space. CUDA programs using `cudaMallocManaged` depend on this module, which automatically migrates data between CPU and GPU. |
-| **nvidia_modeset** | `nvidia_modeset.ko` | Display mode setting module, responsible for managing display output (resolution, refresh rate, etc.). `nvidia_drm` depends on it. |
-| **nvidia_drm** | `nvidia_drm.ko` | DRM subsystem interface, connecting the driver to the Linux Direct Rendering Manager. |
+| **nvidia_uvm** | `nvidia-uvm.ko` | Unified Virtual Memory, enabling CPU and GPU to share the same address space. CUDA programs using `cudaMallocManaged` depend on this module, which automatically migrates data between CPU and GPU. |
+| **nvidia_modeset** | `nvidia-modeset.ko` | Display mode setting module, responsible for managing display output (resolution, refresh rate, etc.). `nvidia_drm` depends on it. |
+| **nvidia_drm** | `nvidia-drm.ko` | DRM subsystem interface, connecting the driver to the Linux Direct Rendering Manager. |
 | **ecc** | `ecc.ko` | A general Linux kernel module. It is not part of the NVIDIA driver. |
 
 ## Linux Driver Architecture

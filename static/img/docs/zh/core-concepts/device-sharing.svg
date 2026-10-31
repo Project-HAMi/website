@@ -20,17 +20,17 @@
 </defs>
 <rect x="0" y="0" width="960" height="388" rx="18" fill="#FFFFFF"/>
 <rect x="24" y="24" width="300" height="104" rx="10" fill="#DBEAFE" stroke="#3B82F6" stroke-width="2" filter="url(#shadow)"/>
-<text x="42" y="50" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="700" fill="#3B82F6" text-anchor="start">Pod A</text>
+<text x="42" y="50" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="700" fill="#1D4ED8" text-anchor="start">Pod A</text>
 <text x="42" y="74" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12.5" font-weight="400" fill="#1F2937" text-anchor="start">nvidia.com/gpu: 1</text>
 <text x="42" y="92" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12.5" font-weight="400" fill="#1F2937" text-anchor="start">nvidia.com/gpumem: 4096</text>
 <text x="42" y="110" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12.5" font-weight="400" fill="#1F2937" text-anchor="start">nvidia.com/gpucores: 30</text>
 <rect x="24" y="142" width="300" height="104" rx="10" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2" filter="url(#shadow)"/>
-<text x="42" y="168" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="700" fill="#F59E0B" text-anchor="start">Pod B</text>
+<text x="42" y="168" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="700" fill="#B45309" text-anchor="start">Pod B</text>
 <text x="42" y="192" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12.5" font-weight="400" fill="#1F2937" text-anchor="start">nvidia.com/gpu: 1</text>
 <text x="42" y="210" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12.5" font-weight="400" fill="#1F2937" text-anchor="start">nvidia.com/gpumem-percentage: 50</text>
 <text x="42" y="228" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12.5" font-weight="400" fill="#1F2937" text-anchor="start">nvidia.com/gpucores: 40</text>
 <rect x="24" y="260" width="300" height="104" rx="10" fill="#EDE9FE" stroke="#8B5CF6" stroke-width="2" filter="url(#shadow)"/>
-<text x="42" y="286" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="700" fill="#8B5CF6" text-anchor="start">Pod C</text>
+<text x="42" y="286" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="700" fill="#6D28D9" text-anchor="start">Pod C</text>
 <text x="42" y="310" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12.5" font-weight="400" fill="#1F2937" text-anchor="start">nvidia.com/gpu: 1</text>
 <text x="42" y="328" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12.5" font-weight="400" fill="#1F2937" text-anchor="start">nvidia.com/gpumem: 2048</text>
 <text x="42" y="346" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12.5" font-weight="400" fill="#1F2937" text-anchor="start">nvidia.com/gpucores: 20</text>

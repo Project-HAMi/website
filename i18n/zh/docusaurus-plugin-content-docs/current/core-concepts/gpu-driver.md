@@ -39,9 +39,9 @@ NVIDIA 驱动由多个内核模块组成，它们之间存在依赖关系：
 | 模块 | 文件 | 说明 |
 | --- | --- | --- |
 | **nvidia** | `nvidia.ko` | 核心 GPU 驱动模块，负责 GPU 硬件初始化、显存管理、命令队列调度等基础功能。所有其他 NVIDIA 模块都依赖它。 |
-| **nvidia_uvm** | `nvidia_uvm.ko` | Unified Virtual Memory（统一虚拟内存），使 CPU 和 GPU 共享同一地址空间。CUDA 程序使用 `cudaMallocManaged` 时依赖此模块，驱动自动在 CPU 和 GPU 之间迁移数据。 |
-| **nvidia_modeset** | `nvidia_modeset.ko` | 显示模式设置模块，负责管理显示输出（分辨率、刷新率等）。`nvidia_drm` 依赖它。 |
-| **nvidia_drm** | `nvidia_drm.ko` | DRM 子系统接口，把驱动接入 Linux 的 Direct Rendering Manager。 |
+| **nvidia_uvm** | `nvidia-uvm.ko` | Unified Virtual Memory（统一虚拟内存），使 CPU 和 GPU 共享同一地址空间。CUDA 程序使用 `cudaMallocManaged` 时依赖此模块，驱动自动在 CPU 和 GPU 之间迁移数据。 |
+| **nvidia_modeset** | `nvidia-modeset.ko` | 显示模式设置模块，负责管理显示输出（分辨率、刷新率等）。`nvidia_drm` 依赖它。 |
+| **nvidia_drm** | `nvidia-drm.ko` | DRM 子系统接口，把驱动接入 Linux 的 Direct Rendering Manager。 |
 | **ecc** | `ecc.ko` | Linux 内核的通用模块，不属于 NVIDIA 驱动。 |
 
 ## Linux 驱动架构

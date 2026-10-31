@@ -95,7 +95,7 @@ In Kubernetes, the flow of GPU resources from hardware to Pod:
 
 ### HAMi Enhanced Scheduling Chain
 
-Building on the native scheduling chain, HAMi replaces the Device Plugin and Scheduler to implement GPU partitioning and sharing:
+Building on the native scheduling chain, HAMi replaces the Device Plugin and adds a scheduler extender to implement GPU partitioning and sharing:
 
 ![HAMi Enhanced Scheduling Chain](/img/docs/en/core-concepts/gpu-chain-hami.svg)
 
