@@ -13,7 +13,7 @@ HAMi 是[云原生计算基金会（CNCF）](https://cncf.io/)的 [孵化项目]
 
 Kubernetes 按整数计算 GPU。一个申请 `nvidia.com/gpu: 1` 的 Pod 会拿到整张卡，即使它的模型只需要 24 GiB 卡上的 2 GiB。卡上剩下的显存和算力不能再分给其他 Pod，GPU 利用率很低，昂贵的资源被浪费，其他 Pod 只能等下一张空闲的卡。
 
-![没有 HAMi 和使用 HAMi 时的一张 GPU](/img/docs/zh/core-concepts/hami-before-after.svg)
+![没有 HAMi 和使用 HAMi 时的一张 GPU](/img/docs/zh/core-concepts/hami-before-after.svg#light-only) ![没有 HAMi 和使用 HAMi 时的一张 GPU](/img/docs/zh/core-concepts/hami-before-after-dark.svg#dark-only)
 
 ## 核心特性
 

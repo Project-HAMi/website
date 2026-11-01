@@ -14,7 +14,7 @@ sidebar_label: GPU 软件栈
 
 下图展示了 GPU 软件栈的完整分层结构：
 
-![GPU 软件栈 5 层架构](/img/docs/zh/core-concepts/gpu-stack.svg)
+![GPU 软件栈 5 层架构](/img/docs/zh/core-concepts/gpu-stack.svg#light-only) ![GPU 软件栈 5 层架构](/img/docs/zh/core-concepts/gpu-stack-dark.svg#dark-only)
 
 ## 各层详解
 
@@ -71,19 +71,19 @@ sidebar_label: GPU 软件栈
 
 一个使用 GPU 的 Pod 从创建到运行，经历了以下依赖链：
 
-![完整 GPU Pod 依赖链](/img/docs/zh/core-concepts/gpu-chain-pod.svg)
+![完整 GPU Pod 依赖链](/img/docs/zh/core-concepts/gpu-chain-pod.svg#light-only) ![完整 GPU Pod 依赖链](/img/docs/zh/core-concepts/gpu-chain-pod-dark.svg#dark-only)
 
 ### nvidia-smi 调用链
 
 `nvidia-smi` 查询 GPU 信息的完整路径：
 
-![nvidia-smi 调用链](/img/docs/zh/core-concepts/gpu-chain-nvidia-smi.svg)
+![nvidia-smi 调用链](/img/docs/zh/core-concepts/gpu-chain-nvidia-smi.svg#light-only) ![nvidia-smi 调用链](/img/docs/zh/core-concepts/gpu-chain-nvidia-smi-dark.svg#dark-only)
 
 ### 管理工具调用链
 
 多个管理工具都通过 NVML 访问 GPU：
 
-![管理工具调用链](/img/docs/zh/core-concepts/gpu-chain-management.svg)
+![管理工具调用链](/img/docs/zh/core-concepts/gpu-chain-management.svg#light-only) ![管理工具调用链](/img/docs/zh/core-concepts/gpu-chain-management-dark.svg#dark-only)
 
 可以看到，无论是命令行工具、监控组件还是 Kubernetes 设备插件，最终都通过 NVML → 内核驱动 → GPU 这条路径来访问硬件。
 
@@ -91,13 +91,13 @@ sidebar_label: GPU 软件栈
 
 在 Kubernetes 中，GPU 资源从硬件到 Pod 的调度流程：
 
-![Kubernetes GPU 调度链](/img/docs/zh/core-concepts/gpu-chain-kubernetes.svg)
+![Kubernetes GPU 调度链](/img/docs/zh/core-concepts/gpu-chain-kubernetes.svg#light-only) ![Kubernetes GPU 调度链](/img/docs/zh/core-concepts/gpu-chain-kubernetes-dark.svg#dark-only)
 
 ### HAMi 增强调度链
 
 HAMi 在原生调度链基础上，替换了 Device Plugin，并增加调度器扩展（scheduler extender），实现 GPU 切分与共享：
 
-![HAMi 增强调度链](/img/docs/zh/core-concepts/gpu-chain-hami.svg)
+![HAMi 增强调度链](/img/docs/zh/core-concepts/gpu-chain-hami.svg#light-only) ![HAMi 增强调度链](/img/docs/zh/core-concepts/gpu-chain-hami-dark.svg#dark-only)
 
 ## 组件速查表
 

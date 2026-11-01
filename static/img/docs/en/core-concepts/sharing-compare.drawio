@@ -1,0 +1,331 @@
+<mxfile host="Electron">
+  <diagram id="sharing-compare" name="sharing-compare">
+    <mxGraphModel grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="0" page="0" pageScale="1" pageWidth="900" pageHeight="496" background="none" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="c2" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=36;html=0;fillColor=#F5F8FB;strokeColor=none;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="496" width="900" as="geometry" />
+        </mxCell>
+        <mxCell id="c3" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=28;html=0;fillColor=#FFFFFF;strokeColor=#D5DEE8;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="456" width="213.33" x="206" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="c4" parent="c3" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=center;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=17;fontColor=#15324D;fontStyle=1;" value="Time-slicing" vertex="1">
+          <mxGeometry height="25.5" width="122.24" x="45.55" y="13.3" as="geometry" />
+        </mxCell>
+        <mxCell id="c5" parent="c3" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=center;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=12;fontColor=#4F6378;fontStyle=0;" value="NVIDIA device plugin" vertex="1">
+          <mxGeometry height="18" width="142.4" x="35.47" y="38.8" as="geometry" />
+        </mxCell>
+        <mxCell id="c44" parent="c3" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=left;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=12.5;fontColor=#1A3956;fontStyle=0;" value="Take turns in time" vertex="1">
+          <mxGeometry height="18.75" width="134" x="14" y="211.25" as="geometry" />
+        </mxCell>
+        <mxCell id="c45" parent="c3" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=left;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=12.5;fontColor=#1A3956;fontStyle=0;" value="slices" vertex="1">
+          <mxGeometry height="18.75" width="50" x="14" y="227.25" as="geometry" />
+        </mxCell>
+        <mxCell id="c54" parent="c3" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=left;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=12.5;fontColor=#1A3956;fontStyle=0;" value="None. Any Pod can use" vertex="1">
+          <mxGeometry height="18.75" width="155" x="38" y="275.25" as="geometry" />
+        </mxCell>
+        <mxCell id="c55" parent="c3" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=left;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=12.5;fontColor=#1A3956;fontStyle=0;" value="all memory" vertex="1">
+          <mxGeometry height="18.75" width="78" x="38" y="291.25" as="geometry" />
+        </mxCell>
+        <mxCell id="c67" parent="c3" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=left;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=12.5;fontColor=#1A3956;fontStyle=0;" value="None" vertex="1">
+          <mxGeometry height="18.75" width="36" x="38" y="347.25" as="geometry" />
+        </mxCell>
+        <mxCell id="c80" parent="c3" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=left;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=12.5;fontColor=#1A3956;fontStyle=0;" value="Other Pods keep" vertex="1">
+          <mxGeometry height="18.75" width="113" x="38" y="403.25" as="geometry" />
+        </mxCell>
+        <mxCell id="c81" parent="c3" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=left;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=12.5;fontColor=#1A3956;fontStyle=0;" value="running" vertex="1">
+          <mxGeometry height="18.75" width="57" x="38" y="419.25" as="geometry" />
+        </mxCell>
+        <mxCell id="c6" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=16;html=0;fillColor=#FFFFFF;strokeColor=#D5DEE8;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="84" width="185.33" x="220" y="88" as="geometry" />
+        </mxCell>
+        <mxCell id="c7" parent="c6" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=left;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=12;fontColor=#1A5FB4;fontStyle=1;" value="A" vertex="1">
+          <mxGeometry height="18" width="14.72" x="6" y="12.8" as="geometry" />
+        </mxCell>
+        <mxCell id="c8" parent="c6" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=left;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=12;fontColor=#B45309;fontStyle=1;" value="B" vertex="1">
+          <mxGeometry height="18" width="14.72" x="6" y="38.8" as="geometry" />
+        </mxCell>
+        <mxCell id="c16" parent="c6" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=right;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=10.5;fontColor=#4F6378;fontStyle=0;" value="time" vertex="1">
+          <mxGeometry height="15.75" width="31.52" x="133.81" y="66.45" as="geometry" />
+        </mxCell>
+        <mxCell id="c9" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=6;html=0;fillColor=#39C6F4;strokeColor=none;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="16" width="19.89" x="254" y="102" as="geometry" />
+        </mxCell>
+        <mxCell id="c10" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=6;html=0;fillColor=#F5B942;strokeColor=none;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="16" width="19.89" x="276.89" y="128" as="geometry" />
+        </mxCell>
+        <mxCell id="c11" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=6;html=0;fillColor=#39C6F4;strokeColor=none;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="16" width="19.89" x="299.78" y="102" as="geometry" />
+        </mxCell>
+        <mxCell id="c12" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=6;html=0;fillColor=#F5B942;strokeColor=none;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="16" width="19.89" x="322.67" y="128" as="geometry" />
+        </mxCell>
+        <mxCell id="c13" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=6;html=0;fillColor=#39C6F4;strokeColor=none;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="16" width="19.89" x="345.56" y="102" as="geometry" />
+        </mxCell>
+        <mxCell id="c14" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=6;html=0;fillColor=#F5B942;strokeColor=none;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="16" width="19.89" x="368.44" y="128" as="geometry" />
+        </mxCell>
+        <mxCell id="c15" edge="1" parent="1" style="edgeStyle=none;rounded=0;html=0;endFill=1;startFill=1;jumpStyle=none;strokeColor=#4A89B8;strokeWidth=1.2;endArrow=block;endSize=6;startArrow=none;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="254" y="150" as="sourcePoint" />
+            <mxPoint x="391.333" y="150" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c17" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=28;html=0;fillColor=#FFFFFF;strokeColor=#D5DEE8;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="456" width="213.33" x="431.33" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="c18" parent="c17" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=center;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=17;fontColor=#15324D;fontStyle=1;" value="MPS" vertex="1">
+          <mxGeometry height="25.5" width="36.56" x="88.39" y="13.3" as="geometry" />
+        </mxCell>
+        <mxCell id="c19" parent="c17" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=center;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=12;fontColor=#4F6378;fontStyle=0;" value="NVIDIA device plugin" vertex="1">
+          <mxGeometry height="18" width="142.4" x="35.47" y="38.8" as="geometry" />
+        </mxCell>
+        <mxCell id="c46" parent="c17" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=left;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=12.5;fontColor=#1A3956;fontStyle=0;" value="Run at the same time" vertex="1">
+          <mxGeometry height="18.75" width="148" x="14" y="211.25" as="geometry" />
+        </mxCell>
+        <mxCell id="c47" parent="c17" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=left;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=12.5;fontColor=#1A3956;fontStyle=0;" value="through one MPS server" vertex="1">
+          <mxGeometry height="18.75" width="162" x="14" y="227.25" as="geometry" />
+        </mxCell>
+        <mxCell id="c58" parent="c17" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=left;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=12.5;fontColor=#1A3956;fontStyle=0;" value="Set per client in MPS" vertex="1">
+          <mxGeometry height="18.75" width="155" x="38" y="283.25" as="geometry" />
+        </mxCell>
+        <mxCell id="c70" parent="c17" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=left;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=12.5;fontColor=#1A3956;fontStyle=0;" value="Active thread" vertex="1">
+          <mxGeometry height="18.75" width="99" x="38" y="339.25" as="geometry" />
+        </mxCell>
+        <mxCell id="c71" parent="c17" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=left;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=12.5;fontColor=#1A3956;fontStyle=0;" value="percentage per client" vertex="1">
+          <mxGeometry height="18.75" width="155" x="38" y="355.25" as="geometry" />
+        </mxCell>
+        <mxCell id="c84" parent="c17" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=left;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=12.5;fontColor=#1A3956;fontStyle=0;" value="Can affect the other" vertex="1">
+          <mxGeometry height="18.75" width="148" x="38" y="403.25" as="geometry" />
+        </mxCell>
+        <mxCell id="c85" parent="c17" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=left;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=12.5;fontColor=#1A3956;fontStyle=0;" value="clients" vertex="1">
+          <mxGeometry height="18.75" width="57" x="38" y="419.25" as="geometry" />
+        </mxCell>
+        <mxCell id="c20" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=16;html=0;fillColor=#FFFFFF;strokeColor=#D5DEE8;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="84" width="185.33" x="445.33" y="88" as="geometry" />
+        </mxCell>
+        <mxCell id="c21" parent="c20" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=left;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=12;fontColor=#1A5FB4;fontStyle=1;" value="A" vertex="1">
+          <mxGeometry height="18" width="14.72" x="6" y="12.8" as="geometry" />
+        </mxCell>
+        <mxCell id="c22" parent="c20" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=left;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=12;fontColor=#B45309;fontStyle=1;" value="B" vertex="1">
+          <mxGeometry height="18" width="14.72" x="6" y="38.8" as="geometry" />
+        </mxCell>
+        <mxCell id="c26" parent="c20" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=right;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=10.5;fontColor=#4F6378;fontStyle=0;" value="time" vertex="1">
+          <mxGeometry height="15.75" width="31.52" x="133.81" y="66.45" as="geometry" />
+        </mxCell>
+        <mxCell id="c23" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=6;html=0;fillColor=#39C6F4;strokeColor=none;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="16" width="130.47" x="479.33" y="102" as="geometry" />
+        </mxCell>
+        <mxCell id="c24" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=6;html=0;fillColor=#F5B942;strokeColor=none;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="16" width="130.47" x="479.33" y="128" as="geometry" />
+        </mxCell>
+        <mxCell id="c25" edge="1" parent="1" style="edgeStyle=none;rounded=0;html=0;endFill=1;startFill=1;jumpStyle=none;strokeColor=#4A89B8;strokeWidth=1.2;endArrow=block;endSize=6;startArrow=none;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="479.333" y="150" as="sourcePoint" />
+            <mxPoint x="616.667" y="150" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c27" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=28;html=0;fillColor=#DCFCE7;strokeColor=#10D05D;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="456" width="213.33" x="656.67" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="c29" parent="c27" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=left;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=17;fontColor=#0B6B3C;fontStyle=1;" value="HAMi" vertex="1">
+          <mxGeometry height="25.5" width="46.08" x="90.67" y="13.3" as="geometry" />
+        </mxCell>
+        <mxCell id="c30" parent="c27" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=center;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=12;fontColor=#4F6378;fontStyle=0;" value="HAMi-Core in each container" vertex="1">
+          <mxGeometry height="18" width="189.44" x="11.95" y="38.8" as="geometry" />
+        </mxCell>
+        <mxCell id="c48" parent="c27" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=left;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=12.5;fontColor=#1A3956;fontStyle=0;" value="Take turns, like" vertex="1">
+          <mxGeometry height="18.75" width="120" x="14" y="211.25" as="geometry" />
+        </mxCell>
+        <mxCell id="c49" parent="c27" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=left;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=12.5;fontColor=#1A3956;fontStyle=0;" value="time-slicing" vertex="1">
+          <mxGeometry height="18.75" width="92" x="14" y="227.25" as="geometry" />
+        </mxCell>
+        <mxCell id="c61" parent="c27" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=left;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=12.5;fontColor=#1A3956;fontStyle=0;" value="gpumem, enforced by" vertex="1">
+          <mxGeometry height="18.75" width="141" x="38" y="275.25" as="geometry" />
+        </mxCell>
+        <mxCell id="c62" parent="c27" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=left;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=12.5;fontColor=#1A3956;fontStyle=0;" value="HAMi-Core" vertex="1">
+          <mxGeometry height="18.75" width="71" x="38" y="291.25" as="geometry" />
+        </mxCell>
+        <mxCell id="c74" parent="c27" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=left;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=12.5;fontColor=#1A3956;fontStyle=0;" value="gpucores, enforced by" vertex="1">
+          <mxGeometry height="18.75" width="155" x="38" y="339.25" as="geometry" />
+        </mxCell>
+        <mxCell id="c75" parent="c27" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=left;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=12.5;fontColor=#1A3956;fontStyle=0;" value="HAMi-Core" vertex="1">
+          <mxGeometry height="18.75" width="71" x="38" y="355.25" as="geometry" />
+        </mxCell>
+        <mxCell id="c88" parent="c27" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=left;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=12.5;fontColor=#1A3956;fontStyle=0;" value="Other Pods keep" vertex="1">
+          <mxGeometry height="18.75" width="113" x="38" y="403.25" as="geometry" />
+        </mxCell>
+        <mxCell id="c89" parent="c27" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=left;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=12.5;fontColor=#1A3956;fontStyle=0;" value="running" vertex="1">
+          <mxGeometry height="18.75" width="57" x="38" y="419.25" as="geometry" />
+        </mxCell>
+        <mxCell id="c28" parent="1" style="shape=image;imageAspect=1;aspect=fixed;verticalLabelPosition=bottom;image=data:image/svg+xml,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGQ9Ik0zMTkuOSAwQzMzOS4yIDIyLjkgMzYyLjQgNDEuNiAzODguOCA1NS42QzQxNiA3MCA0NDUuMyA3OC42IDQ3NiA4MS40TDQ3NC4yIDEwMS4xQzQ0MC45IDk4LjEgNDA5IDg4LjcgMzc5LjUgNzMuMUMzNzUuMyA3MC45IDM3MS4zIDY4LjYgMzY3LjIgNjYuMkMzNTkgNzQuNyAzNTEuNyA4My45IDM0NS4xIDkzLjdDMzgzLjIgMTEyLjUgNDE0LjkgMTQyLjUgNDM2LjUgMTgwLjZDNDY1LjIgMjMxLjMgNDcyLjYgMjkwLjYgNDU3LjQgMzQ3LjRDNDQyLjIgNDA0LjIgNDA2LjIgNDUxLjkgMzU2LjEgNDgxLjZDMzIyLjMgNTAxLjcgMjg0LjcgNTExLjkgMjQ2LjcgNTExLjlDMjI4LjMgNTExLjkgMjA5LjggNTA5LjUgMTkxLjYgNTA0LjZDMTM1LjggNDg5LjcgODkuMTk5OSA0NTMuNSA2MC40OTk5IDQwMi43QzMxLjg5OTkgMzUyIDI0LjM5OTkgMjkyLjcgMzkuNTk5OSAyMzUuOUM1NC43OTk5IDE3OSA5MC43OTk5IDEzMS40IDE0MC45IDEwMS42QzE5MS4xIDcxLjggMjQ5LjUgNjMuNyAzMDUuNCA3OC42QzMxMi42IDgwLjUgMzE5LjcgODIuOCAzMjYuNyA4NS41QzMzMy43IDc0LjcgMzQxLjYgNjQuNSAzNTAuNCA1NUMzMzMuNSA0Mi45IDMxOC4yIDI4LjcgMzA0LjYgMTIuNkwzMTkuOSAwWk0yNTAuNSA5MS4zQzIxNiA5MS4zIDE4MS45IDEwMC42IDE1MS4yIDExOC44QzEwNS41IDE0NS44IDcyLjc5OTkgMTg5LjMgNTguODk5OSAyNDEuMUM0NC45OTk5IDI5Mi45IDUxLjc5OTkgMzQ2LjkgNzcuODk5OSAzOTMuMUMxMDMuOSA0MzkuMiAxNDYuMiA0NzIgMTk2LjggNDg1LjVDMjEzLjMgNDg5LjkgMjMwIDQ5Mi4xIDI0Ni43IDQ5Mi4xQzI4MS4yIDQ5Mi4xIDMxNS4zIDQ4Mi44IDM0NiA0NjQuNkMzOTEuNyA0MzcuNiA0MjQuNCAzOTQuMSA0MzguMyAzNDIuM0M0NTIuMiAyOTAuNSA0NDUuNCAyMzYuNSA0MTkuMyAxOTAuM0MzOTMuMyAxNDQuMiAzNTEgMTExLjQgMzAwLjQgOTcuOUMyODMuOSA5My41IDI2Ny4yIDkxLjMgMjUwLjUgOTEuM1pNMjM3LjggMTA4QzMxNS41IDE3OS44IDM2NS44IDI3NS43IDM4MC41IDM4MS42QzM4MiAzOTIuNCAzODMuMiA0MDQuNyAzODMuOSA0MTcuMUMzNzggNDIzLjkgMzcxLjcgNDMwLjIgMzY0LjkgNDM2LjFDMzY0LjQgNDE4LjMgMzYzIDM5OS44IDM2MC44IDM4NC4zQzM0Ny4zIDI4Ny42IDMwMi45IDE5OS42IDIzNC4yIDEzMkMyNzQuNSAxOTIuMSAzMDAgMjYwLjggMzA4LjYgMzMzLjhDMzE0LjEgMzgwIDMxMi42IDQyNi4xIDMwNC4yIDQ3MS4yQzI5Mi4xIDQ3NS40IDI3OS41IDQ3OC40IDI2Ni43IDQ4MEMyNjYuOCA0NzUuNiAyNjYuOSA0NzEuMiAyNjYuOSA0NjYuOEMyNjYuOSA0NjAuNiAyNjYuOCA0NTQuNCAyNjYuNSA0NDguM0MyNTkuMyA0NDkgMjUyLjEgNDQ5LjQgMjQ0LjkgNDQ5LjRDMjM2LjggNDQ5LjQgMjI4LjcgNDQ4LjkgMjIwLjYgNDQ4QzIyMS4zIDQ0MS40IDIyMS44IDQzNC44IDIyMi4yIDQyOC4yQzIzNi41IDQyOS45IDI1MC45IDQzMCAyNjUuMiA0MjguNUMyNjAuOSAzNzguNyAyNDguMyAzMzAuNSAyMjcuNSAyODQuOEMyMDYuMyAyMzguMiAxNzcuNiAxOTYuMyAxNDEuOSAxNTkuOUMxODYuMSAyMzEuOSAyMDkuNCAzMTQuMiAyMDkuNCAzOTkuNkMyMDkuNCA0MjUuNCAyMDcuMiA0NTEuMSAyMDMgNDc2LjNDMjAxLjYgNDc2IDIwMC4yIDQ3NS42IDE5OC44IDQ3NS4yQzE5My43IDQ3My44IDE4OC43IDQ3Mi4zIDE4My45IDQ3MC41QzE4NS41IDQ2MC45IDE4Ni43IDQ1MS4xIDE4Ny42IDQ0MS40QzE3NC40IDQzNy43IDE2MS43IDQzMi44IDE0OS42IDQyNi43QzE1MCA0MTkuMyAxNTAuMyA0MTIgMTUwLjQgNDA0LjZDMTYyLjYgNDExLjUgMTc1LjUgNDE3IDE4OS4xIDQyMS4xQzE4OS40IDQxMy45IDE4OS42IDQwNi43IDE4OS42IDM5OS41QzE4OS42IDMxNC40IDE2NS41IDIzMi42IDExOS43IDE2MS43QzEyOC41IDE1Mi45IDEzOC4xIDE0NS4xIDE0OC40IDEzOC4zQzE4OS4yIDE3OC4xIDIyMS44IDIyNC41IDI0NS41IDI3Ni41QzI3MS40IDMzMy4zIDI4NS4yIDM5My44IDI4Ni41IDQ1Ni41QzI5Mi44IDQxNi45IDI5My42IDM3Ni41IDI4OC44IDMzNi4xQzI3OS4yIDI1NC44IDI0Ny43IDE3OC45IDE5Ny4zIDExNS4zQzIxMC42IDExMS40IDIyNC4xIDEwOC45IDIzNy44IDEwOFpNOTIuMTk5OSAyMDEuNUMxMDUuMiAyMjkuMyAxMTUuNSAyNTguNCAxMjIuOCAyODguMkMxMzEuNiAzMjQuMiAxMzYgMzYxLjQgMTM2IDM5OC44QzEzNiA0MTIuNiAxMzUuNCA0MjYuNCAxMzQuMiA0NDAuMUMxMjcuNyA0MzQuNyAxMjEuNiA0MjguOSAxMTUuOSA0MjIuNkMxMTYuMyA0MTQuNyAxMTYuNSA0MDYuNyAxMTYuNSAzOTguOEMxMTYuNSAzMzguOSAxMDQuMyAyNzkuMyA4MS4wOTk5IDIyNC43Qzg0LjM5OTkgMjE2LjYgODguMDk5OSAyMDguOCA5Mi4xOTk5IDIwMS41Wk0zODIgMTkwLjVDMzk5LjggMjE3LjYgNDExLjYgMjQ5LjEgNDE2IDI4MS40TDM5Ni41IDI4NEMzOTIuNSAyNTQuNiAzODEuOCAyMjYgMzY1LjYgMjAxLjNMMzgyIDE5MC41Wk0zNDAuNiAxNDRDMzQ5LjkgMTUxLjggMzU4LjcgMTYwLjUgMzY2LjYgMTY5LjlMMzUxLjYgMTgyLjZDMzQ0LjQgMTc0LjEgMzM2LjUgMTY2LjIgMzI4IDE1OS4xTDM0MC42IDE0NFoiIGZpbGw9IiMwRkQwNUQiIC8+PC9zdmc+;" value="" vertex="1">
+          <mxGeometry height="22" width="22" x="723.33" y="34" as="geometry" />
+        </mxCell>
+        <mxCell id="c31" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=16;html=0;fillColor=#FFFFFF;strokeColor=#D5DEE8;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="84" width="185.33" x="670.67" y="88" as="geometry" />
+        </mxCell>
+        <mxCell id="c32" parent="c31" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=left;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=12;fontColor=#1A5FB4;fontStyle=1;" value="A" vertex="1">
+          <mxGeometry height="18" width="14.72" x="6" y="12.8" as="geometry" />
+        </mxCell>
+        <mxCell id="c33" parent="c31" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=left;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=12;fontColor=#B45309;fontStyle=1;" value="B" vertex="1">
+          <mxGeometry height="18" width="14.72" x="6" y="38.8" as="geometry" />
+        </mxCell>
+        <mxCell id="c41" parent="c31" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=right;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=10.5;fontColor=#4F6378;fontStyle=0;" value="time" vertex="1">
+          <mxGeometry height="15.75" width="31.52" x="133.81" y="66.45" as="geometry" />
+        </mxCell>
+        <mxCell id="c34" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=6;html=0;fillColor=#39C6F4;strokeColor=none;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="16" width="19.89" x="704.67" y="102" as="geometry" />
+        </mxCell>
+        <mxCell id="c35" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=6;html=0;fillColor=#F5B942;strokeColor=none;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="16" width="19.89" x="727.56" y="128" as="geometry" />
+        </mxCell>
+        <mxCell id="c36" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=6;html=0;fillColor=#39C6F4;strokeColor=none;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="16" width="19.89" x="750.44" y="102" as="geometry" />
+        </mxCell>
+        <mxCell id="c37" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=6;html=0;fillColor=#F5B942;strokeColor=none;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="16" width="19.89" x="773.33" y="128" as="geometry" />
+        </mxCell>
+        <mxCell id="c38" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=6;html=0;fillColor=#39C6F4;strokeColor=none;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="16" width="19.89" x="796.22" y="102" as="geometry" />
+        </mxCell>
+        <mxCell id="c39" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=6;html=0;fillColor=#F5B942;strokeColor=none;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="16" width="19.89" x="819.11" y="128" as="geometry" />
+        </mxCell>
+        <mxCell id="c40" edge="1" parent="1" style="edgeStyle=none;rounded=0;html=0;endFill=1;startFill=1;jumpStyle=none;strokeColor=#4A89B8;strokeWidth=1.2;endArrow=block;endSize=6;startArrow=none;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="704.667" y="150" as="sourcePoint" />
+            <mxPoint x="842" y="150" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c42" edge="1" parent="1" style="edgeStyle=none;rounded=0;html=0;endFill=1;startFill=1;jumpStyle=none;strokeColor=#D5DEE8;strokeWidth=1;endArrow=none;startArrow=none;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="30" y="216" as="sourcePoint" />
+            <mxPoint x="870" y="216" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c43" parent="1" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=left;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=13.5;fontColor=#15324D;fontStyle=1;" value="How Pods share the GPU" vertex="1">
+          <mxGeometry height="20.25" width="174.32" x="32" y="238.15" as="geometry" />
+        </mxCell>
+        <mxCell id="c50" edge="1" parent="1" style="edgeStyle=none;rounded=0;html=0;endFill=1;startFill=1;jumpStyle=none;strokeColor=#D5DEE8;strokeWidth=1;endArrow=none;startArrow=none;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="30" y="280" as="sourcePoint" />
+            <mxPoint x="870" y="280" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c51" parent="1" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=left;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=13.5;fontColor=#15324D;fontStyle=1;" value="Memory limit per Pod" vertex="1">
+          <mxGeometry height="20.25" width="159.2" x="32" y="302.15" as="geometry" />
+        </mxCell>
+        <mxCell id="c52" parent="1" style="ellipse;html=0;fillColor=#FF5C7A;strokeColor=none;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="18" width="18" x="221" y="303" as="geometry" />
+        </mxCell>
+        <mxCell id="c53" parent="1" style="shape=image;imageAspect=1;verticalLabelPosition=bottom;image=data:image/svg+xml,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjIyNS41IDMwNy41IDkgOSI+PHBhdGggZD0iTTIyNi41IDMwOC41IGw3IDcgTTIzMy41IDMwOC41IGwtNyA3IiBzdHJva2U9IiMwZjE3MjIiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9zdmc+;" value="" vertex="1">
+          <mxGeometry height="9" width="9" x="225.5" y="307.5" as="geometry" />
+        </mxCell>
+        <mxCell id="c56" parent="1" style="ellipse;html=0;fillColor=#10D05D;strokeColor=none;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="18" width="18" x="446.33" y="303" as="geometry" />
+        </mxCell>
+        <mxCell id="c57" edge="1" parent="1" style="edgeStyle=none;rounded=0;html=0;endFill=1;startFill=1;jumpStyle=none;strokeColor=#0F1722;strokeWidth=2;endArrow=none;startArrow=none;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="454.333" y="315" />
+            </Array>
+            <mxPoint x="451.333" y="312" as="sourcePoint" />
+            <mxPoint x="459.333" y="309" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c59" parent="1" style="ellipse;html=0;fillColor=#10D05D;strokeColor=none;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="18" width="18" x="671.67" y="303" as="geometry" />
+        </mxCell>
+        <mxCell id="c60" edge="1" parent="1" style="edgeStyle=none;rounded=0;html=0;endFill=1;startFill=1;jumpStyle=none;strokeColor=#0F1722;strokeWidth=2;endArrow=none;startArrow=none;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="679.667" y="315" />
+            </Array>
+            <mxPoint x="676.667" y="312" as="sourcePoint" />
+            <mxPoint x="684.667" y="309" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c63" edge="1" parent="1" style="edgeStyle=none;rounded=0;html=0;endFill=1;startFill=1;jumpStyle=none;strokeColor=#D5DEE8;strokeWidth=1;endArrow=none;startArrow=none;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="30" y="344" as="sourcePoint" />
+            <mxPoint x="870" y="344" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c64" parent="1" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=left;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=13.5;fontColor=#15324D;fontStyle=1;" value="Compute limit per Pod" vertex="1">
+          <mxGeometry height="20.25" width="166.76" x="32" y="366.15" as="geometry" />
+        </mxCell>
+        <mxCell id="c65" parent="1" style="ellipse;html=0;fillColor=#FF5C7A;strokeColor=none;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="18" width="18" x="221" y="367" as="geometry" />
+        </mxCell>
+        <mxCell id="c66" parent="1" style="shape=image;imageAspect=1;verticalLabelPosition=bottom;image=data:image/svg+xml,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjIyNS41IDM3MS41IDkgOSI+PHBhdGggZD0iTTIyNi41IDM3Mi41IGw3IDcgTTIzMy41IDM3Mi41IGwtNyA3IiBzdHJva2U9IiMwZjE3MjIiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9zdmc+;" value="" vertex="1">
+          <mxGeometry height="9" width="9" x="225.5" y="371.5" as="geometry" />
+        </mxCell>
+        <mxCell id="c68" parent="1" style="ellipse;html=0;fillColor=#10D05D;strokeColor=none;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="18" width="18" x="446.33" y="367" as="geometry" />
+        </mxCell>
+        <mxCell id="c69" edge="1" parent="1" style="edgeStyle=none;rounded=0;html=0;endFill=1;startFill=1;jumpStyle=none;strokeColor=#0F1722;strokeWidth=2;endArrow=none;startArrow=none;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="454.333" y="379" />
+            </Array>
+            <mxPoint x="451.333" y="376" as="sourcePoint" />
+            <mxPoint x="459.333" y="373" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c72" parent="1" style="ellipse;html=0;fillColor=#10D05D;strokeColor=none;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="18" width="18" x="671.67" y="367" as="geometry" />
+        </mxCell>
+        <mxCell id="c73" edge="1" parent="1" style="edgeStyle=none;rounded=0;html=0;endFill=1;startFill=1;jumpStyle=none;strokeColor=#0F1722;strokeWidth=2;endArrow=none;startArrow=none;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="679.667" y="379" />
+            </Array>
+            <mxPoint x="676.667" y="376" as="sourcePoint" />
+            <mxPoint x="684.667" y="373" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c76" edge="1" parent="1" style="edgeStyle=none;rounded=0;html=0;endFill=1;startFill=1;jumpStyle=none;strokeColor=#D5DEE8;strokeWidth=1;endArrow=none;startArrow=none;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="30" y="408" as="sourcePoint" />
+            <mxPoint x="870" y="408" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c77" parent="1" style="text;html=0;whiteSpace=nowrap;strokeColor=none;fillColor=none;spacing=0;spacingLeft=4;spacingRight=4;verticalAlign=middle;align=left;fontFamily=&#39;Source Sans 3&#39;,&#39;Noto Sans&#39;,&#39;Segoe UI&#39;,&#39;PingFang SC&#39;,&#39;Noto Sans CJK SC&#39;,&#39;Microsoft YaHei&#39;,sans-serif;fontSize=13.5;fontColor=#15324D;fontStyle=1;" value="A fatal error in one Pod" vertex="1">
+          <mxGeometry height="20.25" width="189.44" x="32" y="430.15" as="geometry" />
+        </mxCell>
+        <mxCell id="c78" parent="1" style="ellipse;html=0;fillColor=#10D05D;strokeColor=none;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="18" width="18" x="221" y="431" as="geometry" />
+        </mxCell>
+        <mxCell id="c79" edge="1" parent="1" style="edgeStyle=none;rounded=0;html=0;endFill=1;startFill=1;jumpStyle=none;strokeColor=#0F1722;strokeWidth=2;endArrow=none;startArrow=none;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="229" y="443" />
+            </Array>
+            <mxPoint x="226" y="440" as="sourcePoint" />
+            <mxPoint x="234" y="437" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c82" parent="1" style="ellipse;html=0;fillColor=#FF5C7A;strokeColor=none;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="18" width="18" x="446.33" y="431" as="geometry" />
+        </mxCell>
+        <mxCell id="c83" parent="1" style="shape=image;imageAspect=1;verticalLabelPosition=bottom;image=data:image/svg+xml,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjQ1MC44MzMgNDM1LjUgOSA5Ij48cGF0aCBkPSJNNDUxLjgzMzMzMzMzMzMzMzM3IDQzNi41IGw3IDcgTTQ1OC44MzMzMzMzMzMzMzMzNyA0MzYuNSBsLTcgNyIgc3Ryb2tlPSIjMGYxNzIyIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvc3ZnPg==;" value="" vertex="1">
+          <mxGeometry height="9" width="9" x="450.83" y="435.5" as="geometry" />
+        </mxCell>
+        <mxCell id="c86" parent="1" style="ellipse;html=0;fillColor=#10D05D;strokeColor=none;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="18" width="18" x="671.67" y="431" as="geometry" />
+        </mxCell>
+        <mxCell id="c87" edge="1" parent="1" style="edgeStyle=none;rounded=0;html=0;endFill=1;startFill=1;jumpStyle=none;strokeColor=#0F1722;strokeWidth=2;endArrow=none;startArrow=none;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="679.667" y="443" />
+            </Array>
+            <mxPoint x="676.667" y="440" as="sourcePoint" />
+            <mxPoint x="684.667" y="437" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

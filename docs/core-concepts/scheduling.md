@@ -26,7 +26,7 @@ To pick a card model or a specific card, use these Pod annotations:
 
 ## Rank
 
-![Where binpack and spread place the same new Pod](/img/docs/en/core-concepts/scheduling-policies.svg)
+![Where binpack and spread place the same new Pod](/img/docs/en/core-concepts/scheduling-policies.svg#light-only) ![Where binpack and spread place the same new Pod](/img/docs/en/core-concepts/scheduling-policies-dark.svg#dark-only)
 
 The scheduler scores each node and card by how much of its slots, memory, and compute is already in use, then picks one by policy:
 

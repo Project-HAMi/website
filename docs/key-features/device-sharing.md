@@ -29,7 +29,7 @@ HAMi's device sharing enables:
 
 ## How a card is shared
 
-![Three Pods sharing one GPU by slots, memory and compute](/img/docs/en/core-concepts/device-sharing.svg)
+![Three Pods sharing one GPU by slots, memory and compute](/img/docs/en/core-concepts/device-sharing.svg#light-only) ![Three Pods sharing one GPU by slots, memory and compute](/img/docs/en/core-concepts/device-sharing-dark.svg#dark-only)
 
 Each card has three budgets:
 
@@ -43,7 +43,7 @@ These budgets assume the default `deviceMemoryScaling` and `deviceCoreScaling` o
 
 The NVIDIA device plugin can also share a card, through time-slicing or MPS. HAMi shares a card the same way time-slicing does, and adds a memory and compute limit for each container.
 
-![How time-slicing, MPS and HAMi share one GPU](/img/docs/en/core-concepts/sharing-compare.svg)
+![How time-slicing, MPS and HAMi share one GPU](/img/docs/en/core-concepts/sharing-compare.svg#light-only) ![How time-slicing, MPS and HAMi share one GPU](/img/docs/en/core-concepts/sharing-compare-dark.svg#dark-only)
 
 ## Defaults
 

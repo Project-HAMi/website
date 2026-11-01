@@ -19,7 +19,7 @@ will see only 3000 MiB device memory inside container
 
 HAMi-Core (`libvgpu.so`) enforces this task's 3000 MiB memory and 30% compute limits from inside the container, with no changes to the application. The diagram below shows how:
 
-![How HAMi-Core enforces memory and compute limits inside a container](/img/docs/en/core-concepts/resource-isolation.svg)
+![How HAMi-Core enforces memory and compute limits inside a container](/img/docs/en/core-concepts/resource-isolation.svg#light-only) ![How HAMi-Core enforces memory and compute limits inside a container](/img/docs/en/core-concepts/resource-isolation-dark.svg#dark-only)
 
 ## How HAMi-Core gets into the container
 
@@ -32,7 +32,7 @@ The dynamic linker reads `/etc/ld.so.preload` whenever a process starts. Every p
 - Before each allocation, such as `cuMemAlloc`, HAMi-Core adds the request to what the container already uses. If the total goes past the limit, the call returns `CUDA_ERROR_OUT_OF_MEMORY`. Only this container sees the error. Other Pods on the card keep running.
 - Memory queries through NVML return the limit, so `nvidia-smi` inside the container shows the share as the total memory.
 
-![Memory isolation: HAMi-Core checks each allocation against the limit](/img/docs/en/core-concepts/memory-isolation.svg)
+![Memory isolation: HAMi-Core checks each allocation against the limit](/img/docs/en/core-concepts/memory-isolation.svg#light-only) ![Memory isolation: HAMi-Core checks each allocation against the limit](/img/docs/en/core-concepts/memory-isolation-dark.svg#dark-only)
 
 ## Compute
 
@@ -40,7 +40,7 @@ The dynamic linker reads `/etc/ld.so.preload` whenever a process starts. Every p
 - A background thread samples the GPU's utilization and refills the counter. It refills more while the container is below its share and less while it is above.
 - With `gpucores` at 0 or 100, HAMi-Core does not throttle kernels.
 
-![Compute limit while throttling is on: kernels take tokens, wait when they run out, continue after a refill](/img/docs/en/core-concepts/compute-isolation.svg)
+![Compute limit while throttling is on: kernels take tokens, wait when they run out, continue after a refill](/img/docs/en/core-concepts/compute-isolation.svg#light-only) ![Compute limit while throttling is on: kernels take tokens, wait when they run out, continue after a refill](/img/docs/en/core-concepts/compute-isolation-dark.svg#dark-only)
 
 Throttling has three modes. Set the mode for the cluster with the Helm value `devices.nvidia.gpuCorePolicy`, or for one container with the `GPU_CORE_UTILIZATION_POLICY` environment variable. See [Global config](../userguide/configure.md).
 

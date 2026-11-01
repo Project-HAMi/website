@@ -32,7 +32,7 @@ ecc                   45056  0
 
 NVIDIA 驱动由多个内核模块组成，它们之间存在依赖关系：
 
-![NVIDIA 驱动模块，以及从用户态到 GPU 的调用路径](/img/docs/zh/core-concepts/gpu-driver.svg)
+![NVIDIA 驱动模块，以及从用户态到 GPU 的调用路径](/img/docs/zh/core-concepts/gpu-driver.svg#light-only) ![NVIDIA 驱动模块，以及从用户态到 GPU 的调用路径](/img/docs/zh/core-concepts/gpu-driver-dark.svg#dark-only)
 
 ### 各模块的作用
 

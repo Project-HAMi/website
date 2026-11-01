@@ -6,7 +6,7 @@ sidebar_label: Device plugin and DRA
 
 Kubernetes has two ways to hand a device to a Pod: the device plugin API and Dynamic Resource Allocation (DRA). Classic HAMi uses a device plugin. [HAMi-DRA](https://github.com/Project-HAMi/HAMi-DRA) uses DRA.
 
-![Device information flow with a device plugin and with DRA](/img/docs/en/core-concepts/device-plugin-vs-dra.svg)
+![Device information flow with a device plugin and with DRA](/img/docs/en/core-concepts/device-plugin-vs-dra.svg#light-only) ![Device information flow with a device plugin and with DRA](/img/docs/en/core-concepts/device-plugin-vs-dra-dark.svg#dark-only)
 
 ## Device plugin
 

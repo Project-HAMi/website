@@ -27,7 +27,7 @@ translated: true
 
 ## 排序
 
-![binpack 和 spread 会把同一个新 Pod 放到哪里](/img/docs/zh/core-concepts/scheduling-policies.svg)
+![binpack 和 spread 会把同一个新 Pod 放到哪里](/img/docs/zh/core-concepts/scheduling-policies.svg#light-only) ![binpack 和 spread 会把同一个新 Pod 放到哪里](/img/docs/zh/core-concepts/scheduling-policies-dark.svg#dark-only)
 
 调度器根据节点和卡已经用掉的槽位、显存和算力给它们打分，再按策略挑选：
 

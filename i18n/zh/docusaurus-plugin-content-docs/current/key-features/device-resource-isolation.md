@@ -20,7 +20,7 @@ resources:
 
 这个任务的 3000 MiB 显存和 30% 算力限额，由 HAMi-Core（`libvgpu.so`）在容器内部执行，应用不需要做任何修改。下图展示了它如何执行这两项限额：
 
-![HAMi-Core 如何在容器内执行显存和算力限制](/img/docs/zh/core-concepts/resource-isolation.svg)
+![HAMi-Core 如何在容器内执行显存和算力限制](/img/docs/zh/core-concepts/resource-isolation.svg#light-only) ![HAMi-Core 如何在容器内执行显存和算力限制](/img/docs/zh/core-concepts/resource-isolation-dark.svg#dark-only)
 
 ## HAMi-Core 如何进入容器
 
@@ -33,7 +33,7 @@ Pod 启动时，device plugin 把 `libvgpu.so` 和 `/etc/ld.so.preload` 挂进�
 - 每次分配显存前（例如 `cuMemAlloc`），HAMi-Core 把这次申请和容器已经使用的显存相加。总量超过限额时，调用返回 `CUDA_ERROR_OUT_OF_MEMORY`。只有这个容器会收到错误，同一张卡上的其他 Pod 照常运行。
 - 通过 NVML 查询显存时，返回的是限额，所以容器里的 `nvidia-smi` 把份额显示为总显存。
 
-![显存隔离：HAMi-Core 把每次分配和限额对照检查](/img/docs/zh/core-concepts/memory-isolation.svg)
+![显存隔离：HAMi-Core 把每次分配和限额对照检查](/img/docs/zh/core-concepts/memory-isolation.svg#light-only) ![显存隔离：HAMi-Core 把每次分配和限额对照检查](/img/docs/zh/core-concepts/memory-isolation-dark.svg#dark-only)
 
 ## 算力
 
@@ -41,7 +41,7 @@ Pod 启动时，device plugin 把 `libvgpu.so` 和 `/etc/ld.so.preload` 挂进�
 - 一个后台线程采样 GPU 使用率并补充计数器。容器用量低于份额时多补，高于份额时少补。
 - `gpucores` 为 0 或 100 时，HAMi-Core 不限制 kernel 的提交。
 
-![限速开启时的算力限制：kernel 扣除令牌，用完后等待，补充后继续](/img/docs/zh/core-concepts/compute-isolation.svg)
+![限速开启时的算力限制：kernel 扣除令牌，用完后等待，补充后继续](/img/docs/zh/core-concepts/compute-isolation.svg#light-only) ![限速开启时的算力限制：kernel 扣除令牌，用完后等待，补充后继续](/img/docs/zh/core-concepts/compute-isolation-dark.svg#dark-only)
 
 限速有三种模式。集群级用 Helm 参数 `devices.nvidia.gpuCorePolicy` 设置，单个容器用环境变量 `GPU_CORE_UTILIZATION_POLICY` 设置，见[全局配置](../userguide/configure.md)。
 

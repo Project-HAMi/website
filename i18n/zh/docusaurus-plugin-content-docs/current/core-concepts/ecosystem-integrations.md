@@ -8,7 +8,7 @@ HAMi 并不会取代你现有的 Kubernetes 调度器，而是在它基础上做
 
 这一页讲的是 HAMi 怎样和默认调度器，还有四个生态伙伴协同工作，分别是 **Volcano**、**Kueue**、**Koordinator**，以及 NVIDIA 的 **KAI Scheduler**。
 
-![HAMi 生态集成](/img/docs/zh/core-concepts/ecosystem-integrations.svg)
+![HAMi 生态集成](/img/docs/zh/core-concepts/ecosystem-integrations.svg#light-only) ![HAMi 生态集成](/img/docs/zh/core-concepts/ecosystem-integrations-dark.svg#dark-only)
 
 ## HAMi 的集成方式
 

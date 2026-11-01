@@ -7,7 +7,7 @@ translated: true
 
 Kubernetes 有两种把设备交给 Pod 的方式：device plugin API 和动态资源分配（DRA）。经典 HAMi 使用 device plugin，[HAMi-DRA](https://github.com/Project-HAMi/HAMi-DRA) 使用 DRA。
 
-![device plugin 和 DRA 的设备信息流](/img/docs/zh/core-concepts/device-plugin-vs-dra.svg)
+![device plugin 和 DRA 的设备信息流](/img/docs/zh/core-concepts/device-plugin-vs-dra.svg#light-only) ![device plugin 和 DRA 的设备信息流](/img/docs/zh/core-concepts/device-plugin-vs-dra-dark.svg#dark-only)
 
 ## Device plugin
 

@@ -32,7 +32,7 @@ Each line represents a loaded kernel module. The columns are: module name, memor
 
 The NVIDIA driver consists of multiple kernel modules with dependencies between them:
 
-![NVIDIA driver modules and the path from user space to the GPU](/img/docs/en/core-concepts/gpu-driver.svg)
+![NVIDIA driver modules and the path from user space to the GPU](/img/docs/en/core-concepts/gpu-driver.svg#light-only) ![NVIDIA driver modules and the path from user space to the GPU](/img/docs/en/core-concepts/gpu-driver-dark.svg#dark-only)
 
 ### Module Descriptions
 

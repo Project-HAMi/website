@@ -6,7 +6,7 @@ translated: true
 
 HAMi 的整体架构如下所示：
 
-![HAMi 组件和一个 Pod 的完整路径](/img/docs/zh/core-concepts/hami-architecture-flow.svg)
+![HAMi 组件和一个 Pod 的完整路径](/img/docs/zh/core-concepts/hami-architecture-flow.svg#light-only) ![HAMi 组件和一个 Pod 的完整路径](/img/docs/zh/core-concepts/hami-architecture-flow-dark.svg#dark-only)
 
 HAMi 由以下组件组成：
 

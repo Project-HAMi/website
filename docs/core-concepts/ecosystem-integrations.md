@@ -8,7 +8,7 @@ HAMi doesn't replace your Kubernetes scheduler. It extends it. HAMi handles GPU 
 
 This page shows how HAMi works alongside the default scheduler and four ecosystem partners: **Volcano**, **Kueue**, **Koordinator**, and NVIDIA's **KAI Scheduler**.
 
-![HAMi Ecosystem Integrations](/img/docs/en/core-concepts/ecosystem-integrations.svg)
+![HAMi Ecosystem Integrations](/img/docs/en/core-concepts/ecosystem-integrations.svg#light-only) ![HAMi Ecosystem Integrations](/img/docs/en/core-concepts/ecosystem-integrations-dark.svg#dark-only)
 
 ## How HAMi integrates
 

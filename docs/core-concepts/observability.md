@@ -5,7 +5,7 @@ description: Where HAMi's allocation and usage metrics come from, and why they d
 
 HAMi reports two views of every GPU. The allocation view shows what the scheduler has handed out. The usage view shows what containers actually use. Both are Prometheus metrics.
 
-![Where HAMi allocation and usage metrics come from](/img/docs/en/core-concepts/observability.svg)
+![Where HAMi allocation and usage metrics come from](/img/docs/en/core-concepts/observability.svg#light-only) ![Where HAMi allocation and usage metrics come from](/img/docs/en/core-concepts/observability-dark.svg#dark-only)
 
 ## Allocation view
 

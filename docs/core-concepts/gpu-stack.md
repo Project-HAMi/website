@@ -14,7 +14,7 @@ Understanding this layered structure is the foundation for troubleshooting GPU i
 
 The diagram below illustrates the complete layered structure of the GPU software stack:
 
-![GPU Software Stack 5-Layer Architecture](/img/docs/en/core-concepts/gpu-stack.svg)
+![GPU Software Stack 5-Layer Architecture](/img/docs/en/core-concepts/gpu-stack.svg#light-only) ![GPU Software Stack 5-Layer Architecture](/img/docs/en/core-concepts/gpu-stack-dark.svg#dark-only)
 
 ## Layer Details
 
@@ -71,19 +71,19 @@ Understanding the key call chains within the GPU software stack helps with troub
 
 From creation to execution, a GPU-using Pod goes through the following dependency chain:
 
-![Complete GPU Pod Dependency Chain](/img/docs/en/core-concepts/gpu-chain-pod.svg)
+![Complete GPU Pod Dependency Chain](/img/docs/en/core-concepts/gpu-chain-pod.svg#light-only) ![Complete GPU Pod Dependency Chain](/img/docs/en/core-concepts/gpu-chain-pod-dark.svg#dark-only)
 
 ### nvidia-smi Call Chain
 
 The complete path for `nvidia-smi` to query GPU information:
 
-![nvidia-smi Call Chain](/img/docs/en/core-concepts/gpu-chain-nvidia-smi.svg)
+![nvidia-smi Call Chain](/img/docs/en/core-concepts/gpu-chain-nvidia-smi.svg#light-only) ![nvidia-smi Call Chain](/img/docs/en/core-concepts/gpu-chain-nvidia-smi-dark.svg#dark-only)
 
 ### Management Tool Call Chain
 
 Multiple management tools all access the GPU through NVML:
 
-![Management Tool Call Chain](/img/docs/en/core-concepts/gpu-chain-management.svg)
+![Management Tool Call Chain](/img/docs/en/core-concepts/gpu-chain-management.svg#light-only) ![Management Tool Call Chain](/img/docs/en/core-concepts/gpu-chain-management-dark.svg#dark-only)
 
 As you can see, whether it is a command-line tool, a monitoring component, or a Kubernetes device plugin, they all ultimately access the hardware through the NVML -> kernel driver -> GPU path.
 
@@ -91,13 +91,13 @@ As you can see, whether it is a command-line tool, a monitoring component, or a 
 
 In Kubernetes, the flow of GPU resources from hardware to Pod:
 
-![Kubernetes GPU Scheduling Chain](/img/docs/en/core-concepts/gpu-chain-kubernetes.svg)
+![Kubernetes GPU Scheduling Chain](/img/docs/en/core-concepts/gpu-chain-kubernetes.svg#light-only) ![Kubernetes GPU Scheduling Chain](/img/docs/en/core-concepts/gpu-chain-kubernetes-dark.svg#dark-only)
 
 ### HAMi Enhanced Scheduling Chain
 
 Building on the native scheduling chain, HAMi replaces the Device Plugin and adds a scheduler extender to implement GPU partitioning and sharing:
 
-![HAMi Enhanced Scheduling Chain](/img/docs/en/core-concepts/gpu-chain-hami.svg)
+![HAMi Enhanced Scheduling Chain](/img/docs/en/core-concepts/gpu-chain-hami.svg#light-only) ![HAMi Enhanced Scheduling Chain](/img/docs/en/core-concepts/gpu-chain-hami-dark.svg#dark-only)
 
 ## Component Quick Reference
 

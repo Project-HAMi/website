@@ -30,7 +30,7 @@ HAMi 的设备共享能力包括：
 
 ## 一张卡如何共享
 
-![三个 Pod 按槽位、显存和算力共享一张 GPU](/img/docs/zh/core-concepts/device-sharing.svg)
+![三个 Pod 按槽位、显存和算力共享一张 GPU](/img/docs/zh/core-concepts/device-sharing.svg#light-only) ![三个 Pod 按槽位、显存和算力共享一张 GPU](/img/docs/zh/core-concepts/device-sharing-dark.svg#dark-only)
 
 每张卡有三项额度：
 
@@ -44,7 +44,7 @@ HAMi 的设备共享能力包括：
 
 NVIDIA device plugin 也能通过 time-slicing 或 MPS 共享一张卡。HAMi 的共享方式和 time-slicing 相同，并为每个容器加上显存和算力限额。
 
-![time-slicing、MPS 和 HAMi 如何共享一张 GPU](/img/docs/zh/core-concepts/sharing-compare.svg)
+![time-slicing、MPS 和 HAMi 如何共享一张 GPU](/img/docs/zh/core-concepts/sharing-compare.svg#light-only) ![time-slicing、MPS 和 HAMi 如何共享一张 GPU](/img/docs/zh/core-concepts/sharing-compare-dark.svg#dark-only)
 
 ## 默认值
 

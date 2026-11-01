@@ -12,7 +12,7 @@ HAMi is a [Cloud Native Computing Foundation](https://cncf.io/) [Incubating proj
 
 Kubernetes counts GPUs in whole numbers. A Pod that asks for `nvidia.com/gpu: 1` gets an entire card, even when its model needs 2 GiB of a 24 GiB card. The rest of the card's memory and compute cannot go to other Pods. GPU utilization stays low, expensive hardware goes to waste, and other Pods wait for the next free card.
 
-![One GPU without HAMi and with HAMi](/img/docs/en/core-concepts/hami-before-after.svg)
+![One GPU without HAMi and with HAMi](/img/docs/en/core-concepts/hami-before-after.svg#light-only) ![One GPU without HAMi and with HAMi](/img/docs/en/core-concepts/hami-before-after-dark.svg#dark-only)
 
 ## Key Features
 

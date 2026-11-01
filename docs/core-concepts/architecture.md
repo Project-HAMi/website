@@ -5,7 +5,7 @@ description: The four HAMi components and the path a Pod takes through them.
 
 The overall architecture of HAMi is shown as below:
 
-![HAMi components and the path of a Pod](/img/docs/en/core-concepts/hami-architecture-flow.svg)
+![HAMi components and the path of a Pod](/img/docs/en/core-concepts/hami-architecture-flow.svg#light-only) ![HAMi components and the path of a Pod](/img/docs/en/core-concepts/hami-architecture-flow-dark.svg#dark-only)
 
 HAMi consists of the following components:
 

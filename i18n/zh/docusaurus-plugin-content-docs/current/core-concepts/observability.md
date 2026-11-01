@@ -6,7 +6,7 @@ translated: true
 
 HAMi 为每张 GPU 提供两种视图。分配视图显示调度器已经分出去多少，使用视图显示容器实际用了多少。两者都以 Prometheus 指标的形式提供。
 
-![HAMi 的分配指标和使用指标从哪里来](/img/docs/zh/core-concepts/observability.svg)
+![HAMi 的分配指标和使用指标从哪里来](/img/docs/zh/core-concepts/observability.svg#light-only) ![HAMi 的分配指标和使用指标从哪里来](/img/docs/zh/core-concepts/observability-dark.svg#dark-only)
 
 ## 分配视图
 
