@@ -1,45 +1,14 @@
 ---
 title: Ecosystem Integrations
+description: How HAMi works with Volcano, Kueue, Koordinator, and KAI Scheduler.
+sidebar_label: Integrations
 ---
 
 HAMi doesn't replace your Kubernetes scheduler. It extends it. HAMi handles GPU virtualization, sharing, and runtime isolation, and it slots into the wider Kubernetes scheduling world so you can pair **GPU sharing** with **batch scheduling, job queuing, and colocation**.
 
 This page shows how HAMi works alongside the default scheduler and four ecosystem partners: **Volcano**, **Kueue**, **Koordinator**, and NVIDIA's **KAI Scheduler**.
 
-```mermaid
-%% title: HAMi Ecosystem Integrations
-flowchart TB
-    WL["AI Workloads<br/>(inference · training · batch)"]
-
-    subgraph Schedulers["Scheduling & Queueing Ecosystem"]
-        direction LR
-        KS["kube-scheduler<br/>(native)"]
-        VOL["Volcano<br/>gang & batch"]
-        KUE["Kueue<br/>queueing & fairness"]
-        KOO["Koordinator<br/>device scheduling"]
-        KAI["KAI Scheduler<br/>(NVIDIA) AI batch"]
-    end
-
-    subgraph HAMi["HAMi"]
-        direction TB
-        HSCHED["hami-scheduler<br/>vGPU allocation · kube-scheduler extender"]
-        HDP["hami-device-plugin<br/>vGPU resources"]
-        CORE["HAMi-core<br/>runtime GPU isolation"]
-    end
-
-    HW["Heterogeneous Accelerators<br/>NVIDIA · AMD · Huawei Ascend · Cambricon · Hygon · Mthreads · Iluvatar · …"]
-
-    WL --> Schedulers
-    KS -->|"GPU filter / score"| HSCHED
-    HSCHED --> KS
-    KS --> HDP
-    HDP --> CORE
-    VOL -.->|"volcano-vgpu-device-plugin"| CORE
-    KOO -.->|"HAMi-core isolation"| CORE
-    KAI -.->|"kai-resource-isolator (HAMi-core)"| CORE
-    KUE -.->|"queues workloads over<br/>vGPU ResourceFlavors"| KS
-    CORE --> HW
-```
+![HAMi Ecosystem Integrations](/img/docs/en/core-concepts/ecosystem-integrations.svg#light-only) ![HAMi Ecosystem Integrations](/img/docs/en/core-concepts/ecosystem-integrations-dark.svg#dark-only)
 
 ## How HAMi integrates
 
@@ -66,7 +35,7 @@ Out of the box, `kube-scheduler` delegates GPU filtering and scoring to `hami-sc
 
 ### Kueue for job queuing and fairness
 
-[Kueue](https://kueue.sigs.k8s.io/) sits above the default scheduler and manages job admission, fairness, and quotas through `ResourceFlavor` and `ClusterQueue`. HAMi's vGPU resources show up as schedulable flavors that Kueue can queue and admit. That gives you **cohort fairness and quota enforcement** on top of GPU sharing, all without replacing `kube-scheduler`.
+[Kueue](https://kueue.sigs.k8s.io/) sits above the default scheduler and manages job admission, fairness, and quotas through `ResourceFlavor` and `ClusterQueue`. Kueue's `ResourceTransformation` multiplies `nvidia.com/gpumem` and `nvidia.com/gpucores` by the `nvidia.com/gpu` count, and the `ClusterQueue` sets quotas on the totals. That gives you **cohort fairness and quota enforcement** on top of GPU sharing, all without replacing `kube-scheduler`.
 
 - Guide: [Using HAMi with Kueue](../userguide/kueue/how-to-use-kueue.md)
 - Upstream integration doc: [Running HAMi workloads in Kueue](https://kueue.sigs.k8s.io/docs/tasks/run/using_hami/)
@@ -81,7 +50,7 @@ Out of the box, `kube-scheduler` delegates GPU filtering and scoring to `hami-sc
 
 [KAI Scheduler](https://github.com/kai-scheduler/KAI-Scheduler) is NVIDIA's open-source, Kubernetes-native scheduler for AI workloads. It grew out of Run:ai, ships under Apache 2.0, and is a CNCF Sandbox project. It brings **PodGroup gang scheduling**, **hierarchical fair queues**, **fractional GPU sharing**, **topology-aware placement**, and **elastic workloads**. These are the things AI training needs that the default scheduler doesn't offer.
 
-Here's the catch, though. KAI's fractional GPU sharing is _cooperative_: the scheduler keeps the sum of requests within a card, but it doesn't physically stop a Pod from using more memory than it asked for. A container that requests 2 GiB can still see the whole GPU through `nvidia-smi`. In a multi-tenant production cluster, that's the gap that bites you.
+Here's the catch, though. KAI's default GPU sharing mode, `NonMemoryEnforced`, doesn't enforce memory at runtime: the scheduler keeps the sum of requests within a card, but it doesn't physically stop a Pod from using more memory than it asked for. A container that requests 2 GiB can still see the whole GPU through `nvidia-smi`. In a multi-tenant production cluster, that's the gap that bites you.
 
 HAMi-core fills it. **KAI Scheduler does the scheduling, HAMi-core does the isolation.** The integration uses HAMi-core directly rather than the full HAMi platform, so KAI keeps its own scheduler. Turn on the `hamicore` plugin in KAI Scheduler to inject `CUDA_DEVICE_MEMORY_LIMIT`, then deploy [`kai-resource-isolator`](https://github.com/Project-HAMi/KAI-resource-isolator). It's a HAMi project component that ships HAMi-core to each node through a DaemonSet and uses a MutatingWebhook to inject the library and `ld.so.preload`. At runtime `libvgpu.so` enforces the memory cap, so `nvidia-smi` shows only the slice you allocated.
 
