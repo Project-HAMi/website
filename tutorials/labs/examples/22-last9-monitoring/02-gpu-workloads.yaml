@@ -1,0 +1,90 @@
+# Two workloads that share one GPU. Each gets 4000 MiB and 30% of the cores,
+# but holds only ALLOC_MIB of memory, so allocated and used differ.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: last9-lab
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gpu-workload
+  namespace: last9-lab
+data:
+  workload.py: |
+    import os
+    import torch
+
+    alloc_mib = int(os.environ["ALLOC_MIB"])
+    hold = torch.empty(alloc_mib * 1024 * 1024, dtype=torch.uint8, device="cuda")
+    print(f"holding {alloc_mib} MiB", flush=True)
+
+    a = torch.randn(2048, 2048, device="cuda")
+    while True:
+        a = (a @ a) * 1e-4
+        torch.cuda.synchronize()
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gpu-workload-a
+  namespace: last9-lab
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: gpu-workload-a }
+  template:
+    metadata:
+      labels: { app: gpu-workload-a }
+      annotations:
+        # Replace with the UUID of one GPU on your node, so both workloads land on the same card.
+        nvidia.com/use-gpuuuid: "GPU-26e02ca7-f4ba-b335-915c-2a8541deb8a4"
+    spec:
+      containers:
+        - name: cuda
+          image: pytorch/pytorch:2.14.0-cuda12.6-cudnn9-runtime
+          command: ["python", "/app/workload.py"]
+          env:
+            - name: ALLOC_MIB
+              value: "1000"
+          volumeMounts: [{ name: app, mountPath: /app }]
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+              nvidia.com/gpumem: 4000
+              nvidia.com/gpucores: 30
+      volumes:
+        - name: app
+          configMap: { name: gpu-workload }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gpu-workload-b
+  namespace: last9-lab
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: gpu-workload-b }
+  template:
+    metadata:
+      labels: { app: gpu-workload-b }
+      annotations:
+        nvidia.com/use-gpuuuid: "GPU-26e02ca7-f4ba-b335-915c-2a8541deb8a4"
+    spec:
+      containers:
+        - name: cuda
+          image: pytorch/pytorch:2.14.0-cuda12.6-cudnn9-runtime
+          command: ["python", "/app/workload.py"]
+          env:
+            - name: ALLOC_MIB
+              value: "1000"
+          volumeMounts: [{ name: app, mountPath: /app }]
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+              nvidia.com/gpumem: 4000
+              nvidia.com/gpucores: 30
+      volumes:
+        - name: app
+          configMap: { name: gpu-workload }

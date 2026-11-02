@@ -1,0 +1,43 @@
+# kube-prometheus-stack in agent mode: Prometheus Operator plus one Prometheus Agent
+# that scrapes the HAMi ServiceMonitors and remote-writes to Last9.
+# Install with: envsubst < 01-kube-prometheus-stack-values.yaml | helm install ... -f -
+
+# Last9 stores and alerts on the data, and the lab uses HAMi metrics only.
+alertmanager:
+  enabled: false
+grafana:
+  enabled: false
+kubeStateMetrics:
+  enabled: false
+nodeExporter:
+  enabled: false
+kubernetesServiceMonitors:
+  enabled: false
+defaultRules:
+  create: false
+
+prometheus:
+  agentMode: true
+  prometheusSpec:
+    scrapeInterval: 15s
+    externalLabels:
+      cluster: hami-lab
+    # Pick up only the ServiceMonitors created by the HAMi chart.
+    serviceMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelector:
+      matchLabels:
+        app.kubernetes.io/instance: hami
+    remoteWrite:
+      - url: ${LAST9_WRITE_URL}
+        basicAuth:
+          username:
+            name: last9-remote-write
+            key: username
+          password:
+            name: last9-remote-write
+            key: password
+        # Send only HAMi series to keep the Last9 series count small.
+        writeRelabelConfigs:
+          - sourceLabels: [__name__]
+            regex: hami_.*
+            action: keep
