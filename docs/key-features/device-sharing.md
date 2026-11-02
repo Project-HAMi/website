@@ -1,6 +1,6 @@
 ---
 title: Device sharing
-description: What a Pod can ask for, and how several Pods share one card.
+description: Size NVIDIA GPU requests by device count, memory, and compute share. See how slot, memory, and compute budgets limit how many Pods fit on one card.
 ---
 
 HAMi lets multiple tasks share the same GPU, MLU, or NPU device, maximizing the utilization of heterogeneous AI computing resources.

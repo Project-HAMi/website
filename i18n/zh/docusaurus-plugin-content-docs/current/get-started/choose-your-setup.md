@@ -1,5 +1,6 @@
 ---
 title: 选择你的方案
+description: 根据集群条件选择经典 HAMi 或 HAMi-DRA。如果已使用 Volcano 或 KAI Scheduler，可比较它们的 GPU 调度和隔离方式。
 sidebar_label: 选择你的方案
 translated: true
 ---

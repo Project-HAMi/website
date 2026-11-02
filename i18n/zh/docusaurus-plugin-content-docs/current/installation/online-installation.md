@@ -1,6 +1,7 @@
 ---
 sidebar_label: 通过 Helm 在线安装
 title: 通过 Helm 在线安装
+description: 使用 Helm 新装 HAMi，按所选 Chart 版本准备 values 文件并配置镜像源，安装后验证调度器和设备插件。
 ---
 
 使用官方 Helm Chart 安装新的 HAMi release。已有 release 按[升级指南](./upgrade.md)操作。

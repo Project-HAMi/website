@@ -1,6 +1,6 @@
 ---
 title: 设备共享
-description: Pod 可以申请哪些资源，以及多个 Pod 如何共享一张卡。
+description: 按 GPU 数量、显存和算力份额填写 NVIDIA 资源请求，了解槽位、显存和算力三项额度如何决定一张卡能容纳多少个 Pod。
 translated: true
 ---
 

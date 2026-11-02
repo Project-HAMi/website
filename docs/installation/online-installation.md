@@ -1,6 +1,7 @@
 ---
 sidebar_label: Online installation from Helm
 title: Online installation from Helm
+description: Select a HAMi chart version, configure Helm values and image sources, then install a new release and verify the scheduler and device plugin.
 ---
 
 Install a new HAMi release with the official Helm chart. For an existing release, follow [Upgrade](./upgrade.md).

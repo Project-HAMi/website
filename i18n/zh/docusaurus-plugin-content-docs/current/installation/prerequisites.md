@@ -1,5 +1,6 @@
 ---
 title: 前置条件
+description: 安装 HAMi 前核对集群要求，准备 NVIDIA 节点的驱动和容器运行时，或查找其他设备的准备指南。
 sidebar_label: 前置条件
 translated: true
 ---

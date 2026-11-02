@@ -1,5 +1,6 @@
 ---
 title: Troubleshooting
+description: Troubleshoot HAMi device plugins and GPU workloads by symptom. Use logs, Pod events, and runtime settings to identify causes and find fixes.
 ---
 
 ## GPU Memory Limit Not Enforced {#gpu-memory-limit-not-enforced}

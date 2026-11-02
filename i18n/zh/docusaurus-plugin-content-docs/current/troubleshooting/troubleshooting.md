@@ -1,5 +1,6 @@
 ---
 title: 排障手册
+description: 按故障现象查找 HAMi 设备插件和 GPU 工作负载的排障步骤，结合日志、Pod 事件和运行时配置定位原因并选择修复方法。
 translated: true
 ---
 

@@ -1,5 +1,6 @@
 ---
 title: FAQ
+description: Look up device support, troubleshoot GPU memory limits, and check how HAMi can coexist with the NVIDIA device plugin using distinct resource names.
 ---
 
 ## Supported Device Vendors and Specific Models

@@ -16,7 +16,8 @@
     "get-started/deploy-with-helm",
     "installation/online-installation",
     "get-started/verify-hami",
-    "faq/faq"
+    "faq/faq",
+    "troubleshooting/troubleshooting"
   ],
   "sections": [
     {
@@ -49,6 +50,13 @@
     },
     {
       "path": "faq",
+      "title": {
+        "en": "FAQ",
+        "zh": "常见问题"
+      }
+    },
+    {
+      "path": "troubleshooting",
       "title": {
         "en": "FAQ",
         "zh": "常见问题"
