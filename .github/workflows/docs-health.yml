@@ -45,5 +45,8 @@ jobs:
           DOCUSAURUS_SITE_URL: http://127.0.0.1:3000
         run: npm run build
 
+      - name: Check discovery artifacts
+        run: python3 scripts/check-discovery.py
+
       - name: Broken Internal Link Check
         run: bash scripts/check-links.sh
