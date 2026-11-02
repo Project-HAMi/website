@@ -35,7 +35,7 @@ function getTools() {
     },
     {
       name: `${TOOL_NAMESPACE}.searchDocs`,
-      description: "Search HAMi documentation by opening the documentation page with a query.",
+      description: "Search HAMi documentation by opening the localized search page with a query.",
       inputSchema: {
         type: "object",
         required: ["query"],
@@ -48,7 +48,8 @@ function getTools() {
         additionalProperties: false,
       },
       execute: async ({ query }) => {
-        const url = new URL(docsUrl(window.location.pathname));
+        const localePath = getLocalePath(window.location.pathname);
+        const url = new URL(`${localePath}/search`, window.location.origin);
         url.searchParams.set("q", query);
         window.location.assign(url.toString());
         return { url: url.toString() };
