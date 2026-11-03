@@ -1,5 +1,6 @@
 ---
 title: 常见问题
+description: 查询设备支持范围，排查显存限制问题，了解 vGPU 分配机制及 HAMi 与其他 Kubernetes 工具的集成关系。
 ---
 
 ## 支持的设备厂商及具体型号

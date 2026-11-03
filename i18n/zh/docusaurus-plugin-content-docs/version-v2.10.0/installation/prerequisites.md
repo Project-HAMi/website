@@ -2,6 +2,7 @@
 title: 前置条件
 sidebar_label: 前置条件
 translated: true
+description: 安装 HAMi 前核对集群要求，准备 NVIDIA 节点的驱动和容器运行时，或查找其他设备的准备指南。
 ---
 
 安装 HAMi 前，按以下要求准备 Kubernetes 集群和设备节点。

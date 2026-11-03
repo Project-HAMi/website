@@ -1,5 +1,6 @@
 ---
 title: GPU 虚拟化原理
+description: HAMi 如何用 binpack 或 spread 策略选择节点和 NVIDIA GPU，并通过拦截 CUDA API 调用限制容器的显存和算力。
 sidebar_label: GPU 虚拟化
 translated: true
 ---

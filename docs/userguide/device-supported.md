@@ -1,5 +1,6 @@
 ---
 title: Device supported by HAMi
+description: Find supported device models, compare memory and compute isolation capabilities, and follow the setup and allocation guides for your hardware.
 displayed_sidebar: docs
 ---
 

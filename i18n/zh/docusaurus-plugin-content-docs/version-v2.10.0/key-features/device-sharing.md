@@ -1,6 +1,7 @@
 ---
 title: 设备共享
 translated: true
+description: 了解 HAMi 的设备共享能力，包括显存分配、设备选择、资源限额和动态 MIG 支持。
 ---
 
 HAMi 允许多个任务共享同一块 GPU、MLU 或 NPU 设备，从而最大化异构 AI 计算资源的利用率。

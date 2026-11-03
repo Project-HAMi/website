@@ -1,6 +1,7 @@
 ---
 title: Device supported by HAMi
 displayed_sidebar: docs
+description: Find supported device models, compare memory and compute isolation capabilities, and follow the setup and allocation guides for your hardware.
 ---
 
 The table below lists the devices supported by HAMi. This matrix reflects HAMi v2.10.0, the latest released version.

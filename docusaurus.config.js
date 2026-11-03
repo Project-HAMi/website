@@ -2,6 +2,8 @@ const { themes } = require("prism-react-renderer");
 const lightTheme = themes.github;
 const darkTheme = themes.dracula;
 const defaultLocale = "en";
+const llmsCatalog = require("./src/data/llms.json");
+const [latestDocsVersion] = require("./versions.json");
 const siteUrl = (process.env.DOCUSAURUS_SITE_URL || "https://project-hami.io").replace(/\/$/, "");
 const githubEditBaseUrl = "https://github.com/Project-HAMi/website/edit/master/";
 
@@ -51,7 +53,7 @@ async function localizedBlogPlugin(context, opts) {
 localizedBlogPlugin.validateOptions = require("@docusaurus/plugin-content-blog").validateOptions;
 
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
-module.exports = {
+const config = {
   title: "HAMi",
   tagline: "Heterogeneous AI Computing Virtualization Middleware",
   url: siteUrl,
@@ -462,4 +464,32 @@ module.exports = {
       },
     ],
   ],
+};
+
+module.exports = function () {
+  const locale = process.env.DOCUSAURUS_CURRENT_LOCALE || defaultLocale;
+  return {
+    ...config,
+    plugins: [
+      [
+        "docusaurus-plugin-llms",
+        {
+          description: llmsCatalog.summary[locale],
+          rootContent: llmsCatalog.guidance[locale],
+          version: latestDocsVersion,
+          docsDir: llmsCatalog.sections.map((section) => ({
+            path: `versioned_docs/version-${latestDocsVersion}/${section.path}`,
+            routeBasePath: `docs/${section.path}`,
+            label: section.title[locale],
+          })),
+          includeOrder: llmsCatalog.docs.map(
+            (id) => `versioned_docs/version-${latestDocsVersion}/${id}.md`,
+          ),
+          includeUnmatchedLast: false,
+          generateLLMsFullTxt: false,
+        },
+      ],
+      ...config.plugins,
+    ],
+  };
 };

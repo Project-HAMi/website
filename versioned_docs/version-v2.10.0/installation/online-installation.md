@@ -1,6 +1,7 @@
 ---
 sidebar_label: Online Installation from Helm
 title: Online Installation from Helm (Recommended)
+description: Install HAMi with the official Helm chart, customize values, and verify that the scheduler and device plugin are running.
 ---
 
 The recommended way to deploy HAMi in a Kubernetes cluster is via the official Helm chart.

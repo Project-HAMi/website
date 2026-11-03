@@ -1,6 +1,7 @@
 ---
 title: Choose Your Setup
 sidebar_label: Choose your setup
+description: Choose classic HAMi or HAMi-DRA based on cluster requirements, or compare GPU scheduling and isolation options for Volcano and KAI Scheduler.
 ---
 
 HAMi ships in more than one shape, and two other projects sit next to it. This page answers the question people ask first: which one do I install?

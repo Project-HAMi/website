@@ -2,6 +2,7 @@
 title: HAMi 支持的设备
 displayed_sidebar: docs
 translated: true
+description: 查询 HAMi 支持的设备型号，比较各型号的显存和算力隔离能力，并查找对应的设备配置与资源分配指南。
 ---
 
 下表列出了 HAMi 支持的设备。本表反映的是 HAMi 最新发布版本 v2.10.0。

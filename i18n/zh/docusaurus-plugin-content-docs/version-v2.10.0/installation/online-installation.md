@@ -1,6 +1,7 @@
 ---
 sidebar_label: 通过 Helm 在线安装
 title: 通过 Helm 在线安装（推荐）
+description: 通过官方 Helm Chart 安装 HAMi，自定义 values 配置，并检查调度器和设备插件的运行状态。
 ---
 
 在 Kubernetes 集群中部署 HAMi 的推荐方式是使用官方 Helm Chart。

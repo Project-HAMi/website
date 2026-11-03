@@ -1,6 +1,7 @@
 ---
 title: Quick Start
 sidebar_label: Quick Start
+description: Install HAMi with Helm, run a sample Pod on an NVIDIA GPU, and use nvidia-smi to check how much GPU memory the container can see.
 ---
 
 This guide explains how to install HAMi with Helm, then uses an NVIDIA GPU example to run a Pod and check the GPU memory visible to the container.

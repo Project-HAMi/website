@@ -1,6 +1,6 @@
 ---
 title: 架构设计
-description: HAMi 的四个组件，以及一个 Pod 依次经过它们的路径。
+description: 跟踪一个 Pod 的 NVIDIA GPU 显存请求，了解 Webhook 准入、调度器选卡、设备插件分配 GPU 和 HAMi-Core 在容器内执行限额的过程。
 translated: true
 ---
 

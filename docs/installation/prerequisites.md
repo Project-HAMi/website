@@ -1,5 +1,6 @@
 ---
 title: Prerequisites
+description: Check cluster requirements, prepare NVIDIA drivers and the container runtime, and find the setup guide for your device before installing HAMi.
 sidebar_label: Prerequisites
 ---
 

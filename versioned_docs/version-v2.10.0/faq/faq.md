@@ -1,5 +1,6 @@
 ---
 title: FAQ
+description: Look up device support, troubleshoot GPU memory limits, and understand vGPU allocation and integration with other Kubernetes tools.
 ---
 
 ## Supported Device Vendors and Specific Models

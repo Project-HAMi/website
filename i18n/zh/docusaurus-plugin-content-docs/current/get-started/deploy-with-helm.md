@@ -1,5 +1,6 @@
 ---
 title: 快速部署
+description: 使用 Helm 安装 HAMi，在 NVIDIA GPU 上运行示例 Pod，并用 nvidia-smi 检查容器可见的显存容量。
 sidebar_label: 快速部署
 translated: true
 ---

@@ -1,6 +1,6 @@
 ---
 title: Architecture
-description: The four HAMi components and the path a Pod takes through them.
+description: Trace an NVIDIA GPU memory request from Pod admission and card selection through device allocation to limit enforcement by HAMi-Core.
 ---
 
 The overall architecture of HAMi is shown as below:
