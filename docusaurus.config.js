@@ -4,7 +4,11 @@ const darkTheme = themes.dracula;
 const defaultLocale = "en";
 const llmsCatalog = require("./src/data/llms.json");
 const [latestDocsVersion] = require("./versions.json");
-const siteUrl = (process.env.DOCUSAURUS_SITE_URL || "https://project-hami.io").replace(/\/$/, "");
+// Project identity stays on the public domain, including in preview builds.
+const projectUrl = "https://project-hami.io";
+const siteUrl = (process.env.DOCUSAURUS_SITE_URL || projectUrl).replace(/\/$/, "");
+const siteTitle = "HAMi";
+const siteLogo = "img/hami-graph-color.svg";
 const githubEditBaseUrl = "https://github.com/Project-HAMi/website/edit/master/";
 
 // Site-wide announcement bar switch. Flip to true to show it; keep `id` stable
@@ -54,7 +58,7 @@ localizedBlogPlugin.validateOptions = require("@docusaurus/plugin-content-blog")
 
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 const config = {
-  title: "HAMi",
+  title: siteTitle,
   tagline: "Heterogeneous AI Computing Virtualization Middleware",
   url: siteUrl,
   baseUrl: "/",
@@ -100,6 +104,32 @@ const config = {
     },
   },
   headTags: [
+    {
+      tagName: "script",
+      attributes: {
+        type: "application/ld+json",
+      },
+      innerHTML: JSON.stringify({
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": `${projectUrl}/#organization`,
+            name: siteTitle,
+            url: `${projectUrl}/`,
+            logo: `${projectUrl}/${siteLogo}`,
+            sameAs: ["https://github.com/Project-HAMi"],
+          },
+          {
+            "@type": "WebSite",
+            "@id": `${projectUrl}/#website`,
+            name: siteTitle,
+            url: `${projectUrl}/`,
+            publisher: { "@id": `${projectUrl}/#organization` },
+          },
+        ],
+      }),
+    },
     {
       tagName: "script",
       attributes: {},
@@ -297,11 +327,11 @@ const config = {
     },
     announcementBar,
     navbar: {
-      title: "HAMi",
+      title: siteTitle,
       logo: {
         alt: "HAMi",
-        src: "img/hami-graph-color.svg",
-        srcDark: "img/hami-graph-color.svg",
+        src: siteLogo,
+        srcDark: siteLogo,
       },
       items: [
         {
