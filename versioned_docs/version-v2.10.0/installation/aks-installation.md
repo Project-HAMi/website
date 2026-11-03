@@ -1,11 +1,18 @@
 ---
 title: Install HAMi on Azure Kubernetes Service
 sidebar_label: HAMi on AKS
+description: Install HAMi on a driver-only NVIDIA GPU node pool in Azure Kubernetes Service, then verify vGPU scheduling.
 ---
 
 This guide covers the AKS-specific configuration for installing classic HAMi on a Linux NVIDIA GPU node pool where AKS installs the driver and HAMi is the only device plugin. It requires HAMi 2.10.0 or later. GPU Operator, Windows node pools, and Node Auto Provisioning are not covered.
 
 Start with [Prerequisites](./prerequisites.md) for the shared node requirements. Apply the settings below before following [Online Installation from Helm](./online-installation.md). For CDI configuration, see [NVIDIA CDI support](./configure-cdi.md).
+
+:::note Limitations
+
+AKS manages the `namespaceSelector` of the HAMi webhook and excludes control-plane and AKS-managed namespaces, so HAMi does not mutate Pods there. This guide sets `manageNamespaceSelector: false` to avoid Helm ownership conflicts ([HAMi issue #2039](https://github.com/Project-HAMi/HAMi/issues/2039)). As a result, the chart's namespace-level `hami.io/webhook: ignore` label and `whitelistNamespaces` do not apply. Use the per-Pod `hami.io/webhook: ignore` label instead.
+
+:::
 
 ## Create a driver-only GPU node pool
 
@@ -16,6 +23,8 @@ AKS calls this a **driver-only** setup: AKS installs the NVIDIA driver, and you 
 The full managed GPU profile installs an NVIDIA device plugin that advertises `nvidia.com/gpu`, the same resource HAMi's device plugin registers. Do not run both on the same nodes. The GPU management mode, driver choice, and MIG strategy cannot be changed after node-pool creation. If `gpuProfile.nvidia.managementMode` is `Managed`, create a replacement driver-only node pool.
 
 :::
+
+Use a current Azure CLI. See [Before you begin](https://learn.microsoft.com/azure/aks/aks-managed-gpu-nodes?tabs=add-ubuntu-gpu-node-pool%2Cmig-single%2Cdriver-only#before-you-begin) for the required `az` version.
 
 Create a dedicated user node pool. The `gpu=on` label is HAMi's node selector and is reapplied by AKS to nodes created during scale-out, reimage, and node-image upgrade:
 
@@ -79,7 +88,7 @@ devicePlugin:
       effect: NoSchedule
 ```
 
-- `manageNamespaceSelector: false` lets AKS own the webhook `namespaceSelector` and avoids Helm server-side apply conflicts. The chart then does not render `scheduler.admissionWebhook.whitelistNamespaces` or the namespace-level `hami.io/webhook: ignore` label. Use the per-Pod `hami.io/webhook: ignore` label to bypass the webhook.
+- `manageNamespaceSelector: false` lets AKS own the webhook `namespaceSelector` and avoids Helm server-side apply conflicts. See the limitations above.
 - `nvidiaDriverRoot: "/"` uses the driver installed on the node host.
 - `nvidiaNodeSelector` limits HAMi's device plugin to the dedicated pool.
 - `tolerations` replaces the chart's empty default and covers the AKS `sku=gpu` taint plus the `nvidia.com/gpu` taint used by some node images.
@@ -161,7 +170,7 @@ Use a fixed-size pool. HAMi's `nvidia.com/gpu` is a logical slot count, `nvidia.
 
 ### The HAMi device-plugin Pod is Pending
 
-The node must carry `kubernetes.azure.com/agentpool=gpunp` (your pool name), and the Helm values must tolerate `sku=gpu:NoSchedule`. Check with `kubectl describe node <gpu-node>`.
+The node must carry the `kubernetes.azure.com/agentpool=<node-pool>` label, where `<node-pool>` is your node pool name (`gpunp` in this guide). The Helm values must also configure the device plugin Pods to tolerate the `sku=gpu:NoSchedule` taint. Check the node labels and taints with `kubectl describe node <gpu-node>`.
 
 ### Node-pool creation reports `OverconstrainedAllocationRequest`
 

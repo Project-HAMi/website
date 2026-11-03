@@ -1,6 +1,7 @@
 ---
 title: 在 Azure Kubernetes Service 上安装 HAMi
 sidebar_label: AKS 上的 HAMi
+description: 在 AKS 仅驱动的 NVIDIA GPU 节点池上安装 HAMi，并验证 vGPU 调度。
 translated: true
 ---
 
@@ -8,15 +9,23 @@ translated: true
 
 通用节点要求见[安装前提条件](./prerequisites.md)。完成下文配置后，按[通过 Helm 在线安装](./online-installation.md)部署。CDI 配置见 [NVIDIA CDI 支持](./configure-cdi.md)。
 
+:::note 限制
+
+AKS 会管理 HAMi webhook 的 `namespaceSelector`，并排除控制平面和 AKS 托管的命名空间，因此 HAMi 不会修改这些命名空间中的 Pod。本文设置 `manageNamespaceSelector: false` 以避免 Helm 所有权冲突（[HAMi issue #2039](https://github.com/Project-HAMi/HAMi/issues/2039)），因此 Chart 的命名空间级 `hami.io/webhook: ignore` 标签和 `whitelistNamespaces` 不再生效。请改用 Pod 级的 `hami.io/webhook: ignore` 标签。
+
+:::
+
 ## 创建仅驱动的 GPU 节点池
 
 AKS 将这种方式称为**仅驱动（driver-only）**：AKS 安装 NVIDIA 驱动，Kubernetes 设备插件由你负责。请选择所在区域有配额且[AKS 支持的 NVIDIA GPU 虚拟机规格](https://learn.microsoft.com/azure/aks/use-nvidia-gpu#supported-gpu-enabled-vms)。示例使用 `Standard_NC4as_T4_v3`。
 
-:::warning 不要使用 AKS 完全托管 GPU 栈
+:::warning 不要使用 AKS 全托管 GPU 模式
 
 完全托管 GPU 配置会安装一个声明 `nvidia.com/gpu` 的 NVIDIA 设备插件，与 HAMi 设备插件注册的资源相同，不能在同一批节点上同时运行。GPU 管理模式、驱动选择和 MIG 策略在节点池创建后无法修改。如果 `gpuProfile.nvidia.managementMode` 为 `Managed`，请创建新的仅驱动节点池替换。
 
 :::
+
+请先使用较新的 Azure CLI，所需的 `az` 版本见[准备工作](https://learn.microsoft.com/azure/aks/aks-managed-gpu-nodes?tabs=add-ubuntu-gpu-node-pool%2Cmig-single%2Cdriver-only#before-you-begin)。
 
 创建专用的用户节点池。`gpu=on` 标签是 HAMi 的节点选择器，AKS 会在扩容、重置镜像和节点镜像升级创建的节点上重新应用：
 
@@ -80,7 +89,7 @@ devicePlugin:
       effect: NoSchedule
 ```
 
-- `manageNamespaceSelector: false` 让 AKS 管理 webhook 的 `namespaceSelector`，避免 Helm server-side apply 冲突。此时 Chart 不会渲染 `scheduler.admissionWebhook.whitelistNamespaces` 和命名空间级的 `hami.io/webhook: ignore` 标签。需要绕过 webhook 时，请使用 Pod 级的 `hami.io/webhook: ignore` 标签。
+- `manageNamespaceSelector: false` 让 AKS 管理 webhook 的 `namespaceSelector`，避免 Helm server-side apply 冲突。见上文的限制说明。
 - `nvidiaDriverRoot: "/"` 使用节点主机上安装的驱动。
 - `nvidiaNodeSelector` 将 HAMi 设备插件限制在专用节点池。
 - `tolerations` 替换 Chart 默认的空列表，覆盖 AKS 的 `sku=gpu` 污点，以及部分节点镜像使用的 `nvidia.com/gpu` 污点。
@@ -106,7 +115,7 @@ kubectl get node <gpu-node> \
   -o jsonpath='{.metadata.annotations.hami\.io/node-nvidia-register}{"\n"}{.status.allocatable.nvidia\.com/gpu}{"\n"}'
 ```
 
-AKS 会在运行中的 webhook `namespaceSelector` 里排除控制平面和 AKS 托管命名空间，HAMi 不会修改这些命名空间中的 Pod。请在运行中的选择器允许的应用命名空间里运行 HAMi 工作负载：
+AKS 会向 webhook 的 `namespaceSelector` 添加排除规则，使其跳过控制平面使用的命名空间，以及由 AKS 管理的命名空间。HAMi 的 webhook 不会修改这些命名空间中的 Pod。请先用以下命令查看集群中实际生效的选择条件，再选择符合条件的业务命名空间部署 HAMi 工作负载：
 
 ```bash
 kubectl get mutatingwebhookconfiguration hami-webhook \
@@ -162,11 +171,11 @@ AKS 会在扩容、重置镜像、修复和节点镜像升级时替换节点，�
 
 ### HAMi 设备插件 Pod 处于 Pending
 
-节点必须带有 `kubernetes.azure.com/agentpool=gpunp`（你的节点池名称），并且 Helm 值必须容忍 `sku=gpu:NoSchedule`。可用 `kubectl describe node <gpu-node>` 检查。
+节点必须带有 `kubernetes.azure.com/agentpool=<node-pool>` 标签，其中 `<node-pool>` 应替换为实际节点池名称（本文为 `gpunp`）。同时，应在 Helm values 中为设备插件 Pod 配置对 `sku=gpu:NoSchedule` 污点的容忍。可通过 `kubectl describe node <gpu-node>` 查看节点标签和污点。
 
 ### 创建节点池时报告 `OverconstrainedAllocationRequest`
 
-Azure 无法放置所请求的区域、虚拟机规格、磁盘类型和网络组合。这不是 HAMi 的错误。上面的命令使用 `--node-osdisk-type Managed`，避免临时磁盘容量成为额外约束。请选择其他 AKS 支持且有配额和容量的 GPU 虚拟机规格或区域。
+Azure 无法分配同时满足指定区域、虚拟机规格、磁盘类型和网络要求的资源。这不是 HAMi 导致的错误。上述命令使用 `--node-osdisk-type Managed`，避免临时 OS 磁盘的容量要求进一步限制资源分配。可以改用其他 AKS 支持的 GPU 虚拟机规格，或选择其他区域，并确认相应配额和可用容量充足。
 
 ### 设备插件无法发现 NVML 设备
 
