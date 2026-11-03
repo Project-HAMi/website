@@ -128,6 +128,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: hami-vgpu-test
+  namespace: <app-namespace>
 spec:
   restartPolicy: Never
   nodeSelector:
@@ -148,7 +149,7 @@ spec:
           nvidia.com/gpucores: 20
 ```
 
-`kubectl get pod hami-vgpu-test -o jsonpath='{.spec.schedulerName}'` must print `hami-scheduler`, and `kubectl exec hami-vgpu-test -- nvidia-smi --query-gpu=name,memory.total --format=csv,noheader` must report 2048 MiB instead of the physical memory. A Running Pod is not enough: the webhook failure policy is `Ignore`, so a webhook connectivity failure creates the Pod without HAMi's scheduler. For the full memory-limit test, see [Validate HAMi setup and vGPU behavior](../get-started/verify-hami.md). Delete the test Pod afterwards.
+`kubectl get pod hami-vgpu-test -n <app-namespace> -o jsonpath='{.spec.schedulerName}'` must print `hami-scheduler`, and `kubectl exec -n <app-namespace> hami-vgpu-test -- nvidia-smi --query-gpu=name,memory.total --format=csv,noheader` must report 2048 MiB instead of the physical memory. A Running Pod is not enough: the webhook failure policy is `Ignore`, so a webhook connectivity failure creates the Pod without HAMi's scheduler. For the full memory-limit test, see [Validate HAMi setup and vGPU behavior](../get-started/verify-hami.md). Delete the test Pod afterwards.
 
 HAMi-core provides CUDA and NVML software-level isolation. It is not a hardware boundary like MIG and should not isolate mutually untrusted tenants.
 
@@ -162,7 +163,7 @@ Use a fixed-size pool. HAMi's `nvidia.com/gpu` is a logical slot count, `nvidia.
 
 ## GPU Operator, MIG, and DRA
 
-- **GPU Operator:** The procedure above does not use it. If you need it, follow the [AKS GPU Operator guide](https://learn.microsoft.com/azure/aks/nvidia-gpu-operator) on a separate pool created with `--gpu-driver None`, set `devicePlugin.enabled=false` in the Operator values, and make its operands tolerate the `sku=gpu` taint. The Operator enables CDI by default, so also follow [NVIDIA CDI support](./configure-cdi.md) and check the driver root and `nvidia-ctk` path on the actual node.
+- **GPU Operator:** The procedure above does not use it. If you need it, follow the [AKS GPU Operator guide](https://learn.microsoft.com/azure/aks/nvidia-gpu-operator) on a separate pool created with `--gpu-driver None`, set `devicePlugin.enabled=false` in the Operator values, and make its operands tolerate the `sku=gpu` taint. HAMi's device plugin runs only on nodes that match `devicePlugin.nvidiaNodeSelector`, so to serve that pool, label its nodes and set the selector to a label both pools share, such as `gpu: "on"`. Otherwise the pool has no device plugin and advertises no `nvidia.com/gpu` slots. The Operator enables CDI by default, so also follow [NVIDIA CDI support](./configure-cdi.md) and check the driver root and `nvidia-ctk` path on the actual node.
 - **MIG:** AKS-managed MIG sets the profile and resource publication at pool creation. Do not combine it with HAMi dynamic MIG unless you have validated that combination.
 - **DRA:** HAMi-DRA is a separate model. Do not install it with classic HAMi on the same GPUs. See [HAMi-DRA installation](./how-to-use-hami-dra.md).
 

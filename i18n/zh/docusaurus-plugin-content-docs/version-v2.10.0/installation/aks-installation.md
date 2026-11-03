@@ -129,6 +129,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: hami-vgpu-test
+  namespace: <app-namespace>
 spec:
   restartPolicy: Never
   nodeSelector:
@@ -149,7 +150,7 @@ spec:
           nvidia.com/gpucores: 20
 ```
 
-`kubectl get pod hami-vgpu-test -o jsonpath='{.spec.schedulerName}'` 必须输出 `hami-scheduler`，`kubectl exec hami-vgpu-test -- nvidia-smi --query-gpu=name,memory.total --format=csv,noheader` 必须报告 2048 MiB，而不是物理显存。Pod 处于 Running 并不足以证明成功：webhook 的失败策略是 `Ignore`，webhook 连接失败时 Pod 会在没有 HAMi 调度器的情况下被创建。完整的显存限制测试见[验证 HAMi 部署与 vGPU 行为](../get-started/verify-hami.md)。完成后删除测试 Pod。
+`kubectl get pod hami-vgpu-test -n <app-namespace> -o jsonpath='{.spec.schedulerName}'` 必须输出 `hami-scheduler`，`kubectl exec -n <app-namespace> hami-vgpu-test -- nvidia-smi --query-gpu=name,memory.total --format=csv,noheader` 必须报告 2048 MiB，而不是物理显存。Pod 处于 Running 并不足以证明成功：webhook 的失败策略是 `Ignore`，webhook 连接失败时 Pod 会在没有 HAMi 调度器的情况下被创建。完整的显存限制测试见[验证 HAMi 部署与 vGPU 行为](../get-started/verify-hami.md)。完成后删除测试 Pod。
 
 HAMi-core 提供 CUDA 和 NVML 层面的软件隔离。它不是 MIG 那样的硬件边界，不应用于隔离互不信任的租户。
 
@@ -163,7 +164,7 @@ AKS 会在扩容、重置镜像、修复和节点镜像升级时替换节点，�
 
 ## GPU Operator、MIG 和 DRA
 
-- **GPU Operator：** 上述流程不使用它。如果需要，请在使用 `--gpu-driver None` 创建的单独节点池上，按 [AKS GPU Operator 指南](https://learn.microsoft.com/azure/aks/nvidia-gpu-operator)操作，在 Operator 的 values 中设置 `devicePlugin.enabled=false`，并让其组件容忍 `sku=gpu` 污点。Operator 默认启用 CDI，因此还需参阅 [NVIDIA CDI 支持](./configure-cdi.md)，并在实际节点上确认驱动根目录和 `nvidia-ctk` 路径。
+- **GPU Operator：** 上述流程不使用它。如果需要，请在使用 `--gpu-driver None` 创建的单独节点池上，按 [AKS GPU Operator 指南](https://learn.microsoft.com/azure/aks/nvidia-gpu-operator)操作，在 Operator 的 values 中设置 `devicePlugin.enabled=false`，并让其组件容忍 `sku=gpu` 污点。HAMi 设备插件只会运行在匹配 `devicePlugin.nvidiaNodeSelector` 的节点上，因此要让 HAMi 服务该节点池，请为其节点打上标签，并把选择器设为两个节点池共有的标签，例如 `gpu: "on"`。否则该节点池没有设备插件，也不会发布 `nvidia.com/gpu` 槽位。Operator 默认启用 CDI，因此还需参阅 [NVIDIA CDI 支持](./configure-cdi.md)，并在实际节点上确认驱动根目录和 `nvidia-ctk` 路径。
 - **MIG：** AKS 托管 MIG 在创建节点池时设置配置和资源发布。除非已经验证过该组合，否则不要与 HAMi 动态 MIG 同时使用。
 - **DRA：** HAMi-DRA 是独立的模型，不要与经典 HAMi 安装在同一批 GPU 上。见 [HAMi-DRA 安装](./how-to-use-hami-dra.md)。
 
