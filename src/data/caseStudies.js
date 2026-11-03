@@ -1,5 +1,35 @@
 const caseStudiesData = [
   {
+    name: "Seres",
+    nameZh: "赛力斯",
+    logo: "/img/adopters/seres.svg",
+    website: "https://www.seres.cn",
+    publishedAt: "2026-11-02",
+    metric: {
+      en: "Daily tokens up from 300M to 10B+, a 3000%+ increase",
+      zh: "日处理 Token 量从 3 亿增长至 100 亿以上，增幅超 3000%",
+    },
+    summary: {
+      en: "Scaling the SeresCloud inference platform to 42+ online models for AI agents, using HAMi vGPU soft isolation with hard memory and compute limits on Kubernetes.",
+      zh: "基于 Kubernetes 与 HAMi 的 vGPU 软隔离及显存算力硬限制，支撑赛力斯云推理平台扩展至 42+ 在线模型，服务智能体业务。",
+    },
+    highlights: [
+      {
+        en: "Online model count more than quadrupled since the start of the year, absorbing explosive AI agent adoption across internal businesses.",
+        zh: "在线模型数较年初增长逾 4 倍，承接内部各业务智能体落地的爆发式增长。",
+      },
+      {
+        en: "Small-model inference GPU utilization rose from 15-25% to around 90%, with per-task memory and compute hard-isolated via libvgpu.so.",
+        zh: "小模型推理 GPU 利用率由 15%-25% 提升至约 90%，通过 libvgpu.so 对每个任务施加显存与算力硬限制。",
+      },
+      {
+        en: "A single physical GPU serves up to 10 concurrent tasks (deviceSplitCount=10) without oversubscription; Ascend and Hygon DCU will join the heterogeneous pool next.",
+        zh: "单张物理 GPU 最多承载 10 个并发任务（deviceSplitCount=10）且不超卖；下一步计划将昇腾与海光 DCU 纳入异构算力池。",
+      },
+    ],
+    url: "https://www.cncf.io/case-studies/seres/",
+  },
+  {
     name: "ZYT",
     nameZh: "卓驭科技",
     logo: "/img/adopters/zyt.png",
