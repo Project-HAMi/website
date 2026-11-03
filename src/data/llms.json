@@ -4,8 +4,8 @@
     "zh": "HAMi 是用于在 Kubernetes 中共享和调度异构 AI 计算设备的中间件。"
   },
   "guidance": {
-    "en": "This curated index helps agents and tools find key documentation for the latest stable release. Device support, prerequisites, and isolation capabilities vary by device; consult the relevant device guide before deployment.",
-    "zh": "此精选索引帮助 agent 和工具查找最新稳定版的关键文档。设备支持、前置条件和隔离能力因设备而异；部署前请查阅对应的设备指南。"
+    "en": "This index lists key documentation for the latest stable release. Use the supported devices table to check your device model and its isolation capabilities, then follow the guide for that device.",
+    "zh": "本索引收录最新稳定版的关键文档。部署前可通过设备支持表查询设备型号及其隔离能力，再查阅对应的设备指南。"
   },
   "docs": [
     "core-concepts/architecture",
@@ -16,6 +16,7 @@
     "get-started/deploy-with-helm",
     "installation/online-installation",
     "get-started/verify-hami",
+    "userguide/device-supported",
     "faq/faq",
     "troubleshooting/troubleshooting"
   ],
@@ -49,17 +50,24 @@
       }
     },
     {
+      "path": "userguide",
+      "title": {
+        "en": "Device support",
+        "zh": "设备支持"
+      }
+    },
+    {
       "path": "faq",
       "title": {
-        "en": "FAQ",
-        "zh": "常见问题"
+        "en": "FAQ & Troubleshooting",
+        "zh": "常见问题与故障排查"
       }
     },
     {
       "path": "troubleshooting",
       "title": {
-        "en": "FAQ",
-        "zh": "常见问题"
+        "en": "FAQ & Troubleshooting",
+        "zh": "常见问题与故障排查"
       }
     }
   ]
