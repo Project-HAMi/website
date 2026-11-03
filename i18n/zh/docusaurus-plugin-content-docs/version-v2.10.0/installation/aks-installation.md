@@ -164,7 +164,7 @@ AKS 会在扩容、重置镜像、修复和节点镜像升级时替换节点，�
 
 ## GPU Operator、MIG 和 DRA
 
-- **GPU Operator：** 上述流程不使用它。如果需要，请在使用 `--gpu-driver None` 创建的单独节点池上，按 [AKS GPU Operator 指南](https://learn.microsoft.com/azure/aks/nvidia-gpu-operator)操作，在 Operator 的 values 中设置 `devicePlugin.enabled=false`，并让其组件容忍 `sku=gpu` 污点。HAMi 设备插件只会运行在匹配 `devicePlugin.nvidiaNodeSelector` 的节点上，因此要让 HAMi 服务该节点池，请为其节点打上标签，并把选择器设为两个节点池共有的标签，例如 `gpu: "on"`。否则该节点池没有设备插件，也不会发布 `nvidia.com/gpu` 槽位。Operator 默认启用 CDI，因此还需参阅 [NVIDIA CDI 支持](./configure-cdi.md)，并在实际节点上确认驱动根目录和 `nvidia-ctk` 路径。
+- **GPU Operator：** 上述流程不使用它。如果需要，请在使用 `--gpu-driver None --labels gpu=on` 创建的单独节点池上，按 [AKS GPU Operator 指南](https://learn.microsoft.com/azure/aks/nvidia-gpu-operator)操作，在 Operator 的 values 中设置 `devicePlugin.enabled=false`，并让其组件容忍 `sku=gpu` 污点。HAMi 设备插件只会运行在匹配 `devicePlugin.nvidiaNodeSelector` 的节点上，因此要让 HAMi 服务该节点池，请把选择器设为两个节点池共有的 `gpu: "on"` 标签，而不是节点池名称。请在创建节点池时用 `--labels` 设置该标签：AKS 会在新节点上重新应用，而用 `kubectl label` 添加的标签在节点被替换后会丢失。否则该节点池没有设备插件，也不会发布 `nvidia.com/gpu` 槽位。Operator 默认启用 CDI，因此还需参阅 [NVIDIA CDI 支持](./configure-cdi.md)，并在实际节点上确认驱动根目录和 `nvidia-ctk` 路径。
 - **MIG：** AKS 托管 MIG 在创建节点池时设置配置和资源发布。除非已经验证过该组合，否则不要与 HAMi 动态 MIG 同时使用。
 - **DRA：** HAMi-DRA 是独立的模型，不要与经典 HAMi 安装在同一批 GPU 上。见 [HAMi-DRA 安装](./how-to-use-hami-dra.md)。
 
