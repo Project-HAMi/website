@@ -448,6 +448,9 @@ module.exports = {
       "@docusaurus/preset-classic",
       {
         docs: false,
+        sitemap: {
+          ignorePatterns: ["/search", "/zh/search"],
+        },
         gtag: {
           trackingID: "G-MK932R9NMD",
           anonymizeIP: true,

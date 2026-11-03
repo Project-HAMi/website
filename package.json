@@ -30,7 +30,8 @@
     "format": "prettier --write .",
     "test": "node --test",
     "check-links": "DOCUSAURUS_SITE_URL=http://127.0.0.1:3000 npm run build && bash scripts/check-links.sh",
-    "check:all": "npm run lint && npm run format:check && npm run test && npm run check-links"
+    "check:discovery": "python3 scripts/check-discovery.py",
+    "check:all": "npm run lint && npm run format:check && npm run test && npm run check-links && npm run check:discovery"
   },
   "dependencies": {
     "@docusaurus/core": "^3.10.1",
