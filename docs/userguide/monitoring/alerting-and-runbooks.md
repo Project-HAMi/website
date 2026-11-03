@@ -22,10 +22,10 @@ HAMi provides reference Prometheus alerting rules and a runbook for each alert. 
 | Alert | Fires when | Severity | Backends |
 | --- | --- | --- | --- |
 | [`HAMiDeviceAllocationHigh`](#hamideviceallocationhigh) | More than 95% of the memory or cores of one device type stays allocated for 15 minutes | `warning` | All |
-| [`HAMiQuotaAlmostFull`](#hamiquotaalmostfull) | A namespace stays above 90% and below 100% of a HAMi quota for 15 minutes | `info` | All |
-| [`HAMiQuotaFullyUsed`](#hamiquotafullyused) | A namespace stays at exactly 100% of a HAMi quota for 15 minutes | `info` | All |
-| [`HAMiQuotaExceeded`](#hamiquotaexceeded) | A namespace stays above 100% of a HAMi quota for 15 minutes | `warning` | All |
-| [`HAMiSchedulerDown`](#hamischedulerdown) | No scraped scheduler reports itself as the leader for 15 minutes | `critical` | All |
+| [`HAMiQuotaAlmostFull`](#hamiquotaalmostfull) | A namespace stays above 90% and below 100% of an extended ResourceQuota for 15 minutes | `info` | All |
+| [`HAMiQuotaFullyUsed`](#hamiquotafullyused) | A namespace stays at exactly 100% of an extended ResourceQuota for 15 minutes | `info` | All |
+| [`HAMiQuotaExceeded`](#hamiquotaexceeded) | A namespace stays above 100% of an extended ResourceQuota for 15 minutes | `warning` | All |
+| [`HAMiSchedulerDown`](#hamischedulerdown) | No HAMi scheduler has been the leader for 15 minutes | `critical` | All |
 | [`HAMiVGPUMonitorCollectFailing`](#hamivgpumonitorcollectfailing) | A vGPU monitor keeps failing metrics collection for 15 minutes | `warning` | NVIDIA |
 | [`HAMiNodeDevicesNotRegistered`](#haminodedevicesnotregistered) | A vGPU monitor is healthy on a node, but the scheduler has no devices for that node for 15 minutes | `warning` | NVIDIA |
 
@@ -135,7 +135,7 @@ topk(10,
 
 #### Meaning
 
-A namespace has used more than 90% and less than 100% of a HAMi quota for 15 minutes.
+A namespace has used more than 90% and less than 100% of an extended ResourceQuota for 15 minutes.
 
 #### Impact
 
@@ -167,7 +167,7 @@ If the team needs more, raise the `limits.*` value. Otherwise, ask the team to d
 
 #### Meaning
 
-A namespace has used 100% of a HAMi quota for 15 minutes.
+A namespace has used 100% of an extended ResourceQuota for 15 minutes.
 
 #### Impact
 
@@ -199,7 +199,7 @@ If the team needs more, raise the `limits.*` value. Otherwise, ask the team to d
 
 #### Meaning
 
-A namespace has used more than 100% of a HAMi quota for 15 minutes.
+A namespace has used more than 100% of an extended ResourceQuota for 15 minutes.
 
 #### Impact
 
