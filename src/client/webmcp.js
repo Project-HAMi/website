@@ -51,6 +51,7 @@ function getTools() {
         const localePath = getLocalePath(window.location.pathname);
         const url = new URL(`${localePath}/search`, window.location.origin);
         url.searchParams.set("q", query);
+        url.searchParams.set("ctx", "docs");
         window.location.assign(url.toString());
         return { url: url.toString() };
       },
