@@ -1,6 +1,7 @@
 ---
 title: Prerequisites
 sidebar_label: Prerequisites
+description: Check cluster requirements, prepare NVIDIA drivers and the container runtime, and find the setup guide for your device before installing HAMi.
 ---
 
 Before installing HAMi, prepare the Kubernetes cluster and device nodes as described below.

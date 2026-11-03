@@ -1,6 +1,7 @@
 ---
 title: GPU Virtualization Principles
 sidebar_label: GPU Virtualization
+description: How HAMi selects nodes and NVIDIA GPUs with binpack or spread policies and intercepts CUDA calls to limit GPU memory and compute inside a container.
 ---
 
 In AI inference scenarios, a common dilemma is that GPUs are expensive, but mostly idle.

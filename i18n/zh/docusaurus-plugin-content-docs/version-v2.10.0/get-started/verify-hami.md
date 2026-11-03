@@ -1,6 +1,7 @@
 ---
 title: 验证 HAMi 部署与 vGPU 行为
 sidebar_label: 验证 HAMi
+description: 用原生 GPU Pod 验证 NVIDIA 设备访问，检查 HAMi 组件，再用 vGPU Pod 验证显存限制，逐步定位部署故障。
 ---
 
 部署 HAMi 之后，验证安装是否正常工作以及 vGPU 资源隔离是否符合预期至关重要。本指南将带你逐步完成验证流程，从检查原生 GPU 栈到确认容器内的 vGPU 行为。
