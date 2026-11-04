@@ -92,6 +92,7 @@ module.exports = {
             "installation/aws-installation",
             "installation/k3s-installation",
             "installation/gke-installation",
+            "installation/aks-installation",
             "installation/tke-installation",
             "installation/openshift-installation",
             "installation/cce-installation",
