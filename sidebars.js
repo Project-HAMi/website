@@ -387,6 +387,16 @@ module.exports = {
       "dynamic-mig-example",
     ]),
   ]),
+  tecoriginDevice: vendorSidebar("Tecorigin GPU", "tecorigin", [
+    ...vendorPages("tecorigin-device", [
+      "enable-tecorigin-sharing", 
+      "troubleshooting"]),
+    vendorExamples("tecorigin-device", [
+      "allocate-core",
+      "allocate-exclusive",
+      "specify-certain-cards",
+    ]),
+  ]),
   vastaiDevice: vendorSidebar("Vastai GPU", "vastai", [
     ...vendorPages("vastai", ["enable-vastai-sharing"]),
     vendorExamples("vastai", ["default-use"]),

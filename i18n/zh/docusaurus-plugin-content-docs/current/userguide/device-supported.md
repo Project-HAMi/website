@@ -22,7 +22,7 @@ translated: true
 | XPU      | 昆仑芯（Kunlunxin）       | P800                    | 稳定   | 是       | 否       | 否           |
 | GPU      | 沐曦（MetaX）             | MXC500                  | 稳定   | 是       | 是       | 否           |
 | GPU      | 摩尔线程（Mthreads）      | MTT S4000               | 稳定   | 是       | 是       | 否           |
-| DPU      | 太初元碁（Teco）          | 检查中                  | 验证中 | 否       | 否       | 否           |
+| GPU      | 太初元碁（Tecorigin）      | T100                   | 实验性 | 否       | 是       | 否           |
 | GPU      | 瀚博（Vastai）            | VA16                    | 稳定   | 否       | 否       | 否           |
 
 支持状态：
@@ -58,7 +58,7 @@ HAMi 只是使用这些设备的四种方式之一。另外三种自行完成调
 | 昆仑芯（Kunlunxin）       | [启用昆仑芯调度](kunlunxin-device/enable-kunlunxin-schedule.md) | - | - | - |
 | 沐曦（MetaX）             | [启用沐曦 GPU 共享](metax-device/metax-sgpu/enable-metax-gpu-sharing.md) | - | - | - |
 | 摩尔线程（Mthreads）      | [启用摩尔线程 GPU 共享](mthreads-device/enable-mthreads-gpu-sharing.md) | - | - | - |
-| 太初元碁（Teco）          | - | - | - | - |
+| 太初元碁（Tecorigin）      | [启用太初元碁 GPU 共享](tecorigin-device/enable-tecorigin-sharing.md) | - | - | - |
 | 瀚博（Vastai）            | [启用瀚博设备共享](vastai/enable-vastai-sharing.md) | - | - | - |
 
 每份指南都包含该设备的具体搭建步骤、配置说明以及已知限制，部署该设备前请先查阅。
@@ -183,6 +183,14 @@ HAMi 只是使用这些设备的四种方式之一。另外三种自行完成调
 - [分配设备核心给容器](mthreads-device/specify-device-core-usage.md)
 - [为容器分配设备核心和显存资源](mthreads-device/examples/allocate-core-and-memory.md)
 - [分配独占设备](mthreads-device/examples/allocate-exclusive.md)
+
+### 太初元碁（Tecorigin） {#tecorigin}
+
+- [启用太初元碁 GPU 共享](tecorigin-device/enable-tecorigin-sharing.md)
+- [为容器分配核心](tecorigin-device/examples/allocate-core.md)
+- [独占整卡](tecorigin-device/examples/allocate-exclusive.md)
+- [分配到特定设备](tecorigin-device/examples/specify-certain-cards.md)
+- [排查太初元碁调度问题](tecorigin-device/troubleshooting.md)
 
 ### 瀚博（Vastai） {#vastai}
 

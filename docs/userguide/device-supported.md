@@ -21,7 +21,7 @@ The table below lists the devices supported by HAMi. This matrix reflects HAMi v
 | XPU    | Kunlunxin     | P800                    | Stable           | Yes             | No            | No                     |
 | GPU    | MetaX         | MXC500                  | Stable           | Yes             | Yes           | No                     |
 | GPU    | Mthreads      | MTT S4000               | Stable           | Yes             | Yes           | No                     |
-| DPU    | Teco          | Checking                | Under Validation | No              | No            | No                     |
+| GPU    | Tecorigin     | T100                    | Experimental     | No              | Yes           | No                     |
 | GPU    | Vastai        | VA16                    | Stable           | No              | No            | No                     |
 
 Support status:
@@ -57,7 +57,7 @@ Each cell links to the guide for that device and component. A dash means there i
 | Kunlunxin     | [Enable Kunlunxin scheduling](kunlunxin-device/enable-kunlunxin-schedule.md) | - | - | - |
 | MetaX         | [Enable MetaX GPU sharing](metax-device/metax-sgpu/enable-metax-gpu-sharing.md) | - | - | - |
 | Mthreads      | [Enable Mthreads GPU sharing](mthreads-device/enable-mthreads-gpu-sharing.md) | - | - | - |
-| Teco          | - | - | - | - |
+| Tecorigin     | [Enable Tecorigin GPU sharing](tecorigin-device/enable-tecorigin-sharing.md) | - | - | - |
 | Vastai        | [Enable Vastai sharing](vastai/enable-vastai-sharing.md) | - | - | - |
 
 Each linked guide covers device-specific setup, configuration notes, and known limitations. Read it before deploying that device.
@@ -182,6 +182,14 @@ All vendor pages are listed here so this page reaches each of them.
 - [Allocate device core to container](mthreads-device/specify-device-core-usage.md)
 - [Allocate device core and memory resource](mthreads-device/examples/allocate-core-and-memory.md)
 - [Allocate exclusive device](mthreads-device/examples/allocate-exclusive.md)
+
+### Tecorigin {#tecorigin}
+
+- [Enable Tecorigin GPU sharing](tecorigin-device/enable-tecorigin-sharing.md)
+- [Allocate cores to a container](tecorigin-device/examples/allocate-core.md)
+- [Use a whole card](tecorigin-device/examples/allocate-exclusive.md)
+- [Assign to certain cards](tecorigin-device/examples/specify-certain-cards.md)
+- [Troubleshoot Tecorigin scheduling](tecorigin-device/troubleshooting.md)
 
 ### Vastai {#vastai}
 
