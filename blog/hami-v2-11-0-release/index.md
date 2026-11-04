@@ -67,7 +67,13 @@ kind: Deployment
 metadata:
   name: vllm-remote-gpu
 spec:
+  selector:
+    matchLabels:
+      app: vllm-remote-gpu
   template:
+    metadata:
+      labels:
+        app: vllm-remote-gpu
     spec:
       containers:
         - name: vllm
@@ -216,7 +222,13 @@ Upgrade to v2.11.0 via Helm:
 ```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/
 helm repo update
-helm upgrade hami hami-charts/hami -n kube-system
+helm upgrade hami hami-charts/hami -n kube-system --version 2.11.0
+
+# If your values.yaml customizes per-vendor settings, migrate it to the new
+# devices.VENDOR layout first, then apply it explicitly. --reset-values discards
+# the values stored in the release, so include every override in my-values.yaml.
+helm upgrade hami hami-charts/hami -n kube-system --version 2.11.0 \
+  --reset-values --values my-values.yaml
 ```
 
 For a step-by-step upgrade walkthrough with breaking-change callouts, see the dedicated [Upgrade guide](/docs/next/installation/upgrade). For complete installation documentation, refer to: [/docs/installation/online-installation](/docs/installation/online-installation)
