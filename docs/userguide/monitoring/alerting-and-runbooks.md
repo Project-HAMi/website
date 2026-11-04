@@ -6,7 +6,8 @@ HAMi provides reference Prometheus alerting rules and a runbook for each alert. 
 
 :::info Alert rules
 
-[Download hami-alerts.yaml](/prometheus/hami-alerts.yaml)
+- When using Prometheus Operator: [Download hami-alerts.yaml](/prometheus/hami-alerts.yaml)
+- When not using Prometheus Operator: [Download hami-alerts.rules.yaml](/prometheus/hami-alerts.rules.yaml)
 
 :::
 
