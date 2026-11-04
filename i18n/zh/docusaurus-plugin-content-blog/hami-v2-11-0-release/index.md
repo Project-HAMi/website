@@ -141,7 +141,7 @@ Flexible MIG（动态 MIG 实例分配与释放）在 v2.10.0 发布时有已知
 
 - **动态 MIG 设备支持 CDI**（[#3070](https://github.com/Project-HAMi/HAMi/pull/3070)，[@asadjan4611](https://github.com/asadjan4611)）：HAMi 创建 MIG GI/CI 后，会发布原子化的每 MIG CDI 规范，并把 CDI 设备名返回给支持 CDI 的容器运行时。启动恢复会在 device plugin 服务分配前对账存活的 MIG 实例，分配失败会同时回滚 MIG 与 CDI 资源。v2.10.0 的 CDI 限制就此消除。
 - **带回退的放置打分**（[#2855](https://github.com/Project-HAMi/HAMi/pull/2855)，[@maishivamhoo123](https://github.com/maishivamhoo123)）：MIG 放置现在会打分，贪心选择不合适时回退重试；拓扑调度中重复的 MIG 候选会被去重。
-- **按 Pod 的 profile 偏好**（[#3014](https://github.com/Project-HAMi/HAMi/pull/3014)，[@maishivamhoo123](https://github.com/maishivamhoo123)）：Pod 可以通过注解优先选择默认 3g 切分以外的 MIG profile。
+- **按 Pod 的 profile 偏好**（[#3014](https://github.com/Project-HAMi/HAMi/pull/3014)，[@maishivamhoo123](https://github.com/maishivamhoo123)）：Pod 可以通过 `nvidia.com/mig-profile-preference` 注解指定偏好的 MIG profile。调度器会优先尝试该 profile，无法分配时回退到正常的选择规则（显存请求、白名单中的 profile、放置约束）。
 - **生命周期与监控**：动态 MIG 实例生命周期得到优化（[#3128](https://github.com/Project-HAMi/HAMi/pull/3128)，[@asadjan4611](https://github.com/asadjan4611)），MIG 监控覆盖使用动态 MIG 的 Pod，vGPU 监控能正确发现 MIG 实例，分配会对照已注册的 profile 校验，白名单使用真实 NVML 名称（[@tsingst](https://github.com/tsingst)、[@FouoF](https://github.com/FouoF)、[@archlitchi](https://github.com/archlitchi)、[@moezdil](https://github.com/moezdil)、[@usr-bin-ksh](https://github.com/usr-bin-ksh) 参与贡献）。
 - **可靠性**：GPU 出现 XID 错误时，其所有副本与 MIG 切片都会被标记为不健康；hami-core 节点上会自动禁用 MIG，避免生命周期控制冲突。
 
@@ -151,7 +151,7 @@ Flexible MIG（动态 MIG 实例分配与释放）在 v2.10.0 发布时有已知
 
 v2.11.0 落地了安全审计驱动下的第一批调度器 extender 与 webhook 加固（主要由 [@moezdil](https://github.com/moezdil) 完成）：
 
-- extender 的动词只在 **loopback 上提供服务**，不再暴露到集群端口。
+- extender 的 HTTP 端点（`/filter` 与 `/bind`）只在**本机回环地址上提供服务**（`127.0.0.1:9444`），不再暴露到面向集群的端口。
 - extender 在处理请求前**校验 Pod 身份**。
 - 带有**伪造的调度器分配注解**的 Pod 会在 admission 被拒绝，并在更新时受到保护。
 - 节点锁路径只服务**锁所指定的那个 Pod**，过期锁的恢复被串行化，格式错误的设备分配注解会被拒绝。
@@ -235,7 +235,7 @@ helm upgrade hami hami-charts/hami -n kube-system --version 2.11.0 \
 
 :::warning[升级注意事项]
 
-- **Chart 破坏性变更**：厂商配置迁移到了 `devices.VENDOR` 之下。如果你的 `values.yaml` 自定义过厂商设备配置，请在升级前完成迁移；chart 现在会校验未知字段。
+- **Chart 破坏性变更**：厂商配置迁移到了 `devices.VENDOR` 之下。如果你的 `values.yaml` 自定义过厂商设备配置，请在升级前完成迁移；chart 现在一旦发现旧的（已迁移的）字段路径就会渲染失败。
 - chart 要求 **Kubernetes 1.23+**。
 - **MIG + hami-core**：hami-core 节点上会自动禁用 MIG；若同时依赖两者，请核实节点配置。
 - **海光用户**：DCU 资源在 chart 与文档中更名为 HCU。
