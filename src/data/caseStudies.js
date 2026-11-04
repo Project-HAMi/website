@@ -16,11 +16,11 @@ const caseStudiesData = [
     highlights: [
       {
         en: "Online model count more than quadrupled since the start of the year, absorbing explosive AI agent adoption across internal businesses.",
-        zh: "在线模型数较年初增长逾 4 倍，承接内部各业务智能体落地的爆发式增长。",
+        zh: "在线模型数增长至年初的 4 倍以上，承接内部各业务智能体落地的爆发式增长。",
       },
       {
-        en: "Small-model inference GPU utilization rose from 15-25% to around 90%, with per-task memory and compute hard-isolated via libvgpu.so.",
-        zh: "小模型推理 GPU 利用率由 15%-25% 提升至约 90%，通过 libvgpu.so 对每个任务施加显存与算力硬限制。",
+        en: "Small-model inference GPU utilization rose from 15-25% to around 90%, with per-task memory and compute limits enforced via libvgpu.so.",
+        zh: "小模型推理 GPU 利用率由 15%-25% 提升至约 90%，通过 libvgpu.so 对每个任务施加显存与算力限制。",
       },
       {
         en: "A single physical GPU serves up to 10 concurrent tasks (deviceSplitCount=10) without oversubscription; Ascend and Hygon DCU will join the heterogeneous pool next.",

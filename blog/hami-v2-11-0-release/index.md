@@ -141,7 +141,7 @@ Flexible MIG (dynamic MIG instance allocation and deallocation) shipped in v2.10
 
 - **CDI support for dynamic MIG devices** ([#3070](https://github.com/Project-HAMi/HAMi/pull/3070), [@asadjan4611](https://github.com/asadjan4611)): after HAMi creates a MIG GI/CI, it publishes an atomic per-MIG CDI spec and returns the CDI device name to CDI-capable runtimes. Startup recovery reconciles live MIG instances before the device plugin serves allocations, and allocation failures roll back both MIG and CDI resources. The v2.10.0 CDI limitation is gone.
 - **Placement scoring with backtracking** ([#2855](https://github.com/Project-HAMi/HAMi/pull/2855), [@maishivamhoo123](https://github.com/maishivamhoo123)): MIG placements are now scored, with a backtracking fallback when the greedy choice does not fit, and duplicate MIG candidates in topology scheduling are collapsed.
-- **Per-Pod profile preference** ([#3014](https://github.com/Project-HAMi/HAMi/pull/3014), [@maishivamhoo123](https://github.com/maishivamhoo123)): a Pod can prefer a MIG profile other than the default 3g slice via annotation.
+- **Per-Pod profile preference** ([#3014](https://github.com/Project-HAMi/HAMi/pull/3014), [@maishivamhoo123](https://github.com/maishivamhoo123)): a Pod can name a preferred MIG profile through the `nvidia.com/mig-profile-preference` annotation. The scheduler tries that profile first and falls back to the normal selection rules (memory request, allowlisted profiles, placement constraints) when it cannot be allocated.
 - **Lifecycle and monitoring**: the dynamic MIG instance lifecycle is optimized ([#3128](https://github.com/Project-HAMi/HAMi/pull/3128), [@asadjan4611](https://github.com/asadjan4611)), MIG monitoring now covers Pods using dynamic MIG, the vGPU monitor discovers MIG instances correctly, and allocations are checked against registered profiles with the allowlist using real NVML names (contributions from [@tsingst](https://github.com/tsingst), [@FouoF](https://github.com/FouoF), [@archlitchi](https://github.com/archlitchi), [@moezdil](https://github.com/moezdil), and [@usr-bin-ksh](https://github.com/usr-bin-ksh)).
 - **Reliability**: all replicas and MIG slices on a GPU are marked unhealthy on XID errors, and MIG is automatically disabled on hami-core nodes to avoid conflicting lifecycle control.
 
@@ -151,7 +151,7 @@ Flexible MIG (dynamic MIG instance allocation and deallocation) shipped in v2.10
 
 v2.11.0 lands the first wave of the security-audit-driven hardening of the scheduler extender and webhook (largely by [@moezdil](https://github.com/moezdil)):
 
-- Extender verbs are served on **loopback only**, not the cluster port.
+- The extender HTTP endpoints (`/filter` and `/bind`) are served on **loopback only** (`127.0.0.1:9444`), not on the cluster-facing port.
 - The extender **verifies Pod identity** before acting on a request.
 - Pods created with **forged scheduler-owned allocation annotations are denied** at admission and guarded on update.
 - The node-lock path serves **only the Pod the lock names**, expired-lock recovery is serialized, and malformed device allocation annotations are rejected.
@@ -235,7 +235,7 @@ For a step-by-step upgrade walkthrough with breaking-change callouts, see the de
 
 :::warning[Upgrade notes]
 
-- **Breaking chart change**: vendor settings moved under `devices.VENDOR`. If your `values.yaml` customizes per-vendor device config, migrate it before upgrading; the chart now validates unknown fields.
+- **Breaking chart change**: vendor settings moved under `devices.VENDOR`. If your `values.yaml` customizes per-vendor device config, migrate it before upgrading; the chart now fails rendering when it finds the old, moved field paths.
 - **Kubernetes 1.23+** is required by the chart.
 - **MIG + hami-core**: MIG is now automatically disabled on hami-core nodes; verify your node configs if you relied on both.
 - **Hygon users**: DCU resources are renamed to HCU across charts and docs.
