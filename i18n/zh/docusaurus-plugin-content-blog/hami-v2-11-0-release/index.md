@@ -67,7 +67,13 @@ kind: Deployment
 metadata:
   name: vllm-remote-gpu
 spec:
+  selector:
+    matchLabels:
+      app: vllm-remote-gpu
   template:
+    metadata:
+      labels:
+        app: vllm-remote-gpu
     spec:
       containers:
         - name: vllm
@@ -159,7 +165,7 @@ v2.11.0 落地了安全审计驱动下的第一批调度器 extender 与 webhook
 - **节点容量上报**（[#2874](https://github.com/Project-HAMi/HAMi/pull/2874)，[@shkatara](https://github.com/shkatara)）：GPU 显存与算力资源可以上报到节点 `capacity`/`allocatable`，让集群自动扩缩器和仪表盘看到真实的 GPU 份额。
 - **Chart 重构**（[@spencercjh](https://github.com/spencercjh)）：所有厂商配置迁移到 `devices.VENDOR` 之下并完成 helm-docs 文档化，`global.imageSource` 在上游与国内镜像源之间切换，节点配置支持按标签选择器匹配（[@usr-bin-ksh](https://github.com/usr-bin-ksh)）。这对自定义 `values.yaml` 是**破坏性变更**。
 - **AMD 成熟化**（[@moezdil](https://github.com/moezdil)）：`gpumem-percentage` 请求、多 GPU Pod 的 `amd.com/numa-bind`、按 XGMI 链路与 NUMA 的拓扑感知放置、整 WGP 算力取整、命名空间 ResourceQuota 检查、可配置 `runtimeClassName`，以及专门的 AMD e2e 测试套件。
-- **更多设备**：AWS Inferentia1 支持全部四个 NeuronCore（[@asadjan4611](https://github.com/asadjan4611)），恢复寒武纪 MLU 的模型感知调度，沐曦 S5000 每卡显存单位可配置（[@wjluo](https://github.com/wjluo)），海光 DCU 资源在 chart 与文档中更名为 **HCU**（[@kinglong08](https://github.com/kinglong08)）。
+- **更多设备**：AWS Inferentia1 支持全部四个 NeuronCore（[@asadjan4611](https://github.com/asadjan4611)），恢复寒武纪 MLU 的模型感知调度，摩尔线程 S5000 每卡显存单位可配置（[@wjluo](https://github.com/wjluo)），海光 DCU 资源在 chart 与文档中更名为 **HCU**（[@kinglong08](https://github.com/kinglong08)）。
 - **监控**：整卡 Pod 可以绕过 HAMi hook，通过直接 NVML 监控，覆盖带 `CUDA_DISABLE_CONTROL` 与动态 MIG 的 Pod（[@vesta-mlp](https://github.com/vesta-mlp)）；暴露硬件健康与错误指标（[@Gurkaran18](https://github.com/Gurkaran18)）；新增未知 GPU 进程计数指标（[@heuristicwave](https://github.com/heuristicwave)）；调度器暴露 leader 选举与缓存同步指标（[@KunwarSidhu47](https://github.com/KunwarSidhu47)）。
 - **原生 sidecar 容器**纳入 GPU 资源计算（[@maishivamhoo123](https://github.com/maishivamhoo123)），支持 Pod 级与容器级的环境变量覆盖（[@peachest](https://github.com/peachest)）。
 
@@ -204,7 +210,7 @@ v2.11.0 是 HAMi 主仓库与 Project-HAMi 组织（ascend-device-plugin、hami-
 - [@xrwang8](https://github.com/xrwang8)：hami-vnpu-core 配额与调度修复
 - [@panpan0000](https://github.com/panpan0000)：Ascend950DT 整卡调度
 - [@kinglong08](https://github.com/kinglong08)：海光 DCU 更名为 HCU
-- [@wjluo](https://github.com/wjluo)：沐曦 S5000 支持
+- [@wjluo](https://github.com/wjluo)：摩尔线程 S5000 支持
 - [@usr-bin-ksh](https://github.com/usr-bin-ksh)：nodeconfig 标签选择器、MIG 白名单
 
 本版本有 29 位贡献者完成首次贡献，包括 [@Kevindua26](https://github.com/Kevindua26)、[@im-Toqeer-506](https://github.com/im-Toqeer-506)、[@togettoyou](https://github.com/togettoyou)、[@Woolgathererer](https://github.com/Woolgathererer)、[@curry30000](https://github.com/curry30000)、[@sanket-jadhav-cse](https://github.com/sanket-jadhav-cse)、[@usr-bin-ksh](https://github.com/usr-bin-ksh)、[@vesta-mlp](https://github.com/vesta-mlp)、[@tsingst](https://github.com/tsingst)、[@loiht2](https://github.com/loiht2)、[@falconlee236](https://github.com/falconlee236)、[@heuristicwave](https://github.com/heuristicwave)。感谢每一位贡献者，也感谢每一位报告问题、测试候选版本的用户。完整名单见 [v2.11.0 Release Notes](https://github.com/Project-HAMi/HAMi/releases/tag/v2.11.0)。
@@ -216,7 +222,13 @@ v2.11.0 是 HAMi 主仓库与 Project-HAMi 组织（ascend-device-plugin、hami-
 ```bash
 helm repo add hami-charts https://project-hami.github.io/HAMi/
 helm repo update
-helm upgrade hami hami-charts/hami -n kube-system
+helm upgrade hami hami-charts/hami -n kube-system --version 2.11.0
+
+# 如果你的 values.yaml 自定义过厂商配置，请先迁移到新的 devices.VENDOR 结构，
+# 再显式传入。--reset-values 会丢弃 release 中保存的旧值，
+# 因此所有需要保留的覆盖项都必须写进 my-values.yaml。
+helm upgrade hami hami-charts/hami -n kube-system --version 2.11.0 \
+  --reset-values --values my-values.yaml
 ```
 
 带破坏性变更提示的分步升级流程，请参阅专门的[升级指南](/zh/docs/next/installation/upgrade)。完整安装文档请参考：[https://project-hami.io/zh/docs/installation/online-installation](/zh/docs/installation/online-installation)
