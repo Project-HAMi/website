@@ -21,12 +21,12 @@ HAMi provides reference Prometheus alerting rules and a runbook for each alert. 
 
 | Alert | Fires when | Severity | Backends |
 | --- | --- | --- | --- |
-| [`HAMiDeviceAllocationHigh`](#hamideviceallocationhigh) | More than 95% of the memory or cores of one device type stays allocated for 15 minutes | `warning` | All |
+| [`HAMiDeviceMemoryAllocationHigh`](#hamidevicememoryallocationhigh) | More than 95% of the memory of one device type stays allocated for 15 minutes | `warning` | All |
+| [`HAMiDeviceCoreAllocationHigh`](#hamidevicecoreallocationhigh) | More than 95% of the cores of one device type stay allocated for 15 minutes | `warning` | All |
 | [`HAMiQuotaAlmostFull`](#hamiquotaalmostfull) | A namespace stays above 90% and below 100% of an extended ResourceQuota for 15 minutes | `info` | All |
 | [`HAMiQuotaFullyUsed`](#hamiquotafullyused) | A namespace stays at exactly 100% of an extended ResourceQuota for 15 minutes | `info` | All |
 | [`HAMiQuotaExceeded`](#hamiquotaexceeded) | A namespace stays above 100% of an extended ResourceQuota for 15 minutes | `warning` | All |
 | [`HAMiSchedulerDown`](#hamischedulerdown) | No HAMi scheduler has been the leader for 15 minutes | `critical` | All |
-| [`HAMiVGPUMonitorCollectFailing`](#hamivgpumonitorcollectfailing) | A vGPU monitor keeps failing metrics collection for 15 minutes | `warning` | NVIDIA |
 | [`HAMiNodeDevicesNotRegistered`](#haminodedevicesnotregistered) | A vGPU monitor is healthy on a node, but the scheduler has no devices for that node for 15 minutes | `warning` | NVIDIA |
 
 ## Add the rules
@@ -56,6 +56,8 @@ rule_files:
   - /etc/prometheus/rules/hami-alerts.rules.yaml
 ```
 
+[`HAMiNodeDevicesNotRegistered`](#haminodedevicesnotregistered) needs the vGPU monitor metrics while the Pod is not ready, so scrape the Pods directly, not through the Service.
+
 In both cases, open **Alerts** in the Prometheus UI and check that the HAMi alerts (in the `hami` group) are listed.
 
 ## Tune the rules
@@ -80,20 +82,16 @@ Each rule has three settings in [hami-alerts.yaml](/prometheus/hami-alerts.yaml)
 
 Some setups need changes to specific alerts:
 
-- `HAMiDeviceAllocationHigh`: If the cluster runs full on purpose, set `severity` to `info` or raise `for`. If a device type has very few devices, a few Pods that each take a whole device fill it to 100%. Exclude that `device_type` from the rule.
+- `HAMiDeviceMemoryAllocationHigh` and `HAMiDeviceCoreAllocationHigh`: If the cluster runs full on purpose, set `severity` to `info` or raise `for`. If a device type has very few devices, a few Pods that each take a whole device fill it to 100%. Exclude that `device_type` from the rule.
 - `HAMiSchedulerDown`: To alert sooner, lower `for`. Keep it longer than a leader failover.
-- `HAMiVGPUMonitorCollectFailing`: If intermittent failures are missed, use a longer range than `5m` in the rule. If occasional failures fire the alert, use a shorter one.
-- `HAMiNodeDevicesNotRegistered`: For a remote node, exclude it in the rule, for example `hami_vgpumonitor_collect_success{node!="<node-name>"} == 1`.
 
 ## Runbooks
 
-The examples assume that HAMi is installed in `kube-system`.
-
-### HAMiDeviceAllocationHigh
+### HAMiDeviceMemoryAllocationHigh
 
 #### Meaning
 
-More than 95% of the memory or cores of a device type has been allocated for 15 minutes. Allocation counts what Pods requested, not what they actually use, so a device type can be 100% allocated while its devices sit idle.
+More than 95% of the memory of a device type has been allocated for 15 minutes. Allocation counts what Pods requested, not what they actually use, so a device type can be 100% allocated while its devices sit idle.
 
 #### Impact
 
@@ -101,22 +99,20 @@ New Pods that request this device type may stay `Pending`.
 
 #### Diagnosis
 
-Check memory allocation per node for the `device_type` in the alert (with label `resource="memory"`):
+Check memory allocation per node for the `device_type` in the alert (PromQL):
 
 ```promql
 sum by (node) (hami_gpu_memory_allocated_bytes{device_type="<device-type>"})
   / sum by (node) (hami_gpu_memory_limit_bytes{device_type="<device-type>"})
 ```
 
-For a cores allocation alert (with label `resource="cores"`), use `hami_gpu_core_allocated_ratio` and `hami_gpu_core_limit_ratio` instead.
-
-Check the Pods with the most allocated memory:
+Check the Pods with the most allocated memory (PromQL):
 
 ```promql
 topk(10, sum by (namespace, pod) (hami_vgpu_memory_allocated_bytes))
 ```
 
-Check memory that Pods hold but do not use (NVIDIA nodes only):
+Check memory that Pods hold but do not use (PromQL, NVIDIA nodes only):
 
 ```promql
 topk(10,
@@ -128,7 +124,38 @@ topk(10,
 #### Mitigation
 
 - Add nodes of this device type, or uncordon nodes that are ready to return.
-- Ask teams to delete idle Pods, or to recreate them with lower memory and cores requests.
+- Ask teams to delete idle Pods, or to recreate them with lower memory requests.
+- Share the device type between namespaces with [ResourceQuota](../nvidia-device/using-resourcequota.md).
+
+### HAMiDeviceCoreAllocationHigh
+
+#### Meaning
+
+More than 95% of the cores of a device type have been allocated for 15 minutes. Allocation counts what Pods requested, not what they actually use, so a device type can be 100% allocated while its devices sit idle.
+
+#### Impact
+
+New Pods that request this device type may stay `Pending`.
+
+#### Diagnosis
+
+Check cores allocation per node for the `device_type` in the alert (PromQL):
+
+```promql
+sum by (node) (hami_gpu_core_allocated_ratio{device_type="<device-type>"})
+  / sum by (node) (hami_gpu_core_limit_ratio{device_type="<device-type>"})
+```
+
+Check the Pods with the most allocated cores (PromQL):
+
+```promql
+topk(10, sum by (namespace, pod) (hami_vgpu_core_allocated_ratio))
+```
+
+#### Mitigation
+
+- Add nodes of this device type, or uncordon nodes that are ready to return.
+- Ask teams to delete idle Pods, or to recreate them with lower cores requests.
 - Share the device type between namespaces with [ResourceQuota](../nvidia-device/using-resourcequota.md).
 
 ### HAMiQuotaAlmostFull
@@ -143,7 +170,7 @@ The next Pod that does not fit the quota is rejected at creation.
 
 #### Diagnosis
 
-Check memory and cores usage per Pod in a specific namespace:
+Check memory and cores usage per Pod in a specific namespace (PromQL):
 
 ```promql
 sum by (pod) (hami_vgpu_memory_allocated_bytes{namespace="<namespace>"})
@@ -175,7 +202,7 @@ New Pods in the namespace that request this resource are rejected at creation.
 
 #### Diagnosis
 
-Check memory and cores usage per Pod in a specific namespace:
+Check memory and cores usage per Pod in a specific namespace (PromQL):
 
 ```promql
 sum by (pod) (hami_vgpu_memory_allocated_bytes{namespace="<namespace>"})
@@ -203,13 +230,13 @@ A namespace has used more than 100% of an extended ResourceQuota for 15 minutes.
 
 #### Impact
 
-New Pods in the namespace that request this resource are rejected.
+New Pods in the namespace that request this resource are rejected at creation.
 
 #### Diagnosis
 
 Usually this occurs when a quota is created or lowered while Pods are running in the namespace.
 
-Check if the limit changed recently:
+Check how many times the limit changed in the last 24 hours (PromQL):
 
 ```promql
 changes(hami_resource_quota_limit{namespace="<namespace>", quota_name="<quota-name>"}[24h])
@@ -231,40 +258,14 @@ HAMi cannot schedule new Pods that request devices.
 
 #### Diagnosis
 
-Check the `hami_scheduler_is_leader` metric on each scheduler Pod:
+Check the status of the HAMi scheduler Pods:
 
-- No Pod is `Running`: the scheduler cannot start.
-- The metric is `0` on every Pod: no Pod is the leader.
-
-Check the logs of both scheduler containers for the error.
+- If no HAMi scheduler Pod is `Running`, the scheduler has crashed or cannot start. Check the Pod events and logs.
+- If a HAMi scheduler Pod is `Running` but its `vgpu-scheduler-extender` container keeps logging `Scheduler extender has not become leader yet`, no Pod is the leader. Check the logs of the `kube-scheduler` container.
 
 #### Mitigation
 
-- Fix the error in the logs, or delete a stuck Pod.
-- If the metric is `0` on every Pod, check that the `kube-scheduler` container can reach the API server.
-- For failover, set `scheduler.replicas` to `2` with `scheduler.leaderElect: true` in the Helm values.
-
-### HAMiVGPUMonitorCollectFailing
-
-#### Meaning
-
-The vGPU monitor on a node has kept failing to collect metrics for 15 minutes.
-
-#### Impact
-
-Usage metrics for the node are incomplete. Dashboards can show gaps.
-
-#### Diagnosis
-
-Check the logs of the `vgpu-monitor` container in the device plugin Pod on the node:
-
-- `Failed to collect GPU info`: NVML init or the device count call failed. Run `nvidia-smi` in the container to check the driver.
-- `Failed to collect Pod and Container info`: the monitor cannot create a metric for a container, which likely means a HAMi bug. A separate log line names the container.
-- `Failed to collect Pod and Container Mig info`: a Pod has a malformed MIG allocation annotation, likely edited by hand or written by a different HAMi version. A separate log line names the Pod.
-
-#### Mitigation
-
-- Fix the driver or NVML problem.
+Fix the error found in the Pod events or logs. For a `forbidden` error in the `kube-scheduler` logs, grant the missing permissions to the HAMi scheduler ServiceAccount. See [ACK](../../installation/ack-installation.md#grant-dra-access).
 
 ### HAMiNodeDevicesNotRegistered
 
@@ -274,16 +275,13 @@ The vGPU monitor on a node is healthy, but the scheduler has had no devices for 
 
 #### Impact
 
-HAMi places no new Pods that request devices on the node. Pods can stay Pending when other nodes are full.
+HAMi places no new Pods that request devices on the node.
 
 #### Diagnosis
 
-- Check the allocatable devices of the node. Empty or `0` means the device plugin is not registered with kubelet. The scheduler can log `Device is unhealthy, cleaning up node` in this case.
-- Check the `hami.io/node-nvidia-register` annotation of the node. Empty means the device plugin has not reported its devices. Check the logs of the `device-plugin` container.
-- Check the node labels. If `scheduler.nodeLabelSelector` is set, the scheduler ignores nodes that do not have all of those labels.
-- A node with the `hami.io/lupine-server` label serves its devices over the network, so the scheduler has no local devices for it. The alert fires by design. See [Tune the rules](#tune-the-rules).
+- Check the `device-plugin` container in the device plugin Pod on the node. If it is crashing, check its logs for the error.
+- Check the allocatable devices of the node. Empty or `0` means the device plugin is not registered with kubelet.
 
 #### Mitigation
 
-- Fix the error in the device plugin logs.
-- Add missing selector labels to the node, or fix `scheduler.nodeLabelSelector`.
+Fix the error in the device plugin logs.

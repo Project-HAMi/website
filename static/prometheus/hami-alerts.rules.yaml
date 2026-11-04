@@ -3,7 +3,7 @@
 groups:
   - name: hami
     rules:
-      - alert: HAMiDeviceAllocationHigh
+      - alert: HAMiDeviceMemoryAllocationHigh
         expr: |
           sum by (device_type) (hami_gpu_memory_allocated_bytes)
             / sum by (device_type) (hami_gpu_memory_limit_bytes > 0)
@@ -11,12 +11,11 @@ groups:
         for: 15m
         labels:
           severity: warning
-          resource: memory
         annotations:
-          summary: "A device type is almost fully allocated."
+          summary: "The memory of a device type is almost fully allocated."
           description: "{{ $value | humanizePercentage }} of the memory of {{ $labels.device_type }} devices is allocated."
-          runbook_url: https://project-hami.io/docs/next/userguide/monitoring/alerting-and-runbooks#hamideviceallocationhigh
-      - alert: HAMiDeviceAllocationHigh
+          runbook_url: https://project-hami.io/docs/next/userguide/monitoring/alerting-and-runbooks#hamidevicememoryallocationhigh
+      - alert: HAMiDeviceCoreAllocationHigh
         expr: |
           sum by (device_type) (hami_gpu_core_allocated_ratio)
             / sum by (device_type) (hami_gpu_core_limit_ratio > 0)
@@ -24,11 +23,10 @@ groups:
         for: 15m
         labels:
           severity: warning
-          resource: cores
         annotations:
-          summary: "A device type is almost fully allocated."
-          description: "{{ $value | humanizePercentage }} of the cores of {{ $labels.device_type }} devices is allocated."
-          runbook_url: https://project-hami.io/docs/next/userguide/monitoring/alerting-and-runbooks#hamideviceallocationhigh
+          summary: "The cores of a device type are almost fully allocated."
+          description: "{{ $value | humanizePercentage }} of the cores of {{ $labels.device_type }} devices are allocated."
+          runbook_url: https://project-hami.io/docs/next/userguide/monitoring/alerting-and-runbooks#hamidevicecoreallocationhigh
       - alert: HAMiQuotaAlmostFull
         expr: |
           max by (namespace, quota_name) (hami_resource_quota_used)
@@ -74,15 +72,6 @@ groups:
           summary: "No HAMi scheduler is the leader."
           description: "No HAMi scheduler has been the leader for 15 minutes."
           runbook_url: https://project-hami.io/docs/next/userguide/monitoring/alerting-and-runbooks#hamischedulerdown
-      - alert: HAMiVGPUMonitorCollectFailing
-        expr: min_over_time(hami_vgpumonitor_collect_success[5m]) == 0
-        for: 15m
-        labels:
-          severity: warning
-        annotations:
-          summary: "A vGPU monitor keeps failing metrics collection."
-          description: "The vGPU monitor on node {{ $labels.node }} keeps failing metrics collection, so its usage metrics can be incomplete."
-          runbook_url: https://project-hami.io/docs/next/userguide/monitoring/alerting-and-runbooks#hamivgpumonitorcollectfailing
       - alert: HAMiNodeDevicesNotRegistered
         expr: |
           (
