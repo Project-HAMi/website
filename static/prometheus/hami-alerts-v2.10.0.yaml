@@ -59,7 +59,7 @@ spec:
         - alert: HAMiQuotaExceeded
           expr: |
             max by (namespace, quota_name) (hami_resource_quota_used)
-              / max by (namespace, quota_name) (hami_resource_quota_limit > 0)
+              / max by (namespace, quota_name) (hami_resource_quota_limit)
               > 1
           for: 15m
           labels:

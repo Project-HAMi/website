@@ -8,8 +8,8 @@ HAMi 提供 Prometheus 告警规则参考示例，并为每条告警提供运行
 
 :::info 告警规则
 
-- 使用 Prometheus Operator 时：[下载 hami-alerts-v2.10.0.yaml](/prometheus/hami-alerts-v2.10.0.yaml)
-- 不使用 Prometheus Operator 时：[下载 hami-alerts-v2.10.0.rules.yaml](/prometheus/hami-alerts-v2.10.0.rules.yaml)
+- 使用 Prometheus Operator 时：[下载 hami-alerts-v2.10.0.yaml](pathname:///prometheus/hami-alerts-v2.10.0.yaml)
+- 不使用 Prometheus Operator 时：[下载 hami-alerts-v2.10.0.rules.yaml](pathname:///prometheus/hami-alerts-v2.10.0.rules.yaml)
 
 :::
 
@@ -22,13 +22,13 @@ HAMi 提供 Prometheus 告警规则参考示例，并为每条告警提供运行
 
 ## 告警列表
 
-| 告警 | 触发条件 | 严重级别 | 后端 |
-| --- | --- | --- | --- |
-| [`HAMiDeviceMemoryAllocationHigh`](#hamidevicememoryallocationhigh) | 某一设备类型超过 95% 的显存处于已分配状态，持续 15 分钟 | `warning` | 全部 |
-| [`HAMiDeviceCoreAllocationHigh`](#hamidevicecoreallocationhigh) | 某一设备类型超过 95% 的核心处于已分配状态，持续 15 分钟 | `warning` | 全部 |
-| [`HAMiQuotaAlmostFull`](#hamiquotaalmostfull) | 命名空间对某个扩展 ResourceQuota 的使用率高于 90% 且低于 100%，持续 15 分钟 | `info` | 全部 |
-| [`HAMiQuotaFullyUsed`](#hamiquotafullyused) | 命名空间对某个扩展 ResourceQuota 的使用率恰好为 100%，持续 15 分钟 | `info` | 全部 |
-| [`HAMiQuotaExceeded`](#hamiquotaexceeded) | 命名空间对某个扩展 ResourceQuota 的使用率高于 100%，持续 15 分钟 | `warning` | 全部 |
+| 告警 | 触发条件 | 严重级别 |
+| --- | --- | --- |
+| [`HAMiDeviceMemoryAllocationHigh`](#hamidevicememoryallocationhigh) | 某一设备类型超过 95% 的显存处于已分配状态，持续 15 分钟 | `warning` |
+| [`HAMiDeviceCoreAllocationHigh`](#hamidevicecoreallocationhigh) | 某一设备类型超过 95% 的核心处于已分配状态，持续 15 分钟 | `warning` |
+| [`HAMiQuotaAlmostFull`](#hamiquotaalmostfull) | 命名空间对某个扩展 ResourceQuota 的使用率高于 90% 且低于 100%，持续 15 分钟 | `info` |
+| [`HAMiQuotaFullyUsed`](#hamiquotafullyused) | 命名空间对某个扩展 ResourceQuota 的使用率恰好为 100%，持续 15 分钟 | `info` |
+| [`HAMiQuotaExceeded`](#hamiquotaexceeded) | 命名空间对某个扩展 ResourceQuota 的使用率高于 100%，持续 15 分钟 | `warning` |
 
 ## 添加规则
 
@@ -39,20 +39,26 @@ HAMi 提供 Prometheus 告警规则参考示例，并为每条告警提供运行
 ```bash
 helm upgrade --install hami hami-charts/hami \
   --namespace kube-system \
+  --version 2.10.0 \
+  --values my-values.yaml \
   --set prometheus.enabled=true
 ```
 
+`my-values.yaml` 保存当前安装自定义的 Helm Chart values，以便后续升级时保留这些设置。
+
 在 v2.10.0 中，这些 ServiceMonitor 未设置 `honorLabels`，因此配额告警会将所有命名空间都归到 HAMi 所在的命名空间下。请在两个 ServiceMonitor 的 endpoints 上设置 `honorLabels: true`，并在每次执行 `helm upgrade` 后重新设置。
 
-使用 Prometheus Operator 格式的 [hami-alerts-v2.10.0.yaml](/prometheus/hami-alerts-v2.10.0.yaml)。先[调整规则](#tune-the-rules)，然后应用：
+使用 Prometheus Operator 格式的 `hami-alerts-v2.10.0.yaml`。先[调整规则](#tune-the-rules)，然后应用：
 
 ```bash
 kubectl apply -n monitoring -f hami-alerts-v2.10.0.yaml
 ```
 
+确认 Prometheus 的 `ruleSelector` 和规则 namespace selector 能够匹配该 PrometheusRule。
+
 ### 不使用 Prometheus Operator
 
-使用 Prometheus 可读取的规则文件格式 [hami-alerts-v2.10.0.rules.yaml](/prometheus/hami-alerts-v2.10.0.rules.yaml)。先[调整规则](#tune-the-rules)，然后将该文件添加到 Prometheus 配置的 `rule_files` 中：
+使用 `hami-alerts-v2.10.0.rules.yaml`，该文件采用 Prometheus 可读取的规则文件格式。先[调整规则](#tune-the-rules)，然后将其添加到 Prometheus 配置的 `rule_files` 中：
 
 ```yaml
 rule_files:
@@ -65,7 +71,7 @@ rule_files:
 
 阈值、持续时间和严重级别都只是初始值。HAMi 支持多种后端、调度策略和工作负载模式，一组取值无法适用于所有集群。
 
-每条规则在 [hami-alerts-v2.10.0.yaml](/prometheus/hami-alerts-v2.10.0.yaml) 或 [hami-alerts-v2.10.0.rules.yaml](/prometheus/hami-alerts-v2.10.0.rules.yaml) 中都有三项设置：
+每条规则在 `hami-alerts-v2.10.0.yaml` 或 `hami-alerts-v2.10.0.rules.yaml` 中都有三项设置：
 
 ```yaml
 - alert: HAMiQuotaAlmostFull
@@ -84,7 +90,7 @@ rule_files:
 部分场景需要调整特定告警：
 
 - `HAMiDeviceMemoryAllocationHigh` 和 `HAMiDeviceCoreAllocationHigh`：如果集群有意满载运行，可将 `severity` 设为 `info` 或调大 `for`。如果某一设备类型的设备很少，几个各占用一整个设备的 Pod 就能使其达到 100%。此时请在规则中排除该 `device_type`。
-- `HAMiQuotaAlmostFull`、`HAMiQuotaFullyUsed` 和 `HAMiQuotaExceeded`：在 v2.10.0 中，`hami_resource_quota_limit` 未按 `memoryFactor` 缩放，因此当 `memoryFactor` 设置为大于 1 时，显存配额告警会不准确；Cambricon、Iluvatar、Mthreads 和 Metax 使用固定系数，显存配额告警始终不准确。对于这些场景，请在规则中将 `hami_resource_quota_used` 除以该系数，或排除显存对应的 `quota_name`。核心配额不受影响。
+- `HAMiQuotaAlmostFull`、`HAMiQuotaFullyUsed` 和 `HAMiQuotaExceeded`：在 v2.10.0 中，`hami_resource_quota_limit` 未按 `memoryFactor` 缩放，因此当 `memoryFactor` 设置为大于 1 时，显存配额告警会不准确；Cambricon、Iluvatar、Mthreads 和 MetaX 使用固定系数，显存配额告警始终不准确。对于这些场景，请仅对显存对应的 `quota_name` 将 `hami_resource_quota_used` 除以该系数，或在规则中排除该 `quota_name`。核心配额不受 `memoryFactor` 影响。
 
 ## 运行手册
 
@@ -118,7 +124,8 @@ topk(10, sum by (namespace, pod) (hami_vgpu_memory_allocated_bytes))
 ```promql
 topk(10,
   sum by (namespace, pod) (hami_vgpu_memory_allocated_bytes)
-    - sum by (namespace, pod) (hami_vgpu_memory_used_bytes)
+    - (sum by (namespace, pod) (hami_vgpu_memory_used_bytes)
+       or 0 * sum by (namespace, pod) (hami_vgpu_memory_allocated_bytes))
 )
 ```
 
@@ -167,11 +174,11 @@ topk(10, sum by (namespace, pod) (hami_vgpu_core_allocated_ratio))
 
 #### 影响
 
-下一个超出配额的 Pod 在创建时会被拒绝。
+下一个超出配额的 Pod 在创建时会被拒绝；如果它申请整个设备或按百分比申请显存，则会一直处于 `Pending` 状态。
 
 #### 诊断
 
-查看指定命名空间中每个 Pod 的显存和核心用量（PromQL）：
+查看指定命名空间中每个 Pod 的显存和核心分配量（PromQL）：
 
 ```promql
 sum by (pod) (hami_vgpu_memory_allocated_bytes{namespace="<namespace>"})
@@ -200,11 +207,11 @@ kubectl get resourcequota -n <namespace> -o yaml
 
 #### 影响
 
-该命名空间中申请此资源的新 Pod 在创建时会被拒绝。
+该命名空间中申请此资源的新 Pod 在创建时会被拒绝；如果申请整个设备或按百分比申请显存，则会一直处于 `Pending` 状态。
 
 #### 诊断
 
-查看指定命名空间中每个 Pod 的显存和核心用量（PromQL）：
+查看指定命名空间中每个 Pod 的显存和核心分配量（PromQL）：
 
 ```promql
 sum by (pod) (hami_vgpu_memory_allocated_bytes{namespace="<namespace>"})
@@ -233,7 +240,7 @@ kubectl get resourcequota -n <namespace> -o yaml
 
 #### 影响
 
-该命名空间中申请此资源的新 Pod 在创建时会被拒绝。
+该命名空间中申请此资源的新 Pod 在创建时会被拒绝；如果申请整个设备或按百分比申请显存，则会一直处于 `Pending` 状态。
 
 #### 诊断
 

@@ -54,7 +54,7 @@ groups:
       - alert: HAMiQuotaExceeded
         expr: |
           max by (namespace, quota_name) (hami_resource_quota_used)
-            / max by (namespace, quota_name) (hami_resource_quota_limit > 0)
+            / max by (namespace, quota_name) (hami_resource_quota_limit)
             > 1
         for: 15m
         labels:
@@ -69,8 +69,8 @@ groups:
         labels:
           severity: critical
         annotations:
-          summary: "No HAMi scheduler is the leader."
-          description: "No HAMi scheduler has been the leader for 15 minutes."
+          summary: "Prometheus sees no HAMi scheduler leader."
+          description: "Prometheus sees no HAMi scheduler that reports itself as the leader."
           runbook_url: https://project-hami.io/docs/next/userguide/monitoring/alerting-and-runbooks#hamischedulerdown
       - alert: HAMiNodeDevicesNotRegistered
         expr: |

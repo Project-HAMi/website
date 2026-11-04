@@ -8,8 +8,8 @@ HAMi 提供 Prometheus 告警规则参考示例，并为每条告警提供运行
 
 :::info 告警规则
 
-- 使用 Prometheus Operator 时：[下载 hami-alerts.yaml](/prometheus/hami-alerts.yaml)
-- 不使用 Prometheus Operator 时：[下载 hami-alerts.rules.yaml](/prometheus/hami-alerts.rules.yaml)
+- 使用 Prometheus Operator 时：[下载 hami-alerts.yaml](pathname:///prometheus/hami-alerts.yaml)
+- 不使用 Prometheus Operator 时：[下载 hami-alerts.rules.yaml](pathname:///prometheus/hami-alerts.rules.yaml)
 
 :::
 
@@ -17,20 +17,20 @@ HAMi 提供 Prometheus 告警规则参考示例，并为每条告警提供运行
 
 | 组件       | 要求                                        |
 | ---------- | ------------------------------------------- |
-| HAMi       | 基于 master 构建的 Chart                    |
+| HAMi       | v2.11.0 及以上版本                          |
 | Prometheus | 同时采集 scheduler 和 vGPU monitor 指标端点 |
 
 ## 告警列表
 
-| 告警 | 触发条件 | 严重级别 | 后端 |
-| --- | --- | --- | --- |
-| [`HAMiDeviceMemoryAllocationHigh`](#hamidevicememoryallocationhigh) | 某一设备类型超过 95% 的显存处于已分配状态，持续 15 分钟 | `warning` | 全部 |
-| [`HAMiDeviceCoreAllocationHigh`](#hamidevicecoreallocationhigh) | 某一设备类型超过 95% 的核心处于已分配状态，持续 15 分钟 | `warning` | 全部 |
-| [`HAMiQuotaAlmostFull`](#hamiquotaalmostfull) | 命名空间对某个扩展 ResourceQuota 的使用率高于 90% 且低于 100%，持续 15 分钟 | `info` | 全部 |
-| [`HAMiQuotaFullyUsed`](#hamiquotafullyused) | 命名空间对某个扩展 ResourceQuota 的使用率恰好为 100%，持续 15 分钟 | `info` | 全部 |
-| [`HAMiQuotaExceeded`](#hamiquotaexceeded) | 命名空间对某个扩展 ResourceQuota 的使用率高于 100%，持续 15 分钟 | `warning` | 全部 |
-| [`HAMiSchedulerDown`](#hamischedulerdown) | 连续 15 分钟没有 HAMi 调度器成为 leader | `critical` | 全部 |
-| [`HAMiNodeDevicesNotRegistered`](#haminodedevicesnotregistered) | 节点上的 vGPU monitor 运行正常，但调度器连续 15 分钟没有该节点的设备 | `warning` | NVIDIA |
+| 告警 | 触发条件 | 严重级别 |
+| --- | --- | --- |
+| [`HAMiDeviceMemoryAllocationHigh`](#hamidevicememoryallocationhigh) | 某一设备类型超过 95% 的显存处于已分配状态，持续 15 分钟 | `warning` |
+| [`HAMiDeviceCoreAllocationHigh`](#hamidevicecoreallocationhigh) | 某一设备类型超过 95% 的核心处于已分配状态，持续 15 分钟 | `warning` |
+| [`HAMiQuotaAlmostFull`](#hamiquotaalmostfull) | 命名空间对某个扩展 ResourceQuota 的使用率高于 90% 且低于 100%，持续 15 分钟 | `info` |
+| [`HAMiQuotaFullyUsed`](#hamiquotafullyused) | 命名空间对某个扩展 ResourceQuota 的使用率恰好为 100%，持续 15 分钟 | `info` |
+| [`HAMiQuotaExceeded`](#hamiquotaexceeded) | 命名空间对某个扩展 ResourceQuota 的使用率高于 100%，持续 15 分钟 | `warning` |
+| [`HAMiSchedulerDown`](#hamischedulerdown) | Prometheus 连续 15 分钟未看到任何 HAMi 调度器报告自己是 leader | `critical` |
+| [`HAMiNodeDevicesNotRegistered`](#haminodedevicesnotregistered) | 节点上的 vGPU monitor 运行正常，但调度器连续 15 分钟没有该节点的设备 | `warning` |
 
 ## 添加规则
 
@@ -41,25 +41,30 @@ HAMi 提供 Prometheus 告警规则参考示例，并为每条告警提供运行
 ```bash
 helm upgrade --install hami hami-charts/hami \
   --namespace kube-system \
+  --values my-values.yaml \
   --set prometheus.enabled=true
 ```
 
-使用 Prometheus Operator 格式的 [hami-alerts.yaml](/prometheus/hami-alerts.yaml)。先[调整规则](#tune-the-rules)，然后应用：
+`my-values.yaml` 保存当前安装自定义的 Helm Chart values，以便后续升级时保留这些设置。
+
+使用 Prometheus Operator 格式的 `hami-alerts.yaml`。先[调整规则](#tune-the-rules)，然后应用：
 
 ```bash
 kubectl apply -n monitoring -f hami-alerts.yaml
 ```
 
+确认 Prometheus 的 `ruleSelector` 和规则 namespace selector 能够匹配该 PrometheusRule。
+
 ### 不使用 Prometheus Operator
 
-使用 Prometheus 可读取的规则文件格式 [hami-alerts.rules.yaml](/prometheus/hami-alerts.rules.yaml)。先[调整规则](#tune-the-rules)，然后将该文件添加到 Prometheus 配置的 `rule_files` 中：
+使用 `hami-alerts.rules.yaml`，该文件采用 Prometheus 可读取的规则文件格式。先[调整规则](#tune-the-rules)，然后将其添加到 Prometheus 配置的 `rule_files` 中：
 
 ```yaml
 rule_files:
   - /etc/prometheus/rules/hami-alerts.rules.yaml
 ```
 
-[`HAMiNodeDevicesNotRegistered`](#haminodedevicesnotregistered) 需要在 Pod 未就绪时仍能获取 vGPU monitor 指标，因此请直接采集 Pod，不要通过 Service 采集。
+[`HAMiNodeDevicesNotRegistered`](#haminodedevicesnotregistered) 需要在 device plugin Pod 未就绪时仍能获取 vGPU monitor 指标，因此请按 Pod IP 采集，不要通过 Service 采集。
 
 无论使用哪种方式，都请在 Prometheus UI 中打开 **Alerts**，确认已列出 HAMi 告警（位于 `hami` 组中）。
 
@@ -67,7 +72,7 @@ rule_files:
 
 阈值、持续时间和严重级别都只是初始值。HAMi 支持多种后端、调度策略和工作负载模式，一组取值无法适用于所有集群。
 
-每条规则在 [hami-alerts.yaml](/prometheus/hami-alerts.yaml) 或 [hami-alerts.rules.yaml](/prometheus/hami-alerts.rules.yaml) 中都有三项设置：
+每条规则在 `hami-alerts.yaml` 或 `hami-alerts.rules.yaml` 中都有三项设置：
 
 ```yaml
 - alert: HAMiQuotaAlmostFull
@@ -120,7 +125,8 @@ topk(10, sum by (namespace, pod) (hami_vgpu_memory_allocated_bytes))
 ```promql
 topk(10,
   sum by (namespace, pod) (hami_vgpu_memory_allocated_bytes)
-    - sum by (namespace, pod) (hami_vgpu_memory_used_bytes)
+    - (sum by (namespace, pod) (hami_vgpu_memory_used_bytes)
+       or 0 * sum by (namespace, pod) (hami_vgpu_memory_allocated_bytes))
 )
 ```
 
@@ -169,11 +175,11 @@ topk(10, sum by (namespace, pod) (hami_vgpu_core_allocated_ratio))
 
 #### 影响
 
-下一个超出配额的 Pod 在创建时会被拒绝。
+下一个超出配额的 Pod 在创建时会被拒绝；如果它申请整个设备或按百分比申请显存，则会一直处于 `Pending` 状态。
 
 #### 诊断
 
-查看指定命名空间中每个 Pod 的显存和核心用量（PromQL）：
+查看指定命名空间中每个 Pod 的显存和核心分配量（PromQL）：
 
 ```promql
 sum by (pod) (hami_vgpu_memory_allocated_bytes{namespace="<namespace>"})
@@ -201,11 +207,11 @@ kubectl get resourcequota -n <namespace> -o yaml
 
 #### 影响
 
-该命名空间中申请此资源的新 Pod 在创建时会被拒绝。
+该命名空间中申请此资源的新 Pod 在创建时会被拒绝；如果申请整个设备或按百分比申请显存，则会一直处于 `Pending` 状态。
 
 #### 诊断
 
-查看指定命名空间中每个 Pod 的显存和核心用量（PromQL）：
+查看指定命名空间中每个 Pod 的显存和核心分配量（PromQL）：
 
 ```promql
 sum by (pod) (hami_vgpu_memory_allocated_bytes{namespace="<namespace>"})
@@ -233,7 +239,7 @@ kubectl get resourcequota -n <namespace> -o yaml
 
 #### 影响
 
-该命名空间中申请此资源的新 Pod 在创建时会被拒绝。
+该命名空间中申请此资源的新 Pod 在创建时会被拒绝；如果申请整个设备或按百分比申请显存，则会一直处于 `Pending` 状态。
 
 #### 诊断
 
@@ -253,18 +259,18 @@ changes(hami_resource_quota_limit{namespace="<namespace>", quota_name="<quota-na
 
 #### 含义
 
-连续 15 分钟没有 HAMi 调度器成为 leader。
+Prometheus 连续 15 分钟未看到任何 HAMi 调度器报告自己是 leader。原因可能是没有调度器成为 leader，也可能是 Prometheus 无法采集调度器的指标。
 
 #### 影响
 
-HAMi 无法调度申请设备的新 Pod。
+如果没有调度器成为 leader，HAMi 无法调度申请设备的新 Pod。
 
 #### 诊断
 
 检查 HAMi 调度器 Pod 的状态：
 
 - 如果没有 HAMi 调度器 Pod 处于 `Running` 状态，说明调度器已崩溃或无法启动。请检查 Pod 事件和日志。
-- 如果 HAMi 调度器 Pod 处于 `Running` 状态，但其 `vgpu-scheduler-extender` 容器反复输出 `Scheduler extender has not become leader yet`，说明没有 Pod 成为 leader。请检查 `kube-scheduler` 容器的日志。
+- 如果所有运行中的 HAMi 调度器 Pod 的 `vgpu-scheduler-extender` 容器都反复输出 `Scheduler extender has not become leader yet`，说明没有 Pod 成为 leader。请检查 `kube-scheduler` 容器的日志。
 
 #### 缓解措施
 
@@ -274,7 +280,7 @@ HAMi 无法调度申请设备的新 Pod。
 
 #### 含义
 
-节点上的 vGPU monitor 运行正常，但调度器已连续 15 分钟没有该节点的设备。通常是同一 Pod 中的 `device-plugin` 容器发生了故障。
+节点上的 vGPU monitor 运行正常，但调度器已连续 15 分钟没有该节点的设备。通常是同一 Pod 中的 `device-plugin` 容器发生了故障。该告警仅适用于 NVIDIA 节点，因为 vGPU monitor 只运行在 NVIDIA device plugin Pod 中。
 
 #### 影响
 

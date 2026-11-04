@@ -6,8 +6,8 @@ HAMi provides reference Prometheus alerting rules and a runbook for each alert. 
 
 :::info Alert rules
 
-- When using Prometheus Operator: [Download hami-alerts-v2.10.0.yaml](/prometheus/hami-alerts-v2.10.0.yaml)
-- When not using Prometheus Operator: [Download hami-alerts-v2.10.0.rules.yaml](/prometheus/hami-alerts-v2.10.0.rules.yaml)
+- When using Prometheus Operator: [Download hami-alerts-v2.10.0.yaml](pathname:///prometheus/hami-alerts-v2.10.0.yaml)
+- When not using Prometheus Operator: [Download hami-alerts-v2.10.0.rules.yaml](pathname:///prometheus/hami-alerts-v2.10.0.rules.yaml)
 
 :::
 
@@ -20,13 +20,13 @@ HAMi provides reference Prometheus alerting rules and a runbook for each alert. 
 
 ## Alerts
 
-| Alert | Fires when | Severity | Backends |
-| --- | --- | --- | --- |
-| [`HAMiDeviceMemoryAllocationHigh`](#hamidevicememoryallocationhigh) | More than 95% of the memory of one device type stays allocated for 15 minutes | `warning` | All |
-| [`HAMiDeviceCoreAllocationHigh`](#hamidevicecoreallocationhigh) | More than 95% of the cores of one device type stay allocated for 15 minutes | `warning` | All |
-| [`HAMiQuotaAlmostFull`](#hamiquotaalmostfull) | A namespace stays above 90% and below 100% of an extended ResourceQuota for 15 minutes | `info` | All |
-| [`HAMiQuotaFullyUsed`](#hamiquotafullyused) | A namespace stays at exactly 100% of an extended ResourceQuota for 15 minutes | `info` | All |
-| [`HAMiQuotaExceeded`](#hamiquotaexceeded) | A namespace stays above 100% of an extended ResourceQuota for 15 minutes | `warning` | All |
+| Alert | Fires when | Severity |
+| --- | --- | --- |
+| [`HAMiDeviceMemoryAllocationHigh`](#hamidevicememoryallocationhigh) | More than 95% of the memory of one device type stays allocated for 15 minutes | `warning` |
+| [`HAMiDeviceCoreAllocationHigh`](#hamidevicecoreallocationhigh) | More than 95% of the cores of one device type stay allocated for 15 minutes | `warning` |
+| [`HAMiQuotaAlmostFull`](#hamiquotaalmostfull) | A namespace stays above 90% and below 100% of an extended ResourceQuota for 15 minutes | `info` |
+| [`HAMiQuotaFullyUsed`](#hamiquotafullyused) | A namespace stays at exactly 100% of an extended ResourceQuota for 15 minutes | `info` |
+| [`HAMiQuotaExceeded`](#hamiquotaexceeded) | A namespace stays above 100% of an extended ResourceQuota for 15 minutes | `warning` |
 
 ## Add the rules
 
@@ -37,20 +37,26 @@ If Prometheus Operator is installed, enable the ServiceMonitors included in the 
 ```bash
 helm upgrade --install hami hami-charts/hami \
   --namespace kube-system \
+  --version 2.10.0 \
+  --values my-values.yaml \
   --set prometheus.enabled=true
 ```
 
+`my-values.yaml` holds the custom Helm chart values of the current installation, so that future upgrades keep them.
+
 In v2.10.0, these ServiceMonitors do not set `honorLabels`, so the quota alerts group all namespaces under the HAMi namespace. Set `honorLabels: true` on the endpoints of both ServiceMonitors, and repeat this after each `helm upgrade`.
 
-Use [hami-alerts-v2.10.0.yaml](/prometheus/hami-alerts-v2.10.0.yaml), which is in the Prometheus Operator format. [Tune the rules](#tune-the-rules), then apply it:
+Use `hami-alerts-v2.10.0.yaml`, which is in the Prometheus Operator format. [Tune the rules](#tune-the-rules), then apply it:
 
 ```bash
 kubectl apply -n monitoring -f hami-alerts-v2.10.0.yaml
 ```
 
+Verify that the Prometheus `ruleSelector` and rule namespace selector match this PrometheusRule.
+
 ### Prometheus without the Operator
 
-Use [hami-alerts-v2.10.0.rules.yaml](/prometheus/hami-alerts-v2.10.0.rules.yaml), which is in the rule file format that Prometheus reads. [Tune the rules](#tune-the-rules), then add the file to `rule_files` in the Prometheus configuration:
+Use `hami-alerts-v2.10.0.rules.yaml`, which is in the rule file format that Prometheus reads. [Tune the rules](#tune-the-rules), then add the file to `rule_files` in the Prometheus configuration:
 
 ```yaml
 rule_files:
@@ -63,7 +69,7 @@ In both cases, open **Alerts** in the Prometheus UI and check that the HAMi aler
 
 The thresholds, durations, and severities are starting values. HAMi supports many backends, scheduling policies, and workload patterns, so one set of values does not fit every cluster.
 
-Each rule has three settings in [hami-alerts-v2.10.0.yaml](/prometheus/hami-alerts-v2.10.0.yaml) or [hami-alerts-v2.10.0.rules.yaml](/prometheus/hami-alerts-v2.10.0.rules.yaml):
+Each rule has three settings in `hami-alerts-v2.10.0.yaml` or `hami-alerts-v2.10.0.rules.yaml`:
 
 ```yaml
 - alert: HAMiQuotaAlmostFull
@@ -82,7 +88,7 @@ Each rule has three settings in [hami-alerts-v2.10.0.yaml](/prometheus/hami-aler
 Some setups need changes to specific alerts:
 
 - `HAMiDeviceMemoryAllocationHigh` and `HAMiDeviceCoreAllocationHigh`: If the cluster runs full on purpose, set `severity` to `info` or raise `for`. If a device type has very few devices, a few Pods that each take a whole device fill it to 100%. Exclude that `device_type` from the rule.
-- `HAMiQuotaAlmostFull`, `HAMiQuotaFullyUsed`, and `HAMiQuotaExceeded`: In v2.10.0, `hami_resource_quota_limit` is not scaled by `memoryFactor`, so the memory quota alerts are wrong when `memoryFactor` is set above 1, and always on Cambricon, Iluvatar, Mthreads, and Metax, which use a fixed factor. For those setups, divide `hami_resource_quota_used` by the factor in the rule, or exclude the memory `quota_name`. Cores quotas are not affected.
+- `HAMiQuotaAlmostFull`, `HAMiQuotaFullyUsed`, and `HAMiQuotaExceeded`: In v2.10.0, `hami_resource_quota_limit` is not scaled by `memoryFactor`, so the memory quota alerts are wrong when `memoryFactor` is set above 1, and always on Cambricon, Iluvatar, Mthreads, and MetaX, which use a fixed factor. For those setups, divide `hami_resource_quota_used` by the factor for the memory `quota_name` only, or exclude that `quota_name` from the rule. Core quotas are not affected by `memoryFactor`.
 
 ## Runbooks
 
@@ -116,7 +122,8 @@ Check memory that Pods hold but do not use (PromQL, NVIDIA nodes only):
 ```promql
 topk(10,
   sum by (namespace, pod) (hami_vgpu_memory_allocated_bytes)
-    - sum by (namespace, pod) (hami_vgpu_memory_used_bytes)
+    - (sum by (namespace, pod) (hami_vgpu_memory_used_bytes)
+       or 0 * sum by (namespace, pod) (hami_vgpu_memory_allocated_bytes))
 )
 ```
 
@@ -138,7 +145,7 @@ New Pods that request this device type may stay `Pending`.
 
 #### Diagnosis
 
-Check cores allocation per node for the `device_type` in the alert (PromQL):
+Check core allocation per node for the `device_type` in the alert (PromQL):
 
 ```promql
 sum by (node) (hami_gpu_core_allocated_ratio{device_type="<device-type>"})
@@ -154,7 +161,7 @@ topk(10, sum by (namespace, pod) (hami_vgpu_core_allocated_ratio))
 #### Mitigation
 
 - Add nodes of this device type, or uncordon nodes that are ready to return.
-- Ask teams to delete idle Pods, or to recreate them with lower cores requests.
+- Ask teams to delete idle Pods, or to recreate them with lower core requests.
 - Share the device type between namespaces with [ResourceQuota](../nvidia-device/using-resourcequota.md).
 
 ### HAMiQuotaAlmostFull
@@ -165,11 +172,11 @@ A namespace has used more than 90% and less than 100% of an extended ResourceQuo
 
 #### Impact
 
-The next Pod that does not fit the quota is rejected at creation.
+The next Pod that does not fit the quota is rejected at creation, or stays `Pending` if it requests a whole device or a percentage of device memory.
 
 #### Diagnosis
 
-Check memory and cores usage per Pod in a specific namespace (PromQL):
+Check memory and core allocation per Pod in a specific namespace (PromQL):
 
 ```promql
 sum by (pod) (hami_vgpu_memory_allocated_bytes{namespace="<namespace>"})
@@ -198,11 +205,11 @@ A namespace has used 100% of an extended ResourceQuota for 15 minutes.
 
 #### Impact
 
-New Pods in the namespace that request this resource are rejected at creation.
+New Pods in the namespace that request this resource are rejected at creation, or stay `Pending` if they request a whole device or a percentage of device memory.
 
 #### Diagnosis
 
-Check memory and cores usage per Pod in a specific namespace (PromQL):
+Check memory and core allocation per Pod in a specific namespace (PromQL):
 
 ```promql
 sum by (pod) (hami_vgpu_memory_allocated_bytes{namespace="<namespace>"})
@@ -231,7 +238,7 @@ A namespace has used more than 100% of an extended ResourceQuota for 15 minutes.
 
 #### Impact
 
-New Pods in the namespace that request this resource are rejected at creation.
+New Pods in the namespace that request this resource are rejected at creation, or stay `Pending` if they request a whole device or a percentage of device memory.
 
 #### Diagnosis
 
