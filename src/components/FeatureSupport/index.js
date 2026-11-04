@@ -2,12 +2,13 @@ import React, { useEffect, useId, useLayoutEffect, useRef, useState } from "reac
 import clsx from "clsx";
 import Link from "@docusaurus/Link";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
+import { useActiveVersion } from "@docusaurus/plugin-content-docs/client";
 import { COMPONENTS, FEATURES } from "@site/src/data/featureSupport";
 import styles from "./styles.module.css";
 
 const ORDER = ["hami", "dra", "volcano", "kai"];
 
-const TEXT = {
+export const TEXT = {
   label: { en: "Works with", zh: "支持情况" },
   guide: { en: "Guide", zh: "使用指南" },
   status: {
@@ -18,7 +19,7 @@ const TEXT = {
   },
 };
 
-function Glyph({ status }) {
+export function Glyph({ status }) {
   if (status === "yes") {
     return (
       <svg className={clsx(styles.glyph, styles.yes)} viewBox="0 0 12 12" aria-hidden="true">
@@ -90,8 +91,17 @@ function Value({ lines, status, mark, t }) {
   );
 }
 
-function Card({ id, componentKey, features, status, t, cardRef }) {
+// Site links in the data start with /docs/, which is the latest release. Point them at the
+// version the reader is on, so links on /docs/next pages stay in /docs/next.
+export function useVersionedHref() {
+  const version = useActiveVersion();
+  const root = version ? version.path : "/docs";
+  return (href) => (href.startsWith("/docs/") ? `${root}/${href.slice("/docs/".length)}` : href);
+}
+
+export function Card({ id, componentKey, features, status, t, cardRef, className }) {
   const component = COMPONENTS[componentKey];
+  const versioned = useVersionedHref();
   const cells = features.map((key) => FEATURES[key][componentKey]);
   const notes = cells.map((cell) => (cell.note ? t(cell.note) : ""));
   const sharedNote = notes.every((note) => note === notes[0]) ? notes[0] : "";
@@ -117,11 +127,20 @@ function Card({ id, componentKey, features, status, t, cardRef }) {
   // Each feature's own guide, once per destination.
   const guides = cells
     .filter((cell) => cell.guide)
-    .map((cell) => ({ href: t(cell.guide.href), label: t(cell.guide.label || TEXT.guide) }))
+    .map((cell) => ({
+      href: versioned(t(cell.guide.href)),
+      label: t(cell.guide.label || TEXT.guide),
+    }))
     .filter((guide, index, all) => all.findIndex((other) => other.href === guide.href) === index);
 
   return (
-    <div id={id} ref={cardRef} className={styles.card} role="group" aria-label={t(component.full)}>
+    <div
+      id={id}
+      ref={cardRef}
+      className={clsx(styles.card, className)}
+      role="group"
+      aria-label={t(component.full)}
+    >
       <div className={styles.head}>
         <span className={styles.name}>{t(component.full)}</span>
         <span className={clsx(styles.status, styles[status])}>
@@ -161,11 +180,9 @@ function Card({ id, componentKey, features, status, t, cardRef }) {
   );
 }
 
-export default function FeatureSupport({ features }) {
-  const { i18n } = useDocusaurusContext();
-  const t = (text) => (typeof text === "string" ? text : text[i18n.currentLocale] || text.en);
-  const keys = Array.isArray(features) ? features : [features];
-  const baseId = `fs${useId().replace(/[^\w-]/g, "")}`;
+// Hover opens a card, click pins it, and an outside click or Escape closes it.
+// Only one card is open at a time; key names which one.
+export function useHoverCard() {
   const [open, setOpen] = useState(null);
   const [pinned, setPinned] = useState(false);
   const rootRef = useRef(null);
@@ -182,21 +199,26 @@ export default function FeatureSupport({ features }) {
     clearTimeout(closeTimer.current);
     closeTimer.current = setTimeout(() => setOpen(null), 140);
   };
+  const close = () => {
+    setOpen(null);
+    setPinned(false);
+  };
+  const toggle = (key) => {
+    if (open === key && pinned) {
+      close();
+    } else {
+      show(key);
+      setPinned(true);
+    }
+  };
 
-  // Close on outside click or Escape.
   useEffect(() => {
     if (!open) return undefined;
     const onDown = (event) => {
-      if (!rootRef.current?.contains(event.target)) {
-        setOpen(null);
-        setPinned(false);
-      }
+      if (!rootRef.current?.contains(event.target)) close();
     };
     const onKey = (event) => {
-      if (event.key === "Escape") {
-        setOpen(null);
-        setPinned(false);
-      }
+      if (event.key === "Escape") close();
     };
     document.addEventListener("pointerdown", onDown);
     document.addEventListener("keydown", onKey);
@@ -205,6 +227,18 @@ export default function FeatureSupport({ features }) {
       document.removeEventListener("keydown", onKey);
     };
   }, [open]);
+
+  useEffect(() => () => clearTimeout(closeTimer.current), []);
+
+  return { open, pinned, show, hideSoon, toggle, rootRef, cardRef };
+}
+
+export default function FeatureSupport({ features }) {
+  const { i18n } = useDocusaurusContext();
+  const t = (text) => (typeof text === "string" ? text : text[i18n.currentLocale] || text.en);
+  const keys = Array.isArray(features) ? features : [features];
+  const baseId = `fs${useId().replace(/[^\w-]/g, "")}`;
+  const { open, show, hideSoon, toggle, rootRef, cardRef } = useHoverCard();
 
   // Keep the card inside the viewport.
   useLayoutEffect(() => {
@@ -217,8 +251,6 @@ export default function FeatureSupport({ features }) {
     if (right > 0) card.style.setProperty("--shift", `${-right}px`);
     else if (left > 0) card.style.setProperty("--shift", `${left}px`);
   }, [open]);
-
-  useEffect(() => () => clearTimeout(closeTimer.current), []);
 
   return (
     <div ref={rootRef} className={styles.root}>
@@ -243,15 +275,7 @@ export default function FeatureSupport({ features }) {
               aria-expanded={isOpen}
               aria-controls={isOpen ? cardId : undefined}
               onFocus={() => show(componentKey)}
-              onClick={() => {
-                if (isOpen && pinned) {
-                  setOpen(null);
-                  setPinned(false);
-                } else {
-                  show(componentKey);
-                  setPinned(true);
-                }
-              }}
+              onClick={() => toggle(componentKey)}
             >
               <Glyph status={status} />
               {COMPONENTS[componentKey].name}
