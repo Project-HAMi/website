@@ -4,6 +4,8 @@ description: Choose classic HAMi or HAMi-DRA based on cluster requirements, or c
 sidebar_label: Choose your setup
 ---
 
+import FeatureMatrix from '@site/src/components/FeatureSupport/Matrix';
+
 HAMi ships in more than one shape, and two other projects sit next to it. This page answers the question people ask first: which one do I install?
 
 ## HAMi or HAMi-DRA
@@ -61,3 +63,19 @@ A short way to decide:
 Only one device plugin may own `nvidia.com/gpu` on a node. Remove or disable the NVIDIA device plugin before installing the HAMi one. See the [FAQ](../faq/faq.md).
 
 :::
+
+## Which features each setup supports
+
+The tables above compare how the setups work. The table below lists which NVIDIA GPU features each of them supports, so you can check before you deploy. Hover over a status for details.
+
+<FeatureMatrix />
+
+Status:
+
+- **Supported**: the feature works.
+- **With limits**: the feature works, with a limit you should know.
+- **Not supported**: the setup has no way to do this.
+
+The table covers NVIDIA GPUs. For other devices, see [Device supported by HAMi](../userguide/device-supported.md).
+
+It was checked against the source code of HAMi v2.11.0, HAMi-DRA v0.2.3, Volcano v1.16.0 with volcano-vgpu-device-plugin, and KAI Scheduler v0.18.7 with kai-resource-isolator v1.1.0.
