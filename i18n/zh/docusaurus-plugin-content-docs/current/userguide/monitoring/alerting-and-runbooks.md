@@ -114,18 +114,27 @@ sum by (node) (hami_gpu_memory_allocated_bytes{device_type="<device-type>"})
   / sum by (node) (hami_gpu_memory_limit_bytes{device_type="<device-type>"})
 ```
 
-查看已分配显存最多的 Pod（PromQL）：
+查看告警中 `device_type` 上已分配显存最多的 Pod（PromQL）：
 
 ```promql
-topk(10, sum by (namespace, pod) (hami_vgpu_memory_allocated_bytes))
+topk(10, sum by (namespace, pod) (
+  hami_vgpu_memory_allocated_bytes
+    and on (device_uuid) hami_gpu_memory_limit_bytes{device_type="<device-type>"}
+))
 ```
 
-查看 Pod 已占用但未使用的显存（PromQL，仅限 NVIDIA 节点）：
+查看告警中 `device_type` 上 Pod 已占用但未使用的显存（PromQL，仅限 NVIDIA 节点）：
 
 ```promql
 topk(10,
-  sum by (namespace, pod) (hami_vgpu_memory_allocated_bytes)
-    - (sum by (namespace, pod) (hami_vgpu_memory_used_bytes)
+  sum by (namespace, pod) (
+    hami_vgpu_memory_allocated_bytes
+      and on (device_uuid) hami_gpu_memory_limit_bytes{device_type="<device-type>"}
+  )
+    - (sum by (namespace, pod) (
+         hami_vgpu_memory_used_bytes
+           and on (device_uuid) hami_gpu_memory_limit_bytes{device_type="<device-type>"}
+       )
        or 0 * sum by (namespace, pod) (hami_vgpu_memory_allocated_bytes))
 )
 ```
@@ -155,10 +164,13 @@ sum by (node) (hami_gpu_core_allocated_ratio{device_type="<device-type>"})
   / sum by (node) (hami_gpu_core_limit_ratio{device_type="<device-type>"})
 ```
 
-查看已分配核心最多的 Pod（PromQL）：
+查看告警中 `device_type` 上已分配核心最多的 Pod（PromQL）：
 
 ```promql
-topk(10, sum by (namespace, pod) (hami_vgpu_core_allocated_ratio))
+topk(10, sum by (namespace, pod) (
+  hami_vgpu_core_allocated_ratio
+    and on (device_uuid) hami_gpu_core_limit_ratio{device_type="<device-type>"}
+))
 ```
 
 #### 缓解措施

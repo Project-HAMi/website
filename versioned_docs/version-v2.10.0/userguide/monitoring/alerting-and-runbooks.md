@@ -111,18 +111,27 @@ sum by (node) (hami_gpu_memory_allocated_bytes{device_type="<device-type>"})
   / sum by (node) (hami_gpu_memory_limit_bytes{device_type="<device-type>"})
 ```
 
-Check the Pods with the most allocated memory (PromQL):
+Check the Pods with the most allocated memory for the `device_type` in the alert (PromQL):
 
 ```promql
-topk(10, sum by (namespace, pod) (hami_vgpu_memory_allocated_bytes))
+topk(10, sum by (namespace, pod) (
+  hami_vgpu_memory_allocated_bytes
+    and on (device_uuid) hami_gpu_memory_limit_bytes{device_type="<device-type>"}
+))
 ```
 
-Check memory that Pods hold but do not use (PromQL, NVIDIA nodes only):
+Check memory that Pods hold but do not use for the `device_type` in the alert (PromQL, NVIDIA nodes only):
 
 ```promql
 topk(10,
-  sum by (namespace, pod) (hami_vgpu_memory_allocated_bytes)
-    - (sum by (namespace, pod) (hami_vgpu_memory_used_bytes)
+  sum by (namespace, pod) (
+    hami_vgpu_memory_allocated_bytes
+      and on (device_uuid) hami_gpu_memory_limit_bytes{device_type="<device-type>"}
+  )
+    - (sum by (namespace, pod) (
+         hami_vgpu_memory_used_bytes
+           and on (device_uuid) hami_gpu_memory_limit_bytes{device_type="<device-type>"}
+       )
        or 0 * sum by (namespace, pod) (hami_vgpu_memory_allocated_bytes))
 )
 ```
@@ -152,10 +161,13 @@ sum by (node) (hami_gpu_core_allocated_ratio{device_type="<device-type>"})
   / sum by (node) (hami_gpu_core_limit_ratio{device_type="<device-type>"})
 ```
 
-Check the Pods with the most allocated cores (PromQL):
+Check the Pods with the most allocated cores for the `device_type` in the alert (PromQL):
 
 ```promql
-topk(10, sum by (namespace, pod) (hami_vgpu_core_allocated_ratio))
+topk(10, sum by (namespace, pod) (
+  hami_vgpu_core_allocated_ratio
+    and on (device_uuid) hami_gpu_core_limit_ratio{device_type="<device-type>"}
+))
 ```
 
 #### Mitigation
