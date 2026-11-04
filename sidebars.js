@@ -167,6 +167,7 @@ module.exports = {
             "userguide/monitoring/real-time-usage",
             "userguide/monitoring/real-time-device-usage",
             "userguide/monitoring/grafana-dashboard",
+            "userguide/monitoring/alerting-and-runbooks",
           ],
         },
         "userguide/benchmark",
