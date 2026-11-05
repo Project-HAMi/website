@@ -60,10 +60,10 @@ devicePlugin:
       }
 ```
 
-The `nodelabelselector` above matches a label you apply yourself; label each GPU node that should serve Lupine before (or after, followed by a device-plugin restart) enabling remote mode:
+The `nodelabelselector` above matches a label you apply yourself; label each GPU node that should serve Lupine before (or after, followed by a device-plugin restart) enabling remote mode. The node must also match `devicePlugin.nvidiaNodeSelector` (`gpu=on` by default), or the device plugin and the Lupine server will not be scheduled on it:
 
 ```bash
-kubectl label node <gpu-node> role=lupine-server
+kubectl label node <gpu-node> gpu=on role=lupine-server
 ```
 
 Then a vLLM Deployment on a GPU-less node looks like any other HAMi workload (see the full [remote-gpu examples](https://github.com/Project-HAMi/HAMi/tree/master/examples/remotegpu)):
@@ -126,7 +126,7 @@ devices:
     enpuPolicy: "elastic" # fixed-share | elastic | best-effort
 ```
 
-The global mode is selected with `devices.ascend.hamiVnpuMode`; node capability annotations from the Ascend device plugin still take precedence. Also new for Ascend: slot capacity is exposed in the chart for hami-core mode, and **Ascend 950 support** lands in this cycle: the scheduler gains Ascend950DT whole-card scheduling ([#3316](https://github.com/Project-HAMi/HAMi/pull/3316), [@panpan0000](https://github.com/panpan0000)), and [ascend-device-plugin](https://github.com/Project-HAMi/ascend-device-plugin) 0.2.x adds Ascend950DT discovery, node mode overrides, and unhealthy-device preservation on discovery failure.
+The global mode is selected with `devices.ascend.hamiVnpuMode`; node capability annotations from the Ascend device plugin still take precedence. `devices.ascend.enabled` only turns on Ascend support in the HAMi scheduler, it does not deploy the device plugin: install [ascend-device-plugin](https://github.com/Project-HAMi/ascend-device-plugin) separately, using chart 0.2.0 or later for ENPU mode (0.2.x also carries the `vnpus.deviceSplitCount` support that `devices.ascend.deviceSplitCount` requires), and make sure its image bundles an ENPU runtime matching your CANN version. See the [Ascend guide](/docs/next/userguide/ascend-device/enable-ascend-sharing#enpu) for prerequisites. Also new for Ascend: slot capacity is exposed in the chart for hami-core mode, and **Ascend 950 support** lands in this cycle: the scheduler gains Ascend950DT whole-card scheduling ([#3316](https://github.com/Project-HAMi/HAMi/pull/3316), [@panpan0000](https://github.com/panpan0000)), and [ascend-device-plugin](https://github.com/Project-HAMi/ascend-device-plugin) 0.2.x adds Ascend950DT discovery, node mode overrides, and unhealthy-device preservation on discovery failure.
 
 ### HAMi-core (libvNPU) Performance Overhaul
 
