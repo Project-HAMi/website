@@ -375,6 +375,11 @@
   inset: auto 0 -10px;
 }
 
+.cardClamped {
+  max-height: var(--max-height);
+  overflow-y: auto;
+}
+
 .mxTable td .tag {
   white-space: nowrap;
 }

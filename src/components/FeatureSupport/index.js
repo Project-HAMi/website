@@ -218,7 +218,12 @@ export function useHoverCard() {
       if (!rootRef.current?.contains(event.target)) close();
     };
     const onKey = (event) => {
-      if (event.key === "Escape") close();
+      if (event.key !== "Escape") return;
+      // Give focus back to the tag that opened the card, or it falls to the page body.
+      if (rootRef.current?.contains(document.activeElement)) {
+        rootRef.current.querySelector('[aria-expanded="true"]')?.focus();
+      }
+      close();
     };
     document.addEventListener("pointerdown", onDown);
     document.addEventListener("keydown", onKey);

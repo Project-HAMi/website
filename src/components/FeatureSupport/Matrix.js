@@ -19,19 +19,26 @@ const MATRIX_TEXT = {
 };
 
 // The table scrolls sideways on narrow screens, which would clip an absolutely positioned card,
-// so the card is fixed to the viewport and placed under its cell, or above it when there is
-// no room below.
+// so the card is fixed to the viewport and placed under its cell. It goes above the cell when it
+// does not fit below and there is more room above. If it fits on neither side, it is cut to the
+// room it has and scrolls.
 function placeCard(card, anchor) {
   const a = anchor.getBoundingClientRect();
   const width = card.offsetWidth;
-  const height = card.offsetHeight;
+  const height = card.scrollHeight + (card.offsetHeight - card.clientHeight);
   const vw = document.documentElement.clientWidth;
   const vh = document.documentElement.clientHeight;
+  const roomBelow = vh - EDGE - (a.bottom + GAP);
+  const roomAbove = a.top - GAP - EDGE;
+  const above = height > roomBelow && roomAbove > roomBelow;
+  const room = Math.max(above ? roomAbove : roomBelow, 0);
+  const shown = Math.min(height, room);
   const left = Math.min(Math.max(a.left - 19, EDGE), vw - width - EDGE);
-  const above = a.bottom + GAP + height > vh - EDGE && a.top - GAP - height >= EDGE;
   card.style.setProperty("--left", `${left}px`);
-  card.style.setProperty("--top", `${above ? a.top - GAP - height : a.bottom + GAP}px`);
+  card.style.setProperty("--top", `${above ? a.top - GAP - shown : a.bottom + GAP}px`);
+  card.style.setProperty("--max-height", `${room}px`);
   card.classList.toggle(styles.cardAbove, above);
+  card.classList.toggle(styles.cardClamped, height > room);
 }
 
 export default function FeatureMatrix() {
@@ -80,7 +87,7 @@ export default function FeatureMatrix() {
         {GROUPS.map((group) => (
           <tbody key={group.title.en}>
             <tr className={styles.mxGroup}>
-              <th scope="colgroup" colSpan={ORDER.length + 1}>
+              <th scope="rowgroup" colSpan={ORDER.length + 1}>
                 {t(group.title)}
               </th>
             </tr>
