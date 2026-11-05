@@ -33,7 +33,7 @@ translated: true
 | Graph | 693.67 | 335.67 | 336.52 | 100.25% | 438.59 | 130.66% |
 | Eager | 200.28 | 194.53 | 180.49 | 92.79% | 189.54 | 97.43% |
 
-原生单实例与 GPU Fractioning 采集于 11 月 2 日，原生双实例采集于 11 月 4 日，HAMi 50% 算力配置采集于 11 月 5 日。其他方案沿用原始数据。GPU 型号与驱动相同，物理 GPU 和采集批次不同，因此这些比值用于部署配置参照，不能直接视为组件额外开销。前缀缓存行为与 KV 容量也随配置变化。[完整并发与延迟数据（CSV）](/benchmarks/2026-11-a100-sharing/fullstack.csv)。
+原生单实例与 GPU Fractioning 采集于 11 月 2 日，原生双实例采集于 11 月 4 日，HAMi 50% 算力配置采集于 11 月 5 日。其他方案沿用原始数据。GPU 型号与驱动相同，物理 GPU 和采集批次不同，因此这些比值用于部署配置参照，不能直接视为组件额外开销。前缀缓存行为与 KV 容量也随配置变化。[完整并发与延迟数据（CSV）](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fullstack.csv)。
 
 ### 同参数对照
 
@@ -54,7 +54,7 @@ translated: true
 
 相对原有原生双实例基线，HAMi 50% 算力补测的 Graph 吞吐差异为 +0.11%，Eager 为 -2.22%。原同批次测试中，原生 Graph 从单实例的 628.57 降至双实例的 335.51，这部分变化在引入 HAMi 前就已出现，不能仅凭单实例基线将其归因于 HAMi。
 
-Legacy MPS 各实例的测量窗口未完全重叠：各窗口吞吐求和为 449.36，使用统一墙钟窗口则为 399.28 tokens/s/GPU。11 月 3 日原生双实例与未限算力 HAMi 的统一墙钟结果分别为 334.50、334.78；这些历史记录与新的 50% 算力数据分开保留。[当前对照汇总](/benchmarks/2026-11-a100-sharing/controlled.csv)、[原未限算力对照](/benchmarks/2026-11-a100-sharing/controlled-unlimited.csv)、[50% 算力逐轮结果](/benchmarks/2026-11-a100-sharing/hami-50pct-trials.csv)。
+Legacy MPS 各实例的测量窗口未完全重叠：各窗口吞吐求和为 449.36，使用统一墙钟窗口则为 399.28 tokens/s/GPU。11 月 3 日原生双实例与未限算力 HAMi 的统一墙钟结果分别为 334.50、334.78；这些历史记录与新的 50% 算力数据分开保留。[当前对照汇总](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/controlled.csv)、[原未限算力对照](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/controlled-unlimited.csv)、[50% 算力逐轮结果](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/hami-50pct-trials.csv)。
 
 ## 故障隔离结果
 
@@ -70,7 +70,7 @@ HAMi 故障组沿用每实例 20 GiB、未限算力的原始配置。额外的�
 | GPU 工作中 SIGKILL   |        2/2 |         2/2 |         0/2 |                 0/2 |
 | MPS client terminate |     不适用 |      不适用 |         2/2 |                 2/2 |
 
-36 次试验的异卡对照均保持正常。MPS 同卡健康进程在非法写入和未同步 SIGKILL 场景报错 700，在 trap 场景报错 719；安全终止 MPS 客户端未影响同卡进程。超额显存申请为可见容量的两倍，验证的是申请被拒绝，不是持续显存压力。持续正确运行也不意味着没有延迟抖动。[故障计数、错误码与最大采样间隔（CSV）](/benchmarks/2026-11-a100-sharing/fault-isolation.csv)。
+36 次试验的异卡对照均保持正常。MPS 同卡健康进程在非法写入和未同步 SIGKILL 场景报错 700，在 trap 场景报错 719；安全终止 MPS 客户端未影响同卡进程。超额显存申请为可见容量的两倍，验证的是申请被拒绝，不是持续显存压力。持续正确运行也不意味着没有延迟抖动。[故障计数、错误码与最大采样间隔（CSV）](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fault-isolation.csv)。
 
 结果限于本次 A100、驱动、服务配置和注入事件，不构成对 HAMi、原生上下文或 MPS 的通用安全边界保证，也未测试 GPU reset 或硬件故障。静态组核验了 API 可见分配，未独立证明物理 SM 不重叠。NVIDIA 文档说明了 [MPS 的有限错误隔离与安全终止机制](https://docs.nvidia.com/deploy/mps/latest/when-to-use-mps.html)，以及[静态 SM 分区的部分错误隔离能力](https://docs.nvidia.com/deploy/mps/latest/common-tasks.html#using-static-sm-partitioning)；隔离效果取决于驱动、故障类型和配置。
 
@@ -92,6 +92,6 @@ HAMi 计划在 v2.12 提供可选 MPS 支持，具体以实现与验证为准，
 
 ## 复现脚本
 
-使用 [Dynamo v1.6.1 GPU 共享示例](https://github.com/ai-dynamo/dynamo/tree/v1.6.1/examples/gpu-sharing)、[HAMi v2.10.0](https://github.com/Project-HAMi/HAMi/releases/tag/v2.10.0)、[GPU Fractioning v0.1.8](https://github.com/kai-scheduler/gpu-fractioning/tree/v0.1.8)，并按对应实验对齐负载、实例布局、并发映射、引擎参数、缓存、配额和 MPS 模式。采集前检查实际 GPU 映射、已加载的拦截库及 MPS 客户端归属。原始负载脚本 SHA-256 为 `d8fde51c9841b7898eb12a27489e5601b7fab535736db74da8fd3d6713450d19`。
+环境准备、平台选择、性能与故障测试命令、指标汇总步骤统一维护在[复现指南](./gpu-sharing-reproduction.md)。实际采集器和模板见 [benchmark 代码快照](https://github.com/Project-HAMi/gpu-sharing-benchmarks/tree/e9b205bb121c50649bb97d7ed5dc4f796a9e523f)。
 
-[复现脚本与中文指南](https://github.com/Project-HAMi/gpu-sharing-benchmarks/blob/b2368541646273bec81dd5b09670553dd20b9378/README.zh-CN.md)包含实际使用的负载采集器、部署模板、CUDA Graph 健康探针、故障注入器和指标汇总工具。主机路径与 GPU UUID 可配置，上游负载客户端保持原样。11 月 5 日的 HAMi 性能补测使用 `--hami-core-limit 50` 与 `platform/hami-50pct-values.yaml`；原未限算力性能数据及故障配置分别保留。
+CSV 汇总结果统一存放在该仓库的 [results/2026-11-a100-sharing/](https://github.com/Project-HAMi/gpu-sharing-benchmarks/tree/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing) 目录。

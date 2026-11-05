@@ -35,6 +35,7 @@ const vendors = [
       "using-resourcequota",
       "gpu-limits-file",
       "gpu-sharing-benchmarks",
+      "gpu-sharing-reproduction",
     ]),
     vendorExamples("nvidia-device", [
       "use-exclusive-card",
