@@ -1,70 +1,83 @@
 ---
-title: Device supported by HAMi
+title: Devices supported by HAMi
 description: Find supported device models, compare memory and compute isolation capabilities, and follow the setup and allocation guides for your hardware.
 displayed_sidebar: docs
 ---
 
-The table below lists the devices supported by HAMi. This matrix reflects HAMi v2.10.0, the latest released version.
+Applicable version: **Next (unreleased)**, based on [HAMi development commit `adf1a43a`](https://github.com/Project-HAMi/HAMi/blob/adf1a43a07cf7e3b697012b80eef3ddd7c919222/pkg/scheduler/config/config.go#L126). For the released version, see the [v2.10.0 support matrix](/docs/userguide/device-supported).
+
+Last verified: **2026-11-06**, against the [HAMi source](https://github.com/Project-HAMi/HAMi/blob/adf1a43a07cf7e3b697012b80eef3ddd7c919222/pkg/scheduler/config/config.go#L126), [default device configuration](https://github.com/Project-HAMi/HAMi/blob/adf1a43a07cf7e3b697012b80eef3ddd7c919222/charts/hami/values.yaml#L545), and device guides.
+
+The table below lists the device models, allocation modes, and multi-card partitioning capabilities integrated with HAMi. See the device guides below for the required plugins, drivers, and container runtimes.
 
 <!-- prettier-ignore -->
-| Type   | Manufacturer  | Models                  | Status           | MemoryIsolation | CoreIsolation | MultiCard Partitioning |
-| ------ | ------------- | ----------------------- | ---------------- | --------------- | ------------- | ---------------------- |
-| GPU    | NVIDIA        | All                     | Stable           | Yes             | Yes           | Yes                    |
-| GPU    | AMD           | Instinct / ROCm         | Stable           | Yes             | Yes           | No                     |
-| Neuron | AWS           | Inf, Trn                | Stable           | No              | Yes           | No                     |
-| GPU    | Biren         | Biren166M               | Stable           | No              | No            | No                     |
-| MLU    | Cambricon     | 370, 590                | Stable           | Yes             | Yes           | No                     |
-| GCU    | Enflame       | S60                     | Stable           | Yes             | Yes           | No                     |
-| NPU    | Huawei Ascend | 910B, 910B3, 910C, 310P | Stable           | Yes             | Yes           | No                     |
-| HCU    | Hygon         | All                     | Stable           | Yes             | Yes           | No                     |
-| GPU    | Iluvatar      | All                     | Stable           | Yes             | Yes           | No                     |
-| XPU    | Kunlunxin     | P800                    | Stable           | Yes             | No            | No                     |
-| GPU    | MetaX         | MXC500                  | Stable           | Yes             | Yes           | No                     |
-| GPU    | Mthreads      | MTT S4000               | Stable           | Yes             | Yes           | No                     |
-| DPU    | Teco          | Checking                | Under Validation | No              | No            | No                     |
-| GPU    | Vastai        | VA16                    | Stable           | No              | No            | No                     |
+| Device | Mode | Models | Integration status | Memory control | Compute control | Multi-card partitioning |
+| --- | --- | --- | --- | --- | --- | --- |
+| [NVIDIA GPU](#nvidia) | HAMi-core | Depends on model and driver | Stable | [Memory quota](nvidia-device/specify-device-memory-usage.md) | [Time-slice throttling](nvidia-device/specify-device-core-usage.md) | [Yes](https://github.com/Project-HAMi/HAMi/blob/adf1a43a07cf7e3b697012b80eef3ddd7c919222/pkg/device-plugin/nvidiadevice/nvinternal/plugin/server.go#L1524-L1529) |
+| [NVIDIA GPU](#nvidia) | [MIG (dynamic partitioning)](nvidia-device/dynamic-mig-support.md#enable-dynamic-mig-support) | [MIG-capable models](nvidia-device/dynamic-mig-support.md#prerequisites) | Stable | [Hardware profile](nvidia-device/dynamic-mig-support.md#run-a-mig-workload) | [Hardware profile](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/mig-device-names.html#id3) | [Yes](https://github.com/Project-HAMi/HAMi/blob/adf1a43a07cf7e3b697012b80eef3ddd7c919222/pkg/device-plugin/nvidiadevice/nvinternal/plugin/util.go#L466-L476) (subject to CUDA and driver requirements) |
+| [AMD GPU](#amd) | [CU slicing](amd-device/enable-amd-gpu-sharing.md#run-amd-jobs) | Instinct / ROCm; see guide | Stable | [Memory quota](amd-device/enable-amd-gpu-sharing.md#introduction) | [CU share](amd-device/enable-amd-gpu-sharing.md#introduction) | [Yes](https://github.com/Project-HAMi/amd-device-plugin/blob/83e7a3438f43fae360ac1e8f2e65412deeea4cf5/internal/pkg/plugin/plugin.go#L771-L776) |
+| [AWS Neuron](#aws-neuron) | [Whole device / core allocation](awsneuron-device/enable-awsneuron-managing.md#device-granularity) | Inferentia / Trainium; see guide | Stable | [No separate quota interface](awsneuron-device/enable-awsneuron-managing.md#device-granularity) | [NeuronCore allocation](https://github.com/Project-HAMi/HAMi/blob/adf1a43a07cf7e3b697012b80eef3ddd7c919222/pkg/device/awsneuron/device.go#L454-L505) | [No](https://github.com/Project-HAMi/HAMi/blob/adf1a43a07cf7e3b697012b80eef3ddd7c919222/pkg/device/awsneuron/device.go#L454-L505) |
+| [Biren GPU](#biren) | [Whole device / pre-partitioned SVI](biren-device/enable-biren-sharing.md#introduction) | Biren166M | Stable | [Fixed SVI partitions](biren-device/enable-biren-sharing.md#notes) | [Fixed SVI partitions](biren-device/enable-biren-sharing.md#notes) | [Yes (SVI partitions)](https://github.com/Project-HAMi/biren-device-plugin/blob/f0a83df3b681bc3aac795eafb2232ee966c4a2dd/pkg/brgpu/plugin.go#L339-L349) |
+| [Cambricon MLU](#cambricon) | [Dynamic SMLU](cambricon-device/enable-cambricon-mlu-sharing.md#enabling-mlu-sharing) | 370, 590 | Stable | [Memory quota](cambricon-device/enable-cambricon-mlu-sharing.md#running-mlu-jobs) | [Core quota](cambricon-device/enable-cambricon-mlu-sharing.md#running-mlu-jobs) | [No](cambricon-device/enable-cambricon-mlu-sharing.md#running-mlu-jobs) |
+| [Enflame GCU](#enflame) | [DRS](enflame-device/enable-enflame-gcu-sharing.md#running-drs-workloads) | S60 | Stable | [Profile-based allocation](enflame-device/enable-enflame-gcu-sharing.md#request-by-memorycore-recommended-unified-api) | [Profile-based allocation](enflame-device/enable-enflame-gcu-sharing.md#request-by-memorycore-recommended-unified-api) | [No](https://github.com/Project-HAMi/HAMi/blob/adf1a43a07cf7e3b697012b80eef3ddd7c919222/pkg/device/enflame/device.go#L390-L396) |
+| [Ascend NPU](#huawei-ascend) | [template](ascend-device/enable-ascend-sharing.md#template-mode) | 910A, 910B series, 910C, 310P | Stable | [Template-based allocation](ascend-device/enable-ascend-sharing.md#template-mode) | [Determined by template](https://github.com/Project-HAMi/HAMi/blob/adf1a43a07cf7e3b697012b80eef3ddd7c919222/pkg/device/ascend/device.go#L217-L226) | [No](https://github.com/Project-HAMi/HAMi/blob/adf1a43a07cf7e3b697012b80eef3ddd7c919222/pkg/device/ascend/device.go#L269-L276) |
+| [Ascend NPU](#huawei-ascend) | [hami-core](ascend-device/enable-ascend-sharing.md#hami-core-mode) | Depends on model and runtime; see guide | Stable | [Memory quota](ascend-device/enable-ascend-sharing.md#single-device-memory-and-compute-quotas) | [Compute quota](ascend-device/enable-ascend-sharing.md#single-device-memory-and-compute-quotas) | [Yes](ascend-device/enable-ascend-sharing.md#two-device-vllm-inference-tp2) |
+| [Ascend NPU](#huawei-ascend) | [ENPU](ascend-device/enable-ascend-sharing.md#enpu) | A2/910B, A3/910C | Experimental | [Memory quota](ascend-device/enable-ascend-sharing.md#single-device-compute-and-memory-quotas) | [Depends on ENPU policy](ascend-device/enable-ascend-sharing.md#enpu-policy) | [No](ascend-device/enable-ascend-sharing.md#enpu-policy) |
+| [Ascend NPU](#huawei-ascend) | Whole device | [950DT](https://github.com/Project-HAMi/HAMi/blob/adf1a43a07cf7e3b697012b80eef3ddd7c919222/examples/ascend/job-950DT.yaml#L12-L14) 9582 (96 GiB) | Experimental | [No separate quota interface](https://github.com/Project-HAMi/HAMi/blob/adf1a43a07cf7e3b697012b80eef3ddd7c919222/charts/hami/values.yaml#L1018-L1024) | [No separate quota interface](https://github.com/Project-HAMi/HAMi/blob/adf1a43a07cf7e3b697012b80eef3ddd7c919222/charts/hami/values.yaml#L1018-L1024) | [N/A](https://github.com/Project-HAMi/HAMi/blob/adf1a43a07cf7e3b697012b80eef3ddd7c919222/charts/hami/values.yaml#L1018-L1024) |
+| [Hygon HCU](#hygon) | [Dynamic vHCU partitioning](https://github.com/HYGON-AI/k8s-hcu-device-plugin/blob/1b0dce86471ff80d61535f68f26e34ee54b33ab8/README.md#使用模式对比) | See vendor plugin support | Experimental | [Memory quota](hygon-device/enable-hygon-hcu-sharing.md#introduction) | [Compute share](hygon-device/enable-hygon-hcu-sharing.md#introduction) | [No](hygon-device/enable-hygon-hcu-sharing.md#notes) |
+| [Iluvatar GPU](#iluvatar) | [vGPU (gpu-manager)](iluvatar-device/enable-iluvatar-gpu-sharing.md#device-granularity) | MR-V100, MR-V50, BI-V150, BI-V100 | Stable | [Memory quota](iluvatar-device/enable-iluvatar-gpu-sharing.md#memory-allocation) | [Core quota](iluvatar-device/enable-iluvatar-gpu-sharing.md#core-allocation) | [No](iluvatar-device/enable-iluvatar-gpu-sharing.md#notes) |
+| [Kunlunxin XPU](#kunlunxin) | [VXPU](kunlunxin-device/enable-kunlunxin-vxpu.md#device-granularity-partitioning) | P800-OAM | Stable | [Partition size](kunlunxin-device/enable-kunlunxin-vxpu.md#device-granularity-partitioning) | [Determined by partition size](https://github.com/Project-HAMi/HAMi/blob/adf1a43a07cf7e3b697012b80eef3ddd7c919222/pkg/device/kunlun/vdevice.go#L179-L205) | [Yes](kunlunxin-device/enable-kunlunxin-vxpu.md#important-notes) |
+| [MetaX GPU](#metax) | [sGPU](metax-device/metax-sgpu/enable-metax-gpu-sharing.md#running-metax-jobs) | MXC500 | Stable | [Memory quota](metax-device/metax-sgpu/enable-metax-gpu-sharing.md#running-metax-jobs) | [Depends on QoS](metax-device/metax-sgpu/examples/allocate-qos-policy.md) | [Yes](https://developer.metax-tech.com/api/client/document/preview/1411/3rd/12_hami.html#sgpuoption) (not supported with `sgpu-app-class`) |
+| [Mthreads GPU](#mthreads) | [sGPU](mthreads-device/enable-mthreads-gpu-sharing.md#running-mthreads-jobs) | MTT S4000 | Stable | [Discrete memory sizes](mthreads-device/enable-mthreads-gpu-sharing.md#running-mthreads-jobs) | [Core quota](mthreads-device/enable-mthreads-gpu-sharing.md#running-mthreads-jobs) | [No](mthreads-device/enable-mthreads-gpu-sharing.md#important-notes) |
+| [Vastai GPU](#vastai) | [Whole card / Die allocation](vastai/enable-vastai-sharing.md#introduction) | VA16 | Stable | [Whole card or Die allocation](vastai/enable-vastai-sharing.md#introduction) | [Whole card or Die allocation](vastai/enable-vastai-sharing.md#introduction) | [Yes (Die allocation)](https://github.com/Project-HAMi/vastai-device-plugin/blob/dba981846dbdfcf531f7bd3b5d657075e812c49f/cmd/va-vg-plugin/server.go#L383-L388) |
 
-Support status:
-
-- **Stable** - Available in the latest released HAMi version.
-- **Experimental** - Implemented in HAMi but not yet included in a released version.
-- **Under Validation** - Support is still being implemented; not yet functional.
+**Stable** means available in v2.10.0. **Experimental** means included in Next but not yet released.
 
 Capability columns:
 
-- **MemoryIsolation** - Whether HAMi enforces a hard VRAM limit per container: workloads that exceed their requested memory are rejected instead of drawing on the full physical device memory.
-- **CoreIsolation** - Whether HAMi enforces a hard compute usage limit per container: kernel execution is throttled to stay within the requested share instead of using the physical device's compute freely.
-- **MultiCard Partitioning** - Whether a single Pod can use partitioned memory or compute resources across multiple physical cards. `No` means multiple whole cards can still be requested, but memory or core resources must not be specified when requesting more than one card.
+- **Memory control**: The memory quota or partition size that a container can request. Templates and fixed partition sizes round memory allocations up to the corresponding size.
+- **Compute control**: Devices control compute resources through time slices, core allocation, hardware partitions, or QoS policies. See the limitations below.
+- **Multi-card partitioning**: A single container can use part of the resources on multiple physical devices at the same time. Follow the device guide when requesting multiple whole devices. `N/A` means the mode allocates whole devices only.
 
-## Which component supports which device
+## Device limitations
 
-HAMi is one of four ways to reach these devices. The other three schedule the workload themselves and rely on HAMi-core for isolation.
+- **NVIDIA**: HAMi-core [supports partitioning across multiple GPUs](https://github.com/Project-HAMi/HAMi/blob/adf1a43a07cf7e3b697012b80eef3ddd7c919222/pkg/device-plugin/nvidiadevice/nvinternal/plugin/server.go#L1524-L1529) and limits compute usage through [time-slice throttling](nvidia-device/specify-device-core-usage.md); reported utilization varies with the workload. [Dynamic MIG](nvidia-device/dynamic-mig-support.md#prerequisites) requires a MIG-capable GPU and uses hardware-defined profiles. A single CUDA process needs CUDA 12 and an R570 or newer driver to enumerate multiple MIG instances, with at most one CI per GI. Drivers before R570 can enumerate only one MIG instance per CUDA process. See [CUDA device enumeration limits](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/mig-device-names.html#cuda-device-enumeration).
+- **AMD**: Supports memory and CU quotas across multiple GPUs. With plugin `0.0.2` or later, each GPU receives its own scheduler-assigned memory quota; version `0.0.1` applies the first GPU's memory quota to every GPU. Next also supports memory percentages, NUMA/XGMI constraints, and default resource settings. Memory limits are enforced through a runtime hook or the `dmem` cgroup controller. See the [AMD guide](amd-device/enable-amd-gpu-sharing.md#prerequisites) for environment requirements and the [multi-GPU memory quota fix](https://github.com/Project-HAMi/amd-device-plugin/pull/103) for the version difference.
+- **AWS Neuron**: `aws.amazon.com/neuroncore` allocates compute by core count. Next uses the device capacity reported by the node to allocate NeuronCores. A request spanning devices can contain several whole devices and part of the cores on the last device, subject to contiguous-core and topology requirements. Memory is allocated with the device; there is no separate memory quota request. See the [Neuron guide](awsneuron-device/enable-awsneuron-managing.md#device-granularity) and [core allocation rules](https://github.com/Project-HAMi/HAMi/blob/adf1a43a07cf7e3b697012b80eef3ddd7c919222/pkg/device/awsneuron/device.go#L454-L505).
+- **Biren / Vastai**: Request whole cards or pre-partitioned devices by device count. Memory and compute capacity are determined by the partition size. Biren SVI supports [two or four partitions per GPU](https://github.com/Project-HAMi/biren-device-plugin/blob/f0a83df3b681bc3aac795eafb2232ee966c4a2dd/pkg/brgpu/runc.go#L237-L245), and the plugin can [mount multiple SVI partitions in one container](https://github.com/Project-HAMi/biren-device-plugin/blob/f0a83df3b681bc3aac795eafb2232ee966c4a2dd/pkg/brgpu/plugin.go#L339-L349). Vastai Die mode allows allocation across AICs; the scheduler [prefers available Dies on the same AIC](https://github.com/Project-HAMi/HAMi/blob/adf1a43a07cf7e3b697012b80eef3ddd7c919222/pkg/device/vastai/device.go#L361-L372). In partitioned modes, the resource count is the number of partitions. See the [Biren guide](biren-device/enable-biren-sharing.md#notes) and [Vastai guide](vastai/enable-vastai-sharing.md#die-mode).
+- **Cambricon**: Uses the vendor plugin in `dynamic-smlu` mode. Memory and core quotas apply only when `vmlu=1`; requests for multiple devices allocate whole devices. See the [prerequisites](cambricon-device/enable-cambricon-mlu-sharing.md#prerequisites) for MLU370 driver and toolkit requirements, and the [notes on single-device sharing](cambricon-device/enable-cambricon-mlu-sharing.md#running-mlu-jobs).
+- **Enflame**: Uses DRS partitioning through `gcushare-device-plugin`. HAMi [selects a profile that satisfies the memory and compute request](https://github.com/Project-HAMi/HAMi/blob/adf1a43a07cf7e3b697012b80eef3ddd7c919222/pkg/device/enflame/device.go#L447-L462). Both [direct DRS requests](https://github.com/Project-HAMi/HAMi/blob/adf1a43a07cf7e3b697012b80eef3ddd7c919222/pkg/device/enflame/device.go#L371-L377) and [memory/compute requests](https://github.com/Project-HAMi/HAMi/blob/adf1a43a07cf7e3b697012b80eef3ddd7c919222/pkg/device/enflame/device.go#L390-L396) allocate exactly one device. See the [DRS guide](enflame-device/enable-enflame-gcu-sharing.md#request-by-memorycore-recommended-unified-api) for available profiles.
+- **Huawei Ascend**: Template mode allocates memory and compute according to the template and [does not support a separate `-core` request](https://github.com/Project-HAMi/HAMi/blob/adf1a43a07cf7e3b697012b80eef3ddd7c919222/pkg/device/ascend/device.go#L217-L226). hami-vnpu-core supports partitioning across multiple devices, with memory and compute quotas applied per device. hami-vnpu-core currently supports only ARM platforms. See the [Ascend guide](ascend-device/enable-ascend-sharing.md#hami-core-mode) for driver and CANN requirements.
+- **Ascend ENPU**: Each container is limited to one physical DIE. The default `elastic` policy allows borrowing idle compute capacity; use `fixed-share` for a fixed compute share. See the [ENPU guide](ascend-device/enable-ascend-sharing.md#enpu).
+- **Ascend 950DT**: The current HAMi [configuration for model 9582 (96 GiB)](https://github.com/Project-HAMi/HAMi/blob/adf1a43a07cf7e3b697012b80eef3ddd7c919222/charts/hami/values.yaml#L1018-L1024) provides whole-device allocation only. Deployment requires the matching device plugin. See the [950DT whole-device example](https://github.com/Project-HAMi/HAMi/blob/adf1a43a07cf7e3b697012b80eef3ddd7c919222/examples/ascend/job-950DT.yaml#L12-L14).
+- **Hygon**: Uses [dynamic vHCU partitioning](https://github.com/HYGON-AI/k8s-hcu-device-plugin/blob/1b0dce86471ff80d61535f68f26e34ee54b33ab8/README.md#使用模式对比), creating and reclaiming vHCUs according to task requests. The default resource names are `hygon.com/hcunum`, `hcumem`, and `hcucores`; a matching HCU plugin is required. Each container can share at most one device; requests for multiple devices allocate whole devices. See the [Hygon guide](hygon-device/enable-hygon-hcu-sharing.md#notes).
+- **Iluvatar**: Sharing requires gpu-manager and the corresponding runtime libraries inside the container. Each container can share at most one GPU; requests for multiple GPUs allocate whole devices. See the [Iluvatar guide](iluvatar-device/enable-iluvatar-gpu-sharing.md#notes).
+- **Kunlunxin**: `kunlunxin.com/xpu` requests whole devices; `kunlunxin.com/vxpu` and `vxpu-memory` request partitions. [Memory partition sizes](kunlunxin-device/enable-kunlunxin-vxpu.md#device-granularity-partitioning) are 24 and 48 GiB; requests above 48 GiB allocate a whole 96 GiB device. [Compute capacity follows the partition size](https://github.com/Project-HAMi/HAMi/blob/adf1a43a07cf7e3b697012b80eef3ddd7c919222/pkg/device/kunlun/vdevice.go#L179-L205). Multi-device partitioning is supported, subject to topology and driver handle limits. See the [VXPU guide](kunlunxin-device/enable-kunlunxin-vxpu.md#important-notes).
+- **MetaX**: Supports multi-device sGPU allocation, with [memory and compute configured per sGPU](https://developer.metax-tech.com/api/client/document/preview/1411/3rd/12_hami.html#sgpuoption). Compute limits depend on the QoS policy: the default `best-effort` does not limit compute, `fixed-share` caps compute at the requested share, and `burst-share` allows borrowing idle capacity. [With `sgpu-app-class` enabled, each container can request only one device](https://github.com/Project-HAMi/HAMi/blob/adf1a43a07cf7e3b697012b80eef3ddd7c919222/pkg/device/metax/sdevice.go#L89-L105). See the [QoS guide](metax-device/metax-sgpu/examples/allocate-qos-policy.md).
+- **Mthreads**: Each Pod can share at most one Mthreads GPU; this limit applies across all containers in the Pod. Requests for multiple GPUs allocate whole devices. See the [Mthreads guide](mthreads-device/enable-mthreads-gpu-sharing.md#important-notes).
 
-Each cell links to the guide for that device and component. A dash means there is no guide today, not that the combination is impossible.
+## Component integration guides
+
+The table below links to device and scheduling component integration guides, including installation steps, configuration requirements, and limitations. `-` means no guide is available.
 
 <!-- prettier-ignore -->
 | Manufacturer  | HAMi | HAMi-DRA | Volcano | KAI-scheduler |
 | ------------- | ---- | -------- | ------- | ------------- |
 | NVIDIA        | [Allocate device memory](nvidia-device/specify-device-memory-usage.md) · [Remote GPU](nvidia-device/remote-gpu.md) | [Dynamic Resource Allocation](nvidia-device/dynamic-resource-allocation.md) | [Use Volcano vGPU](volcano-vgpu/nvidia-gpu/how-to-use-volcano-vgpu.md) | [Use KAI Scheduler](kai-scheduler/how-to-use-kai-scheduler.md) |
-| AMD           | [Enable AMD GPU sharing](amd-device/enable-amd-gpu-sharing.md) | - | - | - |
-| AWS           | [Manage AWS Neuron devices](awsneuron-device/enable-awsneuron-managing.md) | - | - | - |
-| Biren         | [Enable Biren sharing](biren-device/enable-biren-sharing.md) | - | - | - |
-| Cambricon     | [Enable Cambricon MLU sharing](cambricon-device/enable-cambricon-mlu-sharing.md) | - | - | - |
-| Enflame       | [Enable Enflame GCU sharing](enflame-device/enable-enflame-gcu-sharing.md) | - | - | - |
-| Huawei Ascend | [Enable Huawei Ascend sharing](ascend-device/enable-ascend-sharing.md) | - | [Volcano Ascend vNPU](../installation/how-to-use-volcano-ascend.md) | - |
-| Hygon         | [Enable Hygon HCU sharing](hygon-device/enable-hygon-hcu-sharing.md) | - | - | - |
-| Iluvatar      | [Enable Iluvatar GPU sharing](iluvatar-device/enable-iluvatar-gpu-sharing.md) | - | - | - |
-| Kunlunxin     | [Enable Kunlunxin scheduling](kunlunxin-device/enable-kunlunxin-schedule.md) | - | - | - |
-| MetaX         | [Enable MetaX GPU sharing](metax-device/metax-sgpu/enable-metax-gpu-sharing.md) | - | - | - |
-| Mthreads      | [Enable Mthreads GPU sharing](mthreads-device/enable-mthreads-gpu-sharing.md) | - | - | - |
-| Teco          | - | - | - | - |
-| Vastai        | [Enable Vastai sharing](vastai/enable-vastai-sharing.md) | - | - | - |
+| AMD           | [Enable AMD GPU sharing](amd-device/enable-amd-gpu-sharing.md#deploy) | - | - | - |
+| AWS           | [Manage AWS Neuron devices](awsneuron-device/enable-awsneuron-managing.md#enabling-neuron-sharing-support) | - | - | - |
+| Biren         | [Enable Biren sharing](biren-device/enable-biren-sharing.md#enabling-biren-device-sharing) | - | - | - |
+| Cambricon     | [Enable Cambricon MLU sharing](cambricon-device/enable-cambricon-mlu-sharing.md#enabling-mlu-sharing) | - | - | - |
+| Enflame       | [Enable Enflame GCU sharing](enflame-device/enable-enflame-gcu-sharing.md#enable-enflame-drs-scheduling) | - | - | - |
+| Huawei Ascend | [Enable Huawei Ascend sharing](ascend-device/enable-ascend-sharing.md#deploy-the-ascend-device-plugin) | - | [Volcano Ascend vNPU](../installation/how-to-use-volcano-ascend.md) | - |
+| Hygon         | [Enable Hygon HCU sharing](hygon-device/enable-hygon-hcu-sharing.md#enabling-hcu-sharing-support) | - | - | - |
+| Iluvatar      | [Enable Iluvatar GPU sharing](iluvatar-device/enable-iluvatar-gpu-sharing.md#enabling-gpu-sharing-support) | - | - | - |
+| Kunlunxin     | [Whole-device scheduling](kunlunxin-device/enable-kunlunxin-schedule.md) · [VXPU sharing](kunlunxin-device/enable-kunlunxin-vxpu.md#enable-xpu-sharing-support) | - | - | - |
+| MetaX         | [Enable MetaX GPU sharing](metax-device/metax-sgpu/enable-metax-gpu-sharing.md#enabling-gpu-sharing-support) | - | - | - |
+| Mthreads      | [Enable Mthreads GPU sharing](mthreads-device/enable-mthreads-gpu-sharing.md#enabling-gpu-sharing-support) | - | - | - |
+| Vastai        | [Enable Vastai sharing](vastai/enable-vastai-sharing.md#enabling-vastai-device-sharing) | - | - | - |
 
-Each linked guide covers device-specific setup, configuration notes, and known limitations. Read it before deploying that device.
-
-## Every page, by vendor
-
-All vendor pages are listed here so this page reaches each of them.
+## Device documentation index
 
 ### NVIDIA {#nvidia}
 
