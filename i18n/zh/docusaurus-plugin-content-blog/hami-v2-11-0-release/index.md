@@ -60,10 +60,10 @@ devicePlugin:
       }
 ```
 
-上面的 `nodelabelselector` 匹配的是你自行打上的标签；请在启用 remote 模式前（或之后重启 device-plugin）给每个要充当 Lupine 服务器的 GPU 节点打标签：
+上面的 `nodelabelselector` 匹配的是你自行打上的标签；请在启用 remote 模式前（或之后重启 device-plugin）给每个要充当 Lupine 服务器的 GPU 节点打标签。该节点还必须匹配 `devicePlugin.nvidiaNodeSelector`（默认 `gpu=on`），否则 device plugin 与 Lupine 服务器不会被调度到该节点：
 
 ```bash
-kubectl label node <gpu-node> role=lupine-server
+kubectl label node <gpu-node> gpu=on role=lupine-server
 ```
 
 之后，在无 GPU 节点上的 vLLM Deployment 看起来和普通 HAMi 工作负载完全一样（完整示例见 [remote-gpu examples](https://github.com/Project-HAMi/HAMi/tree/master/examples/remotegpu)）：
@@ -126,7 +126,7 @@ devices:
     enpuPolicy: "elastic" # fixed-share | elastic | best-effort
 ```
 
-全局模式通过 `devices.ascend.hamiVnpuMode` 选择；来自 Ascend device plugin 的节点能力注解仍然优先。昇腾侧其他更新：chart 暴露 hami-core 模式的槽位容量；**昇腾 950 支持**也在本周期落地：调度器新增 Ascend950DT 整卡调度（[#3316](https://github.com/Project-HAMi/HAMi/pull/3316)，[@panpan0000](https://github.com/panpan0000)），[ascend-device-plugin](https://github.com/Project-HAMi/ascend-device-plugin) 0.2.x 增加 Ascend950DT 设备发现、节点模式覆盖，以及发现失败时保留不健康设备。
+全局模式通过 `devices.ascend.hamiVnpuMode` 选择；来自 Ascend device plugin 的节点能力注解仍然优先。`devices.ascend.enabled` 只是在 HAMi 调度器中开启昇腾支持，并不会部署 device plugin：请单独安装 [ascend-device-plugin](https://github.com/Project-HAMi/ascend-device-plugin)，ENPU 模式需要 chart 0.2.0 及以上（0.2.x 同时包含 `devices.ascend.deviceSplitCount` 所依赖的 `vnpus.deviceSplitCount` 支持），并确保其镜像打包了与你的 CANN 版本匹配的 ENPU 运行时。前置条件请参阅[昇腾指南](/zh/docs/next/userguide/ascend-device/enable-ascend-sharing#enpu)。昇腾侧其他更新：chart 暴露 hami-core 模式的槽位容量；**昇腾 950 支持**也在本周期落地：调度器新增 Ascend950DT 整卡调度（[#3316](https://github.com/Project-HAMi/HAMi/pull/3316)，[@panpan0000](https://github.com/panpan0000)），[ascend-device-plugin](https://github.com/Project-HAMi/ascend-device-plugin) 0.2.x 增加 Ascend950DT 设备发现、节点模式覆盖，以及发现失败时保留不健康设备。
 
 ### HAMi-core（libvNPU）性能优化
 
