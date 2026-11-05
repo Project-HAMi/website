@@ -1,5 +1,0 @@
-__pycache__/
-*.pyc
-.venv/
-config.json
-out/
