@@ -1,5 +1,7 @@
 # A100 GPU sharing reproduction scripts
 
+[简体中文](README.zh-CN.md)
+
 This package contains the workload collectors and CUDA fault probes used for the GPU sharing report. The upstream concurrency client is unchanged. Host paths, GPU UUIDs, output ownership, and case selection are parameterized for another node. `provenance.json` records the original and packaged collector hashes.
 
 ## Environment
