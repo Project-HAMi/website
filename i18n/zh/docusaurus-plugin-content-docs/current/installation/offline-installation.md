@@ -12,7 +12,7 @@ title: 离线安装
 - `registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.6.9`
 - `registry.k8s.io/kube-scheduler:{你的 kubernetes 版本}`
 
-如果使用 Lupine 远程 GPU，还需按启用的功能准备以下镜像：
+如果使用 [Lupine 远程 GPU](../userguide/nvidia-device/remote-gpu.md)，还需按启用的功能准备以下镜像：
 
 - `ghcr.io/lupinemachines/lupine-server:cuda-13.3.1-ubuntu24.04`：远程 GPU 服务端镜像，对应 `devices.remotegpu.server.image`。
 - `ghcr.io/lupinemachines/lupine-client:cuda-13.3.1-ubuntu24.04`：向工作负载提供 Lupine 客户端库的镜像，对应 `devices.remotegpu.clientImage`。

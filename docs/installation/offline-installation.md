@@ -12,7 +12,7 @@ First, select the Chart version to install (see [Prepare the HAMi Chart](#prepar
 - `registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.6.9`
 - `registry.k8s.io/kube-scheduler:{your kubernetes version}`
 
-If you use Lupine remote GPUs, also prepare the following images for the features you enable:
+If you use [Lupine remote GPUs](../userguide/nvidia-device/remote-gpu.md), also prepare the following images for the features you enable:
 
 - `ghcr.io/lupinemachines/lupine-server:cuda-13.3.1-ubuntu24.04`: the remote GPU server image, configured through `devices.remotegpu.server.image`.
 - `ghcr.io/lupinemachines/lupine-client:cuda-13.3.1-ubuntu24.04`: the image that provides Lupine client libraries to workloads, configured through `devices.remotegpu.clientImage`.
