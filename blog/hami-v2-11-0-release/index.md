@@ -1,7 +1,7 @@
 ---
-title: "HAMi v2.11.0 Release: Remote GPU Scheduling, Ascend ENPU, NUMA Refit, and Flexible MIG at Scale"
+title: "HAMi v2.11.0 Release: Remote GPU Scheduling, AMD GPU Sharing, Ascend ENPU, NUMA Refit, and Flexible MIG at Scale"
 date: "2026-11-04"
-description: "HAMi v2.11.0 is officially released. This release introduces Remote GPU scheduling through Lupine, Ascend ENPU mode with policy isolation, a scheduler NUMA refit that aligns CPU and GPU allocations, major Flexible MIG maturation including CDI support, scheduler security hardening, OpenShift and SELinux support, and a reworked Helm chart."
+description: "HAMi v2.11.0 is officially released. This release introduces Remote GPU scheduling through Lupine, full AMD Instinct GPU sharing with container-level memory and compute limits, Ascend ENPU mode with policy isolation, a scheduler NUMA refit that aligns CPU and GPU allocations, major Flexible MIG maturation including CDI support, scheduler security hardening, OpenShift and SELinux support, and a reworked Helm chart."
 tags: ["Release", "GPU", "Kubernetes", "Scheduling"]
 authors: [hami_community]
 ---
@@ -11,6 +11,7 @@ The HAMi community is proud to announce the official release of **HAMi v2.11.0**
 Highlights of this release:
 
 - **Remote GPU**: run CUDA and vLLM Pods on GPU-less, driver-less client nodes, using GPUs served over the network by [Lupine](https://github.com/lupinemachines) GPU servers.
+- **AMD Instinct GPU sharing**: AMD GPUs (ROCm) are now first-class in HAMi, with memory limits by size or percentage, compute limits, NUMA- and XGMI-aware placement, scheduling policies and queue priorities, all enforced at the container level.
 - **Ascend ENPU mode**: policy-based isolation (`fixed-share`, `elastic`, `best-effort`) as a third partitioning mode alongside templates and hami-core, plus a major `hami-vnpu-core` performance overhaul.
 - **NUMA refit**: kubelet's Topology Manager and HAMi's scheduler now agree, so CPU affinity and GPU placement land on the same NUMA node.
 - **Flexible MIG grows up**: CDI injection for dynamic MIG devices, placement scoring with backtracking, and per-Pod profile preferences.
@@ -59,6 +60,12 @@ devicePlugin:
       }
 ```
 
+The `nodelabelselector` above matches a label you apply yourself; label each GPU node that should serve Lupine before (or after, followed by a device-plugin restart) enabling remote mode:
+
+```bash
+kubectl label node <gpu-node> role=lupine-server
+```
+
 Then a vLLM Deployment on a GPU-less node looks like any other HAMi workload (see the full [remote-gpu examples](https://github.com/Project-HAMi/HAMi/tree/master/examples/remotegpu)):
 
 ```yaml
@@ -88,6 +95,19 @@ spec:
 
 Current constraints worth knowing: client nodes must be separate from server nodes, supported workload images are CUDA and vLLM 0.19-0.26, and a workload reserves the entire server.
 
+## AMD Instinct GPU Sharing
+
+HAMi now shares and schedules AMD Instinct GPUs (ROCm) on Kubernetes with the same resource model it uses for NVIDIA, and with hard limits enforced inside the container. v2.10.0 laid down the memory, core, type and UUID basics; v2.11.0 completes the feature set (largely [@moezdil](https://github.com/moezdil)):
+
+- **Memory isolation**: request an absolute size with `amd.com/gpumem` or a share of VRAM with `amd.com/gpumem-percentage` ([#3179](https://github.com/Project-HAMi/HAMi/pull/3179)). The limit is enforced by [amd-hami-core](https://github.com/Project-HAMi/amd-hami-core), which now also caps `hipMalloc3D`, arrays, memory pools and VMM, reports the limit as the device total, and can serve `hipMalloc` from managed memory when `HIP_OVERSUBSCRIBE` is set.
+- **Compute isolation**: `amd.com/gpucores` sets the compute-unit share through `HSA_CU_MASK`, with core requests rounded up to whole WGPs on RDNA ([#3174](https://github.com/Project-HAMi/HAMi/pull/3174)).
+- **Flexible placement**: pick or avoid GPU types and UUIDs (`amd.com/use-gputype`, `amd.com/use-gpu-uuid` and their `nouse-` counterparts), keep a multi-GPU Pod on a single NUMA node with `amd.com/numa-bind` ([#3186](https://github.com/Project-HAMi/HAMi/pull/3186)) or on XGMI-linked GPUs with `amd.com/link-bind`, and let the `topology-aware` policy prefer the group with the most XGMI links ([#3191](https://github.com/Project-HAMi/HAMi/pull/3191)).
+- **Advanced scheduling**: the `binpack`, `spread`, `mutex` and `topology-aware` policies, Pod queue priorities through `AMD_TASK_PRIORITY`, namespace ResourceQuota checks in Fit ([#3180](https://github.com/Project-HAMi/HAMi/pull/3180)), quota-feasible GPU combinations in topology scheduling ([#3361](https://github.com/Project-HAMi/HAMi/pull/3361), [@Eshiv-Pandey](https://github.com/Eshiv-Pandey)), defaults for GPU count, memory and cores plus device cordon ([#3192](https://github.com/Project-HAMi/HAMi/pull/3192)), a configurable `runtimeClassName` ([#3194](https://github.com/Project-HAMi/HAMi/pull/3194)), node health judged by allocatable GPUs, and a dedicated AMD e2e suite ([#3193](https://github.com/Project-HAMi/HAMi/pull/3193)).
+
+On the node side, [amd-device-plugin](https://github.com/Project-HAMi/amd-device-plugin) v0.0.4 adds hardware compute partitions (SPX, DPX, QPX, CPX) on Instinct GPUs, per-GPU health from the AMD Device Metrics Exporter, XGMI peer reporting in the node annotation, and `-device_memory_scaling` for memory oversubscription. The new [amd-dra-driver](https://github.com/Project-HAMi/amd-dra-driver) (v0.1.0 to v0.4.1) brings the same limits to the DRA path with per-GPU `HSA_CU_MASK` and `HIP_DEVICE_MEMORY_LIMIT_` entries and kubelet health reporting, and [HAMi-dra](https://github.com/Project-HAMi/HAMi-dra) converts `amd.com/gpu` requests into claims for it. With NVIDIA and AMD behind one scheduling layer, HAMi now offers unified GPU sharing for heterogeneous clusters; see the [AMD GPU guide](/docs/next/userguide/amd-device/enable-amd-gpu-sharing) and the [verification status](/docs/next/userguide/amd-device/verification-status) for what was validated on real hardware.
+
+AMD support is a community effort: [@moezdil](https://github.com/moezdil), with the help of Claven, polished Instinct support across the scheduler, device plugin, amd-hami-core and the DRA driver. Initial device support was implemented by [@FouoF](https://github.com/FouoF) on AMD instances provided by DigitalOcean, and the initial compute (SPX, DPX, QPX, CPX) and memory partition work was done by [@fishman](https://github.com/fishman). Special thanks to **[Vultr](https://www.vultr.com/)** for providing the AMD test machines, and to the AMD community for making this possible.
+
 ## Deeper Ascend Partitioning: ENPU Mode and a Faster HAMi-core
 
 ### ENPU: Policy-Based Isolation for Ascend
@@ -101,11 +121,12 @@ v2.11.0 adds a third Ascend partitioning mode: **ENPU** ([#3110](https://github.
 ```yaml
 devices:
   ascend:
+    enabled: true
     hamiVnpuMode: "enpu" # template | hami-core | enpu
     enpuPolicy: "elastic" # fixed-share | elastic | best-effort
 ```
 
-The global mode is selected with `devices.ascend.hamiVnpuMode`; node capability annotations from the Ascend device plugin still take precedence. Also new for Ascend: slot capacity is exposed in the chart for hami-core mode, and Ascend950DT 9582 whole-card scheduling is supported.
+The global mode is selected with `devices.ascend.hamiVnpuMode`; node capability annotations from the Ascend device plugin still take precedence. Also new for Ascend: slot capacity is exposed in the chart for hami-core mode, and **Ascend 950 support** lands in this cycle: the scheduler gains Ascend950DT whole-card scheduling ([#3316](https://github.com/Project-HAMi/HAMi/pull/3316), [@panpan0000](https://github.com/panpan0000)), and [ascend-device-plugin](https://github.com/Project-HAMi/ascend-device-plugin) 0.2.x adds Ascend950DT discovery, node mode overrides, and unhealthy-device preservation on discovery failure.
 
 ### HAMi-core (libvNPU) Performance Overhaul
 
@@ -131,7 +152,7 @@ metadata:
     hami.io/numa-alignment: "strict" # or best-effort
 ```
 
-with `devicePlugin.numaRefit.enabled=true` in the chart plus `enableNumaTopology` and `enablegetpreferredallocation` on the node. `strict` fails the allocation when the refit cannot satisfy the topology constraint; `best-effort` keeps today's fallback.
+with `devicePlugin.numaRefit.enabled=true` and `devices.nvidia.enableNumaTopology=true` in the chart, plus `enablegetpreferredallocation` in the node configuration. `strict` fails the allocation when the refit cannot satisfy the topology constraint; `best-effort` keeps today's fallback.
 
 The feature was validated on real hardware (8x NVIDIA RTX PRO 6000 Blackwell Server Edition, driver 610.43.02, Kubernetes v1.35.6, CPU Manager `static`, Topology Manager `single-numa-node`): annotated Pods received a `NumaRefitSucceed` event and ended with cpuset, runtime GPU, and annotations on the same NUMA node. Follow-up hardening landed within the same cycle from [@asadjan4611](https://github.com/asadjan4611) and [@AyushSrivastava1818](https://github.com/AyushSrivastava1818) (phase-aware accounting, quota validation, and caller authentication on `/refit`), plus an allocLock fix during Pod removal from [@saiyam1814](https://github.com/saiyam1814). See the [NUMA alignment guide](/docs/userguide/nvidia-device/numa-alignment) for details.
 
@@ -155,19 +176,34 @@ v2.11.0 lands the first wave of the security-audit-driven hardening of the sched
 - The extender **verifies Pod identity** before acting on a request.
 - Pods created with **forged scheduler-owned allocation annotations are denied** at admission and guarded on update.
 - The node-lock path serves **only the Pod the lock names**, expired-lock recovery is serialized, and malformed device allocation annotations are rejected.
-- The chart now requires **Kubernetes 1.23+**, guards the PSP, and pins images by digest.
+- The chart now requires **Kubernetes 1.23+**, guards the PSP, and pins the helper images it pulls from third parties (certgen, the Lupine client and server images, the mock device plugin) by digest; HAMi's own images keep the `v2.11.0` tag.
 
 Scheduler performance also improved: whole-Pod deep copies were removed from the usage snapshot ([@togettoyou](https://github.com/togettoyou)), snapshots are built only for candidate nodes with benchmark regression tracking in CI ([@im-Toqeer-506](https://github.com/im-Toqeer-506)), and preferred `nodeAffinity` is honored in node scoring ([@falconlee236](https://github.com/falconlee236)).
+
+The scheduling policies introduced in v2.10.0, PodGroup-aware binding, the `mutex` policy, and comma-separated policy combinations, are now covered by a dedicated scheduler policy e2e suite ([#2793](https://github.com/Project-HAMi/HAMi/pull/2793), [@haitwang-cloud](https://github.com/haitwang-cloud)), and two fixes keep them predictable: the configured policy is kept when an unrecognized policy annotation is seen ([#2769](https://github.com/Project-HAMi/HAMi/pull/2769), [@IIITManjeet](https://github.com/IIITManjeet)), and padded policy annotations resolve to their canonical name ([#2854](https://github.com/Project-HAMi/HAMi/pull/2854)).
+
+Two operability additions round this out ([@im-Toqeer-506](https://github.com/im-Toqeer-506)): a **PodDisruptionBudget** for the leader-elected multi-replica scheduler ([#2773](https://github.com/Project-HAMi/HAMi/pull/2773)) so node drains cannot evict every replica at once, and a **redacted diagnostic bundle collector** (`hack/hami-support-bundle.sh`, [#3149](https://github.com/Project-HAMi/HAMi/pull/3149)) that gathers versions, workloads, events, HAMi ConfigMaps, and bounded component logs for support cases without ever reading Secrets.
 
 ## Platform, Chart, and More Devices
 
 - **OpenShift and SELinux support** ([#2208](https://github.com/Project-HAMi/HAMi/pull/2208), [@spencercjh](https://github.com/spencercjh)): `platform.openshift=true` creates the required SCC, and `selinux.enabled` relabels host directories for SELinux-enforcing clusters.
-- **Node capacity reporting** ([#2874](https://github.com/Project-HAMi/HAMi/pull/2874), [@shkatara](https://github.com/shkatara)): GPU memory and core resources can be reported in Node `capacity`/`allocatable`, so cluster autoscalers and dashboards see real GPU fractions.
+- **Cluster Autoscaler support** ([#2874](https://github.com/Project-HAMi/HAMi/pull/2874), [@shkatara](https://github.com/shkatara)): with `devicePlugin.reportNodeCapacity`, GPU memory and core resources are reported in Node `capacity`/`allocatable`, so Cluster Autoscaler scale-up simulation, dashboards, and quota tooling see real GPU fractions instead of opaque device counts.
 - **Chart overhaul** ([@spencercjh](https://github.com/spencercjh)): all vendor configs moved under `devices.VENDOR` with a complete helm-docs pass, `global.imageSource` switches between upstream and CN mirrors, and node configs can be selected by label selector ([@usr-bin-ksh](https://github.com/usr-bin-ksh)). This is a **breaking change** for custom `values.yaml` files.
-- **AMD maturation** ([@moezdil](https://github.com/moezdil)): `gpumem-percentage` requests, `amd.com/numa-bind` for multi-GPU Pods, topology-aware placement by XGMI links and NUMA, whole-WGP core rounding, namespace ResourceQuota checks, configurable `runtimeClassName`, and a dedicated AMD e2e suite.
-- **More devices**: all four NeuronCores on AWS Inferentia1 ([@asadjan4611](https://github.com/asadjan4611)), model-aware scheduling restored for Cambricon MLU, Mthreads S5000 per-card memory units ([@wjluo](https://github.com/wjluo)), and Hygon DCU resources renamed to **HCU** across charts and docs ([@kinglong08](https://github.com/kinglong08)).
+- **NVIDIA device plugin**: an opt-in **host PID broker** ([#2417](https://github.com/Project-HAMi/HAMi/pull/2417), [@iemAnshuman](https://github.com/iemAnshuman)) hands HAMi-core each process's host PID over `SO_PEERCRED` without mounting host procfs, and IMEX channels discovered at startup are now actually propagated into allocation responses ([#2892](https://github.com/Project-HAMi/HAMi/pull/2892), [@Eshiv-Pandey](https://github.com/Eshiv-Pandey)).
+- **More devices**: all four NeuronCores on AWS Inferentia1 ([@asadjan4611](https://github.com/asadjan4611)), model-aware scheduling restored for Cambricon MLU and a count above 1 accounted as whole MLUs ([#3218](https://github.com/Project-HAMi/HAMi/pull/3218), [@B-White84](https://github.com/B-White84)), Mthreads S5000 per-card memory units ([@wjluo](https://github.com/wjluo)), Hygon DCU resources renamed to **HCU** across charts and docs ([@kinglong08](https://github.com/kinglong08)) with the default core value updated so DTK 26.10+ shares compute like NVIDIA when no core resource is requested ([#3285](https://github.com/Project-HAMi/HAMi/pull/3285), [@archlitchi](https://github.com/archlitchi)). Vendor fixes also landed for MetaX (multi-container Pods spread over exclusive GPUs, [#2837](https://github.com/Project-HAMi/HAMi/pull/2837)), Enflame (DRS profile core costs kept within the device budget, [#2810](https://github.com/Project-HAMi/HAMi/pull/2810)), Kunlunxin (topology selection independent of slice order, [#2811](https://github.com/Project-HAMi/HAMi/pull/2811), [#2924](https://github.com/Project-HAMi/HAMi/pull/2924)), and Iluvatar (scaled core limit read per card, [#2961](https://github.com/Project-HAMi/HAMi/pull/2961)).
 - **Monitoring**: whole-GPU Pods can bypass the HAMi hook and be monitored via direct NVML, and Pods with `CUDA_DISABLE_CONTROL` or dynamic MIG are covered ([@vesta-mlp](https://github.com/vesta-mlp)); hardware health and error metrics are exposed ([@Gurkaran18](https://github.com/Gurkaran18)), an unknown-GPU-process counter was added ([@heuristicwave](https://github.com/heuristicwave)), and the scheduler exposes leader-election and cache-sync metrics ([@KunwarSidhu47](https://github.com/KunwarSidhu47)).
 - **Native sidecar containers** are now accounted for in GPU resource calculations ([@maishivamhoo123](https://github.com/maishivamhoo123)), and Pod/container-level environment overrides are supported ([@peachest](https://github.com/peachest)).
+
+## Across the Project-HAMi Ecosystem
+
+The release cycle also moved the satellite projects that ship alongside HAMi:
+
+- **[HAMi-core](https://github.com/Project-HAMi/HAMi-core)** (libvgpu.so): the SM limiter is now charged by thread count instead of grid count, CUDA graph and `cuMemAllocAsync` allocations are tracked and released per graph lifetime, VMM mappings roll back cleanly when tracking fails, `CUDA_DEVICE_MEMORY_LIMIT` suffixes are parsed strictly, and the host PID detection race that could pick up another process's PID is closed, with the host PID broker client for the device-plugin feature above.
+- **[HAMi-WebUI](https://github.com/Project-HAMi/HAMi-WebUI) v1.3.0**: `/metrics` is scrape-safe with less page-side query fan-out, init containers are decoded in Pod device annotations, task compute utilization is corrected, Pod and container names are searchable, and the chart preserves HAMi workload labels in the ServiceMonitor and scrapes the bundled kube-state-metrics.
+- **[HAMi-dra](https://github.com/Project-HAMi/HAMi-dra)**: chart 0.2.3 ships a webhook PodDisruptionBudget and hardened CEL selectors for `nouse-gpuuuid`/`nouse-gputype`; main since then adds AMD support (`drivers.amd`, `amd.com/gpu` claim conversion, `gpumem-percentage`), a `hami.io/skip-dra` opt-out, and monitor metric labels aligned with HAMi and Prometheus conventions.
+- **[k8s-dra-driver](https://github.com/Project-HAMi/k8s-dra-driver) v0.1.1**: a vGPU monitor for the DRA path, legacy claim-directory cleanup, and a missing PCIe-root fix, plus GPU-less e2e on kind with Mokka. **[ascend-dra-driver](https://github.com/Project-HAMi/ascend-dra-driver)** chart 0.2.0 exposes `/metrics` from an internal collector aligned with claim Prepare/Unprepare, adds a DeviceClass for the HAMi vNPU-core mode, and reports real UUIDs in ResourceSlices.
+- **[volcano-vgpu-device-plugin](https://github.com/Project-HAMi/volcano-vgpu-device-plugin) v1.13.0**: health state is retained across kubelet stream reconnects, allocation state and device annotations are validated, `WatchAndRegister` stops cleanly with the plugin, and HAMi-core is updated to the latest build.
+- **[gpu-descheduler](https://github.com/Project-HAMi/gpu-descheduler) v0.0.2**: a new project that defragments scattered vGPU workloads across nodes through a mutating webhook and Placement CRDs; this cycle adds multi-arch builds and uses HAMi's AMD `use-gpuuuid` annotation key. **[kai-resource-isolator](https://github.com/Project-HAMi/kai-resource-isolator)** gained a webhook PodDisruptionBudget with anti-affinity for multi-replica installs and chart input validation.
 
 ## A Reorganized, Redrawn Website
 
@@ -192,7 +228,7 @@ The weeks between v2.10.0 and v2.11.0 were some of the busiest in the project's 
 
 ## Contributors
 
-v2.11.0 is the result of contributions across the HAMi main repo and the Project-HAMi org (ascend-device-plugin, hami-vnpu-core, HAMi-dra, and more). Representative feature owners this cycle:
+v2.11.0 is the result of contributions across the HAMi main repo and the Project-HAMi org (ascend-device-plugin, hami-vnpu-core, HAMi-core, HAMi-dra, amd-device-plugin, amd-dra-driver, HAMi-WebUI, and more). Representative feature owners this cycle:
 
 - [@moezdil](https://github.com/moezdil): Remote GPU scheduler backend and device-plugin integration, the AMD feature wave, scheduler security hardening, release engineering, and the website information-architecture reorganization
 - [@archlitchi](https://github.com/archlitchi): release coordination, vNPU templates, remote client tooling, monitor fixes
@@ -240,6 +276,7 @@ For a step-by-step upgrade walkthrough with breaking-change callouts, see the de
 - **MIG + hami-core**: MIG is now automatically disabled on hami-core nodes; verify your node configs if you relied on both.
 - **Hygon users**: DCU resources are renamed to HCU across charts and docs.
 - **Metric deprecations**: `hami_container_device_memory_bytes` and the `limit` label of `hami_resource_quota_used` are deprecated; update dashboards and alerts that depend on them.
+- **Metric label changes**: the always-zero `container_index`/`containeridx` label was dropped from the four vGPU allocation metrics ([#2898](https://github.com/Project-HAMi/HAMi/pull/2898)), and the `device_type` label on `hami_host_gpu_*` no longer carries a duplicate `NVIDIA` prefix, so it matches the scheduler's `hami_gpu_*` series ([#2991](https://github.com/Project-HAMi/HAMi/pull/2991)). Adjust PromQL that groups or filters by these labels.
 - Remote GPU, ENPU, and NUMA refit are all **disabled by default**; enable them explicitly.
 - We recommend verifying compatibility in a test environment before upgrading.
 
@@ -247,7 +284,7 @@ For a step-by-step upgrade walkthrough with breaking-change callouts, see the de
 
 ## Summary
 
-HAMi v2.11.0 is a release about **removing boundaries**: between local and remote GPUs (Remote GPU via Lupine), between CPU and GPU scheduling (NUMA refit), between partitioning styles on Ascend (ENPU with policy isolation), and between dynamic MIG and modern runtimes (CDI support). Combined with a security-hardened scheduler, OpenShift/SELinux support, a restructured chart, and a reorganized and redrawn website, HAMi keeps expanding what a unified heterogeneous-compute scheduling platform can do.
+HAMi v2.11.0 is a release about **removing boundaries**: between local and remote GPUs (Remote GPU via Lupine), between GPU vendors (AMD Instinct sharing next to NVIDIA), between CPU and GPU scheduling (NUMA refit), between partitioning styles on Ascend (ENPU with policy isolation), and between dynamic MIG and modern runtimes (CDI support). Combined with a security-hardened scheduler, OpenShift/SELinux support, a restructured chart, and a reorganized and redrawn website, HAMi keeps expanding what a unified heterogeneous-compute scheduling platform can do.
 
 We sincerely welcome more developers, users, and ecosystem partners to join the HAMi community and help advance GPU virtualization and heterogeneous-compute scheduling.
 
