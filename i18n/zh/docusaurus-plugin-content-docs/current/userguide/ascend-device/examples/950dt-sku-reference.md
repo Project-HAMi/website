@@ -4,8 +4,8 @@ translated: true
 ---
 
 HAMi chart 中启用的 Ascend950DT 配置以 9582 这一 SKU 为目标，按整卡设备使用：
-98,304 MiB HBM 与 32 个 AI 核。该配置已在一台 Ascend950DT 9582 节点上验证过，
-但这一结果并不能验证下文列出的其他 SKU。
+98,304 MiB（96 GiB）HBM 与 32 个 AI 核。该配置已在一台 Ascend950DT 9582 节点上验证过，
+但这一结果并不能保证下文列出的其他 SKU 的成功运行。
 
 下表中的数值来自一份提供的 SKU 对比图，仅作参考。它们并不代表每个 SKU 在 DCMI
 中上报的身份、可用 HBM、AI 核数或 device-plugin 兼容性。配置其他 SKU 前，请在
@@ -31,6 +31,6 @@ HAMi chart 中启用的 Ascend950DT 配置以 9582 这一 SKU 为目标，按整
 | 8 | 24 GiB | DT_950x |
 | 8 | 16 GiB | DT_950y |
 
-图中未说明 126 GiB 上的星号含义。不要在 `devices.ascend.configs` 中为同一个
-`chipName` 启用多个配置项：调度器无法通过该字段区分这些 SKU。只有在验证目标 SKU
-的实际身份与容量后，才能替换 9582 条目。
+不要在 `devices.ascend.configs` 中为同一个 `chipName` 启用多个配置项：调度器
+无法通过该字段区分这些 SKU。只有在验证目标 SKU 的实际身份与容量后，才能替换
+9582 条目。
