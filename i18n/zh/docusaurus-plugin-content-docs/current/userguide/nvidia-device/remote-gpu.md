@@ -116,5 +116,3 @@ hami.io/remote-gpu-client-injection: "disabled"
 ```
 
 此配置关闭该 Pod 的自动 Lupine 库交付。服务端地址、工作负载身份注入及已配置的 HAMi-core 显存限制仍然生效。关闭交付后，工作负载需要自行提供上述 NCCL 显式挂载等配置所用的库。
-
-容器和 GPU 指标请参阅[远程 GPU 监控](./remote-gpu-monitoring.md)。
