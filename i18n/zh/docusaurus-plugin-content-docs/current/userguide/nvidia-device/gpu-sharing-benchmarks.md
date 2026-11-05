@@ -94,4 +94,4 @@ HAMi 计划在 v2.12 提供可选 MPS 支持，具体以实现与验证为准，
 
 使用 [Dynamo v1.6.1 GPU 共享示例](https://github.com/ai-dynamo/dynamo/tree/v1.6.1/examples/gpu-sharing)、[HAMi v2.10.0](https://github.com/Project-HAMi/HAMi/releases/tag/v2.10.0)、[GPU Fractioning v0.1.8](https://github.com/kai-scheduler/gpu-fractioning/tree/v0.1.8)，并按对应实验对齐负载、实例布局、并发映射、引擎参数、缓存、配额和 MPS 模式。采集前检查实际 GPU 映射、已加载的拦截库及 MPS 客户端归属。原始负载脚本 SHA-256 为 `d8fde51c9841b7898eb12a27489e5601b7fab535736db74da8fd3d6713450d19`。
 
-[复现脚本与中文指南](https://github.com/Project-HAMi/website/blob/master/benchmarks/gpu-sharing-a100/README.zh-CN.md)包含实际使用的负载采集器、部署模板、CUDA Graph 健康探针、故障注入器和指标汇总工具。主机路径与 GPU UUID 可配置，上游负载客户端保持原样。11 月 5 日的 HAMi 性能补测使用 `--hami-core-limit 50` 与 `platform/hami-50pct-values.yaml`；原未限算力性能数据及故障配置分别保留。
+[复现脚本与中文指南](https://github.com/Project-HAMi/gpu-sharing-benchmarks/blob/b2368541646273bec81dd5b09670553dd20b9378/README.zh-CN.md)包含实际使用的负载采集器、部署模板、CUDA Graph 健康探针、故障注入器和指标汇总工具。主机路径与 GPU UUID 可配置，上游负载客户端保持原样。11 月 5 日的 HAMi 性能补测使用 `--hami-core-limit 50` 与 `platform/hami-50pct-values.yaml`；原未限算力性能数据及故障配置分别保留。
