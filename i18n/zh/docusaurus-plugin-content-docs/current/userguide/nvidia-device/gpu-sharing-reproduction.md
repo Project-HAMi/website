@@ -16,7 +16,7 @@ git checkout e9b205bb121c50649bb97d7ed5dc4f796a9e523f
 
 ## 环境准备
 
-在专用 Linux GPU 节点运行。这些脚本会创建和清理测试命名空间、管理独立的 MPS 服务，并注入 GPU 执行故障。原测试环境为：
+在专用 Linux GPU 节点运行。这些脚本会创建和清理测试命名空间、管理独立的 MPS 服务，并注入 GPU 执行故障。测试环境为：
 
 - 2× A100-SXM4-40GB，每卡 108 SM；驱动 615.71.10，CUDA 13.4 MPS 工具。
 - Ubuntu 24.04.5、单节点 K3s 1.37.1+k3s1、NVIDIA Container Toolkit 1.20.1；使用 `nvidia` RuntimeClass 和 CDI 设备选择。
@@ -56,9 +56,9 @@ python3 prepare.py --config config.json --out /var/tmp/hami-sharing-run
 | 全栈 `fractions-*` | 原生 NVIDIA 插件、KAI 0.18.6、GPU Fractioning 0.1.8；共享服务 `sm-sharing` |
 | Legacy MPS 同参数对照 | 停止 GPU Fractioning；无 HAMi 注入；采集器自行管理 legacy MPS 服务 |
 | 原生 / MPS 故障矩阵 | 停止 GPU Fractioning；采集器自行管理 v3 MPS 服务 |
-| HAMi 故障补测 | HAMi 2.10.0 调度器与设备插件；无 MPS |
+| HAMi 故障测试 | HAMi 2.10.0 调度器与设备插件；无 MPS |
 
-11 月 2—4 日原 HAMi 测试使用 `platform/hami-fullstack-values.yaml` 和 `platform/hami-controlled-values.yaml`：未限算力，每实例 20 GiB。11 月 5 日性能补测使用 `platform/hami-50pct-values.yaml`：每实例 50% 算力、20 GiB。其他方案沿用原记录。通过官方 HAMi 2.10.0 chart 应用相应 values，节点添加 `gpu=on` 标签；webhook 仅匹配测试命名空间。GPU Fractioning 按发布版指南配置 KAI `default-queue` 和 `gpu-compute.mode: sm-sharing`。
+50% 算力、每实例 20 GiB 配置使用 `platform/hami-50pct-values.yaml`；未启用算力限制的配置使用 `platform/hami-fullstack-values.yaml` 或 `platform/hami-controlled-values.yaml`，显存配额同为每实例 20 GiB。通过官方 HAMi 2.10.0 chart 应用相应 values，节点添加 `gpu=on` 标签；webhook 仅匹配测试命名空间。GPU Fractioning 按发布版指南配置 KAI `default-queue` 和 `gpu-compute.mode: sm-sharing`。
 
 ## 运行性能测试
 
@@ -72,7 +72,7 @@ python3 reproduce.py --root /var/tmp/hami-sharing-run --profile fullstack --case
 python3 reproduce.py --root /var/tmp/hami-sharing-run --profile fullstack --case fractions-default --case fractions-eager
 ```
 
-全栈使用自动 KV 和默认前缀缓存，Eager 仅增加 `--enforce-eager`。原生双实例补测先在每卡初始化一个实例，再启动第二个，避免并发显存 profiling 竞争：
+全栈使用自动 KV 和默认前缀缓存，Eager 仅增加 `--enforce-eager`。原生双实例部署先在每卡初始化一个实例，再启动第二个，避免并发显存 profiling 竞争：
 
 ```bash
 python3 reproduce.py --root /var/tmp/hami-sharing-run --profile native-pair-fullstack
@@ -82,13 +82,13 @@ python3 reproduce.py --root /var/tmp/hami-sharing-run --profile native-pair-full
 
 ```bash
 python3 reproduce.py --root /var/tmp/hami-sharing-run --profile controlled
-# Legacy MPS 补测前，先停止已安装的共享服务。
+# Legacy MPS 测试前，先停止已安装的共享服务。
 python3 reproduce.py --root /var/tmp/hami-sharing-run --profile mps-controlled
 ```
 
 可用 `--case` 选择已生成的用例，例如 `hami-pair-graph`。采集器检查实际 GPU 放置、已加载库、引擎参数、重启次数和 MPS 客户端归属，保留日志、AIPerf 导出及运行前后检查结果。失败记录会保留，便于排查。
 
-## 50% 算力补测
+## 50% 算力配置
 
 生成独立配置目录：
 
@@ -96,7 +96,7 @@ python3 reproduce.py --root /var/tmp/hami-sharing-run --profile mps-controlled
 python3 prepare.py --config config.json --out /var/tmp/hami-sharing-50pct --hami-core-limit 50
 ```
 
-先通过 `platform/hami-50pct-values.yaml` 安装 HAMi，启用算力限制；生成的 worker 请求 `nvidia.com/gpucores: 50`。输出与原未限算力记录分开，采集器核验实际配额后才接受结果。11 月 5 日仅重测 HAMi 性能；故障测试沿用原未限算力协议。
+先通过 `platform/hami-50pct-values.yaml` 安装 HAMi，启用算力限制；生成的 worker 请求 `nvidia.com/gpucores: 50`。不同配置使用独立输出目录，采集器核验实际配额后才接受结果。HAMi 故障测试使用未启用算力限制的配置。
 
 ```bash
 python3 reproduce.py --root /var/tmp/hami-sharing-50pct --profile controlled --case hami-pair-graph --case hami-pair-eager
@@ -111,11 +111,11 @@ python3 summarize_metrics.py --root /var/tmp/hami-sharing-50pct/fullstack --out 
 
 ```bash
 python3 reproduce.py --root /var/tmp/hami-sharing-run --profile fault
-# HAMi 故障补测前，先安装未限算力的 HAMi 配置。
+# HAMi 故障测试前，先安装未限算力的 HAMi 配置。
 python3 reproduce.py --root /var/tmp/hami-sharing-run --profile hami-fault
 ```
 
-第二条命令先检查发布版 HAMi 库哈希、hook、20 GiB 显存上报及 21 GiB 申请被拒绝，再运行八组新 Pod 试验，并与本次原生 / MPS 对照合并。机器可读结果位于各故障目录的 `aggregate.json`、`conditions.csv`。
+第二条命令先检查发布版 HAMi 库哈希、hook、20 GiB 显存上报及 21 GiB 申请被拒绝，再运行八组新 Pod 试验，并与原生 / MPS 对照合并。机器可读结果位于各故障目录的 `aggregate.json`、`conditions.csv`。
 
 ## 重新汇总指标
 
@@ -136,4 +136,4 @@ CSV 汇总数据统一存放于 benchmark 仓库的 [results/2026-11-a100-sharin
 
 `vendor/dynamo/run-sweep.sh` 为未修改的 Dynamo v1.6.1 负载客户端，SHA-256 为 `d8fde51c9841b7898eb12a27489e5601b7fab535736db74da8fd3d6713450d19`。Apache-2.0 许可见 `vendor/dynamo/LICENSE`，模板来源见 `NOTICE.md`，其余文件遵循 benchmark 仓库许可。
 
-验证包括配置生成、源码编译、Shell 检查，以及对已归档 AIPerf 数据和 CUDA 故障结果的重新计算。移植后的性能采集路径也实际运行了 11 月 5 日 HAMi 50% 补测，共 64 份主导出、3,840 个成功测量请求。原生、MPS、GPU Fractioning 和故障数据均保留原采集日期。
+验证包括配置生成、源码编译、Shell 检查，以及对已归档 AIPerf 数据和 CUDA 故障结果的重新计算。

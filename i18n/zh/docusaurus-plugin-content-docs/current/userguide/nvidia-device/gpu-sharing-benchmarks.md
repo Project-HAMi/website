@@ -9,7 +9,7 @@ translated: true
 
 ## 测试环境
 
-数据采集于 2026 年 11 月 2—5 日。环境为 2× NVIDIA A100-SXM4-40GB、Ubuntu 24.04.5、驱动 615.71.10、Dynamo 1.6.1、vLLM 0.31.0、AIPerf 0.13.0。模型为 Qwen3-4B，BF16、TP=1，输入 2,048 tokens，输出目标为 256 tokens。
+测试环境为 2× NVIDIA A100-SXM4-40GB、Ubuntu 24.04.5、驱动 615.71.10、Dynamo 1.6.1、vLLM 0.31.0、AIPerf 0.13.0。模型为 Qwen3-4B，BF16、TP=1，输入 2,048 tokens，输出目标为 256 tokens。
 
 | 部署方式 | 每卡实例数 | 显存配置 | 执行配置 |
 | --- | --: | --- | --- |
@@ -22,6 +22,8 @@ translated: true
 
 ## 性能结果
 
+对照口径：GPU 型号、驱动版本相同，使用独立 GPU 环境采集。
+
 ### 全栈部署对比
 
 负载由未修改的 Dynamo [run-sweep.sh](https://github.com/ai-dynamo/dynamo/blob/v1.6.1/examples/gpu-sharing/common/run-sweep.sh) 产生。每卡总并发为 2、4、8、16、32：单实例承担全部并发，双实例各承担一半。Graph 使用引擎默认配置，Eager 仅增加 `--enforce-eager`。各配置使用自动 KV 分配、默认前缀缓存，各测一轮。
@@ -33,11 +35,11 @@ translated: true
 | Graph | 693.67 | 335.67 | 336.52 | 100.25% | 438.59 | 130.66% |
 | Eager | 200.28 | 194.53 | 180.49 | 92.79% | 189.54 | 97.43% |
 
-原生单实例与 GPU Fractioning 采集于 11 月 2 日，原生双实例采集于 11 月 4 日，HAMi 50% 算力配置采集于 11 月 5 日。其他方案沿用原始数据。GPU 型号与驱动相同，物理 GPU 和采集批次不同，因此这些比值用于部署配置参照，不能直接视为组件额外开销。前缀缓存行为与 KV 容量也随配置变化。[完整并发与延迟数据（CSV）](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fullstack.csv)。
+[完整并发与延迟数据（CSV）](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fullstack.csv)。
 
 ### 同参数对照
 
-每卡总并发固定为 8：单实例并发 8，双实例各并发 4。每实例固定 6 GiB KV，设置 `--max-model-len 4096`、`--max-num-seqs 32`、`--no-enable-prefix-caching`。HAMi 使用 11 月 5 日的 50% 算力补测数据；原生与 legacy v2 MPS 沿用 11 月 3 日记录。每次部署重复采集三轮客户端压测。该对照跨采集批次，也不能替代完整的 GPU Fractioning 部署测试。
+每卡总并发固定为 8：单实例并发 8，双实例各并发 4。每实例固定 6 GiB KV，设置 `--max-model-len 4096`、`--max-num-seqs 32`、`--no-enable-prefix-caching`。HAMi 使用 50% 算力配额，MPS 对照采用 legacy v2 MPS。每次部署重复采集三轮客户端压测。
 
 吞吐为每卡实例吞吐之和的均值 ± 样本标准差。TTFT 单位为 ms，TPOT 单位为 ms/输出 token。延迟列对各实例分位数及各轮结果取均值，**并非将集群全部请求合并后的 p99**。TPOT 表示每请求的平均输出 token 间隔。
 
@@ -52,15 +54,17 @@ translated: true
 | Eager | HAMi 双实例（50%） |     181.67 ± 1.32 |   426.37 |   671.97 |    42.54 |    43.68 |
 | Eager | Legacy MPS 双实例  |     188.51 ± 0.73 |   311.23 |   500.70 |    41.37 |    42.55 |
 
-相对原有原生双实例基线，HAMi 50% 算力补测的 Graph 吞吐差异为 +0.11%，Eager 为 -2.22%。原同批次测试中，原生 Graph 从单实例的 628.57 降至双实例的 335.51，这部分变化在引入 HAMi 前就已出现，不能仅凭单实例基线将其归因于 HAMi。
+HAMi 相对原生双实例的 Graph 吞吐差异为 +0.11%，Eager 为 -2.22%。原生 Graph 从单实例的 628.57 降至双实例的 335.51，不能仅凭单实例基线将这部分部署变化归因于 HAMi。
 
-Legacy MPS 各实例的测量窗口未完全重叠：各窗口吞吐求和为 449.36，使用统一墙钟窗口则为 399.28 tokens/s/GPU。11 月 3 日原生双实例与未限算力 HAMi 的统一墙钟结果分别为 334.50、334.78；这些历史记录与新的 50% 算力数据分开保留。[当前对照汇总](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/controlled.csv)、[原未限算力对照](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/controlled-unlimited.csv)、[50% 算力逐轮结果](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/hami-50pct-trials.csv)。
+Legacy MPS 各实例的测量窗口未完全重叠：各窗口吞吐求和为 449.36，使用统一墙钟窗口则为 399.28 tokens/s/GPU。同一口径下，Graph 模式的原生双实例为 334.50，HAMi 双实例（50%）为 334.97。
+
+[同参数对照汇总](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/controlled.csv)、[50% 算力逐轮结果](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/hami-50pct-trials.csv)。
 
 ## 故障隔离结果
 
 直接 CUDA 探针在 GPU 0 上放置故障注入进程与健康进程，在 GPU 1 上放置健康对照。健康探针持续重放 CUDA Graph 并校验输出。每场景测两次，观察注入前 3 秒及注入后至少 6 秒。MPS v3 共享服务启用 memacct、context-share，参照 GPU Fractioning 0.1.8 的执行机制；这里测试 GPU 执行故障传播，不代表 KAI、GPU Fractioning 或 vLLM 的服务恢复能力。
 
-HAMi 故障组沿用每实例 20 GiB、未限算力的原始配置。额外的静态 API 配置显示，同卡客户端各可见 54 SM，且分区 ID 不同。表内计数为**同卡健康进程持续产生正确结果的次数 / 试验总次数**。
+HAMi 故障组配置为每实例 20 GiB，未启用算力限制。额外的静态 API 配置显示，同卡客户端各可见 54 SM，且分区 ID 不同。表内计数为**同卡健康进程持续产生正确结果的次数 / 试验总次数**。
 
 | 注入事件             | 原生多进程 | HAMi 多进程 | MPS v3 共享 | MPS v3 所测静态配置 |
 | -------------------- | ---------: | ----------: | ----------: | ------------------: |
