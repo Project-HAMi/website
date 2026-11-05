@@ -1,0 +1,10 @@
+{
+  "node_name": "gpu-node",
+  "gpu_uuids": [
+    "GPU-00000000-0000-0000-0000-000000000001",
+    "GPU-00000000-0000-0000-0000-000000000002"
+  ],
+  "aiperf_executable": "aiperf",
+  "hf_cache": "/opt/hf-cache",
+  "namespace_prefix": "sharing-bench"
+}

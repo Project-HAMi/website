@@ -1,0 +1,30 @@
+{
+  "id": "hami-fault-isolation-20261104",
+  "base_experiment": "mps-fault-isolation-20261104",
+  "base_aggregate_sha256": "03176e20ac00189e24f961537a8662e541a033eb026d44148d409dcd8deafa89",
+  "probe_ptx_sha256": "83877ff5b1661cd65cc5fe0430bfc4e797aa0dcd02f70a4af3f98088725ed5dd",
+  "agent_change": "Read-only loaded-library hash, dladdr symbol provenance, GPU UUID and HAMi env capture; CUDA workload and fault branches unchanged",
+  "hami_release": "v2.10.0",
+  "library_sha256": "e98badc7ab64065af728fcca833ed372f16702d1e1c18eec01b1d8f6cbf7a9fb",
+  "gpu_uuids": ["@GPU0@", "@GPU1@"],
+  "cases": [
+    ["hami", "oom", 1],
+    ["hami", "oom", 2],
+    ["hami", "illegal_address", 1],
+    ["hami", "illegal_address", 2],
+    ["hami", "trap", 1],
+    ["hami", "trap", 2],
+    ["hami", "kill_busy", 1],
+    ["hami", "kill_busy", 2]
+  ],
+  "protocol": {
+    "pre_seconds": 3,
+    "post_seconds": 6,
+    "uid": 1000,
+    "gpu0": "victim+attacker",
+    "gpu1": "canary",
+    "sm_limit": 0,
+    "memory_limit_mib": 20480,
+    "fresh_pods_each_case": true
+  }
+}

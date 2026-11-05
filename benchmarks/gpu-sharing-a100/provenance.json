@@ -1,0 +1,161 @@
+{
+  "upstream_client": {
+    "repository": "ai-dynamo/dynamo",
+    "ref": "v1.6.1",
+    "path": "examples/gpu-sharing/common/run-sweep.sh",
+    "sha256": "d8fde51c9841b7898eb12a27489e5601b7fab535736db74da8fd3d6713450d19"
+  },
+  "collector_sources": [
+    {
+      "study_source": "results/hami-graph-diagnosis-20261103-r2/run.py",
+      "published_file": "collectors/controlled.py",
+      "source_sha256": "5af1ec22ed95c1c01f4ca8d9d20f9472b3709d781667b5edf976e3540d2b5cfe",
+      "published_sha256": "ac3261e0386d9aa404dc478f3b4b20b70fedc6e2b506d8eb6b9d5f6ef395824e"
+    },
+    {
+      "study_source": "results/native-pair-fullstack-20261104/run.py",
+      "published_file": "collectors/native_pair.py",
+      "source_sha256": "59fa2a290a42d8626bd43536d722d57f51365f0248c211f5a95d074316996c88",
+      "published_sha256": "a5c67564d3b568411fefafac5f0cb7e88220df8d416989bdab877bcfebbe6389"
+    },
+    {
+      "study_source": "results/mps-graph-diagnosis-20261103/run.py",
+      "published_file": "collectors/mps.py",
+      "source_sha256": "046ae85874520e591cdeed9484801c1057649c09883832ccc6f8f9c718bc03b2",
+      "published_sha256": "d963398170346373b281c4476c2c01f0f118694ef07e9efee9de2da8108fe616"
+    },
+    {
+      "study_source": "results/mps-graph-diagnosis-20261103/mps_control.py",
+      "published_file": "collectors/mps_control.py",
+      "source_sha256": "377e7ba20cd8f8088ebb7e3fdb2681443dbc80a22e88f426ae7895eae50abc57",
+      "published_sha256": "377e7ba20cd8f8088ebb7e3fdb2681443dbc80a22e88f426ae7895eae50abc57"
+    },
+    {
+      "study_source": "results/hami210-fullstack-20261102/native-default/run-benchmark-arm.py",
+      "published_file": "collectors/run-benchmark-arm.py",
+      "source_sha256": "f091128ed999aa1d234541df420cc9b0a6ce80cf5da3728b94f85725cf71ae51",
+      "published_sha256": "a793e844b95d3651ef8900a2710a85877e9ddcc9e3dd6808a961e13794c2fbac"
+    },
+    {
+      "study_source": "scripts/hami210-fullstack/verify-stack.py",
+      "published_file": "collectors/verify-stack.py",
+      "source_sha256": "7bb29209a441f8c893c961c1aea40166fa25c92baabc831741129eb78a60dbc2",
+      "published_sha256": "50e05e6413528249c707663e56e6b2eab860925ded6e956bc5d40095525db01e"
+    },
+    {
+      "study_source": "scripts/verify-mps-clients.py",
+      "published_file": "collectors/verify-mps-clients.py",
+      "source_sha256": "cc94fd934927664ecefa09c675582270de305126f12df80da2a4408a59f3a011",
+      "published_sha256": "2917599e5c0e228e7cb29feb32e7a6c7fcb0089b41e8f4b62a595db2b6be9cd5"
+    },
+    {
+      "study_source": "scripts/summarize.py",
+      "published_file": "collectors/summarize.py",
+      "source_sha256": "a253051b81e7c5b8016360886015f645b7d2cd97b1ed1744303029791791e7a4",
+      "published_sha256": "a253051b81e7c5b8016360886015f645b7d2cd97b1ed1744303029791791e7a4"
+    },
+    {
+      "study_source": "scripts/summarize-resources.py",
+      "published_file": "collectors/summarize-resources.py",
+      "source_sha256": "2b06ec530d8f461c4bc714f3baf58658fb990cc9a753b4903ddefc8d5b419167",
+      "published_sha256": "2b06ec530d8f461c4bc714f3baf58658fb990cc9a753b4903ddefc8d5b419167"
+    },
+    {
+      "study_source": "results/mps-fault-isolation-20261104/run.py",
+      "published_file": "fault/run.py",
+      "source_sha256": "6ef8153bcb4c40aed874ffb3407bcfa4be18302178c5e9c5632280fbd6ca0394",
+      "published_sha256": "7199d0c6be262dde9e218beef23eec9780ecdc1ff2df74af41cfbe687de960c7"
+    },
+    {
+      "study_source": "results/mps-fault-isolation-20261104/agent.py",
+      "published_file": "fault/agent.py",
+      "source_sha256": "7fd4cb8f4f26e4392d2e7ac91effc1f087c29e3bf8e0894c6d1beb9ae8e3ab7a",
+      "published_sha256": "7fd4cb8f4f26e4392d2e7ac91effc1f087c29e3bf8e0894c6d1beb9ae8e3ab7a"
+    },
+    {
+      "study_source": "results/hami-fault-isolation-20261104/run.py",
+      "published_file": "hami_fault/run.py",
+      "source_sha256": "1e1d286507960327ec5131368196a2f7c31c00c46da79837e66c9a022ab71c26",
+      "published_sha256": "410bd31b3a7e3ca96ebffc701b8dd063c870e0557e4bed2ce5672457f6d836dc"
+    },
+    {
+      "study_source": "results/hami-fault-isolation-20261104/case_run.py",
+      "published_file": "hami_fault/case_run.py",
+      "source_sha256": "e27e07f9776a01653ffe20c758e496097b2445016744a28f955f1b9deedc04da",
+      "published_sha256": "0d86009d2d18d322fa253ef158eba9dd3a2b009d946788d50e1b8acb2410bc18"
+    },
+    {
+      "study_source": "results/hami-fault-isolation-20261104/agent.py",
+      "published_file": "hami_fault/agent.py",
+      "source_sha256": "8e582c2a02446dada2aebe81c705ecc5895e4163d04b5d6f67f05674cc2f1292",
+      "published_sha256": "8e582c2a02446dada2aebe81c705ecc5895e4163d04b5d6f67f05674cc2f1292"
+    },
+    {
+      "study_source": "results/hami-fault-isolation-20261104/hami_probe.py",
+      "published_file": "hami_fault/hami_probe.py",
+      "source_sha256": "490466177e49416303336fe16a32b2f82e7bb3cf8f28e2cb1970f5cbb02bcd36",
+      "published_sha256": "490466177e49416303336fe16a32b2f82e7bb3cf8f28e2cb1970f5cbb02bcd36"
+    },
+    {
+      "study_source": "results/hami210-fullstack-20261102/run-case.py",
+      "published_file": "collectors/fullstack.py",
+      "source_sha256": "d230b9052912cbc68517cdcd3f9ca648131de9e791d84e69082a2fb924f49a50",
+      "published_sha256": "f3d808b83b935185299385d388cb8813d9ded4d1ab542453fc5448fd6e6ce290"
+    },
+    {
+      "study_source": "results/hami-graph-diagnosis-20261103-r2/analyze.py",
+      "published_file": "collectors/analyze-controlled.py",
+      "source_sha256": "91ebe9e3d7c923f3b3d31c3c043eb36eb9e7de30698dfe88f37b20f4bef470d9",
+      "published_sha256": "897f41aa836a568c1a655d192aa97842d63a64ec7535512ff3f6227ce76e53a8"
+    },
+    {
+      "study_source": "results/native-pair-fullstack-20261104/analyze.py",
+      "published_file": "collectors/analyze-native-pair.py",
+      "source_sha256": "4e49c676177d7966bca4a49851f9a1b4266269d1b8b9d36472143f4c26c1f08f",
+      "published_sha256": "4e49c676177d7966bca4a49851f9a1b4266269d1b8b9d36472143f4c26c1f08f"
+    },
+    {
+      "study_source": "results/mps-fault-isolation-20261104/analyze.py",
+      "published_file": "fault/analyze.py",
+      "source_sha256": "6d2e4e8430202f836b8ee05a2863a3196c70a8cbdee1ad8ee9524d3a34e57502",
+      "published_sha256": "83df7ef45bceeae53305d73b9a30a55f5d48b443cffe4a77b273b63b4cde4586"
+    },
+    {
+      "study_source": "results/hami-fault-isolation-20261104/analyze.py",
+      "published_file": "hami_fault/analyze.py",
+      "source_sha256": "cbe95240be3f109b28e72cd0f423bb37bb3a9f84594cafc41607b43d7277635c",
+      "published_sha256": "cbe95240be3f109b28e72cd0f423bb37bb3a9f84594cafc41607b43d7277635c"
+    },
+    {
+      "study_source": "generated/hami210-fullstack-20261102/native-default/experiment/common/run-repeated.sh",
+      "published_file": "vendor/run-repeated.sh",
+      "source_sha256": "db1c896491aacc3e54646bb0a902ffe7f7778a8e579c1e919f464ec24164536c",
+      "published_sha256": "db1c896491aacc3e54646bb0a902ffe7f7778a8e579c1e919f464ec24164536c"
+    },
+    {
+      "study_source": "generated/hami210-fullstack-20261102/native-default/experiment/baseline/template.json",
+      "published_file": "templates/native.json",
+      "source_sha256": "c6511655c821959263d55733b54d1566ce7bceb991952bd821861d0f173e3e26",
+      "extraction": "First model object; model name, namespace, node, cache and GPU identifiers parameterized."
+    },
+    {
+      "study_source": "generated/hami210-fullstack-20261102/hami-default/experiment/hami/template.json",
+      "published_file": "templates/hami.json",
+      "source_sha256": "f1373ce8fd42076f0b1b7308b0322e4346693a81e63a6e39c4c0fafbf5d25348",
+      "extraction": "First model object; model name, namespace, node, cache and GPU identifiers parameterized."
+    },
+    {
+      "study_source": "generated/hami210-fullstack-20261102/fractions-default/experiment/kai-gpu-fractions/template.json",
+      "published_file": "templates/fractions.json",
+      "source_sha256": "eff5c00ceca94f4338570266e9293daca881fece41bafdc839d846f9a10519d2",
+      "extraction": "First model object; model name, namespace, node, cache and GPU identifiers parameterized."
+    }
+  ],
+  "adaptations": [
+    "Inherit KUBECONFIG and configure AIPERF/HF_HOME.",
+    "Replace host/GPU/cache identifiers with configuration values.",
+    "Use current host UID for output ownership; GPU clients retain UID 1000.",
+    "Select total GPU concurrency 2/4/8/16/32 and controlled total concurrency 8.",
+    "Separate metric audit from human-readable report prose."
+  ]
+}
