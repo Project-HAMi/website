@@ -116,5 +116,3 @@ hami.io/remote-gpu-client-injection: "disabled"
 ```
 
 This disables automatic Lupine library delivery for that Pod. Server endpoint injection, workload identity and configured HAMi-core memory enforcement still apply. The workload must supply any libraries used by explicit mounts, such as the NCCL mount above.
-
-For container and GPU metrics, see [Remote GPU monitoring](./remote-gpu-monitoring.md).
