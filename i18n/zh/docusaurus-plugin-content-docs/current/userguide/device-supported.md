@@ -45,7 +45,7 @@ HAMi 只是使用这些设备的四种方式之一。另外三种自行完成调
 <!-- prettier-ignore -->
 | 制造商                    | HAMi | HAMi-DRA | Volcano | KAI-scheduler |
 | ------------------------- | ---- | -------- | ------- | ------------- |
-| 英伟达（NVIDIA）          | [分配设备显存](nvidia-device/specify-device-memory-usage.md) | [动态资源分配](nvidia-device/dynamic-resource-allocation.md) | [使用 Volcano vGPU](volcano-vgpu/nvidia-gpu/how-to-use-volcano-vgpu.md) | [使用 KAI Scheduler](kai-scheduler/how-to-use-kai-scheduler.md) |
+| 英伟达（NVIDIA）          | [分配设备显存](nvidia-device/specify-device-memory-usage.md) · [远程 GPU](nvidia-device/remote-gpu.md) | [动态资源分配](nvidia-device/dynamic-resource-allocation.md) | [使用 Volcano vGPU](volcano-vgpu/nvidia-gpu/how-to-use-volcano-vgpu.md) | [使用 KAI Scheduler](kai-scheduler/how-to-use-kai-scheduler.md) |
 | AMD                       | [启用 AMD GPU 共享](amd-device/enable-amd-gpu-sharing.md) | - | - | - |
 | AWS                       | [管理 AWS Neuron 设备](awsneuron-device/enable-awsneuron-managing.md) | - | - | - |
 | 壁仞（Biren）             | [启用壁仞设备共享](biren-device/enable-biren-sharing.md) | - | - | - |
@@ -67,6 +67,9 @@ HAMi 只是使用这些设备的四种方式之一。另外三种自行完成调
 下面按厂商列出所有页面，方便从本页直达。
 
 ### 英伟达（NVIDIA） {#nvidia}
+
+- [使用 Lupine 访问远程 GPU](nvidia-device/remote-gpu.md)
+- [对齐 GPU 与 CPU 的 NUMA 位置](nvidia-device/numa-alignment.md)
 
 - [为容器分配设备显存](nvidia-device/specify-device-memory-usage.md)
 - [动态资源分配](nvidia-device/dynamic-resource-allocation.md)

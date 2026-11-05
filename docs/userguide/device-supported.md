@@ -44,7 +44,7 @@ Each cell links to the guide for that device and component. A dash means there i
 <!-- prettier-ignore -->
 | Manufacturer  | HAMi | HAMi-DRA | Volcano | KAI-scheduler |
 | ------------- | ---- | -------- | ------- | ------------- |
-| NVIDIA        | [Allocate device memory](nvidia-device/specify-device-memory-usage.md) | [Dynamic Resource Allocation](nvidia-device/dynamic-resource-allocation.md) | [Use Volcano vGPU](volcano-vgpu/nvidia-gpu/how-to-use-volcano-vgpu.md) | [Use KAI Scheduler](kai-scheduler/how-to-use-kai-scheduler.md) |
+| NVIDIA        | [Allocate device memory](nvidia-device/specify-device-memory-usage.md) · [Remote GPU](nvidia-device/remote-gpu.md) | [Dynamic Resource Allocation](nvidia-device/dynamic-resource-allocation.md) | [Use Volcano vGPU](volcano-vgpu/nvidia-gpu/how-to-use-volcano-vgpu.md) | [Use KAI Scheduler](kai-scheduler/how-to-use-kai-scheduler.md) |
 | AMD           | [Enable AMD GPU sharing](amd-device/enable-amd-gpu-sharing.md) | - | - | - |
 | AWS           | [Manage AWS Neuron devices](awsneuron-device/enable-awsneuron-managing.md) | - | - | - |
 | Biren         | [Enable Biren sharing](biren-device/enable-biren-sharing.md) | - | - | - |
@@ -66,6 +66,9 @@ Each linked guide covers device-specific setup, configuration notes, and known l
 All vendor pages are listed here so this page reaches each of them.
 
 ### NVIDIA {#nvidia}
+
+- [Remote GPU access with Lupine](nvidia-device/remote-gpu.md)
+- [Align GPU and CPU NUMA placement](nvidia-device/numa-alignment.md)
 
 - [Allocate device memory to container](nvidia-device/specify-device-memory-usage.md)
 - [Dynamic Resource Allocation](nvidia-device/dynamic-resource-allocation.md)
