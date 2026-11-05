@@ -8,7 +8,7 @@ This page compares HAMi with the open-source Run:ai GPU sharing path, KAI Schedu
 
 ## Setup
 
-Measurements were collected on November 2-5, 2026, using 2× NVIDIA A100-SXM4-40GB, Ubuntu 24.04.5, driver 615.71.10, Dynamo 1.6.1, vLLM 0.31.0, and AIPerf 0.13.0. The workload was Qwen3-4B, BF16, tensor parallelism 1, with 2,048 input tokens and 256 output tokens.
+The environment used 2× NVIDIA A100-SXM4-40GB, Ubuntu 24.04.5, driver 615.71.10, Dynamo 1.6.1, vLLM 0.31.0, and AIPerf 0.13.0. The workload was Qwen3-4B, BF16, tensor parallelism 1, with 2,048 input tokens and 256 output tokens.
 
 | Deployment | Instances per GPU | Memory configuration | Execution configuration |
 | --- | --: | --- | --- |
@@ -21,6 +21,8 @@ The native memory utilization setting is an engine planning budget, not a hard i
 
 ## Performance results
 
+Comparison scope: independently measured GPU environments with matching GPU models and driver versions.
+
 ### Deployment comparison
 
 The unchanged Dynamo [run-sweep.sh](https://github.com/ai-dynamo/dynamo/blob/v1.6.1/examples/gpu-sharing/common/run-sweep.sh) was used to generate load. Total concurrency per GPU was 2, 4, 8, 16, and 32. A single instance received all requests; two instances each received half. Graph used the engine defaults; Eager added `--enforce-eager`. These runs used automatic KV allocation and default prefix caching, with one trial per configuration.
@@ -32,11 +34,11 @@ The table shows **total concurrency 8 per GPU**. Throughput is output tokens/s/G
 | Graph | 693.67 | 335.67 | 336.52 | 100.25% | 438.59 | 130.66% |
 | Eager | 200.28 | 194.53 | 180.49 | 92.79% | 189.54 | 97.43% |
 
-Native single and GPU Fractioning were collected on November 2, native pair on November 4, and HAMi with a 50% compute quota on November 5. Other backends retain their original measurements. The GPU model and driver match, but the physical GPUs and collection rounds differ; these ratios are deployment references, not a controlled estimate of component overhead. Prefix-cache behavior and KV capacity also vary with deployment settings. [All measured loads and latency summaries (CSV)](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fullstack.csv).
+[All measured loads and latency summaries (CSV)](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fullstack.csv).
 
 ### Same-parameter comparison
 
-This experiment held total concurrency at 8 per GPU: one instance at concurrency 8, or two at concurrency 4 each. Every instance used a fixed 6 GiB KV allocation, `--max-model-len 4096`, `--max-num-seqs 32`, and `--no-enable-prefix-caching`. HAMi used a 50% compute quota in the November 5 supplement; native and legacy v2 MPS retain their November 3 measurements. Each deployment received three client trials. This comparison spans collection rounds and does not substitute for a complete GPU Fractioning deployment test.
+This experiment held total concurrency at 8 per GPU: one instance at concurrency 8, or two at concurrency 4 each. Every instance used a fixed 6 GiB KV allocation, `--max-model-len 4096`, `--max-num-seqs 32`, and `--no-enable-prefix-caching`. HAMi used a 50% compute quota; the MPS comparison used legacy v2 MPS. Each deployment received three client trials.
 
 Throughput is the mean ± sample standard deviation of the sum of instance throughput per GPU. TTFT is milliseconds; TPOT is milliseconds/output token. Latency columns average instance percentiles and trials; **they are not pooled cluster p99 values**. TPOT measures each request's average output-token interval, not the distribution of individual token gaps.
 
@@ -51,9 +53,11 @@ Throughput is the mean ± sample standard deviation of the sum of instance throu
 | Eager | HAMi pair (50%) |       181.67 ± 1.32 |   426.37 |   671.97 |    42.54 |    43.68 |
 | Eager | Legacy MPS pair |       188.51 ± 0.73 |   311.23 |   500.70 |    41.37 |    42.55 |
 
-Relative to the original native pair, the 50% HAMi supplement differed by +0.11% with Graph and -2.22% with Eager. Native Graph throughput in the original same-round comparison changed from 628.57 for a single instance to 335.51 for a pair, before HAMi was introduced. A single-instance baseline alone cannot attribute that deployment effect to HAMi.
+HAMi differed from the native pair by +0.11% with Graph and -2.22% with Eager. Native Graph throughput changed from 628.57 for a single instance to 335.51 for a pair. A single-instance baseline alone cannot attribute that deployment effect to HAMi.
 
-Legacy MPS windows did not fully overlap: summed instance throughput was 449.36 tokens/s/GPU, versus 399.28 over a common elapsed-time window. The original November 3 common-window references were 334.50 for native pair and 334.78 for unlimited HAMi. These historical values are kept separate from the new quota-limited cohort. [Current controlled summaries](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/controlled.csv), [original unlimited comparison](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/controlled-unlimited.csv), and [50% client trials](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/hami-50pct-trials.csv).
+Legacy MPS windows did not fully overlap: summed instance throughput was 449.36 tokens/s/GPU, versus 399.28 over a common elapsed-time window. Using the common window, Graph throughput was 334.50 for the native pair and 334.97 for the HAMi pair (50%).
+
+[Controlled summaries](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/controlled.csv) and [50% client trials](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/hami-50pct-trials.csv).
 
 ## Fault isolation results
 

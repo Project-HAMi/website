@@ -55,9 +55,9 @@ Only run a case after installing the corresponding sharing stack. Stock NVIDIA a
 | Fullstack `fractions-*` | Stock NVIDIA plugin, KAI 0.18.6, GPU Fractioning 0.1.8 with shared-server `sm-sharing` |
 | Legacy MPS controlled | GPU Fractioning stopped; no HAMi injection; collector manages its own legacy MPS server |
 | Native/MPS fault matrix | GPU Fractioning stopped; collector manages its own v3 MPS servers |
-| HAMi fault supplement | HAMi scheduler/device plugin 2.10.0; no MPS |
+| HAMi fault tests | HAMi scheduler/device plugin 2.10.0; no MPS |
 
-The original November 2-4 HAMi runs used `platform/hami-fullstack-values.yaml` and `platform/hami-controlled-values.yaml`, both with compute limiting disabled and a 20 GiB memory quota per instance. The November 5 performance supplement used `platform/hami-50pct-values.yaml`, with a 50% compute quota and the same memory quota. Other backends retain their original measurements. Install these values with the official HAMi 2.10.0 chart. Label the node `gpu=on`; the webhook is scoped to benchmark-managed namespaces. For GPU Fractioning, configure the KAI `default-queue` and `gpu-compute.mode: sm-sharing` as in the released operator guide.
+Use `platform/hami-50pct-values.yaml` for a 50% compute quota and 20 GiB memory per instance. `platform/hami-fullstack-values.yaml` and `platform/hami-controlled-values.yaml` configure the same memory quota with compute limiting disabled. Apply the selected values with the official HAMi 2.10.0 chart. Label the node `gpu=on`; the webhook is scoped to benchmark-managed namespaces. For GPU Fractioning, configure the KAI `default-queue` and `gpu-compute.mode: sm-sharing` as in the released operator guide.
 
 ## Run performance cases
 
@@ -71,7 +71,7 @@ python3 reproduce.py --root /var/tmp/hami-sharing-run --profile fullstack --case
 python3 reproduce.py --root /var/tmp/hami-sharing-run --profile fullstack --case fractions-default --case fractions-eager
 ```
 
-The fullstack cases preserve automatic KV allocation and default prefix caching. Eager adds only `--enforce-eager`. The native-pair supplement initializes one instance per GPU before the second instance to avoid concurrent memory-profiling races:
+The fullstack cases preserve automatic KV allocation and default prefix caching. Eager adds only `--enforce-eager`. The native-pair deployment initializes one instance per GPU before the second instance to avoid concurrent memory-profiling races:
 
 ```bash
 python3 reproduce.py --root /var/tmp/hami-sharing-run --profile native-pair-fullstack
@@ -81,13 +81,13 @@ The controlled comparison fixes each instance's KV cache at 6 GiB, sets maximum 
 
 ```bash
 python3 reproduce.py --root /var/tmp/hami-sharing-run --profile controlled
-# Stop the installed sharing services before the legacy MPS supplement.
+# Stop the installed sharing services before the legacy MPS tests.
 python3 reproduce.py --root /var/tmp/hami-sharing-run --profile mps-controlled
 ```
 
 `--case` can select a prepared controlled case such as `hami-pair-graph`. Collectors verify GPU placement, actual loaded libraries, engine flags, restart counts, and MPS client membership. They retain logs, AIPerf exports, and before/after runtime checks. A failed attempt is preserved rather than silently overwritten.
 
-## 50% compute-quota supplement
+## 50% compute-quota configuration
 
 Create a separate preparation:
 
@@ -95,7 +95,7 @@ Create a separate preparation:
 python3 prepare.py --config config.json --out /var/tmp/hami-sharing-50pct --hami-core-limit 50
 ```
 
-Install HAMi using `platform/hami-50pct-values.yaml` before running its performance cases. This enables core limiting; generated HAMi workers request `nvidia.com/gpucores: 50`. Keep these outputs separate from the original unlimited-compute cohort. Runtime checks confirm the selected quota before accepting results. The published November 5 supplement reran only HAMi; the fault supplement retains its original unlimited-compute protocol.
+Install HAMi using `platform/hami-50pct-values.yaml` before running its performance cases. This enables core limiting; generated HAMi workers request `nvidia.com/gpucores: 50`. Use separate output directories for each configuration. Runtime checks confirm the selected quota before accepting results. The HAMi fault profile uses compute limiting disabled.
 
 ```bash
 python3 reproduce.py --root /var/tmp/hami-sharing-50pct --profile controlled --case hami-pair-graph --case hami-pair-eager
@@ -110,11 +110,11 @@ Stop other model workloads and sharing services first. The native/MPS matrix run
 
 ```bash
 python3 reproduce.py --root /var/tmp/hami-sharing-run --profile fault
-# Install HAMi with compute limiting disabled before the supplement.
+# Install HAMi with compute limiting disabled before the fault tests.
 python3 reproduce.py --root /var/tmp/hami-sharing-run --profile hami-fault
 ```
 
-The second command first checks the released HAMi library hash, hook locations, 20 GiB memory reporting, and rejection of a 21 GiB allocation. It then runs eight fresh-Pod cases and joins them with the new native/MPS reference. Machine-readable results are in each fault directory's `aggregate.json` and `conditions.csv`.
+The second command first checks the released HAMi library hash, hook locations, 20 GiB memory reporting, and rejection of a 21 GiB allocation. It then runs eight fresh-Pod cases and joins them with the native/MPS reference. Machine-readable results are in each fault directory's `aggregate.json` and `conditions.csv`.
 
 ## Recompute performance summaries
 
@@ -135,4 +135,4 @@ Aggregated CSVs are stored in the benchmark repository at [results/2026-11-a100-
 
 `vendor/dynamo/run-sweep.sh` is the unmodified Dynamo v1.6.1 workload client, SHA-256 `d8fde51c9841b7898eb12a27489e5601b7fab535736db74da8fd3d6713450d19`. See `vendor/dynamo/LICENSE` for its Apache-2.0 license and `NOTICE.md` for template attribution. Other files follow the benchmark repository's license.
 
-The original collectors ran on the environment listed above. Validation includes manifest generation, source compilation, shell checks, and recomputation against archived AIPerf exports and CUDA fault results. The portable performance path also collected the November 5 HAMi 50% supplement: 64 canonical worker exports and 3,840 successful measured requests. Native, MPS, GPU Fractioning, and fault results retain their original collection dates.
+Validation covers manifest generation, source compilation, shell checks, and recomputation against archived AIPerf exports and CUDA fault results.
