@@ -1,0 +1,192 @@
+{
+  "apiVersion": "nvidia.com/v1beta1",
+  "kind": "DynamoGraphDeployment",
+  "metadata": {
+    "name": "@MODEL_NAME@",
+    "namespace": "@NAMESPACE@",
+    "annotations": {
+      "experiment.nvidia.com/model-revision": "1cfa9a7208912126459214e8b04321603b3df60c",
+      "experiment.nvidia.com/runtime-image": "nvcr.io/nvidia/ai-dynamo/vllm-runtime:1.6.1@sha256:5899e7bdd3528ab09a17ec87e2abe1949f8a0386a0a49f3b24dbd52d8211dc5d",
+      "benchmark.execution-mode": "default"
+    }
+  },
+  "spec": {
+    "backendFramework": "vllm",
+    "components": [
+      {
+        "name": "Frontend",
+        "type": "frontend",
+        "replicas": 1,
+        "podTemplate": {
+          "metadata": {
+            "labels": {
+              "experiment.nvidia.com/dgd": "@MODEL_NAME@",
+              "experiment.nvidia.com/role": "frontend"
+            },
+            "annotations": {
+              "kai-resource-isolator.io/inject": "false"
+            }
+          },
+          "spec": {
+            "nodeSelector": {
+              "kubernetes.io/hostname": "@NODE@"
+            },
+            "containers": [
+              {
+                "name": "main",
+                "image": "nvcr.io/nvidia/ai-dynamo/vllm-runtime:1.6.1@sha256:5899e7bdd3528ab09a17ec87e2abe1949f8a0386a0a49f3b24dbd52d8211dc5d",
+                "imagePullPolicy": "IfNotPresent",
+                "command": ["python3", "-m", "dynamo.frontend"],
+                "args": ["--http-port", "8000"],
+                "env": [
+                  {
+                    "name": "DYN_NAMESPACE",
+                    "value": "@NAMESPACE@-@MODEL_NAME@"
+                  },
+                  {
+                    "name": "DYN_DISCOVERY_BACKEND",
+                    "value": "etcd"
+                  },
+                  {
+                    "name": "HF_HOME",
+                    "value": "@HF_CACHE@"
+                  },
+                  {
+                    "name": "HF_HUB_OFFLINE",
+                    "value": "1"
+                  },
+                  {
+                    "name": "TRANSFORMERS_OFFLINE",
+                    "value": "1"
+                  }
+                ],
+                "volumeMounts": [
+                  {
+                    "name": "model-cache",
+                    "mountPath": "@HF_CACHE@",
+                    "readOnly": true
+                  }
+                ]
+              }
+            ],
+            "volumes": [
+              {
+                "name": "model-cache",
+                "hostPath": {
+                  "path": "@HF_CACHE@",
+                  "type": "Directory"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": "worker",
+        "type": "worker",
+        "replicas": 1,
+        "podTemplate": {
+          "metadata": {
+            "labels": {
+              "experiment.nvidia.com/dgd": "@MODEL_NAME@",
+              "experiment.nvidia.com/role": "worker"
+            },
+            "annotations": {
+              "kai-resource-isolator.io/inject": "false"
+            }
+          },
+          "spec": {
+            "nodeSelector": {
+              "kubernetes.io/hostname": "@NODE@"
+            },
+            "runtimeClassName": "nvidia",
+            "terminationGracePeriodSeconds": 180,
+            "securityContext": {
+              "runAsNonRoot": true,
+              "runAsUser": 1000,
+              "runAsGroup": 1000,
+              "seccompProfile": {
+                "type": "RuntimeDefault"
+              }
+            },
+            "containers": [
+              {
+                "name": "main",
+                "image": "nvcr.io/nvidia/ai-dynamo/vllm-runtime:1.6.1@sha256:5899e7bdd3528ab09a17ec87e2abe1949f8a0386a0a49f3b24dbd52d8211dc5d",
+                "imagePullPolicy": "IfNotPresent",
+                "command": ["python3", "-m", "dynamo.vllm"],
+                "args": [
+                  "--model",
+                  "@HF_CACHE@/hub/models--Qwen--Qwen3-4B/snapshots/1cfa9a7208912126459214e8b04321603b3df60c",
+                  "--served-model-name",
+                  "Qwen/Qwen3-4B"
+                ],
+                "env": [
+                  {
+                    "name": "DYN_NAMESPACE",
+                    "value": "@NAMESPACE@-@MODEL_NAME@"
+                  },
+                  {
+                    "name": "DYN_DISCOVERY_BACKEND",
+                    "value": "etcd"
+                  },
+                  {
+                    "name": "DYN_NAMESPACE_WORKER_SUFFIX",
+                    "value": ""
+                  },
+                  {
+                    "name": "HF_HOME",
+                    "value": "@HF_CACHE@"
+                  },
+                  {
+                    "name": "HF_HUB_OFFLINE",
+                    "value": "1"
+                  },
+                  {
+                    "name": "TRANSFORMERS_OFFLINE",
+                    "value": "1"
+                  }
+                ],
+                "resources": {
+                  "requests": {
+                    "cpu": "2",
+                    "memory": "12Gi",
+                    "nvidia.com/gpu": 1
+                  },
+                  "limits": {
+                    "cpu": "8",
+                    "memory": "32Gi",
+                    "nvidia.com/gpu": 1
+                  }
+                },
+                "securityContext": {
+                  "allowPrivilegeEscalation": false,
+                  "capabilities": {
+                    "drop": ["ALL"]
+                  }
+                },
+                "volumeMounts": [
+                  {
+                    "name": "model-cache",
+                    "mountPath": "@HF_CACHE@",
+                    "readOnly": true
+                  }
+                ]
+              }
+            ],
+            "volumes": [
+              {
+                "name": "model-cache",
+                "hostPath": {
+                  "path": "@HF_CACHE@",
+                  "type": "Directory"
+                }
+              }
+            ],
+            "schedulerName": "default-scheduler"
+          }
+        }
+      }
+    ]
+  }
+}

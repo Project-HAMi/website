@@ -370,6 +370,7 @@ module.exports = {
     ...vendorPages("nvidia-device", [
       "specify-device-memory-usage",
       "specify-device-core-usage",
+      "gpu-sharing-benchmarks",
       "specify-device-type-to-use",
       "specify-device-uuid-to-use",
       "scheduling-policy",

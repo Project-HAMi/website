@@ -1,0 +1,73 @@
+{
+  "status": "prepared; not executed",
+  "profile": "release",
+  "gpu_count": 2,
+  "gpu_node": "@NODE@",
+  "namespace": "bench210-native-default",
+  "versions": {
+    "runtime_image": "nvcr.io/nvidia/ai-dynamo/vllm-runtime:1.6.1@sha256:5899e7bdd3528ab09a17ec87e2abe1949f8a0386a0a49f3b24dbd52d8211dc5d",
+    "platform_version": "1.6.1",
+    "aiperf_version": "0.13.0",
+    "kai_version": "v0.18.6 (Run:ai arm only)",
+    "kai_commit": "279f61c6d55b20bd47a43f2560c1b4f646a55547",
+    "hami_isolator_chart": "not installed for HAMi/native; HAMi v2.10.0 scheduler and device-plugin",
+    "gpu_operator_version": "v26.7.2",
+    "driver_version": "615.71.10",
+    "disable_prefix_caching": false,
+    "force_output_length": false,
+    "use_server_token_count": false,
+    "fractioning_version": "0.1.8",
+    "fractioning_commit": "0481ed19f1b00f5bb1d88df2c0ec5089c6e7714e",
+    "release_only": true,
+    "fractions_compute_isolation": "Shared MPS server with concurrent SM occupancy; no per-container hard 50% SM cap",
+    "load_placement": "co-located with model workers, as in the published original run",
+    "k3s_version": "v1.37.1+k3s1",
+    "helm_version": "v4.3.1",
+    "container_toolkit_version": "1.20.1",
+    "kernel": "6.8.0-147-generic",
+    "hami_release_version": "v2.10.0"
+  },
+  "fractions_forks": null,
+  "workload": {
+    "model": "Qwen/Qwen3-4B",
+    "revision": "1cfa9a7208912126459214e8b04321603b3df60c",
+    "input_tokens_target": 2048,
+    "output_tokens_target": 256,
+    "concurrencies_per_model": [1, 2, 4, 8, 16, 32],
+    "random_seed": 42,
+    "max_model_len": "engine default",
+    "max_num_seqs": "engine default",
+    "random_seed_scheme": "Upstream unchanged: seed 42 at every concurrency"
+  },
+  "models": {
+    "baseline": 2,
+    "hami": 4,
+    "fractions": 4
+  },
+  "differences_from_upstream": [
+    "Two A100 40GB GPUs: 2 native models or 4 shared models",
+    "User-selected released runtime/platform/AIPerf versions",
+    "HAMi v2.10.0 scheduler/device-plugin replaces KAI + isolator for the HAMi arm",
+    "Default/eager profiles change engine args only; official profile keeps upstream explicit args"
+  ],
+  "execution_method": "Host AIPerf, ENDPOINT_MODE=clusterip, same-node published method",
+  "gpu_memory_utilization": {
+    "baseline": "engine default"
+  },
+  "runtime_adaptations": [],
+  "case": "native-default",
+  "execution_mode": "default",
+  "aiperf_executable": "@AIPERF@",
+  "native_unhooked": true,
+  "official_client_script_sha256": "d8fde51c9841b7898eb12a27489e5601b7fab535736db74da8fd3d6713450d19",
+  "client_script_unmodified": true,
+  "hami_release_artifact": {
+    "release": "v2.10.0",
+    "requested_image": "docker.io/projecthami/hami:v2.10.0",
+    "pinned_image": "docker.io/projecthami/hami@sha256:8c45cd84d8df3e6a8fe8c95e0141684973b5015692a0ef87588da05284f34447",
+    "library_source_path": "/k8s-vgpu/lib/nvidia/libvgpu.so.v2.10.0",
+    "library_sha256": "e98badc7ab64065af728fcca833ed372f16702d1e1c18eec01b1d8f6cbf7a9fb",
+    "source_core_commit_from_release_tree": "b216ba1be1b8e21488d1c7370ed3357b3049aad1"
+  },
+  "repeats": 1
+}

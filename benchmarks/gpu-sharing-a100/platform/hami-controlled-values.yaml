@@ -1,0 +1,29 @@
+global:
+  imageTag: v2.10.0@sha256:8c45cd84d8df3e6a8fe8c95e0141684973b5015692a0ef87588da05284f34447
+schedulerName: hami-scheduler
+scheduler:
+  forceOverwriteDefaultScheduler: false
+  defaultSchedulerPolicy:
+    nodeSchedulerPolicy: binpack
+    gpuSchedulerPolicy: spread
+  kubeScheduler:
+    image:
+      registry: registry.k8s.io
+      repository: kube-scheduler
+      tag: v1.37.1
+  admissionWebhook:
+    namespaceSelector:
+      matchLabels:
+        benchmark.hami.io/managed: "true"
+  service:
+    type: ClusterIP
+devicePlugin:
+  runtimeClassName: nvidia
+  createRuntimeClass: false
+  deviceSplitCount: 2
+  deviceMemoryScaling: 1
+  disablecorelimit: "true"
+  nvidiaNodeSelector:
+    gpu: "on"
+  service:
+    type: ClusterIP
