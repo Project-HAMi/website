@@ -1,7 +1,7 @@
 ---
-title: "HAMi v2.11.0 发布：Remote GPU 调度、昇腾 ENPU、NUMA Refit 与走向成熟的 Flexible MIG"
+title: "HAMi v2.11.0 发布：Remote GPU 调度、AMD GPU 共享、昇腾 ENPU、NUMA Refit 与走向成熟的 Flexible MIG"
 date: "2026-11-04"
-description: "HAMi v2.11.0 正式发布。本次发布带来基于 Lupine 的 Remote GPU 调度、支持策略隔离的昇腾 ENPU 模式、对齐 CPU 与 GPU 调度的 NUMA refit、包括 CDI 支持在内的 Flexible MIG 重要完善、调度器安全加固、OpenShift 与 SELinux 支持，以及重构后的 Helm Chart。"
+description: "HAMi v2.11.0 正式发布。本次发布带来基于 Lupine 的 Remote GPU 调度、具备容器级显存与算力限制的完整 AMD Instinct GPU 共享、支持策略隔离的昇腾 ENPU 模式、对齐 CPU 与 GPU 调度的 NUMA refit、包括 CDI 支持在内的 Flexible MIG 重要完善、调度器安全加固、OpenShift 与 SELinux 支持，以及重构后的 Helm Chart。"
 tags: ["Release", "GPU", "Kubernetes", "调度"]
 authors: [hami_community]
 ---
@@ -11,6 +11,7 @@ HAMi 社区正式发布 **HAMi v2.11.0**。
 本次发布要点：
 
 - **Remote GPU**：在没有 GPU、没有 NVIDIA 驱动的客户端节点上运行 CUDA 与 vLLM Pod，使用 [Lupine](https://github.com/lupinemachines) GPU 服务器通过网络提供的 GPU。
+- **AMD Instinct GPU 共享**：AMD GPU（ROCm）成为 HAMi 的一等公民，支持按大小或百分比限制显存、限制算力、NUMA 与 XGMI 感知放置、调度策略与队列优先级，全部在容器级强制执行。
 - **昇腾 ENPU 模式**：与模板模式、hami-core 并列的第三种切分方式，提供 fixed-share、elastic、best-effort 策略隔离，同时 `hami-vnpu-core` 完成大规模性能优化。
 - **NUMA refit**：kubelet Topology Manager 与 HAMi 调度器达成一致，CPU 亲和性与 GPU 放置落在同一 NUMA 节点。
 - **Flexible MIG 走向成熟**：动态 MIG 设备支持 CDI 注入、带回退的放置打分、按 Pod 的 profile 偏好。
@@ -59,6 +60,12 @@ devicePlugin:
       }
 ```
 
+上面的 `nodelabelselector` 匹配的是你自行打上的标签；请在启用 remote 模式前（或之后重启 device-plugin）给每个要充当 Lupine 服务器的 GPU 节点打标签：
+
+```bash
+kubectl label node <gpu-node> role=lupine-server
+```
+
 之后，在无 GPU 节点上的 vLLM Deployment 看起来和普通 HAMi 工作负载完全一样（完整示例见 [remote-gpu examples](https://github.com/Project-HAMi/HAMi/tree/master/examples/remotegpu)）：
 
 ```yaml
@@ -88,6 +95,19 @@ spec:
 
 当前需要了解的限制：客户端节点必须与服务器节点分开部署；支持的镜像为 CUDA 和 vLLM 0.19-0.26；工作负载会预留整个服务器。
 
+## AMD Instinct GPU 共享
+
+HAMi 现在可以在 Kubernetes 上共享并调度 AMD Instinct GPU（ROCm），使用与 NVIDIA 相同的资源模型，并在容器内部强制执行硬限制。v2.10.0 打下了显存、算力、类型与 UUID 的基础；v2.11.0 补齐了完整的特性集（主要由 [@moezdil](https://github.com/moezdil) 完成）：
+
+- **显存隔离**：通过 `amd.com/gpumem` 申请绝对大小，或通过 `amd.com/gpumem-percentage` 申请 VRAM 的百分比（[#3179](https://github.com/Project-HAMi/HAMi/pull/3179)）。限制由 [amd-hami-core](https://github.com/Project-HAMi/amd-hami-core) 执行，它现在还会对 `hipMalloc3D`、数组、内存池与 VMM 封顶，把限额作为设备总量上报，并在设置 `HIP_OVERSUBSCRIBE` 时用托管内存提供 `hipMalloc`。
+- **算力隔离**：`amd.com/gpucores` 通过 `HSA_CU_MASK` 设置计算单元份额，RDNA 上的算力请求会向上取整到整个 WGP（[#3174](https://github.com/Project-HAMi/HAMi/pull/3174)）。
+- **灵活放置**：选择或排除 GPU 类型与 UUID（`amd.com/use-gputype`、`amd.com/use-gpu-uuid` 及对应的 `nouse-` 注解），用 `amd.com/numa-bind` 把多 GPU Pod 固定在同一 NUMA 节点（[#3186](https://github.com/Project-HAMi/HAMi/pull/3186)），用 `amd.com/link-bind` 要求所有 GPU 通过 XGMI 互联，`topology-aware` 策略则优先选择 XGMI 链路最多的组合（[#3191](https://github.com/Project-HAMi/HAMi/pull/3191)）。
+- **高级调度**：支持 `binpack`、`spread`、`mutex` 与 `topology-aware` 策略，通过 `AMD_TASK_PRIORITY` 设置 Pod 队列优先级，在 Fit 阶段检查命名空间 ResourceQuota（[#3180](https://github.com/Project-HAMi/HAMi/pull/3180)），拓扑调度中只选择满足配额的 GPU 组合（[#3361](https://github.com/Project-HAMi/HAMi/pull/3361)，[@Eshiv-Pandey](https://github.com/Eshiv-Pandey)），为 GPU 数量、显存与算力提供默认值并支持设备封锁（[#3192](https://github.com/Project-HAMi/HAMi/pull/3192)），可配置 `runtimeClassName`（[#3194](https://github.com/Project-HAMi/HAMi/pull/3194)），按可分配 GPU 判断节点健康，以及专门的 AMD e2e 测试套件（[#3193](https://github.com/Project-HAMi/HAMi/pull/3193)）。
+
+节点侧，[amd-device-plugin](https://github.com/Project-HAMi/amd-device-plugin) v0.0.4 新增 Instinct GPU 的硬件算力分区（SPX、DPX、QPX、CPX）、来自 AMD Device Metrics Exporter 的单 GPU 健康状态、节点注解中的 XGMI 对端信息，以及用于显存超售的 `-device_memory_scaling`。全新的 [amd-dra-driver](https://github.com/Project-HAMi/amd-dra-driver)（v0.1.0 至 v0.4.1）把同样的限制带到 DRA 路径，为每张 GPU 单独下发 `HSA_CU_MASK` 与 `HIP_DEVICE_MEMORY_LIMIT_` 并向 kubelet 上报健康状态，[HAMi-dra](https://github.com/Project-HAMi/HAMi-dra) 则把 `amd.com/gpu` 请求转换为它的 claim。NVIDIA 与 AMD 由同一个调度层统一纳管，HAMi 为异构集群提供了统一的 GPU 共享能力；请参阅 [AMD GPU 指南](/zh/docs/next/userguide/amd-device/enable-amd-gpu-sharing)与[验证状态](/zh/docs/next/userguide/amd-device/verification-status)了解在真实硬件上验证过的范围。
+
+AMD 支持是社区协作的成果：[@moezdil](https://github.com/moezdil) 在 Claven 的协助下打磨了调度器、device plugin、amd-hami-core 与 DRA driver 中的 Instinct 支持；初始设备支持由 [@FouoF](https://github.com/FouoF) 在 DigitalOcean 提供的 AMD 实例上实现；算力分区（SPX、DPX、QPX、CPX）与显存分区的初始工作由 [@fishman](https://github.com/fishman) 完成。特别感谢 **[Vultr](https://www.vultr.com/)** 提供 AMD 测试机器，也感谢 AMD 社区让这一切成为可能。
+
 ## 更深入的昇腾切分：ENPU 模式与更快的 HAMi-core
 
 ### ENPU：面向昇腾的策略化隔离
@@ -101,11 +121,12 @@ v2.11.0 新增了第三种昇腾切分模式：**ENPU**（[#3110](https://github
 ```yaml
 devices:
   ascend:
+    enabled: true
     hamiVnpuMode: "enpu" # template | hami-core | enpu
     enpuPolicy: "elastic" # fixed-share | elastic | best-effort
 ```
 
-全局模式通过 `devices.ascend.hamiVnpuMode` 选择；来自 Ascend device plugin 的节点能力注解仍然优先。昇腾侧其他更新：chart 暴露 hami-core 模式的槽位容量、支持 Ascend950DT 9582 整卡调度。
+全局模式通过 `devices.ascend.hamiVnpuMode` 选择；来自 Ascend device plugin 的节点能力注解仍然优先。昇腾侧其他更新：chart 暴露 hami-core 模式的槽位容量；**昇腾 950 支持**也在本周期落地：调度器新增 Ascend950DT 整卡调度（[#3316](https://github.com/Project-HAMi/HAMi/pull/3316)，[@panpan0000](https://github.com/panpan0000)），[ascend-device-plugin](https://github.com/Project-HAMi/ascend-device-plugin) 0.2.x 增加 Ascend950DT 设备发现、节点模式覆盖，以及发现失败时保留不健康设备。
 
 ### HAMi-core（libvNPU）性能优化
 
@@ -131,7 +152,7 @@ metadata:
     hami.io/numa-alignment: "strict" # 或 best-effort
 ```
 
-同时需要在 chart 中设置 `devicePlugin.numaRefit.enabled=true`，并在节点上开启 `enableNumaTopology` 与 `enablegetpreferredallocation`。`strict` 在 refit 无法满足拓扑约束时让分配失败；`best-effort` 保持现有的回退行为。
+同时需要在 chart 中设置 `devicePlugin.numaRefit.enabled=true` 与 `devices.nvidia.enableNumaTopology=true`，并在节点配置中开启 `enablegetpreferredallocation`。`strict` 在 refit 无法满足拓扑约束时让分配失败；`best-effort` 保持现有的回退行为。
 
 该特性已在真实硬件上验证（8x NVIDIA RTX PRO 6000 Blackwell Server Edition、驱动 610.43.02、Kubernetes v1.35.6、CPU Manager `static`、Topology Manager `single-numa-node`）：带注解的 Pod 收到 `NumaRefitSucceed` 事件，最终 cpuset、运行时 GPU 与注解都落在同一个 NUMA 节点上。同周期内 [@asadjan4611](https://github.com/asadjan4611) 与 [@AyushSrivastava1818](https://github.com/AyushSrivastava1818) 还完成了一批加固（阶段感知的账目、配额校验、`/refit` 调用方认证），[@saiyam1814](https://github.com/saiyam1814) 修复了 Pod 删除时的 allocLock 问题。详见 [NUMA 对齐指南](/zh/docs/userguide/nvidia-device/numa-alignment)。
 
@@ -155,19 +176,34 @@ v2.11.0 落地了安全审计驱动下的第一批调度器 extender 与 webhook
 - extender 在处理请求前**校验 Pod 身份**。
 - 带有**伪造的调度器分配注解**的 Pod 会在 admission 被拒绝，并在更新时受到保护。
 - 节点锁路径只服务**锁所指定的那个 Pod**，过期锁的恢复被串行化，格式错误的设备分配注解会被拒绝。
-- chart 现在要求 **Kubernetes 1.23+**，守护 PSP 并按 digest 固定镜像。
+- chart 现在要求 **Kubernetes 1.23+**，守护 PSP，并对从第三方拉取的辅助镜像（certgen、Lupine 客户端与服务器镜像、mock device plugin）按 digest 固定；HAMi 自身镜像仍使用 `v2.11.0` 标签。
 
 调度器性能同样有提升：用量快照不再深拷贝整个 Pod（[@togettoyou](https://github.com/togettoyou)），快照只为候选节点构建，并在 CI 中加入基准回归跟踪（[@im-Toqeer-506](https://github.com/im-Toqeer-506)），节点打分尊重 preferred `nodeAffinity`（[@falconlee236](https://github.com/falconlee236)）。
+
+v2.10.0 引入的调度策略，即 PodGroup 感知绑定、`mutex` 策略以及逗号分隔的策略组合，现在有了专门的调度策略 e2e 测试套件（[#2793](https://github.com/Project-HAMi/HAMi/pull/2793)，[@haitwang-cloud](https://github.com/haitwang-cloud)），并通过两处修复保证行为可预期：遇到无法识别的策略注解时保留已配置的策略（[#2769](https://github.com/Project-HAMi/HAMi/pull/2769)，[@IIITManjeet](https://github.com/IIITManjeet)），带填充的策略注解会解析为规范名称（[#2854](https://github.com/Project-HAMi/HAMi/pull/2854)）。
+
+还有两项运维方面的补充（[@im-Toqeer-506](https://github.com/im-Toqeer-506)）：为开启 leader 选举的多副本调度器提供 **PodDisruptionBudget**（[#2773](https://github.com/Project-HAMi/HAMi/pull/2773)），避免节点排空时所有副本同时被驱逐；以及一个**脱敏的诊断包收集器**（`hack/hami-support-bundle.sh`，[#3149](https://github.com/Project-HAMi/HAMi/pull/3149)），为支持场景收集版本、工作负载、事件、HAMi ConfigMap 与限定长度的组件日志，且绝不读取 Secret。
 
 ## 平台、Chart 与更多设备
 
 - **OpenShift 与 SELinux 支持**（[#2208](https://github.com/Project-HAMi/HAMi/pull/2208)，[@spencercjh](https://github.com/spencercjh)）：`platform.openshift=true` 创建所需的 SCC，`selinux.enabled` 为 SELinux 强制集群重打主机目录标签。
-- **节点容量上报**（[#2874](https://github.com/Project-HAMi/HAMi/pull/2874)，[@shkatara](https://github.com/shkatara)）：GPU 显存与算力资源可以上报到节点 `capacity`/`allocatable`，让集群自动扩缩器和仪表盘看到真实的 GPU 份额。
+- **Cluster Autoscaler 支持**（[#2874](https://github.com/Project-HAMi/HAMi/pull/2874)，[@shkatara](https://github.com/shkatara)）：开启 `devicePlugin.reportNodeCapacity` 后，GPU 显存与算力资源会上报到节点 `capacity`/`allocatable`，让 Cluster Autoscaler 的扩容模拟、仪表盘和配额工具看到真实的 GPU 份额，而不是不透明的设备数量。
 - **Chart 重构**（[@spencercjh](https://github.com/spencercjh)）：所有厂商配置迁移到 `devices.VENDOR` 之下并完成 helm-docs 文档化，`global.imageSource` 在上游与国内镜像源之间切换，节点配置支持按标签选择器匹配（[@usr-bin-ksh](https://github.com/usr-bin-ksh)）。这对自定义 `values.yaml` 是**破坏性变更**。
-- **AMD 成熟化**（[@moezdil](https://github.com/moezdil)）：`gpumem-percentage` 请求、多 GPU Pod 的 `amd.com/numa-bind`、按 XGMI 链路与 NUMA 的拓扑感知放置、整 WGP 算力取整、命名空间 ResourceQuota 检查、可配置 `runtimeClassName`，以及专门的 AMD e2e 测试套件。
-- **更多设备**：AWS Inferentia1 支持全部四个 NeuronCore（[@asadjan4611](https://github.com/asadjan4611)），恢复寒武纪 MLU 的模型感知调度，摩尔线程 S5000 每卡显存单位可配置（[@wjluo](https://github.com/wjluo)），海光 DCU 资源在 chart 与文档中更名为 **HCU**（[@kinglong08](https://github.com/kinglong08)）。
+- **NVIDIA device plugin**：可选的**宿主机 PID broker**（[#2417](https://github.com/Project-HAMi/HAMi/pull/2417)，[@iemAnshuman](https://github.com/iemAnshuman)）通过 `SO_PEERCRED` 把每个进程的宿主机 PID 交给 HAMi-core，无需挂载宿主机 procfs；启动时发现的 IMEX channel 现在会真正传递到分配响应中（[#2892](https://github.com/Project-HAMi/HAMi/pull/2892)，[@Eshiv-Pandey](https://github.com/Eshiv-Pandey)）。
+- **更多设备**：AWS Inferentia1 支持全部四个 NeuronCore（[@asadjan4611](https://github.com/asadjan4611)），恢复寒武纪 MLU 的模型感知调度并把大于 1 的数量按整卡 MLU 计量（[#3218](https://github.com/Project-HAMi/HAMi/pull/3218)，[@B-White84](https://github.com/B-White84)），摩尔线程 S5000 每卡显存单位可配置（[@wjluo](https://github.com/wjluo)），海光 DCU 资源在 chart 与文档中更名为 **HCU**（[@kinglong08](https://github.com/kinglong08)），并更新了默认算力值，使 DTK 26.10+ 在未请求算力资源时像 NVIDIA 一样共享算力（[#3285](https://github.com/Project-HAMi/HAMi/pull/3285)，[@archlitchi](https://github.com/archlitchi)）。其他厂商修复包括：沐曦（多容器 Pod 分散到独占 GPU，[#2837](https://github.com/Project-HAMi/HAMi/pull/2837)）、燧原（DRS profile 算力成本不超出设备预算，[#2810](https://github.com/Project-HAMi/HAMi/pull/2810)）、昆仑芯（拓扑选择不依赖切片顺序，[#2811](https://github.com/Project-HAMi/HAMi/pull/2811)、[#2924](https://github.com/Project-HAMi/HAMi/pull/2924)）、天数智芯（按每卡读取缩放后的算力上限，[#2961](https://github.com/Project-HAMi/HAMi/pull/2961)）。
 - **监控**：整卡 Pod 可以绕过 HAMi hook，通过直接 NVML 监控，覆盖带 `CUDA_DISABLE_CONTROL` 与动态 MIG 的 Pod（[@vesta-mlp](https://github.com/vesta-mlp)）；暴露硬件健康与错误指标（[@Gurkaran18](https://github.com/Gurkaran18)）；新增未知 GPU 进程计数指标（[@heuristicwave](https://github.com/heuristicwave)）；调度器暴露 leader 选举与缓存同步指标（[@KunwarSidhu47](https://github.com/KunwarSidhu47)）。
 - **原生 sidecar 容器**纳入 GPU 资源计算（[@maishivamhoo123](https://github.com/maishivamhoo123)），支持 Pod 级与容器级的环境变量覆盖（[@peachest](https://github.com/peachest)）。
+
+## Project-HAMi 生态全景
+
+本周期中，与 HAMi 配套发布的周边项目同样有不少进展：
+
+- **[HAMi-core](https://github.com/Project-HAMi/HAMi-core)**（libvgpu.so）：SM 限流器改为按线程数而非 grid 数计费，CUDA graph 与 `cuMemAllocAsync` 的分配按 graph 生命周期跟踪与释放，VMM 映射在跟踪失败时干净回滚，`CUDA_DEVICE_MEMORY_LIMIT` 的后缀严格解析，修复了可能拿到其他进程 PID 的宿主机 PID 探测竞态，并提供与上文 device-plugin 特性配套的宿主机 PID broker 客户端。
+- **[HAMi-WebUI](https://github.com/Project-HAMi/HAMi-WebUI) v1.3.0**：`/metrics` 抓取安全且减少页面侧查询扇出，Pod 设备注解可解码 init 容器，修正任务算力利用率，支持按 Pod 与容器名搜索，chart 在 ServiceMonitor 中保留 HAMi 工作负载标签并抓取内置的 kube-state-metrics。
+- **[HAMi-dra](https://github.com/Project-HAMi/HAMi-dra)**：chart 0.2.3 带来 webhook PodDisruptionBudget 和加固后的 `nouse-gpuuuid`/`nouse-gputype` CEL 选择器；此后主分支新增 AMD 支持（`drivers.amd`、`amd.com/gpu` claim 转换、`gpumem-percentage`）、`hami.io/skip-dra` 退出开关，以及与 HAMi 和 Prometheus 约定对齐的监控指标标签。
+- **[k8s-dra-driver](https://github.com/Project-HAMi/k8s-dra-driver) v0.1.1**：为 DRA 路径提供 vGPU 监控、清理遗留 claim 目录、修复缺失 PCIe root 属性的问题，并在 kind + Mokka 上增加无 GPU 的 e2e 测试。**[ascend-dra-driver](https://github.com/Project-HAMi/ascend-dra-driver)** chart 0.2.0 通过与 claim Prepare/Unprepare 对齐的内部收集器暴露 `/metrics`，为 HAMi vNPU-core 模式增加 DeviceClass，并在 ResourceSlice 中上报真实 UUID。
+- **[volcano-vgpu-device-plugin](https://github.com/Project-HAMi/volcano-vgpu-device-plugin) v1.13.0**：kubelet 流重连时保留健康状态，校验分配状态与设备注解，`WatchAndRegister` 随插件干净停止，并更新到最新的 HAMi-core。
+- **[gpu-descheduler](https://github.com/Project-HAMi/gpu-descheduler) v0.0.2**：新项目，通过 mutating webhook 与 Placement CRD 把分散在各节点上的 vGPU 工作负载整理归拢；本周期增加多架构构建，并改用 HAMi 的 AMD `use-gpuuuid` 注解键。**[kai-resource-isolator](https://github.com/Project-HAMi/kai-resource-isolator)** 为多副本部署增加 webhook PodDisruptionBudget 与反亲和，并校验 chart 输入。
 
 ## 重构与重绘后的官网
 
@@ -192,7 +228,7 @@ v2.11.0 落地了安全审计驱动下的第一批调度器 extender 与 webhook
 
 ## 贡献者
 
-v2.11.0 是 HAMi 主仓库与 Project-HAMi 组织（ascend-device-plugin、hami-vnpu-core、HAMi-dra 等）共同贡献的成果。本周期代表性功能负责人包括：
+v2.11.0 是 HAMi 主仓库与 Project-HAMi 组织（ascend-device-plugin、hami-vnpu-core、HAMi-core、HAMi-dra、amd-device-plugin、amd-dra-driver、HAMi-WebUI 等）共同贡献的成果。本周期代表性功能负责人包括：
 
 - [@moezdil](https://github.com/moezdil)：Remote GPU 调度器后端与 device-plugin 集成、AMD 特性矩阵、调度器安全加固、发布工程，以及官网信息架构重组
 - [@archlitchi](https://github.com/archlitchi)：发布协调、vNPU 模板、remote 客户端工具、监控修复
@@ -240,6 +276,7 @@ helm upgrade hami hami-charts/hami -n kube-system --version 2.11.0 \
 - **MIG + hami-core**：hami-core 节点上会自动禁用 MIG；若同时依赖两者，请核实节点配置。
 - **海光用户**：DCU 资源在 chart 与文档中更名为 HCU。
 - **指标弃用**：`hami_container_device_memory_bytes` 指标以及 `hami_resource_quota_used` 的 `limit` 标签已被弃用，请更新依赖它们的看板与告警。
+- **指标标签变更**：四个 vGPU 分配指标中恒为 0 的 `container_index`/`containeridx` 标签已移除（[#2898](https://github.com/Project-HAMi/HAMi/pull/2898)）；`hami_host_gpu_*` 的 `device_type` 标签不再带重复的 `NVIDIA` 前缀，从而与调度器的 `hami_gpu_*` 序列一致（[#2991](https://github.com/Project-HAMi/HAMi/pull/2991)）。请调整按这些标签分组或过滤的 PromQL。
 - Remote GPU、ENPU 与 NUMA refit **默认全部关闭**，需显式启用。
 - 建议在升级前于测试环境验证兼容性。
 
@@ -247,7 +284,7 @@ helm upgrade hami hami-charts/hami -n kube-system --version 2.11.0 \
 
 ## 总结
 
-HAMi v2.11.0 是一次关于**消除边界**的版本：本地与远程 GPU 之间的边界（基于 Lupine 的 Remote GPU）、CPU 与 GPU 调度之间的边界（NUMA refit）、昇腾上不同切分方式之间的边界（支持策略隔离的 ENPU），以及动态 MIG 与现代容器运行时之间的边界（CDI 支持）。再加上安全加固的调度器、OpenShift/SELinux 支持、重构后的 chart，以及重组重绘后的官网，HAMi 持续拓展统一异构算力调度平台的能力边界。
+HAMi v2.11.0 是一次关于**消除边界**的版本：本地与远程 GPU 之间的边界（基于 Lupine 的 Remote GPU）、GPU 厂商之间的边界（与 NVIDIA 并列的 AMD Instinct 共享）、CPU 与 GPU 调度之间的边界（NUMA refit）、昇腾上不同切分方式之间的边界（支持策略隔离的 ENPU），以及动态 MIG 与现代容器运行时之间的边界（CDI 支持）。再加上安全加固的调度器、OpenShift/SELinux 支持、重构后的 chart，以及重组重绘后的官网，HAMi 持续拓展统一异构算力调度平台的能力边界。
 
 我们诚挚欢迎更多开发者、用户和生态伙伴参与 HAMi 社区，共同推动 GPU 虚拟化与异构算力调度能力的演进。
 
