@@ -276,6 +276,7 @@ module.exports = {
       "allocate-910b",
       "allocate-exclusive",
       "allocate-soft-slicing",
+      "950dt-sku-reference",
     ]),
   ]),
   awsNeuronDevice: vendorSidebar("AWS Neuron", "aws-neuron", [

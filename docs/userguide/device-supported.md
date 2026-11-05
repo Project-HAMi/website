@@ -139,6 +139,7 @@ All vendor pages are listed here so this page reaches each of them.
 - [Allocate 910B slice](ascend-device/examples/allocate-910b.md)
 - [Allocate exclusive device](ascend-device/examples/allocate-exclusive.md)
 - [Soft slicing (hami-vnpu-core)](ascend-device/examples/allocate-soft-slicing.md)
+- [Ascend950DT SKU reference](ascend-device/examples/950dt-sku-reference.md)
 
 ### Hygon {#hygon}
 

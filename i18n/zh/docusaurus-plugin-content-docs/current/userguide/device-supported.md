@@ -140,6 +140,7 @@ HAMi 只是使用这些设备的四种方式之一。另外三种自行完成调
 - [为容器分配 Huawei Ascend-910B 切片](ascend-device/examples/allocate-910b.md)
 - [分配独占设备](ascend-device/examples/allocate-exclusive.md)
 - [软切片（hami-vnpu-core）](ascend-device/examples/allocate-soft-slicing.md)
+- [Ascend950DT SKU 参考](ascend-device/examples/950dt-sku-reference.md)
 
 ### 海光（Hygon） {#hygon}
 
