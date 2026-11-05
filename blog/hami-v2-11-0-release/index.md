@@ -152,7 +152,7 @@ metadata:
     hami.io/numa-alignment: "strict" # or best-effort
 ```
 
-with `devicePlugin.numaRefit.enabled=true` and `devices.nvidia.enableNumaTopology=true` in the chart, plus `enablegetpreferredallocation` in the node configuration. `strict` fails the allocation when the refit cannot satisfy the topology constraint; `best-effort` keeps today's fallback.
+with `devicePlugin.numaRefit.enabled=true` and `devices.nvidia.enableNumaTopology=true` in the chart, plus `operatingmode: hami-core` and `enablegetpreferredallocation` in the node configuration. NUMA refit supports `hami-core` nodes only; MIG-mode nodes are excluded. `strict` fails the allocation when the refit cannot satisfy the topology constraint; `best-effort` keeps today's fallback.
 
 The feature was validated on real hardware (8x NVIDIA RTX PRO 6000 Blackwell Server Edition, driver 610.43.02, Kubernetes v1.35.6, CPU Manager `static`, Topology Manager `single-numa-node`): annotated Pods received a `NumaRefitSucceed` event and ended with cpuset, runtime GPU, and annotations on the same NUMA node. Follow-up hardening landed within the same cycle from [@asadjan4611](https://github.com/asadjan4611) and [@AyushSrivastava1818](https://github.com/AyushSrivastava1818) (phase-aware accounting, quota validation, and caller authentication on `/refit`), plus an allocLock fix during Pod removal from [@saiyam1814](https://github.com/saiyam1814). See the [NUMA alignment guide](/docs/userguide/nvidia-device/numa-alignment) for details.
 

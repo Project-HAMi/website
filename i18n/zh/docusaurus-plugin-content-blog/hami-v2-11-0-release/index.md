@@ -152,7 +152,7 @@ metadata:
     hami.io/numa-alignment: "strict" # 或 best-effort
 ```
 
-同时需要在 chart 中设置 `devicePlugin.numaRefit.enabled=true` 与 `devices.nvidia.enableNumaTopology=true`，并在节点配置中开启 `enablegetpreferredallocation`。`strict` 在 refit 无法满足拓扑约束时让分配失败；`best-effort` 保持现有的回退行为。
+同时需要在 chart 中设置 `devicePlugin.numaRefit.enabled=true` 与 `devices.nvidia.enableNumaTopology=true`，并在节点配置中设置 `operatingmode: hami-core` 与 `enablegetpreferredallocation`。NUMA refit 仅支持 `hami-core` 模式的节点，MIG 模式的节点不受支持。`strict` 在 refit 无法满足拓扑约束时让分配失败；`best-effort` 保持现有的回退行为。
 
 该特性已在真实硬件上验证（8x NVIDIA RTX PRO 6000 Blackwell Server Edition、驱动 610.43.02、Kubernetes v1.35.6、CPU Manager `static`、Topology Manager `single-numa-node`）：带注解的 Pod 收到 `NumaRefitSucceed` 事件，最终 cpuset、运行时 GPU 与注解都落在同一个 NUMA 节点上。同周期内 [@asadjan4611](https://github.com/asadjan4611) 与 [@AyushSrivastava1818](https://github.com/AyushSrivastava1818) 还完成了一批加固（阶段感知的账目、配额校验、`/refit` 调用方认证），[@saiyam1814](https://github.com/saiyam1814) 修复了 Pod 删除时的 allocLock 问题。详见 [NUMA 对齐指南](/zh/docs/userguide/nvidia-device/numa-alignment)。
 
