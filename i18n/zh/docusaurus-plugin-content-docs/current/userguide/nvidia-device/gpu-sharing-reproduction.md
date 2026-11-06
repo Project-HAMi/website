@@ -22,7 +22,7 @@ cd gpu-sharing-benchmarks
 - Ubuntu 24.04.5、单节点 K3s 1.37.1+k3s1、NVIDIA Container Toolkit 1.20.1；使用 `nvidia` RuntimeClass 和 CDI 设备选择。
 - Dynamo 1.6.1、etcd、NATS。
 - HAMi 2.10.0，或 KAI 0.18.6 + GPU Fractioning 0.1.8，按测试组切换。
-- Python 3.11 或更新版本、AIPerf 0.13.0、`kubectl`、`helm`、`jq`、`curl`、`vmstat`；故障与 MPS 用例需要免密 `sudo`。
+- Python 3.11–3.13、AIPerf 0.13.0、`kubectl`、`helm`、`jq`、`curl`、`vmstat`；故障与 MPS 用例需要免密 `sudo`。
 - GPU 客户端使用非 root UID/GID 1000。Legacy MPS 服务使用相同 UID；v3 故障测试服务以 root、多用户模式运行。
 
 参照 [Dynamo GPU 共享部署指南](https://github.com/ai-dynamo/dynamo/tree/v1.6.1/examples/gpu-sharing)准备平台与模型缓存，使用 Dynamo 1.6.1 和 AIPerf 0.13.0。将 `Qwen/Qwen3-4B` 的 `1cfa9a7208912126459214e8b04321603b3df60c` 版本缓存到 `/opt/hf-cache/hub`。压测客户端在 GPU 节点上通过 ClusterIP 访问服务。
@@ -42,27 +42,15 @@ python3 -m venv /var/tmp/aiperf-013
 python3 prepare.py --config config.json --out /var/tmp/hami-sharing-run
 ```
 
-全栈测试每卡总并发为 2、4、8、16、32，双实例各承担一半；同参数对照为每卡总并发 8。默认关闭 HAMi 算力限制，50% 性能测试配置见下文。
+默认关闭 HAMi 算力限制；主报告采用的 50% 配置见下文。
 
-## 按测试组选择平台
-
-原生 NVIDIA 设备插件与 HAMi 设备插件不能同时上报同一批物理 GPU。
-
-| 用例 | 平台要求 |
-| --- | --- |
-| 全栈 `native-*` | 原生 NVIDIA 设备插件；无 HAMi 注入或 MPS |
-| 全栈 `hami-*`、同参数对照 | HAMi 2.10.0 调度器与设备插件；无 MPS |
-| 原生双实例全栈 | 通过 CDI 显式绑定 GPU；无 HAMi 注入或 MPS |
-| 全栈 `fractions-*` | 原生 NVIDIA 插件、KAI 0.18.6、GPU Fractioning 0.1.8；共享服务 `sm-sharing` |
-| Legacy MPS 同参数对照 | 停止 GPU Fractioning；无 HAMi 注入；采集器自行管理 legacy MPS 服务 |
-| 原生 / MPS 故障矩阵 | 停止 GPU Fractioning；采集器自行管理 v3 MPS 服务 |
-| HAMi 故障测试 | HAMi 2.10.0 调度器与设备插件；无 MPS |
+原生 NVIDIA 插件与 HAMi 插件不能同时管理同一批 GPU。独立 MPS 测试前停止 GPU Fractioning。
 
 50% 算力、每实例 20 GiB 配置使用 `platform/hami-50pct-values.yaml`；未启用算力限制的配置使用 `platform/hami-fullstack-values.yaml` 或 `platform/hami-controlled-values.yaml`，显存配额同为每实例 20 GiB。通过官方 HAMi 2.10.0 chart 应用相应 values，节点添加 `gpu=on` 标签。GPU Fractioning 按发布版指南配置 KAI `default-queue` 和 `gpu-compute.mode: sm-sharing`。
 
 ## 运行性能测试
 
-运行全栈用例：
+常规推理测试使用自动缓存：
 
 ```bash
 python3 reproduce.py --root /var/tmp/hami-sharing-run --profile fullstack --case native-default --case native-eager
@@ -72,13 +60,13 @@ python3 reproduce.py --root /var/tmp/hami-sharing-run --profile fullstack --case
 python3 reproduce.py --root /var/tmp/hami-sharing-run --profile fullstack --case fractions-default --case fractions-eager
 ```
 
-全栈测试使用自动 KV 和默认前缀缓存，Eager 仅增加 `--enforce-eager`。原生双实例全栈测试命令为：
+Graph 为默认模式，Eager 增加 `--enforce-eager`。原生双实例运行：
 
 ```bash
 python3 reproduce.py --root /var/tmp/hami-sharing-run --profile native-pair-fullstack
 ```
 
-同参数对照固定每实例 6 GiB KV、最大模型长度 4096、最大序列数 32，关闭前缀缓存。每次新部署采集三轮客户端压测；原生单实例并发 8，双实例各并发 4：
+固定缓存对照使用每实例 6 GiB 缓存，关闭前缀缓存；最大模型长度 4096、最大序列数 32。每卡并发 8，同一次部署测三轮：
 
 ```bash
 python3 reproduce.py --root /var/tmp/hami-sharing-run --profile controlled
@@ -86,7 +74,7 @@ python3 reproduce.py --root /var/tmp/hami-sharing-run --profile controlled
 python3 reproduce.py --root /var/tmp/hami-sharing-run --profile mps-controlled
 ```
 
-可用 `--case` 选择同参数对照用例，例如 `hami-pair-graph`。
+`--case hami-pair-graph` 可单独运行 HAMi 的默认模式。
 
 ## 50% 算力配置
 
@@ -106,9 +94,9 @@ python3 summarize_metrics.py --root /var/tmp/hami-sharing-50pct/controlled --out
 python3 summarize_metrics.py --root /var/tmp/hami-sharing-50pct/fullstack --out /var/tmp/hami-50pct-fullstack.csv --allow-partial
 ```
 
-## 运行故障矩阵
+## 运行故障测试
 
-先停止其他模型负载和共享服务。原生 / MPS 矩阵在 GPU 0 上放置故障进程与健康进程，在 GPU 1 上放置健康对照。每事件两轮，健康进程重放 CUDA Graph 并检查输出；观察注入前 3 秒、注入后至少 6 秒。事件包括超额显存申请、非法 GPU 写入、trap、GPU 工作中未同步 SIGKILL，以及安全终止 MPS 客户端。
+先停止其他模型负载和共享服务。每项故障测两次，观察故障前 3 秒、后至少 6 秒。MPS 故障测试用 v3，独立性能对照用 legacy v2。
 
 ```bash
 python3 reproduce.py --root /var/tmp/hami-sharing-run --profile fault
@@ -127,7 +115,7 @@ python3 summarize_metrics.py --root /var/tmp/hami-sharing-run/mps-controlled --t
 python3 summarize_metrics.py --root /var/tmp/hami-sharing-run/native-pair-fullstack --out /var/tmp/native-pair-points.csv
 ```
 
-部分用例尚未完成时可用 `--allow-partial`。CSV 分别输出每卡实例吞吐之和与统一墙钟吞吐。TTFT、TPOT、E2E 的 p50/p99 是实例分位数的算术均值，不是集群请求合并后的分位数。同参数对照的三轮均值与样本标准差见 `aggregate.json`。
+部分用例尚未完成时可用 `--allow-partial`。CSV 分别输出每卡实例吞吐之和与统一墙钟吞吐。TTFT、TPOT、E2E 的 p50/p99 是实例分位数的算术均值，不是集群请求合并后的分位数。固定缓存对照的三轮均值与样本标准差见 `aggregate.json`。
 
 ## 测试结果文件
 
@@ -135,11 +123,11 @@ python3 summarize_metrics.py --root /var/tmp/hami-sharing-run/native-pair-fullst
 
 | 文件 | 内容 |
 | --- | --- |
-| [fullstack.csv](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fullstack.csv) | 五档并发的全栈吞吐与延迟；HAMi 启用 50% 算力 |
-| [controlled.csv](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/controlled.csv) | 总并发 8 的固定 KV 对照；HAMi 启用 50% 算力 |
-| [hami-50pct-trials.csv](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/hami-50pct-trials.csv) | HAMi 50% 固定 KV 逐轮客户端结果 |
-| [fullstack-unlimited.csv](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fullstack-unlimited.csv) | HAMi 关闭算力限制的全栈对照 |
-| [controlled-unlimited.csv](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/controlled-unlimited.csv) | HAMi 关闭算力限制的固定 KV 对照 |
+| [fullstack.csv](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fullstack.csv) | 五档并发的推理性能；HAMi 50% 算力 |
+| [controlled.csv](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/controlled.csv) | 并发 8、缓存 6 GiB 的对照；HAMi 50% 算力 |
+| [hami-50pct-trials.csv](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/hami-50pct-trials.csv) | HAMi 50% 固定缓存逐轮结果 |
+| [fullstack-unlimited.csv](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fullstack-unlimited.csv) | HAMi 不限算力的常规测试 |
+| [controlled-unlimited.csv](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/controlled-unlimited.csv) | HAMi 不限算力的固定缓存对照 |
 | [fault-isolation.csv](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fault-isolation.csv) | CUDA 故障计数与错误码；HAMi 关闭算力限制 |
 
 ## 代码来源
