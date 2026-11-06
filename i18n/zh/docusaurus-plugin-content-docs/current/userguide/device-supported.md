@@ -6,7 +6,7 @@ displayed_sidebar: docs
 translated: true
 ---
 
-适用版本：**Next（未发布）**，对应 [HAMi 开发提交 `adf1a43a`](https://github.com/Project-HAMi/HAMi/tree/adf1a43a07cf7e3b697012b80eef3ddd7c919222)。HAMi [v2.11.0 已正式发布](https://github.com/Project-HAMi/HAMi/releases/tag/v2.11.0)；历史版本参阅 [v2.10.0 支持矩阵](/zh/docs/userguide/device-supported)。
+适用版本：**Next（未发布）**，对应 [HAMi 开发提交 `adf1a43a`](https://github.com/Project-HAMi/HAMi/tree/adf1a43a07cf7e3b697012b80eef3ddd7c919222)。请参阅 [v2.11.0 支持矩阵](/docs/userguide/device-supported)或历史版本的 [v2.10.0 支持矩阵](/docs/v2.10.0/userguide/device-supported)。
 
 最后核验日期：**2026-11-06**，核对范围为 [HAMi 源码](https://github.com/Project-HAMi/HAMi/tree/adf1a43a07cf7e3b697012b80eef3ddd7c919222)、[默认设备配置](https://github.com/Project-HAMi/HAMi/blob/adf1a43a07cf7e3b697012b80eef3ddd7c919222/charts/hami/values.yaml#L545)和设备指南。
 

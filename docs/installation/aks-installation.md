@@ -91,7 +91,7 @@ devicePlugin:
 - `manageNamespaceSelector: false` lets AKS own the webhook `namespaceSelector` and avoids Helm server-side apply conflicts. See the limitations above.
 - `nvidiaDriverRoot: "/"` uses the driver installed on the node host.
 - `nvidiaNodeSelector` limits HAMi's device plugin to the dedicated pool.
-- `tolerations` replaces the chart default, which is empty in Chart v2.10.0 and contains only `nvidia.com/gpu:NoSchedule` in the unreleased v2.11.0. The list covers the AKS `sku=gpu` taint plus the `nvidia.com/gpu` taint used by some node images.
+- `tolerations` replaces the chart default, which is empty in Chart v2.10.0 and contains only `nvidia.com/gpu:NoSchedule` in v2.11.0. The list covers the AKS `sku=gpu` taint plus the `nvidia.com/gpu` taint used by some node images.
 
 Install the chart with this file, and reuse it for every `helm upgrade`:
 
@@ -100,14 +100,14 @@ helm repo add hami-charts https://project-hami.github.io/HAMi/
 helm repo update hami-charts
 helm upgrade --install hami hami-charts/hami \
   --namespace kube-system \
-  --version 2.10.0 \
+  --version 2.11.0 \
   --values aks-values.yaml \
   --wait
 ```
 
 ## Verify the installation
 
-Check that HAMi registered the GPU and advertises logical slots. With the default of 10 vGPUs per GPU, a one-GPU node reports ten `nvidia.com/gpu` slots. This setting is `devicePlugin.deviceSplitCount` in the published Chart v2.10.0 and `devices.nvidia.deviceSplitCount` in the unreleased Chart v2.11.0 (see the [upgrade guide](./upgrade.md)):
+Check that HAMi registered the GPU and advertises logical slots. With the default of 10 vGPUs per GPU, a one-GPU node reports ten `nvidia.com/gpu` slots. This setting is `devicePlugin.deviceSplitCount` in Chart v2.10.0 and `devices.nvidia.deviceSplitCount` in Chart v2.11.0 (see the [upgrade guide](./upgrade.md)):
 
 ```bash
 kubectl get node <gpu-node> \

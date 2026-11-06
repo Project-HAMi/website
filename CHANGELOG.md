@@ -1,5 +1,75 @@
 # Changelog
 
+## v2.11.0 (2026-11-04)
+
+#### Release highlights
+
+- Whole-GPU allocations export metrics directly through NVML without mounting HAMi-core.
+- Cluster Autoscaler support and real-usage monitoring for Flexible MIG workloads.
+- Running vLLM with Remote CUDA.
+- PodGroup scheduling, mutex policy combinations, and GPU/CPU NUMA alignment.
+- AMD GPU and Ascend 950 support, plus libvnpu performance optimizations.
+
+#### What's changed
+
+See the [v2.11.0 release notes](https://github.com/Project-HAMi/HAMi/releases/tag/v2.11.0) for the complete list of features, fixes, and other changes.
+
+#### Committers: Contributors
+
+- moezdil ([@moezdil](https://github.com/moezdil))
+- devGPP23 ([@devGPP23](https://github.com/devGPP23))
+- maishivamhoo123 ([@maishivamhoo123](https://github.com/maishivamhoo123))
+- KunwarSidhu47 ([@KunwarSidhu47](https://github.com/KunwarSidhu47))
+- saiyam1814 ([@saiyam1814](https://github.com/saiyam1814))
+- Kevindua26 ([@Kevindua26](https://github.com/Kevindua26))
+- asadjan4611 ([@asadjan4611](https://github.com/asadjan4611))
+- im-Toqeer-506 ([@im-Toqeer-506](https://github.com/im-Toqeer-506))
+- iemAnshuman ([@iemAnshuman](https://github.com/iemAnshuman))
+- haitwang-cloud ([@haitwang-cloud](https://github.com/haitwang-cloud))
+- Gurkaran18 ([@Gurkaran18](https://github.com/Gurkaran18))
+- FouoF ([@FouoF](https://github.com/FouoF))
+- Utkarsh56016 ([@Utkarsh56016](https://github.com/Utkarsh56016))
+- archlitchi ([@archlitchi](https://github.com/archlitchi))
+- spencercjh ([@spencercjh](https://github.com/spencercjh))
+- togettoyou ([@togettoyou](https://github.com/togettoyou))
+- peachest ([@peachest](https://github.com/peachest))
+- curry30000 ([@curry30000](https://github.com/curry30000))
+- wjluo ([@wjluo](https://github.com/wjluo))
+- Eshiv-Pandey ([@Eshiv-Pandey](https://github.com/Eshiv-Pandey))
+- Shouren ([@Shouren](https://github.com/Shouren))
+- shkatara ([@shkatara](https://github.com/shkatara))
+- sanket-jadhav-cse ([@sanket-jadhav-cse](https://github.com/sanket-jadhav-cse))
+- maverick-woo ([@maverick-woo](https://github.com/maverick-woo))
+- usr-bin-ksh ([@usr-bin-ksh](https://github.com/usr-bin-ksh))
+- vesta-mlp ([@vesta-mlp](https://github.com/vesta-mlp))
+- adity1raut ([@adity1raut](https://github.com/adity1raut))
+- B-White84 ([@B-White84](https://github.com/B-White84))
+- tsingst ([@tsingst](https://github.com/tsingst))
+- falconlee236 ([@falconlee236](https://github.com/falconlee236))
+- heuristicwave ([@heuristicwave](https://github.com/heuristicwave))
+- panpan0000 ([@panpan0000](https://github.com/panpan0000))
+- AyushSrivastava1818 ([@AyushSrivastava1818](https://github.com/AyushSrivastava1818))
+- blackdragoon26 ([@blackdragoon26](https://github.com/blackdragoon26))
+- SK8-infi ([@SK8-infi](https://github.com/SK8-infi))
+- IIITManjeet ([@IIITManjeet](https://github.com/IIITManjeet))
+- iron-prog ([@iron-prog](https://github.com/iron-prog))
+- Woolgathererer ([@Woolgathererer](https://github.com/Woolgathererer))
+- 0z5a ([@0z5a](https://github.com/0z5a))
+- magic-peach ([@magic-peach](https://github.com/magic-peach))
+- rapsealk ([@rapsealk](https://github.com/rapsealk))
+- ManthanNimodiya ([@ManthanNimodiya](https://github.com/ManthanNimodiya))
+- diegodevxd ([@diegodevxd](https://github.com/diegodevxd))
+- phantom5125 ([@phantom5125](https://github.com/phantom5125))
+- Samurai007AK ([@Samurai007AK](https://github.com/Samurai007AK))
+- loiht2 ([@loiht2](https://github.com/loiht2))
+- 0718lol ([@0718lol](https://github.com/0718lol))
+- Shenhan11 ([@Shenhan11](https://github.com/Shenhan11))
+- dongjiang1989 ([@dongjiang1989](https://github.com/dongjiang1989))
+- kinglong08 ([@kinglong08](https://github.com/kinglong08))
+- karthikeyan-lgk ([@karthikeyan-lgk](https://github.com/karthikeyan-lgk))
+
+**Full Changelog**: https://github.com/Project-HAMi/HAMi/compare/v2.10.0...v2.11.0
+
 ## v2.10.0 (2026-08-21)
 
 #### Major features

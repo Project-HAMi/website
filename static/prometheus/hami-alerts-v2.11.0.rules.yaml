@@ -1,0 +1,88 @@
+# Reference alerting rules for HAMi v2.11.0, for Prometheus without the Operator. Tune the rules for your cluster before you use them.
+# Guide and runbooks: https://project-hami.io/docs/userguide/monitoring/alerting-and-runbooks
+groups:
+  - name: hami
+    rules:
+      - alert: HAMiDeviceMemoryAllocationHigh
+        expr: |
+          sum by (device_type) (hami_gpu_memory_allocated_bytes)
+            / sum by (device_type) (hami_gpu_memory_limit_bytes > 0)
+            > 0.95
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "The memory of a device type is almost fully allocated."
+          description: "{{ $value | humanizePercentage }} of the memory of {{ $labels.device_type }} devices is allocated."
+          runbook_url: https://project-hami.io/docs/userguide/monitoring/alerting-and-runbooks#hamidevicememoryallocationhigh
+      - alert: HAMiDeviceCoreAllocationHigh
+        expr: |
+          sum by (device_type) (hami_gpu_core_allocated_ratio)
+            / sum by (device_type) (hami_gpu_core_limit_ratio > 0)
+            > 0.95
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "The cores of a device type are almost fully allocated."
+          description: "{{ $value | humanizePercentage }} of the cores of {{ $labels.device_type }} devices are allocated."
+          runbook_url: https://project-hami.io/docs/userguide/monitoring/alerting-and-runbooks#hamidevicecoreallocationhigh
+      - alert: HAMiQuotaAlmostFull
+        expr: |
+          max by (namespace, quota_name) (hami_resource_quota_used)
+            / max by (namespace, quota_name) (hami_resource_quota_limit > 0)
+            > 0.9 < 1
+        for: 15m
+        labels:
+          severity: info
+        annotations:
+          summary: "A namespace is close to its extended ResourceQuota limit."
+          description: "Namespace {{ $labels.namespace }} uses {{ $value | humanizePercentage }} of its {{ $labels.quota_name }} quota."
+          runbook_url: https://project-hami.io/docs/userguide/monitoring/alerting-and-runbooks#hamiquotaalmostfull
+      - alert: HAMiQuotaFullyUsed
+        expr: |
+          max by (namespace, quota_name) (hami_resource_quota_used)
+            / max by (namespace, quota_name) (hami_resource_quota_limit > 0)
+            == 1
+        for: 15m
+        labels:
+          severity: info
+        annotations:
+          summary: "A namespace has used all of its extended ResourceQuota."
+          description: "Namespace {{ $labels.namespace }} uses all of its {{ $labels.quota_name }} quota."
+          runbook_url: https://project-hami.io/docs/userguide/monitoring/alerting-and-runbooks#hamiquotafullyused
+      - alert: HAMiQuotaExceeded
+        expr: |
+          max by (namespace, quota_name) (hami_resource_quota_used)
+            / max by (namespace, quota_name) (hami_resource_quota_limit)
+            > 1
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "A namespace is over its extended ResourceQuota limit."
+          description: "Namespace {{ $labels.namespace }} uses {{ $value | humanizePercentage }} of its {{ $labels.quota_name }} quota."
+          runbook_url: https://project-hami.io/docs/userguide/monitoring/alerting-and-runbooks#hamiquotaexceeded
+      - alert: HAMiSchedulerDown
+        expr: absent(hami_scheduler_is_leader == 1)
+        for: 15m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Prometheus sees no HAMi scheduler leader."
+          description: "Prometheus sees no HAMi scheduler that reports itself as the leader."
+          runbook_url: https://project-hami.io/docs/userguide/monitoring/alerting-and-runbooks#hamischedulerdown
+      - alert: HAMiNodeDevicesNotRegistered
+        expr: |
+          (
+            max by (node) (hami_vgpumonitor_collect_success == 1)
+              unless on (node) count by (node) (hami_gpu_memory_limit_bytes)
+          )
+          and on () (max(hami_scheduler_is_leader) == 1)
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "The HAMi scheduler has no devices for a node that runs a vGPU monitor."
+          description: "The vGPU monitor on node {{ $labels.node }} is healthy, but the scheduler has no devices for this node."
+          runbook_url: https://project-hami.io/docs/userguide/monitoring/alerting-and-runbooks#haminodedevicesnotregistered

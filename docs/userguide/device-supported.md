@@ -5,7 +5,7 @@ description: Find supported device models, compare memory and compute isolation 
 displayed_sidebar: docs
 ---
 
-Applicable version: **Next (unreleased)**, based on [HAMi development commit `adf1a43a`](https://github.com/Project-HAMi/HAMi/tree/adf1a43a07cf7e3b697012b80eef3ddd7c919222). HAMi [v2.11.0 has been released](https://github.com/Project-HAMi/HAMi/releases/tag/v2.11.0). For the historical version, see the [v2.10.0 support matrix](/docs/userguide/device-supported).
+Applicable version: **Next (unreleased)**, based on [HAMi development commit `adf1a43a`](https://github.com/Project-HAMi/HAMi/tree/adf1a43a07cf7e3b697012b80eef3ddd7c919222). See the [v2.11.0 support matrix](/docs/userguide/device-supported) or the historical [v2.10.0 support matrix](/docs/v2.10.0/userguide/device-supported).
 
 Last verified: **2026-11-06**, against the [HAMi source](https://github.com/Project-HAMi/HAMi/tree/adf1a43a07cf7e3b697012b80eef3ddd7c919222), [default device configuration](https://github.com/Project-HAMi/HAMi/blob/adf1a43a07cf7e3b697012b80eef3ddd7c919222/charts/hami/values.yaml#L545), and device guides.
 
