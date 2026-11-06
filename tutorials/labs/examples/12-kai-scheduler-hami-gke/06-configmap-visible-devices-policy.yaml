@@ -1,0 +1,31 @@
+# kai-resource-isolator wires NVIDIA_VISIBLE_DEVICES into each shared Pod via a per-pod
+# ConfigMap (<pod>-shared-gpu-0), using its own device-ID format
+# (k8s.device-plugin.nvidia.com/gpu=GPU-...). A real nvidia-container-runtime (as registered by
+# 05-privileged-free-toolkit-daemonset.yaml) does not understand that format -- it only accepts
+# "all", "none", "void", or an exact device ID -- so it would reject every shared Pod using
+# runtimeClassName: nvidia-ctk unless this value is normalized to "all" first.
+#
+# Only safe on a single-GPU node: this normalization makes every shared Pod visible to every GPU
+# on the node, not just the one it was scheduled onto.
+#
+# Patching the ConfigMap (rather than the Pod) matters: kubelet resolves configMapKeyRef at
+# container start, not at Pod admission, and ConfigMaps carry none of the Pod spec's
+# update-immutability restrictions -- so this can't conflict with kai-scheduler's own
+# pod-grouper controller the way a direct Pod mutation does.
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: fix-visible-devices-configmap
+spec:
+  background: false
+  rules:
+    - name: override-visible-devices-key
+      match:
+        any:
+          - resources:
+              kinds: [ConfigMap]
+              names: ["*-shared-gpu-0"]
+      mutate:
+        patchStrategicMerge:
+          data:
+            NVIDIA_VISIBLE_DEVICES: "all"

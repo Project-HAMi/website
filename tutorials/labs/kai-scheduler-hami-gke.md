@@ -307,7 +307,7 @@ inject-nvidia-library-path    true        true         true
 inject-gpu-devices            true        true         true
 ```
 
-The first policy adds the NVML library path to reservation Pods. The second mounts `/dev/nvidia*`, `nvidia-smi`, and NVIDIA libraries into shared Pods. In this workaround path, shared Pods also require `privileged: true`.
+The first policy adds the NVML library path to reservation Pods. The second mounts `/dev/nvidia*`, `nvidia-smi`, and NVIDIA libraries into shared Pods. In this workaround path, shared Pods also require `privileged: true`. If your cluster's Pod Security policy rejects privileged containers outright, see the [optional alternative](#optional-an-alternative-to-privileged-true) below Step 8 for a non-privileged path.
 
 :::caution Security boundary
 
@@ -444,6 +444,79 @@ hami_vgpu_memory_used_bytes{...,pod="kai-hami-lab12-b",...} 3.328180224e+09
 
 The limit equals 4147 MiB in bytes. The used value is slightly above 3 GiB because it includes CUDA context and allocator overhead. This proves the monitor found both per-container caches and exported live usage rather than only serving an empty Prometheus endpoint.
 
+## Optional: An Alternative to `privileged: true`
+
+Step 5's workaround mounts `/dev/nvidia*` and the NVIDIA libraries into shared Pods by hand and runs them `privileged: true`. That's a reasonable default for this lab, but it's not the only way to get real GPU access on a GKE-managed-driver node without GPU Operator, and some clusters' Pod Security configuration (`baseline`/`restricted`) reject privileged containers outright regardless of what the workload needs.
+
+This section documents a verified alternative: register a real `nvidia-container-runtime` with containerd as a standard Kubernetes `RuntimeClass`, so shared Pods get GPU access the same way any `runtimeClassName`-based workload does — no `privileged: true`, no hostPath device/library mounts in the Pod spec at all. **This is presented as an additional option, not a replacement for Step 5** — if the privileged path already works for your cluster's security policy, there's no need to switch.
+
+### Why a second mechanism is needed at all
+
+`nvidia-container-runtime` is the same tool GPU Operator installs and manages for you — Lab 12's Prerequisites deliberately avoid GPU Operator, so this section installs just that one component by hand, scoped only to Pods that opt in via `runtimeClassName: nvidia-ctk`. It doesn't touch or replace GKE's own built-in GPU-granting path (which activates only for Pods making a plain `nvidia.com/gpu` resource request) — KAI's `gpu-memory`-annotated Pods never make that kind of request, so GKE's own mechanism never sees them regardless.
+
+The toolkit's default ("legacy") mode does a `chroot()` into the driver directory before loading NVML, which fails on GKE's driver layout (`nvml error: driver not loaded`, even with a genuinely working driver) because that directory isn't a self-contained root the way GPU Operator's own driver container is. **CSV mode** avoids this: it reads explicit file lists and bind-mounts them directly into the target container, with no chroot step.
+
+### 1. Install the toolkit DaemonSet
+
+```bash
+kubectl apply \
+  -f tutorials/labs/examples/12-kai-scheduler-hami-gke/05-privileged-free-toolkit-daemonset.yaml
+kubectl rollout status daemonset/privileged-free-toolkit-daemonset \
+  -n nvidia-container-toolkit --timeout=180s
+```
+
+This creates its own namespace, ServiceAccount, RBAC, a `RuntimeClass` object named `nvidia-ctk`, and a ConfigMap holding the toolkit's real entrypoint script (sourced from [NVIDIA's own GPU Operator repository](https://github.com/NVIDIA/gpu-operator/tree/master/assets/state-container-toolkit), since Lab 12 doesn't install GPU Operator itself). The DaemonSet waits for the GKE driver to be present, installs the toolkit binaries, registers them with containerd as a runtime handler named `nvidia`, and writes `devices.csv`/`drivers.csv` manifests by discovering the driver library versions actually present on the node — so it keeps working after a future driver upgrade with no manual changes.
+
+**This intentionally uses a new RuntimeClass object (`nvidia-ctk`), not Step 5's existing `nvidia` one.** A `RuntimeClass` object only references a handler name; the actual implementation lives in each node's containerd config. Step 5's `nvidia` RuntimeClass (`02-runtimeclass.yaml`) has `handler: runc` — it exists purely as a compatibility shim so KAI reservation Pods referencing `runtimeClassName: nvidia` pass admission, and other parts of this lab depend on it continuing to resolve to plain `runc`. Repointing that object at the real handler would break that. The new `nvidia-ctk` object has `handler: nvidia`, matching the handler name this DaemonSet actually registers in containerd, so the two paths coexist without collision.
+
+### 2. Fix the device-visibility format mismatch
+
+`kai-resource-isolator` wires `NVIDIA_VISIBLE_DEVICES` into shared Pods using its own device-ID format (`k8s.device-plugin.nvidia.com/gpu=GPU-...`), which a real `nvidia-container-runtime` doesn't recognize — it only accepts `all`, `none`, `void`, or an exact device ID. The fix patches the per-pod ConfigMap this value is wired through (`<pod>-shared-gpu-0`), not the Pod object itself — a direct Pod-object mutation here will conflict with `kai-scheduler`'s `pod-grouper` controller and fail with a `pod updates may not change fields other than...` error.
+
+```bash
+kubectl apply \
+  -f tutorials/labs/examples/12-kai-scheduler-hami-gke/06-configmap-visible-devices-policy.yaml
+kubectl wait --for=condition=Ready --timeout=60s \
+  clusterpolicy/fix-visible-devices-configmap
+```
+
+:::caution Single-GPU nodes only
+
+Forcing `NVIDIA_VISIBLE_DEVICES` to `"all"` is a no-op on this lab's single-T4 node, but on a node with multiple GPUs it means every shared Pod using `runtimeClassName: nvidia-ctk` can see and address every physical GPU on that node, not just the one `kai-resource-isolator` scheduled it onto — silently defeating per-GPU device isolation. Only use this on single-GPU nodes until `kai-resource-isolator` supports a configurable device-ID format.
+
+:::
+
+### 3. Run shared Pods without `privileged`
+
+```bash
+kubectl apply \
+  -f tutorials/labs/examples/12-kai-scheduler-hami-gke/07-shared-pods-nonprivileged.yaml
+kubectl wait --for=condition=Ready \
+  pod/kai-hami-lab12-nonpriv-a pod/kai-hami-lab12-nonpriv-b \
+  --timeout=10m
+for pod in kai-hami-lab12-nonpriv-a kai-hami-lab12-nonpriv-b; do
+  kubectl logs "$pod" | grep -E 'test_(start|end)=|allocate |PASS:'
+done
+```
+
+This Pod spec mirrors Step 6/7's own `memory-limit.cu` test (same 4096 MiB request, same pass/fail probe), with `runtimeClassName: nvidia-ctk` in place of `privileged: true`. The exact Pods above were not independently re-run for this write-up, but this injection mechanism was verified live against several different real KAI/HamiCore Pod configurations:
+
+- A single `gpu-memory: "7680"` Pod reached the same enforced memory ceiling as Step 7's privileged path, byte-for-byte.
+- A separate two-Pod concurrent isolation test (`gpu-memory: "7000"` on each, a dedicated isolation probe rather than `memory-limit.cu`) produced an identical pass/fail pattern to Step 7, with both Pods' allocation windows genuinely overlapping:
+
+  ```plaintext
+  test_start=2026-10-30T07:06:51Z
+  allocate 3 GiB: no error
+  allocate another 5 GiB: out of memory
+  PASS: in-quota allocation succeeded and over-quota allocation failed
+  test_end=2026-10-30T07:07:22Z
+  ```
+
+  (identical on both Pods) — confirming neither Pod's allocation affected the other's quota.
+- The single-Pod case was also confirmed durable across node recreation and a GPU driver upgrade, since the DaemonSet's init container re-discovers driver library versions live on every startup rather than assuming a fixed version.
+
+Together these confirm the mechanism itself — real device/library injection via `runtimeClassName`, with HamiCore's enforcement unchanged — works correctly and isn't a weaker path than Step 5's. If you hit something different running the exact Pods above, please open an issue.
+
 ## Troubleshooting
 
 | Symptom | Cause in the verified environment | Action |
@@ -455,7 +528,7 @@ The limit equals 4147 MiB in bytes. The used value is slightly above 3 GiB becau
 | Shared Pod cannot see `/dev/nvidia*` | It requests `gpu-memory`, so the GKE device plugin does not run Allocate | Apply the Kyverno device-mount policy |
 | libsync reports `Read-only file system` | COS root filesystem is read-only | Set `paths.containerVgpuMount=/home/kubernetes/bin/nvidia/vgpu` |
 | `libvgpu.so` cannot be preloaded | The effective mount path still points to `/usr/local/vgpu` | Reinstall with the verified `containerVgpuMount` value |
-| DaemonSet rejected for `system-node-critical` | GKE PriorityClass quota blocks user namespaces | Set both Chart PriorityClass values to an empty string |
+| DaemonSet rejected for `system-node-critical` | GKE PriorityClass quota blocks user namespaces | Set both Chart PriorityClass values to an empty string. The optional `privileged-free-toolkit-daemonset` ([Optional section](#optional-an-alternative-to-privileged-true)) uses the same PriorityClass and can hit this too — drop its `priorityClassName` field if so |
 | `CUDA driver version is insufficient` | CUDA image is newer than the node driver supports | Use the verified CUDA 12.4.1 image or another compatible version |
 | `kubectl exec` ends with WebSocket EOF | Control-plane exec stream reset or unsupported client/server skew | Use a compatible `kubectl`; the Lab proof runs at container startup and is read with `kubectl logs` |
 | Monitor lookup returns no Pod or no series | `$TEST_NODE` was stale, or the monitor is absent from the workload node | Derive the node from `kai-hami-lab12-a`, then inspect the monitor DaemonSet with `kubectl get pods -n kai-resource-isolator -l app.kubernetes.io/component=kai-vgpu-monitor -o wide` |
@@ -490,6 +563,20 @@ Delete `02-runtimeclass.yaml` only if Step 5 created it; preserve a RuntimeClass
 ```bash
 kubectl delete \
   -f tutorials/labs/examples/12-kai-scheduler-hami-gke/02-runtimeclass.yaml
+```
+
+If you followed the [optional non-privileged alternative](#optional-an-alternative-to-privileged-true), remove its resources too:
+
+```bash
+kubectl delete \
+  -f tutorials/labs/examples/12-kai-scheduler-hami-gke/07-shared-pods-nonprivileged.yaml \
+  --ignore-not-found
+kubectl delete \
+  -f tutorials/labs/examples/12-kai-scheduler-hami-gke/06-configmap-visible-devices-policy.yaml \
+  --ignore-not-found
+kubectl delete \
+  -f tutorials/labs/examples/12-kai-scheduler-hami-gke/05-privileged-free-toolkit-daemonset.yaml \
+  --ignore-not-found
 ```
 
 Delete the GKE cluster if you created it only for this exercise:

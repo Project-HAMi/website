@@ -1,0 +1,313 @@
+# Optional alternative to privileged: true — installs the real NVIDIA Container Toolkit (the
+# same component GPU Operator would normally manage for you) as a standalone DaemonSet, with no
+# dependency on GPU Operator being installed anywhere in the cluster (this lab's Prerequisites
+# say not to install it, so everything here is self-contained: its own namespace, ServiceAccount,
+# RBAC, and the toolkit's real entrypoint script, sourced directly from NVIDIA's public
+# GPU Operator repo -- https://github.com/NVIDIA/gpu-operator/tree/master/assets/state-container-toolkit).
+#
+# Why this is needed: Step 5's privileged: true / Kyverno approach works, but some clusters'
+# security policies (Kubernetes Pod Security "baseline"/"restricted") reject privileged
+# containers outright. This DaemonSet registers a real nvidia-container-runtime with containerd
+# instead, exposed as a standard Kubernetes RuntimeClass, so workload pods can get GPU access
+# without privileged at all.
+#
+# Uses CSV mode, not the toolkit's default "legacy" mode: legacy mode does a chroot() into the
+# driver directory to find libraries, which breaks NVML's own driver-presence check on GKE's
+# non-self-contained driver layout (confirmed: "nvml error: driver not loaded" even with a
+# genuinely working driver). CSV mode instead bind-mounts an explicit file list directly into
+# the target container, avoiding that chroot/proc dependency entirely.
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nvidia-container-toolkit
+---
+# Step 5's own `nvidia` RuntimeClass (02-runtimeclass.yaml) has `handler: runc` -- it exists only
+# as a compatibility shim so reservation Pods referencing runtimeClassName: nvidia don't fail
+# admission. It must NOT be repointed at a real handler, since Step 5's own flow depends on it
+# resolving to plain runc. This DaemonSet registers its real nvidia-container-runtime under a
+# distinct object instead, so the two paths can't collide.
+apiVersion: node.k8s.io/v1
+kind: RuntimeClass
+metadata:
+  name: nvidia-ctk
+handler: nvidia
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: nvidia-container-toolkit
+  namespace: nvidia-container-toolkit
+---
+# Mirrors the namespaced permission GPU Operator's own toolkit Role grants
+# (assets/state-container-toolkit/0200_role.yaml upstream) -- everything else in that upstream
+# Role is OpenShift SecurityContextConstraints-specific and not applicable on GKE.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: nvidia-container-toolkit
+  namespace: nvidia-container-toolkit
+rules:
+  - apiGroups: ["apps"]
+    resources: ["daemonsets"]
+    verbs: ["list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: nvidia-container-toolkit
+  namespace: nvidia-container-toolkit
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: nvidia-container-toolkit
+subjects:
+  - kind: ServiceAccount
+    name: nvidia-container-toolkit
+    namespace: nvidia-container-toolkit
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nvidia-container-toolkit-entrypoint
+  namespace: nvidia-container-toolkit
+data:
+  entrypoint.sh: |-
+    #!/bin/sh
+
+    until [ -f /run/nvidia/validations/driver-ready ]
+    do
+      echo "waiting for the driver validations to be ready..."
+      sleep 5
+    done
+
+    set -o allexport
+    cat /run/nvidia/validations/driver-ready
+    . /run/nvidia/validations/driver-ready
+
+    sleep 5
+
+    exec nvidia-toolkit
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: privileged-free-toolkit-daemonset
+  namespace: nvidia-container-toolkit
+  labels:
+    app: privileged-free-toolkit-daemonset
+spec:
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: privileged-free-toolkit-daemonset
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: privileged-free-toolkit-daemonset
+    spec:
+      hostPID: true
+      priorityClassName: system-node-critical
+      serviceAccountName: nvidia-container-toolkit
+      nodeSelector:
+        hami.run/lab-12: "true"
+      initContainers:
+        - name: driver-sanity-check-and-ready-marker
+          image: busybox:1.36
+          imagePullPolicy: IfNotPresent
+          command: ["sh", "-c"]
+          args:
+            - |
+              set -eu
+              echo "Checking for a real NVIDIA driver library under /driver-root ..."
+              if ! find /driver-root -maxdepth 4 -iname 'libnvidia-ml.so*' | grep -q .; then
+                echo "FATAL: no libnvidia-ml.so* found under /driver-root." >&2
+                find /driver-root -maxdepth 4 >&2 || true
+                exit 1
+              fi
+              echo "Found driver library. Writing driver-ready marker."
+              echo "export DRIVER_READY=true" > /run/nvidia/validations/driver-ready
+          volumeMounts:
+            - name: driver-install-dir
+              mountPath: /driver-root
+              mountPropagation: HostToContainer
+              readOnly: true
+            - name: run-nvidia-validations
+              mountPath: /run/nvidia/validations
+        - name: write-csv-manifests
+          # Auto-discovers the real, currently-installed driver library version instead of
+          # assuming a fixed one -- survives a future driver upgrade with no manual changes.
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - |
+              set -eu
+              LIBDIR=/home/kubernetes/bin/nvidia/lib64
+              OUTDIR=/etc/nvidia-container-runtime/host-files-for-container.d
+
+              cat > "$OUTDIR/devices.csv" << 'EOF'
+              dev,/dev/nvidia0
+              dev,/dev/nvidiactl
+              dev,/dev/nvidia-uvm
+              dev,/dev/nvidia-uvm-tools
+              dev,/dev/nvidia-modeset
+              EOF
+
+              : > "$OUTDIR/drivers.csv"
+              for base in libnvidia-ml.so libcuda.so libnvidia-allocator.so; do
+                real=$(ls -1 "$LIBDIR/$base".*.* 2>/dev/null | head -1 || true)
+                if [ -z "$real" ]; then
+                  echo "WARNING: no versioned file found for $base in $LIBDIR" >&2
+                  continue
+                fi
+                echo "lib,$real" >> "$OUTDIR/drivers.csv"
+                echo "sym,$LIBDIR/$base.1" >> "$OUTDIR/drivers.csv"
+                echo "sym,$LIBDIR/$base" >> "$OUTDIR/drivers.csv"
+              done
+
+              SMI=$(find /home/kubernetes/bin/nvidia -maxdepth 3 -type f -name nvidia-smi 2>/dev/null | head -1 || true)
+              if [ -n "$SMI" ]; then
+                echo "bin,$SMI" >> "$OUTDIR/drivers.csv"
+              else
+                echo "WARNING: nvidia-smi binary not found under /home/kubernetes/bin/nvidia -- it will not be available inside workload containers; CUDA/NVML access is unaffected." >&2
+              fi
+
+              echo "--- devices.csv ---"; cat "$OUTDIR/devices.csv"
+              echo "--- drivers.csv ---"; cat "$OUTDIR/drivers.csv"
+          volumeMounts:
+            - name: nvidia-csv-dir
+              mountPath: /etc/nvidia-container-runtime/host-files-for-container.d
+            - name: driver-install-dir
+              mountPath: /home/kubernetes/bin/nvidia
+      containers:
+        - name: nvidia-container-toolkit-ctr
+          image: nvcr.io/nvidia/k8s/container-toolkit:v1.19.0
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args: ["/bin/entrypoint.sh"]
+          securityContext:
+            privileged: true # the DaemonSet itself still needs this to patch containerd and
+            # install node-level binaries -- the point of this alternative is removing
+            # privileged from *workload* pods, not from this one-time node setup helper.
+          env:
+            - name: ROOT
+              value: /home/kubernetes/bin/nvidia/toolkit
+            - name: NVIDIA_CONTAINER_RUNTIME_MODES_CDI_DEFAULT_KIND
+              value: management.nvidia.com/gpu
+            - name: NVIDIA_VISIBLE_DEVICES
+              value: void
+            - name: TOOLKIT_PID_FILE
+              value: /run/nvidia/toolkit/toolkit.pid
+            - name: NRI_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: CDI_ENABLED
+              value: "false"
+            - name: NVIDIA_RUNTIME_SET_AS_DEFAULT
+              value: "false"
+            - name: NVIDIA_CONTAINER_RUNTIME_MODE
+              value: csv
+            - name: DRIVER_ROOT
+              value: /
+            - name: CRIO_CONFIG_MODE
+              value: config
+            - name: RUNTIME
+              value: containerd
+            - name: CONTAINERD_RUNTIME_CLASS
+              value: nvidia
+            - name: RUNTIME_CONFIG
+              value: /runtime/config-dir/config.toml
+            - name: CONTAINERD_CONFIG
+              value: /runtime/config-dir/config.toml
+            - name: RUNTIME_DROP_IN_CONFIG
+              value: /runtime/config-dir.d/99-nvidia.toml
+            - name: RUNTIME_DROP_IN_CONFIG_HOST_PATH
+              value: /etc/containerd/conf.d/99-nvidia.toml
+            - name: RUNTIME_SOCKET
+              value: /runtime/sock-dir/containerd.sock
+            - name: CONTAINERD_SOCKET
+              value: /runtime/sock-dir/containerd.sock
+          volumeMounts:
+            - name: nvidia-container-toolkit-entrypoint
+              mountPath: /bin/entrypoint.sh
+              subPath: entrypoint.sh
+              readOnly: true
+            - name: toolkit-root
+              mountPath: /run/nvidia/toolkit
+            - name: run-nvidia-validations
+              mountPath: /run/nvidia/validations
+            - name: toolkit-install-dir
+              mountPath: /home/kubernetes/bin/nvidia/toolkit
+            - name: crio-hooks # inert here -- CRI-O-specific, GKE nodes run containerd. Kept
+              mountPath: /usr/share/containers/oci/hooks.d # only because the toolkit image expects the path to exist.
+            - name: driver-install-dir # inert in CSV mode (DRIVER_ROOT: / below overrides any
+              mountPath: /driver-root # use of this path) -- kept for the init container's own
+              mountPropagation: HostToContainer # driver-presence check, which does use it.
+            - name: host-root
+              mountPath: /host
+              mountPropagation: HostToContainer
+              readOnly: true
+            - name: cdi-root
+              mountPath: /var/run/cdi
+            - name: containerd-config
+              mountPath: /runtime/config-dir/
+            - name: containerd-drop-in-config
+              mountPath: /runtime/config-dir.d/
+            - name: containerd-socket
+              mountPath: /runtime/sock-dir/
+      volumes:
+        - name: nvidia-container-toolkit-entrypoint
+          configMap:
+            name: nvidia-container-toolkit-entrypoint
+            defaultMode: 448
+        - name: toolkit-root
+          hostPath:
+            path: /run/nvidia/toolkit
+            type: DirectoryOrCreate
+        - name: run-nvidia-validations
+          hostPath:
+            path: /run/nvidia/validations
+            type: DirectoryOrCreate
+        - name: driver-install-dir
+          hostPath:
+            path: /home/kubernetes/bin/nvidia
+            type: ""
+        - name: host-root
+          hostPath:
+            path: /
+            type: ""
+        - name: toolkit-install-dir
+          hostPath:
+            path: /home/kubernetes/bin/nvidia/toolkit
+            type: DirectoryOrCreate
+        - name: crio-hooks
+          hostPath:
+            path: /run/containers/oci/hooks.d
+            type: ""
+        - name: cdi-root
+          hostPath:
+            path: /var/run/cdi
+            type: DirectoryOrCreate
+        - name: containerd-config
+          hostPath:
+            path: /etc/containerd
+            type: DirectoryOrCreate
+        - name: containerd-drop-in-config
+          hostPath:
+            path: /etc/containerd/conf.d
+            type: DirectoryOrCreate
+        - name: containerd-socket
+          hostPath:
+            path: /run/containerd
+            type: ""
+        - name: nvidia-csv-dir
+          hostPath:
+            path: /etc/nvidia-container-runtime/host-files-for-container.d
+            type: DirectoryOrCreate
