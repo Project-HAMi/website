@@ -131,6 +131,7 @@ Pod 删除后，NVIDIA 设备插件会自动清理对应的 vGPU 缓存。`devic
 | [AWS Neuron 前置条件](../installation/prerequisites.md#device-prerequisites) | `devices.awsneuron.*` |
 | [瀚博 Vastai](./vastai/enable-vastai-sharing.md) | `devices.vastai.*` |
 | [壁仞 Biren](./biren-device/enable-biren-sharing.md) | `devices.biren.*` |
+| [太初元碁 Tecorigin](./tecorigin-device/enable-tecorigin-sharing.md) | `devices.tecorigin.*` |
 
 例如，纯 Ascend 集群可以关闭 NVIDIA 插件，并启用 Ascend 调度支持：
 

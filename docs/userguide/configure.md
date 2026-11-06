@@ -131,6 +131,7 @@ Other vendor plugins generally require a separate deployment. The table below li
 | [AWS Neuron prerequisites](../installation/prerequisites.md#device-prerequisites) | `devices.awsneuron.*` |
 | [Vastai](./vastai/enable-vastai-sharing.md) | `devices.vastai.*` |
 | [Biren](./biren-device/enable-biren-sharing.md) | `devices.biren.*` |
+| [Tecorigin](./tecorigin-device/enable-tecorigin-sharing.md) | `devices.tecorigin.*` |
 
 For example, an Ascend-only cluster can disable the NVIDIA plugin and enable Ascend scheduling support:
 
