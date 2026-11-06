@@ -5,9 +5,17 @@ description: 基于 A100 实测，对比原生双实例、HAMi 与基于 MPS 的
 translated: true
 ---
 
-本文对比原生 vLLM、HAMi 2.10.0 与 Run:ai 的开源路径 KAI Scheduler + GPU Fractioning。[NVIDIA Dynamo 报告](https://docs.nvidia.com/dynamo/dev/many-model-serving/interpreting-gpu-sharing-results)比较原生单实例与共享双实例；本文增加原生双实例基线，展示不引入共享层时，两个进程运行在同一张卡上的性能。
+**核心结论**：
 
-**核心发现：**固定 KV 的 Graph 测试中，原生从单实例变为双实例，吞吐由 628.57 降至 335.51 输出 tokens/s/GPU；HAMi 50% 算力双实例为 335.87，相对原生双实例差异为 +0.11%。因此，相对单实例下降约 50%，不能直接归因于 HAMi。
+- **以原生双实例为比较基线**：固定 KV 的 Graph 测试中，原生从单实例变为双实例，吞吐由 628.57 降至 335.51 输出 tokens/s/GPU；HAMi 50% 算力双实例为 335.87，相对原生双实例差异为 +0.11%。因此，相对单实例下降约 50%，不能直接归因于 HAMi。
+- **区分 Graph 与 Eager**：GPU Fractioning 和 legacy MPS 在各自的 Graph 测试中高于原生双实例。HAMi 的 Eager 吞吐在全栈对比中低于原生双实例 7.21%，固定 KV 对照中低 2.22%。
+- **按配置解读故障结果**：对非法写入、trap、GPU 工作中未同步 SIGKILL，每场景两次试验中，原生和 HAMi 的同卡健康进程均持续正确运行；HAMi 故障测试关闭算力限制。MPS v3 两种所测配置的同卡进程均在两次试验中受影响。Legacy v2 MPS 性能测试与这些故障探针是独立实验。
+
+![固定 KV 的 Graph 与 Eager 吞吐对比，包含原生单实例、原生双实例、HAMi 50% 算力双实例和 legacy MPS 双实例](/img/docs/zh/userguide/nvidia-device/gpu-sharing-benchmarks.svg)
+
+图中每卡总并发为 8，每实例 KV 为 6 GiB。柱表示每卡实例吞吐之和的均值，误差线表示样本标准差；菱形表示 legacy MPS 统一墙钟窗口的吞吐。A、C 是不同物理 GPU 组，跨组比值不能单独归因于共享层开销。[图表数据（CSV）](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/controlled.csv)。
+
+本文对比原生 vLLM、HAMi 2.10.0 与 Run:ai 的开源路径 KAI Scheduler + GPU Fractioning。[NVIDIA Dynamo 报告](https://docs.nvidia.com/dynamo/dev/many-model-serving/interpreting-gpu-sharing-results)比较原生单实例与共享双实例；本文增加原生双实例基线，展示不引入共享层时，两个进程运行在同一张卡上的性能。
 
 ## 测试环境
 
@@ -62,7 +70,7 @@ Legacy MPS 各实例的测量窗口未完全重叠：各窗口吞吐求和为 44
 
 直接 CUDA 探针在 GPU 0 上放置故障注入进程与健康进程，在 GPU 1 上放置健康对照。健康探针持续重放 CUDA Graph 并校验输出。每场景测两次，观察注入前 3 秒及注入后至少 6 秒。MPS v3 共享服务启用 memacct、context-share，参照 GPU Fractioning 0.1.8 的执行机制。
 
-**主表的 HAMi 配置：**性能测试启用 50% 算力配额，故障测试关闭算力限制；两者均为每实例 20 GiB 显存配额。额外的静态 API 配置显示，同卡客户端各可见 54 SM，且分区 ID 不同。表内计数为**同卡健康进程持续产生正确结果的次数 / 试验总次数**。
+**主表的 HAMi 配置**：性能测试启用 50% 算力配额，故障测试关闭算力限制；两者均为每实例 20 GiB 显存配额。额外的静态 API 配置显示，同卡客户端各可见 54 SM，且分区 ID 不同。表内计数为**同卡健康进程持续产生正确结果的次数 / 试验总次数**。
 
 | 注入事件             | 原生多进程 | HAMi 多进程 | MPS v3 共享 | MPS v3 所测静态配置 |
 | -------------------- | ---------: | ----------: | ----------: | ------------------: |
@@ -75,11 +83,6 @@ Legacy MPS 各实例的测量窗口未完全重叠：各窗口吞吐求和为 44
 36 次试验的异卡对照均保持正常。MPS 同卡健康进程在非法写入和未同步 SIGKILL 场景报错 700，在 trap 场景报错 719；安全终止 MPS 客户端未影响同卡进程。正式超额显存用例申请可见容量的两倍；独立的 HAMi 配额预检则验证 20 GiB 配额下的 21 GiB 申请被拒绝。两者验证的都是申请被拒绝，不是持续显存压力。[故障计数、错误码与最大采样间隔（CSV）](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fault-isolation.csv)。
 
 这些探针只测 GPU 故障传播，未测服务恢复、延迟隔离、租户安全、GPU reset 或硬件故障。静态组核验了 API 可见分配，未独立证明物理 SM 不重叠。机制说明见 NVIDIA 的 [MPS 错误隔离与安全终止文档](https://docs.nvidia.com/deploy/mps/latest/when-to-use-mps.html)和[静态 SM 分区文档](https://docs.nvidia.com/deploy/mps/latest/common-tasks.html#using-static-sm-partitioning)。
-
-## 实测结论
-
-- **性能：**GPU Fractioning 和 legacy MPS 在各自的 Graph 性能测试中高于原生双实例。HAMi 的 Eager 吞吐在全栈对比中低于原生双实例 7.21%，固定 KV 对照中低 2.22%。
-- **故障传播：**在非法写入、trap、GPU 工作中未同步 SIGKILL 场景中，原生与 HAMi 的同卡健康进程持续正确运行，MPS v3 的同卡进程受到影响。Legacy v2 MPS 性能测试与 MPS v3 故障探针使用不同配置。
 
 :::note MPS 支持计划
 
