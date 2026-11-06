@@ -101,6 +101,8 @@ Every new document must be added to `sidebars.js` to appear in navigation. Find 
 }
 ```
 
+For a vendor guide, add the page name to the appropriate `vendorPages(...)` or `vendorExamples(...)` entry. For a new vendor, add `vendorCategory(...)` with a unique key to `vendors`.
+
 If you are unsure which category fits, mention it in the PR and a maintainer will help.
 
 ### 4. Add a Chinese translation (optional)
