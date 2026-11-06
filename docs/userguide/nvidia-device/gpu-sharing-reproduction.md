@@ -21,7 +21,7 @@ Use a dedicated Linux GPU node with:
 - Ubuntu 24.04.5, single-node K3s 1.37.1+k3s1, NVIDIA Container Toolkit 1.20.1, NVIDIA RuntimeClass `nvidia`, and CDI device selection.
 - Dynamo platform 1.6.1 with etcd and NATS.
 - HAMi 2.10.0, or KAI 0.18.6 with GPU Fractioning 0.1.8, depending on the selected arm.
-- Python 3.11 or later, AIPerf 0.13.0, `kubectl`, `helm`, `jq`, `curl`, `vmstat`, and passwordless `sudo` for the fault/MPS profiles.
+- Python 3.11–3.13, AIPerf 0.13.0, `kubectl`, `helm`, `jq`, `curl`, `vmstat`, and passwordless `sudo` for the fault/MPS profiles.
 - A non-root GPU client UID/GID of 1000. The legacy MPS server runs under this UID; v3 fault servers run as root with multiuser mode.
 
 Follow the [Dynamo GPU-sharing setup guide](https://github.com/ai-dynamo/dynamo/tree/v1.6.1/examples/gpu-sharing) using Dynamo 1.6.1 and AIPerf 0.13.0. Cache `Qwen/Qwen3-4B` revision `1cfa9a7208912126459214e8b04321603b3df60c` under `/opt/hf-cache/hub`. Run the load generator on the GPU node, connecting to ClusterIP services.
@@ -41,27 +41,15 @@ Copy `config.example.json` to `config.json` and set the node name, two GPU UUIDs
 python3 prepare.py --config config.json --out /var/tmp/hami-sharing-run
 ```
 
-Fullstack tests use total concurrency 2, 4, 8, 16, and 32 per GPU; paired instances each receive half. The controlled comparison uses total concurrency 8. HAMi compute limiting is disabled by default; the 50% performance configuration is shown below.
+HAMi compute limiting is disabled by default; the report's 50% configuration is shown below.
 
-## Select the platform for each arm
-
-Stock NVIDIA and HAMi device plugins must not advertise the same physical devices simultaneously.
-
-| Cases | Required platform |
-| --- | --- |
-| Fullstack `native-*` | Stock NVIDIA device plugin; no HAMi injection or MPS |
-| Fullstack `hami-*`; controlled cases | HAMi scheduler/device plugin 2.10.0; no MPS |
-| Native-pair fullstack | Explicit CDI GPU attachment; no HAMi injection or MPS |
-| Fullstack `fractions-*` | Stock NVIDIA plugin, KAI 0.18.6, GPU Fractioning 0.1.8 with shared-server `sm-sharing` |
-| Legacy MPS controlled | GPU Fractioning stopped; no HAMi injection; collector manages its own legacy MPS server |
-| Native/MPS fault matrix | GPU Fractioning stopped; collector manages its own v3 MPS servers |
-| HAMi fault tests | HAMi scheduler/device plugin 2.10.0; no MPS |
+Stock NVIDIA and HAMi plugins must not manage the same GPUs simultaneously. Stop GPU Fractioning before standalone MPS tests.
 
 Use `platform/hami-50pct-values.yaml` for a 50% compute quota and 20 GiB memory per instance. `platform/hami-fullstack-values.yaml` and `platform/hami-controlled-values.yaml` configure the same memory quota with compute limiting disabled. Apply the selected values with the official HAMi 2.10.0 chart and label the node `gpu=on`. For GPU Fractioning, configure the KAI `default-queue` and `gpu-compute.mode: sm-sharing` as in the released operator guide.
 
 ## Run performance cases
 
-Run the fullstack cases:
+Standard inference tests use automatic cache allocation:
 
 ```bash
 python3 reproduce.py --root /var/tmp/hami-sharing-run --profile fullstack --case native-default --case native-eager
@@ -71,13 +59,13 @@ python3 reproduce.py --root /var/tmp/hami-sharing-run --profile fullstack --case
 python3 reproduce.py --root /var/tmp/hami-sharing-run --profile fullstack --case fractions-default --case fractions-eager
 ```
 
-Fullstack tests use automatic KV allocation and default prefix caching. Eager adds only `--enforce-eager`. Run the native-pair fullstack cases with:
+Graph is the default mode; Eager adds `--enforce-eager`. Run the native pair with:
 
 ```bash
 python3 reproduce.py --root /var/tmp/hami-sharing-run --profile native-pair-fullstack
 ```
 
-The controlled comparison fixes each instance's KV cache at 6 GiB, sets maximum model length 4096 and maximum sequences 32, and disables prefix caching. Each fresh deployment receives three client trials. Native single runs concurrency 8; paired instances run concurrency 4 each:
+The fixed-cache comparison uses 6 GiB per instance with prefix caching disabled, maximum model length 4096, and maximum sequences 32. Total concurrency is 8 per GPU, with three client trials per deployment:
 
 ```bash
 python3 reproduce.py --root /var/tmp/hami-sharing-run --profile controlled
@@ -85,7 +73,7 @@ python3 reproduce.py --root /var/tmp/hami-sharing-run --profile controlled
 python3 reproduce.py --root /var/tmp/hami-sharing-run --profile mps-controlled
 ```
 
-Use `--case` to select a controlled case, such as `hami-pair-graph`.
+Use `--case hami-pair-graph` to run HAMi in default mode alone.
 
 ## 50% compute-quota configuration
 
@@ -105,9 +93,9 @@ python3 summarize_metrics.py --root /var/tmp/hami-sharing-50pct/controlled --out
 python3 summarize_metrics.py --root /var/tmp/hami-sharing-50pct/fullstack --out /var/tmp/hami-50pct-fullstack.csv --allow-partial
 ```
 
-## Run the fault matrix
+## Run the fault tests
 
-Stop other model workloads and sharing services first. The native/MPS matrix runs two trials per event, placing an injector and healthy process on GPU 0 and a healthy control on GPU 1. Healthy processes replay a CUDA Graph and check output values. Observation is 3 seconds before and at least 6 seconds after injection. The events are oversized allocation, illegal GPU write, trap, unsynchronized SIGKILL during bounded GPU work, and safe MPS client termination.
+Stop other model workloads and sharing services first. Each fault is tested twice, observing 3 seconds before and at least 6 seconds after injection. Fault tests use MPS v3; the standalone performance comparison uses legacy v2.
 
 ```bash
 python3 reproduce.py --root /var/tmp/hami-sharing-run --profile fault
@@ -126,7 +114,7 @@ python3 summarize_metrics.py --root /var/tmp/hami-sharing-run/mps-controlled --t
 python3 summarize_metrics.py --root /var/tmp/hami-sharing-run/native-pair-fullstack --out /var/tmp/native-pair-points.csv
 ```
 
-Use `--allow-partial` while other cases are still pending. The CSV reports summed instance throughput per GPU and common-window throughput separately. TTFT, TPOT, and end-to-end p50/p99 are means of per-instance percentiles, not pooled cluster percentiles. The controlled comparison's three-trial means and sample standard deviations are in `aggregate.json`.
+Use `--allow-partial` while other cases are still pending. The CSV reports summed instance throughput per GPU and common-window throughput separately. TTFT, TPOT, and end-to-end p50/p99 are means of per-instance percentiles, not pooled cluster percentiles. The fixed-cache comparison's three-trial means and sample standard deviations are in `aggregate.json`.
 
 ## Published results
 
@@ -134,11 +122,11 @@ Results directory: [results/2026-11-a100-sharing/](https://github.com/Project-HA
 
 | File | Contents |
 | --- | --- |
-| [fullstack.csv](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fullstack.csv) | Deployment throughput and latency at all five loads; HAMi uses 50% compute |
-| [controlled.csv](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/controlled.csv) | Fixed-KV comparison at total concurrency 8; HAMi uses 50% compute |
-| [hami-50pct-trials.csv](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/hami-50pct-trials.csv) | Individual HAMi 50% fixed-KV client trials |
-| [fullstack-unlimited.csv](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fullstack-unlimited.csv) | Deployment comparison with HAMi compute limiting disabled |
-| [controlled-unlimited.csv](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/controlled-unlimited.csv) | Fixed-KV comparison with HAMi compute limiting disabled |
+| [fullstack.csv](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fullstack.csv) | Inference performance at five loads; HAMi 50% compute |
+| [controlled.csv](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/controlled.csv) | Concurrency 8, cache 6 GiB comparison; HAMi 50% compute |
+| [hami-50pct-trials.csv](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/hami-50pct-trials.csv) | Individual HAMi 50% fixed-cache trials |
+| [fullstack-unlimited.csv](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fullstack-unlimited.csv) | Standard tests with HAMi compute limiting disabled |
+| [controlled-unlimited.csv](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/controlled-unlimited.csv) | Fixed-cache tests with HAMi compute limiting disabled |
 | [fault-isolation.csv](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fault-isolation.csv) | CUDA fault counts and error codes; HAMi compute limiting disabled |
 
 ## Source
