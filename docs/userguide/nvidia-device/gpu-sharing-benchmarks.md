@@ -6,13 +6,13 @@ description: A100 measurements comparing native two-instance serving, HAMi, and 
 
 **Main findings**:
 
-- **HAMi 50% and the native pair had similar throughput**: with fixed cache in default mode, they reached 335.87 and 335.51 tokens/s/GPU, a +0.11% difference. Native single reached 628.57; the drop with two instances cannot be attributed directly to HAMi.
+- **Fixed-cache Graph test**: at concurrency 8 per GPU, native single reached 628.57, native pair 335.51, and HAMi 50% 335.87 tokens/s/GPU. HAMi was 0.11% above the native pair.
 - **HAMi 50% had lower throughput in Eager mode**: 4.46% to 7.94% below the native pair across all five loads in the standard test, and 2.22% below it with fixed cache. GPU Fractioning and legacy MPS exceeded the native pair in their respective default-mode tests.
-- **Fault propagation differed**: illegal writes, traps, and process kills during GPU work were each tested twice. Native and HAMi peers stayed healthy; both tested MPS v3 configurations affected their peers. HAMi compute limiting was disabled for these tests.
+- **Same-GPU results for three faults**: illegal writes, traps, and process kills during GPU work were each tested twice. Native and HAMi peers stayed correct in 2/2 trials per event; both MPS v3 configurations recorded 0/2. HAMi compute limiting was disabled.
 
 ![Fixed-cache Graph and Eager throughput for native single, native pair, HAMi pair with a 50% compute quota, and legacy MPS pair](/img/docs/en/userguide/nvidia-device/gpu-sharing-benchmarks.svg)
 
-Concurrency is 8 per GPU, with 6 GiB cache per instance. Bars show three-trial throughput means; error bars show sample standard deviations. Diamonds use a common measurement period. A and C are different physical GPU pairs, so the difference does not isolate sharing-layer overhead. [Figure data (CSV)](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/controlled.csv).
+Concurrency is 8 per GPU, with 6 GiB cache per instance. Bars show three-trial throughput means; error bars show sample standard deviations. Diamonds use a common measurement period. A and C are different physical GPU pairs. [Figure data (CSV)](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/controlled.csv).
 
 ## Inference performance
 
@@ -20,7 +20,7 @@ Concurrency is 8 per GPU, with 6 GiB cache per instance. Bars show three-trial t
 
 Dynamo ran vLLM, with load from the official [run-sweep.sh](https://github.com/ai-dynamo/dynamo/blob/v1.6.1/examples/gpu-sharing/common/run-sweep.sh). Graph is the default mode; Eager adds `--enforce-eager`. Automatic cache allocation and default prefix caching were used, with one trial per configuration.
 
-Total concurrency is 2, 4, 8, 16, or 32 per GPU, split equally between paired instances. All configurations use two instances except native single; both HAMi configurations have 20 GiB memory per instance. Throughput is output tokens/s/GPU; higher is better. **Bold marks the highest value at each load**; parentheses show the difference from the native pair.
+Total concurrency is 2, 4, 8, 16, or 32 per GPU, split equally between paired instances. All configurations use two instances except native single; both HAMi configurations have 20 GiB memory per instance. Throughput is output tokens/s/GPU. **Bold marks the highest value at each load**; parentheses show the difference from the native pair.
 
 #### Graph (default)
 
@@ -44,15 +44,13 @@ Total concurrency is 2, 4, 8, 16, or 32 per GPU, split equally between paired in
 
 **Findings across all five loads**:
 
-- **HAMi stayed close to the native pair in Graph**: the 50% compute configuration differed by −0.66% to +2.19%.
-- **GPU Fractioning's advantage was mainly in Graph**: 25.14% to 37.60% above the native pair, versus −2.91% to +0.92% in Eager.
-- **HAMi had lower Eager throughput**: 4.46% to 7.94% below the native pair with 50% compute, and 3.80% to 7.42% below it with no compute limit.
-
-These configurations used different physical GPU pairs. The observed differences do not isolate component overhead.
+- **HAMi 50% in Graph**: the throughput difference from the native pair was −0.66% to +2.19%.
+- **GPU Fractioning**: Graph throughput was 25.14% to 37.60% above the native pair, versus −2.91% to +0.92% in Eager.
+- **HAMi in Eager**: 4.46% to 7.94% below the native pair with 50% compute, and 3.80% to 7.42% below it with no compute limit.
 
 #### Response latency: concurrency 8 per GPU
 
-Values are p99 first-token wait times and per-request average times per subsequent token, in milliseconds; **lower is better**. Each value averages instance percentiles.
+Values are p99 first-token wait times and per-request average times per subsequent token, in milliseconds. Each value averages instance percentiles.
 
 | Configuration | Graph first token | Graph subsequent token | Eager first token | Eager subsequent token |
 | --- | --: | --: | --: | --: |
@@ -87,7 +85,7 @@ Legacy MPS measurement periods did not fully overlap. Over a common period, defa
 
 ## Fault isolation results
 
-A faulting process and a healthy process shared one GPU; another GPU served as a control. CUDA test programs kept computing and checking results. Each event was tested twice, observing 3 seconds before and at least 6 seconds after the fault.
+A faulting process and a healthy process shared one GPU; another GPU served as a control. CUDA test programs replayed Graphs and verified outputs. Each event was tested twice, observing 3 seconds before and at least 6 seconds after the fault.
 
 **HAMi compute limiting was disabled here**, with 20 GiB memory per instance; MPS used v3. **2/2 means the same-GPU peer stayed healthy in both trials; 0/2 means it was affected in both.**
 
@@ -99,9 +97,9 @@ A faulting process and a healthy process shared one GPU; another GPU served as a
 | SIGKILL during GPU work | 2/2 | 2/2 | 0/2 | 0/2 |
 | MPS client terminate | N/A | N/A | 2/2 | 2/2 |
 
-All 36 other-GPU controls stayed healthy. The memory test only checked rejection of oversized allocations, requesting twice the visible capacity. [Fault counts, errors, and maximum sample gaps (CSV)](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fault-isolation.csv).
+All 36 other-GPU controls stayed healthy. Allocation requests for twice the visible capacity were rejected. [Fault counts, errors, and maximum sample gaps (CSV)](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fault-isolation.csv).
 
-These tests cover GPU fault propagation between processes, excluding service recovery, latency isolation, tenant security, and hardware faults. The static configuration reported half the compute units per client (54 SMs), without proving physical separation. See [MPS fault handling](https://docs.nvidia.com/deploy/mps/latest/when-to-use-mps.html) and [static partitioning](https://docs.nvidia.com/deploy/mps/latest/common-tasks.html#using-static-sm-partitioning).
+The static configuration reported 54 SMs per client and distinct partition IDs. See [MPS fault handling](https://docs.nvidia.com/deploy/mps/latest/when-to-use-mps.html) and [static partitioning](https://docs.nvidia.com/deploy/mps/latest/common-tasks.html#using-static-sm-partitioning).
 
 ## Test conditions
 
@@ -114,9 +112,9 @@ Hardware: 2× A100-SXM4-40GB, Ubuntu 24.04.5, driver 615.71.10. Software: Dynamo
 | HAMi 2.10.0 pair | 2 | 20 GiB quota each | 50% compute quota per instance |
 | KAI 0.18.6 + GPU Fractioning 0.1.8 pair | 2 | 20 GiB quota each | MPS sm-sharing; no static SM partitioning |
 
-Native memory utilization controls the engine budget. GPU Fractioning uses the released shared-MPS configuration; the [NVIDIA report](https://docs.nvidia.com/dynamo/dev/many-model-serving/interpreting-gpu-sharing-results) uses custom forks. This study adds a native two-instance baseline.
+GPU Fractioning uses the released shared-MPS configuration; the [NVIDIA report](https://docs.nvidia.com/dynamo/dev/many-model-serving/interpreting-gpu-sharing-results) uses custom forks. This study adds a native two-instance baseline.
 
-## Test scope
+## Measurement records
 
 A, B, and C are different physical GPU pairs with the same model and driver.
 
@@ -126,8 +124,6 @@ A, B, and C are different physical GPU pairs with the same model and driver.
 | November 3 | Fixed cache: native single, native pair, legacy MPS, and unlimited-compute HAMi | A |
 | November 4 | Native-pair standard test and all fault tests | B |
 | November 5 | HAMi 50% performance: standard and fixed-cache tests | C |
-
-Cross-set differences may include hardware effects. Results apply to the tested model and loads.
 
 ## Reproduction scripts
 
