@@ -85,6 +85,8 @@ spec:
               cambricon.com/mlu.smlu.vcore: "10"
 ```
 
+## Notes
+
 :::note
 
 1. **Init containers are not supported for MLU sharing.**
