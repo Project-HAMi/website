@@ -1,4 +1,5 @@
-.root {
+.root,
+.matrix {
   --fs-yes: #0a7a3e;
   --fs-part: #946200;
   --fs-no: #6b7a89;
@@ -9,7 +10,9 @@
   --fs-link: #0a7a3e;
   --fs-hover: rgba(10, 122, 62, 0.06);
   --fs-shadow: 0 10px 30px rgba(15, 23, 34, 0.1), 0 1px 3px rgba(15, 23, 34, 0.06);
+}
 
+.root {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -18,7 +21,8 @@
   font-size: 0.92rem;
 }
 
-:global(html[data-theme="dark"]) .root {
+:global(html[data-theme="dark"]) .root,
+:global(html[data-theme="dark"]) .matrix {
   --fs-yes: #3ddc84;
   --fs-part: #f0bf5a;
   --fs-no: #8593a3;
@@ -308,6 +312,75 @@
   height: 1px;
   overflow: hidden;
   clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* matrix: every feature against every setup, one table */
+
+.matrix {
+  margin: 0 0 1.5rem;
+  overflow-x: auto;
+}
+
+.mxTable {
+  display: table;
+  width: 100%;
+  margin: 0;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.mxTable th,
+.mxTable td {
+  padding: 8px 12px;
+  border: 0;
+  border-bottom: 1px solid var(--fs-line);
+  background: none;
+  text-align: left;
+  vertical-align: top;
+}
+
+.mxTable thead th {
+  border-bottom-width: 2px;
+  white-space: nowrap;
+}
+
+.mxTable tr {
+  border: 0;
+  background: none;
+}
+
+.mxGroup th {
+  padding-top: 18px;
+  color: var(--fs-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.mxFeature {
+  min-width: 150px;
+  font-weight: 500;
+}
+
+/* a matrix card is fixed to the viewport, since the scrolling table would clip it */
+.cardFixed {
+  position: fixed;
+  top: var(--top, 0);
+  left: var(--left, 0);
+}
+
+.cardAbove::before {
+  inset: auto 0 -10px;
+}
+
+.cardClamped {
+  max-height: var(--max-height);
+  overflow-y: auto;
+}
+
+.mxTable td .tag {
   white-space: nowrap;
 }
 
