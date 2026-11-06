@@ -277,6 +277,12 @@ helm upgrade hami hami-charts/hami -n kube-system --version 2.11.0 \
 - **海光用户**：DCU 资源在 chart 与文档中更名为 HCU。
 - **指标弃用**：`hami_container_device_memory_bytes` 指标以及 `hami_resource_quota_used` 的 `limit` 标签已被弃用，请更新依赖它们的看板与告警。
 - **指标标签变更**：四个 vGPU 分配指标中恒为 0 的 `container_index`/`containeridx` 标签已移除（[#2898](https://github.com/Project-HAMi/HAMi/pull/2898)）；`hami_host_gpu_*` 的 `device_type` 标签不再带重复的 `NVIDIA` 前缀，从而与调度器的 `hami_gpu_*` 序列一致（[#2991](https://github.com/Project-HAMi/HAMi/pull/2991)）。请调整按这些标签分组或过滤的 PromQL。
+- **更严格的请求校验**：无效的 HAMi 设备请求现在会直接失败，而不是把无 GPU 的 Pod 绑定到节点（[#2994](https://github.com/Project-HAMi/HAMi/pull/2994)）；超出 0-100 的 GPU 算力百分比（[#2784](https://github.com/Project-HAMi/HAMi/pull/2784)）和带小数的 `nvidia.com/gpumem-percentage`（[#2789](https://github.com/Project-HAMi/HAMi/pull/2789)）会在准入阶段被拒绝；device plugin 会拒绝超过容器请求量的分配（[#3075](https://github.com/Project-HAMi/HAMi/pull/3075)）。此前因请求被静默丢弃而"正常运行"的工作负载现在会被拒绝。
+- **严格的 device-config 解析**：`device-config.yaml` 中未知或拼错的字段现在会让调度器启动失败并给出明确错误，而不是被忽略（[#2941](https://github.com/Project-HAMi/HAMi/pull/2941)）。升级前请检查自定义的 `device-config.content` 覆盖。
+- **移除节点握手注解**：不再写入 `hami.io/node-handshake-*` 注解，并在注册时清理；设备健康状态现在跟随节点的 `allocatable`（[#3227](https://github.com/Project-HAMi/HAMi/pull/3227)，AMD：[#3182](https://github.com/Project-HAMi/HAMi/pull/3182)）。请移除依赖这些注解的工具。
+- **限制下发方式与缓存文件**：`devices.nvidia.limitDelivery` 可选 `file`（默认，行为不变）或 `env`（仅环境变量，不再生成 `/overrideEnv` 文件），可按节点（nodeconfig 中的 `limitdelivery`）和按 Pod（`hami.io/limit-delivery`）覆盖；共享缓存文件现在固定命名为 `usage.cache`，不再使用随机名称（[#3226](https://github.com/Project-HAMi/HAMi/pull/3226)）。
+- **ResourceQuota 语义**：同一命名空间存在多个 ResourceQuota 时，生效的设备限额取其中的最小值，删除其中一个也不再清除限制（[#3094](https://github.com/Project-HAMi/HAMi/pull/3094)）；配额显存限额按 `memoryFactor` 缩放后存储，因此 `hami_resource_quota_limit` 现在与 `hami_resource_quota_used` 一致（[#3339](https://github.com/Project-HAMi/HAMi/pull/3339)）。
+- **新增 chart 配置项**：用于调优 kube-apiserver 客户端的 `scheduler.kubeQPS` / `kubeBurst` / `kubeTimeout`（[#2905](https://github.com/Project-HAMi/HAMi/pull/2905)）、`scheduler.nodeLockRetryTimeout` 与 `scheduler.extenderHTTPTimeout`（[#2944](https://github.com/Project-HAMi/HAMi/pull/2944)），以及为私有仓库中的 Remote GPU 镜像提供的 `devices.remotegpu.sessionImagePullSecrets`（[#3329](https://github.com/Project-HAMi/HAMi/pull/3329)）。
 - Remote GPU、ENPU 与 NUMA refit **默认全部关闭**，需显式启用。
 - 建议在升级前于测试环境验证兼容性。
 
