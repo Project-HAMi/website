@@ -5,141 +5,141 @@ sidebar_label: OpenCost 成本分摊
 translated: true
 ---
 
-## 概述
+## 当前状态与第一个里程碑
 
-HAMi 通过将一张物理 GPU 划分为显存和算力切片，让多个 Pod 共享同一张卡。[OpenCost](https://www.opencost.io/) 等 Kubernetes 成本工具根据 `nvidia.com/gpu` 资源请求分摊 GPU 成本，而 HAMi 始终以整数设备数量上报该资源。即使一个 Pod 只预留了四分之一张卡，它仍会请求 `nvidia.com/gpu: 1`，因此每个共用该卡的 Pod 都会按整张卡计费。四个 Pod 共享一张 GPU，却会被计为四张 GPU 的费用。
+本方案对应 [HAMi #3073](https://github.com/Project-HAMi/HAMi/issues/3073) 和 [OpenCost #3828](https://github.com/opencost/opencost/issues/3828)。OpenCost 原生 GPU 请求核算读取 `nvidia.com/gpu`，因此申请一个虚拟设备和 25% 算力的 HAMi Pod 仍可能按完整设备记录请求量。价格和已有的副本调整也会影响成本，实际结果需要在集群中测量。
 
-本文档描述了一种设计方案，利用 HAMi 已有的指标，按每个 Pod 实际占有的物理 GPU 份额分摊成本。该方案对应 [issue #3073](https://github.com/Project-HAMi/HAMi/issues/3073) 中 HAMi 侧的工作，以及 OpenCost 的问题报告 [opencost/opencost#3828](https://github.com/opencost/opencost/issues/3828)。
+第一个里程碑将未经修改的 OpenCost 分配 API 结果与离线的**算力预留参考模型**比较。[实验工具](https://github.com/Eshiv-Pandey/HAMi/tree/33ebfa601b95a3662539d8c1c144757216c4201b/opencost-repro) 单独发布在 HAMi 的个人 fork 中。[Linux CPU 检查](https://github.com/Eshiv-Pandey/HAMi/actions/runs/42265985065) 已在 Python 3.11 和 3.13 上通过。GPU Kubernetes 和实际 OpenCost 验证仍待完成。该工具没有实现 OpenCost 原生 HAMi 分配源。
 
-## 动机
+使用一张独占物理 NVIDIA GPU 顺序执行实验：四个持续运行的四分之一预留 Pod 运行一小时，然后一个整卡预留 Pod 运行一小时。在所选算力策略下，两组实验都应预留一个 GPU 小时。此里程碑要求显式正值算力和显存限制、每个 Pod 只有一个容器、Pod UID 保持稳定、没有初始化容器且没有容器重启。
 
-### 目标
+## 分配与运行时证据
 
-- 在共享同一张物理 GPU 的 Pod 之间分摊成本，使各 Pod 的费用与未预留资源的空闲成本之和等于整张卡的价格。
-- 对 GPU 显存和 GPU 算力分别定价，因为两者可以独立租用，而且一个 Pod 的显存份额与算力份额可能不同。
-- 根据仅在容器运行期间存在的指标对 Pod 计费，避免对已预留资源但从未运行的 Pod 收费。
-
-### 非目标
-
-- 不在 HAMi 中新增运行时组件。成本核算由针对 HAMi 指标的 OpenCost 查询和记录规则实现，本文档负责说明其设计。
-- 第一个里程碑不涉及非 NVIDIA 设备的成本模型。
-- 不自动分摊未设置算力上限且存在竞争时的算力成本。未设置核心限制的 Pod 将作为一类特殊情况明确说明，绝不会在未作说明的情况下按零算力计费。
-
-## 背景
-
-### HAMi Pod 如何申请 GPU 切片
-
-Pod 通过以下三个资源限制申请一张卡的切片：
+四分之一份额工作负载请求：
 
 ```yaml
 resources:
+  requests:
+    nvidia.com/gpu: "1"
+    nvidia.com/gpucores: "25"
+    nvidia.com/gpumem-percentage: "25"
   limits:
-    nvidia.com/gpu: 1 # 可见一张 GPU
-    nvidia.com/gpucores: 25 # 使用该卡 25% 的算力
-    nvidia.com/gpumem-percentage: 25 # 使用该卡 25% 的显存
+    nvidia.com/gpu: "1"
+    nvidia.com/gpucores: "25"
+    nvidia.com/gpumem-percentage: "25"
 ```
 
-通过装箱调度，可以让四个这样的 Pod 同时运行在同一张物理卡上。
+| 指标 | 含义与身份信息 |
+| --- | --- |
+| `hami_vgpu_core_allocated_ratio` | Pod 与设备的已分配算力。NVIDIA 数值为 0 到 100 的百分比。标签包含命名空间、节点、Pod 名称和设备 UUID。 |
+| `hami_vgpu_memory_allocated_bytes` | Pod 与设备的预留显存，身份标签与算力预留相同。 |
+| `hami_gpu_memory_limit_bytes` | 直接物理显存容量，GPU 空闲时也可使用。 |
+| `hami_container_device_utilization_ratio` | 运行时利用率，标签包含命名空间、Pod 名称、容器、虚拟设备索引和 UUID，不包含节点或 Pod UID。 |
+| `hami_vgpu_memory_used_bytes` | 运行时显存使用量，身份标签与运行时利用率相同。 |
 
-### 为什么仅靠 `nvidia.com/gpu` 无法准确计费
+应使用直接容量指标。用已分配字节数除以分配份额，在空闲 GPU 上会产生 `0/0`。当前预留序列按 Pod 与设备聚合，没有容器索引或 Pod UID。v2.10.0 中恒定的 `container_index` 标签已在 [HAMi #2898](https://github.com/Project-HAMi/HAMi/pull/2898) 中移除。
 
-OpenCost 的 GPU 请求查询读取 `nvidia_com_gpu` 资源，并将其视为整卡使用量。它不读取 `gpucores` 或 `gpumem`，因此无法识别四个 Pod 正在共享一张卡。结果是费用可能达到实际应计费用的四倍，用户只能手动修正。
+调度过滤成功后 Pod 仍可能无法启动。采集要求 `hami.io/bind-phase` 成功、`hami.io/vgpu-devices-allocated` 包含实际物理 UUID，并独立观察 Kubernetes 运行区间和新鲜运行时源时间戳。工具通过稳定的实时 Kubernetes UID 与 `kube_pod_info` 佐证身份。观测缺失、过期、存在歧义或 Pod 重建时，实验失败。仅有序列存在不能证明可计费生命周期。
 
-### HAMi 已经记录了哪些数据
+这种受限实时实验不能证明历史 KSM 关联足以支持生产计费。是否需要 HAMi UID 指标仍属于集成决策。多容器聚合、初始化容器资源释放和重启需要独立语义。
 
-与本方案相关的指标分为两类。
+### 无限制算力与运行时设置
 
-调度器预留指标在调度器的过滤阶段根据缓存的分配信息生成：
+未设置或值为零的 `gpucores` 表示没有算力限制，不能默认转换为零成本。由于其预留份额未定义，第一个里程碑拒绝此类分配。
 
-- `hami_vgpu_memory_allocated_bytes`：按命名空间、节点、Pod 和设备 UUID 区分。
-- `hami_vgpu_core_allocated_ratio`：使用相同的标签。对于 NVIDIA，该值是 0 到 100 范围内的百分比，而不是 0 到 1 的比例。
-- `hami_gpu_memory_allocated_bytes` 和 `hami_node_gpu_memory_allocated_ratio`：按设备记录，结合两者可计算出整张卡的显存总量。
+HAMi v2.11.0 与检查的上游源码均固定 HAMi-core 为 `17212525d27ac156955ab940c5d51df33d9e0d09`。该版本的 [`do_init_device_sm_limits`](https://github.com/Project-HAMi/HAMi-core/blob/17212525d27ac156955ab940c5d51df33d9e0d09/src/multiprocess/multiprocess_memory_limit.c#L275-L294) 将缺失或为零的基础 `CUDA_DEVICE_SM_LIMIT` 转换为 100。[`init_utilization_watcher`](https://github.com/Project-HAMi/HAMi-core/blob/17212525d27ac156955ab940c5d51df33d9e0d09/src/multiprocess/multiprocess_utilization_watcher.c#L334-L357) 在决定是否启动时包含有效限制为 100 的设备。因此，请求算力为零不代表缺少利用率采集。
 
-这些预留时间序列是 Pod 级别的，而不是容器级别的。`PodManager` 仅保存每个 Pod 汇总后的设备使用情况，每种设备类型对应一条记录。因此，在 v2.10.0 及更早版本中，这些指标所携带的 `container_index` 标签始终为 0，并已在 [#2898](https://github.com/Project-HAMi/HAMi/pull/2898) 中移除。本设计面向当前 master 分支，始终按 Pod 级别处理预留数据。在 v2.10.0 及更早版本中，该标签虽然存在，但值是固定的，因此同样适用这种 Pod 级别的处理方式。
+后续利用率实验应保留实际部署的 HAMi-core 版本、`CUDA_DEVICE_SM_LIMIT` 和 `GPU_CORE_UTILIZATION_POLICY` 设置，并通过新鲜运行时证据确认采集。利用率为零可能表示工作负载空闲，不能据此判断采集缺失。按利用率计费和争用策略需要独立验证。
 
-vGPUmonitor 运行时指标由监控 DaemonSet 生成，且仅在容器运行期间存在：
+## 参考成本策略
 
-- `hami_container_device_utilization_ratio`：按命名空间、Pod、容器、虚拟设备索引和设备 UUID 区分。
-- `hami_vgpu_memory_used_bytes`：使用相同的标签。
-
-预留指标在过滤阶段计算，因此只能说明切片已被预留，不能证明 Pod 已经运行。Pod 可能通过过滤后仍无法启动。这些指标也不包含 Pod UID。运行时指标仅在容器运行期间存在，因此它们的存在本身就表明 Pod 已经启动。
-
-## 设计细节
-
-### 计费数据来源
-
-计费以运行时指标的存在为前提。这些指标仅在容器运行期间存在，因此在过滤阶段预留了切片、却从未运行的 Pod 不会被收费。两种策略都遵循这一前提。
-
-在满足此前提后，两种策略从不同来源读取份额，因为只有调度器记录了切片的预留大小。实测策略从运行时指标获取两个维度的份额。预留策略从调度器预留指标获取份额，但仍然只对运行时指标表明容器存在的时间窗口计费。调度器预留指标还提供整卡总量以及对账所需的空闲余量。
-
-### 成本模型
-
-GPU 显存和 GPU 算力分别定价后相加：
+对于已确认且有采样证据的运行区间：
 
 ```text
-pod_cost_per_hour = core_price_per_hour * core_fraction
-                  + mem_price_per_hour  * mem_fraction
+reserved_gpu_hours = core_percent / 100 * running_seconds / 3600
+reserved_cost = reserved_gpu_hours * physical_gpu_hourly_price
 ```
 
-`core_fraction` 和 `mem_fraction` 的取值范围均为 0 到 1。当算力限制和显存限制不同时，不存在一个通用的单一份额，因此始终分别处理这两个维度。
-
-### 对账恒等式
-
-对于每张物理卡，各 Pod 的费用与空闲成本之和必须等于整张卡的价格：
+参考模型先累积 GPU 秒，再除以 3600，避免重复累加小数小时产生舍入误差。利用率为零仍产生预留成本。显存份额仅用于诊断，参考模型不会将物理价格平均拆分为算力和显存价格。
 
 ```text
-idle_cost_per_hour = core_price_per_hour * (1 - sum(core_fraction over pods on the card))
-                   + mem_price_per_hour  * (1 - sum(mem_fraction  over pods on the card))
+reserved_gpu_hours + idle_gpu_hours + unattributed_gpu_hours
+  = physical_gpu_hours
 
-sum(pod_cost_per_hour over pods on the card) + idle_cost_per_hour
-  == physical_gpu_price_per_hour
+reserved_cost + idle_cost + unattributed_cost
+  = physical_gpu_hours * physical_gpu_hourly_price
 ```
 
-空闲成本按各维度的剩余份额计算：分别对算力和显存中未计入任何 Pod 费用的部分定价。它既涵盖没有任何 Pod 预留的容量，也涵盖实测策略下 Pod 切片内已预留但未使用的容量。由于每个维度的空闲份额严格定义为 1 减去该维度的份额总和，两种策略都能保证恒等式成立：在整张卡被完全预留时，预留份额之和为 1，空闲成本为 0；而当实测份额之和小于 1 时，空闲成本会相应增加，因此即使一张卡已被完全预留但使用不足，核算出的总成本也不会低于整卡价格。
+采样缺失时，对应运行预留保持未归属状态，不转为空闲或免费。区间不完整、算力预留总量超过整卡或显存预留总量超过直接容量时，实验失败。允许显存超卖的 HAMi 配置不在此里程碑范围内：实际使用量受物理容量约束，并不意味着预留总量也受该约束。
 
-对于每张卡，每个维度的份额总和都限制在 0 到 1 范围内，以保证空闲成本非负，并防止 Pod 费用之和超过整卡价格。显存受物理容量约束，因为已使用字节数不能超过整卡总量。在资源竞争或采样噪声的影响下，实测算力份额之和可能短暂超过 1；当一张卡上各容器的原始比例之和超过 1 时，处理流程会按比例归一化，使该维度的总和恰好为 1，从而将空闲成本的下限保持为 0，并保留各 Pod 之间的相对份额。如果归一化所需舍弃的量超过可配置的容差，则将该时间区间标记为无法分摊，而不是根据失真的份额计费。
+各维度独立定价仍是一种可选策略，使用 `core_gpu_hours * core_hourly_price + memory_gpu_hours * memory_hourly_price`。它需要先约定费率、超卖处理和对账语义。仅算力参考测试不能验证该策略或按实际使用量归属成本。
 
-### 分摊策略
+### 定价与 OpenCost 原生核算
 
-本设计定义了两种策略。它们使用相同的成本模型和对账恒等式，区别仅在于如何确定份额。
+`node_gpu_hourly_cost` 可能已包含 [OpenCost #2862](https://github.com/opencost/opencost/pull/2862) 引入的副本调整。存在副本元数据时，参考模型使用虚拟容量除以物理数量，将报价还原为物理报价一次。它不会将副本标签的数值直接用作该比率，也不会再次折扣。保留价格来源、币种、节点容量、GFD 物理数量和副本标签。操作人员必须确认费率表示预期价格。
 
-预留策略。`core_fraction` 和 `mem_fraction` 来自调度器预留指标。例如，预留 25% 算力的 Pod，其算力份额为 0.25。在整张卡被完全预留时，各 Pod 的份额之和为 1，空闲份额为 0。这是第一个里程碑的目标，也是最容易理解和核算的策略。
+还应检查原生设备清单。缺少副本元数据时，OpenCost 可能将 HAMi 的虚拟 `nvidia.com/gpu` 容量解释为物理 GPU 数量。仅修正 Pod 份额不能证明资产和空闲成本正确。最终分配源接入位置需要 OpenCost 维护者确认，并在计算原生小时数与成本之前同时处理请求量和已分配量。[自定义成本插件 PR #69](https://github.com/opencost/opencost-plugins/pull/69) 涉及相邻 GenAI/MIG 记录，自定义成本不会自动替换原生 GPU 费用。
 
-实测策略。`core_fraction` 来自计费窗口内 `hami_container_device_utilization_ratio` 的平均值，并归一化到 0 到 1；`mem_fraction` 则由 `hami_vgpu_memory_used_bytes` 除以整卡显存总量得到。这些值反映预留切片内的实际使用量，其总和不会达到 1，差额对应预留切片内的空闲容量。
+## 执行基线实验
 
-### 无算力限制及算力竞争的处理
+使用 Linux/amd64 GPU Kubernetes 环境，提供兼容 CUDA 12.1 的驱动、NVIDIA 容器运行时、Python 3.11 或更新版本，以及足够运行四个 PyTorch Pod 的内存和磁盘。集群组件由操作人员安装，实验工具负责准备工作负载并采集证据。
 
-在 HAMi 中，`gpucores` 为 0 或未设置表示不限制算力，而不是算力为零。这类 Pod 可以使用整张卡的算力，并与共用该卡的其他 Pod 竞争。仅根据分配信息无法推导出它的实际算力份额。
+| 组件               | 固定版本                  |
+| ------------------ | ------------------------- |
+| HAMi               | v2.11.0                   |
+| OpenCost           | 1.121.3                   |
+| Prometheus         | 3.2.1                     |
+| kube-state-metrics | 2.15.0                    |
+| PyTorch 工作负载   | 2.5.1、CUDA 12.1、cuDNN 9 |
 
-这些 Pod 需要作为单独的一类处理。在预留策略下，可以将它们排除在算力分摊之外并标记为无法分摊，也可以采用可配置的回退方案，例如在共享该卡且未设置算力限制的 Pod 之间，均分该卡尚未预留的算力。绝不会在未作说明的情况下按零算力计费。在实测策略下，算力份额根据一段时间内的实测利用率确定，但前提是运行时确实为该容器采集了这一指标。
+使用工具 `versions.json` 中不可变的 linux/amd64 镜像清单。采集工具将运行镜像 ID 与清单或配置摘要比较。启用 HAMi 新指标和 OpenCost 标准 Kubernetes 指标输入。所有被查询的 Prometheus 目标必须健康，并以 15 秒间隔抓取。
 
-`hami_container_device_utilization_ratio` 从 HAMi-core 的 `utilization_watcher` 线程写入的共享区域读取。HAMi 根据分配的 `gpucores` 值设置 `CUDA_DEVICE_SM_LIMIT`。在当前 HAMi master 使用的 HAMi-core 版本中，[`do_init_device_sm_limits`](https://github.com/Project-HAMi/HAMi-core/blob/a55248ecc6e2530602875054e2d334645d08f35b/src/multiprocess/multiprocess_memory_limit.c#L281-L295) 会将为零或未设置的 `CUDA_DEVICE_SM_LIMIT` 转换为 100。[`init_utilization_watcher`](https://github.com/Project-HAMi/HAMi-core/blob/a55248ecc6e2530602875054e2d334645d08f35b/src/multiprocess/multiprocess_utilization_watcher.c#L273-L344) 会在至少一个设备的有效 SM 限制大于 0 且不超过 100 时启动 watcher。watcher 先采集利用率，再跳过限制为 100 的设备的算力节流。因此，设置了 `gpucores: 0` 的 Pod 不会仅因没有算力限制而失去利用率采集。
+在运行中的 OpenCost 容器中设置以下字面值：
 
-算力限制的执行由 `GPU_CORE_UTILIZATION_POLICY` 单独控制；当 Helm chart 的 `gpuCorePolicy` 值不是 `default` 时，会将该值注入此环境变量，其他可选值为 `force` 和 `disable`。采用实测策略前，应验证所部署 HAMi-core 版本的采集功能。仅凭利用率读数为零，无法断定采集不可用；空闲工作负载也可能上报零。如果采集不可用，则将该 Pod 标记为无法分摊，而不是按零算力计费。第一个里程碑仍仅涵盖显式设置非零限制的场景。
+```yaml
+- name: PROMETHEUS_QUERY_RESOLUTION_SECONDS
+  value: "60"
+- name: KUBECOST_SCRAPE_INTERVAL
+  value: "15s"
+```
 
-### 关联数据时的 Pod 身份识别
+OpenCost 1.121.3 的 `/allocation/compute` 不读取 URL 中的 `resolution` 覆盖参数。源查询分辨率来自进程配置，未设置时默认为 300 秒。工具分别检查 60 秒进程查询分辨率和 15 秒抓取间隔。OpenCost 必须查询与采集工具相同的 Prometheus 服务，保留 Service 选择器或端口转发命令作为连接证据。
 
-两类指标都不携带 Pod UID，而且粒度不同。预留时间序列是 Pod 级别的，标签包括 `namespace`、`node`、`pod`、`device_uuid`。运行时时间序列是容器级别的，标签包括 `namespace`、`pod`、`container`、`vdevice_index`、`device_uuid`，不包含 `node`。
+检出链接中的工具版本，并从其仓库根目录执行命令。将 `NODE` 和 `GPU_UUID` 设置为真实节点名称与完整物理 GPU UUID，将示例币种 `USD` 替换为实际定价币种。循环顺序执行共享和整卡实验，任何一步失败都会停止。重复实验时使用新的命名空间和输出目录。
 
-因此，不需要映射容器索引，也不要求 kube-state-metrics 提供容器索引。数据关联在 Pod 级别按物理卡进行。首先，在每个 `(namespace, pod, device_uuid)` 分组内，跨 `container` 和 `vdevice_index` 对运行时时间序列求和，得到每个 Pod 在每张卡上的一个运行时值，与调度器汇总预留数据的粒度一致。然后，将聚合后的时间序列与预留时间序列按 `(namespace, pod, device_uuid)` 关联。关联键不包含 `node`，因为 `(namespace, pod)` 已能在集群内标识一个 Pod，而预留时间序列已经携带了用于报表展示的节点信息。随后，kube-state-metrics 按 `(namespace, pod)` 提供工作负载归属和 Pod 生命周期信息，这与其暴露的数据粒度一致，因此这一侧也无需进行容器级别的映射。
+```bash
+set -euo pipefail
+: "${NODE:?Set the GPU node name}"
+: "${GPU_UUID:?Set the full physical GPU UUID}"
+python3 -m unittest discover -s opencost-repro -p 'test_*.py' -v
+for profile in shared whole; do
+  output="opencost-repro/runs/${profile}"
+  python3 opencost-repro/runner.py prepare \
+    --namespace "hami-finops-${profile}" --node "${NODE}" --uuid "${GPU_UUID}" \
+    --profile "${profile}" --out "${output}" --apply
+  python3 opencost-repro/runner.py capture \
+    --out "${output}" \
+    --prom-url http://127.0.0.1:9090 --opencost-url http://127.0.0.1:9003 \
+    --duration 3600 --currency USD --cleanup
+  python3 opencost-repro/runner.py report --dataset "${output}/dataset.json"
+done
+```
 
-本设计曾考虑向 HAMi 指标添加 `pod_uid` 标签，但最终未采用：它不能省去上述 Pod 级别的聚合，还会提高这些高流量时间序列的基数。
+放置使用必需节点亲和性与物理 UUID 注解。生成清单不设置 `spec.nodeName`，工具检查调度器分配的节点。所选节点通过 HAMi 容量指标只能暴露目标物理 GPU，且该卡不能被其他工作负载占用。CUDA 就绪状态在成功执行 GPU 运算后才建立。
 
-这一方案尚未解决的情况是：在同一次抓取窗口内，一个 Pod 在相同命名空间中以相同名称被重新创建。如果实践证明这种情况会导致分摊错误，则可以采用已记录的回退方案，添加 `pod_uid` 标签。
+`--cleanup` 使用 API 服务端 UID 前置条件删除已验证 Deployment，并等待其 Pod 消失，同时保留命名空间和 ConfigMap。清理失败时检查 `cleanup-failure.json`。保留失败输出，重试时使用新目录。源码或版本锁变化后，也需要重新准备实验。
 
-### 分摊逻辑的执行位置与避免重复计费
+## 结果与实现验收
 
-分摊逻辑通过针对 HAMi 指标的 OpenCost 查询和记录规则执行。OpenCost 自定义成本插件会添加独立的成本记录，并不会替换原生 GPU 成本，因此集成时必须避免对同一张卡重复计费。相关的 GenAI 和 MIG 效率插件（[opencost/opencost-plugins#69](https://github.com/opencost/opencost-plugins/pull/69)）涉及不同的范围；本方案关注的是通过软件共享 NVIDIA GPU 时，按 HAMi 分配的资源份额分摊成本。
+工具保留 Kubernetes 快照、原始 Prometheus 结果与源时间戳、硬件及驱动证据、代码摘要、定价输入、工作负载日志，以及精确 RFC3339 窗口内的实际分配 API 响应。原生分配区间必须覆盖每个已确认运行窗口。报告分别保留 `gpuHours`、原始 `gpuCost`、`gpuCostAdjustment` 和调整后成本。固定版本的线上 JSON 格式使用小写 `gpuAllocation.gpuRequestAverage`。
 
-## 验证
+已发布 CPU 测试包含 68 个用例，覆盖核算、身份、缺失观测、重复采样、定价、API 格式和模拟采集失败。它们在没有 GPU 或 OpenCost 服务的情况下验证参考模型与采集行为，替代此前基于个人 fork 记录规则的验证表述。本文不声称已经获得实测基线或集成结果。
 
-成本核算逻辑已编码为 Prometheus 记录规则，并通过 `promtool` 对合成时间序列进行单元测试。测试数据模拟了第一个里程碑的工作负载：一张卡由四个各占 25% 份额的 Pod 共享，第二张卡由一个对照 Pod 独占。测试断言了各 Pod 的份额、费用以及两张卡上的对账恒等式，且已通过。这样可以在投入 GPU 资源之前验证查询和模型。
+返回两组采集目录与脱敏的定价及连接证据。得出计费结论之前，必须调查缺失采样、无效原生区间、GPU 工作负载失败或不完整 API 结果。下一步工作：
 
-包含这些清单、查询、记录规则、`promtool` 测试以及部署和报告脚本的复现工具不属于本 PR。它目前位于 HAMi fork 的一个分支中，即 [`Eshiv-Pandey/HAMi` 的 `opencost-repro/` 目录](https://github.com/Eshiv-Pandey/HAMi/tree/docs/opencost-repro/opencost-repro)，这里引用它仅用于说明上述验证结果的来源。是否应将其纳入上游、以及放在何处，仍由跟踪 issue 中的讨论决定。下一步是在具有代表性的多租户 GPU 集群上实际运行，记录两种策略下的真实利用率。
+1. 采集两组完整的原生结果与参考模型 GPU 基线数据。
+2. 与 OpenCost 维护者约定可选分配源接入位置、物理设备清单和 UID 及生命周期语义。
+3. 实现并测试绑定及运行窗口、绑定失败、重启、缺失数据、重复抓取、重建、物理价格、副本归一化和原生资产及空闲成本对账。
+4. 对同一组工作负载分别禁用和启用约定的分配源。只有这些运行才能建立实测的集成前后对比结果。
 
-## 剩余工作
-
-- 在多租户 GPU 集群上运行复现工具，记录两种策略下的实测利用率。
-- 扩展 `promtool` 测试，加入实测份额总和超过 1 的超额使用时间区间，覆盖算力和显存两个维度中的按比例归一化以及标记为无法分摊的回退处理。
-- 在更广泛地使用前，将未设置算力限制时的回退方案和 init 容器的资源释放行为明确为经过实测的策略。
-- 与 OpenCost 社区共同确定集成逻辑的存放位置，以及如何避免与原生 GPU 成本重复计费。
+集成已实现并验证后，才对报告使用 `--require-corrected`。它将原生小时数、原始成本和调整后成本与参考模型比较。基线差异是待调查证据，不能证明修正已经实现。

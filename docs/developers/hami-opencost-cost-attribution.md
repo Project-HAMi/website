@@ -4,141 +4,141 @@ title: HAMi-aware Fractional GPU Cost Attribution with OpenCost
 sidebar_label: OpenCost Cost Attribution
 ---
 
-## Summary
+## Status and first milestone
 
-HAMi lets several Pods share one physical GPU by carving it into memory and compute slices. Kubernetes cost tools such as [OpenCost](https://www.opencost.io/) attribute GPU cost from the `nvidia.com/gpu` resource request, which HAMi always reports as a whole number of devices. A Pod that reserves a quarter of a card still requests `nvidia.com/gpu: 1`, so each co-located Pod is billed for a full card. Four Pods sharing one GPU are billed as four GPUs.
+This proposal tracks [HAMi #3073](https://github.com/Project-HAMi/HAMi/issues/3073) and [OpenCost #3828](https://github.com/opencost/opencost/issues/3828). OpenCost's native GPU request accounting reads `nvidia.com/gpu`. A HAMi Pod requesting one virtual device and 25% cores can therefore retain whole-device request accounting. The price and existing replica adjustments also affect its cost; the live result must be measured.
 
-This document describes a design for attributing GPU cost in proportion to the fraction of a physical card each Pod actually holds, using metrics HAMi already exposes. It tracks the HAMi side of [issue #3073](https://github.com/Project-HAMi/HAMi/issues/3073) and the OpenCost report [opencost/opencost#3828](https://github.com/opencost/opencost/issues/3828).
+The first milestone compares unmodified OpenCost allocation API results with an offline **core-reservation reference**. The [experimental harness](https://github.com/Eshiv-Pandey/HAMi/tree/33ebfa601b95a3662539d8c1c144757216c4201b/opencost-repro) is published separately in a HAMi fork. Its [Linux CPU checks](https://github.com/Eshiv-Pandey/HAMi/actions/runs/42265985065) pass on Python 3.11 and 3.13. GPU Kubernetes and live OpenCost validation remain pending. This artifact does not implement a native HAMi allocation source in OpenCost.
 
-## Motivation
+Use one dedicated physical NVIDIA GPU sequentially: four continuously running quarter reservations for one hour, followed by one whole-GPU reservation for one hour. Both should reserve one GPU-hour under the chosen core policy. The milestone requires explicit positive core and memory limits, one container per Pod, stable Pod UIDs, no init containers, and no container restarts.
 
-### Goals
+## Allocation and runtime evidence
 
-- Attribute the cost of one physical GPU across the Pods that share it, so the per-Pod charges and the unreserved idle cost reconcile to the card's price.
-- Price GPU memory and GPU compute separately, since the two are rented independently and a Pod's memory share and compute share can differ.
-- Base per-Pod billing on metrics that exist only while a container runs, so a reservation that never became a running Pod is not billed.
-
-### Non-Goals
-
-- No new runtime component in HAMi. The accounting lives in OpenCost queries and recording rules against HAMi metrics, plus this design documentation.
-- No cost model for non-NVIDIA devices in the first milestone.
-- No automatic attribution of contended, unlimited compute. Pods with no core limit are a documented, explicit class, never silently billed as zero.
-
-## Background
-
-### How a HAMi Pod requests a GPU slice
-
-A Pod asks for a slice of a card with three limits:
+A quarter workload requests:
 
 ```yaml
 resources:
+  requests:
+    nvidia.com/gpu: "1"
+    nvidia.com/gpucores: "25"
+    nvidia.com/gpumem-percentage: "25"
   limits:
-    nvidia.com/gpu: 1 # see one GPU
-    nvidia.com/gpucores: 25 # use 25% of its compute
-    nvidia.com/gpumem-percentage: 25 # use 25% of its memory
+    nvidia.com/gpu: "1"
+    nvidia.com/gpucores: "25"
+    nvidia.com/gpumem-percentage: "25"
 ```
 
-Four such Pods can be binpacked onto one physical card at the same time.
+| Metric | Meaning and identity |
+| --- | --- |
+| `hami_vgpu_core_allocated_ratio` | Pod/device allocated cores. NVIDIA values are percentages from 0 to 100. Labels include namespace, node, Pod name, and device UUID. |
+| `hami_vgpu_memory_allocated_bytes` | Pod/device reserved memory, with the same identity. |
+| `hami_gpu_memory_limit_bytes` | Direct physical memory capacity, including when the GPU is idle. |
+| `hami_container_device_utilization_ratio` | Runtime utilization, labelled by namespace, Pod name, container, virtual-device index, and UUID. Node and Pod UID are absent. |
+| `hami_vgpu_memory_used_bytes` | Runtime memory usage, with the same runtime identity. |
 
-### Why `nvidia.com/gpu` is not enough for cost
+Use direct capacity. Dividing allocated bytes by an allocated fraction yields `0/0` on an idle GPU. Current reservation series are Pod/device aggregates without a container index or Pod UID. The constant `container_index` label present in v2.10.0 was removed in [HAMi #2898](https://github.com/Project-HAMi/HAMi/pull/2898).
 
-OpenCost's GPU request query reads the `nvidia_com_gpu` resource and treats it as whole-card usage. It does not read `gpucores` or `gpumem`, so it cannot see that four Pods are sharing one card. The result is up to a fourfold overcharge that users then correct by hand.
+Scheduler filtering can succeed even when a Pod never starts. The capture requires successful `hami.io/bind-phase`, the actual physical UUID in `hami.io/vgpu-devices-allocated`, independently observed Kubernetes running episodes, and fresh runtime source timestamps. It corroborates identity through stable live Kubernetes UIDs and `kube_pod_info`. Missing, stale, ambiguous observations or Pod recreation fail the experiment. Series presence alone does not prove a billable lifetime.
 
-### What HAMi already records
+This restricted live experiment does not establish a safe historical KSM join for production billing. Whether HAMi needs a UID metric remains an integration decision. Multi-container aggregation, init-container release, and restarts need separate semantics.
 
-Two families of metrics are relevant.
+### Unlimited compute and runtime settings
 
-Scheduler reservation metrics, emitted during the scheduler filter phase from the cached allocation:
+Unset or zero `gpucores` means no compute limit and must never default to zero cost. The first milestone rejects it because its reservation fraction is unspecified.
 
-- `hami_vgpu_memory_allocated_bytes` per namespace, node, pod, and device UUID.
-- `hami_vgpu_core_allocated_ratio` per the same labels. For NVIDIA this value is a percentage in the range 0 to 100, not a 0 to 1 ratio.
-- `hami_gpu_memory_allocated_bytes` and `hami_node_gpu_memory_allocated_ratio` per device, which together recover a card's total memory.
+HAMi v2.11.0 and the reviewed upstream source pin HAMi-core at `17212525d27ac156955ab940c5d51df33d9e0d09`. At this revision, [`do_init_device_sm_limits`](https://github.com/Project-HAMi/HAMi-core/blob/17212525d27ac156955ab940c5d51df33d9e0d09/src/multiprocess/multiprocess_memory_limit.c#L275-L294) maps a missing or zero base `CUDA_DEVICE_SM_LIMIT` to 100. [`init_utilization_watcher`](https://github.com/Project-HAMi/HAMi-core/blob/17212525d27ac156955ab940c5d51df33d9e0d09/src/multiprocess/multiprocess_utilization_watcher.c#L334-L357) includes an effective limit of 100 when deciding whether to start. Zero requested cores therefore do not imply absent utilization collection.
 
-These reservation series are pod level, not container level. `PodManager` stores only each pod's collapsed device usage, one entry per device type, so the `container_index` label that these metrics carried up to and including v2.10.0 was always 0 and was dropped in [#2898](https://github.com/Project-HAMi/HAMi/pull/2898). This design targets current master and treats reservation data as pod level throughout. On v2.10.0 and earlier the label is present but constant, so the same pod-level treatment applies there.
+Preserve the deployed HAMi-core revision, `CUDA_DEVICE_SM_LIMIT`, and `GPU_CORE_UTILIZATION_POLICY` settings for later utilization experiments. Confirm collection with fresh runtime evidence. Zero utilization can indicate an idle workload and does not establish missing collection. Utilization billing and contention policies require independent validation.
 
-vGPUmonitor runtime metrics, emitted by the monitoring DaemonSet only while a container is running:
+## Reference cost policy
 
-- `hami_container_device_utilization_ratio` per namespace, pod, container, virtual device index, and device UUID.
-- `hami_vgpu_memory_used_bytes` per the same labels.
-
-The reservation metrics are computed in the filter phase, so they record that a slice was reserved, not that the Pod ran. A Pod can pass filtering and still fail to start. They also omit the Pod UID. The runtime metrics exist only while a container runs, so they are implicitly gated on the Pod having started.
-
-## Design Details
-
-### Billing source
-
-Billing is gated on the runtime metrics. They exist only while a container runs, so a slice that was reserved during the filter phase but never became a running Pod is never charged. That gate applies to both policies.
-
-Within the gate, the two policies read their fractions from different places, because the reserved size of a slice is recorded only by the scheduler. The measured policy takes both fractions from the runtime metrics. The reservation policy takes them from the scheduler reservation metrics, and still bills only for the windows in which the runtime metrics show the container present. The scheduler reservation metrics also supply the card totals and the idle remainder used in reconciliation.
-
-### Cost model
-
-GPU memory and GPU compute are priced separately and summed:
+For a confirmed, sampled running interval:
 
 ```text
-pod_cost_per_hour = core_price_per_hour * core_fraction
-                  + mem_price_per_hour  * mem_fraction
+reserved_gpu_hours = core_percent / 100 * running_seconds / 3600
+reserved_cost = reserved_gpu_hours * physical_gpu_hourly_price
 ```
 
-`core_fraction` and `mem_fraction` are each in the range 0 to 1. There is no single universal fraction when the core and memory limits differ, so the two dimensions are always kept separate.
-
-### Reconciliation identity
-
-For every physical card, the per-Pod charges plus the idle cost must equal the card's price:
+The reference accumulates GPU-seconds before dividing by 3600 to avoid repeated fractional-hour rounding. Zero utilization still incurs a reservation cost. Memory fractions are diagnostics; the reference does not split the physical price equally between cores and memory.
 
 ```text
-idle_cost_per_hour = core_price_per_hour * (1 - sum(core_fraction over pods on the card))
-                   + mem_price_per_hour  * (1 - sum(mem_fraction  over pods on the card))
+reserved_gpu_hours + idle_gpu_hours + unattributed_gpu_hours
+  = physical_gpu_hours
 
-sum(pod_cost_per_hour over pods on the card) + idle_cost_per_hour
-  == physical_gpu_price_per_hour
+reserved_cost + idle_cost + unattributed_cost
+  = physical_gpu_hours * physical_gpu_hourly_price
 ```
 
-The idle cost is the per-dimension remainder: for compute and for memory it prices the fraction of the card that no Pod's charge accounts for. That covers both capacity no Pod reserved and, under the measured policy, reserved capacity left idle inside a Pod's slice. Because the idle term is defined as the exact complement of the summed fractions in each dimension, the identity holds by construction for both policies: on a fully reserved card the reservation fractions sum to 1 and the idle cost is 0, while measured fractions that sum to less than 1 raise the idle cost by the matching amount, so a fully reserved but under-used card is never billed below its price.
+A missing sample leaves its running reservation unattributed. It does not become idle or free. Incomplete intervals, excessive core reservations, and memory reservations exceeding direct capacity fail the experiment. HAMi configurations allowing memory overcommit are outside this milestone: physically bounded usage does not imply physically bounded reservations.
 
-The summed fractions are bounded to the interval 0 to 1 per card in each dimension, which keeps the idle cost non-negative and stops Pod charges from exceeding the card price. Memory is bounded physically, since used bytes cannot exceed the card total. Measured compute can briefly sum above 1 under contention or sampling noise; when the raw per-container ratios on a card sum above 1, the pipeline normalizes them proportionally so the dimension sums to exactly 1, which floors the idle cost at 0 and preserves the Pods' relative shares. Intervals where that normalization would have to discard more than a configurable tolerance are marked unattributable rather than billed on distorted fractions.
+Independent component prices remain a possible policy, using `core_gpu_hours * core_hourly_price + memory_gpu_hours * memory_hourly_price`. It requires agreed rates, overcommit handling, and reconciliation semantics. The core-only fixture does not validate that policy or measured-usage attribution.
 
-### Attribution policies
+### Pricing and native OpenCost accounting
 
-Two policies are defined. Both use the same cost model and reconciliation identity, and differ only in how the fractions are measured.
+`node_gpu_hourly_cost` can already include the replica adjustment from [OpenCost #2862](https://github.com/opencost/opencost/pull/2862). With replica metadata, the reference recovers a physical quote once using virtual capacity divided by physical count. It does not use the numerical replica label as the ratio or apply another discount. Preserve the pricing source, currency, node capacity, GFD physical count, and replica labels. The operator must confirm that the rate represents the intended price.
 
-Reservation policy. `core_fraction` and `mem_fraction` come from the scheduler reservation metrics. For a Pod reserving 25% cores this is 0.25. On a fully reserved card the per-Pod fractions sum to 1 and the idle fraction is 0. This is the first-milestone target and the simplest to reason about.
+Inspect native inventory too. Without replica metadata, OpenCost can interpret HAMi's virtual `nvidia.com/gpu` capacity as physical GPU count. Corrected Pod fractions alone would not establish correct asset and idle costs. The eventual allocation-source hook requires OpenCost maintainer agreement and must cover both requested and allocated GPU quantities before native hours/cost are computed. [Custom-cost plugin PR #69](https://github.com/opencost/opencost-plugins/pull/69) addresses adjacent GenAI/MIG records; custom costs do not automatically replace native GPU charges.
 
-Measured policy. `core_fraction` comes from `hami_container_device_utilization_ratio` averaged over the billing window and normalized to 0 to 1, and `mem_fraction` from `hami_vgpu_memory_used_bytes` over the card total. These reflect real usage inside the reserved slices and will not sum to 1, the difference being idle inside reserved slices.
+## Run the baseline reproduction
 
-### Handling of unlimited and contended compute
+Use a Linux/amd64 GPU Kubernetes runner with a CUDA 12.1-compatible driver, NVIDIA container runtime support, Python 3.11 or newer, and enough RAM and disk for four PyTorch Pods. The operator installs the cluster components; the harness prepares workloads and collects evidence.
 
-In HAMi, `gpucores` of 0 or unset means no compute limit, not zero compute. Such a Pod is allowed to use the whole card's compute and competes with any co-located Pods. Its real compute share cannot be derived from the allocation alone.
+| Component          | Locked release            |
+| ------------------ | ------------------------- |
+| HAMi               | v2.11.0                   |
+| OpenCost           | 1.121.3                   |
+| Prometheus         | 3.2.1                     |
+| kube-state-metrics | 2.15.0                    |
+| PyTorch workload   | 2.5.1, CUDA 12.1, cuDNN 9 |
 
-These Pods are an explicit class. Under the reservation policy they are either excluded from compute attribution and flagged as unattributable, or given a configurable fallback such as an equal split of the card's unreserved compute among the no-limit Pods sharing it. They are never silently billed as zero compute. Under the measured policy their compute share is taken from measured utilization over time, but only when the runtime actually collects that metric for the container.
+Use the immutable linux/amd64 manifests in the harness's `versions.json`. The capture checks running image IDs against the manifest or configuration digest. Enable HAMi's new metrics and OpenCost's standard Kubernetes metric inputs. All queried Prometheus targets must be healthy and scraped every 15 seconds.
 
-`hami_container_device_utilization_ratio` is read from the shared region that the HAMi-core `utilization_watcher` thread writes. HAMi sets `CUDA_DEVICE_SM_LIMIT` from the allocated `gpucores` value. In the HAMi-core revision used by current HAMi master, [`do_init_device_sm_limits`](https://github.com/Project-HAMi/HAMi-core/blob/a55248ecc6e2530602875054e2d334645d08f35b/src/multiprocess/multiprocess_memory_limit.c#L281-L295) converts a zero or unset `CUDA_DEVICE_SM_LIMIT` to 100. [`init_utilization_watcher`](https://github.com/Project-HAMi/HAMi-core/blob/a55248ecc6e2530602875054e2d334645d08f35b/src/multiprocess/multiprocess_utilization_watcher.c#L273-L344) starts the watcher when at least one device has an effective SM limit greater than 0 and at most 100. The watcher collects utilization before skipping throttling for devices with a limit of 100. A Pod with `gpucores: 0` therefore does not lose utilization collection merely because it has no compute limit.
+Set these literal values in the running OpenCost container:
 
-Core enforcement is controlled separately by `GPU_CORE_UTILIZATION_POLICY`, injected from the chart value `gpuCorePolicy` when that is set to something other than `default`, the other values being `force` and `disable`. Verify collection for the deployed HAMi-core version before using the measured policy. A zero utilization reading alone does not establish that collection is unavailable; an idle workload can also report zero. If collection is unavailable, flag the Pod as unattributable rather than billing it as zero compute. The first milestone remains scoped to explicit nonzero limits.
+```yaml
+- name: PROMETHEUS_QUERY_RESOLUTION_SECONDS
+  value: "60"
+- name: KUBECOST_SCRAPE_INTERVAL
+  value: "15s"
+```
 
-### Pod identity across the join
+OpenCost 1.121.3 does not read a `resolution` URL override on `/allocation/compute`. Source resolution comes from process configuration and defaults to 300 seconds when unset. The capture checks 60-second process resolution separately from 15-second scrapes. OpenCost must query the same Prometheus server used by the capture. Retain Service selectors or port-forward commands as connection evidence.
 
-Neither family carries the Pod UID, and the two sit at different granularity. The reservation series are pod level: `namespace`, `node`, `pod`, `device_uuid`. The runtime series are container level: `namespace`, `pod`, `container`, `vdevice_index`, `device_uuid`, with no `node`.
+Check out the linked harness revision and run from its repository root. Set `NODE` and `GPU_UUID` to the real node and full physical GPU UUID. Replace the example `USD` with the actual pricing currency. The loop runs shared and whole profiles sequentially, stopping on any failure. Use fresh namespaces and output directories when repeating it.
 
-There is therefore no container index to map, and kube-state-metrics is never asked for one. The join runs at pod level, per physical card. Runtime series are first summed over `container` and `vdevice_index` within each `(namespace, pod, device_uuid)` group, which gives one runtime value per Pod per card and matches the granularity at which the scheduler already collapses reservation data. That aggregated series joins the reservation series on `(namespace, pod, device_uuid)`. `node` is not part of the key, since `(namespace, pod)` already identifies a Pod in a cluster and the reservation series carry the node for reporting. kube-state-metrics then contributes workload ownership and Pod lifetime keyed on `(namespace, pod)`, which is the granularity it exposes, so no container-level mapping is required on that side either.
+```bash
+set -euo pipefail
+: "${NODE:?Set the GPU node name}"
+: "${GPU_UUID:?Set the full physical GPU UUID}"
+python3 -m unittest discover -s opencost-repro -p 'test_*.py' -v
+for profile in shared whole; do
+  output="opencost-repro/runs/${profile}"
+  python3 opencost-repro/runner.py prepare \
+    --namespace "hami-finops-${profile}" --node "${NODE}" --uuid "${GPU_UUID}" \
+    --profile "${profile}" --out "${output}" --apply
+  python3 opencost-repro/runner.py capture \
+    --out "${output}" \
+    --prom-url http://127.0.0.1:9090 --opencost-url http://127.0.0.1:9003 \
+    --duration 3600 --currency USD --cleanup
+  python3 opencost-repro/runner.py report --dataset "${output}/dataset.json"
+done
+```
 
-Adding a `pod_uid` label to HAMi metrics was considered and rejected: it would not remove the pod-level aggregation above, and it would raise cardinality on these high-volume series.
+Placement uses required node affinity and a physical UUID annotation. The rendered manifest does not set `spec.nodeName`; the capture checks the node assigned by scheduling. The node must expose exactly the targeted physical GPU through HAMi capacity metrics, with no other workload occupying it. CUDA readiness follows a successful GPU operation.
 
-The one case this leaves open is a Pod recreated with the same name in the same namespace within a single scrape window. A `pod_uid` label is kept as a documented fallback if that case is shown to corrupt attribution in practice.
+`--cleanup` deletes the verified Deployment with an API-server UID precondition and waits for its Pods to disappear. It leaves the namespace and ConfigMap. Inspect `cleanup-failure.json` on failure. Preserve failed outputs and use a new directory for retries. Source or version-lock changes require a newly prepared experiment.
 
-### Where attribution runs, and avoiding double counting
+## Results and implementation acceptance
 
-The attribution runs as OpenCost queries and recording rules against HAMi metrics. OpenCost custom-cost plugins add separate records and do not replace native GPU cost, so an integration must take care not to count a card twice. The adjacent GenAI and MIG efficiency plugin ([opencost/opencost-plugins#69](https://github.com/opencost/opencost-plugins/pull/69)) covers a different scope; the scope here is HAMi fractional allocation on software-shared NVIDIA GPUs.
+The capture preserves Kubernetes snapshots, raw Prometheus results and source timestamps, hardware/driver evidence, code hashes, pricing inputs, workload logs, and the actual allocation API response for the exact RFC3339 window. Native allocation intervals must cover each confirmed running window. The report retains `gpuHours`, raw `gpuCost`, `gpuCostAdjustment`, and adjusted cost separately. The pinned wire format uses lowercase `gpuAllocation.gpuRequestAverage`.
 
-## Validation
+The published CPU suite contains 68 tests for accounting, identity, missing observations, duplicates, pricing, API shape, and mocked capture failures. It validates the reference and collector without a GPU or OpenCost server. It replaces the earlier validation claim based on recording rules in a personal fork. No measured baseline or integration result is claimed here.
 
-The accounting is encoded as Prometheus recording rules and unit-tested with `promtool` against synthetic series that mirror the milestone-1 workload: one card shared by four 25% Pods and a second card held whole by one control Pod. The test asserts the per-Pod fractions, the per-Pod cost, and the reconciliation identity on both cards, and it passes. This validates the queries and the model before any GPU time is spent.
+Return both capture directories and sanitized pricing/connection evidence. Investigate missing samples, invalid native windows, failed GPU workloads, or incomplete API results before drawing billing conclusions. The next steps are:
 
-The harness holding those manifests, queries, recording rules, the `promtool` test, and the deploy and report scripts is not part of this pull request. It currently lives in a branch of a HAMi fork, under [`opencost-repro/` on `Eshiv-Pandey/HAMi`](https://github.com/Eshiv-Pandey/HAMi/tree/docs/opencost-repro/opencost-repro), and is referenced here only as the provenance of the result above. Whether it belongs upstream, and where, is left to the discussion on the tracking issue. The remaining step is a live run on a representative multi-tenant GPU cluster to record real utilization under both policies.
+1. Collect the two complete native-versus-reference GPU baseline datasets.
+2. Agree the opt-in allocation-source hook, physical inventory, and UID/lifetime semantics with OpenCost maintainers.
+3. Implement and test binding/running windows, failed binds, restarts, missing data, duplicate scrapes, recreation, physical prices, replica normalization, and native asset/idle reconciliation.
+4. Run the same profiles with the source disabled and enabled. Only those runs can establish a measured before/after integration result.
 
-## Remaining Work
-
-- Run the reproduction on a multi-tenant GPU cluster and record the measured utilization numbers for both policies.
-- Extend the `promtool` test with an over-subscribed interval, where the summed measured fractions exceed 1, to cover the proportional normalization and the unattributable fallback in both the compute and memory dimensions.
-- Specify the unlimited-core fallback and the init-container release behavior as explicit, measured policies before broader use.
-- Decide, with the OpenCost community, where the integration lives and how it avoids double counting native GPU cost.
+Use `--require-corrected` on the report after an integration exists and is validated. It checks native hours, raw cost, and adjusted cost against the reference. A baseline discrepancy is evidence to investigate, not proof of an implemented correction.
