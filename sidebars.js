@@ -1,9 +1,182 @@
+// Unique keys distinguish vendor categories from similarly named categories elsewhere.
+const vendorCategory = (label, id, items) => ({
+  type: "category",
+  label,
+  key: `vendor-${id}`,
+  collapsible: true,
+  collapsed: true,
+  items,
+});
+
+const vendorPages = (dir, names) => names.map((name) => `userguide/${dir}/${name}`);
+
+// "nvidia-device" -> "nvidia", "metax-device/metax-gpu" -> "metax-gpu"
+const vendorKey = (dir) => dir.replace(/^.*\//, "").replace(/-device$/, "");
+
+const vendorExamples = (dir, names) => ({
+  type: "category",
+  label: "Examples",
+  key: `${vendorKey(dir)}-examples`,
+  items: vendorPages(`${dir}/examples`, names),
+});
+
+const vendors = [
+  vendorCategory("NVIDIA GPU", "nvidia", [
+    ...vendorPages("nvidia-device", [
+      "remote-gpu",
+      "specify-device-memory-usage",
+      "specify-device-core-usage",
+      "specify-device-type-to-use",
+      "specify-device-uuid-to-use",
+      "scheduling-policy",
+      "numa-alignment",
+      "dynamic-mig-support",
+      "dynamic-resource-allocation",
+      "using-resourcequota",
+    ]),
+    vendorExamples("nvidia-device", [
+      "use-exclusive-card",
+      "allocate-device-memory",
+      "allocate-device-memory2",
+      "allocate-device-core",
+      "specify-card-type-to-use",
+      "specify-certain-card",
+      "dynamic-mig-example",
+    ]),
+  ]),
+  vendorCategory("AMD GPU", "amd", [
+    ...vendorPages("amd-device", [
+      "enable-amd-gpu-sharing",
+      "how-it-works",
+      "configuration",
+      "troubleshooting",
+      "verification-status",
+    ]),
+    vendorExamples("amd-device", [
+      "default-use",
+      "use-memory",
+      "use-memory-percentage",
+      "allocate-core-and-memory",
+      "specify-card-type-to-use",
+      "specify-card-type-not-use",
+      "specify-uuid-to-use",
+      "specify-uuid-not-use",
+      "numa-bind",
+      "link-bind",
+      "scheduler-policy",
+      "task-priority",
+    ]),
+  ]),
+  vendorCategory("AWS Neuron", "aws-neuron", [
+    ...vendorPages("awsneuron-device", ["enable-awsneuron-managing"]),
+    vendorExamples("awsneuron-device", ["allocate-neuron-core", "allocate-neuron-device"]),
+  ]),
+  vendorCategory("Biren GPU", "biren", [
+    ...vendorPages("biren-device", ["enable-biren-sharing"]),
+    vendorExamples("biren-device", ["default-use"]),
+  ]),
+  vendorCategory("Cambricon MLU", "cambricon", [
+    ...vendorPages("cambricon-device", [
+      "enable-cambricon-mlu-sharing",
+      "specify-device-memory-usage",
+      "specify-device-core-usage",
+      "specify-device-type-to-use",
+    ]),
+    vendorExamples("cambricon-device", ["allocate-core-and-memory", "allocate-exclusive"]),
+  ]),
+  vendorCategory(
+    "Enflame GCU",
+    "enflame",
+    vendorPages("enflame-device", ["enable-enflame-gcu-sharing"]),
+  ),
+  vendorCategory("Huawei Ascend NPU", "huawei-ascend", [
+    ...vendorPages("ascend-device", ["enable-ascend-sharing", "device-template"]),
+    vendorExamples("ascend-device", [
+      "allocate-310p",
+      "allocate-910b",
+      "allocate-exclusive",
+      "allocate-soft-slicing",
+    ]),
+  ]),
+  vendorCategory("Hygon HCU", "hygon", [
+    ...vendorPages("hygon-device", [
+      "enable-hygon-hcu-sharing",
+      "specify-device-memory-usage",
+      "specify-device-core-usage",
+      "specify-device-uuid-to-use",
+    ]),
+    vendorExamples("hygon-device", [
+      "allocate-core-and-memory",
+      "allocate-exclusive",
+      "specify-certain-cards",
+    ]),
+  ]),
+  vendorCategory("Iluvatar GPU", "iluvatar", [
+    ...vendorPages("iluvatar-device", ["enable-iluvatar-gpu-sharing"]),
+    vendorExamples("iluvatar-device", [
+      "allocate-bi-v150",
+      "allocate-mr-v100",
+      "allocate-exclusive-bi-v150",
+      "allocate-exclusive-mr-v100",
+    ]),
+  ]),
+  vendorCategory("Kunlunxin XPU", "kunlunxin", [
+    ...vendorPages("kunlunxin-device", ["enable-kunlunxin-schedule", "enable-kunlunxin-vxpu"]),
+    vendorExamples("kunlunxin-device", ["allocate-whole-xpu", "allocate-vxpu"]),
+  ]),
+  vendorCategory("MetaX GPU", "metax", [
+    {
+      type: "category",
+      label: "GPU (topology-aware)",
+      key: "metax-gpu",
+      items: [
+        ...vendorPages("metax-device/metax-gpu", [
+          "enable-metax-gpu-schedule",
+          "specify-binpack-task",
+          "specify-spread-task",
+        ]),
+        vendorExamples("metax-device/metax-gpu", [
+          "default-use",
+          "allocate-binpack",
+          "allocate-spread",
+        ]),
+      ],
+    },
+    {
+      type: "category",
+      label: "sGPU (shared)",
+      key: "metax-sgpu",
+      items: [
+        ...vendorPages("metax-device/metax-sgpu", ["enable-metax-gpu-sharing"]),
+        vendorExamples("metax-device/metax-sgpu", [
+          "default-use",
+          "allocate-exclusive",
+          "allocate-qos-policy",
+        ]),
+      ],
+    },
+  ]),
+  vendorCategory("Mthreads GPU", "mthreads", [
+    ...vendorPages("mthreads-device", [
+      "enable-mthreads-gpu-sharing",
+      "specify-device-memory-usage",
+      "specify-device-core-usage",
+    ]),
+    vendorExamples("mthreads-device", ["allocate-core-and-memory", "allocate-exclusive"]),
+  ]),
+  vendorCategory("Vastai GPU", "vastai", [
+    ...vendorPages("vastai", ["enable-vastai-sharing"]),
+    vendorExamples("vastai", ["default-use"]),
+  ]),
+];
+
 module.exports = {
   docs: [
+    "core-concepts/introduction",
     {
       type: "category",
       label: "Get started",
-      collapsed: false,
+      collapsed: true,
       link: {
         type: "generated-index",
         title: "Get started",
@@ -17,17 +190,29 @@ module.exports = {
     },
     {
       type: "category",
-      label: "Introduction",
+      label: "Concepts",
       collapsed: true,
       link: {
         type: "generated-index",
-        title: "Introduction",
-        description: "What HAMi is and what it does for you.",
+        title: "Concepts",
+        description: "How HAMi shares, isolates and schedules devices.",
       },
       items: [
-        "core-concepts/introduction",
+        "core-concepts/architecture",
+        {
+          type: "category",
+          label: "Background",
+          items: [
+            "core-concepts/gpu-stack",
+            "core-concepts/gpu-driver",
+            "core-concepts/device-plugin-and-dra",
+          ],
+        },
         "key-features/device-sharing",
         "key-features/device-resource-isolation",
+        "core-concepts/scheduling",
+        "core-concepts/observability",
+        "core-concepts/ecosystem-integrations",
       ],
     },
     {
@@ -53,7 +238,11 @@ module.exports = {
             "installation/aws-installation",
             "installation/k3s-installation",
             "installation/gke-installation",
+            "installation/aks-installation",
             "installation/tke-installation",
+            "installation/openshift-installation",
+            "installation/cce-installation",
+            "installation/ack-installation",
           ],
         },
         {
@@ -103,7 +292,7 @@ module.exports = {
         description:
           "Start from the supported devices matrix, then follow the guide for your vendor.",
       },
-      items: ["userguide/device-supported"],
+      items: ["userguide/device-supported", ...vendors],
     },
     {
       type: "category",
@@ -125,6 +314,7 @@ module.exports = {
             "userguide/monitoring/real-time-usage",
             "userguide/monitoring/real-time-device-usage",
             "userguide/monitoring/grafana-dashboard",
+            "userguide/monitoring/alerting-and-runbooks",
           ],
         },
         "userguide/benchmark",
@@ -158,21 +348,19 @@ module.exports = {
       },
       items: [
         "core-concepts/gpu-virtualization",
-        "core-concepts/architecture",
         "core-concepts/hami-architecture",
-        "core-concepts/gpu-stack",
-        "core-concepts/gpu-driver",
-        "core-concepts/ecosystem-integrations",
         "developers/build",
         "developers/protocol",
         "developers/scheduling",
         "developers/hami-core-design",
         "developers/dynamic-mig",
+        "developers/dynamic-mig-lifecycle",
         "developers/dynamic-mig-migration",
         "developers/gpu-topology-scheduling",
         "developers/kunlunxin-topology",
         "developers/profiling-scheduler",
         "developers/scheduler-event-log",
+        "developers/scheduler-metrics",
         "developers/gpu-utilization-metrics",
         "developers/hami-vnpu-core-integration",
         "developers/hami-webui-development-guide",
@@ -200,6 +388,7 @@ module.exports = {
         "contributor/governance",
         "contributor/ladder",
         "contributor/roadmap",
+        "contributor/general-technical-review",
         "contributor/e2e-testing",
       ],
     },

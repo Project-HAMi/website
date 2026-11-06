@@ -3,6 +3,10 @@ title: Allocate device core to container
 sidebar_label: Allocate device core resource
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="cores" />
+
 To allocate a certain part of device core resource, you need only to assign the `nvidia.com/gpucores` without other resource fields.
 
 ```yaml

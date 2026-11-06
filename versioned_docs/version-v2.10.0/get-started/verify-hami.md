@@ -1,6 +1,7 @@
 ---
 title: Validate HAMi Setup and vGPU Behavior
 sidebar_label: Validate HAMi
+description: Test NVIDIA GPU access with a native Pod, check the HAMi components, then run a vGPU Pod to verify its memory limit and locate deployment failures.
 ---
 
 After deploying HAMi, it is essential to verify that the installation is functioning correctly and that vGPU resource isolation is working as expected. This guide walks you through a step-by-step validation process, from checking the native GPU stack to confirming vGPU behavior inside containers.
@@ -77,7 +78,7 @@ Expected: You see valid `nvidia-smi` output. If this fails, do NOT continue. Fix
 ### 2. Verify execution
 
 ```bash
-kubectl wait --for=condition=Succeeded pod/cuda-test --timeout=60s
+kubectl wait --for=jsonpath='{.status.phase}'=Succeeded pod/cuda-test --timeout=60s
 kubectl logs cuda-test
 ```
 

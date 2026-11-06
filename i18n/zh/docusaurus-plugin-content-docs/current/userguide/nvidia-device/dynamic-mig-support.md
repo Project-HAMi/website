@@ -3,11 +3,9 @@ title: 启用动态 MIG 功能
 translated: true
 ---
 
-import SupportedComponents, { Tag } from '@site/src/components/SupportedComponents';
+import FeatureSupport from '@site/src/components/FeatureSupport';
 
-<SupportedComponents>
-  <Tag href="../../get-started/deploy-with-helm.md" type="hami">HAMi</Tag>
-</SupportedComponents>
+<FeatureSupport features="dynamicMig" />
 
 HAMi v2.10 采用预留优先、拓扑感知的方式实现 NVIDIA 多实例 GPU（MIG）的动态切分。它不再选择并切换预定义的整卡几何配置，而是：
 

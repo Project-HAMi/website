@@ -2,6 +2,10 @@
 title: Assign task to MIG instance
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="dynamicMig" />
+
 This Pod requests two MIG devices with at least 8,000 MiB each. The `nvidia.com/vgpu-mode: "mig"` annotation requires Dynamic MIG, and the optional `binpack` policy asks HAMi to prefer packing the allocations.
 
 ```yaml

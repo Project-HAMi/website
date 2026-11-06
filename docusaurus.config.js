@@ -2,6 +2,8 @@ const { themes } = require("prism-react-renderer");
 const lightTheme = themes.github;
 const darkTheme = themes.dracula;
 const defaultLocale = "en";
+const llmsCatalog = require("./src/data/llms.json");
+const [latestDocsVersion] = require("./versions.json");
 const siteUrl = (process.env.DOCUSAURUS_SITE_URL || "https://project-hami.io").replace(/\/$/, "");
 const githubEditBaseUrl = "https://github.com/Project-HAMi/website/edit/master/";
 
@@ -51,7 +53,7 @@ async function localizedBlogPlugin(context, opts) {
 localizedBlogPlugin.validateOptions = require("@docusaurus/plugin-content-blog").validateOptions;
 
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
-module.exports = {
+const config = {
   title: "HAMi",
   tagline: "Heterogeneous AI Computing Virtualization Middleware",
   url: siteUrl,
@@ -365,12 +367,16 @@ module.exports = {
           title: "Documentation",
           items: [
             {
-              label: "Concepts",
-              to: "/docs/core-concepts/gpu-virtualization",
+              label: "Supported Devices",
+              to: "/docs/userguide/device-supported",
             },
             {
               label: "Quick Start",
               to: "/docs/get-started/deploy-with-helm",
+            },
+            {
+              label: "Concepts",
+              to: "/docs/core-concepts/gpu-virtualization",
             },
             {
               label: "Tutorials",
@@ -379,7 +385,7 @@ module.exports = {
           ],
         },
         {
-          title: "Community",
+          title: "Join Community",
           items: [
             {
               label: "Discord",
@@ -393,6 +399,10 @@ module.exports = {
               label: "WeChat Group",
               href: "/community?wechat=group",
             },
+            {
+              label: "Community Survey",
+              href: "https://forms.gle/CTXZmG1WUgE9vPBm8",
+            },
           ],
         },
         {
@@ -403,8 +413,16 @@ module.exports = {
               href: "/community?wechat=official",
             },
             {
+              label: "Xiaohongshu",
+              href: "https://xhslink.cn/o/7BNNFxIwz40",
+            },
+            {
               label: "LinkedIn",
               href: "https://www.linkedin.com/company/project-hami-io/",
+            },
+            {
+              label: "YouTube",
+              href: "https://www.youtube.com/@hami-community",
             },
             {
               label: "X",
@@ -432,6 +450,9 @@ module.exports = {
       "@docusaurus/preset-classic",
       {
         docs: false,
+        sitemap: {
+          ignorePatterns: ["/search", "/zh/search"],
+        },
         gtag: {
           trackingID: "G-MK932R9NMD",
           anonymizeIP: true,
@@ -443,4 +464,32 @@ module.exports = {
       },
     ],
   ],
+};
+
+module.exports = function () {
+  const locale = process.env.DOCUSAURUS_CURRENT_LOCALE || defaultLocale;
+  return {
+    ...config,
+    plugins: [
+      [
+        "docusaurus-plugin-llms",
+        {
+          description: llmsCatalog.summary[locale],
+          rootContent: llmsCatalog.guidance[locale],
+          version: latestDocsVersion,
+          docsDir: llmsCatalog.sections.map((section) => ({
+            path: `versioned_docs/version-${latestDocsVersion}/${section.path}`,
+            routeBasePath: `docs/${section.path}`,
+            label: section.title[locale],
+          })),
+          includeOrder: llmsCatalog.docs.map(
+            (id) => `versioned_docs/version-${latestDocsVersion}/${id}.md`,
+          ),
+          includeUnmatchedLast: false,
+          generateLLMsFullTxt: false,
+        },
+      ],
+      ...config.plugins,
+    ],
+  };
 };

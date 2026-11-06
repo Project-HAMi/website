@@ -1,5 +1,6 @@
 ---
 title: Prerequisites
+description: Check cluster requirements, prepare NVIDIA drivers and the container runtime, and find the setup guide for your device before installing HAMi.
 sidebar_label: Prerequisites
 ---
 
@@ -16,17 +17,17 @@ Before installing HAMi, prepare the Kubernetes cluster and device nodes as descr
 | Device | Prerequisites and setup |
 | --- | --- |
 | NVIDIA GPU | [Prepare NVIDIA GPU nodes](#preparing-your-gpu-nodes) |
-| Huawei Ascend NPU | [Prerequisites](../userguide/ascend-device/enable-ascend-sharing.md#prerequisites) |
 | AMD GPU | [Prerequisites](../userguide/amd-device/enable-amd-gpu-sharing.md#prerequisites) |
-| Cambricon MLU | [Prerequisites](../userguide/cambricon-device/enable-cambricon-mlu-sharing.md#prerequisites) |
-| Hygon HCU | [Prerequisites](../userguide/hygon-device/enable-hygon-hcu-sharing.md#prerequisites) |
-| Moore Threads GPU | [Prerequisites](../userguide/mthreads-device/enable-mthreads-gpu-sharing.md#prerequisites) |
-| Iluvatar GPU | [Prerequisites](../userguide/iluvatar-device/enable-iluvatar-gpu-sharing.md#prerequisites) |
-| Enflame GCU | [Prerequisites](../userguide/enflame-device/enable-enflame-gcu-sharing.md#prerequisites) |
 | AWS Neuron | [Prerequisites](../userguide/awsneuron-device/enable-awsneuron-managing.md#prerequisites) |
+| Biren GPU | [Device setup](../userguide/biren-device/enable-biren-sharing.md#using-biren-devices) |
+| Cambricon MLU | [Prerequisites](../userguide/cambricon-device/enable-cambricon-mlu-sharing.md#prerequisites) |
+| Enflame GCU | [Prerequisites](../userguide/enflame-device/enable-enflame-gcu-sharing.md#prerequisites) |
+| Huawei Ascend NPU | [Prerequisites](../userguide/ascend-device/enable-ascend-sharing.md#prerequisites) |
+| Hygon HCU | [Prerequisites](../userguide/hygon-device/enable-hygon-hcu-sharing.md#prerequisites) |
+| Iluvatar GPU | [Prerequisites](../userguide/iluvatar-device/enable-iluvatar-gpu-sharing.md#prerequisites) |
 | Kunlunxin XPU | [Whole-device scheduling](../userguide/kunlunxin-device/enable-kunlunxin-schedule.md#prerequisites) / [vXPU sharing](../userguide/kunlunxin-device/enable-kunlunxin-vxpu.md#prerequisites) |
 | MetaX GPU | [Whole-device scheduling](../userguide/metax-device/metax-gpu/enable-metax-gpu-schedule.md#prerequisites) / [sGPU sharing](../userguide/metax-device/metax-sgpu/enable-metax-gpu-sharing.md#prerequisites) |
-| Biren GPU | [Device setup](../userguide/biren-device/enable-biren-sharing.md#using-biren-devices) |
+| Moore Threads GPU | [Prerequisites](../userguide/mthreads-device/enable-mthreads-gpu-sharing.md#prerequisites) |
 | Vastai | [Device setup](../userguide/vastai/enable-vastai-sharing.md#using-vastai-devices) |
 
 ## Prepare NVIDIA GPU nodes {#preparing-your-gpu-nodes}
@@ -156,8 +157,10 @@ If the file is missing, inspect the Toolkit and validator Pods on that node and 
 When GPU Operator manages both the driver and Toolkit, save the following HAMi values as `hami-nvidia-values.yaml`:
 
 ```yaml
+devices:
+  nvidia:
+    runtimeClassName: nvidia
 devicePlugin:
-  runtimeClassName: nvidia
   deviceListStrategy: envvar
   nvidiaDriverRoot: /run/nvidia/driver
   gpuOperatorToolkitReady:
@@ -166,7 +169,7 @@ devicePlugin:
 
 - If the host manages the driver, set `devicePlugin.nvidiaDriverRoot` to `/`. The path must match the actual node layout.
 - If the host manages Toolkit, set `devicePlugin.gpuOperatorToolkitReady.enabled=false`. Enabling this option makes HAMi wait for the Operator's Toolkit readiness marker.
-- If the RuntimeClass has a different name, set `devicePlugin.runtimeClassName` to that name. For host-managed runtimes that already use NVIDIA as the default, this value can be omitted.
+- If the RuntimeClass has a different name, set `devices.nvidia.runtimeClassName` to that name. For host-managed runtimes that already use NVIDIA as the default, this value can be omitted.
 - For CDI, use the values in the [NVIDIA CDI guide](./configure-cdi.md), including the driver root and the actual `nvidia-ctk` hook path.
 
 ### Label NVIDIA GPU nodes {#label-your-nodes}

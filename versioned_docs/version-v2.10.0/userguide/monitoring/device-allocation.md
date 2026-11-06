@@ -23,6 +23,7 @@ It contains the following metrics:
 | hami_vgpu_core_allocated_ratio | vGPU core allocated from a container | `{container_index="Ascend310P",device_uuid="aio-node74-arm-Ascend310P-0",node="aio-node74-arm",pod="ascend310p-pod",namespace="default",zone="vGPU"}` 50 |
 | hami_vgpu_memory_allocated_bytes | vGPU memory allocated from a container | `{container_index="Ascend310P",device_uuid="aio-node74-arm-Ascend310P-0",node="aio-node74-arm",pod="ascend310p-pod",namespace="default",zone="vGPU"}` 3.221225472e+09 |
 | hami_resource_quota_used | resourcequota usage for a certain device | `{quota_name="nvidia.com/gpucores", namespace="default",limit="200",zone="vGPU"}` 100 |
+| hami_resource_quota_limit | resourcequota limit for a certain device (only emitted when a quota limit is set) | `{quota_name="nvidia.com/gpucores", namespace="default",zone="vGPU"}` 200 |
 
 If you are using [HAMi DRA](../../installation/how-to-use-hami-dra), the metrics will be:
 

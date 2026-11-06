@@ -1,6 +1,7 @@
 ---
 title: 架构设计
 translated: true
+description: 了解 HAMi Webhook、调度器、设备插件和 HAMi-Core 的职责，以及它们如何处理 Pod 准入、设备分配和容器内资源隔离。
 ---
 
 HAMi 的整体架构如下所示：

@@ -56,6 +56,7 @@ hami.io/node-handshake: Requesting_2024-01-23 04:30:04
 | 后端       | 待分配注解键                                |
 | ---------- | ------------------------------------------- |
 | NVIDIA     | `hami.io/vgpu-devices-to-allocate`          |
+| AMD        | `hami.io/amd-devices-to-allocate`           |
 | 寒武纪 MLU | `hami.io/cambricon-mlu-devices-to-allocate` |
 | 摩尔线程   | `hami.io/mthreads-vgpu-devices-to-allocate` |
 | 海光 HCU   | `hami.io/hcu-devices-to-allocate`           |

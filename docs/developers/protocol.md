@@ -57,6 +57,7 @@ During this process, the following annotations are managed on the Pod:
 | Backend       | Pending-allocation key                      |
 | ------------- | ------------------------------------------- |
 | NVIDIA        | `hami.io/vgpu-devices-to-allocate`          |
+| AMD           | `hami.io/amd-devices-to-allocate`           |
 | Cambricon MLU | `hami.io/cambricon-mlu-devices-to-allocate` |
 | Moore Threads | `hami.io/mthreads-vgpu-devices-to-allocate` |
 | Hygon HCU     | `hami.io/hcu-devices-to-allocate`           |

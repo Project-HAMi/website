@@ -1,5 +1,6 @@
 ---
 title: Device sharing
+description: Explore HAMi device sharing capabilities, including memory allocation, device selection, resource limits, and dynamic MIG support.
 ---
 
 HAMi lets multiple tasks share the same GPU, MLU, or NPU device, maximizing the utilization of heterogeneous AI computing resources.

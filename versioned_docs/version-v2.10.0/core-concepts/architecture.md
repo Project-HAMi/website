@@ -1,5 +1,6 @@
 ---
 title: Architecture
+description: Understand how the HAMi webhook, scheduler, device plugin, and HAMi-Core handle Pod admission, device allocation, and resource isolation.
 ---
 
 The overall architecture of HAMi is shown as below:

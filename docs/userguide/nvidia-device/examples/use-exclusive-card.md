@@ -3,6 +3,10 @@ title: Use Exclusive GPU
 sidebar_label: Use exclusive GPU
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="exclusive" />
+
 To use GPU in an exclusive mode, which is the default behavior of nvidia-k8s-device-plugin, you need only to assign the `nvidia.com/gpu` without other resource fields.
 
 ```yaml

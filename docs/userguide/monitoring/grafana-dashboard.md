@@ -100,20 +100,21 @@ The JSON uses a data source variable instead of a fixed Prometheus UID. Select t
 
 ## Dashboard variables
 
-| Variable    | Description                                                         |
-| ----------- | ------------------------------------------------------------------- |
-| Data source | Prometheus data source                                              |
-| Node        | Filters physical GPU and scheduler panels; supports multiple values |
-| Namespace   | Filters vGPU workload panels; supports multiple values              |
+| Variable | Description |
+| --- | --- |
+| Data source | Prometheus data source |
+| Node | Filters physical GPU, scheduler, and MIG panels; supports multiple values |
+| Namespace | Filters vGPU workload panels, the resource quota table, and the MIG panels; supports multiple values |
 
 ## Dashboard rows
 
 | Row | Panels |
 | --- | --- |
-| Cluster overview | Physical GPU count, total memory, allocated memory, and shared containers |
+| Cluster overview | Physical GPU count, total memory, allocated memory and cores, and shared containers |
 | Physical GPUs (host) | Real-time memory usage and utilization, with allocation comparisons |
-| Scheduler / allocation | Device limits, allocation ratios, sharing, and GPU inventory |
-| vGPU / container workloads | Per-container vGPU memory, limits, and utilization |
+| Scheduler / allocation | Device limits, allocation ratios, sharing, GPU inventory, and resource quota |
+| vGPU / container workloads | Per-container vGPU memory, limits, utilization, context and buffer memory, time since the last kernel, and used versus allocated cores per pod |
+| Dynamic MIG | In-use MIG instances by profile, and MIG inventory and allocation table |
 | NVIDIA hardware telemetry (optional DCGM Exporter) | XID errors, temperature, power usage, and SM clock |
 
 ## DCGM Exporter (optional)
@@ -135,6 +136,7 @@ The queries match the DCGM `UUID` label to HAMi's `device_uuid` label.
 | Physical GPU panels are empty | Every vGPU monitor Service endpoint is discovered |
 | Container panels are empty | A vGPU workload is running and the correct namespace is selected |
 | Node or Namespace has no values | The selected Prometheus data source contains the corresponding labels |
+| MIG panels are empty | A node runs HAMi with `operatingmode: mig` and a MIG workload is running |
 | Hardware telemetry is empty | DCGM Exporter is scraped and its metrics contain the `UUID` label |
 
 For metric definitions, see [Cluster device allocation](device-allocation) and [Real-time device usage](real-time-device-usage).

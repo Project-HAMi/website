@@ -3,6 +3,10 @@ title: Assign to Certain Device UUID
 sidebar_label: Assign to certain device
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="gpuUuid" />
+
 Sometimes a task may wish to run on a certain GPU, it can fill the `nvidia.com/use-gpuuuid` field in pod annotation. HAMi scheduler will try to fit in device with that uuid.
 
 For example, a task with the following annotation will be assigned to the device with uuid `GPU-123456`

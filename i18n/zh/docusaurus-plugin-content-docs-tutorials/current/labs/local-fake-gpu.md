@@ -13,7 +13,7 @@ lab:
   verified: "2026-05-21"
 tags:
   - 模拟
-  - 本地安装
+  - local-setup
 toc_max_heading_level: 2
 ---
 

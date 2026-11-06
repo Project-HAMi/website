@@ -1,5 +1,6 @@
 ---
 title: 验证 HAMi 部署与 vGPU 行为
+description: 用原生 GPU Pod 验证 NVIDIA 设备访问，检查 HAMi 组件，再用 vGPU Pod 验证显存限制，逐步定位部署故障。
 sidebar_label: 验证 HAMi
 ---
 
@@ -77,7 +78,7 @@ EOF
 ### 2. 验证执行结果
 
 ```bash
-kubectl wait --for=condition=Succeeded pod/cuda-test --timeout=60s
+kubectl wait --for=jsonpath='{.status.phase}'=Succeeded pod/cuda-test --timeout=60s
 kubectl logs cuda-test
 ```
 

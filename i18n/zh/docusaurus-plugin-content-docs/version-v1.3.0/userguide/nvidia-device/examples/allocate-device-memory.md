@@ -24,6 +24,6 @@ spec:
 
 :::note
 
-`nvidia.com/gpumem` can't be used together with `nvidia.com/gpumem-percentage`
+建议选择一种方式指定显存。若同时设置这两个参数，且 `nvidia.com/gpumem` 为大于 0 的整数，则显存申请量以 `nvidia.com/gpumem` 为准。详见[显存分配说明](../specify-device-memory-usage.md)。
 
 :::

@@ -14,6 +14,7 @@ import {
 import {
   faBookOpen,
   faCalendarDays,
+  faClipboardList,
   faCodeBranch,
   faFileLines,
   faGlobe,
@@ -79,6 +80,10 @@ function pickLocalized(locale, textObj) {
 export default function CommunityPage() {
   const { i18n } = useDocusaurusContext();
   const isZh = i18n.currentLocale === "zh";
+  // The survey form is region-specific: Feishu for zh, Google Forms for everyone else.
+  const surveyUrl = isZh
+    ? "https://dynamia-ai.feishu.cn/share/base/form/shrcnI1cfFqgx3jWQ76U3HUhwhQ"
+    : "https://forms.gle/CTXZmG1WUgE9vPBm8";
   const wechatOfficialQr = useBaseUrl("img/community/wechat-official-account-qr.jpg");
   const wechatVideoQr = useBaseUrl("img/community/wechat-video-channel-qr.jpg");
   const wechatAssistantQr = useBaseUrl("img/community/wechat-assistant-qr.jpg");
@@ -107,6 +112,12 @@ export default function CommunityPage() {
           label: { en: "Mailing list", zh: "邮件列表" },
           href: "https://groups.google.com/forum/#!forum/hami-project",
           icon: faFileLines,
+        },
+        {
+          label: { en: "Community Survey", zh: "社区问卷" },
+          href: surveyUrl,
+          icon: faClipboardList,
+          external: true,
         },
       ],
     },
@@ -218,6 +229,16 @@ export default function CommunityPage() {
                 ? "参与 HAMi 开源社区，通过讨论、会议和贡献推动异构 AI 基础设施的发展。"
                 : "Join the HAMi open-source community and advance heterogeneous AI infrastructure through discussions, meetings, and contributions."}
             </p>
+            <div className={styles.heroActions}>
+              <a
+                className="button button--primary"
+                href={surveyUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {isZh ? "填写社区问卷" : "Take the Community Survey"}
+              </a>
+            </div>
           </div>
         </section>
 

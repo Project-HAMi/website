@@ -7,14 +7,18 @@ import {
   faSlack,
   faWeixin,
   faXTwitter,
+  faYoutube,
 } from "@fortawesome/free-brands-svg-icons";
 import {
   faBullhorn,
+  faClipboardList,
   faGraduationCap,
   faLightbulb,
+  faMicrochip,
   faRocket,
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
+import XiaohongshuIcon from "./XiaohongshuIcon";
 import { useColorMode, useThemeConfig } from "@docusaurus/theme-common";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import FooterLinks from "@theme/Footer/Links";
@@ -124,14 +128,17 @@ function Footer() {
   }
 
   const { copyright, links, logo, style } = footer;
-  const zhOnlyLabels = new Set(["WeChat Group", "WeChat Official Account"]);
-  const adjustedLinks =
-    i18n.currentLocale === "zh"
-      ? links
-      : links?.map((group) => ({
-          ...group,
-          items: group.items?.filter((item) => !zhOnlyLabels.has(item.label)),
-        }));
+  const zhOnlyLabels = new Set(["WeChat Group", "WeChat Official Account", "Xiaohongshu"]);
+  // English-only footer links (the zh audience gets Bilibili instead of YouTube).
+  const enOnlyLabels = new Set(["YouTube"]);
+  const adjustedLinks = links?.map((group) => ({
+    ...group,
+    items: group.items?.filter(
+      (item) =>
+        (i18n.currentLocale === "zh" || !zhOnlyLabels.has(item.label)) &&
+        (i18n.currentLocale !== "zh" || !enOnlyLabels.has(item.label)),
+    ),
+  }));
   const iconMap = {
     Concepts: faLightbulb,
     原理: faLightbulb,
@@ -151,19 +158,36 @@ function Footer() {
     微信入群: faWeixin,
     "WeChat Official Account": faWeixin,
     公众号: faWeixin,
+    "Community Survey": faClipboardList,
+    社区问卷: faClipboardList,
+    "Supported Devices": faMicrochip,
+    支持设备列表: faMicrochip,
+    YouTube: faYoutube,
   };
+  // FontAwesome free has no Xiaohongshu glyph; use the brand mark directly.
+  const xhsLabels = new Set(["Xiaohongshu", "小红书"]);
+  // The survey form is region-specific: Feishu for zh, Google Forms for everyone else.
+  const SURVEY_URL_EN = "https://forms.gle/CTXZmG1WUgE9vPBm8";
+  const SURVEY_URL_ZH = "https://dynamia-ai.feishu.cn/share/base/form/shrcnI1cfFqgx3jWQ76U3HUhwhQ";
   const iconizedLinks = adjustedLinks?.map((group) => ({
     ...group,
-    items: group.items?.map((item) => {
+    items: group.items?.map((rawItem) => {
+      const item =
+        isZh && rawItem.href === SURVEY_URL_EN ? { ...rawItem, href: SURVEY_URL_ZH } : rawItem;
       const icon = iconMap[item.label];
-      if (!icon) {
+      const itemIcon = xhsLabels.has(item.label) ? (
+        <XiaohongshuIcon className={styles.footerItemIcon} />
+      ) : icon ? (
+        <FontAwesomeIcon icon={icon} className={styles.footerItemIcon} />
+      ) : null;
+      if (!itemIcon) {
         return item;
       }
       return {
         ...item,
         label: (
           <span className={styles.footerItemLabel}>
-            <FontAwesomeIcon icon={icon} className={styles.footerItemIcon} />
+            {itemIcon}
             <span>{item.label}</span>
           </span>
         ),

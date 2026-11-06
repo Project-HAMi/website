@@ -32,6 +32,11 @@ const contributorsData = [
     href: "https://www.yixincars.com",
   },
   {
+    logo: "/img/adopters/cetc.png",
+    logoZh: "/img/adopters/cetc-zh.png",
+    alt: "CETC Cloud",
+  },
+  {
     logo: "/img/contributors/huawei.svg",
     alt: "Huawei",
     href: "https://www.huawei.com",

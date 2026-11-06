@@ -4,6 +4,10 @@ sidebar_label: 分配显存
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="memMib" />
+
 要分配特定大小的 GPU 设备显存，你只需在 `nvidia.com/gpu` 之外分配 `nvidia.com/gpumem`。
 
 ```yaml
@@ -24,6 +28,6 @@ spec:
 
 :::note
 
-`nvidia.com/gpumem` 不能与 `nvidia.com/gpumem-percentage` 一起使用
+建议选择一种方式指定显存。若同时设置这两个参数，且 `nvidia.com/gpumem` 为大于 0 的整数，则显存申请量以 `nvidia.com/gpumem` 为准。详见[显存分配说明](../specify-device-memory-usage.md)。
 
 :::

@@ -5,6 +5,8 @@ translated: true
 
 通过指定资源如 `nvidia.com/gpumem` 来分配一定大小的设备显存。可选项，每个 `nvidia.com/gpumem` 单位等于 1M。
 
+请将 `nvidia.com/gpumem` 设置为不带单位后缀的非负整数。
+
 ```yaml
       resources:
         limits:
@@ -23,6 +25,6 @@ translated: true
 
 :::note
 
-`nvidia.com/gpumem` 和 `nvidia.com/gpumem-percentage` 不能同时分配
+建议选择一种方式指定显存。若同时设置这两个参数，且 `nvidia.com/gpumem` 为大于 0 的整数，则显存申请量以 `nvidia.com/gpumem` 为准；若它未设置或为 0，则使用有效的 `nvidia.com/gpumem-percentage` 计算显存申请量。
 
 :::

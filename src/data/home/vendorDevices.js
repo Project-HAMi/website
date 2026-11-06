@@ -7,6 +7,13 @@ const vendorDevices = [
     href: "https://www.nvidia.com",
   },
   {
+    key: "amd",
+    name: "AMD",
+    label: { en: "AMD", zh: "AMD" },
+    logo: "img/ecosystem/amd.svg",
+    href: "https://www.amd.com",
+  },
+  {
     key: "aws",
     name: "AWS",
     label: { en: "AWS Neuron", zh: "AWS Neuron" },
@@ -14,11 +21,11 @@ const vendorDevices = [
     href: "https://aws.amazon.com",
   },
   {
-    key: "ascend",
-    name: "Huawei Ascend",
-    label: { en: "Huawei Ascend", zh: "华为昇腾" },
-    logo: "img/contributors/ascend.svg",
-    href: "https://www.hiascend.com",
+    key: "biren",
+    name: "Biren",
+    label: { en: "Biren", zh: "壁仞科技" },
+    logo: "img/ecosystem/biren.svg",
+    href: "https://www.birentech.com",
   },
   {
     key: "cambricon",
@@ -33,6 +40,13 @@ const vendorDevices = [
     label: { en: "Enflame", zh: "燧原" },
     logo: "img/contributors/enflame.svg",
     href: "https://www.enflame-tech.com",
+  },
+  {
+    key: "ascend",
+    name: "Huawei Ascend",
+    label: { en: "Huawei Ascend", zh: "华为昇腾" },
+    logo: "img/contributors/ascend.svg",
+    href: "https://www.hiascend.com",
   },
   {
     key: "hygon",
@@ -75,20 +89,6 @@ const vendorDevices = [
     label: { en: "Vastai", zh: "瀚博半导体" },
     logo: "img/ecosystem/vaststream.jpg",
     href: "https://www.vastaitech.com",
-  },
-  {
-    key: "amd",
-    name: "AMD",
-    label: { en: "AMD", zh: "AMD" },
-    logo: "img/ecosystem/amd.svg",
-    href: "https://www.amd.com",
-  },
-  {
-    key: "biren",
-    name: "Biren",
-    label: { en: "Biren", zh: "壁仞科技" },
-    logo: "img/ecosystem/biren.svg",
-    href: "https://www.birentech.com",
   },
 ];
 

@@ -105,7 +105,7 @@ devicePlugin:
 helm install hami hami-charts/hami -n kube-system -f hami-tke-values.yaml
 ```
 
-`hami-device-plugin` 和 `hami-scheduler` 运行后，确认 HAMi 已注册 GPU。`devicePlugin.deviceSplitCount` 默认为 10，因此一张 T4 会上报 10 个 `nvidia.com/gpu`：
+`hami-device-plugin` 和 `hami-scheduler` 运行后，确认 HAMi 已注册 GPU。`devices.nvidia.deviceSplitCount` 默认为 10，因此一张 T4 会上报 10 个 `nvidia.com/gpu`：
 
 ```bash
 kubectl get node <node-name> -o jsonpath='{.status.allocatable.nvidia\.com/gpu}{"\n"}'

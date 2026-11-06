@@ -28,7 +28,7 @@ When a user job requests a certain number of `kunlunxin.com/xpu` resources, Kube
 ## Enabling Topology-Aware Scheduling
 
 - Deploy the Kunlunxin device plugin on P800 nodes. (Please contact your device vendor to obtain the appropriate package and documentation.)
-- Deploy HAMi according to the instructions in `README.md`.
+- Follow [Online installation](../../installation/online-installation.md). Configure HAMi through `devices.kunlun.*` in the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md); keep resource names consistent with the separately installed vendor plugin. Keep `devices.kunlun.enabled=true` (the default).
 
 ## Running Kunlunxin Jobs
 

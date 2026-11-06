@@ -7,6 +7,8 @@ sidebar_label: AMD Instinct vGPU
 
 This proposal adds per-pod **memory limiting** and **compute-unit (CU) partitioning** for AMD ROCm GPUs, so multiple pods can share one Instinct GPU.
 
+**Status.** This design is implemented. The device plugin is [amd-device-plugin](https://github.com/Project-HAMi/amd-device-plugin) and the memory library is [amd-hami-core](https://github.com/Project-HAMi/amd-hami-core). For setup and usage, see [Enable AMD GPU Sharing](../userguide/amd-device/enable-amd-gpu-sharing.md). Sections 6 to 8 below describe the state at the time of the proposal and are updated where the implementation changed them.
+
 ## 2. Goals
 
 - Fractional allocation by memory (`amd.com/gpumem`, MiB) and compute (`amd.com/gpucores`, percentage).
@@ -22,7 +24,7 @@ This proposal adds per-pod **memory limiting** and **compute-unit (CU) partition
 
 **WGP pairing and rollout scope.** ROCm documents that not every CU mask is valid on every device: on GPUs where two CUs form a Work Group Processor (WGP) and kernels run in WGP mode, disabling only one CU of a pair is invalid ([setting CUs](https://rocm.docs.amd.com/en/latest/reference/system-optimization/gpu-isolation.html)). WGP is an **RDNA** construct (GFX10+); HIP describes it under the RDNA hardware model ([HIP hardware implementation](https://rocm.docs.amd.com/projects/HIP/en/latest/understand/hardware_implementation.html)). **CDNA** devices (e.g. Instinct MI300X, `gfx942`) keep independent CUs and are not subject to that pairing rule.
 
-The design aims to support **all AMD ROCm GPU types**. Initial implementation starts on **non-WGP** devices (CDNA / Instinct), where CU ranges can be chosen without pair alignment. Support for WGP-capable (RDNA) devices follows later and must select CU masks in adjacent pairs so `HSA_CU_MASK` remains hardware-valid.
+The design aims to support **all AMD ROCm GPU types**. The first implementation started on **non-WGP** devices (CDNA / Instinct), where CU ranges can be chosen without pair alignment. WGP-capable (RDNA) devices are supported too: they select CU masks in adjacent pairs so `HSA_CU_MASK` remains hardware-valid (see section 6).
 
 ## 4. Protocol (scheduler `<->` device-plugin)
 
@@ -37,13 +39,14 @@ Registered under `hami.io/node-amd-register`, in JSON format, an array of `Devic
   {
     "id": "<device-id>",
     "index": 0,
-    "count": 1,
+    "count": 10,
     "devmem": 196608,
     "devcore": 304,
     "type": "AMD Instinct MI300X VF",
     "numa": 0,
-    "mode": "hami-core",
-    "health": true
+    "health": true,
+    "devicevendor": "amd",
+    "custominfo": { "pciBDF": "0000:83:00.0", "cuPerWGP": 1 }
   }
 ]
 ```
@@ -51,6 +54,9 @@ Registered under `hami.io/node-amd-register`, in JSON format, an array of `Devic
 - `devmem` = total device memory in MiB (e.g. 196608 for MI300X).
 - `devcore` = total CU count (e.g. 304 for MI300X).
 - `id` = device identifier.
+- `count` = how many pods may share the GPU (`-split_count`, by default 10, or 2 on gfx12).
+- `type` = the product name from AMD SMI (`amd-gpu` if AMD SMI reports none).
+- `custominfo` = extra fields such as the PCI address, `cuPerWGP`, the XGMI peers and the partition profiles; see [How AMD GPU sharing works](../userguide/amd-device/how-it-works.md#what-the-plugin-publishes).
 
 ### 4.2 Pod allocation (scheduler -> pod annotations -> Allocate)
 
@@ -113,12 +119,12 @@ The scheduler records this `cuCount` in `hami.io/amd-devices-allocated`. The dev
 
 - **No `amd-smi` / `rocm-smi` virtualization.** These read sysfs/drm, not HIP, so LD_AUDIT cannot intercept them; in-container tools may report physical resources.
 - **The CU mask is cooperative, not a security boundary.** `HSA_CU_MASK` is an environment variable read by ROCr at initialization, so a process that clears it before ROCr starts regains the full device. Unlike the memory limit, which the LD_AUDIT layer enforces at the HIP API boundary, CU partitioning holds only for workloads that leave the injected environment alone.
-- **Mixed GPU types are not supported on one node.** The device plugin derives the GPU type from `amd.com/gpu.product-name`, but this label cannot describe multiple GPU types.
-- **WGP-aware CU allocation is phased.** First ship CU partitioning on non-WGP devices (CDNA / Instinct). RDNA (GFX10+) devices need WGP pair alignment when building `HSA_CU_MASK` ([setting CUs](https://rocm.docs.amd.com/en/latest/reference/system-optimization/gpu-isolation.html)) and land in a follow-up.
+- **Mixed GPU types on one node are untested.** The device plugin registers each GPU's type from its AMD SMI product name, and the node was only run with one GPU model.
+- **WGP-aware CU allocation.** RDNA (GFX10+) devices need WGP pair alignment when building `HSA_CU_MASK` ([setting CUs](https://rocm.docs.amd.com/en/latest/reference/system-optimization/gpu-isolation.html)). The device plugin allocates whole WGPs and rounds a request up (3 CUs become 4), and publishes the pair size as `custominfo.cuPerWGP` so a scheduler that reads it books the same count. The scheduler side needs a HAMi release newer than v2.10.0.
 
 ## 7. Multi-GPU validation required
 
-The current MI300X VF test node has only one GPU. It verifies the single-device case, but cannot establish the mapping between a reordered visible-device list and `HSA_CU_MASK` entries for more than one GPU.
+The MI300X and MI325X VF test nodes have only one GPU. They verify the single-device case, but cannot establish the mapping between a reordered visible-device list and `HSA_CU_MASK` entries for more than one GPU. Multi-GPU scheduling (`amd.com/numa-bind`, `amd.com/link-bind`, the `topology-aware` policy) has been run only with a scheduler fed with simulated GPUs.
 
 On that node, ROCr accepted the container-local device index:
 
@@ -136,4 +142,4 @@ Before enabling multi-GPU workloads, validate on a node with at least two AMD GP
 
 ## 8. Discussion points
 
-- **Device-plugin layering.** In [HAMi#1707](https://github.com/Project-HAMi/HAMi/issues/1707), the AMD vGPU device-plugin is proposed to be built on ROCm/k8s-device-plugin, which already advertises whole-GPU `amd.com/gpu`. Since kubelet cannot register the same resource from two plugins, the natural path is to **extend the ROCm plugin** so a single plugin owns `amd.com/gpu` and also advertises the fractional `amd.com/gpumem` / `amd.com/gpucores` (optional, which is not a must-have for HAMi but can be useful for other schedulers).
+- **Device-plugin layering (resolved).** The project ships its own plugin, amd-device-plugin, which owns `amd.com/gpu` and also advertises the fractional resources. It must not run next to the upstream ROCm plugin on the same nodes, because kubelet refuses the second registration. The original discussion follows. In [HAMi#1707](https://github.com/Project-HAMi/HAMi/issues/1707), the AMD vGPU device-plugin is proposed to be built on ROCm/k8s-device-plugin, which already advertises whole-GPU `amd.com/gpu`. Since kubelet cannot register the same resource from two plugins, the natural path is to **extend the ROCm plugin** so a single plugin owns `amd.com/gpu` and also advertises the fractional `amd.com/gpumem` / `amd.com/gpucores` (optional, which is not a must-have for HAMi but can be useful for other schedulers).

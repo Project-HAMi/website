@@ -127,7 +127,12 @@ function addFigureNumbers(locale) {
   const prefix = locale === "zh" ? "图" : "Figure";
 
   // Find all images that are not logos or small icons
-  const images = Array.from(articleContent.querySelectorAll("img")).filter((img) => {
+  const allImages = Array.from(articleContent.querySelectorAll("img"));
+  const images = allImages.filter((img) => {
+    // A dark-only image joins the figure of its light twin instead of getting its own number
+    if ((img.getAttribute("src") || "").endsWith("#dark-only")) {
+      return false;
+    }
     // Re-run captioning when lazy/slow images complete loading
     if (!img.complete && !img.dataset.hasLoadListener) {
       img.dataset.hasLoadListener = "true";
@@ -176,6 +181,19 @@ function addFigureNumbers(locale) {
       figure.appendChild(targetElement);
     }
 
+    // Move the #dark-only image that directly follows a #light-only one into the same
+    // figure, so CSS can show one of them per theme under a single caption. Pair by
+    // position, since the build rewrites file names with a content hash.
+    const next = allImages[allImages.indexOf(img) + 1];
+    const darkTwin =
+      (img.getAttribute("src") || "").endsWith("#light-only") &&
+      (next?.getAttribute("src") || "").endsWith("#dark-only")
+        ? next
+        : null;
+    if (darkTwin && darkTwin.parentElement !== figure) {
+      img.after(darkTwin);
+    }
+
     // Find or create the <figcaption>, always overwriting its text so that
     // navigating between locales corrects stale captions from a previous run.
     let figcaption = figure.querySelector("figcaption");
@@ -191,11 +209,13 @@ function addFigureNumbers(locale) {
       text-align: center;
     `;
 
-    img.style.cssText = `
-      max-width: 100%;
-      height: auto;
-      border-radius: 8px;
-    `;
+    [img, darkTwin].filter(Boolean).forEach((el) => {
+      el.style.cssText = `
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+      `;
+    });
 
     figcaption.style.cssText = `
       margin-top: 0.8em;

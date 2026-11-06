@@ -1,8 +1,11 @@
 ---
 title: 选择你的方案
+description: 根据集群条件选择经典 HAMi 或 HAMi-DRA。如果已使用 Volcano 或 KAI Scheduler，可比较它们的 GPU 调度和隔离方式。
 sidebar_label: 选择你的方案
 translated: true
 ---
+
+import FeatureMatrix from '@site/src/components/FeatureSupport/Matrix';
 
 HAMi 有不止一种形态，旁边还有另外两个项目。本页回答大家最先问的问题：我该装哪一个？
 
@@ -61,3 +64,19 @@ HAMi 有不止一种形态，旁边还有另外两个项目。本页回答大家
 一个节点上只能有一个 device plugin 拥有 `nvidia.com/gpu`。安装 HAMi 的 device plugin 之前，请先移除或停用 NVIDIA 官方 device plugin。参见 [FAQ](../faq/faq.md)。
 
 :::
+
+## 各方案支持哪些功能
+
+上面两张表比较的是各方案的工作方式。下表列出它们各自支持哪些 NVIDIA GPU 功能，方便你在部署前确认。把鼠标移到状态上可以查看详情。
+
+<FeatureMatrix />
+
+状态说明：
+
+- **支持**：功能可以用。
+- **有限制**：功能可以用，但有需要注意的限制。
+- **不支持**：该方案无法实现这个功能。
+
+本表只覆盖 NVIDIA GPU。其他设备请参见 [HAMi 支持的设备](../userguide/device-supported.md)。
+
+表中内容已对照以下版本的源码核对：HAMi v2.11.0、HAMi-DRA v0.2.3、Volcano v1.16.0 搭配 volcano-vgpu-device-plugin、KAI Scheduler v0.18.7 搭配 kai-resource-isolator v1.1.0。

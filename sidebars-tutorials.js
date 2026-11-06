@@ -106,6 +106,16 @@ module.exports = {
           id: "labs/hami-ascend-vnpu-slicing",
           customProps: { level: "Intermediate", duration: "about 60 minutes" },
         },
+        {
+          type: "doc",
+          id: "labs/local-gpu-passthrough",
+          customProps: { level: "Advanced", duration: "about 120 minutes" },
+        },
+        {
+          type: "doc",
+          id: "labs/ascend-hami-dra",
+          customProps: { level: "Advanced", duration: "about 120 minutes" },
+        },
       ],
     },
   ],

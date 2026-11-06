@@ -1,6 +1,7 @@
 ---
 title: 排障手册
 translated: true
+description: 按故障现象查找 HAMi 设备插件和 GPU 工作负载的排障步骤，结合日志、Pod 事件和运行时配置定位原因并选择修复方法。
 ---
 
 ## GPU 显存限制未生效 {#gpu-memory-limit-not-enforced}

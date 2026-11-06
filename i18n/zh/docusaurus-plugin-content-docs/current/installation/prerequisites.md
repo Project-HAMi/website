@@ -1,5 +1,6 @@
 ---
 title: 前置条件
+description: 安装 HAMi 前核对集群要求，准备 NVIDIA 节点的驱动和容器运行时，或查找其他设备的准备指南。
 sidebar_label: 前置条件
 translated: true
 ---
@@ -17,17 +18,17 @@ translated: true
 | 设备 | 前置条件与配置入口 |
 | --- | --- |
 | NVIDIA GPU | [准备 NVIDIA GPU 节点](#准备-nvidia-gpu-节点) |
-| 华为昇腾 NPU | [先决条件](../userguide/ascend-device/enable-ascend-sharing.md#先决条件) |
 | AMD GPU | [节点需求](../userguide/amd-device/enable-amd-gpu-sharing.md#节点需求) |
-| 寒武纪 MLU | [节点需求](../userguide/cambricon-device/enable-cambricon-mlu-sharing.md#节点需求) |
-| 海光 HCU | [节点需求](../userguide/hygon-device/enable-hygon-hcu-sharing.md#节点需求) |
-| 摩尔线程 GPU | [节点需求](../userguide/mthreads-device/enable-mthreads-gpu-sharing.md#节点需求) |
-| 天数智芯 GPU | [前置条件](../userguide/iluvatar-device/enable-iluvatar-gpu-sharing.md#前置条件) |
-| 燧原 GCU | [节点需求](../userguide/enflame-device/enable-enflame-gcu-sharing.md#节点需求) |
 | AWS Neuron | [前提条件](../userguide/awsneuron-device/enable-awsneuron-managing.md#前提条件) |
+| 壁仞 GPU | [设备配置](../userguide/biren-device/enable-biren-sharing.md#使用壁仞设备) |
+| 寒武纪 MLU | [节点需求](../userguide/cambricon-device/enable-cambricon-mlu-sharing.md#节点需求) |
+| 燧原 GCU | [节点需求](../userguide/enflame-device/enable-enflame-gcu-sharing.md#节点需求) |
+| 华为昇腾 NPU | [先决条件](../userguide/ascend-device/enable-ascend-sharing.md#先决条件) |
+| 海光 HCU | [节点需求](../userguide/hygon-device/enable-hygon-hcu-sharing.md#节点需求) |
+| 天数智芯 GPU | [前置条件](../userguide/iluvatar-device/enable-iluvatar-gpu-sharing.md#前置条件) |
 | 昆仑芯 XPU | [整卡调度](../userguide/kunlunxin-device/enable-kunlunxin-schedule.md#前置条件) / [vXPU 共享](../userguide/kunlunxin-device/enable-kunlunxin-vxpu.md#前置条件) |
 | 沐曦 GPU | [整卡调度](../userguide/metax-device/metax-gpu/enable-metax-gpu-schedule.md#前提条件) / [sGPU 共享](../userguide/metax-device/metax-sgpu/enable-metax-gpu-sharing.md#需求) |
-| 壁仞 GPU | [设备配置](../userguide/biren-device/enable-biren-sharing.md#使用壁仞设备) |
+| 摩尔线程 GPU | [节点需求](../userguide/mthreads-device/enable-mthreads-gpu-sharing.md#节点需求) |
 | 瀚博半导体 | [设备配置](../userguide/vastai/enable-vastai-sharing.md#使用瀚博半导体设备) |
 
 ## 准备 NVIDIA GPU 节点
@@ -157,8 +158,10 @@ sudo ls -l /run/nvidia/validations/toolkit-ready
 GPU Operator 同时管理驱动和 Toolkit 时，将以下 HAMi values 保存为 `hami-nvidia-values.yaml`：
 
 ```yaml
+devices:
+  nvidia:
+    runtimeClassName: nvidia
 devicePlugin:
-  runtimeClassName: nvidia
   deviceListStrategy: envvar
   nvidiaDriverRoot: /run/nvidia/driver
   gpuOperatorToolkitReady:
@@ -167,7 +170,7 @@ devicePlugin:
 
 - 驱动由宿主机管理时，将 `devicePlugin.nvidiaDriverRoot` 设为 `/`。路径必须与节点实际目录一致。
 - Toolkit 由宿主机管理时，设置 `devicePlugin.gpuOperatorToolkitReady.enabled=false`。启用该选项会等待 Operator 的 Toolkit 就绪标记。
-- RuntimeClass 使用其他名称时，将 `devicePlugin.runtimeClassName` 设为对应名称。运行时由宿主机管理且已将 NVIDIA 设为默认运行时时，可省略此配置。
+- RuntimeClass 使用其他名称时，将 `devices.nvidia.runtimeClassName` 设为对应名称。运行时由宿主机管理且已将 NVIDIA 设为默认运行时时，可省略此配置。
 - 使用 CDI 时，按 [NVIDIA CDI 指南](./configure-cdi.md)设置参数，包括驱动根目录和实际的 `nvidia-ctk` hook 路径。
 
 ### 为节点打标签

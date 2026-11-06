@@ -3,6 +3,10 @@ title: 将任务分配给 MIG 实例
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="dynamicMig" />
+
 此 Pod 申请两个 MIG 设备，每个至少 8,000 MiB 显存。`nvidia.com/vgpu-mode: "mig"` 注解要求使用动态 MIG，可选的 `binpack` 策略则要求 HAMi 优先紧凑放置这些分配。
 
 ```yaml

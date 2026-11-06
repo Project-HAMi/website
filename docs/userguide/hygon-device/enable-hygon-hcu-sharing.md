@@ -29,6 +29,8 @@ The vendor-driven rename from DCU to HCU is a breaking change: the old DCU resou
 
 ## Enabling HCU-sharing Support
 
+Install HAMi using [Online installation](../../installation/online-installation.md). The vendor device plugin is installed separately as described below. HAMi-side resource names and device settings are under `devices.hygon.*` in the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md); keep resource names consistent with the plugin.
+
 - Deploy the [k8s-hcu-device-plugin](https://github.com/HYGON-AI/k8s-hcu-device-plugin) provided by Hygon. Follow the deployment instructions in its README.
 
 ## Running HCU jobs

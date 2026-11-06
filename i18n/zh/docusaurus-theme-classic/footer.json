@@ -27,12 +27,16 @@
     "message": "教程",
     "description": "The label of footer link with label=Tutorials linking to /tutorials"
   },
+  "link.item.label.Supported Devices": {
+    "message": "支持设备列表",
+    "description": "The label of footer link with label=Supported Devices linking to /docs/userguide/device-supported"
+  },
   "link.item.label.User Guide": {
     "message": "用户指南",
     "description": "The label of footer link with label=User Guide linking to /docs/userguide/configure"
   },
   "link.title.Community": {
-    "message": "社区",
+    "message": "加入社区",
     "description": "The title of the footer links column with title=Community in the footer"
   },
   "link.title.More": {
@@ -67,6 +71,10 @@
     "message": "微信入群",
     "description": "The label of footer link with label=WeChat Group linking to /community?wechat=group"
   },
+  "link.item.label.Community Survey": {
+    "message": "社区问卷",
+    "description": "The label of footer link with label=Community Survey linking to https://forms.gle/CTXZmG1WUgE9vPBm8"
+  },
   "link.item.label.WeChat Official Account": {
     "message": "公众号",
     "description": "The label of footer link with label=WeChat Official Account linking to /community?wechat=official"
@@ -98,5 +106,13 @@
   "link.item.label.Discord": {
     "message": "Discord",
     "description": "The label of footer link with label=Discord linking to https://discord.gg/Amhy7XmbNq"
+  },
+  "link.item.label.Xiaohongshu": {
+    "message": "小红书",
+    "description": "The label of footer link with label=Xiaohongshu linking to https://xhslink.cn/o/7BNNFxIwz40"
+  },
+  "link.title.Join Community": {
+    "message": "加入社区",
+    "description": "The title of the footer links column with title=Join Community in the footer"
   }
 }

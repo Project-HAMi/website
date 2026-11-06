@@ -2,6 +2,10 @@
 title: Assign task to a certain GPU
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="gpuUuid" />
+
 To assign a task to a certain GPU, you need only to assign the `nvidia.com/use-gpuuuid` in annotations field.
 
 ```yaml

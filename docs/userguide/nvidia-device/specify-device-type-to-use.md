@@ -2,6 +2,10 @@
 title: Assign to certain device type
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="gpuType" />
+
 ## Overview
 
 Sometimes a task may wish to run on a certain type of GPU, it can fill the `nvidia.com/use-gputype` field in pod annotation. HAMi scheduler will check if the device type returned from `nvidia-smi -L` contains the content of annotation.

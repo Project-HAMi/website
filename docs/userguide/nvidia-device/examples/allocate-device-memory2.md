@@ -3,6 +3,10 @@ title: Allocate a part of device memory by percentage to container
 sidebar_label: Allocate device memory by percentage
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="memPercent" />
+
 To allocate a certain size of GPU device memory by percentage, you need only to assign `nvidia.com/gpumem-percentage` besides `nvidia.com/gpu`.
 
 ```yaml
@@ -23,6 +27,6 @@ spec:
 
 :::note
 
-`nvidia.com/gpumem` cannot be used together with `nvidia.com/gpumem-percentage`
+Prefer specifying memory using one of these resources. If both are set and `nvidia.com/gpumem` is a positive integer, it takes precedence when determining the memory request. See [Allocate device memory](../specify-device-memory-usage.md) for details.
 
 :::

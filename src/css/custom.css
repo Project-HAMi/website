@@ -408,6 +408,16 @@ article.markdown img {
   cursor: zoom-in;
 }
 
+/* Themed images: foo.svg#light-only and foo-dark.svg#dark-only, one shown per theme */
+[data-theme="light"] img[src$="#dark-only"],
+[data-theme="dark"] img[src$="#light-only"] {
+  display: none;
+}
+
+[data-theme="dark"] img[src$="#dark-only"] {
+  background: transparent;
+}
+
 body.hami-lightbox-open {
   overflow: hidden;
 }
@@ -1602,17 +1612,6 @@ html.blog-post-page .theme-announcement-bar ~ .main-wrapper .tableOfContents_bqd
     text-align: left !important;
     margin-top: 0.5rem;
   }
-}
-
-.footer__col a,
-.footer__link-item {
-  text-decoration: none !important;
-}
-
-.footer__col a:hover,
-.footer__link-item:hover {
-  color: var(--ifm-color-primary) !important;
-  text-decoration: none !important;
 }
 
 /* --- Tutorials lab pages (plugin id: tutorials) ---
