@@ -15,9 +15,9 @@ function LinkLabel({ label }) {
   );
 }
 
+/** Preserve historical vendor-sidebar anchors when rendering links. */
 export default function DocSidebarItemLink({ item, onItemClick, activePath, level, ...props }) {
   const { href, label, className, autoAddBaseUrl, docId, customProps } = item;
-  // Historical vendor sidebars link back to a specific heading.
   const to = customProps?.anchor ? `${href}#${customProps.anchor}` : href;
   const isActive = isActiveSidebarItem(item, activePath);
   const isInternalLink = isInternalUrl(href);
