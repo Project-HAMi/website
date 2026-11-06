@@ -4,7 +4,9 @@ sidebar_label: Sharing benchmarks
 description: A100 measurements comparing native two-instance serving, HAMi, and MPS-based GPU sharing.
 ---
 
-This page compares HAMi with the open-source Run:ai GPU sharing path, KAI Scheduler + GPU Fractioning. It reports deployment throughput, an additional native two-instance baseline, and GPU execution fault probes. These measurements describe the tested configurations; they are not a general ranking of sharing backends.
+This page compares native vLLM serving, HAMi 2.10.0, and the open-source Run:ai path, KAI Scheduler + GPU Fractioning. The [NVIDIA Dynamo report](https://docs.nvidia.com/dynamo/dev/many-model-serving/interpreting-gpu-sharing-results) compares one native instance with two shared instances. Here, a native two-instance baseline also shows how two processes perform without a sharing layer.
+
+**Main finding:** in the fixed-KV Graph test, native throughput fell from 628.57 to 335.51 output tokens/s/GPU when moving from one instance to two. HAMi with a 50% compute quota reached 335.87, a +0.11% difference from the native pair. A roughly 50% drop against a single-instance baseline therefore cannot, by itself, be attributed to HAMi.
 
 ## Setup
 
@@ -17,11 +19,9 @@ The environment used 2× NVIDIA A100-SXM4-40GB, Ubuntu 24.04.5, driver 615.71.10
 | HAMi 2.10.0 pair | 2 | 20 GiB quota each | HAMi scheduler and device plugin; 50% compute quota per instance |
 | KAI 0.18.6 + GPU Fractioning 0.1.8 pair | 2 | 20 GiB quota each | MPS sm-sharing; no static SM partitioning |
 
-The native memory utilization setting is an engine planning budget, not a hard isolation boundary. The released GPU Fractioning configuration uses a shared MPS server; it is distinct from the custom KAI/GPU Fractioning forks used in the linked NVIDIA report. The separate controlled comparison below fixes the KV allocation.
+The native memory utilization setting is an engine planning budget, not a hard isolation boundary. The released GPU Fractioning configuration uses a shared MPS server; it is distinct from the custom KAI/GPU Fractioning forks used in the linked NVIDIA report.
 
 ## Performance results
-
-Comparison scope: independently measured GPU environments with matching GPU models and driver versions.
 
 ### Deployment comparison
 
@@ -34,7 +34,7 @@ The table shows **total concurrency 8 per GPU**. Throughput is output tokens/s/G
 | Graph | 693.67 | 335.67 | 336.52 | 100.25% | 438.59 | 130.66% |
 | Eager | 200.28 | 194.53 | 180.49 | 92.79% | 189.54 | 97.43% |
 
-[All measured loads and latency summaries (CSV)](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fullstack.csv).
+[All measured loads and latency summaries (CSV)](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fullstack.csv) · [Compute-limiting-disabled reference (CSV)](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fullstack-unlimited.csv).
 
 ### Same-parameter comparison
 
@@ -53,17 +53,15 @@ Throughput is the mean ± sample standard deviation of the sum of instance throu
 | Eager | HAMi pair (50%) |       181.67 ± 1.32 |   426.37 |   671.97 |    42.54 |    43.68 |
 | Eager | Legacy MPS pair |       188.51 ± 0.73 |   311.23 |   500.70 |    41.37 |    42.55 |
 
-HAMi differed from the native pair by +0.11% with Graph and -2.22% with Eager. Native Graph throughput changed from 628.57 for a single instance to 335.51 for a pair. A single-instance baseline alone cannot attribute that deployment effect to HAMi.
-
 Legacy MPS windows did not fully overlap: summed instance throughput was 449.36 tokens/s/GPU, versus 399.28 over a common elapsed-time window. Using the common window, Graph throughput was 334.50 for the native pair and 334.97 for the HAMi pair (50%).
 
-[Controlled summaries](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/controlled.csv) and [50% client trials](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/hami-50pct-trials.csv).
+[Controlled summaries](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/controlled.csv) · [Compute-limiting-disabled reference](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/controlled-unlimited.csv) · [50% client trials](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/hami-50pct-trials.csv).
 
 ## Fault isolation results
 
-Direct CUDA probes placed a fault injector and a healthy process on GPU 0, with another healthy process on GPU 1. The healthy probes replayed a CUDA Graph and verified output values. Each scenario ran twice, observing 3 seconds before and at least 6 seconds after injection. The MPS v3 shared-server configuration enabled memacct and context-share, following GPU Fractioning 0.1.8's execution mechanism. This tested GPU fault propagation, not KAI, GPU Fractioning, or vLLM service recovery.
+Direct CUDA probes placed a fault injector and a healthy process on GPU 0, with another healthy process on GPU 1. The healthy probes replayed a CUDA Graph and verified output values. Each scenario ran twice, observing 3 seconds before and at least 6 seconds after injection. The MPS v3 shared-server configuration enabled memacct and context-share, following GPU Fractioning 0.1.8's execution mechanism.
 
-The HAMi fault configuration used a 20 GiB quota with compute limiting disabled. The additional static API configuration reported 54 SMs per same-GPU client and distinct partition IDs. The table counts trials in which the **same-GPU healthy process continued producing correct results**.
+**HAMi in the result tables:** performance tests used a 50% compute quota; fault tests disabled compute limiting. Both used a 20 GiB memory quota per instance. The additional static API configuration reported 54 SMs per same-GPU client and distinct partition IDs. The table counts trials in which the **same-GPU healthy process continued producing correct results**.
 
 | Injected event | Native processes | HAMi processes | MPS v3 shared | MPS v3 tested static configuration |
 | --- | --: | --: | --: | --: |
@@ -73,25 +71,33 @@ The HAMi fault configuration used a 20 GiB quota with compute limiting disabled.
 | SIGKILL during GPU work | 2/2 | 2/2 | 0/2 | 0/2 |
 | MPS client terminate | N/A | N/A | 2/2 | 2/2 |
 
-All other-GPU controls remained healthy, across 36 trials. In the MPS cases, the same-GPU peer reported error 700 for illegal writes and unsynchronized SIGKILL, or 719 for traps. Safe MPS client termination did not affect the peer. Oversized allocation requested twice the visible capacity; this was allocation rejection, not a sustained memory-pressure test. Continued correctness does not imply absence of latency interference. [Fault counts, errors, and maximum sample gaps (CSV)](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fault-isolation.csv).
+All other-GPU controls remained healthy, across 36 trials. In the MPS cases, the same-GPU peer reported error 700 for illegal writes and unsynchronized SIGKILL, or 719 for traps. Safe MPS client termination did not affect the peer. The formal oversized-allocation case requested twice the visible capacity. A separate HAMi preflight checked that a 21 GiB request was rejected against the 20 GiB quota. These checks test allocation rejection, not sustained memory pressure. [Fault counts, errors, and maximum sample gaps (CSV)](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fault-isolation.csv).
 
-These observations apply to this A100/driver/server configuration and these injected events. They do not establish a general security boundary for HAMi, native contexts, or MPS, and do not test GPU reset or hardware failures. The static experiment verified API-visible allocation, not independent physical SM disjointness. NVIDIA documents [limited MPS error containment and safe client termination](https://docs.nvidia.com/deploy/mps/latest/when-to-use-mps.html), and [partial error isolation with static SM partitions](https://docs.nvidia.com/deploy/mps/latest/common-tasks.html#using-static-sm-partitioning); isolation depends on the driver, fault type, and configuration.
+These probes measure GPU fault propagation; they do not test service recovery, latency isolation, tenant security, GPU reset, or hardware failures. The static experiment verified API-visible allocation; it did not independently prove physical SM disjointness. See NVIDIA’s descriptions of [MPS error containment and safe termination](https://docs.nvidia.com/deploy/mps/latest/when-to-use-mps.html) and [static SM partitioning](https://docs.nvidia.com/deploy/mps/latest/common-tasks.html#using-static-sm-partitioning).
 
-## Reading the baselines
+## What the measurements show
 
-The [NVIDIA Dynamo report](https://docs.nvidia.com/dynamo/dev/many-model-serving/interpreting-gpu-sharing-results) compares one native instance with two shared instances at equal total requests per GPU. That baseline measures the throughput retained when deployment density increases. A native pair answers an additional question: how much throughput changes when a sharing layer is added to the same two-instance placement.
+- **Performance:** GPU Fractioning and legacy MPS delivered higher Graph throughput than the native pair in their respective tests. HAMi's Eager throughput was 7.21% below the native pair in the deployment comparison and 2.22% below it with fixed KV.
+- **Fault propagation:** native and HAMi peers remained correct during the tested illegal-write, trap, and unsynchronized SIGKILL events. MPS v3 peers on the same GPU failed in those cases. The legacy v2 MPS performance test and MPS v3 fault probes use different configurations.
 
-Both comparisons are useful. A roughly 50% difference from a single-instance baseline is not, by itself, a measurement of HAMi's additional overhead. Conversely, a small HAMi-to-native-pair difference does not remove the cost of splitting a workload into two instances or imply equivalence across models and loads. The two-GPU release measurements here should not be pooled numerically with NVIDIA's eight-GPU fork measurements.
+:::note Planned MPS support
 
-## Backend choice and planned MPS support
-
-Select a backend against measured throughput, TTFT/TPOT targets, tenant trust, acceptable same-GPU fault impact, and recovery behavior. MPS improved Graph throughput for the tested shared workload; independent native and HAMi processes contained the injected process faults in the tested cases. Memory quotas, SM allocation, execution fault containment, and security isolation are separate properties.
-
-:::note Planned support
-
-Optional MPS support is planned for HAMi v2.12, subject to implementation and validation. The intent is to let users select a sharing mode for their workload and isolation requirements. These results characterize the configurations above, not the future HAMi MPS integration.
+HAMi plans optional MPS support for v2.12, subject to implementation and validation. The results above do not characterize that future integration.
 
 :::
+
+## Test scope
+
+All runs used the GPU model and driver listed above. Sets A, B, and C denote different physical GPU pairs, identified by UUID.
+
+| Collection date (UTC, 2026) | Test groups | GPU set |
+| --- | --- | --- |
+| November 2 | Deployment comparison: native single, GPU Fractioning, and HAMi with compute limiting disabled | A |
+| November 3 | Fixed-KV comparison: native single, native pair, legacy MPS, and HAMi with compute limiting disabled | A |
+| November 4 | Native-pair deployment comparison and all fault probes | B |
+| November 5 | HAMi 50% performance tests: deployment and fixed-KV comparisons | C |
+
+The results cover this model and the stated loads. Cross-set ratios can include GPU variation and do not isolate sharing-layer overhead. NVIDIA's eight-GPU measurements using custom branches are a separate experiment.
 
 ## Reproduction scripts
 
