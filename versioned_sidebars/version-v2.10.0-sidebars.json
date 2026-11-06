@@ -556,6 +556,8 @@
       "items": [
         "userguide/nvidia-device/specify-device-memory-usage",
         "userguide/nvidia-device/specify-device-core-usage",
+        "userguide/nvidia-device/gpu-sharing-benchmarks",
+        "userguide/nvidia-device/gpu-sharing-reproduction",
         "userguide/nvidia-device/specify-device-type-to-use",
         "userguide/nvidia-device/specify-device-uuid-to-use",
         "userguide/nvidia-device/scheduling-policy",
