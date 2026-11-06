@@ -1,6 +1,7 @@
 ---
 title: GPU sharing benchmark reproduction
 sidebar_label: Benchmark reproduction
+description: Reproduce A100 GPU sharing performance and fault probes with native serving, HAMi, and GPU Fractioning.
 ---
 
 This guide is the canonical setup and execution reference for the [A100 benchmark report](./gpu-sharing-benchmarks.md). Run commands from the benchmark repository root. Host paths, GPU UUIDs, and case selection are configurable; `provenance.json` records the collector source hashes.
@@ -41,7 +42,7 @@ Copy `config.example.json` to a separate local configuration. Set the actual nod
 python3 prepare.py --config config.json --out /var/tmp/hami-sharing-run
 ```
 
-Preparation writes manifests and plans without contacting Kubernetes or accessing a GPU. It refuses to overwrite an existing directory. Total concurrency per GPU is 2, 4, 8, 16, and 32; paired deployments receive half that concurrency per instance. The controlled comparison uses total concurrency 8 only.
+Preparation writes manifests and plans without contacting Kubernetes or accessing a GPU. It refuses to overwrite an existing directory. Total concurrency per GPU is 2, 4, 8, 16, and 32; paired deployments receive half that concurrency per instance. The controlled comparison uses total concurrency 8 only. The default preparation disables HAMi compute limiting for the unlimited references and fault tests; the main report’s 50% performance configuration is shown below.
 
 ## Select the platform for each arm
 
@@ -89,10 +90,11 @@ python3 reproduce.py --root /var/tmp/hami-sharing-run --profile mps-controlled
 
 ## 50% compute-quota configuration
 
-Create a separate preparation:
+Create a separate configuration with a fresh `namespace_prefix` of at most 19 lowercase DNS-label characters. A different output directory alone does not change Kubernetes namespace names. The pinned fullstack collector leaves its namespace after removing workloads, so do not reuse a prefix from an earlier run.
 
 ```bash
-python3 prepare.py --config config.json --out /var/tmp/hami-sharing-50pct --hami-core-limit 50
+jq '.namespace_prefix = "sharing-bench-50pct"' config.json > config.50pct.json
+python3 prepare.py --config config.50pct.json --out /var/tmp/hami-sharing-50pct --hami-core-limit 50
 ```
 
 Install HAMi using `platform/hami-50pct-values.yaml` before running its performance cases. This enables core limiting; generated HAMi workers request `nvidia.com/gpucores: 50`. Use separate output directories for each configuration. Runtime checks confirm the selected quota before accepting results. The HAMi fault profile uses compute limiting disabled.
@@ -114,7 +116,7 @@ python3 reproduce.py --root /var/tmp/hami-sharing-run --profile fault
 python3 reproduce.py --root /var/tmp/hami-sharing-run --profile hami-fault
 ```
 
-The second command first checks the released HAMi library hash, hook locations, 20 GiB memory reporting, and rejection of a 21 GiB allocation. It then runs eight fresh-Pod cases and joins them with the native/MPS reference. Machine-readable results are in each fault directory's `aggregate.json` and `conditions.csv`.
+The second command first checks the released HAMi library hash, hook locations, 20 GiB memory reporting, and rejection of a 21 GiB allocation. This is the quota preflight. It then runs eight formal fresh-Pod fault cases, including oversized allocations of twice the visible capacity, and joins them with the native/MPS reference. Machine-readable results are in each fault directory's `aggregate.json` and `conditions.csv`.
 
 ## Recompute performance summaries
 
@@ -129,7 +131,16 @@ Use `--allow-partial` while other cases are still pending. The summary rejects i
 
 ## Published results
 
-Aggregated CSVs are stored in the benchmark repository at [results/2026-11-a100-sharing/](https://github.com/Project-HAMi/gpu-sharing-benchmarks/tree/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing). The report links the same snapshot.
+All CSVs are stored in the benchmark repository at [results/2026-11-a100-sharing/](https://github.com/Project-HAMi/gpu-sharing-benchmarks/tree/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing). The main report uses the 50% HAMi performance rows; the `*-unlimited.csv` files retain the compute-limiting-disabled comparisons.
+
+| File | Contents |
+| --- | --- |
+| [fullstack.csv](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fullstack.csv) | Deployment throughput and latency at all five loads; HAMi uses 50% compute |
+| [controlled.csv](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/controlled.csv) | Fixed-KV comparison at total concurrency 8; HAMi uses 50% compute |
+| [hami-50pct-trials.csv](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/hami-50pct-trials.csv) | Individual HAMi 50% fixed-KV client trials |
+| [fullstack-unlimited.csv](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fullstack-unlimited.csv) | Deployment comparison with HAMi compute limiting disabled |
+| [controlled-unlimited.csv](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/controlled-unlimited.csv) | Fixed-KV comparison with HAMi compute limiting disabled |
+| [fault-isolation.csv](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fault-isolation.csv) | CUDA fault counts and error codes; HAMi compute limiting disabled |
 
 ## Source and validation
 

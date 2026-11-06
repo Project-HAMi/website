@@ -5,7 +5,9 @@ description: 基于 A100 实测，对比原生双实例、HAMi 与基于 MPS 的
 translated: true
 ---
 
-本文对比 HAMi 与 Run:ai 的开源 GPU 共享路径（KAI Scheduler + GPU Fractioning），展示部署吞吐、原生双实例基线和 GPU 执行故障的传播范围。结论仅适用于本次测试配置。
+本文对比原生 vLLM、HAMi 2.10.0 与 Run:ai 的开源路径 KAI Scheduler + GPU Fractioning。[NVIDIA Dynamo 报告](https://docs.nvidia.com/dynamo/dev/many-model-serving/interpreting-gpu-sharing-results)比较原生单实例与共享双实例；本文增加原生双实例基线，展示不引入共享层时，两个进程运行在同一张卡上的性能。
+
+**核心发现：**固定 KV 的 Graph 测试中，原生从单实例变为双实例，吞吐由 628.57 降至 335.51 输出 tokens/s/GPU；HAMi 50% 算力双实例为 335.87，相对原生双实例差异为 +0.11%。因此，相对单实例下降约 50%，不能直接归因于 HAMi。
 
 ## 测试环境
 
@@ -18,11 +20,9 @@ translated: true
 | HAMi 2.10.0 双实例 | 2 | 每实例 20 GiB 配额 | HAMi 自身调度器与设备插件；每实例 50% 算力配额 |
 | KAI 0.18.6 + GPU Fractioning 0.1.8 双实例 | 2 | 每实例 20 GiB 配额 | MPS sm-sharing；未启用静态 SM 分区 |
 
-原生实例的显存利用率是引擎规划预算，不构成硬隔离边界。这里采用发布版 GPU Fractioning 的共享 MPS 服务，与 NVIDIA 报告中的定制 KAI/GPU Fractioning 分支不同。下文另有固定 KV 容量的同参数对照。
+原生实例的显存利用率是引擎规划预算，不构成硬隔离边界。这里采用发布版 GPU Fractioning 的共享 MPS 服务，与 NVIDIA 报告中的定制 KAI/GPU Fractioning 分支不同。
 
 ## 性能结果
-
-对照口径：GPU 型号、驱动版本相同，使用独立 GPU 环境采集。
 
 ### 全栈部署对比
 
@@ -35,7 +35,7 @@ translated: true
 | Graph | 693.67 | 335.67 | 336.52 | 100.25% | 438.59 | 130.66% |
 | Eager | 200.28 | 194.53 | 180.49 | 92.79% | 189.54 | 97.43% |
 
-[完整并发与延迟数据（CSV）](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fullstack.csv)。
+[完整并发与延迟数据（CSV）](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fullstack.csv) · [未启用算力限制的参考数据（CSV）](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fullstack-unlimited.csv)。
 
 ### 同参数对照
 
@@ -54,17 +54,15 @@ translated: true
 | Eager | HAMi 双实例（50%） |     181.67 ± 1.32 |   426.37 |   671.97 |    42.54 |    43.68 |
 | Eager | Legacy MPS 双实例  |     188.51 ± 0.73 |   311.23 |   500.70 |    41.37 |    42.55 |
 
-HAMi 相对原生双实例的 Graph 吞吐差异为 +0.11%，Eager 为 -2.22%。原生 Graph 从单实例的 628.57 降至双实例的 335.51，不能仅凭单实例基线将这部分部署变化归因于 HAMi。
-
 Legacy MPS 各实例的测量窗口未完全重叠：各窗口吞吐求和为 449.36，使用统一墙钟窗口则为 399.28 tokens/s/GPU。同一口径下，Graph 模式的原生双实例为 334.50，HAMi 双实例（50%）为 334.97。
 
-[同参数对照汇总](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/controlled.csv)、[50% 算力逐轮结果](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/hami-50pct-trials.csv)。
+[同参数对照汇总](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/controlled.csv) · [未启用算力限制的参考数据](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/controlled-unlimited.csv) · [50% 算力逐轮结果](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/hami-50pct-trials.csv)。
 
 ## 故障隔离结果
 
-直接 CUDA 探针在 GPU 0 上放置故障注入进程与健康进程，在 GPU 1 上放置健康对照。健康探针持续重放 CUDA Graph 并校验输出。每场景测两次，观察注入前 3 秒及注入后至少 6 秒。MPS v3 共享服务启用 memacct、context-share，参照 GPU Fractioning 0.1.8 的执行机制；这里测试 GPU 执行故障传播，不代表 KAI、GPU Fractioning 或 vLLM 的服务恢复能力。
+直接 CUDA 探针在 GPU 0 上放置故障注入进程与健康进程，在 GPU 1 上放置健康对照。健康探针持续重放 CUDA Graph 并校验输出。每场景测两次，观察注入前 3 秒及注入后至少 6 秒。MPS v3 共享服务启用 memacct、context-share，参照 GPU Fractioning 0.1.8 的执行机制。
 
-HAMi 故障组配置为每实例 20 GiB，未启用算力限制。额外的静态 API 配置显示，同卡客户端各可见 54 SM，且分区 ID 不同。表内计数为**同卡健康进程持续产生正确结果的次数 / 试验总次数**。
+**主表的 HAMi 配置：**性能测试启用 50% 算力配额，故障测试关闭算力限制；两者均为每实例 20 GiB 显存配额。额外的静态 API 配置显示，同卡客户端各可见 54 SM，且分区 ID 不同。表内计数为**同卡健康进程持续产生正确结果的次数 / 试验总次数**。
 
 | 注入事件             | 原生多进程 | HAMi 多进程 | MPS v3 共享 | MPS v3 所测静态配置 |
 | -------------------- | ---------: | ----------: | ----------: | ------------------: |
@@ -74,25 +72,33 @@ HAMi 故障组配置为每实例 20 GiB，未启用算力限制。额外的静�
 | GPU 工作中 SIGKILL   |        2/2 |         2/2 |         0/2 |                 0/2 |
 | MPS client terminate |     不适用 |      不适用 |         2/2 |                 2/2 |
 
-36 次试验的异卡对照均保持正常。MPS 同卡健康进程在非法写入和未同步 SIGKILL 场景报错 700，在 trap 场景报错 719；安全终止 MPS 客户端未影响同卡进程。超额显存申请为可见容量的两倍，验证的是申请被拒绝，不是持续显存压力。持续正确运行也不意味着没有延迟抖动。[故障计数、错误码与最大采样间隔（CSV）](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fault-isolation.csv)。
+36 次试验的异卡对照均保持正常。MPS 同卡健康进程在非法写入和未同步 SIGKILL 场景报错 700，在 trap 场景报错 719；安全终止 MPS 客户端未影响同卡进程。正式超额显存用例申请可见容量的两倍；独立的 HAMi 配额预检则验证 20 GiB 配额下的 21 GiB 申请被拒绝。两者验证的都是申请被拒绝，不是持续显存压力。[故障计数、错误码与最大采样间隔（CSV）](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fault-isolation.csv)。
 
-结果限于本次 A100、驱动、服务配置和注入事件，不构成对 HAMi、原生上下文或 MPS 的通用安全边界保证，也未测试 GPU reset 或硬件故障。静态组核验了 API 可见分配，未独立证明物理 SM 不重叠。NVIDIA 文档说明了 [MPS 的有限错误隔离与安全终止机制](https://docs.nvidia.com/deploy/mps/latest/when-to-use-mps.html)，以及[静态 SM 分区的部分错误隔离能力](https://docs.nvidia.com/deploy/mps/latest/common-tasks.html#using-static-sm-partitioning)；隔离效果取决于驱动、故障类型和配置。
+这些探针只测 GPU 故障传播，未测服务恢复、延迟隔离、租户安全、GPU reset 或硬件故障。静态组核验了 API 可见分配，未独立证明物理 SM 不重叠。机制说明见 NVIDIA 的 [MPS 错误隔离与安全终止文档](https://docs.nvidia.com/deploy/mps/latest/when-to-use-mps.html)和[静态 SM 分区文档](https://docs.nvidia.com/deploy/mps/latest/common-tasks.html#using-static-sm-partitioning)。
 
-## 如何理解基线
+## 实测结论
 
-[NVIDIA Dynamo 报告](https://docs.nvidia.com/dynamo/dev/many-model-serving/interpreting-gpu-sharing-results)在每卡总并发相同的条件下，比较原生单实例与共享双实例，衡量提高部署密度后的整体吞吐变化。增加原生双实例基线，则可以进一步观察：同样部署两个实例时，引入共享层后结果如何变化。
+- **性能：**GPU Fractioning 和 legacy MPS 在各自的 Graph 性能测试中高于原生双实例。HAMi 的 Eager 吞吐在全栈对比中低于原生双实例 7.21%，固定 KV 对照中低 2.22%。
+- **故障传播：**在非法写入、trap、GPU 工作中未同步 SIGKILL 场景中，原生与 HAMi 的同卡健康进程持续正确运行，MPS v3 的同卡进程受到影响。Legacy v2 MPS 性能测试与 MPS v3 故障探针使用不同配置。
 
-两种比较各有用途。“相对单实例下降约 50%”本身不能直接解释为 HAMi 的额外损耗。HAMi 与原生双实例接近，也不意味着拆分实例没有代价，或其他模型、并发下结果相同。本文的两卡发布版数据与 NVIDIA 的八卡定制分支数据应分别解读。
+:::note MPS 支持计划
 
-## 方案选择与 MPS 支持计划
-
-选择方案时，应同时考虑吞吐、TTFT/TPOT 目标、租户信任程度、可接受的同卡故障影响范围和恢复方式。本次共享负载下，MPS 的 Graph 吞吐更高；原生与 HAMi 的独立进程配置在所测事件中保住了同卡健康进程。显存配额、SM 分配、执行故障隔离与安全隔离是不同属性。
-
-:::note 支持计划
-
-HAMi 计划在 v2.12 提供可选 MPS 支持，具体以实现与验证为准，让用户按负载和隔离要求选择共享模式。本文结果不代表未来 HAMi MPS 集成的测试结论。
+HAMi 计划在 v2.12 提供可选 MPS 支持，具体以实现与验证为准。本文结果不代表未来集成的测试结论。
 
 :::
+
+## 测试范围
+
+各组使用前述 GPU 型号和驱动。A、B、C 表示三组不同的物理 GPU，已按 UUID 区分。
+
+| 采集日期（UTC，2026 年） | 测试组 | GPU 组 |
+| --- | --- | --- |
+| 11 月 2 日 | 全栈：原生单实例、GPU Fractioning、未启用算力限制的 HAMi | A |
+| 11 月 3 日 | 固定 KV：原生单实例、原生双实例、legacy MPS、未启用算力限制的 HAMi | A |
+| 11 月 4 日 | 原生双实例全栈、全部故障探针 | B |
+| 11 月 5 日 | HAMi 50% 性能：全栈与固定 KV 对照 | C |
+
+结果适用于本次模型和并发。跨 GPU 组的比值可能包含硬件差异，不能单独衡量共享组件的额外开销。NVIDIA 的八卡定制分支测试应单独解读。
 
 ## 复现脚本
 
