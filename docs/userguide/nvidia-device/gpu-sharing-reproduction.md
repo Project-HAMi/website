@@ -4,7 +4,7 @@ sidebar_label: Benchmark reproduction
 description: Reproduce A100 GPU sharing performance and fault probes with native serving, HAMi, and GPU Fractioning.
 ---
 
-This guide is the canonical setup and execution reference for the [A100 benchmark report](./gpu-sharing-benchmarks.md). Run commands from the benchmark repository root. Host paths, GPU UUIDs, and case selection are configurable; `provenance.json` records the collector source hashes.
+See the [benchmark report](./gpu-sharing-benchmarks.md) for results.
 
 ## Get the benchmark code
 
@@ -15,16 +15,16 @@ cd gpu-sharing-benchmarks
 
 ## Environment
 
-Run collectors on a dedicated Linux GPU node. They deploy and remove benchmark namespaces, start and stop scoped MPS servers, and inject GPU execution faults. The published setup used:
+Use a dedicated Linux GPU node with:
 
 - Two A100-SXM4-40GB GPUs, 108 SMs each, driver 615.71.10, and CUDA 13.4 MPS tools.
 - Ubuntu 24.04.5, single-node K3s 1.37.1+k3s1, NVIDIA Container Toolkit 1.20.1, NVIDIA RuntimeClass `nvidia`, and CDI device selection.
-- Dynamo platform 1.6.1 with etcd and NATS. Workload containers are pinned by digest in the templates.
+- Dynamo platform 1.6.1 with etcd and NATS.
 - HAMi 2.10.0, or KAI 0.18.6 with GPU Fractioning 0.1.8, depending on the selected arm.
 - Python 3.11 or later, AIPerf 0.13.0, `kubectl`, `helm`, `jq`, `curl`, `vmstat`, and passwordless `sudo` for the fault/MPS profiles.
-- A non-root GPU client UID/GID of 1000. The legacy MPS server runs under this UID; v3 fault servers run as root with multiuser mode, matching the recorded configuration.
+- A non-root GPU client UID/GID of 1000. The legacy MPS server runs under this UID; v3 fault servers run as root with multiuser mode.
 
-Use the [Dynamo GPU-sharing setup guide](https://github.com/ai-dynamo/dynamo/tree/v1.6.1/examples/gpu-sharing) to provision the platform and model cache, selecting platform 1.6.1 and AIPerf 0.13.0 rather than its older example defaults. Cache `Qwen/Qwen3-4B` revision `1cfa9a7208912126459214e8b04321603b3df60c` under `/opt/hf-cache/hub`. Workers use the pinned snapshot path and offline mode. The load generator runs on the GPU node and connects to ClusterIP services.
+Follow the [Dynamo GPU-sharing setup guide](https://github.com/ai-dynamo/dynamo/tree/v1.6.1/examples/gpu-sharing) using Dynamo 1.6.1 and AIPerf 0.13.0. Cache `Qwen/Qwen3-4B` revision `1cfa9a7208912126459214e8b04321603b3df60c` under `/opt/hf-cache/hub`. Run the load generator on the GPU node, connecting to ClusterIP services.
 
 ```bash
 python3 -m venv /var/tmp/aiperf-013
@@ -33,19 +33,19 @@ python3 -m venv /var/tmp/aiperf-013
 
 Set `aiperf_executable` in the local configuration to `/var/tmp/aiperf-013/bin/aiperf`. Install the sharing stacks from [HAMi 2.10.0](https://github.com/Project-HAMi/HAMi/tree/v2.10.0/charts/hami) and [GPU Fractioning 0.1.8](https://github.com/kai-scheduler/gpu-fractioning/tree/v0.1.8), using KAI 0.18.6 for the latter.
 
-## Prepare without a GPU
+## Generate the test configuration
 
-Copy `config.example.json` to a separate local configuration. Set the actual node name, two GPU UUIDs from `nvidia-smi --query-gpu=uuid --format=csv,noheader`, AIPerf executable, and model-cache path. `KUBECONFIG` and the current kubectl context are inherited.
+Copy `config.example.json` to `config.json` and set the node name, two GPU UUIDs, AIPerf executable, and model-cache path. Query GPU UUIDs with `nvidia-smi --query-gpu=uuid --format=csv,noheader`.
 
 ```bash
 python3 prepare.py --config config.json --out /var/tmp/hami-sharing-run
 ```
 
-Preparation writes manifests and plans without contacting Kubernetes or accessing a GPU. It refuses to overwrite an existing directory. Total concurrency per GPU is 2, 4, 8, 16, and 32; paired deployments receive half that concurrency per instance. The controlled comparison uses total concurrency 8 only. The default preparation disables HAMi compute limiting for the unlimited references and fault tests; the main report’s 50% performance configuration is shown below.
+Fullstack tests use total concurrency 2, 4, 8, 16, and 32 per GPU; paired instances each receive half. The controlled comparison uses total concurrency 8. HAMi compute limiting is disabled by default; the 50% performance configuration is shown below.
 
 ## Select the platform for each arm
 
-Only run a case after installing the corresponding sharing stack. Stock NVIDIA and HAMi device plugins must not advertise the same physical devices simultaneously.
+Stock NVIDIA and HAMi device plugins must not advertise the same physical devices simultaneously.
 
 | Cases | Required platform |
 | --- | --- |
@@ -57,11 +57,11 @@ Only run a case after installing the corresponding sharing stack. Stock NVIDIA a
 | Native/MPS fault matrix | GPU Fractioning stopped; collector manages its own v3 MPS servers |
 | HAMi fault tests | HAMi scheduler/device plugin 2.10.0; no MPS |
 
-Use `platform/hami-50pct-values.yaml` for a 50% compute quota and 20 GiB memory per instance. `platform/hami-fullstack-values.yaml` and `platform/hami-controlled-values.yaml` configure the same memory quota with compute limiting disabled. Apply the selected values with the official HAMi 2.10.0 chart. Label the node `gpu=on`; the webhook is scoped to benchmark-managed namespaces. For GPU Fractioning, configure the KAI `default-queue` and `gpu-compute.mode: sm-sharing` as in the released operator guide.
+Use `platform/hami-50pct-values.yaml` for a 50% compute quota and 20 GiB memory per instance. `platform/hami-fullstack-values.yaml` and `platform/hami-controlled-values.yaml` configure the same memory quota with compute limiting disabled. Apply the selected values with the official HAMi 2.10.0 chart and label the node `gpu=on`. For GPU Fractioning, configure the KAI `default-queue` and `gpu-compute.mode: sm-sharing` as in the released operator guide.
 
 ## Run performance cases
 
-After selecting the required platform, run individual fullstack cases:
+Run the fullstack cases:
 
 ```bash
 python3 reproduce.py --root /var/tmp/hami-sharing-run --profile fullstack --case native-default --case native-eager
@@ -71,7 +71,7 @@ python3 reproduce.py --root /var/tmp/hami-sharing-run --profile fullstack --case
 python3 reproduce.py --root /var/tmp/hami-sharing-run --profile fullstack --case fractions-default --case fractions-eager
 ```
 
-The fullstack cases preserve automatic KV allocation and default prefix caching. Eager adds only `--enforce-eager`. The native-pair deployment initializes one instance per GPU before the second instance to avoid concurrent memory-profiling races:
+Fullstack tests use automatic KV allocation and default prefix caching. Eager adds only `--enforce-eager`. Run the native-pair fullstack cases with:
 
 ```bash
 python3 reproduce.py --root /var/tmp/hami-sharing-run --profile native-pair-fullstack
@@ -85,18 +85,18 @@ python3 reproduce.py --root /var/tmp/hami-sharing-run --profile controlled
 python3 reproduce.py --root /var/tmp/hami-sharing-run --profile mps-controlled
 ```
 
-`--case` can select a prepared controlled case such as `hami-pair-graph`. Collectors verify GPU placement, actual loaded libraries, engine flags, restart counts, and MPS client membership. They retain logs, AIPerf exports, and before/after runtime checks. A failed attempt is preserved rather than silently overwritten.
+Use `--case` to select a controlled case, such as `hami-pair-graph`.
 
 ## 50% compute-quota configuration
 
-Create a separate configuration with a fresh `namespace_prefix` of at most 19 lowercase DNS-label characters. A different output directory alone does not change Kubernetes namespace names. The pinned fullstack collector leaves its namespace after removing workloads, so do not reuse a prefix from an earlier run.
+Create a separate configuration with a new `namespace_prefix` of at most 19 lowercase DNS-label characters.
 
 ```bash
 jq '.namespace_prefix = "sharing-bench-50pct"' config.json > config.50pct.json
 python3 prepare.py --config config.50pct.json --out /var/tmp/hami-sharing-50pct --hami-core-limit 50
 ```
 
-Install HAMi using `platform/hami-50pct-values.yaml` before running its performance cases. This enables core limiting; generated HAMi workers request `nvidia.com/gpucores: 50`. Use separate output directories for each configuration. Runtime checks confirm the selected quota before accepting results. The HAMi fault profile uses compute limiting disabled.
+Install HAMi with `platform/hami-50pct-values.yaml` to enable the 50% compute quota, then run:
 
 ```bash
 python3 reproduce.py --root /var/tmp/hami-sharing-50pct --profile controlled --case hami-pair-graph --case hami-pair-eager
@@ -115,7 +115,7 @@ python3 reproduce.py --root /var/tmp/hami-sharing-run --profile fault
 python3 reproduce.py --root /var/tmp/hami-sharing-run --profile hami-fault
 ```
 
-The second command first checks the released HAMi library hash, hook locations, 20 GiB memory reporting, and rejection of a 21 GiB allocation. This is the quota preflight. It then runs eight formal fresh-Pod fault cases, including oversized allocations of twice the visible capacity, and joins them with the native/MPS reference. Machine-readable results are in each fault directory's `aggregate.json` and `conditions.csv`.
+The HAMi quota preflight requests 21 GiB against a 20 GiB limit. It is followed by eight fault trials; the oversized-allocation cases request twice the visible capacity. Results are in each fault directory's `aggregate.json` and `conditions.csv`.
 
 ## Recompute performance summaries
 
@@ -126,11 +126,11 @@ python3 summarize_metrics.py --root /var/tmp/hami-sharing-run/mps-controlled --t
 python3 summarize_metrics.py --root /var/tmp/hami-sharing-run/native-pair-fullstack --out /var/tmp/native-pair-points.csv
 ```
 
-Use `--allow-partial` while other cases are still pending. The summary rejects incomplete runs, request errors, missing workers, and a HAMi compute limit that differs from the declared profile. It reports summed instance throughput per GPU and common-window throughput separately. TTFT, TPOT, and end-to-end p50/p99 are arithmetic means of per-instance percentiles, not pooled cluster percentiles. Three-trial means and sample standard deviations can be calculated from the point rows; the controlled collector also writes them to `aggregate.json`.
+Use `--allow-partial` while other cases are still pending. The CSV reports summed instance throughput per GPU and common-window throughput separately. TTFT, TPOT, and end-to-end p50/p99 are means of per-instance percentiles, not pooled cluster percentiles. The controlled comparison's three-trial means and sample standard deviations are in `aggregate.json`.
 
 ## Published results
 
-All CSVs are stored in the benchmark repository at [results/2026-11-a100-sharing/](https://github.com/Project-HAMi/gpu-sharing-benchmarks/tree/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing). The main report uses the 50% HAMi performance rows; the `*-unlimited.csv` files retain the compute-limiting-disabled comparisons.
+Results directory: [results/2026-11-a100-sharing/](https://github.com/Project-HAMi/gpu-sharing-benchmarks/tree/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing).
 
 | File | Contents |
 | --- | --- |
@@ -141,8 +141,6 @@ All CSVs are stored in the benchmark repository at [results/2026-11-a100-sharing
 | [controlled-unlimited.csv](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/controlled-unlimited.csv) | Fixed-KV comparison with HAMi compute limiting disabled |
 | [fault-isolation.csv](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fault-isolation.csv) | CUDA fault counts and error codes; HAMi compute limiting disabled |
 
-## Source and validation
+## Source
 
-`vendor/dynamo/run-sweep.sh` is the unmodified Dynamo v1.6.1 workload client, SHA-256 `d8fde51c9841b7898eb12a27489e5601b7fab535736db74da8fd3d6713450d19`. See `vendor/dynamo/LICENSE` for its Apache-2.0 license and `NOTICE.md` for template attribution. Other files follow the benchmark repository's license.
-
-Validation covers manifest generation, source compilation, shell checks, and recomputation against archived AIPerf exports and CUDA fault results.
+The workload client `vendor/dynamo/run-sweep.sh` comes from Dynamo v1.6.1. See `vendor/dynamo/LICENSE` for its Apache-2.0 license and `NOTICE.md` for template attribution.
