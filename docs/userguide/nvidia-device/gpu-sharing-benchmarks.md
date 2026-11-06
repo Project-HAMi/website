@@ -6,8 +6,8 @@ description: A100 measurements comparing native two-instance serving, HAMi, and 
 
 **Main findings**:
 
-- **HAMi and the native pair had similar throughput**: with fixed cache in default mode, they reached 335.87 and 335.51 tokens/s/GPU, a +0.11% difference. Native single reached 628.57; the drop with two instances cannot be attributed directly to HAMi.
-- **HAMi had lower throughput in Eager mode**: 7.21% below the native pair in the standard test and 2.22% below it with fixed cache. GPU Fractioning and legacy MPS exceeded the native pair in their respective default-mode tests.
+- **HAMi 50% and the native pair had similar throughput**: with fixed cache in default mode, they reached 335.87 and 335.51 tokens/s/GPU, a +0.11% difference. Native single reached 628.57; the drop with two instances cannot be attributed directly to HAMi.
+- **HAMi 50% had lower throughput in Eager mode**: 4.46% to 7.94% below the native pair across all five loads in the standard test, and 2.22% below it with fixed cache. GPU Fractioning and legacy MPS exceeded the native pair in their respective default-mode tests.
 - **Fault propagation differed**: illegal writes, traps, and process kills during GPU work were each tested twice. Native and HAMi peers stayed healthy; both tested MPS v3 configurations affected their peers. HAMi compute limiting was disabled for these tests.
 
 ![Fixed-cache Graph and Eager throughput for native single, native pair, HAMi pair with a 50% compute quota, and legacy MPS pair](/img/docs/en/userguide/nvidia-device/gpu-sharing-benchmarks.svg)
@@ -18,16 +18,51 @@ Concurrency is 8 per GPU, with 6 GiB cache per instance. Bars show three-trial t
 
 ### Standard test: automatic cache allocation
 
-Dynamo ran vLLM, with load from the official [run-sweep.sh](https://github.com/ai-dynamo/dynamo/blob/v1.6.1/examples/gpu-sharing/common/run-sweep.sh). Graph is the default mode; Eager adds `--enforce-eager`. These tests used automatic cache allocation and default prefix caching, with one trial per configuration.
+Dynamo ran vLLM, with load from the official [run-sweep.sh](https://github.com/ai-dynamo/dynamo/blob/v1.6.1/examples/gpu-sharing/common/run-sweep.sh). Graph is the default mode; Eager adds `--enforce-eager`. Automatic cache allocation and default prefix caching were used, with one trial per configuration.
 
-Total concurrency is 8 per GPU, split equally between paired instances. Throughput is output tokens/s/GPU; **higher is better**. Parentheses show the difference from the native pair. The full dataset covers concurrency 2, 4, 8, 16, and 32.
+Total concurrency is 2, 4, 8, 16, or 32 per GPU, split equally between paired instances. All configurations use two instances except native single; both HAMi configurations have 20 GiB memory per instance. Throughput is output tokens/s/GPU; higher is better. **Bold marks the highest value at each load**; parentheses show the difference from the native pair.
 
-| Mode  | Native single | Native pair | HAMi pair (50%) | GPU Fractioning pair |
-| ----- | ------------: | ----------: | --------------: | -------------------: |
-| Graph |        693.67 |      335.67 | 336.52 (+0.25%) |     438.59 (+30.66%) |
-| Eager |        200.28 |      194.53 | 180.49 (−7.21%) |      189.54 (−2.57%) |
+#### Graph (default)
 
-[All measured loads and latency summaries (CSV)](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fullstack.csv) · [Compute-limiting-disabled reference (CSV)](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fullstack-unlimited.csv).
+| Concurrency/GPU | Native single | Native pair | HAMi 50% | HAMi unlimited | GPU Fractioning |
+| --- | --: | --: | --: | --: | --: |
+| 2 | **225.50** | 97.66 | 99.80 (+2.19%) | 97.61 (−0.05%) | 134.37 (+37.60%) |
+| 4 | **426.82** | 186.77 | 186.92 (+0.08%) | 186.76 (0.00%) | 255.64 (+36.88%) |
+| 8 | **693.67** | 335.67 | 336.52 (+0.25%) | 335.62 (−0.02%) | 438.59 (+30.66%) |
+| 16 | **1038.10** | 565.45 | 561.73 (−0.66%) | 564.90 (−0.10%) | 718.28 (+27.03%) |
+| 32 | **1117.88** | 817.12 | 817.89 (+0.10%) | 818.71 (+0.20%) | 1022.54 (+25.14%) |
+
+#### Eager
+
+| Concurrency/GPU | Native single | Native pair | HAMi 50% | HAMi unlimited | GPU Fractioning |
+| --- | --: | --: | --: | --: | --: |
+| 2 | 51.26 | **51.84** | 47.76 (−7.88%) | 48.11 (−7.20%) | 50.34 (−2.91%) |
+| 4 | **103.10** | 101.99 | 93.89 (−7.94%) | 94.42 (−7.42%) | 99.66 (−2.29%) |
+| 8 | **200.28** | 194.53 | 180.49 (−7.21%) | 182.01 (−6.44%) | 189.54 (−2.57%) |
+| 16 | **377.41** | 361.61 | 341.28 (−5.62%) | 343.67 (−4.96%) | 361.11 (−0.14%) |
+| 32 | **653.43** | 630.84 | 602.68 (−4.46%) | 606.86 (−3.80%) | 636.66 (+0.92%) |
+
+**Findings across all five loads**:
+
+- **HAMi stayed close to the native pair in Graph**: the 50% compute configuration differed by −0.66% to +2.19%.
+- **GPU Fractioning's advantage was mainly in Graph**: 25.14% to 37.60% above the native pair, versus −2.91% to +0.92% in Eager.
+- **HAMi had lower Eager throughput**: 4.46% to 7.94% below the native pair with 50% compute, and 3.80% to 7.42% below it with no compute limit.
+
+These configurations used different physical GPU pairs. The observed differences do not isolate component overhead.
+
+#### Response latency: concurrency 8 per GPU
+
+Values are p99 first-token wait times and per-request average times per subsequent token, in milliseconds; **lower is better**. Each value averages instance percentiles.
+
+| Configuration | Graph first token | Graph subsequent token | Eager first token | Eager subsequent token |
+| --- | --: | --: | --: | --: |
+| Native single | 665.76 | 11.95 | 730.71 | 40.39 |
+| Native pair | 730.35 | 22.44 | 669.55 | 40.83 |
+| HAMi 50% | 714.99 | 22.41 | 588.04 | 44.52 |
+| HAMi unlimited | 739.09 | 22.43 | 599.89 | 43.90 |
+| GPU Fractioning | 427.74 | 17.48 | 595.79 | 42.67 |
+
+Compared with the native pair, HAMi 50% had lower first-token p99 and higher subsequent-token p99 in Eager.
 
 ### Fixed-cache comparison: 6 GiB per instance
 
@@ -97,3 +132,5 @@ Cross-set differences may include hardware effects. Results apply to the tested 
 ## Reproduction scripts
 
 [Run the tests](./gpu-sharing-reproduction.md) · [Source code](https://github.com/Project-HAMi/gpu-sharing-benchmarks/tree/e9b205bb121c50649bb97d7ed5dc4f796a9e523f) · [All results](https://github.com/Project-HAMi/gpu-sharing-benchmarks/tree/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing)
+
+Raw data: [Standard tests CSV](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fullstack.csv) · [No compute limit CSV](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fullstack-unlimited.csv).
