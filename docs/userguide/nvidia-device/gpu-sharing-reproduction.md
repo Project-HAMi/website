@@ -11,7 +11,6 @@ This guide is the canonical setup and execution reference for the [A100 benchmar
 ```bash
 git clone https://github.com/Project-HAMi/gpu-sharing-benchmarks.git
 cd gpu-sharing-benchmarks
-git checkout e9b205bb121c50649bb97d7ed5dc4f796a9e523f
 ```
 
 ## Environment
