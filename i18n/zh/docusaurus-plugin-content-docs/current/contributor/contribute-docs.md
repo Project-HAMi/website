@@ -101,6 +101,8 @@ sidebar_label: 侧边栏短标题
 }
 ```
 
+对于厂商指南，将页面名称添加到对应的 `vendorPages(...)` 或 `vendorExamples(...)` 中。新增厂商时，在 `vendors` 中添加具有唯一键的 `vendorCategory(...)`。
+
 如果不确定属于哪个分类，在 PR 中说明，维护者会帮忙。
 
 ### 4. 添加中文翻译（可选）

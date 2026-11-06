@@ -11,169 +11,117 @@
     "message": "贡献者指南",
     "description": "The label for category 'Contributor Guide' in sidebar 'docs'"
   },
-  "sidebar.amdDevice.doc.← All supported devices": {
-    "message": "← 所有支持的设备",
-    "description": "The label for the doc item '← All supported devices' in sidebar 'amdDevice', linking to the doc userguide/device-supported"
-  },
-  "sidebar.amdDevice.category.AMD GPU": {
+  "sidebar.docs.category.vendor-amd": {
     "message": "AMD GPU",
-    "description": "The label for category 'AMD GPU' in sidebar 'amdDevice'"
+    "description": "The label for category 'AMD GPU' in sidebar 'docs'"
   },
-  "sidebar.ascendDevice.doc.← All supported devices": {
-    "message": "← 所有支持的设备",
-    "description": "The label for the doc item '← All supported devices' in sidebar 'ascendDevice', linking to the doc userguide/device-supported"
-  },
-  "sidebar.ascendDevice.category.Huawei Ascend NPU": {
+  "sidebar.docs.category.vendor-huawei-ascend": {
     "message": "华为昇腾 NPU",
-    "description": "The label for category 'Huawei Ascend NPU' in sidebar 'ascendDevice'"
+    "description": "The label for category 'Huawei Ascend NPU' in sidebar 'docs'"
   },
-  "sidebar.awsNeuronDevice.doc.← All supported devices": {
-    "message": "← 所有支持的设备",
-    "description": "The label for the doc item '← All supported devices' in sidebar 'awsNeuronDevice', linking to the doc userguide/device-supported"
-  },
-  "sidebar.awsNeuronDevice.category.AWS Neuron": {
+  "sidebar.docs.category.vendor-aws-neuron": {
     "message": "AWS Neuron",
-    "description": "The label for category 'AWS Neuron' in sidebar 'awsNeuronDevice'"
+    "description": "The label for category 'AWS Neuron' in sidebar 'docs'"
   },
-  "sidebar.birenDevice.doc.← All supported devices": {
-    "message": "← 所有支持的设备",
-    "description": "The label for the doc item '← All supported devices' in sidebar 'birenDevice', linking to the doc userguide/device-supported"
-  },
-  "sidebar.birenDevice.category.Biren GPU": {
+  "sidebar.docs.category.vendor-biren": {
     "message": "壁仞 GPU",
-    "description": "The label for category 'Biren GPU' in sidebar 'birenDevice'"
+    "description": "The label for category 'Biren GPU' in sidebar 'docs'"
   },
-  "sidebar.cambriconDevice.doc.← All supported devices": {
-    "message": "← 所有支持的设备",
-    "description": "The label for the doc item '← All supported devices' in sidebar 'cambriconDevice', linking to the doc userguide/device-supported"
-  },
-  "sidebar.cambriconDevice.category.Cambricon MLU": {
+  "sidebar.docs.category.vendor-cambricon": {
     "message": "寒武纪 MLU",
-    "description": "The label for category 'Cambricon MLU' in sidebar 'cambriconDevice'"
+    "description": "The label for category 'Cambricon MLU' in sidebar 'docs'"
   },
-  "sidebar.enflameDevice.doc.← All supported devices": {
-    "message": "← 所有支持的设备",
-    "description": "The label for the doc item '← All supported devices' in sidebar 'enflameDevice', linking to the doc userguide/device-supported"
-  },
-  "sidebar.enflameDevice.category.Enflame GCU": {
+  "sidebar.docs.category.vendor-enflame": {
     "message": "燧原 GCU",
-    "description": "The label for category 'Enflame GCU' in sidebar 'enflameDevice'"
+    "description": "The label for category 'Enflame GCU' in sidebar 'docs'"
   },
-  "sidebar.hygonDevice.doc.← All supported devices": {
-    "message": "← 所有支持的设备",
-    "description": "The label for the doc item '← All supported devices' in sidebar 'hygonDevice', linking to the doc userguide/device-supported"
-  },
-  "sidebar.hygonDevice.category.Hygon HCU": {
+  "sidebar.docs.category.vendor-hygon": {
     "message": "海光 HCU",
-    "description": "The label for category 'Hygon HCU' in sidebar 'hygonDevice'"
+    "description": "The label for category 'Hygon HCU' in sidebar 'docs'"
   },
-  "sidebar.iluvatarDevice.doc.← All supported devices": {
-    "message": "← 所有支持的设备",
-    "description": "The label for the doc item '← All supported devices' in sidebar 'iluvatarDevice', linking to the doc userguide/device-supported"
-  },
-  "sidebar.iluvatarDevice.category.Iluvatar GPU": {
+  "sidebar.docs.category.vendor-iluvatar": {
     "message": "天数智芯 GPU",
-    "description": "The label for category 'Iluvatar GPU' in sidebar 'iluvatarDevice'"
+    "description": "The label for category 'Iluvatar GPU' in sidebar 'docs'"
   },
-  "sidebar.kunlunxinDevice.doc.← All supported devices": {
-    "message": "← 所有支持的设备",
-    "description": "The label for the doc item '← All supported devices' in sidebar 'kunlunxinDevice', linking to the doc userguide/device-supported"
-  },
-  "sidebar.kunlunxinDevice.category.Kunlunxin XPU": {
+  "sidebar.docs.category.vendor-kunlunxin": {
     "message": "昆仑芯 XPU",
-    "description": "The label for category 'Kunlunxin XPU' in sidebar 'kunlunxinDevice'"
+    "description": "The label for category 'Kunlunxin XPU' in sidebar 'docs'"
   },
-  "sidebar.metaxDevice.doc.← All supported devices": {
-    "message": "← 所有支持的设备",
-    "description": "The label for the doc item '← All supported devices' in sidebar 'metaxDevice', linking to the doc userguide/device-supported"
-  },
-  "sidebar.metaxDevice.category.MetaX GPU": {
+  "sidebar.docs.category.vendor-metax": {
     "message": "沐曦 GPU",
-    "description": "The label for category 'MetaX GPU' in sidebar 'metaxDevice'"
+    "description": "The label for category 'MetaX GPU' in sidebar 'docs'"
   },
-  "sidebar.mthreadsDevice.doc.← All supported devices": {
-    "message": "← 所有支持的设备",
-    "description": "The label for the doc item '← All supported devices' in sidebar 'mthreadsDevice', linking to the doc userguide/device-supported"
-  },
-  "sidebar.mthreadsDevice.category.Mthreads GPU": {
+  "sidebar.docs.category.vendor-mthreads": {
     "message": "摩尔线程 GPU",
-    "description": "The label for category 'Mthreads GPU' in sidebar 'mthreadsDevice'"
+    "description": "The label for category 'Mthreads GPU' in sidebar 'docs'"
   },
-  "sidebar.nvidiaDevice.doc.← All supported devices": {
-    "message": "← 所有支持的设备",
-    "description": "The label for the doc item '← All supported devices' in sidebar 'nvidiaDevice', linking to the doc userguide/device-supported"
-  },
-  "sidebar.nvidiaDevice.category.NVIDIA GPU": {
+  "sidebar.docs.category.vendor-nvidia": {
     "message": "NVIDIA GPU",
-    "description": "The label for category 'NVIDIA GPU' in sidebar 'nvidiaDevice'"
+    "description": "The label for category 'NVIDIA GPU' in sidebar 'docs'"
   },
-  "sidebar.vastaiDevice.doc.← All supported devices": {
-    "message": "← 所有支持的设备",
-    "description": "The label for the doc item '← All supported devices' in sidebar 'vastaiDevice', linking to the doc userguide/device-supported"
-  },
-  "sidebar.vastaiDevice.category.Vastai GPU": {
+  "sidebar.docs.category.vendor-vastai": {
     "message": "瀚博 GPU",
-    "description": "The label for category 'Vastai GPU' in sidebar 'vastaiDevice'"
+    "description": "The label for category 'Vastai GPU' in sidebar 'docs'"
   },
-  "sidebar.metaxDevice.category.metax-gpu": {
+  "sidebar.docs.category.metax-gpu": {
     "message": "GPU（拓扑感知）",
-    "description": "The label for category 'GPU (topology-aware)' in sidebar 'metaxDevice'"
+    "description": "The label for category 'GPU (topology-aware)' in sidebar 'docs'"
   },
-  "sidebar.metaxDevice.category.metax-sgpu": {
+  "sidebar.docs.category.metax-sgpu": {
     "message": "sGPU（共享）",
-    "description": "The label for category 'sGPU (shared)' in sidebar 'metaxDevice'"
+    "description": "The label for category 'sGPU (shared)' in sidebar 'docs'"
   },
-  "sidebar.amdDevice.category.amd-examples": {
+  "sidebar.docs.category.amd-examples": {
     "message": "示例",
-    "description": "The label for category 'Examples' in sidebar 'amdDevice'"
+    "description": "The label for category 'Examples' in sidebar 'docs'"
   },
-  "sidebar.ascendDevice.category.ascend-examples": {
+  "sidebar.docs.category.ascend-examples": {
     "message": "示例",
-    "description": "The label for category 'Examples' in sidebar 'ascendDevice'"
+    "description": "The label for category 'Examples' in sidebar 'docs'"
   },
-  "sidebar.awsNeuronDevice.category.awsneuron-examples": {
+  "sidebar.docs.category.awsneuron-examples": {
     "message": "示例",
-    "description": "The label for category 'Examples' in sidebar 'awsNeuronDevice'"
+    "description": "The label for category 'Examples' in sidebar 'docs'"
   },
-  "sidebar.birenDevice.category.biren-examples": {
+  "sidebar.docs.category.biren-examples": {
     "message": "示例",
-    "description": "The label for category 'Examples' in sidebar 'birenDevice'"
+    "description": "The label for category 'Examples' in sidebar 'docs'"
   },
-  "sidebar.cambriconDevice.category.cambricon-examples": {
+  "sidebar.docs.category.cambricon-examples": {
     "message": "示例",
-    "description": "The label for category 'Examples' in sidebar 'cambriconDevice'"
+    "description": "The label for category 'Examples' in sidebar 'docs'"
   },
-  "sidebar.hygonDevice.category.hygon-examples": {
+  "sidebar.docs.category.hygon-examples": {
     "message": "示例",
-    "description": "The label for category 'Examples' in sidebar 'hygonDevice'"
+    "description": "The label for category 'Examples' in sidebar 'docs'"
   },
-  "sidebar.iluvatarDevice.category.iluvatar-examples": {
+  "sidebar.docs.category.iluvatar-examples": {
     "message": "示例",
-    "description": "The label for category 'Examples' in sidebar 'iluvatarDevice'"
+    "description": "The label for category 'Examples' in sidebar 'docs'"
   },
-  "sidebar.kunlunxinDevice.category.kunlunxin-examples": {
+  "sidebar.docs.category.kunlunxin-examples": {
     "message": "示例",
-    "description": "The label for category 'Examples' in sidebar 'kunlunxinDevice'"
+    "description": "The label for category 'Examples' in sidebar 'docs'"
   },
-  "sidebar.metaxDevice.category.metax-gpu-examples": {
+  "sidebar.docs.category.metax-gpu-examples": {
     "message": "示例",
-    "description": "The label for category 'Examples' in sidebar 'metaxDevice'"
+    "description": "The label for category 'Examples' in sidebar 'docs'"
   },
-  "sidebar.metaxDevice.category.metax-sgpu-examples": {
+  "sidebar.docs.category.metax-sgpu-examples": {
     "message": "示例",
-    "description": "The label for category 'Examples' in sidebar 'metaxDevice'"
+    "description": "The label for category 'Examples' in sidebar 'docs'"
   },
-  "sidebar.mthreadsDevice.category.mthreads-examples": {
+  "sidebar.docs.category.mthreads-examples": {
     "message": "示例",
-    "description": "The label for category 'Examples' in sidebar 'mthreadsDevice'"
+    "description": "The label for category 'Examples' in sidebar 'docs'"
   },
-  "sidebar.nvidiaDevice.category.nvidia-examples": {
+  "sidebar.docs.category.nvidia-examples": {
     "message": "示例",
-    "description": "The label for category 'Examples' in sidebar 'nvidiaDevice'"
+    "description": "The label for category 'Examples' in sidebar 'docs'"
   },
-  "sidebar.vastaiDevice.category.vastai-examples": {
+  "sidebar.docs.category.vastai-examples": {
     "message": "示例",
-    "description": "The label for category 'Examples' in sidebar 'vastaiDevice'"
+    "description": "The label for category 'Examples' in sidebar 'docs'"
   },
   "sidebar.docs.category.Using HAMi with Kueue": {
     "message": "在 Kueue 中使用 HAMi",
