@@ -4,7 +4,7 @@ title: 升级 HAMi
 
 :::warning 适用版本
 
-本文仅适用于从 HAMi v2.10 升级到新版 Chart，不建议从其他版本直接按本文操作。如果当前使用的是更早版本，请先参考 [v2.10 升级文档](../../version-v2.10.0/installation/upgrade.md)，将 HAMi 升级至 v2.10，再按本文继续升级。
+本文仅适用于从 HAMi v2.10 升级到 v2.11.0，不建议从其他版本直接按本文操作。如果当前使用的是更早版本，请先参考 [v2.10 升级文档](/docs/v2.10.0/installation/upgrade)，将 HAMi 升级至 v2.10，再按本文继续升级。
 
 :::
 
@@ -66,22 +66,16 @@ kubectl get configmap hami-scheduler-device -n "${namespace}" \
 
 ### 获取 Chart
 
-包含迁移变更的 Chart 尚未发布到 Helm 仓库。请使用 HAMi 提交 [`def0bf8`](https://github.com/Project-HAMi/HAMi/commit/def0bf82074ca7aff940800c18d5d3402eef5cff) 或包含该提交的后续提交。以下命令以 `def0bf8` 为例，后续校验和升级均使用 `${hami_chart_dir}` 中的 Chart：
+检出 v2.11.0 发布版本以获取对应的 Chart。后续校验和升级均使用 `${hami_chart_dir}` 中的 Chart：
 
 ```bash
 git clone https://github.com/Project-HAMi/HAMi.git "${hami_chart_dir}"
-git -C "${hami_chart_dir}" checkout def0bf82074ca7aff940800c18d5d3402eef5cff
+git -C "${hami_chart_dir}" checkout v2.11.0
 ```
-
-:::warning 未发布的 Chart 与镜像版本
-
-该提交中的 Chart 是开发版本，不是已发布版本，其 `version` 和 `appVersion` 可能仍沿用上一版本。固定 Chart 提交不会固定后文使用的 `latest` 镜像标签。
-
-:::
 
 ## 迁移并创建 values
 
-从 v2.10 升级时，需要核对 Chart values 的字段路径、类型、默认值和配置含义变化。以下以 v2.10.0 到本文示例提交 `def0bf8` 的 Chart values 为基准。请先基于备份的 values 创建 `my-values.yaml`，按下文完成迁移和渲染校验，再执行升级。使用更晚的提交时，还需核对其后续 values 变更。
+从 v2.10 升级时，需要核对 Chart values 的字段路径、类型、默认值和配置含义变化。以下以 v2.10.0 到 v2.11.0 的 Chart values 为基准。请先基于备份的 values 创建 `my-values.yaml`，按下文完成迁移和渲染校验，再执行升级。使用更高版本的 Chart 时，还需核对后续 values 变更。
 
 ### 创建 values.yaml
 
@@ -91,24 +85,12 @@ git -C "${hami_chart_dir}" checkout def0bf82074ca7aff940800c18d5d3402eef5cff
 cp previous-values.yaml my-values.yaml
 ```
 
-本文使用 `latest` 标签的 HAMi 镜像。Chart 默认使用 `IfNotPresent` 拉取策略，仅修改标签会继续使用节点上缓存的旧镜像。请在 `my-values.yaml` 中设置标签，并将 scheduler extender、HAMi device plugin 和 monitor 的拉取策略改为 `Always`：
+v2.11.0 Chart 默认使用 `v2.11.0` 标签的 HAMi 镜像。请在 `my-values.yaml` 中设置标签，避免备份 values 中的旧标签覆盖该默认值：
 
 ```yaml
 global:
-  imageTag: latest
-scheduler:
-  extender:
-    image:
-      pullPolicy: Always
-devicePlugin:
-  image:
-    pullPolicy: Always
-  monitor:
-    image:
-      pullPolicy: Always
+  imageTag: v2.11.0
 ```
-
-`Always` 会在容器启动时向镜像仓库解析标签对应的镜像。`latest` 仍是可变标签，不能保证不同时间启动的容器使用同一构建；远端标签更新也不会自动重启已有 Pod。
 
 如果旧 values 中单独设置过 `scheduler.extender.image.tag`、`devicePlugin.image.tag` 或 `devicePlugin.monitor.image.tag`，请删除这些覆盖。
 
@@ -129,7 +111,7 @@ devicePlugin:
 | `scheduler.service.monitorTargetPort` | 默认值从数字 `9395` 改为命名端口 `metrics` | 没有固定端口需求时删除旧覆盖；自定义监控端口时，核对它与 `scheduler.metricsBindAddress` 一致 |
 
 - `podSecurityPolicy.enabled` 的路径未变。在 Kubernetes `1.25` 及以上，证书 Job 不再允许启用此项；如果旧 values 设置为 `true`，请改为 `false`。
-- `scheduler.patch.imageNew` 是 webhook 证书 Job 的镜像配置，不继承 `global.imageTag`。不要将前文 HAMi 镜像的 `latest` 设置复制到这里。
+- `scheduler.patch.imageNew` 是 webhook 证书 Job 的镜像配置，不继承 `global.imageTag`。不要将 HAMi 镜像标签复制到这里。
 
 #### Device plugin 与 monitor
 
@@ -281,6 +263,8 @@ v2.10 的 Chart 模板将 `defaultMemory` 固定为 `0`，当时无法通过单�
 整理后的 `my-values.yaml` 如下：
 
 ```yaml
+global:
+  imageTag: v2.11.0
 devices:
   nvidia:
     deviceSplitCount: 20
@@ -289,7 +273,7 @@ devicePlugin:
   disablecorelimit: "true"
 ```
 
-这份文件只保留需要覆盖的设置：迁移后的设备字段、从 ConfigMap 中提取的自定义配置，以及路径不变的自定义设置。`resourceName` 的旧路径和对应的新路径都不需要写入，交由新 Chart 提供默认值。
+这份文件设置发布版本的镜像标签，并保留需要覆盖的设置：迁移后的设备字段、从 ConfigMap 中提取的自定义配置，以及路径不变的自定义设置。`resourceName` 的旧路径和对应的新路径都不需要写入，交由新 Chart 提供默认值。
 
 `scheduler.overwriteEnv` 和其他 `devicePlugin` 设置仍使用原路径，包括 `enabled`、镜像、`deviceListStrategy`、`migStrategy`、`disablecorelimit` 和 `nodeConfiguration`；如有自定义值，同样保留在原路径下。
 

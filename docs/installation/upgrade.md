@@ -4,7 +4,7 @@ title: Upgrade HAMi
 
 :::warning Supported Source Version
 
-This guide only applies to upgrades from HAMi v2.10 to the new Chart. Following these instructions directly from other versions is not recommended. If you are running an earlier version, first follow the [v2.10 upgrade guide](../../versioned_docs/version-v2.10.0/installation/upgrade.md) to upgrade HAMi to v2.10, then continue with this guide.
+This guide only applies to upgrades from HAMi v2.10 to v2.11.0. Following these instructions directly from other versions is not recommended. If you are running an earlier version, first follow the [v2.10 upgrade guide](/docs/v2.10.0/installation/upgrade) to upgrade HAMi to v2.10, then continue with this guide.
 
 :::
 
@@ -66,22 +66,16 @@ Confirm that `previous-device-config.yaml` contains the current device configura
 
 ### Obtain the Chart
 
-The Chart containing the migration changes has not yet been published to the Helm repository. Use HAMi commit [`def0bf8`](https://github.com/Project-HAMi/HAMi/commit/def0bf82074ca7aff940800c18d5d3402eef5cff) or a later commit that includes it. The following commands use `def0bf8` as an example. All subsequent validation and upgrade commands use the Chart in `${hami_chart_dir}`:
+Check out the v2.11.0 release to obtain its Chart. All subsequent validation and upgrade commands use the Chart in `${hami_chart_dir}`:
 
 ```bash
 git clone https://github.com/Project-HAMi/HAMi.git "${hami_chart_dir}"
-git -C "${hami_chart_dir}" checkout def0bf82074ca7aff940800c18d5d3402eef5cff
+git -C "${hami_chart_dir}" checkout v2.11.0
 ```
-
-:::warning Unreleased Chart and image versions
-
-The Chart at this commit is development code, not a published release. Its `version` and `appVersion` may still refer to the previous release. Pinning the Chart commit does not pin the `latest` image tag used below.
-
-:::
 
 ## Migrate and Create Values
 
-When upgrading from v2.10, review changes to Chart values field paths, types, defaults, and configuration semantics. The following guidance covers Chart values changes from v2.10.0 to the example commit `def0bf8`. First create `my-values.yaml` from the backed-up values, complete the migration and rendering validation below, then perform the upgrade. If you use a later commit, also review subsequent values changes.
+When upgrading from v2.10, review changes to Chart values field paths, types, defaults, and configuration semantics. The following guidance covers Chart values changes from v2.10.0 to v2.11.0. First create `my-values.yaml` from the backed-up values, complete the migration and rendering validation below, then perform the upgrade. If you use a later Chart version, also review subsequent values changes.
 
 ### Create values.yaml
 
@@ -91,24 +85,12 @@ Create `my-values.yaml` from `previous-values.yaml` as a starting point for prep
 cp previous-values.yaml my-values.yaml
 ```
 
-This guide uses HAMi images tagged `latest`. The Chart defaults to the `IfNotPresent` pull policy, so changing only the tag will continue to use old images cached on the nodes. Set the tag in `my-values.yaml` and change the pull policy for the scheduler extender, HAMi device plugin, and monitor to `Always`:
+The v2.11.0 Chart defaults to HAMi images tagged `v2.11.0`. Set the tag in `my-values.yaml` so an older tag in the backed-up values does not override it:
 
 ```yaml
 global:
-  imageTag: latest
-scheduler:
-  extender:
-    image:
-      pullPolicy: Always
-devicePlugin:
-  image:
-    pullPolicy: Always
-  monitor:
-    image:
-      pullPolicy: Always
+  imageTag: v2.11.0
 ```
-
-With `Always`, the container runtime queries the image registry to resolve the tag when a container starts. The `latest` tag remains mutable, so containers started at different times are not guaranteed to use the same build. Updating the tag in the registry does not automatically restart existing Pods.
 
 If the old values explicitly set `scheduler.extender.image.tag`, `devicePlugin.image.tag`, or `devicePlugin.monitor.image.tag`, remove those overrides.
 
@@ -129,7 +111,7 @@ First review the non-device configuration in `previous-values.yaml`. Add custom 
 | `scheduler.service.monitorTargetPort` | The default changes from the numeric port `9395` to the named port `metrics` | Remove the old override if a fixed port is unnecessary. For a custom metrics port, check that it matches `scheduler.metricsBindAddress` |
 
 - The `podSecurityPolicy.enabled` path is unchanged. Certificate Jobs no longer allow it to be enabled on Kubernetes `1.25` and later. If the old values set it to `true`, change it to `false`.
-- `scheduler.patch.imageNew` configures the webhook certificate Job image and does not inherit `global.imageTag`. Do not copy the `latest` setting for HAMi images from above into this field.
+- `scheduler.patch.imageNew` configures the webhook certificate Job image and does not inherit `global.imageTag`. Do not copy the HAMi image tag into this field.
 
 #### Device Plugin and Monitor
 
@@ -281,6 +263,8 @@ The v2.10 Chart template hardcoded `defaultMemory` to `0`, so it could not be ch
 The resulting `my-values.yaml` is:
 
 ```yaml
+global:
+  imageTag: v2.11.0
 devices:
   nvidia:
     deviceSplitCount: 20
@@ -289,7 +273,7 @@ devicePlugin:
   disablecorelimit: "true"
 ```
 
-This file retains only the settings that need overrides: migrated device fields, custom configuration extracted from the ConfigMap, and custom settings whose paths have not changed. Neither the old path for `resourceName` nor its corresponding new path needs to be included; the new Chart provides the default.
+This file sets the release image tag and retains the settings that need overrides: migrated device fields, custom configuration extracted from the ConfigMap, and custom settings whose paths have not changed. Neither the old path for `resourceName` nor its corresponding new path needs to be included; the new Chart provides the default.
 
 `scheduler.overwriteEnv` and other `devicePlugin` settings still use their original paths, including `enabled`, image settings, `deviceListStrategy`, `migStrategy`, `disablecorelimit`, and `nodeConfiguration`. Retain any custom values at their original paths.
 
