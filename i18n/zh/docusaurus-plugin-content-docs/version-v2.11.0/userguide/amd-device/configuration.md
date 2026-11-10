@@ -4,7 +4,7 @@ sidebar_label: 配置
 translated: true
 ---
 
-插件 chart 会把它的 values 作为参数传给插件。[chart README](https://github.com/Project-HAMi/amd-device-plugin/blob/main/helm/amd-gpu/README.md) 列出了所有 values。chart 和镜像必须来自同一个提交或发布版本：镜像标签默认取 chart 的 `appVersion`（一个已发布的版本），而来自 `main` 的 chart 会传入已发布镜像不认识的参数，Pod 会以用法提示退出。要运行 `main`，请用同一份源码构建镜像，并设置 `dp.image.repository` 和 `dp.image.tag`。
+插件 chart 会把它的 values 作为参数传给插件。[chart README](https://github.com/Project-HAMi/amd-device-plugin/blob/v0.0.4/helm/amd-gpu/README.md) 列出了所有 values。chart 和镜像必须来自同一个提交或发布版本：镜像标签默认取 chart 的 `appVersion`（一个已发布的版本），而来自 `main` 的 chart 会传入已发布镜像不认识的参数，Pod 会以用法提示退出。要运行 `main`，请用同一份源码构建镜像，并设置 `dp.image.repository` 和 `dp.image.tag`。
 
 插件需要 `NODE_NAME`，以及修改 node、`nodes/status` 和 Pod 并创建事件的 RBAC 权限，chart 已授予这两项。节点 labeller 需要 `DS_NODE_NAME`。
 
@@ -13,7 +13,7 @@ translated: true
 HAMi 与 `amd-device-plugin` 使用不同的 Chart 和 values 文件：
 
 - HAMi：通过 `devices.amd.*` 设置调度器使用的资源名称和默认值，见 [HAMi Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/README.md)。
-- AMD 插件：通过 `dp.*` 配置插件，通过 `monitor.*` 配置监控，完整 Chart values 见[插件 Chart values 参数表](https://github.com/Project-HAMi/amd-device-plugin/blob/main/helm/amd-gpu/README.md)。
+- AMD 插件：通过 `dp.*` 配置插件，通过 `monitor.*` 配置监控，完整 Chart values 见[插件 Chart values 参数表](https://github.com/Project-HAMi/amd-device-plugin/blob/v0.0.4/helm/amd-gpu/README.md)。
 
 下表列出插件 Chart values 与命令行参数、环境变量的对应关系。模式切换和可选功能的前置条件见下文。
 
@@ -69,7 +69,7 @@ HAMi 与 `amd-device-plugin` 使用不同的 Chart 和 values 文件：
 | `qpx` | 4                 | 64               | `qpx`  |
 | `cpx` | 8                 | 32               | `cpx`  |
 
-每张 MI355X 有 256 个 CU 和 294896 MiB 显存（288 GB）。插件注册整卡还是 `amdgpu_xcp_*` 分区，取决于内核的 KFD 拓扑，而不是插件。在列出 XCP render 次设备号的内核上，每个分区注册均分的显存和 CU（`qpx`：每张 GPU 4 个设备，各 73728 MiB 和 64 个 CU）。在内核 6.8.0-136 上拓扑中没有这些信息，因此 `qpx` 节点为每张 GPU 注册一个硬的整卡条目，同一张 GPU 的各分区共用同一个 ROCr `unique_id`。需要在节点上执行的检查见 [MI355X 分区](https://github.com/Project-HAMi/amd-device-plugin/blob/main/docs/user-guide/mi355x-partitioning.md)。
+每张 MI355X 有 256 个 CU 和 294896 MiB 显存（288 GB）。插件注册整卡还是 `amdgpu_xcp_*` 分区，取决于内核的 KFD 拓扑，而不是插件。在列出 XCP render 次设备号的内核上，每个分区注册均分的显存和 CU（`qpx`：每张 GPU 4 个设备，各 73728 MiB 和 64 个 CU）。在内核 6.8.0-136 上拓扑中没有这些信息，因此 `qpx` 节点为每张 GPU 注册一个硬的整卡条目，同一张 GPU 的各分区共用同一个 ROCr `unique_id`。需要在节点上执行的检查见 [MI355X 分区](https://github.com/Project-HAMi/amd-device-plugin/blob/v0.0.4/docs/user-guide/mi355x-partitioning.md)。
 
 ## `dmem` 显存限制
 

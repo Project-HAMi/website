@@ -4,7 +4,7 @@ sidebar_label: 测试状态
 translated: true
 ---
 
-本页概述在真实 AMD GPU 上检查了什么、发现了什么，以及还剩什么。完整记录（为每个已合并的 PR 提供一行说明）见 [STATUS.md](https://github.com/Project-HAMi/amd-device-plugin/blob/main/STATUS.md)，项目的简短介绍见 [ONBOARDING.md](https://github.com/Project-HAMi/amd-device-plugin/blob/main/ONBOARDING.md)。这两个文件涵盖 [amd-device-plugin](https://github.com/Project-HAMi/amd-device-plugin) 和 [amd-hami-core](https://github.com/Project-HAMi/amd-hami-core) 两个仓库，以及 [HAMi](https://github.com/Project-HAMi/HAMi) 中与 AMD 相关的 PR。
+本页概述在真实 AMD GPU 上检查了什么、发现了什么，以及还剩什么。完整记录（为每个已合并的 PR 提供一行说明）见 [STATUS.md](https://github.com/Project-HAMi/amd-device-plugin/blob/v0.0.4/STATUS.md)，项目的简短介绍见 [ONBOARDING.md](https://github.com/Project-HAMi/amd-device-plugin/blob/v0.0.4/ONBOARDING.md)。这两个文件涵盖 [amd-device-plugin](https://github.com/Project-HAMi/amd-device-plugin) 和 [amd-hami-core](https://github.com/Project-HAMi/amd-hami-core) 两个仓库，以及 [HAMi](https://github.com/Project-HAMi/HAMi) 中与 AMD 相关的 PR。
 
 ## 测试方式
 
