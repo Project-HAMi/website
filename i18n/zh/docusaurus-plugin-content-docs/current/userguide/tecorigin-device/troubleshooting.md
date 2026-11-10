@@ -20,7 +20,10 @@ kubectl get node <node-name> -o jsonpath='{.metadata.annotations.hami\.io/node-t
 | `invalid memory ... Devmem is MiB, not bytes` | 插件写成了字节数 | 改为 MiB |
 | `no healthy tecorigin card found on node` | 所有卡都是 `health=false` | 修复硬件后更新注解，使健康检查重新读取 |
 
-注解存在但未能注册时，Pod 也会一直 Pending，调度器日志中会出现 `node unregistered`。注册注解与 `hami.io/node-tecorigin-cores` 都会在每次健康检查时参与指纹比对，修正任一注解即可重新读取显卡列表，无需重启调度器。
+注解存在但没有完成注册，同样会导致 Pod 处于 Pending，调度日志里会出现 `node unregistered`。
+> 注意：`node unregistered` 和 `no healthy tecorigin card found on node` 均为 V(5) 级别日志。HAMI Chart 默认日志级别是 `-v=4`，默认情况下看不到这两行日志。你可以将调度器日志级别调整为 `-v=5` 查看，或者直接查看调度拒绝原因。
+注册注解和 `hami.io/node-tecorigin-cores` 会在每次健康检查时做指纹校验，修改任意一项都会重新读取卡列表，不需要重启调度器。
+
 
 ## Pod 一直 Pending
 
@@ -41,7 +44,17 @@ kubectl logs -n {Release Namespace} -l app.kubernetes.io/component=hami-schedule
 > 注意：如果节点上所有显卡都没有空闲核，调度器会直接返回 `CardInsufficientCore`，不会输出 `tecorigin fit failed` 日志。此时上面这条 grep 命令搜不到结果，需要直接查看显卡分配状态。
 
 
-日志会输出 `want`、节点总 `freeCores`、候选卡数 `candidates` 以及 `maxCards`——即该请求最多可用的卡数。`maxCards` 由节点上最大的单卡核心数推导，因此 `want` 超过它时必须跨卡拆分；需要更多卡的节点会被拒绝。
+日志输出 `want`（申请核数）、**候选卡聚合空闲核 `freeCores`**、候选设备数以及 `maxCards`。
+`freeCores` 仅统计通过健康状态、UUID、容器数量、空闲核校验的候选卡之和。
+`maxCards` 代表卡片数量，不是核数：取值为 `ceil(申请核数 / 最大可用候选卡核数)`，也就是该请求最少需要几张卡；任何需要更多卡片的拆分方案都会被拒绝。
+
+排查步骤：先对比 `freeCores` 和 `want`。
+- 如果 `freeCores < want`：符合筛选条件的候选卡集合，整体空闲核总量不足。
+- 如果 `freeCores >= want`：再拿 `want` 和单卡最大核数对比：
+  - `want ≤ 单卡最大核数`：`maxCards = 1`，失败原因是没有单张候选卡的空闲核足够；
+  - `want > 单卡最大核数`：请求需要跨卡分配，若拆分所需卡片数超出最小卡片限制，节点被过滤。
+
+
 
 ## 确认运行中的容器实际获得了什么
 

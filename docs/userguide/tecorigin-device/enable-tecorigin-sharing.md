@@ -93,7 +93,7 @@ After a Pod is scheduled, HAMi writes the chosen devices to `hami.io/tecorigin-d
 <card-serial>,<type>,<memory-MiB>,<core-mask>
 ```
 
-`core-mask` is a decimal bitmask of the cores allocated on that card: `4` cores on a 4-core card is `15` (`0b1111`), one core is `1`. The plugin expands the mask into global core indexes and sets `TECO_VISIBLE_DEVICES` accordingly. Because the mask is card-local, the optional core-id map is the only way to trace an index back to a card by hand.
+`core-mask` is a decimal bitmask of the cores allocated on that card: all four cores on a 4-core card is `15` (`0b1111`). A single-core allocation uses a bit corresponding to its local core index: core 0 → `1`, core 1 → `2`, core 2 → `4`, core 3 → `8`. The plugin expands the mask into global core indexes and sets `TECO_VISIBLE_DEVICES` accordingly. Because the mask is card-local, the optional core-id map is the only way to trace an index back to a card by hand.
 
 ## Running Tecorigin jobs
 

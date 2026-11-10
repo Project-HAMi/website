@@ -55,7 +55,11 @@ kubectl get node <node-name> -o jsonpath='{.metadata.annotations.hami\.io/node-t
 该序列号同时也是 `teco-smi` 输出的显卡标识，以及 HAMi 在 `hami.io/tecorigin-devices-allocated` 中记录的值。
 
 :::note
-
-序列号在整个集群中唯一，因此绑定显卡也就绑定了节点。若绑定的显卡已被占满，工作负载会保持 Pending，并在分配原因中显示 `CardUUIDMismatch` 或 `CardInsufficientCore`，而不会改用未被允许的显卡。
-
+序列号在集群内唯一标识一张卡，因此绑定指定卡片等价于绑定节点。
+绑定卡片的工作负载如果无法调度，会保持 Pending，分配拒绝原因可能为 `CardTimeSlicingExhausted`、`CardUUIDMismatch` 或 `CardInsufficientCore`：
+- `CardTimeSlicingExhausted`：指定卡的时间切片核配额已经耗尽；
+- `CardUUIDMismatch`：调度器尝试选中了不在允许UUID列表中的其他卡片；
+- `CardInsufficientCore`：目标卡空闲核不足。
+该工作负载不会自动调度到未被允许使用的其他卡片上。
 :::
+
