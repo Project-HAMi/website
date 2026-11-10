@@ -3,7 +3,7 @@ title: Configure the AMD device plugin
 sidebar_label: Configuration
 ---
 
-The plugin chart passes its values to the plugin as flags. The [chart README](https://github.com/Project-HAMi/amd-device-plugin/blob/v0.0.4/helm/amd-gpu/README.md) lists every value. The chart and the image have to come from the same commit or release: the image tag defaults to the chart `appVersion`, a published release, and a chart from `main` passes flags that a published image does not know, so its pod stops with a usage message. To run `main`, build the image from the same checkout and set `dp.image.repository` and `dp.image.tag`.
+The plugin chart passes its values to the plugin as flags. The [chart README](https://github.com/Project-HAMi/amd-device-plugin/blob/main/helm/amd-gpu/README.md) lists every value. The chart and the image have to come from the same commit or release: the image tag defaults to the chart `appVersion`, a published release, and a chart from `main` passes flags that a published image does not know, so its pod stops with a usage message. To run `main`, build the image from the same checkout and set `dp.image.repository` and `dp.image.tag`.
 
 The plugin needs `NODE_NAME` and RBAC to patch nodes, `nodes/status` and pods and to create events. The chart grants both. The node labeller needs `DS_NODE_NAME`.
 
@@ -12,7 +12,7 @@ The plugin needs `NODE_NAME` and RBAC to patch nodes, `nodes/status` and pods an
 HAMi and `amd-device-plugin` use separate Charts and values files:
 
 - HAMi: use `devices.amd.*` for scheduler resource names and defaults. See the [HAMi Chart values reference](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/README.md).
-- AMD plugin: use `dp.*` for the plugin and `monitor.*` for its monitor. See the [plugin Chart values reference](https://github.com/Project-HAMi/amd-device-plugin/blob/v0.0.4/helm/amd-gpu/README.md) for the full list of Chart values.
+- AMD plugin: use `dp.*` for the plugin and `monitor.*` for its monitor. See the [plugin Chart values reference](https://github.com/Project-HAMi/amd-device-plugin/blob/main/helm/amd-gpu/README.md) for the full list of Chart values.
 
 The following table maps the plugin Chart values to command-line flags and environment variables. Mode changes and optional features have the prerequisites described below.
 
@@ -68,7 +68,7 @@ Partition counts are per GPU: `amd-smi set -g <id> --compute-partition qpx` flip
 | `qpx`   | 4                  | 64                | `qpx`  |
 | `cpx`   | 8                  | 32                | `cpx`  |
 
-An MI355X has 256 CUs and 294896 MiB of VRAM (288 GB) per GPU. Whether the plugin registers whole GPUs or `amdgpu_xcp_*` partitions depends on the kernel's KFD topology, not on the plugin. On a kernel that lists XCP render minors, each partition registers with an even share of VRAM and CUs (`qpx`: 4 devices of 73728 MiB and 64 CUs per GPU). On kernel 6.8.0-136 the topology lacks them, so a `qpx` node registers one hard whole-GPU entry per GPU, and the partitions of one GPU share a single ROCr `unique_id`. See [MI355X partitioning](https://github.com/Project-HAMi/amd-device-plugin/blob/v0.0.4/docs/user-guide/mi355x-partitioning.md) for the checks to run on a node.
+An MI355X has 256 CUs and 294896 MiB of VRAM (288 GB) per GPU. Whether the plugin registers whole GPUs or `amdgpu_xcp_*` partitions depends on the kernel's KFD topology, not on the plugin. On a kernel that lists XCP render minors, each partition registers with an even share of VRAM and CUs (`qpx`: 4 devices of 73728 MiB and 64 CUs per GPU). On kernel 6.8.0-136 the topology lacks them, so a `qpx` node registers one hard whole-GPU entry per GPU, and the partitions of one GPU share a single ROCr `unique_id`. See [MI355X partitioning](https://github.com/Project-HAMi/amd-device-plugin/blob/main/docs/user-guide/mi355x-partitioning.md) for the checks to run on a node.
 
 ## The `dmem` VRAM cap
 

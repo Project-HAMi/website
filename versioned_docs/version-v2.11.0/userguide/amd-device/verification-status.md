@@ -3,7 +3,7 @@ title: AMD GPU test status
 sidebar_label: Test status
 ---
 
-This page summarizes what was checked on a real AMD GPU, what was found and what is left. The full record, with one line for every merged pull request, is in [STATUS.md](https://github.com/Project-HAMi/amd-device-plugin/blob/v0.0.4/STATUS.md), and a short guide to the project is in [ONBOARDING.md](https://github.com/Project-HAMi/amd-device-plugin/blob/v0.0.4/ONBOARDING.md). Both files cover the [amd-device-plugin](https://github.com/Project-HAMi/amd-device-plugin) and [amd-hami-core](https://github.com/Project-HAMi/amd-hami-core) repositories and the AMD pull requests of [HAMi](https://github.com/Project-HAMi/HAMi).
+This page summarizes what was checked on a real AMD GPU, what was found and what is left. The full record, with one line for every merged pull request, is in [STATUS.md](https://github.com/Project-HAMi/amd-device-plugin/blob/main/STATUS.md), and a short guide to the project is in [ONBOARDING.md](https://github.com/Project-HAMi/amd-device-plugin/blob/main/ONBOARDING.md). Both files cover the [amd-device-plugin](https://github.com/Project-HAMi/amd-device-plugin) and [amd-hami-core](https://github.com/Project-HAMi/amd-hami-core) repositories and the AMD pull requests of [HAMi](https://github.com/Project-HAMi/HAMi).
 
 ## How it was tested
 
