@@ -99,9 +99,14 @@ scheduler:
       tag: v1.34.1-tke.8
   patch:
     imageNew:
+      # 安装前，在能访问源仓库和目标仓库的机器上执行：
+      # skopeo login <内网镜像仓库>
+      # skopeo copy --all docker://registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.6.9 docker://<内网镜像仓库>/<镜像命名空间>/kube-webhook-certgen:v1.6.9
       registry: <内网镜像仓库>
       repository: <镜像命名空间>/kube-webhook-certgen
       tag: v1.6.9
+      # 需要拉取凭据时，使用 kube-system 中已有的镜像拉取 Secret：
+      # pullSecrets: [<image-pull-secret>]
 devicePlugin:
   nvidiaDriverRoot: /
 ```

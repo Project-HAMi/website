@@ -98,9 +98,14 @@ scheduler:
       tag: v1.34.1-tke.8
   patch:
     imageNew:
+      # Before installation, run on a machine with access to both registries:
+      # skopeo login <internal-registry>
+      # skopeo copy --all docker://registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.6.9 docker://<internal-registry>/<image-namespace>/kube-webhook-certgen:v1.6.9
       registry: <internal-registry>
       repository: <image-namespace>/kube-webhook-certgen
       tag: v1.6.9
+      # If pull credentials are required, use an existing image pull Secret in kube-system:
+      # pullSecrets: [<image-pull-secret>]
 devicePlugin:
   nvidiaDriverRoot: /
 ```
