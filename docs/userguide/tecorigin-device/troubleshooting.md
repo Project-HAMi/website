@@ -19,7 +19,10 @@ kubectl get node <node-name> -o jsonpath='{.metadata.annotations.hami\.io/node-t
 | `invalid memory ... Devmem is MiB, not bytes` | The plugin wrote a byte count | Write MiB |
 | `no healthy tecorigin card found on node` | Every card reports `health=false` | Fix the card, then update the annotation so the health check re-reads it |
 
-An annotation that is present but produces no registration also leaves Pods pending with `node unregistered` in the scheduler log. The register annotation and `hami.io/node-tecorigin-cores` are fingerprinted on each health check, so correcting either one re-reads the card list; no scheduler restart is needed.
+An annotation that is present but produces no registration also leaves Pods pending with `node unregistered` in the scheduler log.
+> Note: Both `node unregistered` and `no healthy tecorigin card found on node` are logged at V(5). The HAMI chart defaults to `-v=4`, so these messages are not visible by default. You can set the scheduler log level to `-v=5` to view them, or inspect the scheduling rejection reason directly.
+The register annotation and `hami.io/node-tecorigin-cores` are fingerprinted on each health check, so correcting either one re-reads the card list; no scheduler restart is needed.
+
 
 ## The Pod stays pending
 
@@ -40,9 +43,14 @@ kubectl logs -n {Release Namespace} -l app.kubernetes.io/component=hami-schedule
 > Note: When all GPUs on the node have zero free cores, the scheduler returns `CardInsufficientCore` without logging `tecorigin fit failed`. In this case the grep above will find no matches; you need to check the card allocation status directly.
 
 
-The line reports `want`, the node's total `freeCores`, the number of `candidates`, and `maxCards`. `maxCards` is a card count, not a core count: it is `ceil(want / the largest eligible card's core count)`, the fewest cards the request could need, and a split that takes more cards than that is refused.
+The log prints `want`, the aggregated `freeCores` from eligible candidate cards, candidate count, and `maxCards`.
+`freeCores` sums only cards that pass health, UUID, container-count and free-core filters.
+`maxCards` is a card count, not a core count: it equals `ceil(want / core count of the largest eligible card)`, the minimal number of cards required for this request. Any split requiring more cards will be rejected.
 
-To tell the two failure causes apart, compare `want` with the largest card's core count. At or below it, `maxCards` is 1 and the failure means no single card has enough free cores. Above it, the request has to span cards, and the node is refused when covering it would take a wider split than the minimum.
+To tell the failure causes apart: first compare `freeCores` against `want`. If `freeCores < want`, the pool of eligible candidate cards does not have enough total free cores.
+If `freeCores >= want`, then compare `want` with the largest card’s core count.
+- When `want ≤ largest card core count`: `maxCards = 1`, failure means no single eligible card has enough free cores.
+- When `want > largest card core count`: the request must span multiple cards; the node is rejected if the required split exceeds the minimal-card limit.
 
 
 ## Verify what a running container received

@@ -164,6 +164,14 @@ const vendors = [
     ]),
     vendorExamples("mthreads-device", ["allocate-core-and-memory", "allocate-exclusive"]),
   ]),
+  vendorCategory("Tecorigin GPU", "tecorigin", [
+    ...vendorPages("tecorigin-device", ["enable-tecorigin-sharing", "troubleshooting"]),
+    vendorExamples("tecorigin-device", [
+      "allocate-core",
+      "allocate-exclusive",
+      "specify-certain-cards",
+    ]),
+  ]),
   vendorCategory("Vastai GPU", "vastai", [
     ...vendorPages("vastai", ["enable-vastai-sharing"]),
     vendorExamples("vastai", ["default-use"]),
