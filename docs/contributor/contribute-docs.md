@@ -101,6 +101,8 @@ Every new document must be added to `sidebars.js` to appear in navigation. Find 
 }
 ```
 
+For a vendor guide, add the page name to the appropriate `vendorPages(...)` or `vendorExamples(...)` entry. For a new vendor, add `vendorCategory(...)` with a unique key to `vendors`.
+
 If you are unsure which category fits, mention it in the PR and a maintainer will help.
 
 ### 4. Add a Chinese translation (optional)
@@ -183,15 +185,15 @@ The following rules apply to all documentation on this site.
 
 ## Versioning
 
-HAMi docs are versioned alongside each release:
+HAMi docs are versioned alongside each release. In the examples below, `X.Y.Z` is the latest release and `A.B.C` is an older release:
 
 | Location                         | Version                 | URL              |
 | -------------------------------- | ----------------------- | ---------------- |
 | `docs/`                          | dev / next (unreleased) | `/docs/next/*`   |
-| `versioned_docs/version-v2.9.0/` | v2.9.0 (latest stable)  | `/docs/*`        |
-| `versioned_docs/version-v2.8.0/` | v2.8.0                  | `/docs/v2.8.0/*` |
+| `versioned_docs/version-vX.Y.Z/` | latest stable release   | `/docs/*`        |
+| `versioned_docs/version-vA.B.C/` | older release           | `/docs/vA.B.C/*` |
 
-> The `docs/` directory is the **unreleased dev version** (served at `/docs/next`), **not** the "current/latest stable release". The latest stable release is the first entry in `versions.json` (currently v2.9.0), served at `/docs`. Editing `docs/` only affects the next release.
+> The `docs/` directory is the **unreleased dev version** (served at `/docs/next`), **not** the "current/latest stable release". The latest stable release is the first entry in `versions.json`, served at `/docs`. Editing `docs/` only affects the next release.
 
 **Contribute to `docs/`** for changes that apply to the next release. These are the files most contributors should edit.
 

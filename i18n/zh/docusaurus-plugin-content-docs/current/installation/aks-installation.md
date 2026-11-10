@@ -92,7 +92,7 @@ devicePlugin:
 - `manageNamespaceSelector: false` 让 AKS 管理 webhook 的 `namespaceSelector`，避免 Helm server-side apply 冲突。见上文的限制说明。
 - `nvidiaDriverRoot: "/"` 使用节点主机上安装的驱动。
 - `nvidiaNodeSelector` 将 HAMi 设备插件限制在专用节点池。
-- `tolerations` 会替换 Chart 的默认值：该默认值在 Chart v2.10.0 中为空，在尚未发布的 v2.11.0 中仅包含 `nvidia.com/gpu:NoSchedule`。该列表覆盖 AKS 的 `sku=gpu` 污点，以及部分节点镜像使用的 `nvidia.com/gpu` 污点。
+- `tolerations` 会替换 Chart 的默认值：该默认值在 Chart v2.10.0 中为空，在 v2.11.0 中仅包含 `nvidia.com/gpu:NoSchedule`。该列表覆盖 AKS 的 `sku=gpu` 污点，以及部分节点镜像使用的 `nvidia.com/gpu` 污点。
 
 使用该文件安装 Chart，之后每次 `helm upgrade` 也使用同一个文件：
 
@@ -101,14 +101,14 @@ helm repo add hami-charts https://project-hami.github.io/HAMi/
 helm repo update hami-charts
 helm upgrade --install hami hami-charts/hami \
   --namespace kube-system \
-  --version 2.10.0 \
+  --version 2.11.0 \
   --values aks-values.yaml \
   --wait
 ```
 
 ## 验证安装
 
-确认 HAMi 已注册 GPU 并声明逻辑槽位。默认每个 GPU 对应 10 个 vGPU 时，单 GPU 节点会报告 10 个 `nvidia.com/gpu` 槽位。该配置项在已发布的 Chart v2.10.0 中为 `devicePlugin.deviceSplitCount`，在尚未发布的 Chart v2.11.0 中为 `devices.nvidia.deviceSplitCount`（见[升级指南](./upgrade.md)）：
+确认 HAMi 已注册 GPU 并声明逻辑槽位。默认每个 GPU 对应 10 个 vGPU 时，单 GPU 节点会报告 10 个 `nvidia.com/gpu` 槽位。该配置项在 Chart v2.10.0 中为 `devicePlugin.deviceSplitCount`，在 Chart v2.11.0 中为 `devices.nvidia.deviceSplitCount`（见[升级指南](./upgrade.md)）：
 
 ```bash
 kubectl get node <gpu-node> \

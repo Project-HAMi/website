@@ -2,6 +2,7 @@
 title: GPU sharing benchmark reproduction
 sidebar_label: Benchmark reproduction
 description: Reproduce A100 GPU sharing performance and fault probes with native serving, HAMi, and GPU Fractioning.
+hide_version_banner: true
 ---
 
 ## Core environment

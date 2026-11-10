@@ -2,6 +2,7 @@
 title: GPU 共享测试复现指南
 sidebar_label: 测试复现指南
 description: 复现 A100 上原生 vLLM、HAMi 与 GPU Fractioning 的共享性能和 GPU 故障测试。
+hide_version_banner: true
 translated: true
 ---
 

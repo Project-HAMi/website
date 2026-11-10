@@ -1,7 +1,7 @@
-// Which NVIDIA GPU features each HAMi setup supports, checked against source code in October 2026.
-// HAMi follows master 07c89a3f, as these are /docs/next pages, with v2.10.0 differences noted.
+// Which NVIDIA GPU features each HAMi setup supports, checked against source code in October 2026
+// and again in November 2026. HAMi follows v2.11.0, with v2.10.0 differences noted.
 // The others follow their latest releases: HAMi-DRA v0.2.3 with k8s-dra-driver v0.1.1, Volcano
-// v1.16.0 with volcano-vgpu-device-plugin 5283c86, KAI Scheduler v0.18.6 with KAI-resource-isolator
+// v1.16.0 with volcano-vgpu-device-plugin ef0cad3, KAI Scheduler v0.18.7 with KAI-resource-isolator
 // v1.1.0. Changes only on their main branches are noted as unreleased.
 // status: "yes" supported, "partial" works with a caveat the reader should know, "no" not supported.
 // use: a string lists identifiers (comma separated, shown as code); an { en, zh } object is prose.
@@ -9,6 +9,7 @@
 // short: the label shown beside the identifiers in a card.
 // guide: where this setup documents the feature, { href, label? }; href may be { en, zh } when
 // heading anchors differ by locale. Left out when the page itself covers it or no doc does.
+// page: the HAMi guide for the feature, relative to the docs version root. The matrix links it.
 
 // Paired identifiers whose roles differ; the card shows each with its role.
 const pickAvoid = (pick, avoid) => [
@@ -75,10 +76,31 @@ export const COMPONENTS = {
   },
 };
 
+// Row groups of the matrix, in display order.
+export const GROUPS = [
+  {
+    title: { en: "Allocation", zh: "资源分配" },
+    features: ["memMib", "memPercent", "cores", "exclusive"],
+  },
+  {
+    title: { en: "Device selection", zh: "选卡" },
+    features: ["gpuType", "gpuUuid"],
+  },
+  {
+    title: { en: "Scheduling", zh: "调度" },
+    features: ["nodePolicy", "gpuPolicy", "numa", "dynamicMig", "remoteGpu"],
+  },
+  {
+    title: { en: "Quota and monitoring", zh: "配额与监控" },
+    features: ["quota", "allocationMetrics", "usageMetrics"],
+  },
+];
+
 export const FEATURES = {
   memMib: {
     title: { en: "Memory in MiB", zh: "按 MiB 分配显存" },
     short: { en: "In MiB", zh: "按 MiB" },
+    page: "userguide/nvidia-device/specify-device-memory-usage",
     hami: { status: "yes", use: "nvidia.com/gpumem" },
     dra: { status: "yes", use: "nvidia.com/gpumem", guide: DRA_COMPAT },
     volcano: { status: "yes", use: "volcano.sh/vgpu-memory", guide: VOLCANO_JOBS },
@@ -96,6 +118,7 @@ export const FEATURES = {
   memPercent: {
     title: { en: "Memory by percentage", zh: "按百分比分配显存" },
     short: { en: "By percent", zh: "按百分比" },
+    page: "userguide/nvidia-device/specify-device-memory-usage",
     hami: { status: "yes", use: "nvidia.com/gpumem-percentage" },
     dra: {
       status: "no",
@@ -123,6 +146,7 @@ export const FEATURES = {
   cores: {
     title: { en: "Compute limit", zh: "限制算力" },
     short: { en: "Cores", zh: "算力" },
+    page: "userguide/nvidia-device/specify-device-core-usage",
     hami: {
       status: "yes",
       use: "nvidia.com/gpucores",
@@ -156,6 +180,7 @@ export const FEATURES = {
   exclusive: {
     title: { en: "Whole GPU", zh: "独占整卡" },
     short: { en: "Whole GPU", zh: "整卡" },
+    page: "userguide/nvidia-device/examples/use-exclusive-card",
     hami: { status: "yes", use: "nvidia.com/gpu" },
     dra: { status: "yes", use: "nvidia.com/gpu", guide: DRA_COMPAT },
     volcano: {
@@ -171,6 +196,7 @@ export const FEATURES = {
   gpuType: {
     title: { en: "Choose GPU by type", zh: "按型号选卡" },
     short: { en: "Type", zh: "型号" },
+    page: "userguide/nvidia-device/specify-device-type-to-use",
     hami: {
       status: "yes",
       use: pickAvoid("nvidia.com/use-gputype", "nvidia.com/nouse-gputype"),
@@ -202,6 +228,7 @@ export const FEATURES = {
   gpuUuid: {
     title: { en: "Choose GPU by UUID", zh: "按 UUID 选卡" },
     short: { en: "UUID", zh: "UUID" },
+    page: "userguide/nvidia-device/specify-device-uuid-to-use",
     hami: { status: "yes", use: pickAvoid("nvidia.com/use-gpuuuid", "nvidia.com/nouse-gpuuuid") },
     dra: { status: "yes", use: pickAvoid("nvidia.com/use-gpuuuid", "nvidia.com/nouse-gpuuuid") },
     volcano: {
@@ -220,6 +247,7 @@ export const FEATURES = {
   nodePolicy: {
     title: { en: "Node binpack or spread", zh: "节点级 binpack/spread" },
     short: { en: "Node", zh: "节点级" },
+    page: "userguide/nvidia-device/scheduling-policy",
     hami: {
       status: "yes",
       use: clusterOrPod("nodeSchedulerPolicy", "hami.io/node-scheduler-policy"),
@@ -253,6 +281,7 @@ export const FEATURES = {
   gpuPolicy: {
     title: { en: "GPU binpack or spread", zh: "卡级 binpack/spread" },
     short: { en: "GPU", zh: "卡级" },
+    page: "userguide/nvidia-device/scheduling-policy",
     hami: {
       status: "yes",
       use: clusterOrPod("gpuSchedulerPolicy", "hami.io/gpu-scheduler-policy"),
@@ -286,6 +315,7 @@ export const FEATURES = {
   numa: {
     title: { en: "NUMA alignment", zh: "NUMA 对齐" },
     short: { en: "NUMA", zh: "NUMA" },
+    page: "userguide/nvidia-device/numa-alignment",
     hami: {
       status: "yes",
       use: [
@@ -293,8 +323,8 @@ export const FEATURES = {
         { label: { en: "Match CPU", zh: "对齐 CPU" }, code: "hami.io/numa-alignment" },
       ],
       note: {
-        en: "hami.io/numa-alignment needs a release after v2.10.0 and is off by default.",
-        zh: "hami.io/numa-alignment 需要 v2.10.0 之后的版本，默认关闭。",
+        en: "hami.io/numa-alignment needs v2.11.0 or later and is off by default.",
+        zh: "hami.io/numa-alignment 需要 v2.11.0 及以上，默认关闭。",
       },
     },
     dra: {
@@ -321,6 +351,7 @@ export const FEATURES = {
   quota: {
     title: { en: "Quota", zh: "资源配额" },
     short: { en: "Quota", zh: "配额" },
+    page: "userguide/nvidia-device/using-resourcequota",
     hami: {
       status: "yes",
       use: [
@@ -328,8 +359,8 @@ export const FEATURES = {
         { label: { en: "Cores", zh: "算力" }, code: "limits.nvidia.com/gpucores" },
       ],
       note: {
-        en: "HAMi counts what is actually allocated, so multiple GPUs and percentages add up correctly. HAMi quotas do not cover the GPU count; use requests.nvidia.com/gpu in a native ResourceQuota. Scoped quotas are skipped, while v2.10.0 applies them to every Pod.",
-        zh: "HAMi 按实际分配量计算，多卡和百分比都能算对。HAMi 配额不管卡数，卡数要用原生 ResourceQuota 的 requests.nvidia.com/gpu。带 scope 的配额会被跳过，v2.10.0 则会套用到所有 Pod。",
+        en: "HAMi counts what is actually allocated, so multiple GPUs and percentages add up correctly. HAMi quotas do not cover the GPU count; use requests.nvidia.com/gpu in a native ResourceQuota. Scoped quotas are skipped. Before v2.11.0 they applied to every Pod.",
+        zh: "HAMi 按实际分配量计算，多卡和百分比都能算对。HAMi 配额不管卡数，卡数要用原生 ResourceQuota 的 requests.nvidia.com/gpu。带 scope 的配额会被跳过，v2.11.0 之前则会套用到所有 Pod。",
       },
       guide: {
         href: "/docs/userguide/kueue/how-to-use-kueue",
@@ -374,6 +405,7 @@ export const FEATURES = {
   dynamicMig: {
     title: { en: "Dynamic MIG", zh: "动态 MIG" },
     short: { en: "MIG", zh: "MIG" },
+    page: "userguide/nvidia-device/dynamic-mig-support",
     hami: {
       status: "yes",
       use: [
@@ -401,9 +433,29 @@ export const FEATURES = {
       status: "no",
     },
   },
+  remoteGpu: {
+    title: { en: "Remote GPU", zh: "远程 GPU" },
+    short: { en: "Remote", zh: "远程" },
+    page: "userguide/nvidia-device/remote-gpu",
+    hami: {
+      status: "partial",
+      use: [
+        { label: { en: "Node", zh: "节点" }, code: "operatingmode: remote" },
+        { label: { en: "Pod", zh: "Pod" }, code: "nvidia.com/remote-gpu" },
+      ],
+      note: {
+        en: "Needs v2.11.0 or later and devices.remotegpu.enabled, which is off by default. A workload reserves the whole GPU server, even with a smaller memory request.",
+        zh: "需要 v2.11.0 及以上，并开启默认关闭的 devices.remotegpu.enabled。一个工作负载会独占整台 GPU 服务器，申请的显存再小也一样。",
+      },
+    },
+    dra: { status: "no" },
+    volcano: { status: "no" },
+    kai: { status: "no" },
+  },
   allocationMetrics: {
     title: { en: "Allocation metrics", zh: "分配监控" },
     short: { en: "Metrics", zh: "指标" },
+    page: "userguide/monitoring/device-allocation",
     hami: {
       status: "yes",
       use: endpointMetrics("hami-scheduler:31993", "hami_*"),
@@ -433,6 +485,7 @@ export const FEATURES = {
   usageMetrics: {
     title: { en: "Real-time usage metrics", zh: "实时用量监控" },
     short: { en: "Metrics", zh: "指标" },
+    page: "userguide/monitoring/real-time-device-usage",
     hami: {
       status: "yes",
       use: endpointMetrics("<device-plugin-pod-ip>:9394", "hami_*"),

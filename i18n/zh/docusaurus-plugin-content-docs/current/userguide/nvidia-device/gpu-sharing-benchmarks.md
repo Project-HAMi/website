@@ -2,6 +2,7 @@
 title: GPU 共享性能与故障隔离
 sidebar_label: 共享性能测试
 description: 基于 A100 实测，对比原生双实例、HAMi 与基于 MPS 的 GPU 共享方案。
+hide_version_banner: true
 translated: true
 ---
 

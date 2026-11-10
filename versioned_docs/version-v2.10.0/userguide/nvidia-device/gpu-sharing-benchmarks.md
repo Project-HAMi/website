@@ -2,6 +2,7 @@
 title: GPU sharing performance and fault isolation
 sidebar_label: Sharing benchmarks
 description: A100 measurements comparing native two-instance serving, HAMi, and MPS-based GPU sharing.
+hide_version_banner: true
 ---
 
 **Main findings**:
