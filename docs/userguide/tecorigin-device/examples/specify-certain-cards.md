@@ -33,7 +33,7 @@ metadata:
     tecorigin.com/nouse-gpuuuid: "3CP100241200187"
 ```
 
-`use-gpuuuid` and `nouse-gpuuuid` are evaluated independently: a card must appear in the allowed list, or not appear in the excluded list, for the request to land on it. Listing both is allowed but a card present in both is excluded.
+`use-gpuuuid` and `nouse-gpuuuid` are evaluated together: if the allow list is set, a card must be present in the allow list, and must not be present in the exclude list. Listing both is allowed; a card present in both lists is excluded.
 
 ## Find the serial numbers
 
