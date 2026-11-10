@@ -59,4 +59,3 @@ A serial identifies one card in the whole cluster, so pinning a card also pins t
 - `CardInsufficientCore`: the target card lacks enough free cores.
 It will not move to a card it was not allowed to use.
 :::
-

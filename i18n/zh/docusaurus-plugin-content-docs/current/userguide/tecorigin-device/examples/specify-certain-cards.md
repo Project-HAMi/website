@@ -62,4 +62,3 @@ kubectl get node <node-name> -o jsonpath='{.metadata.annotations.hami\.io/node-t
 - `CardInsufficientCore`：目标卡空闲核不足。
 该工作负载不会自动调度到未被允许使用的其他卡片上。
 :::
-
