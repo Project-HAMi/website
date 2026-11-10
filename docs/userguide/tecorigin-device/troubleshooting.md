@@ -37,8 +37,13 @@ For `CardInsufficientCore`, look at the free-core count in the scheduler log:
 ```bash
 kubectl logs -n {Release Namespace} -l app.kubernetes.io/component=hami-scheduler -c vgpu-scheduler-extender --tail=200 | grep "tecorigin fit failed"
 ```
+> Note: When all GPUs on the node have zero free cores, the scheduler returns `CardInsufficientCore` without logging `tecorigin fit failed`. In this case the grep above will find no matches; you need to check the card allocation status directly.
 
-The line reports `want`, the node's total `freeCores`, the number of `candidates` and `maxCards` — the most cards the request may use. `maxCards` comes from the largest card on the node, so a `want` above it has to be spread and a node that would need more cards is refused.
+
+The line reports `want`, the node's total `freeCores`, the number of `candidates`, and `maxCards`. `maxCards` is a card count, not a core count: it is `ceil(want / the largest eligible card's core count)`, the fewest cards the request could need, and a split that takes more cards than that is refused.
+
+To tell the two failure causes apart, compare `want` with the largest card's core count. At or below it, `maxCards` is 1 and the failure means no single card has enough free cores. Above it, the request has to span cards, and the node is refused when covering it would take a wider split than the minimum.
+
 
 ## Verify what a running container received
 
@@ -72,6 +77,7 @@ Index `5` belongs to card `3CP100241200185`, local core `1`. The map never affec
 
 ## Requests do not produce the expected split
 
-Placement is deterministic: fewest cards first, then the split that leaves the least capacity unused (cards with the fewest free cores are filled first), then the lowest-indexed cards. A 6-core request therefore lands on two cards with three free cores each before it touches a card with four free cores, because 3 + 3 wastes nothing.
+Placement is deterministic: fewest cards first, then the set whose free cores add up most tightly to the request, then the lowest-indexed cards of each size. A 6-core request therefore lands on two cards with three free cores each rather than on a four-core and a three-core card, because 3 + 3 wastes nothing. The cores are then taken from the roomiest selected card first, so a set with four and three free cores gives 4 + 2 and leaves one core on the second card.
+
 
 If a whole card was expected, confirm the request matches the card's core count: `4` on 4-core cards, `3` on 3-core cards. A `4` on a node of 3-core cards is split and cannot be exclusive.

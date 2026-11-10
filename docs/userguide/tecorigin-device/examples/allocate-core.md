@@ -47,7 +47,7 @@ spec:
 
 ## Across several cards
 
-A request larger than one card's core count is split over the fewest cards, and among those cards HAMi picks the tightest fit: it fills the cards with the fewest free cores first, so capacity is not left fragmented. On a node of idle 4-core cards, `6` takes four cores of one card and two of another.
+A request larger than one card's core count is split over the fewest cards, and among those sets HAMi takes the one whose free cores add up most tightly to the request, so cards that are already partly used are preferred over idle ones. The cores are then taken from the selected cards in descending order of free cores. On a node of idle 4-core cards, `6` takes four cores of one card and two of another; given cards with four and three free cores, it takes the four from the first and two from the second, leaving one core free on the second card.
 
 ```yaml
 apiVersion: v1
@@ -69,10 +69,12 @@ A node is only eligible when the request can be served without spreading beyond 
 
 ## Requests versus limits
 
-A limit takes precedence when both are set. A request alone is also honoured, which fits workloads that set only `resources.requests`:
+When both are set, the limit takes precedence. For extended resources like `tecorigin.com/gpucore`, requests and limits must be set to equal values.
 
 ```yaml
       resources:
+        limits:
+          tecorigin.com/gpucore: 1
         requests:
           tecorigin.com/gpucore: 1
 ```

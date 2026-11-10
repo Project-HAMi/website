@@ -38,6 +38,8 @@ HAMi 会在 Pod 的分配原因中以 `<失败数>/<总数> <Reason>` 的形式�
 ```bash
 kubectl logs -n {Release Namespace} -l app.kubernetes.io/component=hami-scheduler -c vgpu-scheduler-extender --tail=200 | grep "tecorigin fit failed"
 ```
+> 注意：如果节点上所有显卡都没有空闲核，调度器会直接返回 `CardInsufficientCore`，不会输出 `tecorigin fit failed` 日志。此时上面这条 grep 命令搜不到结果，需要直接查看显卡分配状态。
+
 
 日志会输出 `want`、节点总 `freeCores`、候选卡数 `candidates` 以及 `maxCards`——即该请求最多可用的卡数。`maxCards` 由节点上最大的单卡核心数推导，因此 `want` 超过它时必须跨卡拆分；需要更多卡的节点会被拒绝。
 
@@ -73,6 +75,6 @@ kubectl get node <node-name> -o jsonpath='{.metadata.annotations.hami\.io/node-t
 
 ## 实际拆分与预期不一致
 
-放置过程是确定性的：先取最少卡数，再取最不浪费容量的组合（先填满空闲核心较少的卡），最后取索引最小的卡。因此 6 核请求会优先落在两张各有 3 个空闲核心的卡上，而不是动用一张有 4 个空闲核心的卡，因为 3 + 3 没有浪费。
+放置过程是确定性的：先取最少卡数，再取空闲核心总量最贴近请求的组合，最后在同等大小的卡中取索引最小的。因此 6 核请求会落在两张各有 3 个空闲核心的卡上，而不是一张 4 核卡加一张 3 核卡，因为 3 + 3 没有浪费。取用时从空闲核心最多的卡开始，所以 4 与 3 的组合会分出 4 + 2，第二张卡余 1 个核心。
 
 若期望独占整卡，请确认请求与卡型核心数一致：4 核卡写 `4`，3 核卡写 `3`。在 3 核卡节点上写 `4` 会被拆分，无法独占。

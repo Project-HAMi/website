@@ -130,7 +130,7 @@ Next steps:
 
 2. **Compute isolation is physical.** Each allocated core belongs to one container rather than being time-sliced, so there is no execution rate to throttle. Two containers on one card run on disjoint cores and do not contend for the same core, though they still share the card's memory bandwidth.
 
-3. **Cards with more than 4 cores are rejected.** The backend derives the core mask from a 4-bit width. A card reporting more cores is dropped while parsing the node annotation, and its cores are not advertised.
+3. **Cards with more than 4 cores reject the whole node annotation.** The backend derives the core mask from a 4-bit width. If any card in the annotation reports more than four cores, the parser fails the entire list; the node is not registered and none of its cores are advertised.
 
 4. **A card takes at most as many containers as it has cores.** On a 4-core card, the fifth container that wants a core of it is refused even when cores are free. Requests that ask for more cores per container, or fewer, are not affected.
 
