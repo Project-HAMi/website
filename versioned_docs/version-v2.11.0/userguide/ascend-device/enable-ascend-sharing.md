@@ -7,7 +7,7 @@ The Huawei Ascend device plugin provides three NPU slicing modes for HAMi: `temp
 ## Prerequisites
 
 - Install the Ascend driver and [ascend-docker-runtime](https://gitcode.com/Ascend/mind-cluster/tree/master/component/ascend-docker-runtime), and register the `ascend` handler in the node's container runtime. The RuntimeClass created below refers to this handler.
-- Use HAMi scheduler and Ascend device plugin versions that support the selected mode. This page describes Next; the fields shown here may not yet be available in published charts or images.
+- Use HAMi v2.11.0 and an Ascend device plugin version that supports the selected mode.
 - Ensure `npu-smi` is available on the node. The plugin can access `/usr/local/Ascend/driver/tools/npu-smi` and `/usr/local/sbin/npu-smi` by default. Other locations require an additional host path mount.
 
 ### template mode
@@ -62,7 +62,7 @@ devices:
     hamiVnpuMode: template
 ```
 
-Keep the default device models and templates in `devices.ascend.configs` when they fit the cluster. To customize them, use the [values source](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/values.yaml) and preserve the complete list of required models: list overrides replace the entire list. Template mode does not use `deviceSplitCount` to calculate slice capacity.
+Keep the default device models and templates in `devices.ascend.configs` when they fit the cluster. To customize them, use the [values source](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/values.yaml) and preserve the complete list of required models: list overrides replace the entire list. Template mode does not use `deviceSplitCount` to calculate slice capacity.
 
 ### hami-core configuration
 
@@ -97,7 +97,7 @@ ENPU also uses `deviceSplitCount`, capped at `100`. Each container can request a
 
 Follow [Online installation](../../installation/online-installation.md), passing `--values hami-ascend-values.yaml`. The following steps assume release `hami`; replace `<namespace>` in commands with the actual HAMi namespace. An Ascend-only cluster can additionally set `devicePlugin.enabled: false` to disable the NVIDIA plugin; retain it where needed in a mixed GPU cluster.
 
-When customizing resource names, also update `devices.ascend.customresources` and workload Pods. See the [HAMi Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values) for all fields. For an existing installation, follow [Upgrade](../../installation/upgrade.md).
+When customizing resource names, also update `devices.ascend.customresources` and workload Pods. See the [HAMi Chart values reference](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/README.md#values) for all fields. For an existing installation, follow [Upgrade](../../installation/upgrade.md).
 
 ## Deploy the Ascend device plugin
 

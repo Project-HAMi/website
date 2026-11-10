@@ -51,7 +51,7 @@ global:
 
 Alternatively, append `--set global.imageSource=cn` to the installation command below.
 
-For supported default image references, `cn` selects Alibaba Cloud mirrors for kube-scheduler and the default pinned certgen image, and [DaoCloud mirrors](https://github.com/DaoCloud/public-image-mirror) for HAMi, mock-device-plugin, and Lupine server/client images. Custom repositories are not automatically rewritten. See the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md) for image overrides and exceptions.
+For supported default image references, `cn` selects Alibaba Cloud mirrors for kube-scheduler and the default pinned certgen image, and [DaoCloud mirrors](https://github.com/DaoCloud/public-image-mirror) for HAMi, mock-device-plugin, and Lupine server/client images. Custom repositories are not automatically rewritten. See the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/README.md) for image overrides and exceptions.
 
 ## Deploy HAMi {#deploy-hami}
 
@@ -70,7 +70,7 @@ The chart detects the Kubernetes server version and selects the matching kube-sc
 
 Keep `devicePlugin.nvidiaDriverRoot=auto` for automatic discovery. The plugin reads GPU Operator's `/run/nvidia/validations/driver-ready`; if the file is absent, it assumes the driver is installed on the host. If HAMi starts before GPU Operator validation completes, wait for GPU Operator to become ready and restart the HAMi device plugin DaemonSet.
 
-The device plugin Pod must use the NVIDIA runtime to load driver libraries and discover GPUs. Set NVIDIA as the node's default runtime or configure `devices.nvidia.runtimeClassName`. For CDI settings and prerequisites, see [Configure CDI](./configure-cdi.md). Driver-path overrides and their mount behavior are documented in the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md).
+The device plugin Pod must use the NVIDIA runtime to load driver libraries and discover GPUs. Set NVIDIA as the node's default runtime or configure `devices.nvidia.runtimeClassName`. For CDI settings and prerequisites, see [Configure CDI](./configure-cdi.md). Driver-path overrides and their mount behavior are documented in the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/README.md).
 
 ## Verify installation {#verify-installation}
 

@@ -9,7 +9,7 @@ Set the annotation `hami.io/gpu-scheduler-policy` on a pod to choose how the sch
 | `binpack` | Fills one GPU before using the next. |
 | `spread` | Spreads pods over different GPUs. |
 | `mutex` | Uses only GPUs that no other pod holds. A pod that finds none stays `Pending` (`ExclusiveDeviceAllocateConflict`). Other pods can still share a GPU that a `mutex` pod holds. |
-| `topology-aware` | For a request of two or more GPUs, picks the group with the most XGMI links, and uses a shared NUMA node as the tie-break. Requires a HAMi release newer than v2.10.0 ([Project-HAMi/HAMi#3191](https://github.com/Project-HAMi/HAMi/pull/3191)). |
+| `topology-aware` | For a request of two or more GPUs, picks the group with the most XGMI links, and uses a shared NUMA node as the tie-break. Requires HAMi v2.11.0 or later ([Project-HAMi/HAMi#3191](https://github.com/Project-HAMi/HAMi/pull/3191)). |
 
 ```yaml
 apiVersion: v1

@@ -21,7 +21,7 @@ translated: true
 
 - Deploy MetaX GPU Operator on metax nodes (Please consult your device provider to obtain the installation package and documentation)
 
-- Follow [Online installation](../../../installation/online-installation.md). Configure HAMi through `devices.metax.*` in the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md); keep resource names consistent with the separately installed vendor plugin.
+- Follow [Online installation](../../../installation/online-installation.md). Configure HAMi through `devices.metax.*` in the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/README.md); keep resource names consistent with the separately installed vendor plugin.
 
 ## Running MetaX jobs
 
@@ -47,6 +47,6 @@ spec:
 
 :::note
 
-You can find more examples in [examples/metax folder](https://github.com/Project-HAMi/HAMi/tree/master/examples/metax/sgpu)
+You can find more examples in [examples/metax folder](https://github.com/Project-HAMi/HAMi/tree/v2.11.0/examples/metax/sgpu)
 
 :::

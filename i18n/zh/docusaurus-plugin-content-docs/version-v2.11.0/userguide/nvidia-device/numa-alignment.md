@@ -14,7 +14,7 @@ NUMA 对齐分两部分解决这个问题：
 - device plugin 向 kubelet 上报每个 vGPU 副本的 NUMA 节点（`enableNumaTopology`），使 Topology Manager 可以将分配限制在 NUMA 本地副本内。
 - 当该限制排除了调度器最初选择的 GPU 时，device plugin 请求调度器将分配 **refit**（重新适配）到 kubelet 允许的 GPU 上。调度器重新运行正常的策略适配，同时更新两个分配注解并移动预留，使运行时、注解和账目保持一致。
 
-需要比 v2.10.0 更新的 HAMi 版本（NUMA refit，[Project-HAMi/HAMi#2731](https://github.com/Project-HAMi/HAMi/pull/2731)）。仅支持 hami-core 模式；MIG 模式节点不参与。
+需要 HAMi v2.11.0 或更高版本（NUMA refit，[Project-HAMi/HAMi#2731](https://github.com/Project-HAMi/HAMi/pull/2731)）。仅支持 hami-core 模式；MIG 模式节点不参与。
 
 ## 节点前提条件
 

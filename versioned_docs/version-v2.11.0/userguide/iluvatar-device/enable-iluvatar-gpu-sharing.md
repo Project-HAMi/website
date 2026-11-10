@@ -39,7 +39,7 @@ devices:
     enabled: true
 ```
 
-This enables Iluvatar scheduling; install gpu-manager separately as described above. Supported models and resource names are configured through `devices.iluvatar.configs`. If you customize them, also update `devices.iluvatar.customresources`. Both lists are replaced in full when overridden. See the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md) and [complete defaults](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/values.yaml); do not edit the generated global ConfigMap.
+This enables Iluvatar scheduling; install gpu-manager separately as described above. Supported models and resource names are configured through `devices.iluvatar.configs`. If you customize them, also update `devices.iluvatar.customresources`. Both lists are replaced in full when overridden. See the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/README.md) and [complete defaults](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/values.yaml); do not edit the generated global ConfigMap.
 
 ## Device Granularity
 

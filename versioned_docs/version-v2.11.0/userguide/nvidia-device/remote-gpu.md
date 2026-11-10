@@ -68,7 +68,7 @@ A workload reserves the entire GPU server. Set the GPU count to the server's phy
 
 ## Run the CUDA example
 
-From the HAMi source checkout, use [default_use.yaml](https://github.com/Project-HAMi/HAMi/blob/master/examples/remotegpu/default_use.yaml):
+From the HAMi source checkout, use [default_use.yaml](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/examples/remotegpu/default_use.yaml):
 
 ```bash
 kubectl apply -f examples/remotegpu/default_use.yaml
@@ -81,7 +81,7 @@ The example uses `nvidia/cuda:13.0.2-devel-ubuntu24.04`, requests two remote GPU
 
 ## Run the vLLM example
 
-Use [vllm_deployment.yaml](https://github.com/Project-HAMi/HAMi/blob/master/examples/remotegpu/vllm_deployment.yaml):
+Use [vllm_deployment.yaml](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/examples/remotegpu/vllm_deployment.yaml):
 
 ```bash
 kubectl apply -f examples/remotegpu/vllm_deployment.yaml

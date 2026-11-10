@@ -11,7 +11,7 @@ The plugin needs `NODE_NAME` and RBAC to patch nodes, `nodes/status` and pods an
 
 HAMi and `amd-device-plugin` use separate Charts and values files:
 
-- HAMi: use `devices.amd.*` for scheduler resource names and defaults. See the [HAMi Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md).
+- HAMi: use `devices.amd.*` for scheduler resource names and defaults. See the [HAMi Chart values reference](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/README.md).
 - AMD plugin: use `dp.*` for the plugin and `monitor.*` for its monitor. See the [plugin Chart values reference](https://github.com/Project-HAMi/amd-device-plugin/blob/main/helm/amd-gpu/README.md) for the full list of Chart values.
 
 The following table maps the plugin Chart values to command-line flags and environment variables. Mode changes and optional features have the prerequisites described below.

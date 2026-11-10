@@ -44,7 +44,7 @@ A Contributor contributes directly to the project. Contributions do not have to 
   - Invitations to contributor events
   - Eligible to become an Organization Member
 
-Contributors are listed in the [AUTHORS.md file](https://github.com/Project-HAMi/HAMi/blob/master/AUTHORS.md). If a name is missing, open an issue on the HAMi repository to have it added.
+Contributors are listed in the [AUTHORS.md file](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/AUTHORS.md). If a name is missing, open an issue on the HAMi repository to have it added.
 
 ### Organization Member
 
@@ -111,7 +111,7 @@ A Maintainer is a highly established contributor responsible for the entire proj
 
 A Maintainer must meet all Reviewer responsibilities and requirements.
 
-The current list of maintainers is in [MAINTAINERS](https://github.com/Project-HAMi/HAMi/blob/master/MAINTAINERS.md).
+The current list of maintainers is in [MAINTAINERS](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/MAINTAINERS.md).
 
 **An active maintainer:**
 
@@ -125,7 +125,7 @@ The current list of maintainers is in [MAINTAINERS](https://github.com/Project-H
 
 New maintainers are added by consensus among the current maintainer group, via Slack or email discussion. A majority must support the addition, and no single maintainer should object.
 
-When adding a new maintainer, open a PR to [HAMi](https://github.com/Project-HAMi/HAMi) and update [MAINTAINERS](https://github.com/Project-HAMi/HAMi/blob/master/MAINTAINERS.md). Once merged, the person becomes a maintainer.
+When adding a new maintainer, open a PR to [HAMi](https://github.com/Project-HAMi/HAMi) and update [MAINTAINERS](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/MAINTAINERS.md). Once merged, the person becomes a maintainer.
 
 **Removing maintainers:**
 
