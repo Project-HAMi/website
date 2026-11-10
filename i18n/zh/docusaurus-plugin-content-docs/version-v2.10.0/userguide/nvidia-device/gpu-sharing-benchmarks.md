@@ -115,17 +115,6 @@ HAMi 此处关闭算力限制，显存仍为每实例 20 GiB；MPS 使用 v3。*
 
 GPU Fractioning 使用发布版共享 MPS；[NVIDIA 报告](https://docs.nvidia.com/dynamo/dev/many-model-serving/interpreting-gpu-sharing-results)使用定制分支。本文增加原生双实例作为比较基线。
 
-## 采集记录
-
-A、B、C 是三组不同的物理 GPU，型号和驱动相同。
-
-| 采集日期（UTC，2026 年） | 测试组 | GPU 组 |
-| --- | --- | --- |
-| 11 月 2 日 | 常规测试：原生单实例、GPU Fractioning、不限算力的 HAMi | A |
-| 11 月 3 日 | 固定缓存：原生单实例、原生双实例、legacy MPS、不限算力的 HAMi | A |
-| 11 月 4 日 | 原生双实例常规测试、全部故障测试 | B |
-| 11 月 5 日 | HAMi 50% 性能：常规测试与固定缓存对照 | C |
-
 ## 复现脚本
 
 [运行步骤](./gpu-sharing-reproduction.md) · [测试代码](https://github.com/Project-HAMi/gpu-sharing-benchmarks/tree/e9b205bb121c50649bb97d7ed5dc4f796a9e523f) · [全部数据](https://github.com/Project-HAMi/gpu-sharing-benchmarks/tree/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing)

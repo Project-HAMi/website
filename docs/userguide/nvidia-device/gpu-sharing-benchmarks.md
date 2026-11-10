@@ -114,17 +114,6 @@ Hardware: 2× A100-SXM4-40GB, Ubuntu 24.04.5, driver 615.71.10. Software: Dynamo
 
 GPU Fractioning uses the released shared-MPS configuration; the [NVIDIA report](https://docs.nvidia.com/dynamo/dev/many-model-serving/interpreting-gpu-sharing-results) uses custom forks. This study adds a native two-instance baseline.
 
-## Measurement records
-
-A, B, and C are different physical GPU pairs with the same model and driver.
-
-| Collection date (UTC, 2026) | Test groups | GPU set |
-| --- | --- | --- |
-| November 2 | Standard test: native single, GPU Fractioning, and unlimited-compute HAMi | A |
-| November 3 | Fixed cache: native single, native pair, legacy MPS, and unlimited-compute HAMi | A |
-| November 4 | Native-pair standard test and all fault tests | B |
-| November 5 | HAMi 50% performance: standard and fixed-cache tests | C |
-
 ## Reproduction scripts
 
 [Run the tests](./gpu-sharing-reproduction.md) · [Source code](https://github.com/Project-HAMi/gpu-sharing-benchmarks/tree/e9b205bb121c50649bb97d7ed5dc4f796a9e523f) · [All results](https://github.com/Project-HAMi/gpu-sharing-benchmarks/tree/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing)
