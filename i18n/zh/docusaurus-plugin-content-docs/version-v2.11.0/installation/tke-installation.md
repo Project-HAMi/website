@@ -74,11 +74,13 @@ nvidia-device-plugin-daemonset   0         0         0       0            0     
 
 TKE 节点默认没有公网 IP，除非 VPC 配置了 NAT 网关，否则只能从腾讯云内网拉取镜像。`docker.io/projecthami/hami` 不受影响，因为 TKE 已将 `mirror.ccs.tencentyun.com` 配置为 containerd 的 `docker.io` 镜像源；但 Chart 默认的 kube-scheduler 和 certgen 镜像来自 `registry.k8s.io`，这类节点无法访问该地址。
 
-镜像拉取失败时，`hami-scheduler` Pod 会报类似以下错误：
+kube-scheduler 镜像拉取失败时，`hami-scheduler` Pod 会报类似以下错误：
 
 ```text
 Failed to pull image "registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:v1.34.1": ... dial tcp 120.55.105.209:443: i/o timeout
 ```
+
+安装时若 certgen 镜像拉取失败，应检查 `hami-admission-create` Job 及其 Pod。Helm 会等待这个安装前 Job 完成，此时 `hami-scheduler` Pod 可能尚未创建。
 
 kube-scheduler 改用 TKE 的 `ccr.ccs.tencentyun.com/tkeimages/hyperkube` 镜像。该镜像包含 `kube-scheduler` 可执行文件，镜像 tag 与 TKE 的 Kubernetes 版本一致。在以下命令输出的 `VERSION` 列中查看集群版本：
 

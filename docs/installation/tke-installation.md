@@ -73,11 +73,13 @@ nvidia-device-plugin-daemonset   0         0         0       0            0     
 
 TKE nodes have no public IP by default, so unless the VPC provides a NAT gateway they can pull images only from Tencent Cloud internal endpoints. The `docker.io/projecthami/hami` image still pulls normally, because TKE configures `mirror.ccs.tencentyun.com` as the containerd mirror for `docker.io`. The chart's default kube-scheduler and certgen images, however, come from `registry.k8s.io`, which such nodes cannot reach.
 
-When an image pull fails, the `hami-scheduler` Pod reports an error similar to:
+When the kube-scheduler image pull fails, the `hami-scheduler` Pod reports an error similar to:
 
 ```text
 Failed to pull image "registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:v1.34.1": ... dial tcp 120.55.105.209:443: i/o timeout
 ```
+
+If the certgen image pull fails during installation, inspect the `hami-admission-create` Job and its Pod. Helm waits for this pre-install Job to complete, so the `hami-scheduler` Pod may not exist yet.
 
 For kube-scheduler, use TKE's `ccr.ccs.tencentyun.com/tkeimages/hyperkube` image instead. It contains the `kube-scheduler` binary, and its tags match TKE's Kubernetes versions. Find the version in the `VERSION` column:
 

@@ -46,9 +46,9 @@ translated: true
   - 受邀参加贡献者活动
   - 有资格成为组织成员
 
-特别感谢[长长的名单](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/AUTHORS.md)中那些为项目做出贡献并帮助维护项目的人。没有你们的贡献，我们不会有今天的成就。谢谢！
+特别感谢[长长的名单](https://github.com/Project-HAMi/HAMi/blob/master/AUTHORS.md)中那些为项目做出贡献并帮助维护项目的人。没有你们的贡献，我们不会有今天的成就。谢谢！
 
-只要你为 HAMi 做出贡献，你的名字将被添加到[这里](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/AUTHORS.md)。如果你没有找到你的名字，联系我们添加。
+只要你为 HAMi 做出贡献，你的名字将被添加到[这里](https://github.com/Project-HAMi/HAMi/blob/master/AUTHORS.md)。如果你没有找到你的名字，联系我们添加。
 
 ### 组织成员
 
@@ -123,7 +123,7 @@ translated: true
 
 维护者必须满足审阅者的责任和要求，并且：
 
-当前维护者列表可以在 [MAINTAINERS](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/MAINTAINERS.md) 中找到。
+当前维护者列表可以在 [MAINTAINERS](https://github.com/Project-HAMi/HAMi/blob/master/MAINTAINERS.md) 中找到。
 
 ### 活跃的维护者应该
 
@@ -141,7 +141,7 @@ translated: true
 
 新维护者由当前维护者小组通过共识添加。这可以通过 Slack 或电子邮件的私人讨论进行。大多数维护者应支持添加新成员，并且没有单个维护者反对添加新维护者。
 
-在添加新维护者时，我们应提交一个 PR 到 [HAMi](https://github.com/Project-HAMi/HAMi) 并更新 [MAINTAINERS](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/MAINTAINERS.md)。一旦这个 PR 合并，你将成为 HAMi 的维护者。
+在添加新维护者时，我们应提交一个 PR 到 [HAMi](https://github.com/Project-HAMi/HAMi) 并更新 [MAINTAINERS](https://github.com/Project-HAMi/HAMi/blob/master/MAINTAINERS.md)。一旦这个 PR 合并，你将成为 HAMi 的维护者。
 
 ### 移除维护者
 
