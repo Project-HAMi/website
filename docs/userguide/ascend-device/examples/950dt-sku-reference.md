@@ -5,7 +5,7 @@ description: Reference for the Ascend950DT SKUs, including the validated 9582 wh
 
 The HAMi chart's enabled Ascend950DT configuration targets the 9582 SKU as one whole-card device: 98,304 MiB of HBM and 32 AI cores. This configuration was tested on one Ascend950DT 9582 node. That result does not guarantee that the other SKUs listed below work.
 
-The following values are a reference from the vendor's SKU comparison table. The underlying 950DT SKU tiers (36/32/28 AI cores) are documented in the [CANN Ascend950DT reference](https://gitcode.com/cann/cannbot-knowledge/-/blob/main/knowledge/common/platforms/concepts/ascend950dt_vs_pr_overrides.md). The table does not establish each SKU's reported DCMI identity, usable HBM, AI core count, or device-plugin compatibility. Verify those details on the target hardware before configuring another SKU.
+The following values are a reference from the vendor's SKU comparison table. The underlying 950DT SKU tiers (36/32/28 AI cores) are documented in the [CANN Ascend950DT reference](https://gitcode.com/cann/cannbot-knowledge/blob/master/knowledge/common/platforms/concepts/ascend950dt_vs_pr_overrides.md). The table does not establish each SKU's reported DCMI identity, usable HBM, AI core count, or device-plugin compatibility. Verify those details on the target hardware before configuring another SKU.
 
 | AI cores |      HBM | SKUs in the comparison table |
 | -------: | -------: | ---------------------------- |

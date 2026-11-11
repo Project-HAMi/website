@@ -6,7 +6,7 @@ translated: true
 
 HAMi chart 中启用的 Ascend950DT 配置以 9582 这一 SKU 为目标，按整卡设备使用：98,304 MiB（96 GiB）HBM 与 32 个 AI 核。该配置已在一台 Ascend950DT 9582 节点上验证过，但这一结果并不能保证下文列出的其他 SKU 的成功运行。
 
-下表中的数值来自厂商提供的 SKU 对比表。950DT 的 SKU 档位（36/32/28 个 AI 核）在 [CANN Ascend950DT 参考](https://gitcode.com/cann/cannbot-knowledge/-/blob/main/knowledge/common/platforms/concepts/ascend950dt_vs_pr_overrides.md)中有说明。该表并不代表每个 SKU 在 DCMI 中上报的身份、可用 HBM、AI 核数或 device-plugin 兼容性。配置其他 SKU 前，请在目标硬件上逐项核实。
+下表中的数值来自厂商提供的 SKU 对比表。950DT 的 SKU 档位（36/32/28 个 AI 核）在 [CANN Ascend950DT 参考](https://gitcode.com/cann/cannbot-knowledge/blob/master/knowledge/common/platforms/concepts/ascend950dt_vs_pr_overrides.md)中有说明。该表并不代表每个 SKU 在 DCMI 中上报的身份、可用 HBM、AI 核数或 device-plugin 兼容性。配置其他 SKU 前，请在目标硬件上逐项核实。
 
 | AI 核数 |      HBM | 对比表中列出的 SKU         |
 | ------: | -------: | -------------------------- |
