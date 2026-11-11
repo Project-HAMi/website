@@ -32,7 +32,7 @@ HAMi reports the reason in the Pod's allocation reason, as `<failed>/<total> <Re
 | --- | --- |
 | `CardNotHealth` | The card is marked unhealthy in the register annotation |
 | `CardTimeSlicingExhausted` | The card already holds as many containers as it has cores, even if cores are free |
-| `CardUUIDMismatch` | `tecorigin.com/use-gpuuuid` or `tecorigin.com/nouse-gpuuuid` excludes this card |
+| `CardUuidMismatch` | `tecorigin.com/use-gpuuuid` or `tecorigin.com/nouse-gpuuuid` excludes this card |
 | `CardInsufficientCore` | Not enough free cores, or serving the request would need more cards than the request's own minimum |
 
 For `CardInsufficientCore`, look at the free-core count in the scheduler log:

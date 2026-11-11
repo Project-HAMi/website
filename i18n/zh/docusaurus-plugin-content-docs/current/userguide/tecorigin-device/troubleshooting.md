@@ -33,7 +33,7 @@ HAMi 会在 Pod 的分配原因中以 `<失败数>/<总数> <Reason>` 的形式�
 | --- | --- |
 | `CardNotHealth` | 该卡在注册注解中标记为不健康 |
 | `CardTimeSlicingExhausted` | 该卡承载的容器数已达核心数上限，即使仍有空闲核心 |
-| `CardUUIDMismatch` | `tecorigin.com/use-gpuuuid` 或 `tecorigin.com/nouse-gpuuuid` 排除了该卡 |
+| `CardUuidMismatch` | `tecorigin.com/use-gpuuuid` 或 `tecorigin.com/nouse-gpuuuid` 排除了该卡 |
 | `CardInsufficientCore` | 空闲核心不足，或满足该请求需要的卡数超过其自身的最小卡数 |
 
 出现 `CardInsufficientCore` 时，可查看调度器日志中的空闲核心数：

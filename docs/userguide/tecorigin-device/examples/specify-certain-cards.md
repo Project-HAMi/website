@@ -53,9 +53,9 @@ The first field of each `:`-separated segment is the card serial:
 The same serial is what `teco-smi` prints for the card, and what HAMi reports in `hami.io/tecorigin-devices-allocated`.
 
 :::note
-A serial identifies one card in the whole cluster, so pinning a card also pins the node. A workload pinned to a card that is fully allocated stays pending with `CardTimeSlicingExhausted`, `CardUUIDMismatch` or `CardInsufficientCore` in the allocation reason:
-- `CardTimeSlicingExhausted`: the target pinned card has no remaining time-slice cores available.
-- `CardUUIDMismatch`: the scheduler tried to select a card outside your allowed UUID list.
+A serial identifies one card in the whole cluster, so pinning a card also pins the node. A workload pinned to a card that is fully allocated stays pending with `CardTimeSlicingExhausted`, `CardUuidMismatch` or `CardInsufficientCore` in the allocation reason:
+- `CardTimeSlicingExhausted`: a card on the node has reached its container-count limit. The card may be outside the allowed UUID list.
+- `CardUuidMismatch`: the scheduler tried to select a card outside your allowed UUID list.
 - `CardInsufficientCore`: the target card lacks enough free cores.
 It will not move to a card it was not allowed to use.
 :::
