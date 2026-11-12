@@ -91,6 +91,7 @@ module.exports = {
           items: [
             "userguide/nvidia-device/dynamic-resource-allocation",
             "userguide/nvidia-device/dynamic-mig-support",
+            "userguide/nvidia-device/mps-v3",
             "userguide/nvidia-device/scheduling-policy",
             "userguide/nvidia-device/specify-device-memory-usage",
             "userguide/nvidia-device/specify-device-core-usage",
@@ -389,6 +390,7 @@ module.exports = {
         "developers/scheduling",
         "developers/hami-core-design",
         "developers/dynamic-mig",
+        "developers/mps-v3-design",
         "developers/gpu-topology-scheduling",
         "developers/kunlunxin-topology",
         "developers/profiling-scheduler",
