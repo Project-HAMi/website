@@ -156,12 +156,6 @@ cpu-client-01   Ready    <none>          v1.37.0
 gpu-server-01   Ready    control-plane   v1.37.0
 ```
 
-本例的 GPU Server 同时是控制平面节点。如果该节点带有 `node-role.kubernetes.io/control-plane:NoSchedule` 污点，先移除它，使 HAMi Device Plugin 和 Lupine Server 能调度到该节点。
-
-```bash
-kubectl taint nodes gpu-server-01 node-role.kubernetes.io/control-plane:NoSchedule-
-```
-
 ### 3.2 部署 GPU Operator
 
 由 GPU Operator 安装 NVIDIA Driver、Container Toolkit 和监控组件，关闭原生 NVIDIA Device Plugin，后续由 HAMi 管理 GPU。

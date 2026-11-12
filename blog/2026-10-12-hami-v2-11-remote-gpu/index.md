@@ -170,12 +170,6 @@ cpu-client-01   Ready    <none>          v1.37.0
 gpu-server-01   Ready    control-plane   v1.37.0
 ```
 
-The GPU Server in this example is also a control-plane node. If it has the `node-role.kubernetes.io/control-plane:NoSchedule` taint, remove it so the HAMi Device Plugin and Lupine Server can be scheduled on that node.
-
-```bash
-kubectl taint nodes gpu-server-01 node-role.kubernetes.io/control-plane:NoSchedule-
-```
-
 ### 3.2 Deploy GPU Operator
 
 GPU Operator installs the NVIDIA driver, Container Toolkit, and monitoring components. Disable the native NVIDIA Device Plugin so HAMi can manage the GPUs.
