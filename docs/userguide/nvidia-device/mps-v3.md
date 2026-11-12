@@ -114,7 +114,7 @@ HAMi binds each partition to the namespace by GPU UUID. The namespace uses an ac
 | --- | --- |
 | The node rejects MPS v3 during startup | Check driver r620 or later, cgroup v2, non-MIG GPUs, UUID device IDs, scaling, the MPS control binary, and the published CDI hook. |
 | A Pod cannot find a compatible GPU | Check the Pod and node strategies, available core and memory budget, the SM chunk geometry, and existing GPU sets. |
-| Timeslice setup or readback fails | Check the target GPU and driver with the selected base timeslice. The driver can reject unsupported settings. The plugin probes two concurrent servers on a drained node before advertising the strategy. |
+| Timeslice setup or readback fails | Check the target GPU and driver with the selected base timeslice. The driver can reject unsupported settings. Each GPU must use `DEFAULT` compute mode for `server-timeslice`. |
 | Cleanup is waiting for clients | Let clients exit. HAMi removes the namespace first, then the partition and the last unused server. |
 | The daemon is lost with live allocations | Investigate the daemon and restart affected workloads through Kubernetes. Preserve the allocation state while the Pods are live. |
 

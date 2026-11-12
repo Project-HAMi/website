@@ -114,7 +114,7 @@ HAMi 按 GPU UUID 将分区绑定到 namespace，并将 namespace 的活跃线�
 | --- | --- |
 | MPS v3 节点启动失败 | 检查 r620 驱动、cgroup v2、非 MIG GPU、UUID 设备 ID、缩放系数、MPS 工具和已发布的 CDI hook。 |
 | Pod 无法匹配 GPU | 检查 Pod 与节点策略、算力和显存余量、SM chunk 和现有 GPU 集合。 |
-| 时间片设置或回读失败 | 检查目标 GPU、驱动和基础时间片。插件会在排空后尝试启动两个同卡 server，再上报该策略。 |
+| 时间片设置或回读失败 | 检查目标 GPU、驱动和基础时间片。`server-timeslice` 要求 GPU 使用 `DEFAULT` compute mode。 |
 | 资源回收等待客户端 | 等待 CUDA 客户端退出。HAMi 依次删除 namespace、分区和最后一个无引用的 server。 |
 | daemon 丢失且仍有存活分配 | 排查 daemon 后通过 Kubernetes 重建受影响的工作负载。在 Pod 存活期间保留分配状态。 |
 

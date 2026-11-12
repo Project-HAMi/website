@@ -49,7 +49,7 @@ flowchart TB
 
 同一容器在每张卡上使用相同的显存和算力额度。相同 GPU 集合在 `namespace-cap` 下可共用 server，在 `server-timeslice` 下可运行多个独立 server。调度器和管理器均拒绝部分重叠的集合。同一 GPU 不能混用静态 SM 分区和 namespace 百分比。
 
-静态分区以基础 SM 数核算。调度器校验每卡的 chunk 几何，并按 `ceil(基础 SM 数 / 总 SM 数 × 100)` 记账。开启借出或借入时，基础额度须由整 chunk 组成，有限峰值须覆盖基础额度并符合每卡容量。驱动在运行时决定借用量，调度预留保持基础额度。
+静态分区以基础 SM 数核算。创建静态分区前，管理器核对驱动报告的总 SM 数和 chunk 数。调度器按 `ceil(基础 SM 数 / 总 SM 数 × 100)` 记账。开启借出或借入时，基础额度须由整 chunk 组成，有限峰值须覆盖基础额度并符合每卡容量。驱动在运行时决定借用量，调度预留保持基础额度。
 
 ## 分配与容器启动
 
@@ -89,9 +89,9 @@ flowchart TD
 
 管理器对专用状态目录加独占锁，在 `allocations.json` 记录版本、Pod 与容器身份、GPU 集合、额度、SM 选项、资源名称和准备状态。启动时根据权威节点 Pod 列表和 daemon 状态恢复分配。
 
-排空后，管理器设置并核对 `compute-policy`。`server-timeslice` 节点用配置的 GPU 集合验证两个 server 能同时就绪。如果要恢复为默认 yield，管理器会在无 server 时重启 daemon。存在活跃分配时，管理器只核对既有策略和权重。daemon 级策略需要在没有 server 时变更，server 权重需要在没有客户端时变更。[NVIDIA 加权时间片接口](https://docs.nvidia.com/deploy/mps/620/mpsv3-interface.html#weighted-timeslicing)
+排空后，管理器设置并核对 `compute-policy`。`server-timeslice` 节点通过 NVML 逐卡检查 compute mode，仅允许使用 `DEFAULT` 模式的 GPU。实际 GPU 集合在创建工作负载的 server 时验证。如果要恢复为默认 yield，管理器会在无 server 时重启 daemon。存在活跃分配时，管理器只核对既有策略和权重。daemon 级策略需要在没有 server 时变更，server 权重需要在没有客户端时变更。[NVIDIA 加权时间片接口](https://docs.nvidia.com/deploy/mps/620/mpsv3-interface.html#weighted-timeslicing)
 
-健康检查和恢复优先使用 `get` 字段回读配置。资源是否存在、静态分区的具体设置通过 r620 CSV inventory 核对。620.70.06 的 `sm-partition list --all` 在状态列前还有一列 contract timeout。未知格式、查询超时或断连会停止当前操作并保留记录。daemon 或分配健康检查失败时，插件会上报设备不健康并阻止新分配。
+健康检查和恢复优先使用 `get` 字段回读配置。资源是否存在、静态分区的具体设置通过 r620 CSV inventory 核对。620.70.06 的 `sm-partition list --all` 在状态列前还有一列 contract timeout。未知格式、查询超时或断连会停止当前操作并保留记录。daemon 或全局策略异常影响整节点，单个分配的健康异常仅影响其 GPU。只读健康检查在分配锁外执行。
 
 恢复复用仍与记录一致的资源。遇到仍存活的旧版分配、策略不匹配或 daemon 丢失且仍有活跃分配时，管理器拒绝接管。仅重启管理器时，可以重新连接仍存活的 daemon。整个插件容器重启若同时结束了 daemon，则需要恢复受影响的工作负载。
 
