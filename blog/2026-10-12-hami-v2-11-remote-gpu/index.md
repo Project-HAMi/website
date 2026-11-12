@@ -170,6 +170,8 @@ cpu-client-01   Ready    <none>          v1.37.0
 gpu-server-01   Ready    control-plane   v1.37.0
 ```
 
+The GPU Server in this example is also a master (control-plane) node. Remove any control-plane `NoSchedule` taint before deployment so the HAMi Device Plugin and Lupine Server can be scheduled on that node.
+
 ### 3.2 Deploy GPU Operator
 
 GPU Operator installs the NVIDIA driver, Container Toolkit, and monitoring components. Disable the native NVIDIA Device Plugin so HAMi can manage the GPUs.
