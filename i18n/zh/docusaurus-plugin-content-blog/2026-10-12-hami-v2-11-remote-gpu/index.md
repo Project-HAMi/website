@@ -4,7 +4,7 @@ date: "2026-10-12"
 slug: hami-v2-11-remote-gpu
 description: "介绍 HAMi v2.11 Remote GPU 的部署方式，在纯 CPU Kubernetes 节点运行 CUDA Samples 和 vLLM，通过远端 T4 完成真实推理。"
 authors: [lixd]
-tags: ["HAMi", "GPU", "Kubernetes", "vLLM"]
+tags: ["HAMi", "GPU", "Kubernetes", { label: "vLLM", permalink: "vllm" }]
 image: /img/blog/hami-v2-11-remote-gpu/cover.jpg
 ---
 
@@ -155,6 +155,8 @@ NAME            STATUS   ROLES           VERSION
 cpu-client-01   Ready    <none>          v1.37.0
 gpu-server-01   Ready    control-plane   v1.37.0
 ```
+
+本例的 GPU Server 同时是控制平面节点，需要处理其 `NoSchedule` 污点。使用 KubeClipper 建群时加上 `--untaint-master`，允许 HAMi Device Plugin 和 Lupine Server 调度到该节点。
 
 ### 3.2 部署 GPU Operator
 

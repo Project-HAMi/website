@@ -4,7 +4,7 @@ date: "2026-10-12"
 slug: hami-v2-11-remote-gpu
 description: "Deploy HAMi v2.11 Remote GPU, run CUDA Samples and vLLM on a CPU-only Kubernetes node, and verify real inference on a remote Tesla T4."
 authors: [lixd]
-tags: ["HAMi", "GPU", "Kubernetes", "vLLM"]
+tags: ["HAMi", "GPU", "Kubernetes", { label: "vLLM", permalink: "vllm" }]
 image: /img/blog/hami-v2-11-remote-gpu/cover.jpg
 ---
 
@@ -169,6 +169,8 @@ NAME            STATUS   ROLES           VERSION
 cpu-client-01   Ready    <none>          v1.37.0
 gpu-server-01   Ready    control-plane   v1.37.0
 ```
+
+The GPU Server in this example is also a control-plane node, so its `NoSchedule` taint needs to be handled. Add `--untaint-master` when creating this test cluster with KubeClipper to allow the HAMi Device Plugin and Lupine Server to be scheduled on that node.
 
 ### 3.2 Deploy GPU Operator
 
