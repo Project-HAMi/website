@@ -333,6 +333,7 @@ module.exports = {
             },
           ],
         },
+        "userguide/hami-gpu-descheduler",
         "troubleshooting/troubleshooting",
         "troubleshooting/paddle-threadlocal-coredump",
         "faq/faq",

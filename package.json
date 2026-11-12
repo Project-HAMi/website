@@ -46,7 +46,7 @@
     "@fortawesome/free-solid-svg-icons": "^7.3.1",
     "@fortawesome/react-fontawesome": "^3.5.0",
     "clsx": "^2.1.1",
-    "node-ical": "^0.27.3",
+    "node-ical": "^0.27.6",
     "prism-react-renderer": "^2.4.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
@@ -65,7 +65,7 @@
   },
   "devDependencies": {
     "@docusaurus/faster": "^3.10.1",
-    "@swc/core": "^1.16.21",
+    "@swc/core": "^1.16.22",
     "docusaurus-plugin-llms": "0.6.1",
     "js-yaml": "^5.5.0",
     "markdownlint-cli": "^0.50.0",
