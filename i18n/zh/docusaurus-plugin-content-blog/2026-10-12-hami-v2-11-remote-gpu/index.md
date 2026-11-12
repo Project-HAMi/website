@@ -129,7 +129,7 @@ spec:
 
 ### 3.1 准备 Kubernetes 集群
 
-准备一个包含 GPU 节点和纯 CPU 节点的 Kubernetes 集群，本次集群由 KubeClipper 部署：集群部署过程可以参考之前的文章。[KubeClipper 1.7.0 发布与集群部署](https://www.lixueduan.com/posts/kubernetes/66-kubeclipper-release-1.7.0/)
+准备一个包含 GPU 节点和纯 CPU 节点的 Kubernetes 集群。
 
 文中清单和输出的节点名统一使用示例名称，复现时请替换为实际节点名。
 
@@ -156,7 +156,11 @@ cpu-client-01   Ready    <none>          v1.37.0
 gpu-server-01   Ready    control-plane   v1.37.0
 ```
 
-本例的 GPU Server 同时是控制平面节点，需要处理其 `NoSchedule` 污点。使用 KubeClipper 建群时加上 `--untaint-master`，允许 HAMi Device Plugin 和 Lupine Server 调度到该节点。
+本例的 GPU Server 同时是控制平面节点。如果该节点带有 `node-role.kubernetes.io/control-plane:NoSchedule` 污点，先移除它，使 HAMi Device Plugin 和 Lupine Server 能调度到该节点。
+
+```bash
+kubectl taint nodes gpu-server-01 node-role.kubernetes.io/control-plane:NoSchedule-
+```
 
 ### 3.2 部署 GPU Operator
 
