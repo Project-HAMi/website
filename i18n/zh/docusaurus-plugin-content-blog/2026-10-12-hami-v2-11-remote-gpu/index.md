@@ -156,6 +156,8 @@ cpu-client-01   Ready    <none>          v1.37.0
 gpu-server-01   Ready    control-plane   v1.37.0
 ```
 
+本例的 GPU Server 同时是 master（控制平面）节点。如该节点存在控制平面的 `NoSchedule` 污点，部署前需先去除，以免 HAMi Device Plugin 和 Lupine Server 无法调度到该节点。
+
 ### 3.2 部署 GPU Operator
 
 由 GPU Operator 安装 NVIDIA Driver、Container Toolkit 和监控组件，关闭原生 NVIDIA Device Plugin，后续由 HAMi 管理 GPU。
