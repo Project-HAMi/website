@@ -143,7 +143,7 @@ Once its client environment is ready, the application starts on the CPU Client. 
 
 ### 3.1 Prepare a Kubernetes cluster
 
-Prepare a Kubernetes cluster with a GPU node and a CPU-only node. This test cluster was deployed with KubeClipper; the deployment procedure is described in [KubeClipper 1.7.0 release and cluster deployment](https://www.lixueduan.com/posts/kubernetes/66-kubeclipper-release-1.7.0/).
+Prepare a Kubernetes cluster with a GPU node and a CPU-only node.
 
 Node names in the manifests and captured output use example names. Replace them with the actual node names in your cluster.
 
@@ -170,7 +170,11 @@ cpu-client-01   Ready    <none>          v1.37.0
 gpu-server-01   Ready    control-plane   v1.37.0
 ```
 
-The GPU Server in this example is also a control-plane node, so its `NoSchedule` taint needs to be handled. Add `--untaint-master` when creating this test cluster with KubeClipper to allow the HAMi Device Plugin and Lupine Server to be scheduled on that node.
+The GPU Server in this example is also a control-plane node. If it has the `node-role.kubernetes.io/control-plane:NoSchedule` taint, remove it so the HAMi Device Plugin and Lupine Server can be scheduled on that node.
+
+```bash
+kubectl taint nodes gpu-server-01 node-role.kubernetes.io/control-plane:NoSchedule-
+```
 
 ### 3.2 Deploy GPU Operator
 
