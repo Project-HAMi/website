@@ -81,6 +81,12 @@ Scheduling determines two locations: the Client node running the Pod and the Ser
 
 > To select a particular resource pool, a Pod can set the `hami.io/remote-server` annotation.
 
+:::warning Current limitation
+
+A workload reserves the entire GPU server. The endpoint exposes all its GPUs, so set the GPU count to the server's physical GPU count. A smaller memory quota does not make the remaining server capacity available to another workload. Run the test Pods in this post sequentially, or use separate servers.
+
+:::
+
 ### 2.3 Prepare the application client environment
 
 After allocation, the application needs the client libraries and the address of its assigned Server.
