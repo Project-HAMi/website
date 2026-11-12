@@ -120,4 +120,4 @@ HAMi 按 GPU UUID 将分区绑定到 namespace，并将 namespace 的活跃线�
 
 容器仅在 `/run/hami-mps` 看到自己的 namespace socket 目录。算力设置对通过该 socket 接入的 CUDA 进程生效。MPS 不提供显存带宽或 MIG 级别的故障隔离。普通容器重启保留原分配。若仍有存活工作负载，管理器恢复依赖原 daemon 及其资源。
 
-分配流程、恢复条件和真机数据见 [MPS v3 后端设计](../../developers/mps-v3-design.md)。
+分配流程和恢复条件见 [MPS v3 后端设计](../../developers/mps-v3-design.md)。

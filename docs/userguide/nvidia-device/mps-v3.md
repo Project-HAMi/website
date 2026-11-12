@@ -120,4 +120,4 @@ HAMi binds each partition to the namespace by GPU UUID. The namespace uses an ac
 
 Each container receives a read-only mount of its namespace socket directory at `/run/hami-mps`. Compute settings apply to CUDA processes that attach through that socket. The MPS policies do not isolate memory bandwidth or provide MIG-style fault containment. Container restarts retain their allocations. Manager recovery requires the daemon and its resources to be available for live workloads.
 
-See the [MPS v3 backend design](../../developers/mps-v3-design.md) for allocation, recovery, and hardware verification details.
+See the [MPS v3 backend design](../../developers/mps-v3-design.md) for allocation and recovery details.
