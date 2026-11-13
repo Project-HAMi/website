@@ -278,7 +278,8 @@
                 "userguide/ascend-device/examples/allocate-310p",
                 "userguide/ascend-device/examples/allocate-910b",
                 "userguide/ascend-device/examples/allocate-exclusive",
-                "userguide/ascend-device/examples/allocate-soft-slicing"
+                "userguide/ascend-device/examples/allocate-soft-slicing",
+                "userguide/ascend-device/examples/950dt-sku-reference"
               ]
             }
           ]
