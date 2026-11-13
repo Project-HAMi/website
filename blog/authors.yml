@@ -27,4 +27,3 @@ rootsongjc:
 lixd:
   name: lixd
   url: https://github.com/lixd
-  image_url: https://github.com/lixd.png
