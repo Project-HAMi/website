@@ -22,21 +22,7 @@ Lupine has two node roles:
 - The Server has the GPU, an NVIDIA driver, and the Lupine server process. It receives remote CUDA calls, executes GPU computation, and returns the results.
 - The Client runs the CUDA application. Lupine client libraries forward CUDA calls to the Server over the network, without a local GPU or NVIDIA driver.
 
-```mermaid
-%% title: Local GPU and Remote GPU execution paths
-flowchart TB
-    subgraph Local["Local GPU node"]
-        A["CUDA / vLLM application"] --> B["NVIDIA driver"] --> C["GPU"]
-    end
-    subgraph Client["CPU Client: no GPU or NVIDIA driver"]
-        D["CUDA / vLLM application"] --> E["Lupine client libraries"]
-    end
-    subgraph Server["GPU Server"]
-        F["Lupine server"] --> G["NVIDIA driver"] --> H["GPU"]
-    end
-    E -->|"CUDA calls over the network"| F
-    F -. "Results" .-> E
-```
+![Local GPU and Remote GPU execution paths](/img/blog/hami-v2-11-remote-gpu/en/remote-gpu-principle.svg#light-only) ![Local GPU and Remote GPU execution paths](/img/blog/hami-v2-11-remote-gpu/en/remote-gpu-principle-dark.svg#dark-only)
 
 The application process runs on the CPU Client. Client libraries forward CUDA calls to the GPU Server, where the driver accesses the GPU, performs the computation, and returns the results.
 
@@ -46,7 +32,7 @@ With HAMi Remote GPU, the Client and Server run on different nodes in the same K
 
 Integrating this into Kubernetes requires resource discovery, Server selection, and client setup. HAMi identifies nodes that can provide remote GPUs, assigns a Server to each Pod, and prepares the client libraries and connection address before the application starts.
 
-![HAMi Remote GPU architecture](/img/blog/hami-v2-11-0-release/en/remote-gpu-architecture.svg#light-only) ![HAMi Remote GPU architecture](/img/blog/hami-v2-11-0-release/en/remote-gpu-architecture-dark.svg#dark-only)
+![HAMi Remote GPU architecture](/img/blog/hami-v2-11-remote-gpu/en/remote-gpu-architecture.svg#light-only) ![HAMi Remote GPU architecture](/img/blog/hami-v2-11-remote-gpu/en/remote-gpu-architecture-dark.svg#dark-only)
 
 ### 2.1 Register a GPU node as a Server
 
