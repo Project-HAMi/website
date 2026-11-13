@@ -14,14 +14,14 @@ translated: true
 
 ## 已验证的内容
 
-- **切片和 CU 掩码：**各 Pod 之间互不重叠，并且固定住以防 `setenv`。在 25% 的切片中，一个计算 kernel 的速度为每秒 215 个。没有库时，在进程内设置 `HSA_CU_MASK` 会把它放宽到 1015，有库时保持 215。
-- **显存限制：**限制为 1 GiB 时，`hipMalloc3D`、数组、内存池和 `hipMemCreate` 都返回内存不足，`hipMemGetInfo` 报告 1 GiB。三个进程各申请 1.5 GiB、总限制 4 GiB：三轮中每一轮都恰好有两个成功。vLLM 引擎在 25% 的切片内运行，看到 16384 MiB。
+- **切片和 CU 掩码**：各 Pod 之间互不重叠，并且固定住以防 `setenv`。在 25% 的切片中，一个计算 kernel 的速度为每秒 215 个。没有库时，在进程内设置 `HSA_CU_MASK` 会把它放宽到 1015，有库时保持 215。
+- **显存限制**：限制为 1 GiB 时，`hipMalloc3D`、数组、内存池和 `hipMemCreate` 都返回内存不足，`hipMemGetInfo` 报告 1 GiB。三个进程各申请 1.5 GiB、总限制 4 GiB：三轮中每一轮都恰好有两个成功。vLLM 引擎在 25% 的切片内运行，看到 16384 MiB。
 - **`dmem` 限制**（内核 7.0），以及据此读取的按容器指标。
-- **队列优先级：**同一个 25% 切片上的两个进程，`AMD_TASK_PRIORITY` 为 0 和 3 时分别得到每秒 144.7 和 72.3 个 kernel，不设置优先级时各约 108.6。
-- **插件生命周期：**已发布的 0.0.2 和 0.0.3 的升级与回滚、kubelet 重启（可分配量在 6 秒内恢复，运行中的 Pod 保持运行）、CDI，以及被 kubelet 拒绝的第二个插件。
-- **健康状态：**真实的 Device Metrics Exporter 让健康的 GPU 保持完整的共享份数，测试用的 exporter 则把它降到 0 并发出节点事件。
-- **HAMi 调度器功能：**显存百分比、命名空间 ResourceQuota、`mutex` 策略（以及 `binpack,mutex`）、NUMA 和链路绑定、`runtimeClassName`、把核心请求向上取整到完整 WGP，以及端到端测试集（9 个用例通过，0 个失败，2 个跳过）。
-- **本文档中的示例：**8 个示例清单都在该 GPU 上应用过。整卡、核心、显存和显存百分比的 Pod 都运行了，类型和 UUID 的 Pod 运行了，或者按其注释所说以 `CardTypeMismatch` 或 `CardUuidMismatch` 保持 `Pending`。
+- **队列优先级**：同一个 25% 切片上的两个进程，`AMD_TASK_PRIORITY` 为 0 和 3 时分别得到每秒 144.7 和 72.3 个 kernel，不设置优先级时各约 108.6。
+- **插件生命周期**：已发布的 0.0.2 和 0.0.3 的升级与回滚、kubelet 重启（可分配量在 6 秒内恢复，运行中的 Pod 保持运行）、CDI，以及被 kubelet 拒绝的第二个插件。
+- **健康状态**：真实的 Device Metrics Exporter 让健康的 GPU 保持完整的共享份数，测试用的 exporter 则把它降到 0 并发出节点事件。
+- **HAMi 调度器功能**：显存百分比、命名空间 ResourceQuota、`mutex` 策略（以及 `binpack,mutex`）、NUMA 和链路绑定、`runtimeClassName`、把核心请求向上取整到完整 WGP，以及端到端测试集（9 个用例通过，0 个失败，2 个跳过）。
+- **本文档中的示例**：8 个示例清单都在该 GPU 上应用过。整卡、核心、显存和显存百分比的 Pod 都运行了，类型和 UUID 的 Pod 运行了，或者按其注释所说以 `CardTypeMismatch` 或 `CardUuidMismatch` 保持 `Pending`。
 - **显存库的 C 测试**在 AddressSanitizer、UBSan 和 ThreadSanitizer 下通过，glibc 2.34 检查也通过。
 
 ## 发现并修复的问题
@@ -40,15 +40,15 @@ translated: true
 
 ## 尚未验证的内容
 
-- **多张 GPU、XGMI、NUMA 和策略顺序。**只运行了调度器的决策过程，并在注册信息中写入了额外的 GPU。需要一个真实的多 GPU Instinct 节点。
-- **计算分区（`dpx`、`qpx`、`cpx`）。**虚拟功能在两种运行模式下都能继续工作，切换会被跳过并输出一行日志，但切换本身、XCP 注册和分区上的 Pod 需要裸机 MI300、MI325 或 MI355。运行插件时设置 `OPERATING_MODE=partition` 和 `COMPUTE_PARTITION`。
+- **多张 GPU、XGMI、NUMA 和策略顺序**。只运行了调度器的决策过程，并在注册信息中写入了额外的 GPU。需要一个真实的多 GPU Instinct 节点。
+- **计算分区（`dpx`、`qpx`、`cpx`）**。虚拟功能在两种运行模式下都能继续工作，切换会被跳过并输出一行日志，但切换本身、XCP 注册和分区上的 Pod 需要裸机 MI300、MI325 或 MI355。运行插件时设置 `OPERATING_MODE=partition` 和 `COMPUTE_PARTITION`。
 - **RDNA 显卡。** 仅在 RX 9070 XT 上验证过上述 init 容器的情况。
 - **Device Metrics Exporter 报告的真实硬件故障。**
 - **XNACK**，即大于显存的 `hipMalloc` 由主机内存提供（虚拟功能上 XNACK 是关闭的）。
-- **双 GPU 的 JAX 示例和 vLLM 模型下载。**模型下载需要一个能访问 Hugging Face 的节点。
+- **双 GPU 的 JAX 示例和 vLLM 模型下载**。模型下载需要一个能访问 Hugging Face 的节点。
 - **发布流程、arm64 和其他 Kubernetes 版本。**
 
 ## 待解决的问题
 
-- **核心默认值。**没有 `amd.com/gpucores` 的请求会获得全部 CU，因此只设置 `amd.com/gpumem` 的 Pod 会占满该 GPU 的算力。需要共享 GPU 的 Pod 都应设置 `amd.com/gpucores`。
+- **核心默认值**。没有 `amd.com/gpucores` 的请求会获得全部 CU，因此只设置 `amd.com/gpumem` 的 Pod 会占满该 GPU 的算力。需要共享 GPU 的 Pod 都应设置 `amd.com/gpucores`。
 - **k3s 路径。**`muslFailClosed` 的 chart 默认值是 RKE2 路径，因此在 k3s 上必须设置两个值（见[配置](./configuration.md#musl-fail-closed)）。
