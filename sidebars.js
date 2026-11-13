@@ -371,6 +371,7 @@ module.exports = {
         "developers/init-container-design",
         "developers/sidecar-container-design",
         "developers/gpu-limit-delivery-design",
+        "developers/opentelemetry-tracing-design",
       ],
     },
     {
