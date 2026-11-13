@@ -2,69 +2,14 @@
 title: Huawei Ascend device template
 ---
 
-Huawei Ascend device templates define how a physical Huawei Ascend card is sliced into virtual instances that HAMi can schedule. Each template describes the available memory, AI cores and optional CPU resources for a given card model. When a Pod requests Huawei Ascend resources, HAMi selects a suitable template according to the requested memory and compute.
+Huawei Ascend templates describe the memory, AI cores, and optional AI CPU cores available in a hardware slice. HAMi selects a template that satisfies the workload request.
 
-```yaml
-vnpus:
-  - chipName: 910A
-    commonWord: Ascend910A
-    resourceName: huawei.com/Ascend910A
-    resourceMemoryName: huawei.com/Ascend910A-memory
-    memoryAllocatable: 32768
-    memoryCapacity: 32768
-    memoryFactor: 1
-    aiCore: 30
-    templates:
-      - name: vir02
-        memory: 2184
-        aiCore: 2
-      - name: vir04
-        memory: 4369
-        aiCore: 4
-      - name: vir08
-        memory: 8738
-        aiCore: 8
-      - name: vir16
-        memory: 17476
-        aiCore: 16
-  - chipName: 910B3
-    commonWord: Ascend910B3
-    resourceName: huawei.com/Ascend910B3
-    resourceMemoryName: huawei.com/Ascend910B3-memory
-    memoryAllocatable: 65536
-    memoryCapacity: 65536
-    memoryFactor: 1
-    aiCore: 20
-    aiCPU: 7
-    templates:
-      - name: vir05_1c_16g
-        memory: 16384
-        aiCore: 5
-        aiCPU: 1
-      - name: vir10_3c_32g
-        memory: 32768
-        aiCore: 10
-        aiCPU: 3
-  - chipName: 310P3
-    commonWord: Ascend310P
-    resourceName: huawei.com/Ascend310P
-    resourceMemoryName: huawei.com/Ascend310P-memory
-    memoryAllocatable: 21527
-    memoryCapacity: 24576
-    memoryFactor: 1
-    aiCore: 8
-    aiCPU: 7
-    templates:
-      - name: vir01
-        memory: 3072
-        aiCore: 1
-        aiCPU: 1
-      - name: vir02
-        memory: 6144
-        aiCore: 2
-        aiCPU: 2
-      - name: vir04
-        memory: 12288
-        aiCore: 4
-        aiCPU: 4
-```
+## Configure templates
+
+Use `devices.ascend.configs` in the HAMi values file. The Chart writes this list to `vnpus.configs` in the global device ConfigMap. HAMi and the Ascend plugin can share that ConfigMap directly only when they run in the same namespace. If the plugin runs in another namespace, create a separate plugin ConfigMap there and keep its Ascend settings consistent with HAMi’s Helm values. Do not manually edit that ConfigMap; see [Global device configuration](../configure.md#device-config-overrides).
+
+Keep the defaults for supported models. The [values source](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/values.yaml) contains the complete chip definitions and templates; the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md) explains each field. An override replaces the entire `configs` list, so retain every model the cluster needs. If resource names change, also update `devices.ascend.customresources` and keep the plugin configuration consistent.
+
+For example, the default 910B3 configuration includes `vir05_1c_16g` with 16384 MiB, 5 AI cores, and 1 AI CPU core. Memory and compute are determined by the selected template; they are not independent percentages in template mode.
+
+Template names must be supported by the device driver. Editing memory or core numbers does not create a new hardware template. See [Ascend sharing](./enable-ascend-sharing.md) for deployment and workload examples.

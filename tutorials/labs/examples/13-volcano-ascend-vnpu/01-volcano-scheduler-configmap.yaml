@@ -1,0 +1,30 @@
+# Volcano scheduler configuration with the deviceshare plugin in HAMi vNPU mode.
+# Apply into volcano-system, then: kubectl -n volcano-system rollout restart deploy volcano-scheduler
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: volcano-scheduler-configmap
+  namespace: volcano-system
+data:
+  volcano-scheduler.conf: |
+    actions: "enqueue, allocate, backfill"
+    tiers:
+      - plugins:
+          - name: priority
+          - name: gang
+            enablePreemptable: false
+          - name: conformance
+      - plugins:
+          - name: overcommit
+          - name: drf
+            enablePreemptable: false
+          - name: predicates
+          - name: deviceshare
+            arguments:
+              deviceshare.AscendHAMiVNPUEnable: "true"
+              deviceshare.SchedulePolicy: binpack
+              deviceshare.KnownGeometriesCMNamespace: kube-system
+              deviceshare.KnownGeometriesCMName: hami-scheduler-device
+          - name: proportion
+          - name: nodeorder
+          - name: binpack

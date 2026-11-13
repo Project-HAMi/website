@@ -13,6 +13,9 @@
 "CNCF":
   label: "CNCF"
   permalink: "/cncf"
+"ContainerDays":
+  label: "ContainerDays"
+  permalink: "/container-days"
 "DRA":
   label: "DRA"
   permalink: "/dra"
@@ -34,12 +37,36 @@
 "HAMi":
   label: "HAMi"
   permalink: "/ha-mi"
+"Inference Optimization":
+  label: "Inference Optimization"
+  permalink: "/inference-optimization"
+"LLM-D":
+  label: "LLM-D"
+  permalink: "/llm-d"
+"Mooncake":
+  label: "Mooncake"
+  permalink: "/mooncake"
+"PD Disaggregation":
+  label: "PD Disaggregation"
+  permalink: "/pd-disaggregation"
+"vLLM":
+  label: "vLLM"
+  permalink: "/vllm"
 "Incubating":
   label: "Incubating"
   permalink: "/incubating"
 "India":
   label: "India"
   permalink: "/india"
+"Japan":
+  label: "Japan"
+  permalink: "/japan"
+"China":
+  label: "China"
+  permalink: "/china"
+"Singapore":
+  label: "Singapore"
+  permalink: "/singapore"
 "KAI Scheduler":
   label: "KAI Scheduler"
   permalink: "/kai-scheduler"
@@ -52,12 +79,33 @@
 "Kubernetes":
   label: "Kubernetes"
   permalink: "/kubernetes"
+"LFX":
+  label: "LFX"
+  permalink: "/lfx"
+"Mentorship":
+  label: "Mentorship"
+  permalink: "/mentorship"
 "Meetup":
   label: "Meetup"
   permalink: "/meetup"
 "NVIDIA":
   label: "NVIDIA"
   permalink: "/nvidia"
+"Volcano":
+  label: "Volcano"
+  permalink: "/volcano"
+"Ascend":
+  label: "Ascend"
+  permalink: "/ascend"
+"vNPU":
+  label: "vNPU"
+  permalink: "/v-npu"
+"软切分":
+  label: "软切分"
+  permalink: "/soft-slicing"
+"NPU 共享":
+  label: "NPU 共享"
+  permalink: "/npu-sharing"
 "Release":
   label: "Release"
   permalink: "/release"
@@ -103,3 +151,6 @@
 "调度":
   label: "调度"
   permalink: "/scheduling"
+"社区":
+  label: "社区"
+  permalink: "/community"

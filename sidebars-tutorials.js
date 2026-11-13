@@ -61,6 +61,61 @@ module.exports = {
           id: "labs/topology-aware-scheduling",
           customProps: { level: "Intermediate", duration: "about 45 minutes" },
         },
+        {
+          type: "doc",
+          id: "labs/kserve-hami-dra",
+          customProps: { level: "Advanced", duration: "about 90 minutes" },
+        },
+        {
+          type: "doc",
+          id: "labs/kai-scheduler-hami-gke",
+          customProps: { level: "Advanced", duration: "about 90 minutes" },
+        },
+        {
+          type: "doc",
+          id: "labs/volcano-ascend-vnpu",
+          customProps: { level: "Advanced", duration: "about 120 minutes" },
+        },
+        {
+          type: "doc",
+          id: "labs/composable-scheduler-policies-gke",
+          customProps: { level: "Intermediate", duration: "about 60 minutes" },
+        },
+        {
+          type: "doc",
+          id: "labs/hami-sglang",
+          customProps: { level: "Intermediate", duration: "about 45 minutes" },
+        },
+        {
+          type: "doc",
+          id: "labs/dynamic-mig-rtx-pro",
+          customProps: { level: "Advanced", duration: "about 90 minutes" },
+        },
+        {
+          type: "doc",
+          id: "labs/hami-kitops",
+          customProps: { level: "Advanced", duration: "about 60 minutes" },
+        },
+        {
+          type: "doc",
+          id: "labs/hami-linkerd-noisy-neighbor",
+          customProps: { level: "Advanced", duration: "about 120 minutes" },
+        },
+        {
+          type: "doc",
+          id: "labs/hami-ascend-vnpu-slicing",
+          customProps: { level: "Intermediate", duration: "about 60 minutes" },
+        },
+        {
+          type: "doc",
+          id: "labs/local-gpu-passthrough",
+          customProps: { level: "Advanced", duration: "about 120 minutes" },
+        },
+        {
+          type: "doc",
+          id: "labs/ascend-hami-dra",
+          customProps: { level: "Advanced", duration: "about 120 minutes" },
+        },
       ],
     },
   ],

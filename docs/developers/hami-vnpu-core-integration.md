@@ -4,7 +4,7 @@ title: HAMi vNPU Core Integration
 sidebar_label: vNPU Core Integration
 ---
 
-HAMi-vnpu-core is an Huawei Ascend NPU in-container resource controller written in Rust. It implements user-space interception via `libvnpu.so` (interceptor) and `Limiter` (manager). Two environment variables are used to declare resource quotas: `NPU_MEM_QUOTA` for memory limits and `NPU_PRIORITY` for scheduling priority. This design integrates that capability into HAMi scheduling to support Huawei Ascend NPU memory virtualization and compute time-slice soft partitioning.
+HAMi-vnpu-core is a Huawei Ascend NPU in-container resource controller written in Rust. It implements user-space interception via `libvnpu.so` (interceptor) and `Limiter` (manager). Two environment variables are used to declare resource quotas: `NPU_MEM_QUOTA` for memory limits and `NPU_PRIORITY` for scheduling priority. This design integrates that capability into HAMi scheduling to support Huawei Ascend NPU memory virtualization and compute time-slice soft partitioning.
 
 ## Prerequisites
 

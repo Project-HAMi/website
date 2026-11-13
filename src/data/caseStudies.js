@@ -1,5 +1,126 @@
 const caseStudiesData = [
   {
+    name: "Seres",
+    nameZh: "赛力斯",
+    logo: "/img/adopters/seres.svg",
+    website: "https://www.seres.cn",
+    publishedAt: "2026-11-02",
+    metric: {
+      en: "Daily tokens up from 300M to 10B+, a 3000%+ increase",
+      zh: "日处理 Token 量从 3 亿增长至 100 亿以上，增幅超 3000%",
+    },
+    summary: {
+      en: "Scaling the SeresCloud inference platform to 42+ online models for AI agents, using HAMi vGPU soft isolation with hard memory and compute limits on Kubernetes.",
+      zh: "基于 Kubernetes 与 HAMi 的 vGPU 软隔离及显存算力硬限制，支撑赛力斯云推理平台扩展至 42+ 在线模型，服务智能体业务。",
+    },
+    highlights: [
+      {
+        en: "Online model count more than quadrupled since the start of the year, absorbing explosive AI agent adoption across internal businesses.",
+        zh: "在线模型数增长至年初的 4 倍以上，承接内部各业务智能体落地的爆发式增长。",
+      },
+      {
+        en: "Small-model inference GPU utilization rose from 15-25% to around 90%, with per-task memory and compute limits enforced via libvgpu.so.",
+        zh: "小模型推理 GPU 利用率由 15%-25% 提升至约 90%，通过 libvgpu.so 对每个任务施加显存与算力限制。",
+      },
+      {
+        en: "A single physical GPU serves up to 10 concurrent tasks (deviceSplitCount=10) without oversubscription; Ascend and Hygon DCU will join the heterogeneous pool next.",
+        zh: "单张物理 GPU 最多承载 10 个并发任务（deviceSplitCount=10）且不超卖；下一步计划将昇腾与海光 DCU 纳入异构算力池。",
+      },
+    ],
+    url: "https://www.cncf.io/case-studies/seres/",
+  },
+  {
+    name: "ZYT",
+    nameZh: "卓驭科技",
+    logo: "/img/adopters/zyt.png",
+    logoZh: "/img/adopters/zyt-zh.svg",
+    website: "https://www.zyt.com",
+    publishedAt: "2026-09-29",
+    metric: {
+      en: "GPU utilization lifted from under 15% to over 55%, with >95% allocation",
+      zh: "GPU 利用率从不足 15% 提升至 55% 以上，分配率超 95%",
+    },
+    summary: {
+      en: "Building an elastic driving cloud for autonomous driving with Kubernetes, Koordinator, and HAMi, sharing fine-grained GPU slices across training, inference, and dev Codespaces.",
+      zh: "基于 Kubernetes、Koordinator 与 HAMi 构建弹性自动驾驶驾驶云，为训练、推理与开发环境（Codespaces）提供细粒度 GPU 切片共享。",
+    },
+    highlights: [
+      {
+        en: "GPU allocation stays above 95% while overall utilization rose from under 15% to over 55%, about 60% on shared inference.",
+        zh: "GPU 分配率保持在 95% 以上，整体利用率由不足 15% 提升至 55% 以上，共享推理场景约 60%。",
+      },
+      {
+        en: "Codespaces GPU dev environments cut whole-GPU card usage by about 60%, serving 10+ algorithm, data, and platform teams.",
+        zh: "Codespaces 开发环境整机 GPU 卡用量减少约 60%，支撑十余个算法、数据与平台团队。",
+      },
+      {
+        en: "Two-level ElasticQuota with reservation and gang scheduling sustains 300K–800K pod scheduling per day with 100+ quota objects per cluster.",
+        zh: "两级 ElasticQuota 配合资源预留与 Gang 调度，单集群 100+ 配额对象，支撑每日 30 万至 80 万 Pod 调度。",
+      },
+    ],
+    url: "https://www.cncf.io/case-studies/zhuoyu-technology/",
+  },
+  {
+    name: "CETC Cloud",
+    nameZh: "电科云",
+    logo: "/img/adopters/cetc.png",
+    logoZh: "/img/adopters/cetc-zh.png",
+    publishedAt: "2026-09-08",
+    metric: {
+      en: "15× dev capacity per appliance with 87.5% VRAM reclaimed",
+      zh: "单台一体机开发环境容量提升 15 倍，显存回收 87.5%",
+    },
+    summary: {
+      en: "Delivering an intelligent knowledge base appliance to project sites, sharing heterogeneous GPUs across text generation, embedding, and rerank models with HAMi on Kubernetes.",
+      zh: "将智能知识库一体机交付至项目现场独立运行，基于 Kubernetes 与 HAMi 实现文本生成、Embedding、Rerank 等模型的 GPU 共享混部。",
+    },
+    highlights: [
+      {
+        en: "Concurrent dev Pods on the same 8-GPU appliance grew from 2 to 30 (15×).",
+        zh: "同一台 8 卡一体机可承载的并发开发 Pod 由 2 个增至 30 个（15 倍）。",
+      },
+      {
+        en: "Embedding moved from a dedicated 64 GB GPU to an 8 GB / 20% compute slice with negligible performance impact.",
+        zh: "Embedding 服务由独占一整张 64 GB GPU 改为 8 GB 显存 / 20% 算力切片，性能几乎无损。",
+      },
+      {
+        en: "Online services, batch jobs, and dev debugging share one unified Kubernetes scheduling process.",
+        zh: "在线服务、批处理任务与研发调试统一纳入同一 Kubernetes 调度体系。",
+      },
+    ],
+    url: "https://www.cncf.io/case-studies/cetc-cloud/",
+  },
+  {
+    name: "Sangfor",
+    nameZh: "深信服",
+    logo: "/img/adopters/sangfor.jpg",
+    website: "https://www.sangfor.com",
+    publishedAt: "2026-09-08",
+    metric: {
+      en: "3×+ GPU utilization and 50% lower external model costs",
+      zh: "GPU 利用率提升 3 倍以上，外部模型调用成本降低 50%",
+    },
+    summary: {
+      en: "Building a production-grade shared GPU platform on Kubernetes, Volcano, and HAMi for 2,000+ R&D engineers.",
+      zh: "基于 Kubernetes、Volcano 与 HAMi 构建生产级 GPU 共享平台，支撑 2000+ 研发工程师日常使用。",
+    },
+    highlights: [
+      {
+        en: "Models co-located per GPU grew from 1 to 8+, lifting GPU utilization more than 3×.",
+        zh: "单卡混部模型数从 1 个增至 8 个以上，GPU 利用率提升 3 倍以上。",
+      },
+      {
+        en: "External model invocation cost halved, from 400K to 200K RMB per month.",
+        zh: "外部模型调用成本减半，从每月 40 万元降至 20 万元。",
+      },
+      {
+        en: "Model failure recovery dropped from ~1 hour to under 10 minutes, sustaining 95%+ success under 3× peak traffic.",
+        zh: "模型故障恢复时间从约 1 小时缩短至 10 分钟以内，3 倍峰值流量下成功率保持 95% 以上。",
+      },
+    ],
+    url: "https://www.cncf.io/case-studies/sangfor/",
+  },
+  {
     name: "China Merchants Bank",
     nameZh: "招商银行",
     logo: "/img/adopters/china-merchants-bank.png",

@@ -20,6 +20,8 @@ This component supports multiplexing Kunlunxin XPU devices (P800-OAM) and provid
 
 ## Enable XPU-sharing Support
 
+Install HAMi using [Online installation](../../installation/online-installation.md). Keep `devices.kunlun.enabled=true` (the default). The vendor device plugin is installed separately as described below. HAMi-side resource names and device settings are under `devices.kunlun.*` in the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md); keep resource names consistent with the plugin.
+
 - Deploy [vxpu-device-plugin]
 
 ```yaml

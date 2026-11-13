@@ -15,6 +15,8 @@ HAMi 已经在 AWS 市场上发布，你可以通过 helm 或 AWS add-on 快速�
 
 ## 使用 Helm 安装
 
+下面的安装步骤使用的是 `2.6.1-community` 版本。如需安装更新的版本，请将 Helm 命令中的 `2.6.1-community` 替换为 [AWS Marketplace 页面](https://aws.amazon.com/marketplace/pp/prodview-x237accxbpuwa)上可用的最新版本。
+
 你可以使用以下命令获取 HAMi 的 Helm chart 并安装：
 
 ```shell

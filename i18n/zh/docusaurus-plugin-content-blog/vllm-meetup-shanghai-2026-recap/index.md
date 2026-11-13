@@ -6,14 +6,14 @@ image: /img/vllm-meetup-shanghai-2026-recap/title.webp
 tags:
   [
     "vLLM",
-    "GPU Virtualization",
+    "GPU 虚拟化",
     "PD Disaggregation",
     "LLM-D",
     "Mooncake",
     "HAMi",
     "Inference Optimization",
-    "Cloud Native",
-    "AI Infrastructure",
+    "云原生",
+    "AI 基础设施",
   ]
 authors: [archlitchi]
 ---

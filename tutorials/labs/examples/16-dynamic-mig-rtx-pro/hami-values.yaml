@@ -1,0 +1,42 @@
+global:
+  imageTag: v2.10.0
+
+scheduler:
+  defaultSchedulerPolicy:
+    nodeSchedulerPolicy: binpack
+    gpuSchedulerPolicy: binpack
+
+devicePlugin:
+  # NVIDIA's static MIG resource exposure strategy. This is not HAMi's
+  # per-node Dynamic MIG operating mode below.
+  migStrategy: none
+
+  # Steps 2 and 7 of the lab fill in the node name and the excluded GPU index
+  # list below before rendering. The verified run excluded [0, 1, 2, 3, 5, 6],
+  # which registers only GPU 4.
+  nodeConfiguration:
+    config: |
+      {
+        "nodeconfig": [
+          {
+            "name": "__NODE_NAME__",
+            "operatingmode": "mig",
+            "devicememoryscaling": 1,
+            "devicecorescaling": 1,
+            "devicesplitcount": 10,
+            "preconfigureddevicememory": 0,
+            "enablenumatopology": false,
+            "migstrategy": "none",
+            "filterdevices": {
+              "uuid": [],
+              "index": [__EXCLUDED_GPU_INDICES__]
+            },
+            "enablegetpreferredallocation": false
+          }
+        ]
+      }
+
+# Use the device-config.yaml bundled with the v2.10.0 chart. It contains
+# the RTX PRO 6000 profile allowlist tested by this lab.
+device-config:
+  content: ""

@@ -9,7 +9,7 @@ HAMi has supported K8s [DRA](https://kubernetes.io/docs/concepts/scheduling-evic
 
 ## Prerequisites
 
-- The underlying container runtime (e.g., containerd or CRI-O) has [CDI](https://github.com/cncf-tags/container-device-interface?tab=readme-ov-file#how-to-configure-cdi) enabled
+- The underlying container runtime (e.g., containerd or CRI-O) has [CDI](../../installation/configure-cdi.md) enabled
 
 ## Installation
 

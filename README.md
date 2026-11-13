@@ -8,7 +8,7 @@ This repository contains:
 
 - **Complete HAMi documentation** covering installation, usage, and development
 - **Official HAMi website** built with [Docusaurus 3](https://docusaurus.io/)
-- **Device-specific guides** for NVIDIA, Ascend, Cambricon, Enflame, Hygon, and more
+- **Device-specific guides** for NVIDIA, AMD, Ascend, Cambricon, Enflame, Hygon, and more
 - **Multi-language support** (English and Chinese)
 - **Release notes and changelog**
 

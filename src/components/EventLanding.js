@@ -1,25 +1,22 @@
 import Layout from "@theme/Layout";
 import Head from "@docusaurus/Head";
+import Link from "@docusaurus/Link";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDiscord, faGithub } from "@fortawesome/free-brands-svg-icons";
 import {
   faCalendarDays,
   faLocationDot,
+  faClock,
+  faDoorOpen,
   faFilePdf,
   faVideo,
 } from "@fortawesome/free-solid-svg-icons";
 import useBaseUrl from "@docusaurus/useBaseUrl";
 import events from "@site/src/data/events";
+import { formatDate, formatDateRange } from "@site/src/utils/date";
+import { isChinese, pick } from "@site/src/utils/i18n";
 import styles from "./EventLanding.module.css";
-
-function isChinese(locale) {
-  return locale.startsWith("zh");
-}
-
-function pick(locale, obj) {
-  return isChinese(locale) && obj.zh ? obj.zh : obj.en;
-}
 
 function utm(url, slug) {
   let u;
@@ -39,27 +36,6 @@ const DEFAULTS = {
   githubUrl: "https://github.com/Project-HAMi/HAMi",
 };
 
-function dateFmt(locale) {
-  return new Intl.DateTimeFormat(isChinese(locale) ? "zh-CN" : "en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    timeZone: "UTC",
-  });
-}
-
-function formatDate(dateStr, locale) {
-  return dateFmt(locale).format(new Date(dateStr));
-}
-
-function formatDateRange(startStr, endStr, locale) {
-  const fmt = dateFmt(locale);
-  if (typeof fmt.formatRange !== "function") {
-    return `${fmt.format(new Date(startStr))} - ${fmt.format(new Date(endStr))}`;
-  }
-  return fmt.formatRange(new Date(startStr), new Date(endStr));
-}
-
 export default function EventLanding({ slug }) {
   const { i18n, siteConfig } = useDocusaurusContext();
   const isZh = isChinese(i18n.currentLocale);
@@ -76,6 +52,8 @@ export default function EventLanding({ slug }) {
       </Layout>
     );
   }
+  const effectiveEventStatus = event.eventStatus || "EventScheduled";
+
   const eventJsonLd = {
     "@context": "https://schema.org",
     "@type": "Event",
@@ -92,13 +70,53 @@ export default function EventLanding({ slug }) {
     description: pick(locale, event.description),
     image: bannerUrl ? `${siteConfig.url}${bannerUrl}` : undefined,
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+    eventStatus: `https://schema.org/${effectiveEventStatus}`,
+    organizer: {
+      "@type": "Organization",
+      name: "HAMi",
+      url: "https://project-hami.io/",
+    },
+    ...(event.speaker
+      ? {
+          performer: event.speaker
+            .split(",")
+            .map((name) => ({ "@type": "Person", name: name.trim() })),
+        }
+      : {}),
+    ...(event.price !== undefined || event.externalUrl
+      ? {
+          offers: {
+            "@type": "Offer",
+            url: event.externalUrl || `${siteConfig.url}/events/${event.slug}`,
+            price: event.price ?? "0",
+            priceCurrency: event.priceCurrency || "USD",
+            availability:
+              effectiveEventStatus === "EventScheduled"
+                ? "https://schema.org/InStock"
+                : "https://schema.org/SoldOut",
+            validFrom: event.offerValidFrom || event.date,
+          },
+        }
+      : {}),
   };
 
+  const talkSlideItems = Array.isArray(event.resources?.talkSlides)
+    ? event.resources.talkSlides
+    : event.resources?.talkSlides
+      ? [event.resources.talkSlides]
+      : [];
+  const resourceItems = [
+    ...(event.resources?.communityFlyer?.url
+      ? [{ icon: faFilePdf, ...event.resources.communityFlyer }]
+      : []),
+    ...talkSlideItems.filter((s) => s?.url).map((s) => ({ icon: faFilePdf, ...s })),
+    ...(event.resources?.speakerReel?.url
+      ? [{ icon: faVideo, ...event.resources.speakerReel }]
+      : []),
+  ];
+
   return (
-    <Layout
-      title={isZh ? event.title.zh : event.title.en}
-      description={isZh ? event.description.zh : event.description.en}
-    >
+    <Layout title={pick(locale, event.title)} description={pick(locale, event.description)}>
       {bannerUrl && (
         <Head>
           <meta property="og:image" content={`${siteConfig.url}${bannerUrl}`} />
@@ -112,6 +130,9 @@ export default function EventLanding({ slug }) {
       <main className={styles.page}>
         <section className={styles.hero}>
           <div className="container">
+            <Link to="/landing" className={styles.backLink}>
+              ← {isZh ? "落地页" : "Landing Pages"}
+            </Link>
             {event.banner && (
               <img src={bannerUrl} alt={pick(locale, event.title)} className={styles.banner} />
             )}
@@ -127,6 +148,20 @@ export default function EventLanding({ slug }) {
                 <FontAwesomeIcon icon={faLocationDot} className={styles.metaIcon} />
                 {pick(locale, event.location)}
               </span>
+              {event.startTime && (
+                <span className={styles.metaItem}>
+                  <FontAwesomeIcon icon={faClock} className={styles.metaIcon} />
+                  {event.startTime}
+                  {event.endTime ? ` - ${event.endTime}` : ""}
+                  {event.timeZone ? ` ${event.timeZone}` : ""}
+                </span>
+              )}
+              {event.room && (
+                <span className={styles.metaItem}>
+                  <FontAwesomeIcon icon={faDoorOpen} className={styles.metaIcon} />
+                  {event.room}
+                </span>
+              )}
             </div>
             <p className={styles.description}>{pick(locale, event.description)}</p>
             {(event.externalUrl || event.talkUrl) && (
@@ -187,30 +222,24 @@ export default function EventLanding({ slug }) {
           </section>
         )}
 
-        {event.resources && Object.values(event.resources).some((r) => r?.url) && (
+        {resourceItems.length > 0 && (
           <section className={styles.resources}>
             <div className="container">
               <div className={`hami-section-card ${styles.resourcesCard}`}>
                 <h2 className={styles.sectionTitle}>{isZh ? "会议资料" : "Event Resources"}</h2>
                 <div className={styles.resourceList}>
-                  {[
-                    { key: "communityFlyer", icon: faFilePdf },
-                    { key: "talkSlides", icon: faFilePdf },
-                    { key: "speakerReel", icon: faVideo },
-                  ]
-                    .filter((r) => event.resources[r.key]?.url)
-                    .map((r) => (
-                      <a
-                        key={r.key}
-                        href={event.resources[r.key].url}
-                        className={styles.resourceLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <FontAwesomeIcon icon={r.icon} className={styles.resourceIcon} />
-                        <span>{pick(locale, event.resources[r.key])}</span>
-                      </a>
-                    ))}
+                  {resourceItems.map((item) => (
+                    <a
+                      key={item.url}
+                      href={item.url}
+                      className={styles.resourceLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <FontAwesomeIcon icon={item.icon} className={styles.resourceIcon} />
+                      <span>{pick(locale, item)}</span>
+                    </a>
+                  ))}
                 </div>
               </div>
             </div>
@@ -247,6 +276,13 @@ export default function EventLanding({ slug }) {
                 </a>
               </div>
             </div>
+          </div>
+        </section>
+        <section className={styles.moreEvents}>
+          <div className="container">
+            <Link to="/events" className={styles.backLink}>
+              ← {isZh ? "活动日历" : "Events Calendar"}
+            </Link>
           </div>
         </section>
       </main>

@@ -4,6 +4,10 @@ sidebar_label: ResourceQuota
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="quota" />
+
 ## Extended ResourceQuota
 
 HAMi extends the native scheduler, allowing you to use the built-in ResourceQuota to limit resources. For NVIDIA devices, HAMi supports an extended version of ResourceQuota for specialized scenarios. For tasks requesting multiple devices, the native ResourceQuota calculates the request for each resource individually, while the extended ResourceQuota calculates the actual resource request based on the number of devices.

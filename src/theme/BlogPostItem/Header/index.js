@@ -7,30 +7,39 @@ import Translate from "@docusaurus/Translate";
 import BlogPostItemHeaderTitle from "@theme/BlogPostItem/Header/Title";
 import BlogPostItemHeaderInfo from "@theme/BlogPostItem/Header/Info";
 import BlogPostItemHeaderAuthors from "@theme/BlogPostItem/Header/Authors";
+import { formatNumericDate } from "@site/src/utils/date";
 import styles from "./styles.module.css";
 
-function formatDate(date, locale) {
-  const language = locale === "zh" ? "zh-CN" : "en-US";
-  return new Date(date).toLocaleDateString(language, {
-    year: "numeric",
-    month: "numeric",
-    day: "numeric",
-    timeZone: "UTC",
-  });
-}
-
-function formatAuthors(metadata, fallbackLabel) {
-  const names = (metadata.authors || []).map((author) => author?.name).filter(Boolean);
-  if (names.length === 0) {
+function renderAuthors(metadata, fallbackLabel) {
+  const authors = metadata.authors || [];
+  const namedAuthors = authors.filter((author) => author?.name);
+  if (namedAuthors.length === 0) {
     return fallbackLabel;
   }
-  return names.join(", ");
+  return namedAuthors.map((author, index) => {
+    const name = author.name;
+    const separator = index < namedAuthors.length - 1 ? ", " : null;
+    const key = author.key || `author-${index}`;
+    return (
+      <React.Fragment key={key}>
+        {author.url ? (
+          <a href={author.url} target="_blank" rel="noopener noreferrer">
+            {name}
+          </a>
+        ) : (
+          name
+        )}
+        {separator}
+      </React.Fragment>
+    );
+  });
 }
 
 export default function BlogPostItemHeader() {
   const { metadata, frontMatter, isBlogPostPage } = useBlogPost();
   const { i18n } = useDocusaurusContext();
   const cover = frontMatter.cover;
+  const coverUrl = useBaseUrl(cover || "");
   const fallbackLabel = (
     <Translate
       id="theme.hami.blog.meta.unknownAuthor"
@@ -44,11 +53,7 @@ export default function BlogPostItemHeader() {
     <header>
       {isBlogPostPage && cover && (
         <div className={styles.coverWrap}>
-          <img
-            className={styles.cover}
-            src={useBaseUrl(cover)}
-            alt={frontMatter.title || metadata.title}
-          />
+          <img className={styles.cover} src={coverUrl} alt={frontMatter.title || metadata.title} />
         </div>
       )}
       <BlogPostItemHeaderTitle />
@@ -64,7 +69,7 @@ export default function BlogPostItemHeader() {
               </Translate>
               :
             </strong>{" "}
-            {formatAuthors(metadata, fallbackLabel)}
+            {renderAuthors(metadata, fallbackLabel)}
           </div>
           <div className={styles.metaItem}>
             <strong>
@@ -76,7 +81,7 @@ export default function BlogPostItemHeader() {
               </Translate>
               :
             </strong>{" "}
-            {formatDate(metadata.date, i18n.currentLocale)}
+            {formatNumericDate(metadata.date, i18n.currentLocale)}
           </div>
         </div>
       )}

@@ -2,15 +2,15 @@
 title: Allocate device memory
 ---
 
-To allocate a percentage of device memory, specify resources such as `cambricon.com/mlu.smlu.vmemory`.
+Allocate a fixed size of device memory with the optional `cambricon.com/mlu.smlu.vmemory` resource. HAMi accounts for each unit as 256 MiB, matching the `min-dsmlu-unit=256` plugin configuration in the [MLU sharing guide](./enable-cambricon-mlu-sharing.md).
 
-This field is optional. Each unit of `cambricon.com/mlu.smlu.vmemory` represents 1% of the device's total memory.
+Use a plain integer without suffixes such as `Mi`, `Gi`, or `G`. The value is a count of memory units, not a percentage. For example, `20` units allocate 5120 MiB (5 GiB).
 
 ```yaml
 resources:
   limits:
     cambricon.com/vmlu: 1 # requesting 1 MLU
-    cambricon.com/mlu.smlu.vmemory: "20" # Each MLU contains 20% device memory
+    cambricon.com/mlu.smlu.vmemory: "20" # Allocate 20 x 256 MiB = 5 GiB
 ```
 
 :::note

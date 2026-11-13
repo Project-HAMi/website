@@ -1,0 +1,137 @@
+# model-a, two Deployments behind one Service, each pinned to its card
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: model-a-app
+  namespace: lab10
+data:
+  app.py: |
+    import os, time, torch
+    from fastapi import FastAPI
+    N = int(os.environ.get("N", "8192"))
+    BATCH = int(os.environ.get("BATCH", "512"))
+    ITERS = int(os.environ.get("ITERS", "8"))
+    EXTRA_MIB = int(os.environ.get("EXTRA_MIB", "0"))  # scenario 5
+    app = FastAPI()
+    SERVED = {"infer": 0}  # per-pod request counter
+    W = torch.randn(N, N, device="cuda", dtype=torch.float16)
+    X = torch.randn(BATCH, N, device="cuda", dtype=torch.float16)
+    def step():
+        y = X
+        for _ in range(ITERS):
+            y = (y @ W) * 1e-3
+        torch.cuda.synchronize()
+        return float(y[0, 0])
+    for _ in range(20):
+        step()  # warm-up
+    @app.get("/healthz")
+    def healthz():
+        return {"ok": True, "gpu": torch.cuda.get_device_name(0)}
+    @app.get("/stats")
+    def stats():
+        return {"pod": os.environ.get("HOSTNAME"), "served": SERVED["infer"]}
+    @app.get("/infer")
+    def infer():
+        SERVED["infer"] += 1
+        t0 = time.perf_counter()
+        scratch = torch.empty(EXTRA_MIB * 1024 * 1024 // 2, dtype=torch.float16, device="cuda") if EXTRA_MIB else None
+        v = step()
+        del scratch
+        return {"gpu_ms": round((time.perf_counter() - t0) * 1000, 3), "v": v, "pod": os.environ.get("HOSTNAME")}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: model-a
+  namespace: lab10
+spec:
+  selector:
+    app: model-a
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: model-a-gpu-a
+  namespace: lab10
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: model-a, gpu: a }
+  template:
+    metadata:
+      labels: { app: model-a, gpu: a }
+      annotations:
+        nvidia.com/use-gpuuuid: "GPU-7023a4c2-4128-840d-2b86-ab87d8bf7f47"
+    spec:
+      containers:
+        - name: model
+          image: pytorch/pytorch:2.14.0-cuda12.6-cudnn9-runtime
+          command:
+            [
+              "sh",
+              "-c",
+              "pip install -q --break-system-packages fastapi uvicorn && cd /app && exec uvicorn app:app --host 0.0.0.0 --port 8000",
+            ]
+          ports: [{ containerPort: 8000, name: http }]
+          volumeMounts: [{ name: app, mountPath: /app }]
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+              nvidia.com/gpumem: 4000
+              nvidia.com/gpucores: 50
+          startupProbe:
+            httpGet: { path: /healthz, port: 8000 }
+            periodSeconds: 5
+            failureThreshold: 120
+          readinessProbe:
+            httpGet: { path: /healthz, port: 8000 }
+            periodSeconds: 5
+      volumes:
+        - name: app
+          configMap: { name: model-a-app }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: model-a-gpu-b
+  namespace: lab10
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: model-a, gpu: b }
+  template:
+    metadata:
+      labels: { app: model-a, gpu: b }
+      annotations:
+        nvidia.com/use-gpuuuid: "GPU-4dc50575-f241-9f14-1e6e-ecb4a93c3299"
+    spec:
+      containers:
+        - name: model
+          image: pytorch/pytorch:2.14.0-cuda12.6-cudnn9-runtime
+          command:
+            [
+              "sh",
+              "-c",
+              "pip install -q --break-system-packages fastapi uvicorn && cd /app && exec uvicorn app:app --host 0.0.0.0 --port 8000",
+            ]
+          ports: [{ containerPort: 8000, name: http }]
+          volumeMounts: [{ name: app, mountPath: /app }]
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+              nvidia.com/gpumem: 4000
+              nvidia.com/gpucores: 50
+          startupProbe:
+            httpGet: { path: /healthz, port: 8000 }
+            periodSeconds: 5
+            failureThreshold: 120
+          readinessProbe:
+            httpGet: { path: /healthz, port: 8000 }
+            periodSeconds: 5
+      volumes:
+        - name: app
+          configMap: { name: model-a-app }

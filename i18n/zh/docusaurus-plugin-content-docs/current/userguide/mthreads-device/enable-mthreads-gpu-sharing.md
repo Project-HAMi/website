@@ -10,7 +10,7 @@ translated: true
 
 **GPU 共享**: 每个任务可以只占用一部分显卡，多个任务可以共享一张显卡
 
-**可限制分配的显存大小**: 你现在可以用显存值（例如 3000M）来分配 GPU，本组件会确保任务使用的显存不会超过分配数值
+**可限制分配的显存大小**: 你现在可以用显存单位数（例如 32 个单位，即 16 GiB）来分配 GPU，本组件会确保任务使用的显存不会超过分配数值
 
 **可限制分配的算力核组比例**: 你现在可以用算力核组数量（例如 8 个）来分配 GPU，本组件会确保任务使用的算力不会超过分配数值
 
@@ -39,11 +39,9 @@ translated: true
 
 :::
 
-- 在安装 HAMi 时配置参数 `devices.mthreads.enabled=true`
+按[在线安装指南](../../installation/online-installation.md)部署 HAMi，保持 `devices.mthreads.enabled=true`（默认值）。此配置将厂商资源加入内置调度器 extender，厂商插件或工具包仍需单独安装。完整参数见 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md)中的 `devices.mthreads.*`。
 
-```bash
-helm install hami hami-charts/hami --set scheduler.kubeScheduler.image.tag={your kubernetes version} --set devices.mthreads.enabled=true -n kube-system
-```
+自定义资源名称时，保持 `devices.mthreads.customresources` 与 `resourceCountName` 一致。仅在集群需要不同的单卡显存容量时设置 `devices.mthreads.memoryPerCard`，默认配置见 [values 源码](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/values.yaml)。
 
 ## 运行 GPU 任务
 
@@ -71,7 +69,7 @@ spec:
 
 :::note
 
-每一单位的 sgpu-memory 代表 512M 的显存。
+每个 `mthreads.com/sgpu-memory` 单位代表 512 MiB 显存。示例申请 32 个单位，即 16 GiB。共享 GPU 支持的取值为 `2`、`4`、`8`、`16`、`32`、`64` 和 `96`。
 
 :::
 

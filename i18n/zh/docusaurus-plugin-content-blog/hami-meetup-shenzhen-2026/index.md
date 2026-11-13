@@ -5,6 +5,7 @@ description: "4 月 25 日，HAMi Meetup 深圳站成功举办。来自 CNCF、�
 image: ./meetup-shenzhen-group-photo.webp
 tags: ["HAMi", "Meetup", "深圳", "GPU 虚拟化", "异构算力调度", "DRA", "云原生", "AI 基础设施"]
 authors: [hami_community]
+unlisted: true
 ---
 
 ![HAMi Meetup 深圳站](meetup-shenzhen-group-photo.webp)

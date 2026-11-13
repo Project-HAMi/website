@@ -1,11 +1,12 @@
 ---
 title: GPU Virtualization Principles
+description: How HAMi selects nodes and NVIDIA GPUs with binpack or spread policies and intercepts CUDA calls to limit GPU memory and compute inside a container.
 sidebar_label: GPU Virtualization
 ---
 
 In AI inference scenarios, a common dilemma is that GPUs are expensive, but mostly idle.
 
-A typical inference service often only uses 20%~40% of the GPU's compute and a small amount of VRAM, leaving the rest idle. Kubernetes' default GPU scheduling model is exclusive: `nvidia.com/gpu: 1` means the entire card is yours, and all other Pods must wait. Want to share a single GPU across multiple inference services? The standard Device Plugin cannot do it, because it can only report device counts (integers) to the scheduler - there is no concept of "VRAM quota."
+A typical inference service often only uses between 20% and 40% of the GPU's compute and a small amount of VRAM, leaving the rest idle. Kubernetes' default GPU scheduling model is exclusive: `nvidia.com/gpu: 1` means the entire card is yours, and all other Pods must wait. Want to share a single GPU across multiple inference services? The standard Device Plugin cannot do it, because it can only report device counts (integers) to the scheduler - there is no concept of "VRAM quota."
 
 This led to various GPU sharing solutions. NVIDIA's official Time-Slicing allows multiple Pods to be scheduled concurrently, but provides no VRAM isolation - a Pod OOM can crash all tasks on the card. MIG hardware partitioning offers true isolation, but only datacenter-grade cards like A100 and H100 support it.
 
@@ -68,7 +69,7 @@ HAMi consists of four core components:
 | `HAMi MutatingWebhook Server` | Deployment (embedded in hami-scheduler Pod) | Admission entry point: scans Pod resource fields, rewrites `schedulerName` to `hami-scheduler` for Pods that need HAMi scheduling (configurable); Pods with explicitly specified schedulerName are skipped |
 | `HAMi Scheduler-Extender` | Deployment (embedded in hami-scheduler Pod) | Scheduling core: maintains a global GPU view, implements fine-grained VRAM/compute-aware scheduling during Filter/Bind phases, supports binpack/spread strategies |
 | `HAMi Device Plugin` | DaemonSet | Node resource layer: registers virtual GPU resources with Kubelet; mounts `libvgpu.so` and `ld.so.preload` into containers via hostPath during `Allocate`, and injects environment variables such as `CUDA_DEVICE_MEMORY_LIMIT_<index>` and `CUDA_DEVICE_SM_LIMIT` |
-| `HAMi-Core` (`libvgpu.so`) | Dynamic library (injected during Device Plugin Allocate) | In-container soft isolation: overrides `dlsym` to hijack NVIDIA library functions starting with `cu`/`nvml`, implementing VRAM limit interception and compute throttling |
+| `HAMi-Core` (`libvgpu.so`) | Dynamic library (injected during Device Plugin Allocate) | In-container soft isolation: overrides `dlsym` to hijack the specific NVIDIA library functions listed in its hook table (not every `cu`/`nvml`-prefixed symbol), implementing VRAM limit interception and compute throttling |
 
 After deployment, the Pod status looks like this:
 
@@ -167,7 +168,7 @@ After the Pod is scheduled to the target node, Kubelet calls the Device Plugin's
    - `CUDA_DEVICE_MEMORY_LIMIT_<index>=<number>m`: Per-device VRAM quota, where `index` is the container's device index (0, 1, 2...), with a unit suffix `m` (e.g., `1024m`), derived from the Pod's `nvidia.com/gpumem` request
    - `CUDA_DEVICE_SM_LIMIT=<percentage>`: Compute quota ceiling (from the Pod's `nvidia.com/gpucores` request)
 
-After the container starts, libvgpu.so hijacks NVIDIA dynamic library symbol resolution by **overriding the `dlsym` function**, intercepting all function calls starting with `cu` and `nvml`:
+After the container starts, libvgpu.so hijacks NVIDIA dynamic library symbol resolution by **overriding the `dlsym` function**, intercepting the specific `cu`/`nvml`-prefixed function calls listed in its hook table. Calls to `cu`/`nvml` functions outside that table resolve normally to the real driver:
 
 **VRAM Limit:**
 

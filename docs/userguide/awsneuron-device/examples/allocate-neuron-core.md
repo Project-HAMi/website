@@ -2,7 +2,7 @@
 title: Allocate AWS Neuron core
 ---
 
-To allocate 1/2 of a neuron device, use `aws.amazon.com/neuroncore`, as shown below:
+Request one NeuronCore with `aws.amazon.com/neuroncore`. The number of cores per physical device depends on the node; one core is not always half a device.
 
 ```yaml
 apiVersion: v1

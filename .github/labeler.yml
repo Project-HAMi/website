@@ -1,0 +1,46 @@
+area/docs:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "docs/**"
+          - "versioned_docs/**"
+          - "versioned_sidebars/**"
+          - "tutorials/**"
+          - "sidebars.js"
+          - "sidebars-tutorials.js"
+          - "versions.json"
+
+area/ui:
+  - changed-files:
+      - any-glob-to-any-file: "src/**"
+
+area/blog:
+  - changed-files:
+      - any-glob-to-any-file: "blog/**"
+
+area/i18n:
+  - changed-files:
+      - any-glob-to-any-file: "i18n/**"
+
+area/edge-functions:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "netlify/**"
+          - "netlify.toml"
+
+area/ci-infra:
+  - changed-files:
+      - any-glob-to-any-file:
+          - ".github/**"
+          - "scripts/**"
+          - "package.json"
+          - "package-lock.json"
+          - ".markdownlint.json"
+          - ".prettierrc"
+          - ".prettierignore"
+
+area/seo:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "static/robots.txt"
+          - "static/llms.txt"
+          - "docusaurus.config.js"

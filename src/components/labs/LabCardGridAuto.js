@@ -9,7 +9,8 @@
  * Field sources (single source of truth each):
  *   - title, description: the lab doc itself (per-locale)
  *   - href: the resolved sidebar link (per-locale)
- *   - level, duration: the sidebar entry's `customProps` (localized at render)
+ *   - level, duration: the sidebar entry's `customProps`, mapped to translated
+ *     labels below and in LevelBadge
  *
  * `useDocsVersion().docs` intentionally omits `frontMatter`, so level/duration
  * are read from sidebar `customProps` instead of the `lab:` front matter block.
@@ -24,6 +25,32 @@ import {
 } from "@docusaurus/plugin-content-docs/client";
 import LevelBadge from "./LevelBadge";
 import styles from "./LabCardGrid.module.css";
+
+// Keyed by the English label, like LEVELS in LevelBadge. The ids have to be
+// static or `write-translations` has nothing to extract; passing the sidebar
+// value straight to <Translate> leaves the extractor with a runtime expression.
+const DURATIONS = {
+  "about 30 minutes": (
+    <Translate id="tutorials.lab.duration.30min" description="Lab duration of about 30 minutes">
+      about 30 minutes
+    </Translate>
+  ),
+  "about 40 minutes": (
+    <Translate id="tutorials.lab.duration.40min" description="Lab duration of about 40 minutes">
+      about 40 minutes
+    </Translate>
+  ),
+  "about 45 minutes": (
+    <Translate id="tutorials.lab.duration.45min" description="Lab duration of about 45 minutes">
+      about 45 minutes
+    </Translate>
+  ),
+  "about 60 minutes": (
+    <Translate id="tutorials.lab.duration.60min" description="Lab duration of about 60 minutes">
+      about 60 minutes
+    </Translate>
+  ),
+};
 
 // Match the labs category by the doc ids it contains (locale-independent),
 // not by its (possibly translated) label.
@@ -73,9 +100,7 @@ export default function LabCardGridAuto() {
           </div>
           {card.description && <p className={styles.cardDescription}>{card.description}</p>}
           {card.duration && (
-            <div className={styles.cardFooter}>
-              <Translate>{card.duration}</Translate>
-            </div>
+            <div className={styles.cardFooter}>{DURATIONS[card.duration] ?? card.duration}</div>
           )}
         </Link>
       ))}

@@ -22,7 +22,7 @@
     "name": "CenCloud",
     "nameZh": "琛云科技",
     "logo": "/img/adopters/cencloud.svg",
-    "website": ""
+    "website": "https://www.chenyuncloud.cn/"
   },
   {
     "name": "RiseUnion",
@@ -440,5 +440,12 @@
     "nameZh": "微店",
     "logo": "/img/adopters/weidian.png",
     "website": "https://www.weidian.com/"
+  },
+  {
+    "name": "ZYT",
+    "nameZh": "卓驭科技",
+    "logo": "/img/adopters/zyt.png",
+    "logoZh": "/img/adopters/zyt-zh.svg",
+    "website": "https://www.zyt.com/"
   }
 ]

@@ -1,5 +1,6 @@
 ---
 title: FAQ
+description: Look up device support, troubleshoot GPU memory limits, and check how HAMi can coexist with the NVIDIA device plugin using distinct resource names.
 ---
 
 ## Supported Device Vendors and Specific Models
@@ -7,8 +8,9 @@ title: FAQ
 | **GPU Vendor** | **GPU Model** | **Granularity** | **Multi-GPU Support** |
 | --- | --- | --- | --- |
 | NVIDIA | Almost all mainstream consumer and data center GPUs | Core 1%, Memory 1M | Supported. Multi-GPU can still be split and shared using virtualization. |
+| AMD | Instinct and Radeon (ROCm) | Core 1% (whole WGPs on RDNA), Memory 1M | Implemented, but real multi-GPU validation is still required: multi-GPU runs so far used simulated GPUs on one real GPU. See the [AMD test status](../userguide/amd-device/verification-status.md). |
 | Huawei Ascend | 910A, 910B2, 910B3, 310P | Minimum granularity depends on the card type template. Refer to the [official templates](https://www.hiascend.com/document/detail/zh/mindx-dl/50rc1/AVI/cpaug/cpaug_0005.html). | Supported, but splitting is not supported when `npu > 1`. The entire card is exclusively allocated. |
-| Hygon | All | Core 1%, Memory 1M | Supported, but splitting is not supported when `dcu > 1`. The entire card is exclusively allocated. |
+| Hygon | All | Core 1%, Memory 1M | Supported, but splitting is not supported when `hcu > 1`. The entire card is exclusively allocated. |
 | Cambricon | 370, 590 | Core 1%, Memory 256M | Supported, but splitting is not supported when `mlu > 1`. The entire card is exclusively allocated. |
 | Iluvatar | All | Core 1%, Memory 256M | Supported, but splitting is not supported when `gpu > 1`. The entire card is exclusively allocated. |
 | Moore Threads | MTT S4000 | Core 1 core group, Memory 512M | Supported, but splitting is not supported when `gpu > 1`. The entire card is exclusively allocated. |
@@ -99,7 +101,7 @@ A single Pod cannot span multiple nodes. If cross-host resource coordination is 
 
 ### TL;DR
 
-Use only one GPU management plugin per node in a cluster to ensure clarity and stability in resource allocation.
+Use only one GPU management plugin per node by default. HAMi and the NVIDIA official device plugin can coexist when HAMi advertises distinct resource names, as described in [the FAQ](#how-does-hami-coexist-with-the-nvidia-official-device-plugin).
 
 ### Their Relationship
 
@@ -109,6 +111,7 @@ These three Device Plugins all manage GPU resources but differ in usage scenario
   - Reports GPU resources to Kubernetes using the extended resource name `nvidia.com/gpu`.
   - Supports HAMi’s GPU resource management features, including custom vGPU splitting and scheduling.
   - Designed for complex resource management scenarios such as vGPU overcommitment and customized scheduling.
+  - The resource name can be changed to avoid conflicts with the NVIDIA official device plugin, as described in [the FAQ](#how-does-hami-coexist-with-the-nvidia-official-device-plugin).
 
 - **Volcano vGPU Device Plugin**
   - Reports vGPU resources using the extended resource name `volcano.sh/vgpu-number`.
@@ -122,7 +125,7 @@ These three Device Plugins all manage GPU resources but differ in usage scenario
 
 ### Coexistence
 
-- **HAMi Device Plugin and NVIDIA Official Device Plugin**: Should not coexist to avoid resource conflicts.
+- **HAMi Device Plugin and NVIDIA Official Device Plugin**: Should not use the same resource names. They can coexist on the same node when HAMi advertises distinct resource names, as described in [the FAQ](#how-does-hami-coexist-with-the-nvidia-official-device-plugin).
 - **HAMi Device Plugin and Volcano vGPU Device Plugin**: Can theoretically coexist; use only one to avoid conflicts.
 - **NVIDIA Official Device Plugin and Volcano vGPU Device Plugin**: Can theoretically coexist, but mixed usage is not advised.
 
@@ -144,8 +147,8 @@ Device Plugins can only report a single resource type. GPU memory and compute in
 - HAMi stores detailed GPU resource information (e.g., compute power, memory, model) as **node annotations** for use by the scheduler.
 - Example annotation:
 
-  ```yaml
-  hami.io/node-nvidia-register: GPU-fc28df76-54d2-c387-e52e-5f0a9495968c,10,49140,100,NVIDIA-NVIDIA L40S,0,true:GPU-b97db201-0442-8531-56d4-367e0c7d6edd,10,49140,100,...
+  ```text
+  hami.io/node-nvidia-register: [{"id":"GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec","count":10,"devmem":32768,"devcore":100,"type":"NVIDIA-Tesla V100-PCIE-32GB","numa":1,"mode":"hami-core","health":true},{"id":"GPU-0fc3eda5-e98b-a25b-5b0d-cf5c855d1448","index":1,"count":10,"devmem":32768,"devcore":100,"type":"NVIDIA-Tesla V100-PCIE-32GB","numa":1,"mode":"hami-core","health":true}]
   ```
 
 ### Follow-Up
@@ -178,7 +181,7 @@ If the official Device Plugin cannot provide the required information, HAMi deve
 
 ## How does HAMi enforce GPU memory and compute limits?
 
-HAMi injects `libvgpu.so` into containers via `/etc/ld.so.preload`. The library intercepts CUDA memory allocation calls and returns OOM when the `nvidia.com/gpumem` limit is exceeded; compute limits use a token-bucket throttle on kernel launch calls. Applications that bypass the CUDA library (Docker-in-Docker, direct driver API) are not covered. For the full interception flow, see [GPU Virtualization](../core-concepts/gpu-virtualization).
+HAMi injects `libvgpu.so` into containers via `/etc/ld.so.preload`. The library intercepts CUDA memory allocation calls and returns OOM when the `nvidia.com/gpumem` limit is exceeded; compute limits use a token-bucket throttle on kernel launch calls. Applications that bypass the CUDA library (Docker-in-Docker, direct driver API) are not covered. For the full interception flow, see [GPU Virtualization](./core-concepts/gpu-virtualization).
 
 ## How does HAMi vGPU differ from NVIDIA MIG? When should I use each?
 
@@ -194,11 +197,11 @@ HAMi vGPU is software-only with no hardware requirements. NVIDIA MIG is hardware
 | Dynamic reconfiguration | Yes, no node drain needed | Requires MIG profile reconfiguration |
 | Multi-tenant noise isolation | Best-effort | Strong |
 
-Use HAMi vGPU when the GPU does not support MIG, workloads need flexible memory sizes, or dynamic repacking without node drains is needed. Use MIG when hard hardware isolation is a compliance or SLA requirement. HAMi also supports dynamic MIG via `mig-parted`; see [Dynamic MIG Support](../userguide/nvidia-device/dynamic-mig-support).
+Use HAMi vGPU when the GPU does not support MIG, workloads need flexible memory sizes, or dynamic repacking without node drains is needed. Use MIG when hard hardware isolation is a compliance or SLA requirement. HAMi also supports dynamic MIG via `mig-parted`; see [Dynamic MIG Support](./userguide/nvidia-device/dynamic-mig-support).
 
 ## Why does nvidia-smi inside my container show less memory than on the host?
 
-`libvgpu.so` intercepts `nvmlDeviceGetMemoryInfo` and related calls, returning the `nvidia.com/gpumem` limit instead of physical VRAM. This is intentional: workloads that size their allocations based on reported memory (such as vLLM) will use only their budget. The host’s `nvidia-smi` always shows physical memory. See [GPU Virtualization](../core-concepts/gpu-virtualization).
+`libvgpu.so` intercepts `nvmlDeviceGetMemoryInfo` and related calls, returning the `nvidia.com/gpumem` limit instead of physical VRAM. This is intentional: workloads that size their allocations based on reported memory (such as vLLM) will use only their budget. The host’s `nvidia-smi` always shows physical memory. See [GPU Virtualization](./core-concepts/gpu-virtualization).
 
 ## Why is my nvidia.com/gpumem limit not enforced? {#why-is-my-nvidiagpumem-limit-not-enforced}
 
@@ -206,7 +209,7 @@ The four most common causes: `CUDA_DISABLE_CONTROL=true` is set, the workload ru
 
 ## Does HAMi replace kube-scheduler or run alongside it?
 
-HAMi runs alongside kube-scheduler as a [scheduler extender](https://github.com/kubernetes/design-proposals-archive/blob/main/scheduling/scheduler_extender.md) - it does not replace it. The MutatingWebhook sets `schedulerName: hami-scheduler` only on pods requesting HAMi resources; all other pods follow the default scheduler path unchanged. See [Architecture](../core-concepts/architecture).
+HAMi runs alongside kube-scheduler as a [scheduler extender](https://github.com/kubernetes/design-proposals-archive/blob/main/scheduling/scheduler_extender.md) - it does not replace it. The MutatingWebhook sets `schedulerName: hami-scheduler` only on pods requesting HAMi resources; all other pods follow the default scheduler path unchanged. See [Architecture](./core-concepts/architecture).
 
 ## Does HAMi work with vLLM, and what are the known limitations for multi-GPU tensor parallelism?
 
@@ -221,8 +224,97 @@ devicePlugin:
   enabled: false
 ```
 
-DCGM Exporter is not affected and continues to report physical-level counters normally. HAMi’s per-container virtual metrics are separate; see [GPU Utilization Metrics](../developers/gpu-utilization-metrics).
+DCGM Exporter is not affected and continues to report physical-level counters normally. HAMi’s per-container virtual metrics are separate; see [GPU Utilization Metrics](./developers/gpu-utilization-metrics).
+
+If the HAMi Device Plugin or workloads fail after upgrading to GPU Operator 25.10+, see [NVIDIA containers fail with GPU Operator 25.10+](../troubleshooting/troubleshooting.md#nvidia-toolkit-gpu-operator-25-10).
 
 ## How do I set up Prometheus and Grafana monitoring for HAMi vGPU metrics?
 
-The `hami-device-plugin` pod on each node exposes per-container vGPU metrics on port `31992` (configurable via `devicePlugin.service.httpPort`). See [Grafana Dashboard](../userguide/monitoring/grafana-dashboard) for the full setup including Prometheus scrape config and dashboard import.
+The `hami-device-plugin` pod on each node exposes per-container vGPU metrics on port `31992` (configurable via `devicePlugin.service.httpPort`). See [Grafana Dashboard](./userguide/monitoring/grafana-dashboard) for the full setup including Prometheus scrape config and dashboard import.
+
+## PaddlePaddle crashes with core_dump on vGPU?
+
+This is caused by `thread_local` allocator. Refer to [PaddlePaddle CoreDump Issue with thread_local Allocator on vGPU](./troubleshooting/paddle-threadlocal-coredump).
+
+## How to enable finer-grained GPU slicing such as 0.05 or 0.01?
+
+HAMi uses `deviceSplitCount` to control the maximum number of tasks that can be assigned to a single physical GPU. The default value is 10.
+
+It caps the number of tasks that can share one GPU. The actual memory and core allocation for each workload still comes from its own resource requests.
+
+To allow finer slices, override the value in your Helm `values.yaml`:
+
+```yaml
+devices:
+  nvidia:
+    deviceSplitCount: 20 # allows up to 20 tasks per GPU
+    # or
+    # deviceSplitCount: 100 # allows up to 100 tasks per GPU
+```
+
+Then request the target slice in the workload's resource limits. With deviceSplitCount: 20, requesting 5% of the memory and cores gives a 0.05 slice:
+
+```yaml
+resources:
+  limits:
+    nvidia.com/gpu: 1
+    nvidia.com/gpucores: 5
+    nvidia.com/gpumem-percentage: 5
+```
+
+With deviceSplitCount: 100, requesting 1% of the memory and cores gives a 0.01 slice:
+
+```yaml
+resources:
+  limits:
+    nvidia.com/gpu: 1
+    nvidia.com/gpucores: 1
+    nvidia.com/gpumem-percentage: 1
+```
+
+For per-node overrides, set `devicesplitcount` in the `devicePlugin.nodeConfiguration.config` JSON instead.
+
+The mapping between `deviceSplitCount` and the maximum number of tasks per GPU:
+
+| deviceSplitCount | Max tasks per GPU | Slice size |
+| ---------------- | ----------------- | ---------- |
+| 10 (default)     | 10                | 0.1        |
+| 20               | 20                | 0.05       |
+| 100              | 100               | 0.01       |
+
+> A very large `deviceSplitCount` increases the number of vGPU entries the device plugin manages per GPU. Choose a value that matches your actual concurrency needs.
+
+## How does HAMi coexist with the NVIDIA official device plugin?
+
+HAMi and the NVIDIA official device plugin both report GPU resources using the same extended resource name, `nvidia.com/gpu`, by default. Running both on the same node causes a resource ownership conflict. To make them coexist, modify HAMi's resource names in your Helm `values.yaml`:
+
+```yaml
+# NVIDIA GPU Parameters
+devices:
+  nvidia:
+    resourceCountName: "hami.io/gpu"
+    resourceMemoryName: "hami.io/gpumem"
+    resourceMemoryPercentageName: "hami.io/gpumem-percentage"
+    resourceCoreName: "hami.io/gpucores"
+    resourcePriorityName: "hami.io/priority"
+```
+
+The resource names must differ from the ones the NVIDIA device plugin uses. Both plugins default to nvidia.com/gpu and its related names, so HAMi needs distinct names. Using hami.io/gpu and its related names is the recommended convention.
+
+After the change, the node advertises both resource names. Workloads can choose which plugin to use by requesting one of the two resource names. Do not request both in the same workload.
+
+```yaml
+# Use NVIDIA official device plugin
+resources:
+  limits:
+    nvidia.com/gpu: 1
+```
+
+```yaml
+# Use HAMi vGPU scheduling
+resources:
+  limits:
+    hami.io/gpu: 1
+```
+
+> Note: A single resource name must be owned by exactly one plugin, and a workload must not request both resource names at the same time.

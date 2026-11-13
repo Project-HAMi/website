@@ -7,7 +7,7 @@ sidebar_label: 验证 HAMi
 
 ## 适用范围与前提条件
 
-本指南假设 HAMi 已经安装完成（例如，通过快速开始部分中的[使用 Helm 部署 HAMi](/docs/get-started/deploy-with-helm) 指南）。
+本指南假设 HAMi 已经安装完成（例如，通过快速开始部分中的[快速部署](/docs/get-started/deploy-with-helm) 指南）。
 
 本文档的目标不是重复安装步骤，而是验证 HAMi 在真实的 Kubernetes 环境中是否正常工作，包括 GPU 访问和 vGPU 行为。
 

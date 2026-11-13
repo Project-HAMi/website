@@ -19,4 +19,20 @@ import LabCardGridAuto from '@site/src/components/labs/LabCardGridAuto';
 
 <LabCardGridAuto />
 
-每个实验都列出了各自的前提条件。实验 3 和 4 直接复用实验 1 搭建的集群，一次开机即可完成全部三个实验；实验 2 可在任意笔记本上运行，无需 GPU。实验 7 在租用的 GPU 虚拟机上自行搭建单节点 k3s 集群，不使用 GPU Operator。实验 8 需要已有的 Volcano GPU 集群，用于验证 Volcano vGPU、Gang 调度和队列级资源限制。实验 9 使用 Kueue 准入控制限制 HAMi vGPU 数量、显存和算力配额。
+每个实验都列出了各自的前提条件。
+
+- **实验 3 和 4** 直接复用实验 1 搭建的集群，一次开机即可完成全部三个实验。
+- **实验 2** 可在任意笔记本上运行，无需 GPU。
+- **实验 7** 在租用的 GPU 虚拟机上自行搭建单节点 k3s 集群，不使用 GPU Operator。
+- **实验 8** 需要已有的 Volcano GPU 集群，用于验证 Volcano vGPU、Gang 调度和队列级资源限制。
+- **实验 9** 使用 Kueue 准入控制限制 HAMi vGPU 数量、显存和算力配额。
+- **实验 11** 将从头搭建完整的 KServe Standard 推理环境，并通过 HAMi 原生 DRA Claim 让两个 vLLM 副本共享一张 GPU。
+- **实验 12** 在 GKE 1.35/COS/CDI 上部署 KAI Scheduler 与 HAMi-core，并通过 CUDA 分配验证显存上限。
+- **实验 13** 在昇腾 310P3 ARM 服务器上源码编译 Volcano 与 ascend-device-plugin，验证 hami-vnpu-core 软切分、binpack 共卡与容器级监控指标。
+- **实验 14** 在挂载四块 T4 的 GKE 节点上安装 HAMi v2.10.0，并通过分配注解与调度器日志观察可组合的 `gpu-scheduler-policy` 策略链（`spread`、`binpack`、`mutex`、`mutex,binpack`）。
+- **实验 16** 在配备 7 张 RTX PRO 6000 的服务器上安装 HAMi v2.10.0，并验证完整的 Dynamic MIG 生命周期：按 Pod 创建 MIG、混合规格、选择性回收、device plugin 重启恢复以及跨 GPU 调度。
+- **实验 17** 将模型打包为 KitOps ModelKit，通过 initContainer 从 Jozu Hub 拉取，并使用 SGLang（可选 vLLM）在 HAMi GPU 共享资源上提供服务。
+- **实验 18** 在两张共享 GPU 上同时运行吵闹邻居与安静租户负载，验证 HAMi 隔离能覆盖与不能覆盖的边界，并使用 Linkerd 让敏感流量绕开竞争。
+- **实验 19** 在 310P3 节点上安装 HAMi 2.10.0 与昇腾设备插件，验证模板硬切（`vir01`、`vir02`、`vir04`）、多 Pod 共卡、容量耗尽、整卡互斥和分配指标。
+- **实验 20** 构建本地 QEMU/KVM GPU 直通 VM，并在真实 NVIDIA GPU 上验证 HAMi 细粒度切分。
+- **实验 21** 在昇腾 310P3 节点上安装 HAMi DRA 0.2.3 与 Ascend DRA Driver，验证请求到 ResourceClaim 的转换、双 Pod NPU 共享、显存配额隔离与调度器容量记账。

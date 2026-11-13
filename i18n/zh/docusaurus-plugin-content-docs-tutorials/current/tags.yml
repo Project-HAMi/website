@@ -1,6 +1,9 @@
 "DRA":
   label: "DRA"
   permalink: "/dra"
+"ascend":
+  label: "Ascend"
+  permalink: "/ascend"
 "GPU 分区":
   label: "GPU 分区"
   permalink: "/gpu-partitioning"
@@ -10,18 +13,45 @@
 "gang-scheduling":
   label: "gang-scheduling"
   permalink: "/gang-scheduling"
+"gke":
+  label: "GKE"
+  permalink: "/gke"
+"gpu-sharing":
+  label: "GPU 共享"
+  permalink: "/gpu-sharing"
+"hard-slicing":
+  label: "硬切分"
+  permalink: "/hard-slicing"
+"gpu-passthrough":
+  label: "GPU 直通"
+  permalink: "/gpu-passthrough"
 "hami":
   label: "hami"
   permalink: "/hami"
+"hami-core":
+  label: "HAMi-core"
+  permalink: "/hami-core"
 "inference":
   label: "inference"
   permalink: "/inference"
 "k3s":
   label: "k3s"
   permalink: "/k-3-s"
+"kai-scheduler":
+  label: "KAI Scheduler"
+  permalink: "/kai-scheduler"
 "kueue":
   label: "Kueue"
   permalink: "/kueue"
+"kserve":
+  label: "KServe"
+  permalink: "/kserve"
+"kitops":
+  label: "KitOps"
+  permalink: "/kitops"
+"modelkit":
+  label: "ModelKit"
+  permalink: "/modelkit"
 "nvidia":
   label: "nvidia"
   permalink: "/nvidia"
@@ -34,6 +64,18 @@
 "quota":
   label: "配额"
   permalink: "/quota"
+"scheduler-internals":
+  label: "scheduler-internals"
+  permalink: "/scheduler-internals"
+"sglang":
+  label: "SGLang"
+  permalink: "/sglang"
+"topology":
+  label: "topology"
+  permalink: "/topology"
+"vnpu":
+  label: "vNPU"
+  permalink: "/vnpu"
 "vgpu":
   label: "vgpu"
   permalink: "/vgpu"
@@ -43,13 +85,19 @@
 "volcano":
   label: "volcano"
   permalink: "/volcano"
+"cuda":
+  label: "CUDA"
+  permalink: "/cuda"
+"fractional-gpu":
+  label: "GPU 切分"
+  permalink: "/fractional-gpu"
 "安装":
   label: "安装"
   permalink: "/installation"
 "实验性":
   label: "实验性"
   permalink: "/experimental"
-"本地安装":
+"local-setup":
   label: "本地安装"
   permalink: "/local-setup"
 "模拟":
@@ -61,6 +109,12 @@
 "资源共享":
   label: "资源共享"
   permalink: "/resource-sharing"
+"soft-slicing":
+  label: "软切分"
+  permalink: "/soft-slicing"
 "隔离":
   label: "隔离"
   permalink: "/isolation"
+"service-mesh":
+  label: "服务网格"
+  permalink: "/service-mesh"

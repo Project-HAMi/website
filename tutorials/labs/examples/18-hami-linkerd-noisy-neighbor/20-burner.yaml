@@ -1,0 +1,72 @@
+# noisy neighbor, burner on GPU-A, burner-b on GPU-B as the control group
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: burner-app
+  namespace: lab10
+data:
+  burn.py: |
+    import torch
+    a = torch.randn(8192, 8192, device="cuda", dtype=torch.float16)
+    while True:
+        a = (a @ a) * 1e-4
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: burner
+  namespace: lab10
+spec:
+  replicas: 0
+  selector:
+    matchLabels: { app: burner }
+  template:
+    metadata:
+      labels: { app: burner }
+      annotations:
+        linkerd.io/inject: disabled
+        nvidia.com/use-gpuuuid: "GPU-7023a4c2-4128-840d-2b86-ab87d8bf7f47"
+    spec:
+      containers:
+        - name: burner
+          image: pytorch/pytorch:2.14.0-cuda12.6-cudnn9-runtime
+          command: ["python", "/app/burn.py"]
+          volumeMounts: [{ name: app, mountPath: /app }]
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+              nvidia.com/gpumem: 4000
+              nvidia.com/gpucores: 50
+      volumes:
+        - name: app
+          configMap: { name: burner-app }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: burner-b
+  namespace: lab10
+spec:
+  replicas: 0
+  selector:
+    matchLabels: { app: burner-b }
+  template:
+    metadata:
+      labels: { app: burner-b }
+      annotations:
+        linkerd.io/inject: disabled
+        nvidia.com/use-gpuuuid: "GPU-4dc50575-f241-9f14-1e6e-ecb4a93c3299"
+    spec:
+      containers:
+        - name: burner-b
+          image: pytorch/pytorch:2.14.0-cuda12.6-cudnn9-runtime
+          command: ["python", "/app/burn.py"]
+          volumeMounts: [{ name: app, mountPath: /app }]
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+              nvidia.com/gpumem: 4000
+              nvidia.com/gpucores: 50
+      volumes:
+        - name: app
+          configMap: { name: burner-app }

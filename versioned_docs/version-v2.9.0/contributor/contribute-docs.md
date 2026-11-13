@@ -149,7 +149,7 @@ Store images under `/static/img/docs/` using language-aware subdirectories:
 Reference images with absolute paths from the site root:
 
 ```md
-![Architecture diagram](/img/docs/common/architecture/hami-arch.png) ![WebUI Overview](/img/docs/en/userguide/webui-overview.png)
+![Architecture diagram](/img/docs/common/developers/hami-core-design/hami-arch.png) ![WebUI Overview](/img/docs/en/userguide/webui-overview.png)
 ```
 
 Use descriptive alt text. Do not link to external images - host them in the repository.

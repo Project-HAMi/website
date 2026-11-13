@@ -54,7 +54,7 @@ data:
 一旦你在*所有*希望使用的 GPU 节点上启用了此选项，你就可以通过部署以下 Daemonset 在集群中启用 GPU 支持：
 
 ```bash
-kubectl create -f https://raw.githubusercontent.com/Project-HAMi/volcano-vgpu-device-plugin/main/volcano-vgpu-device-plugin.yml
+kubectl create -f https://raw.githubusercontent.com/Project-HAMi/volcano-vgpu-device-plugin/main/deployments/static/volcano-vgpu-device-plugin.yml
 ```
 
 ### 验证环境是否准备好

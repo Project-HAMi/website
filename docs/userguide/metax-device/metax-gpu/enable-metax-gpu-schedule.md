@@ -38,7 +38,7 @@ When a user job requests a specific number of `metax-tech.com/gpu` resources, Ku
 
 - Deploy MetaX GPU Extensions on metax nodes (Please consult your device provider to acquire its package and document)
 
-- Deploy HAMi using the [online installation guide](../../../installation/online-installation.md)
+- Follow [Online installation](../../../installation/online-installation.md). Configure HAMi through `devices.metax.*` in the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md); keep resource names consistent with the separately installed vendor plugin.
 
 ## Running MetaX jobs
 

@@ -12,7 +12,6 @@ kind: Pod
 metadata:
   name: amd-vgpu-example
 spec:
-  schedulerName: hami-scheduler
   restartPolicy: Never
   containers:
     - name: pytorch

@@ -53,7 +53,7 @@ data:
 Once you have enabled this option on _all_ the GPU nodes you wish to use, you can then enable GPU support in your cluster by deploying the following DaemonSet:
 
 ```shell
-kubectl create -f https://raw.githubusercontent.com/Project-HAMi/volcano-vgpu-device-plugin/main/volcano-vgpu-device-plugin.yml
+kubectl create -f https://raw.githubusercontent.com/Project-HAMi/volcano-vgpu-device-plugin/main/deployments/static/volcano-vgpu-device-plugin.yml
 ```
 
 ### Verify environment is ready

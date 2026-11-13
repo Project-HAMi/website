@@ -1,5 +1,6 @@
 ---
 title: 验证 HAMi 部署与 vGPU 行为
+description: 用原生 GPU Pod 验证 NVIDIA 设备访问，检查 HAMi 组件，再用 vGPU Pod 验证显存限制，逐步定位部署故障。
 sidebar_label: 验证 HAMi
 ---
 
@@ -7,7 +8,7 @@ sidebar_label: 验证 HAMi
 
 ## 适用范围与前提条件
 
-本指南假设 HAMi 已经安装完成（例如，通过快速开始部分中的[使用 Helm 部署 HAMi](/docs/get-started/deploy-with-helm) 指南）。
+本指南假设 HAMi 已经安装完成（例如，通过快速开始部分中的[快速部署](/docs/get-started/deploy-with-helm) 指南）。
 
 本文档的目标不是重复安装步骤，而是验证 HAMi 在真实的 Kubernetes 环境中是否正常工作，包括 GPU 访问和 vGPU 行为。
 
@@ -77,7 +78,7 @@ EOF
 ### 2. 验证执行结果
 
 ```bash
-kubectl wait --for=condition=Succeeded pod/cuda-test --timeout=60s
+kubectl wait --for=jsonpath='{.status.phase}'=Succeeded pod/cuda-test --timeout=60s
 kubectl logs cuda-test
 ```
 

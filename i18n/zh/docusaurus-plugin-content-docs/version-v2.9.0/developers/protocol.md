@@ -5,33 +5,66 @@ translated: true
 
 ## 设备注册
 
-为了进行更准确的调度，HAMi 调度器需要在设备注册时感知设备的规格，包括 UUID、显存、计算能力、型号、numa 数量等。
+<img src="/img/docs/common/developers/protocol/protocol-register.png" width="600px" alt="HAMi 设备注册协议图，显示节点注解过程" />
 
-然而，device-plugin 设备注册 API 并未提供相应的参数获取，因此 HAMi-device-plugin 在注册时将这些补充信息存储在节点的注释中，以供调度器读取，如下图所示：
+HAMi 需要了解集群中每个 AI 设备的规格信息以进行准确调度。在设备注册期间，device-plugin 需要每隔 30 秒将每个设备的规格持续更新（Patch）到节点注解（Node Annotation）中，格式如下：
 
-<img src="/img/docs/common/developers/protocol/device-registration.png" width="600px" alt="HAMi 设备注册协议图，显示节点注解过程" />
-
-这里需要使用两个注释，其中一个是时间戳，如果超过指定的阈值，则认为对应节点上的设备无效。另一个是设备注册信息。一个具有 2 个 32G-V100 GPU 的节点可以注册如下所示：
-
-```yaml
-hami.io/node-handshake: Requesting_2024.05.14 07:07:33
-hami.io/node-nvidia-register: "GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec,10,32768,100,NVIDIA-Tesla V100-PCIE-32GB,0,true:GPU-0fc3eda5-e98b-a25b-5b0d-cf5c855d1448,10,32768,100,NVIDIA-Tesla V100-PCIE-32GB,0,true:"
+```text
+hami.io/node-handshake-{device-type}: Reported_{device_node_current_timestamp}
+hami.io/node-{device-type}-register: {Device 1}:{Device2}:...:{Device N}
 ```
 
-### 调度决策
+大多数 device-plugin 以如下逗号分隔的格式注册每个设备：
 
-kube-scheduler 在 `bind` 过程中调用 device-plugin 挂载设备，但仅向 device-plugin 提供设备的 `UUID`。因此，在设备共享的场景中，device-plugin 无法获取任务请求的相应设备规格，如 `设备显存` 和 `计算核心`。
+```text
+{Device UUID},{device split count},{device memory limit},{device core limit},{device type},{device numa},{healthy}
+```
 
-因此，有必要开发一个协议，使调度器层与 device-plugin 进行通信以传递任务调度信息。调度器通过将调度结果补丁到 Pod 的注释中并在 device-plugin 中读取它来传递此信息，如下图所示：
+NVIDIA device-plugin 则注册为 JSON 数组，每个设备对应一个对象：
 
-<img src="/img/docs/common/developers/protocol/task-dispatch.png" width="600px" alt="HAMi 任务分发流程图" />
+```text
+{"id":"GPU-...","index":1,"count":10,"devmem":32768,"devcore":100,"type":"NVIDIA-Tesla V100-PCIE-32GB","numa":1,"mode":"hami-core","health":true}
+```
 
-在此过程中，需要设置 3 个注释，分别是 `时间戳`、`待分配设备` 和 `已分配设备`。调度器创建时，`待分配设备` 和 `已分配设备` 的内容相同，但 device-plugin 将根据 `待分配设备` 的内容确定当前设备分配情况，当分配成功时，相应设备将从注释中移除，因此当任务成功运行时，`待分配设备` 的内容将为空。
+字段为零值时会被省略，因此第一个设备没有 `index` 字段，位于 NUMA 节点 0 的设备也不会出现 `numa` 字段。
 
-一个请求 3000M 设备显存的 GPU 任务的示例将生成如下的相应注释：
+示例如下。注意 NVIDIA 使用的是不带设备类型后缀的 `hami.io/node-handshake`：
+
+```text
+hami.io/node-handshake: Requesting_2024-01-23 04:30:04
+hami.io/node-handshake-mlu: Requesting_2024.01.10 04:06:57
+hami.io/node-mlu-register: MLU-45013011-2257-0000-0000-000000000000,10,23308,0,MLU-MLU370-X4,0,false:MLU-54043011-2257-0000-0000-000000000000,10,23308,0,MLU-MLU370-X4,0,false:
+hami.io/node-nvidia-register: [{"id":"GPU-00552014-5c87-89ac-b1a6-7b53aa24b0ec","count":10,"devmem":32768,"devcore":100,"type":"NVIDIA-Tesla V100-PCIE-32GB","numa":1,"mode":"hami-core","health":true},{"id":"GPU-0fc3eda5-e98b-a25b-5b0d-cf5c855d1448","index":1,"count":10,"devmem":32768,"devcore":100,"type":"NVIDIA-Tesla V100-PCIE-32GB","numa":1,"mode":"hami-core","health":true}]
+```
+
+在此示例中，该节点包含两种不同的 AI 设备：2 张 NVIDIA-V100 GPU 和 2 张寒武纪 (Cambricon) 370-X4 MLU。
+
+设备节点可能因硬件或网络故障而变得不可用。如果节点在过去 60 秒内未注册，调度器会将其标记为“不可用”（unavailable）。
+
+由于调度器节点与“设备”节点上的系统时钟可能未准确对齐，调度器节点每 15 秒会 Patch 以下设备节点注解：
+
+```text
+hami.io/node-handshake-{device-type}: Requesting_{scheduler_node_current_timestamp}
+```
+
+## 任务分发与调度决策
+
+在 `bind` 过程中，`kube-scheduler` 将 Pod 绑定到节点。在容器创建期间，`kubelet` 调用 device-plugin 的 Allocate 方法并将其响应传递给容器运行时。在 GPU 共享场景下，device-plugin 无法原生获取工作负载请求的设备规格（例如 GPU 显存和计算核心限制）。
+
+因此，HAMi 使用一种协议让调度器将任务分配元数据传递给 device-plugin。调度器通过向 Pod 写入分配注解（Annotation）来传递这些信息，device-plugin 在容器启动时读取这些注解，如下图所示：
+
+<img src="/img/docs/common/developers/protocol/task-dispatch.png" width="600px" alt="HAMi 任务分发协议图，显示调度器与 device-plugin 的交互过程" />
+
+在此过程中，主要涉及以下注解：
+
+- `hami.io/bind-time`：调度决策的时间戳。
+- `hami.io/vgpu-devices-allocated`：调度器分配的设备及其规格。
+- `hami.io/vgpu-devices-to-allocate`：待分配的设备。调度器创建 Pod 注解时，`hami.io/vgpu-devices-to-allocate` 包含目标设备。device-plugin 根据此注解确定分配方案，分配完成后移除已分配的设备。任务成功运行后，`hami.io/vgpu-devices-to-allocate` 序列化为 `;`（表示空列表），而不是空字符串或省略该注解。
+
+以下是一个请求 3000 MiB 设备显存的 GPU 任务在 Pod 上生成的注解示例：
 
 ```yaml
-hami.io/bind-time: 1716199325
+hami.io/bind-time: "1716199325"
 hami.io/vgpu-devices-allocated: GPU-0fc3eda5-e98b-a25b-5b0d-cf5c855d1448,NVIDIA,3000,0:;
 hami.io/vgpu-devices-to-allocate: ;
 ```

@@ -70,11 +70,11 @@ This page catalogs every diagram across the repository: `docs/`, `blog/`, `i18n/
 
 | Image path | Format | Referenced in | Source file | Status | Control/data plane |
 | --- | --- | --- | --- | --- | --- |
-| `static/img/docs/common/developers/protocol/protocol-register.png` | PNG | `docs/developers/protocol.md` (EN only) | none | unknown | not separated |
-| `static/img/docs/common/developers/protocol/device-registration.png` | PNG | `i18n/zh/.../developers/protocol.md` (ZH only) | none | unknown | not separated |
-| `static/img/docs/common/developers/protocol/task-dispatch.png` | PNG | `i18n/zh/.../developers/protocol.md` (ZH only) | none | unknown | not separated |
+| `static/img/docs/common/developers/protocol/protocol-register.png` | PNG | `docs/developers/protocol.md` (EN), `i18n/zh/.../developers/protocol.md` (ZH) | none | unknown | not separated |
+| `static/img/docs/common/developers/protocol/task-dispatch.png` | PNG | historical v1.3.0 and v2.4.1–v2.5.1 snapshots; `docs/developers/protocol.md` (EN), `i18n/zh/.../developers/protocol.md` (ZH) | none | unknown | not separated |
+| `static/img/docs/common/developers/protocol/device-registration.png` | PNG | historical v1.3.0 and v2.4.1–v2.5.1 protocol snapshots | none | unknown | not separated |
 
-**Inconsistency found:** The EN `docs/developers/protocol.md` references only `protocol-register.png`. The ZH version references `device-registration.png` and `task-dispatch.png` - two different files that do not appear in the EN doc. The EN doc appears to be missing the task dispatch diagram. This inconsistency must be resolved before redrawing.
+**Note:** Current/v2.9.0 English and Chinese protocol pages use `protocol-register.png` and `task-dispatch.png`; historical snapshots retain the older `device-registration.png` and legacy `task-dispatch.png` references.
 
 ---
 
@@ -149,7 +149,7 @@ This page catalogs every diagram across the repository: `docs/`, `blog/`, `i18n/
 
 **Notes:**
 
-- Both mindmaps carry the title "HAMi VGPU mind map". The "VGPU" scope is narrower than HAMi's current support surface, which now covers Cambricon MLU, Hygon DCU, Kunlunxin XPU, MetaX GPU, Iluvatar Corex, and Ascend NPU in addition to NVIDIA VGPU.
+- Both mindmaps carry the title "HAMi VGPU mind map". The "VGPU" scope is narrower than HAMi's current support surface, which now covers Cambricon MLU, Hygon DCU, Kunlunxin XPU, MetaX GPU, Iluvatar Corex, and Huawei Ascend NPU in addition to NVIDIA VGPU.
 - Neither mindmap has an editable source file. Updating them requires a full redraw.
 - Full content accuracy cannot be assessed from this inventory without visual inspection of the PNG files. A maintainer familiar with current HAMi architecture must review before any decision to update or remove.
 - Tracked for redesign in issue [#414](https://github.com/Project-HAMi/website/issues/414).
@@ -241,13 +241,9 @@ The directory `static/img/docs/common/architecture/` does not exist. The file at
 
 This is a broken link that will cause a missing image in the rendered page.
 
-### Protocol diagram inconsistency (EN vs. ZH)
+### Protocol diagram inconsistency (EN vs. ZH) — resolved
 
-The EN `docs/developers/protocol.md` references only `protocol-register.png` (device registration).
-
-The ZH `i18n/zh/.../developers/protocol.md` references both `device-registration.png` and `task-dispatch.png`.
-
-The EN page is missing the task dispatch diagram. This must be reconciled before either page is considered complete.
+Current/v2.9.0 English and Chinese protocol pages use `protocol-register.png` and `task-dispatch.png`; historical snapshots retain the older `device-registration.png` and legacy `task-dispatch.png` references.
 
 ---
 
@@ -265,9 +261,9 @@ Priority list for the redraw work in [#421](https://github.com/Project-HAMi/webs
 | Medium | `static/img/docs/common/developers/scheduling/scheduler-policy-story.png` | PNG | No source |
 | Medium | `static/img/docs/common/developers/scheduling/node-scheduler-policy-demo.png` | PNG | No source |
 | Medium | `static/img/docs/common/developers/scheduling/gpu-scheduler-policy-demo.png` | PNG | No source |
-| Medium | `static/img/docs/common/developers/protocol/protocol-register.png` | PNG | No source; EN/ZH inconsistency must be resolved first |
-| Medium | `static/img/docs/common/developers/protocol/device-registration.png` | PNG | No source; ZH-only |
-| Medium | `static/img/docs/common/developers/protocol/task-dispatch.png` | PNG | No source; ZH-only, missing from EN |
+| Medium | `static/img/docs/common/developers/protocol/protocol-register.png` | PNG | No source; shared by EN and ZH |
+| Medium | `static/img/docs/common/developers/protocol/task-dispatch.png` | PNG | No source; historical EN/ZH, shared by current EN and ZH |
+| Medium | `static/img/docs/common/developers/protocol/device-registration.png` | PNG | No source; retained by historical protocol snapshots |
 | Medium | `static/img/docs/en/dynamic-mig/hami-dynamic-mig-structure.png` | PNG | No source |
 | Medium | `static/img/docs/en/dynamic-mig/hami-dynamic-mig-procedure.png` | PNG | No source |
 | Low | `static/img/docs/common/userguide/metax-device/metax-gpu/metax-topology.jpg` | JPG | Device-specific, no source |

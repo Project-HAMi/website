@@ -1,23 +1,28 @@
 import React from "react";
 import Layout from "@theme/Layout";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
-import useBaseUrl from "@docusaurus/useBaseUrl";
+import useBaseUrl, { useBaseUrlUtils } from "@docusaurus/useBaseUrl";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBilibili,
   faDiscord,
   faGithub,
+  faLinkedin,
   faSlack,
   faYoutube,
 } from "@fortawesome/free-brands-svg-icons";
 import {
   faBookOpen,
   faCalendarDays,
+  faClipboardList,
   faCodeBranch,
   faFileLines,
+  faGlobe,
+  faLocationDot,
   faUsers,
   faVideo,
 } from "@fortawesome/free-solid-svg-icons";
+import ambassadorRoster from "../data/ambassadors.json";
 import styles from "./community.module.css";
 
 const maintainers = [
@@ -58,6 +63,12 @@ const maintainers = [
   },
 ];
 
+// This local roster adds presentation fields that are not in the canonical
+// list. Keep its members and term metadata in sync with ambassadorRoster.source.
+const ambassadors = ambassadorRoster.ambassadors;
+const ambassadorProgramUrl =
+  "https://github.com/Project-HAMi/community/blob/main/ambassador-program.md";
+
 function getGitHubUsername(profileUrl) {
   return profileUrl.replace("https://github.com/", "").replace(/\/$/, "");
 }
@@ -69,9 +80,14 @@ function pickLocalized(locale, textObj) {
 export default function CommunityPage() {
   const { i18n } = useDocusaurusContext();
   const isZh = i18n.currentLocale === "zh";
+  // The survey form is region-specific: Feishu for zh, Google Forms for everyone else.
+  const surveyUrl = isZh
+    ? "https://dynamia-ai.feishu.cn/share/base/form/shrcnI1cfFqgx3jWQ76U3HUhwhQ"
+    : "https://forms.gle/CTXZmG1WUgE9vPBm8";
   const wechatOfficialQr = useBaseUrl("img/community/wechat-official-account-qr.jpg");
   const wechatVideoQr = useBaseUrl("img/community/wechat-video-channel-qr.jpg");
   const wechatAssistantQr = useBaseUrl("img/community/wechat-assistant-qr.jpg");
+  const { withBaseUrl } = useBaseUrlUtils();
   const cardConfig = [
     {
       key: "join",
@@ -96,6 +112,12 @@ export default function CommunityPage() {
           label: { en: "Mailing list", zh: "邮件列表" },
           href: "https://groups.google.com/forum/#!forum/hami-project",
           icon: faFileLines,
+        },
+        {
+          label: { en: "Community Survey", zh: "社区问卷" },
+          href: surveyUrl,
+          icon: faClipboardList,
+          external: true,
         },
       ],
     },
@@ -207,33 +229,43 @@ export default function CommunityPage() {
                 ? "参与 HAMi 开源社区，通过讨论、会议和贡献推动异构 AI 基础设施的发展。"
                 : "Join the HAMi open-source community and advance heterogeneous AI infrastructure through discussions, meetings, and contributions."}
             </p>
+            <div className={styles.heroActions}>
+              <a
+                className="button button--primary"
+                href={surveyUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {isZh ? "填写社区问卷" : "Take the Community Survey"}
+              </a>
+            </div>
           </div>
         </section>
 
         <section className={styles.section}>
           <div className="container">
             <div className={styles.governanceSection}>
-              <h2 className={styles.maintainersTitle}>{isZh ? "维护者" : "Maintainers"}</h2>
+              <h2 className={styles.peopleTitle}>{isZh ? "维护者" : "Maintainers"}</h2>
               <p className={styles.governanceIntro}>
                 {isZh
                   ? "HAMi 由以下维护者共同推进，负责项目方向、评审与版本发布。"
                   : "HAMi is maintained by the people below, who help guide project direction, reviews, and releases."}
               </p>
 
-              <div className={styles.maintainersGrid}>
+              <div className={styles.peopleGrid}>
                 {maintainers.map((maintainer) => {
                   const username = getGitHubUsername(maintainer.github);
                   return (
-                    <article key={maintainer.github} className={styles.maintainerCard}>
-                      <div className={styles.maintainerTop}>
+                    <article key={maintainer.github} className={styles.personCard}>
+                      <div className={styles.personTop}>
                         <img
-                          className={styles.maintainerAvatar}
+                          className={styles.personAvatar}
                           src={`${maintainer.github}.png?size=160`}
-                          alt={`${maintainer.name} GitHub avatar`}
+                          alt=""
                           loading="lazy"
                         />
-                        <div className={styles.maintainerBody}>
-                          <h3 className={styles.maintainerName}>{maintainer.name}</h3>
+                        <div className={styles.personBody}>
+                          <h3 className={styles.personName}>{maintainer.name}</h3>
                           <p className={styles.maintainerMeta}>
                             {maintainer.employerUrl ? (
                               <a
@@ -266,6 +298,104 @@ export default function CommunityPage() {
                               <span>@{username}</span>
                             </a>
                           </p>
+                        </div>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className={styles.section}>
+          <div className="container">
+            <div className={styles.governanceSection}>
+              <h2 className={styles.peopleTitle}>{isZh ? "大使" : "Ambassadors"}</h2>
+              <p className={styles.governanceIntro}>
+                {isZh
+                  ? `当前 ${ambassadorRoster.term.label} 任期的 HAMi 大使通过内容创作、活动组织和社区支持推广项目。`
+                  : `HAMi Ambassadors in the current ${ambassadorRoster.term.label} term evangelize the project through content, events, and community support.`}
+              </p>
+              <a
+                href={ambassadorProgramUrl}
+                target="_blank"
+                rel="noreferrer"
+                className={styles.programLink}
+              >
+                {isZh
+                  ? "了解大使计划与申请方式 →"
+                  : "Learn about the Ambassador Program and how to apply →"}
+              </a>
+              <div className={styles.peopleGrid}>
+                {ambassadors.map((ambassador) => {
+                  const username = getGitHubUsername(ambassador.github);
+                  const displayName =
+                    isZh && ambassador.nameZh ? ambassador.nameZh : ambassador.name;
+                  const displayLocation =
+                    isZh && ambassador.locationZh ? ambassador.locationZh : ambassador.location;
+                  return (
+                    <article key={ambassador.github} className={styles.personCard}>
+                      <div className={`${styles.personTop} ${styles.ambassadorTop}`}>
+                        <img
+                          className={`${styles.personAvatar} ${styles.ambassadorAvatar}`}
+                          src={withBaseUrl(ambassador.avatar)}
+                          alt=""
+                          loading="lazy"
+                        />
+                        <div className={styles.personBody}>
+                          <h3 className={styles.personName}>{displayName}</h3>
+                          <div className={styles.ambassadorMetaRow}>
+                            {displayLocation && (
+                              <span className={styles.ambassadorLocation}>
+                                <FontAwesomeIcon icon={faLocationDot} aria-hidden="true" />
+                                <span>{displayLocation}</span>
+                              </span>
+                            )}
+                            <div className={styles.ambassadorLinks}>
+                              <a
+                                href={ambassador.github}
+                                target="_blank"
+                                rel="noreferrer"
+                                className={`${styles.ambassadorLink} ${styles.ambassadorGithubLink}`}
+                              >
+                                <FontAwesomeIcon icon={faGithub} aria-hidden="true" />
+                                <span>@{username}</span>
+                              </a>
+                              {ambassador.linkedin && (
+                                <a
+                                  href={ambassador.linkedin}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className={`${styles.ambassadorLink} ${styles.ambassadorIconLink}`}
+                                  aria-label={
+                                    isZh
+                                      ? `${displayName} 的 LinkedIn`
+                                      : `${displayName}'s LinkedIn profile`
+                                  }
+                                  title="LinkedIn"
+                                >
+                                  <FontAwesomeIcon icon={faLinkedin} aria-hidden="true" />
+                                </a>
+                              )}
+                              {ambassador.website && (
+                                <a
+                                  href={ambassador.website}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className={`${styles.ambassadorLink} ${styles.ambassadorIconLink}`}
+                                  aria-label={
+                                    isZh
+                                      ? `${displayName} 的个人主页`
+                                      : `${displayName}'s personal website`
+                                  }
+                                  title={isZh ? "个人主页" : "Website"}
+                                >
+                                  <FontAwesomeIcon icon={faGlobe} aria-hidden="true" />
+                                </a>
+                              )}
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </article>

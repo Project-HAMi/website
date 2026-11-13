@@ -7,7 +7,7 @@ After deploying HAMi, it is essential to verify that the installation is functio
 
 ## Scope and Assumptions
 
-This guide assumes that HAMi is already installed (for example, via the [Deploy HAMi using Helm](/docs/get-started/deploy-with-helm) guide in the Get Started section).
+This guide assumes that HAMi is already installed (for example, via the [Quick Start](/docs/get-started/deploy-with-helm) guide in the Get Started section).
 
 The goal of this document is not to repeat installation steps, but to validate that HAMi is working correctly in a real Kubernetes environment, including GPU access and vGPU behavior.
 

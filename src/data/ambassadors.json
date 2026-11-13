@@ -1,0 +1,57 @@
+{
+  "source": "https://github.com/Project-HAMi/community/blob/main/ambassador-list.md",
+  "lastSyncedAt": "2026-09-03",
+  "term": {
+    "label": "2026–2028",
+    "startsAt": "2026-09-01",
+    "endsAt": "2028-08-31"
+  },
+  "ambassadors": [
+    {
+      "name": "Mesut Oezdil",
+      "github": "https://github.com/mesutoezdil",
+      "avatar": "img/community/ambassadors/mesut-oezdil.jpg",
+      "linkedin": "https://www.linkedin.com/in/mesut-oezdil/",
+      "website": "https://linktr.ee/mesutoezdil",
+      "location": "Stuttgart, Germany",
+      "locationZh": "德国斯图加特"
+    },
+    {
+      "name": "Tianqing Wang",
+      "nameZh": "王天青",
+      "github": "https://github.com/grissomsh",
+      "avatar": "img/community/ambassadors/tianqing-wang.jpg",
+      "linkedin": "https://www.linkedin.com/in/%E5%A4%A9%E9%9D%92-%E7%8E%8B-6104282a/",
+      "location": "Shanghai, China",
+      "locationZh": "中国上海",
+      "website": "https://forceinjection.github.io"
+    },
+    {
+      "name": "Xueduan Li",
+      "nameZh": "李学端",
+      "github": "https://github.com/lixd",
+      "avatar": "img/community/ambassadors/xueduan-li.jpg",
+      "website": "https://www.lixueduan.com/",
+      "location": "Chongqing, China",
+      "locationZh": "中国重庆",
+      "linkedin": "https://www.linkedin.com/in/lixd/"
+    },
+    {
+      "name": "Shivam Kumar",
+      "github": "https://github.com/maishivamhoo123",
+      "avatar": "img/community/ambassadors/shivam-kumar.jpg",
+      "location": "Bihar, India",
+      "locationZh": "印度比哈尔邦",
+      "linkedin": "https://www.linkedin.com/in/shivam-kumar-559417290/"
+    },
+    {
+      "name": "Saiyam Pathak",
+      "github": "https://github.com/saiyam1814",
+      "avatar": "img/community/ambassadors/saiyam-pathak.jpg",
+      "linkedin": "https://www.linkedin.com/in/saiyampathak/",
+      "website": "https://kubesimplify.com/",
+      "location": "Chandigarh, India",
+      "locationZh": "印度昌迪加尔"
+    }
+  ]
+}

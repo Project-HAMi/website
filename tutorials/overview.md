@@ -17,4 +17,22 @@ Background knowledge that the labs build on.
 
 ## Labs
 
-<LabCardGridAuto /> Each lab lists its own prerequisites. Labs 3 and 4 continue from the cluster Lab 1 builds, so a single session covers all three; Lab 2 runs on any laptop with no GPU required. Lab 7 brings up its own single-node k3s cluster on a rented GPU VM, without the GPU Operator. Lab 8 requires an existing Volcano GPU cluster and validates Volcano vGPU, Gang scheduling, and queue-level limits. Lab 9 uses Kueue admission control to enforce HAMi vGPU count, memory, and compute quotas.
+<LabCardGridAuto />
+
+Each lab lists its own prerequisites.
+
+- **Labs 3 and 4** continue from the cluster Lab 1 builds, so a single session covers all three.
+- **Lab 2** runs on any laptop with no GPU required.
+- **Lab 7** brings up its own single-node k3s cluster on a rented GPU VM, without the GPU Operator.
+- **Lab 8** requires an existing Volcano GPU cluster and validates Volcano vGPU, Gang scheduling, and queue-level limits.
+- **Lab 9** uses Kueue admission control to enforce HAMi vGPU count, memory, and compute quotas.
+- **Lab 11** builds a complete KServe Standard inference stack and runs two vLLM replicas on one GPU through native HAMi DRA claims.
+- **Lab 12** deploys KAI Scheduler and HAMi-core on GKE 1.35/COS/CDI and proves the memory ceiling with CUDA allocations.
+- **Lab 13** builds Volcano and the ascend-device-plugin from source on an Ascend 310P3 ARM server and verifies hami-vnpu-core soft slicing, binpack card sharing, and per-container metrics.
+- **Lab 14** installs HAMi v2.10.0 on a four-T4 GKE node and observes the composable `gpu-scheduler-policy` chains (`spread`, `binpack`, `mutex`, `mutex,binpack`) through allocation annotations and scheduler logs.
+- **Lab 16** installs HAMi v2.10.0 on a seven-GPU RTX PRO 6000 server and verifies the complete Dynamic MIG lifecycle: per-Pod placement, mixed profiles, selective reclamation, device-plugin restart recovery, and spillover to a second GPU.
+- **Lab 17** packages a model as a KitOps ModelKit, pulls it from Jozu Hub through an initContainer, and serves it with SGLang and optionally vLLM on HAMi GPU shares.
+- **Lab 18** stages a noisy neighbor next to a quiet tenant on two shared GPUs, proves what HAMi isolation covers and what it does not, and routes around the contention with Linkerd.
+- **Lab 19** installs HAMi 2.10.0 and the Ascend device plugin on a 310P3 node, then verifies template-based hard slicing (`vir01`, `vir02`, and `vir04`), multi-Pod sharing, capacity exhaustion, whole-card exclusion, and allocation metrics.
+- **Lab 20** builds a local QEMU/KVM GPU passthrough VM and validates HAMi fractional allocation on a real NVIDIA GPU.
+- **Lab 21** installs HAMi DRA 0.2.3 and the Ascend DRA driver on an Ascend 310P3 node and verifies the request-to-ResourceClaim conversion, two-Pod NPU sharing, memory quota enforcement, and scheduler capacity accounting.

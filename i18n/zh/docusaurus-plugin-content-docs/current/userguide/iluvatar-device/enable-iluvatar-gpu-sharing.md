@@ -27,45 +27,23 @@ title: 启用天数智芯 GPU 共享
 
   > **注意：** 仅安装 gpu-manager，不要安装 gpu-admission 包。
 
-- 安装 HAMi 时设置 `devices.iluvatar.enabled=true`
-
-```bash
-helm install hami hami-charts/hami --set scheduler.kubeScheduler.image.tag={your kubernetes version} --set devices.iluvatar.enabled=true -n kube-system
-```
-
-**说明：** 当前支持的 GPU 型号及资源名称定义如下（位于 [https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/templates/scheduler/device-configmap.yaml](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/templates/scheduler/device-configmap.yaml)）：
+将以下内容加入 HAMi values 文件，再按[在线安装指南](../../installation/online-installation.md)部署：
 
 ```yaml
-iluvatars:
-  - chipName: MR-V100
-    commonWord: MR-V100
-    resourceCountName: iluvatar.ai/MR-V100-vgpu
-    resourceMemoryName: iluvatar.ai/MR-V100.vMem
-    resourceCoreName: iluvatar.ai/MR-V100.vCore
-  - chipName: MR-V50
-    commonWord: MR-V50
-    resourceCountName: iluvatar.ai/MR-V50-vgpu
-    resourceMemoryName: iluvatar.ai/MR-V50.vMem
-    resourceCoreName: iluvatar.ai/MR-V50.vCore
-  - chipName: BI-V150
-    commonWord: BI-V150
-    resourceCountName: iluvatar.ai/BI-V150-vgpu
-    resourceMemoryName: iluvatar.ai/BI-V150.vMem
-    resourceCoreName: iluvatar.ai/BI-V150.vCore
-  - chipName: BI-V100
-    commonWord: BI-V100
-    resourceCountName: iluvatar.ai/BI-V100-vgpu
-    resourceMemoryName: iluvatar.ai/BI-V100.vMem
-    resourceCoreName: iluvatar.ai/BI-V100.vCore
+devices:
+  iluvatar:
+    enabled: true
 ```
+
+此配置启用天数智芯调度支持；gpu-manager 仍需按上文单独安装。支持的型号和资源名称通过 `devices.iluvatar.configs` 配置；自定义时还需同步修改 `devices.iluvatar.customresources`。这两个列表都会被整体替换。完整参数见 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md)，默认配置见 [values 源码](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/values.yaml)，不要修改生成的全局 ConfigMap。
 
 ## 设备粒度
 
-HAMi 将每块天数智芯 GPU 划分为 100 个资源单位进行分配。当你申请部分 GPU 时，实际上是在申请其中的一定数量单位。
+HAMi 按百分比分配天数智芯 GPU 的计算核心，按固定大小的单位分配设备显存。
 
 ### 显存分配
 
-- `iluvatar.ai/<card-type>.vMem` 的每个单位代表 256MB 显存
+- `iluvatar.ai/<card-type>.vMem` 的每个单位代表 256 MiB 显存
 - 如果未指定显存请求，系统默认使用 100% 可用显存
 - 显存分配通过硬限制机制强制执行，以确保任务不会超出其分配的显存
 
@@ -113,7 +91,7 @@ spec:
 
 :::note
 
-每个 vcuda-memory 单位表示 256MB 显存
+每个 `iluvatar.ai/<card-type>.vMem` 单位表示 256 MiB 显存。请使用纯整数，不要添加 `Mi`、`Gi` 或 `G` 等显存后缀。示例中的 `64` 个单位为每个 GPU 分配 16 GiB 显存。
 
 :::
 

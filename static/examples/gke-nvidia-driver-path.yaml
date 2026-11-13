@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: gke-nvidia-driver-path
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      app: gke-nvidia-driver-path
+  template:
+    metadata:
+      labels:
+        app: gke-nvidia-driver-path
+    spec:
+      nodeSelector:
+        cloud.google.com/gke-os-distribution: ubuntu
+        gpu: "on"
+      tolerations:
+        - operator: Exists
+      containers:
+        - name: prepare
+          image: nvcr.io/nvidia/k8s/container-toolkit:v1.19.1
+          command: ["sh", "-c"]
+          args:
+            - |
+              set -eu
+              until [ -x /gke-driver/bin/nvidia-smi ]; do sleep 2; done
+              if [ ! -e /host-usr-bin/nvidia-smi ] && [ ! -L /host-usr-bin/nvidia-smi ]; then
+                ln -s /home/kubernetes/bin/nvidia/bin/nvidia-smi /host-usr-bin/nvidia-smi
+              fi
+              touch /tmp/ready
+              while :; do sleep 3600; done
+          env:
+            - name: NVIDIA_VISIBLE_DEVICES
+              value: void
+          securityContext:
+            runAsUser: 0
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          readinessProbe:
+            exec:
+              command: ["test", "-f", "/tmp/ready"]
+            initialDelaySeconds: 1
+            periodSeconds: 2
+          volumeMounts:
+            - name: host-usr-bin
+              mountPath: /host-usr-bin
+            - name: gke-driver
+              mountPath: /gke-driver
+              readOnly: true
+      volumes:
+        - name: host-usr-bin
+          hostPath:
+            path: /usr/bin
+            type: Directory
+        - name: gke-driver
+          hostPath:
+            path: /home/kubernetes/bin/nvidia
+            type: Directory

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useCallback, useState } from "react";
 import clsx from "clsx";
 import Layout from "@theme/Layout";
 import Link from "@docusaurus/Link";
-import useBaseUrl from "@docusaurus/useBaseUrl";
+import { useBaseUrlUtils } from "@docusaurus/useBaseUrl";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -25,10 +25,13 @@ import styles from "./styles.module.css";
 import ContributorsList from "../components/contributorsList";
 import LogoWall from "../components/logoWall";
 import BeforeAfterComparison from "../components/BeforeAfterComparison";
+import RuntimeComparison from "../components/RuntimeComparison";
 import adoptersData from "../data/adopters.json";
 import ecosystemData from "../data/ecosystem.json";
+import technicalPartnersData from "../data/technicalPartners";
 import heroStats from "../data/home/heroStats";
 import valueCards from "../data/home/valueCards";
+import vendorDevices from "../data/home/vendorDevices";
 
 const cardIcons = {
   "network-wired": faNetworkWired,
@@ -84,47 +87,6 @@ const heroSchedulerEcosystem = [
   },
 ];
 const heroGpuSlices = ["GPU", "1/2", "1/4", "1/N"];
-const heroDeviceEcosystem = [
-  { key: "nvidia", label: { en: "NVIDIA", zh: "NVIDIA" }, logo: "img/ecosystem/nvidia.svg" },
-  {
-    key: "ascend",
-    label: { en: "Huawei Ascend", zh: "华为昇腾" },
-    logo: "img/contributors/ascend.svg",
-  },
-  {
-    key: "cambricon",
-    label: { en: "Cambricon", zh: "寒武纪" },
-    logo: "img/contributors/cambricon.svg",
-  },
-  { key: "hygon", label: { en: "Hygon", zh: "海光" }, logo: "img/contributors/hygon.png" },
-  { key: "enflame", label: { en: "Enflame", zh: "燧原" }, logo: "img/contributors/enflame.svg" },
-  {
-    key: "iluvatar",
-    label: { en: "Iluvatar", zh: "天数智芯" },
-    logo: "img/contributors/iluvatar.png",
-  },
-  {
-    key: "kunlunxin",
-    label: { en: "Kunlunxin", zh: "昆仑芯" },
-    logo: "img/contributors/kunlunxin.jpg",
-  },
-  {
-    key: "mthreads",
-    label: { en: "Moore Threads", zh: "摩尔线程" },
-    logo: "img/contributors/mthread.png",
-  },
-  { key: "metax", label: { en: "MetaX", zh: "沐曦" }, logo: "img/contributors/metax.png" },
-  {
-    key: "aws-neuron",
-    label: { en: "AWS Neuron", zh: "AWS Neuron" },
-    logo: "img/ecosystem/aws.svg",
-  },
-  {
-    key: "vaststream",
-    label: { en: "Vastai", zh: "瀚博半导体" },
-    logo: "img/ecosystem/vaststream.jpg",
-  },
-];
 const heroDiagramCopy = {
   workloads: {
     en: "AI Workloads",
@@ -175,136 +137,19 @@ const heroDiagramCopy = {
     zh: "显存 / 核心利用趋势",
   },
 };
-const runtimeLanes = [
-  {
-    key: "control",
-    tone: "control",
-    title: { en: "Control Plane", zh: "控制面" },
-    summary: { en: "Decision path", zh: "决策路径" },
-    steps: [
-      {
-        key: "webhook",
-        emphasis: "secondary",
-        label: { en: "MutatingWebhook", zh: "MutatingWebhook" },
-        note: { en: "Admission Entry", zh: "准入入口" },
-      },
-      {
-        key: "scheduler",
-        emphasis: "primary",
-        label: { en: "HAMi Scheduler", zh: "HAMi Scheduler" },
-        note: { en: "Policy / Topology", zh: "策略 / 拓扑" },
-      },
-      {
-        key: "binding",
-        emphasis: "primary",
-        label: { en: "Device Binding Decision", zh: "设备绑定决策" },
-        note: { en: "Target GPU Selected", zh: "完成目标设备选择" },
-      },
-    ],
-  },
-  {
-    key: "data",
-    tone: "data",
-    title: { en: "Data Plane", zh: "数据面" },
-    summary: { en: "Enforcement Path", zh: "执行路径" },
-    steps: [
-      {
-        key: "injection",
-        emphasis: "primary",
-        label: { en: "Device Plugin + CDI Injection", zh: "Device Plugin + CDI 注入" },
-        note: { en: "Device Attached", zh: "完成设备注入" },
-      },
-      {
-        key: "isolation",
-        emphasis: "primary",
-        label: { en: "HAMi Core", zh: "HAMi Core" },
-        note: { en: "Memory / Core Isolation", zh: "显存 / 核心隔离" },
-      },
-      {
-        key: "runtime",
-        emphasis: "secondary",
-        label: { en: "Container Workload", zh: "容器工作负载" },
-        note: { en: "Execution Starts", zh: "开始运行" },
-      },
-    ],
-  },
-];
-const runtimeDiagramCopy = {
-  title: { en: "HAMi Runtime Mechanism", zh: "HAMi 运行时机制" },
-  entryLabel: { en: "Request Entry / Runtime Interface", zh: "请求入口 / 运行时接口" },
-  entryValue: {
-    en: "PodSpec + Device Plugin / DRA + CDI",
-    zh: "PodSpec + Device Plugin / DRA + CDI 运行时接口",
-  },
-};
 const architectureSectionCopy = {
   lead: {
-    en: "From request to isolation, HAMi turns GPU slicing and heterogeneous scheduling into usable Kubernetes runtime paths.",
-    zh: "从请求到隔离执行，HAMi 将 GPU 切分与异构调度组织成可落地的 Kubernetes 运行时链路。",
+    en: "HAMi runs in Device Plugin or DRA mode. Both are used the same way. The difference is who schedules: HAMi, or Kubernetes.",
+    zh: "HAMi 支持 Device Plugin 和 DRA 两种模式，用法相同，区别在于调度：前者由 HAMi 完成，后者交给 Kubernetes。",
   },
 };
-const vendorEcosystem = [
-  {
-    key: "nvidia",
-    name: "NVIDIA",
-    logo: "img/ecosystem/nvidia.svg",
-    href: "https://www.nvidia.com",
-  },
-  { key: "aws", name: "AWS", logo: "img/ecosystem/aws.svg", href: "https://aws.amazon.com" },
-  {
-    key: "ascend",
-    name: "Huawei Ascend",
-    logo: "img/contributors/ascend.svg",
-    href: "https://www.hiascend.com",
-  },
-  {
-    key: "cambricon",
-    name: "Cambricon",
-    logo: "img/contributors/cambricon.svg",
-    href: "https://www.cambricon.com",
-  },
-  {
-    key: "enflame",
-    name: "Enflame",
-    logo: "img/contributors/enflame.svg",
-    href: "https://www.enflame-tech.com",
-  },
-  { key: "hygon", name: "Hygon", logo: "img/contributors/hygon.png", href: "https://www.hygon.cn" },
-  {
-    key: "iluvatar",
-    name: "Iluvatar",
-    logo: "img/contributors/iluvatar.png",
-    href: "https://www.iluvatar.com",
-  },
-  {
-    key: "kunlunxin",
-    name: "Kunlunxin",
-    logo: "img/contributors/kunlunxin.jpg",
-    href: "https://www.kunlunxin.com",
-  },
-  {
-    key: "metax",
-    name: "MetaX",
-    logo: "img/contributors/metax.png",
-    href: "https://www.metax-tech.com",
-  },
-  {
-    key: "mthreads",
-    name: "Moore Threads",
-    logo: "img/contributors/mthread.png",
-    href: "https://www.mthreads.com",
-  },
-  {
-    key: "vaststream",
-    name: "Vastai",
-    logo: "img/ecosystem/vaststream.jpg",
-    href: "https://www.birentech.com",
-  },
-];
 
 const DEVSTATS_URL = "https://hami.devstats.cncf.io/d/18/overall-project-statistics-table?orgId=1";
 const GITHUB_REPO_URL = "https://github.com/Project-HAMi/HAMi";
 const DOCKER_IMAGE_URL = "https://hub.docker.com/r/projecthami/hami";
+// The survey form is region-specific: Feishu for zh, Google Forms for everyone else.
+const SURVEY_URL_EN = "https://forms.gle/CTXZmG1WUgE9vPBm8";
+const SURVEY_URL_ZH = "https://dynamia-ai.feishu.cn/share/base/form/shrcnI1cfFqgx3jWQ76U3HUhwhQ";
 
 function formatCompactNumber(value) {
   if (!Number.isFinite(value)) return "--";
@@ -343,44 +188,17 @@ function pickLocalizedOrRaw(locale, value) {
   return typeof value === "string" ? value : pickLocalized(locale, value);
 }
 
-function RuntimeLaneCard({ lane, locale }) {
-  return (
-    <section className={styles.runtimeLane} data-runtime-part={lane.key}>
-      <header className={styles.runtimeLaneHeader}>
-        <h3>{pickLocalized(locale, lane.title)}</h3>
-        <span className={styles.runtimeLaneKicker}>{pickLocalized(locale, lane.summary)}</span>
-      </header>
-      <div className={styles.runtimeLaneFlow}>
-        {lane.steps.map((step, index) => (
-          <React.Fragment key={step.key}>
-            <article
-              className={clsx(styles.runtimeStepCard, styles[`runtimeStepCard_${step.emphasis}`])}
-            >
-              <span className={styles.runtimeStepLabel}>{pickLocalized(locale, step.label)}</span>
-              <span className={styles.runtimeStepNote}>{pickLocalized(locale, step.note)}</span>
-            </article>
-            {index < lane.steps.length - 1 && (
-              <div className={styles.runtimeArrow} aria-hidden="true">
-                <span className={styles.runtimeArrowLine} />
-              </div>
-            )}
-          </React.Fragment>
-        ))}
-      </div>
-    </section>
-  );
-}
-
 export default function Home() {
   const { i18n } = useDocusaurusContext();
+  const { withBaseUrl } = useBaseUrlUtils();
   const isZh = i18n.currentLocale === "zh";
   const [starsCount, setStarsCount] = useState(3100);
   // Static: Docker Hub's API sends no CORS header, so it cannot be read from the browser.
-  const dockerPulls = 325000;
-  const kubernetesLogo = useBaseUrl("img/kubernetes-logo.svg");
-  const hamiLogo = useBaseUrl("img/hami-graph-color.svg");
-  const hamiHorizontalLogoLight = useBaseUrl("img/hami-horizontal-color-black.svg");
-  const hamiHorizontalLogoDark = useBaseUrl("img/hami-horizontal-color-white.svg");
+  const dockerPulls = 700000;
+  const kubernetesLogo = withBaseUrl("img/kubernetes-logo.svg");
+  const hamiLogo = withBaseUrl("img/hami-graph-color.svg");
+  const hamiHorizontalLogoLight = withBaseUrl("img/hami-horizontal-color-black.svg");
+  const hamiHorizontalLogoDark = withBaseUrl("img/hami-horizontal-color-white.svg");
   const contributorsCount = useCountUp(500);
   const contributorCountries = useCountUp(27);
   const starsCountDisplay = useCountUp(starsCount);
@@ -494,11 +312,14 @@ export default function Home() {
                 <div className={styles.heroActions}>
                   <Link
                     className="button button--primary button--lg"
-                    to={useBaseUrl("/docs/get-started/deploy-with-helm")}
+                    to={withBaseUrl("/docs/get-started/deploy-with-helm")}
                   >
                     {isZh ? "快速开始" : "Quick Start"}
                   </Link>
-                  <Link className="button button--outline button--lg" to={useBaseUrl("/community")}>
+                  <Link
+                    className="button button--outline button--lg"
+                    to={withBaseUrl("/community")}
+                  >
                     {isZh ? "加入社区" : "Join Community"}
                   </Link>
                 </div>
@@ -521,7 +342,7 @@ export default function Home() {
                           <div key={item.key} className={styles.ecoLogoChip}>
                             {item.logo ? (
                               <img
-                                src={useBaseUrl(item.logo)}
+                                src={withBaseUrl(item.logo)}
                                 alt={pickLocalizedOrRaw(i18n.currentLocale, item.label)}
                               />
                             ) : (
@@ -542,7 +363,7 @@ export default function Home() {
                             {heroSchedulerEcosystem.map((item) => (
                               <div key={item.key} className={styles.ecoLogoChip}>
                                 <img
-                                  src={useBaseUrl(item.logo)}
+                                  src={withBaseUrl(item.logo)}
                                   alt={pickLocalizedOrRaw(i18n.currentLocale, item.label)}
                                 />
                               </div>
@@ -624,13 +445,13 @@ export default function Home() {
                         <div className={styles.observabilityLogoRow}>
                           <div className={styles.ecoLogoChip}>
                             <img
-                              src={useBaseUrl("img/ecosystem/prometheus.svg")}
+                              src={withBaseUrl("img/ecosystem/prometheus.svg")}
                               alt="Prometheus"
                             />
                           </div>
                           <div className={styles.ecoLogoChip}>
                             <img
-                              src={useBaseUrl("img/ecosystem/opentelemetry.svg")}
+                              src={withBaseUrl("img/ecosystem/opentelemetry.svg")}
                               alt="OpenTelemetry"
                             />
                           </div>
@@ -646,10 +467,10 @@ export default function Home() {
                         )}
                       </h3>
                       <div className={styles.ecoLogoGrid}>
-                        {heroDeviceEcosystem.map((item) => (
+                        {vendorDevices.map((item) => (
                           <div key={item.key} className={styles.ecoLogoChip}>
                             <img
-                              src={useBaseUrl(item.logo)}
+                              src={withBaseUrl(item.logo)}
                               alt={pickLocalizedOrRaw(i18n.currentLocale, item.label)}
                             />
                           </div>
@@ -672,14 +493,14 @@ export default function Home() {
               <div className={styles.cncfFeatureMedia}>
                 <div className={styles.cncfLogoBox}>
                   <img
-                    src={useBaseUrl("img/cncf-color.svg")}
+                    src={withBaseUrl("img/cncf-color.svg")}
                     alt="CNCF logo"
                     className={styles.cncfFeatureLogoLight}
                   />
                 </div>
                 <div className={styles.cnaiLogoBox}>
                   <img
-                    src={useBaseUrl("img/ecosystem/cnai.svg")}
+                    src={withBaseUrl("img/ecosystem/cnai.svg")}
                     alt="CNAI Landscape logo"
                     className={styles.cnaiLogo}
                   />
@@ -763,53 +584,7 @@ export default function Home() {
               {pickLocalized(i18n.currentLocale, architectureSectionCopy.lead)}
             </p>
 
-            <div className={styles.architectureOverview}>
-              <article
-                ref={addRevealRef}
-                data-reveal-scale="1"
-                className={clsx(styles.runtimeMechanism, styles.reveal)}
-                aria-label={isZh ? "HAMi 运行时机制架构图" : "HAMi runtime architecture diagram"}
-              >
-                <div
-                  className={styles.runtimeDiagramFrame}
-                  role="img"
-                  aria-label={isZh ? "HAMi 运行时机制架构图" : "HAMi runtime architecture diagram"}
-                >
-                  <h3 className={styles.runtimeDiagramTitle}>
-                    {pickLocalized(i18n.currentLocale, runtimeDiagramCopy.title)}
-                  </h3>
-                  <section className={styles.runtimeStage} data-runtime-part="entry">
-                    <span className={styles.runtimeSectionLabel}>
-                      {pickLocalized(i18n.currentLocale, runtimeDiagramCopy.entryLabel)}
-                    </span>
-                    <div className={styles.runtimeStageCard}>
-                      {pickLocalized(i18n.currentLocale, runtimeDiagramCopy.entryValue)}
-                    </div>
-                  </section>
-                  <div className={styles.runtimeStageConnector} aria-hidden="true">
-                    <span className={styles.runtimeConnectorLine} />
-                  </div>
-                  <section className={styles.runtimePipelineSection} data-runtime-part="pipeline">
-                    <div className={styles.runtimeLaneGrid}>
-                      <RuntimeLaneCard lane={runtimeLanes[0]} locale={i18n.currentLocale} />
-                      <RuntimeLaneCard lane={runtimeLanes[1]} locale={i18n.currentLocale} />
-                    </div>
-                  </section>
-                  <section className={styles.runtimeResources} data-runtime-part="resources">
-                    <span className={styles.runtimeResourcesLabel}>
-                      {isZh ? "资源语义" : "Resource Semantics"}
-                    </span>
-                    <div className={styles.runtimeResourcesValue}>
-                      <code>nvidia.com/gpu</code>
-                      <span className={styles.runtimeResourcesDivider}>+</span>
-                      <code>gpumem</code>
-                      <span className={styles.runtimeResourcesSlash}>/</span>
-                      <code>gpucores</code>
-                    </div>
-                  </section>
-                </div>
-              </article>
-            </div>
+            <RuntimeComparison isZh={isZh} />
           </div>
         </section>
 
@@ -852,7 +627,7 @@ export default function Home() {
                 className="support-wrapper"
                 aria-label={isZh ? "HAMi 生态支持" : "HAMi ecosystem wall"}
               >
-                {vendorEcosystem.map((vendor) => (
+                {vendorDevices.map((vendor) => (
                   <li key={vendor.key}>
                     <a
                       href={vendor.href}
@@ -860,7 +635,7 @@ export default function Home() {
                       rel="noopener noreferrer"
                       className="adopter-card-link"
                     >
-                      {vendor.logo && <img src={useBaseUrl(vendor.logo)} alt={vendor.name} />}
+                      {vendor.logo && <img src={withBaseUrl(vendor.logo)} alt={vendor.name} />}
                     </a>
                   </li>
                 ))}
@@ -868,7 +643,7 @@ export default function Home() {
             </div>
             <Link
               className={clsx(styles.inlineLink, styles.supportDocsLink)}
-              to={useBaseUrl("/docs/userguide/device-supported")}
+              to={withBaseUrl("/docs/userguide/device-supported")}
             >
               {isZh ? "查看完整设备支持列表 →" : "View full supported devices list →"}
             </Link>
@@ -906,16 +681,16 @@ export default function Home() {
               </h3>
               <p className={styles.adoptersCtaText}>
                 {isZh
-                  ? "请按照贡献者指南流程提交贵组织信息。"
-                  : "Submit your organization through the contributor guide process."}
+                  ? "填写社区问卷，告诉我们贵组织的使用情况，即可加入采用者列表。"
+                  : "Fill out the community survey to tell us how your organization uses HAMi and join the list."}
               </p>
               <a
                 className={clsx("button", "button--primary", styles.adoptersCtaButton)}
-                href="https://github.com/Project-HAMi/HAMi/issues/4"
+                href={isZh ? SURVEY_URL_ZH : SURVEY_URL_EN}
                 target="_blank"
                 rel="noreferrer"
               >
-                {isZh ? "查看提交说明 →" : "See submission instructions →"}
+                {isZh ? "填写问卷，加入采用者列表 →" : "Fill out the survey to join →"}
               </a>
             </article>
           </div>
@@ -925,6 +700,20 @@ export default function Home() {
           ref={addRevealRef}
           className={clsx(styles.section, styles.sectionAlt, styles.reveal)}
         >
+          <div className="container">
+            <h2 className={styles.sectionTitle}>{isZh ? "技术合作伙伴" : "Technical Partners"}</h2>
+            <p className={styles.sectionLead}>
+              {isZh
+                ? "这些组织为我们提供硬件、资源与顶级支持。这是 HAMi 维护者与这些组织之间的深度技术合作。如果您有意达成这一级别的合作，请联系我们。"
+                : "These organizations provide us with hardware, resources, and top tier support. This is a deep technical partnership between the HAMi maintainers and these organizations. If you are interested in this level of commitment, please contact us."}
+            </p>
+            <div className={styles.supportersWrap}>
+              <ContributorsList items={technicalPartnersData} />
+            </div>
+          </div>
+        </section>
+
+        <section ref={addRevealRef} className={clsx(styles.section, styles.reveal)}>
           <div className="container">
             <h2 className={styles.sectionTitle}>{isZh ? "贡献组织" : "Contributors"}</h2>
             <p className={styles.sectionLead}>
@@ -970,19 +759,19 @@ export default function Home() {
                   <span className={styles.communityMetricIcon} aria-hidden="true">
                     <FontAwesomeIcon icon={faBoxOpen} />
                   </span>
-                  <strong>{isZh ? "镜像下载" : "Docker Pulls"}</strong>
+                  <strong>{isZh ? "累计下载量" : "Total Image Pulls"}</strong>
                   <a
                     className={styles.metricSourceHint}
                     href={DOCKER_IMAGE_URL}
                     target="_blank"
                     rel="noreferrer"
-                    data-source={isZh ? "数据来源：Docker Hub" : "Source: Docker Hub"}
+                    data-source={isZh ? "数据来源：Docker Hub。" : "Source: Docker Hub."}
                     aria-label={isZh ? "查看 Docker 下载数据来源" : "View Docker pulls data source"}
                   >
                     <FontAwesomeIcon icon={faCircleInfo} />
                   </a>
                 </div>
-                <span>{formatCompactNumber(dockerPullsDisplay)}</span>
+                <span>{formatCompactNumber(dockerPullsDisplay)}+</span>
               </article>
               <article className={styles.communityMetricCard}>
                 <div className={styles.communityMetricHead}>
@@ -1032,9 +821,17 @@ export default function Home() {
               >
                 {isZh ? "给 HAMi 点个 Star" : "Star HAMi on GitHub"}
               </a>
-              <Link className={clsx("button", "button--outline")} to={useBaseUrl("/community")}>
+              <Link className={clsx("button", "button--outline")} to={withBaseUrl("/community")}>
                 {isZh ? "加入社区" : "Join Community"}
               </Link>
+              <a
+                className={clsx("button", "button--outline")}
+                href={isZh ? SURVEY_URL_ZH : SURVEY_URL_EN}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {isZh ? "填写社区问卷" : "Community Survey"}
+              </a>
             </div>
           </div>
         </section>

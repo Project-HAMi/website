@@ -2,6 +2,12 @@
 title: Enable dynamic MIG feature
 ---
 
+import SupportedComponents, { Tag } from '@site/src/components/SupportedComponents';
+
+<SupportedComponents>
+  <Tag href="../../get-started/deploy-with-helm.md" type="hami">HAMi</Tag>
+</SupportedComponents>
+
 HAMi now supports dynamic MIG using mig-parted to adjust MIG devices dynamically, including:
 
 - **Dynamic MIG Instance Management**: Users no longer need to operate directly on GPU nodes or use commands like `nvidia-smi -i 0 -mig 1` to manage MIG instances. HAMi-device-plugin will handle this automatically.
@@ -86,7 +92,7 @@ nvidia:
           memory: 24576
           count: 1
 
-    - models: ["A100-SXM4-40GB", "A100-40GB-PCIe", "A100-PCIE-40GB", "A100-SXM4-40GB"]
+    - models: ["A100-SXM4-40GB", "A100-40GB-PCIe", "A100-PCIE-40GB"]
       allowedGeometries:
         - name: 1g.5gb
           memory: 5120

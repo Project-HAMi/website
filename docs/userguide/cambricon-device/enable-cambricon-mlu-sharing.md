@@ -21,7 +21,7 @@ title: Enable Cambricon MLU Sharing
 
 1. **Install HAMi via Helm**
 
-   Follow the instructions under the _Enabling vGPU Support in Kubernetes_ section in the [HAMi README](https://github.com/Project-HAMi/HAMi#enabling-vgpu-support-in-kubernetes).
+   Follow [Online installation](../../installation/online-installation.md). Configure HAMi through `devices.cambricon.*` in the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md); keep resource names consistent with the separately installed vendor plugin.
 
 2. **Enable SMLU mode on each MLU device**
 
@@ -36,7 +36,7 @@ title: Enable Cambricon MLU Sharing
    Get the `cambricon-device-plugin` from your device provider, and configure it with the following parameters:
 
    - `mode=dynamic-smlu`: Enables dynamic SMLU support.
-   - `min-dsmlu-unit=256`: Sets the minimum allocatable memory unit to 256 MB.
+   - `min-dsmlu-unit=256`: Sets the minimum allocatable memory unit to 256 MiB.
 
    Refer to your provider’s documentation for additional details.
 
@@ -84,6 +84,8 @@ spec:
               cambricon.com/mlu.smlu.vmemory: "20"
               cambricon.com/mlu.smlu.vcore: "10"
 ```
+
+## Notes
 
 :::note
 

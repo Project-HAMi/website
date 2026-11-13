@@ -31,45 +31,23 @@ Install only gpu-manager. Do not install the gpu-admission package.
 
 :::
 
-- Set `devices.iluvatar.enabled=true` when installing HAMi
-
-```bash
-helm install hami hami-charts/hami --set scheduler.kubeScheduler.image.tag={your kubernetes version} --set devices.iluvatar.enabled=true -n kube-system
-```
-
-The currently supported GPU models and resource names are defined in [device-configmap.yaml](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/templates/scheduler/device-configmap.yaml):
+Add the following to the HAMi values file and follow [Online installation](../../installation/online-installation.md):
 
 ```yaml
-iluvatars:
-  - chipName: MR-V100
-    commonWord: MR-V100
-    resourceCountName: iluvatar.ai/MR-V100-vgpu
-    resourceMemoryName: iluvatar.ai/MR-V100.vMem
-    resourceCoreName: iluvatar.ai/MR-V100.vCore
-  - chipName: MR-V50
-    commonWord: MR-V50
-    resourceCountName: iluvatar.ai/MR-V50-vgpu
-    resourceMemoryName: iluvatar.ai/MR-V50.vMem
-    resourceCoreName: iluvatar.ai/MR-V50.vCore
-  - chipName: BI-V150
-    commonWord: BI-V150
-    resourceCountName: iluvatar.ai/BI-V150-vgpu
-    resourceMemoryName: iluvatar.ai/BI-V150.vMem
-    resourceCoreName: iluvatar.ai/BI-V150.vCore
-  - chipName: BI-V100
-    commonWord: BI-V100
-    resourceCountName: iluvatar.ai/BI-V100-vgpu
-    resourceMemoryName: iluvatar.ai/BI-V100.vMem
-    resourceCoreName: iluvatar.ai/BI-V100.vCore
+devices:
+  iluvatar:
+    enabled: true
 ```
+
+This enables Iluvatar scheduling; install gpu-manager separately as described above. Supported models and resource names are configured through `devices.iluvatar.configs`. If you customize them, also update `devices.iluvatar.customresources`. Both lists are replaced in full when overridden. See the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md) and [complete defaults](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/values.yaml); do not edit the generated global ConfigMap.
 
 ## Device Granularity
 
-HAMi divides each Iluvatar GPU into 100 units for resource allocation. Requesting a portion of a GPU corresponds to requesting a specific number of these units.
+HAMi allocates Iluvatar GPU compute cores in percentage points and device memory in fixed-size units.
 
 ### Memory Allocation
 
-- Each unit of `iluvatar.ai/<card-type>.vMem` represents 256MB of device memory
+- Each unit of `iluvatar.ai/<card-type>.vMem` represents 256 MiB of device memory
 - If no memory request is specified, the system defaults to using 100% of the available memory
 - Memory allocation is enforced with hard limits to ensure tasks do not exceed their allocated memory
 
@@ -117,7 +95,7 @@ spec:
 
 :::note
 
-Each unit of `iluvatar.ai/<card-type>.vMem` represents 256 MB of device memory.
+Each unit of `iluvatar.ai/<card-type>.vMem` represents 256 MiB of device memory. Use a plain integer without memory suffixes such as `Mi`, `Gi`, or `G`. In the example, `64` units allocate 16 GiB per GPU.
 
 :::
 

@@ -15,8 +15,10 @@ function LinkLabel({ label }) {
   );
 }
 
+/** Preserve historical vendor-sidebar anchors when rendering links. */
 export default function DocSidebarItemLink({ item, onItemClick, activePath, level, ...props }) {
-  const { href, label, className, autoAddBaseUrl, docId } = item;
+  const { href, label, className, autoAddBaseUrl, docId, customProps } = item;
+  const to = customProps?.anchor ? `${href}#${customProps.anchor}` : href;
   const isActive = isActiveSidebarItem(item, activePath);
   const isInternalLink = isInternalUrl(href);
   const displayLabel = label;
@@ -37,7 +39,7 @@ export default function DocSidebarItemLink({ item, onItemClick, activePath, leve
         })}
         autoAddBaseUrl={autoAddBaseUrl}
         aria-current={isActive ? "page" : undefined}
-        to={href}
+        to={to}
         {...(isInternalLink && {
           onClick: onItemClick ? () => onItemClick(item) : undefined,
         })}

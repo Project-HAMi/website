@@ -40,7 +40,7 @@ KAI Scheduler 的 GPU 共享是「协作式」的：调度器确保请求的显�
 
 ## 什么是 HAMi？
 
-HAMi 是 CNCF 沙箱项目，专注于异构 AI 算力虚拟化中间件。其核心能力是通过 CUDA 拦截库（HAMi-core），在容器级别实现 GPU 显存和算力的硬隔离。
+HAMi 是 CNCF 沙箱项目，专注于异构 AI 算力虚拟化中间件。其核心能力是通过 CUDA 拦截库（HAMi-core）在 CUDA API 层强制限制 GPU 显存和算力，使工作负载无法超额使用所分配的份额。
 
 简单理解 HAMi 的定位：
 
@@ -67,12 +67,10 @@ graph TD
     POD --> SCHED --> INJECT --> WEBHOOK --> CONTAINER --> ENFORCE
     DAEMON -. "加载 libvgpu.so" .-> CONTAINER
 
-    style SCHED fill:#d9f99d,stroke:#4f7d00,stroke-width:2px,color:#1f2937
-    style INJECT fill:#d9f99d,stroke:#4f7d00,stroke-width:2px,color:#1f2937
-    style WEBHOOK fill:#dbeafe,stroke:#1a5fb4,stroke-width:2px,color:#1f2937
-    style DAEMON fill:#dbeafe,stroke:#1a5fb4,stroke-width:2px,color:#1f2937
-    style CONTAINER fill:#fef3c7,stroke:#b45309,stroke-width:2px,color:#1f2937
-    style ENFORCE fill:#dcfce7,stroke:#0b6b3c,stroke-width:2px,color:#1f2937
+    class SCHED,INJECT accent
+    class WEBHOOK,DAEMON info
+    class CONTAINER run
+    class ENFORCE ok
 ```
 
 工作流程分为四个阶段：
@@ -92,8 +90,8 @@ graph TD
     B2 --> B3["无法超额<br/>硬隔离"]
 
     A3 ~~~ B1
-    style A3 fill:#fee2e2,stroke:#b3261e,stroke-width:2px,color:#1f2937
-    style B3 fill:#dcfce7,stroke:#0b6b3c,stroke-width:2px,color:#1f2937
+    class A3 bad
+    class B3 ok
 ```
 
 ### 部署方式
@@ -199,8 +197,8 @@ graph TD
     HAMI --> Kueue
     HAMI --> Koordinator
 
-    style HAMI fill:#dbeafe,stroke:#1a5fb4,stroke-width:2px,color:#1f2937
-    style KAI fill:#d9f99d,stroke:#4f7d00,stroke-width:2px,color:#1f2937
+    class HAMI info
+    class KAI accent
 ```
 
 ### 为用户创造实际价值

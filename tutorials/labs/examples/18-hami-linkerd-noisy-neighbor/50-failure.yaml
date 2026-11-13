@@ -1,0 +1,43 @@
+# deliberately broken replica, slice smaller than its per-request allocation
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: model-a-bad
+  namespace: lab10
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: model-a, gpu: b-bad }
+  template:
+    metadata:
+      labels: { app: model-a, gpu: b-bad }
+      annotations:
+        nvidia.com/use-gpuuuid: "GPU-4dc50575-f241-9f14-1e6e-ecb4a93c3299"
+    spec:
+      containers:
+        - name: model
+          image: pytorch/pytorch:2.14.0-cuda12.6-cudnn9-runtime
+          command:
+            [
+              "sh",
+              "-c",
+              "pip install -q --break-system-packages fastapi uvicorn && cd /app && exec uvicorn app:app --host 0.0.0.0 --port 8000",
+            ]
+          env: [{ name: EXTRA_MIB, value: "1200" }]
+          ports: [{ containerPort: 8000, name: http }]
+          volumeMounts: [{ name: app, mountPath: /app }]
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+              nvidia.com/gpumem: 1500
+              nvidia.com/gpucores: 20
+          startupProbe:
+            httpGet: { path: /healthz, port: 8000 }
+            periodSeconds: 5
+            failureThreshold: 120
+          readinessProbe:
+            httpGet: { path: /healthz, port: 8000 }
+            periodSeconds: 5
+      volumes:
+        - name: app
+          configMap: { name: model-a-app }

@@ -16,6 +16,8 @@ HAMi now supports sharing `vastaitech.com/va` (Vastaitech) devices and provides 
 
 ### Enabling Vastai Device Sharing
 
+Install HAMi using [Online installation](../../installation/online-installation.md). Keep `devices.vastai.enabled=true` (the default). The vendor device plugin is installed separately as described below. HAMi-side resource names and device settings are under `devices.vastai.*` in the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md); keep resource names consistent with the plugin.
+
 #### Label the Node
 
 ```bash

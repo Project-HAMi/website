@@ -3,7 +3,7 @@ import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import useBaseUrl from "@docusaurus/useBaseUrl";
 import contributorsData from "../data/contributors";
 
-const ContributorsList = () => {
+const ContributorsList = ({ items = contributorsData }) => {
   const { i18n } = useDocusaurusContext();
   const isZh = i18n.currentLocale === "zh";
   const baseUrl = useBaseUrl("/");
@@ -12,7 +12,7 @@ const ContributorsList = () => {
 
   return (
     <ul className="support-wrapper">
-      {contributorsData.map(({ logo, logoZh, alt, href }, index) => (
+      {items.map(({ logo, logoZh, alt, href }, index) => (
         <li key={index}>
           {(() => {
             const defaultLogo = withBaseUrl(logo);

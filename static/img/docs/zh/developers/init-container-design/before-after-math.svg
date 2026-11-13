@@ -1,0 +1,21 @@
+<svg viewBox="0 0 900 440" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="440" fill="#DFF3FE" rx="16"/>
+  <text x="450" y="40" font-family="Verdana, Arial, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif" font-size="21" font-weight="bold" fill="#0B4F6C" text-anchor="middle">两种计算 Pod GPU 需求的方式</text>
+
+  <line x1="40" y1="178" x2="860" y2="178" stroke="#DC2626" stroke-width="2" stroke-dasharray="8,6"/>
+  <text x="860" y="173" font-family="Verdana, Arial, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif" font-size="13" fill="#DC2626" text-anchor="end">24Gi 上限</text>
+
+  <text x="220" y="90" font-family="Verdana, Arial, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif" font-size="17" font-weight="bold" fill="#B91C1C" text-anchor="middle">修改前：直接相加</text>
+  <rect x="140" y="290" width="160" height="80" fill="#34D399" stroke="#047857" stroke-width="2"/>
+  <text x="220" y="335" font-family="Verdana, Arial, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif" font-size="14" fill="#013D2C" text-anchor="middle">应用容器：10Gi</text>
+  <rect x="140" y="130" width="160" height="160" fill="#FBBF24" stroke="#B45309" stroke-width="2"/>
+  <text x="220" y="215" font-family="Verdana, Arial, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif" font-size="14" fill="#5A3800" text-anchor="middle">init 容器：20Gi</text>
+  <text x="220" y="110" font-family="Verdana, Arial, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif" font-size="15" font-weight="bold" fill="#B91C1C" text-anchor="middle">= 30Gi，超出上限！</text>
+
+  <text x="680" y="90" font-family="Verdana, Arial, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif" font-size="17" font-weight="bold" fill="#047857" text-anchor="middle">修改后：取较大值</text>
+  <rect x="600" y="210" width="160" height="160" fill="#FBBF24" stroke="#B45309" stroke-width="2"/>
+  <text x="680" y="295" font-family="Verdana, Arial, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif" font-size="14" fill="#5A3800" text-anchor="middle">较大值：20Gi</text>
+  <text x="680" y="190" font-family="Verdana, Arial, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif" font-size="15" font-weight="bold" fill="#047857" text-anchor="middle">= 20Gi，放得下，还剩 4Gi</text>
+
+  <text x="450" y="410" font-family="Verdana, Arial, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif" font-size="14" fill="#0B4F6C" text-anchor="middle">init 容器和应用容器不会同时运行，所以不应该把两者相加，取较大的那个即可。</text>
+</svg>

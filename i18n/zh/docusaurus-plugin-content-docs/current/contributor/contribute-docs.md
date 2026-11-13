@@ -101,6 +101,8 @@ sidebar_label: 侧边栏短标题
 }
 ```
 
+对于厂商指南，将页面名称添加到对应的 `vendorPages(...)` 或 `vendorExamples(...)` 中。新增厂商时，在 `vendors` 中添加具有唯一键的 `vendorCategory(...)`。
+
 如果不确定属于哪个分类，在 PR 中说明，维护者会帮忙。
 
 ### 4. 添加中文翻译（可选）
@@ -149,7 +151,7 @@ Docusaurus 会自动把这些解析为正确的 URL，包括版本和语言。
 用相对于站点根目录的绝对路径引用图片：
 
 ```md
-![Architecture diagram](/img/docs/common/architecture/hami-arch.png) ![WebUI Overview](/img/docs/en/userguide/webui-overview.png)
+![Architecture diagram](/img/docs/common/developers/hami-core-design/hami-arch.png) ![WebUI Overview](/img/docs/en/userguide/webui-overview.png)
 ```
 
 使用有意义的 alt 文本，不要链接外部图片，图片要托管在本仓库中。
@@ -183,15 +185,15 @@ Docusaurus 会自动把这些解析为正确的 URL，包括版本和语言。
 
 ## 版本管理
 
-HAMi 文档随每次发布进行版本管理：
+HAMi 文档随每次发布进行版本管理。以下示例中，`X.Y.Z` 表示最新发布版本，`A.B.C` 表示较早的版本：
 
-| 位置                             | 版本                   | URL              |
-| -------------------------------- | ---------------------- | ---------------- |
-| `docs/`                          | 开发版/next（未发布）  | `/docs/next/*`   |
-| `versioned_docs/version-v2.9.0/` | v2.9.0（最新稳定版本） | `/docs/*`        |
-| `versioned_docs/version-v2.8.0/` | v2.8.0                 | `/docs/v2.8.0/*` |
+| 位置                             | 版本                  | URL              |
+| -------------------------------- | --------------------- | ---------------- |
+| `docs/`                          | 开发版/next（未发布） | `/docs/next/*`   |
+| `versioned_docs/version-vX.Y.Z/` | 最新稳定版本          | `/docs/*`        |
+| `versioned_docs/version-vA.B.C/` | 较早的版本            | `/docs/vA.B.C/*` |
 
-> `docs/` 目录是**未发布的开发版**（托管在 `/docs/next`），**不是**"当前/最新稳定版本"。最新稳定版本是 `versions.json` 的第一项（目前是 v2.9.0），托管在 `/docs`。编辑 `docs/` 只影响下一个版本。
+> `docs/` 目录是**未发布的开发版**（托管在 `/docs/next`），**不是**"当前/最新稳定版本"。最新稳定版本是 `versions.json` 的第一项，托管在 `/docs`。编辑 `docs/` 只影响下一个版本。
 
 **为 `docs/` 贡献**适用于影响下一个版本的改动，大多数贡献者应该编辑这里。
 

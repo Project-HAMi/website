@@ -62,7 +62,17 @@ To auto-fix formatting:
 npm run format
 ```
 
-### 4. Build
+### 4. Unit Tests
+
+Runs unit tests for shared utilities under `src/` (e.g. `src/utils/date.js`):
+
+```bash
+npm run test
+```
+
+Shared logic used by more than one component (date/time formatting, locale mapping, etc.) should live in `src/utils/` and be covered by a test there, rather than being reimplemented locally in each component. `src/utils/date.js` is the single place for locale/timezone-aware date formatting; don't hand-roll `Intl.DateTimeFormat`/`toLocaleDateString` elsewhere.
+
+### 5. Build
 
 Builds the full site (both `en` and `zh` locales). This also validates internal links:
 
@@ -76,13 +86,13 @@ For a faster build (English only):
 npm run build:fast
 ```
 
-### 5. Run All Checks
+### 6. Run All Checks
 
 ```bash
 npm run check:all
 ```
 
-This runs lint, format check, build, and link check in sequence.
+This runs lint, format check, unit tests, build, and link check in sequence.
 
 ## CI
 
@@ -92,6 +102,7 @@ Every pull request automatically runs:
 | ---------------- | --------------------------------------------------------- |
 | **Lint**         | `npm run lint` - Markdown structural checks               |
 | **Format**       | `npm run format:check` - Prettier formatting verification |
+| **Unit Tests**   | `npm run test` - Node's built-in test runner              |
 | **Build**        | `npm run build` - Full site build with link validation    |
 | **Broken Links** | Internal link check against the built site                |
 

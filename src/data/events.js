@@ -6,6 +6,7 @@ const events = [
       zh: "从项目到生产：HAMi 与 Viettel Cloud 亮相 KCD 越南",
     },
     date: "2026-07-25",
+    speaker: "Reza Jelveh, The Anh Nguyen",
     location: {
       en: "Hanoi, Vietnam",
       zh: "越南 河内",
@@ -25,12 +26,12 @@ const events = [
       talkSlides: {
         en: "Talk Slides",
         zh: "演讲幻灯片",
-        url: "/resources/2026-kcd-vietnam/talk-slides.pdf",
+        url: "/resources/events/2026-kcd-vietnam/talk-slides.pdf",
       },
       communityFlyer: {
         en: "Community Flyer",
         zh: "社区宣传册",
-        url: "/resources/flyers/community-flyer.pdf",
+        url: "/resources/events/flyers/community-flyer.pdf",
       },
     },
     cta: {
@@ -47,6 +48,7 @@ const events = [
       zh: "HAMi 亮相 KubeCon 日本 2026",
     },
     date: "2026-07-28",
+    speaker: "Jeonghyun Kim, Reza Jelveh",
     endDate: "2026-07-30",
     location: {
       en: "Yokohama, Japan",
@@ -67,12 +69,12 @@ const events = [
       communityFlyer: {
         en: "Community Flyer",
         zh: "社区宣传册",
-        url: "/resources/flyers/community-flyer.pdf",
+        url: "/resources/events/flyers/community-flyer.pdf",
       },
       talkSlides: {
         en: "Talk Slides",
         zh: "演讲幻灯片",
-        url: "/resources/2026-kubecon-japan/snow_corp_cncf.pdf",
+        url: "/resources/events/2026-kubecon-japan/snow_corp_cncf.pdf",
       },
     },
     caseStudy: {
@@ -101,6 +103,373 @@ const events = [
     externalUrl: "https://events.linuxfoundation.org/kubecon-cloudnativecon-japan",
     talkUrl:
       "https://events.linuxfoundation.org/kubecon-cloudnativecon-japan/program/schedule/?id=1182713",
+  },
+  {
+    slug: "coscup-2026",
+    title: {
+      en: "Running Multiple AI Workloads on One GPU with HAMi: Architecture and Gotchas",
+      zh: "用 HAMi 在一块 GPU 上运行多个 AI 工作负载：架构与注意事项",
+    },
+    date: "2026-08-09",
+    startTime: "11:20",
+    endTime: "11:50",
+    location: {
+      en: "Taipei, Taiwan",
+      zh: "中国台湾 台北",
+    },
+    resources: {
+      communityFlyer: {
+        en: "Community Flyer",
+        zh: "社区宣传册",
+        url: "/resources/events/flyers/community-flyer.pdf",
+      },
+      talkSlides: {
+        en: "Talk Slides",
+        zh: "演讲幻灯片",
+        url: "/resources/events/2026-coscup/coscup_2026.pdf",
+      },
+    },
+    cta: {
+      discordUrl: "https://go.dynamia.ai/hami-chat-coscup",
+      githubUrl: "https://go.dynamia.ai/proj-hami-coscup",
+    },
+    room: "TR214",
+    description: {
+      en: "GPUs are expensive. Kubernetes doesn't share them well yet, and DRA is still work in progress. HAMi brings heterogeneous GPU sharing to Kubernetes. This talk covers how HAMi hijacks CUDA calls without touching your application code, why memory isolation matters, and real production use cases where teams cut GPU costs by 40-60%.",
+      zh: "GPU 很贵。Kubernetes 目前还无法很好地共享它们，DRA 仍在开发中。HAMi 为 Kubernetes 带来异构 GPU 共享。本演讲将介绍 HAMi 如何在不改动应用代码的情况下接管 CUDA 调用、为什么显存隔离至关重要，以及真实的生产用例——团队将 GPU 成本降低了 40-60%。",
+    },
+    externalUrl: "https://coscup.org/2026/en/",
+    talkUrl: "https://coscup.org/2026/en/session/BGYZ3B",
+  },
+  {
+    slug: "opensource-summit-korea",
+    title: {
+      en: "Simplifying AI for Edge Compute with HAMi",
+      zh: "使用 HAMi 简化边缘计算中的 AI",
+    },
+    date: "2026-08-12",
+    startTime: "11:40",
+    endTime: "12:10",
+    timeZone: "KST",
+    location: {
+      en: "Grand InterContinental Seoul Parnas",
+      zh: "首尔柏纳斯大洲际酒店",
+    },
+    address: {
+      addressLocality: "Seoul",
+      addressCountry: "KR",
+      streetAddress: "521 Teheran-ro Gangnam-gu, 06164",
+    },
+    description: {
+      en: "Open-source agents like Hermes and OpenClaw can reason and use tools, but edge deployment is still hard - not the model, the compute underneath: limited memory, tight power budgets, no ops team. Democratizing agentic AI means fixing the compute layer. This deep dive covers GPU and memory slicing at the edge: carving one device's unified memory so multiple agents run concurrently on hardware as small as an NVIDIA Jetson, and time-sharing when demand exceeds memory. We compare Jetson-class GPUs with NPUs from Axelera and DeepX - higher performance per watt - and what it takes to make them schedulable. HAMi, the CNCF Incubation project for hardware-agnostic GPU virtualization, is that layer: one scheduling plane across heterogeneous accelerators, fine-grained memory slicing, open source. A blueprint for edge AI without a cloud budget.",
+      zh: "开源智能体（如 Hermes 和 OpenClaw）能够推理并使用工具，但边缘部署仍然困难——问题不在模型，而在底层的算力：内存有限、功耗预算紧张、没有运维团队。让智能体 AI 普及化，关键在于修复算力层。本次深度解析涵盖边缘 GPU 与显存切片：将一块设备的统一内存切分，让多个智能体在 NVIDIA Jetson 这样的小型硬件上并发运行，并在内存不足时进行时间共享。我们对比 Jetson 级 GPU 与 Axelera、DeepX 的 NPU——每瓦性能更高——以及让它们可被调度的必要条件。HAMi 是 CNCF 孵化项目，提供与硬件无关的 GPU 虚拟化，正是这一层：跨异构加速器的统一调度平面、细粒度显存切片、开源。一份无需云预算的边缘 AI 蓝图。",
+    },
+    resources: {
+      communityFlyer: {
+        en: "Community Flyer",
+        zh: "社区宣传册",
+        url: "/resources/events/flyers/community-flyer.pdf",
+      },
+      talkSlides: {
+        en: "Talk Slides",
+        zh: "演讲幻灯片",
+        url: "/resources/events/2026-ossummit-korea/ossummit_korea.pdf",
+      },
+    },
+    cta: {
+      discordUrl: "https://go.dynamia.ai/hami-chat-korea",
+      githubUrl: "https://go.dynamia.ai/proj-hami-korea",
+    },
+    externalUrl: "https://events.linuxfoundation.org/open-source-summit-korea/",
+    talkUrl: "https://events.linuxfoundation.org/open-source-summit-korea/program/schedule/",
+  },
+  {
+    slug: "hami-meetup-shanghai",
+    title: {
+      en: "HAMi Meetup Shanghai 2026: Incubating Special Event",
+      zh: "「不卷算力，卷效率」HAMi Meetup 上海站 · Incubating 特别活动",
+    },
+    date: "2026-09-06",
+    startTime: "14:00",
+    endTime: "17:50",
+    location: {
+      en: "Wujiaochang, Shanghai, China",
+      zh: "中国 上海 五角场",
+    },
+    address: {
+      addressLocality: "Shanghai",
+      addressCountry: "CN",
+    },
+    banner: "/img/events/2026-hami-meetup-shanghai/hami-meetup-shanghai-sept.jpg",
+    description: {
+      en: 'The first offline special event since HAMi was accepted as a CNCF Incubating project. On the afternoon of September 6, join us in Shanghai for technical talks, a community panel, and the Incubating milestone session under the theme "race efficiency, not compute", followed by a Community Night in the evening. Free registration, a warm-up ahead of KubeCon China 2026.',
+      zh: "HAMi 晋级 CNCF 孵化项目后的首场线下特别活动。9 月 6 日下午，主题演讲、社区圆桌与 Incubating 里程碑环节将围绕「不卷算力，卷效率」展开，晚间为 HAMi Community Night。活动免费报名，正值 KubeCon China 2026 开幕前夕，欢迎顺路相聚上海。",
+    },
+    price: 0,
+    priceCurrency: "CNY",
+    cta: {
+      discordUrl: "https://go.dynamia.ai/hami-chat",
+    },
+    externalUrl: "https://www.huodongxing.com/event/2874911381700",
+  },
+  {
+    slug: "kubecon-china",
+    title: {
+      en: "HAMi at KubeCon China 2026",
+      zh: "HAMi 亮相 KubeCon China 2026",
+    },
+    date: "2026-09-07",
+    endDate: "2026-09-09",
+    speaker: "Xiao Zhang, Jifei Wang, Mengxuan Li, Walter Duan",
+    location: {
+      en: "Shanghai International Convention Center, Shanghai, China",
+      zh: "中国 上海 上海国际会议中心",
+    },
+    address: {
+      addressLocality: "Shanghai",
+      addressCountry: "CN",
+    },
+    banner: "/img/events/2026-kubecon-china/hami-at-kubecon-china-2026.png",
+    description: {
+      en: "HAMi's first KubeCon China appearance as a CNCF Incubating project. All HAMi activities were on September 8: the opening keynote \"Operating Frontier Intelligence at Scale\" (09:12-09:22, Grand Ballroom II + III), a keynote on PD-disaggregated vLLM deployment on alternative AI accelerators using llm-d (09:59-10:04, Grand Ballroom II + III), a lightning talk on scheduling-driven dynamic MIG (11:14-11:19, 5B + C), and a session on Intsig's billion-document GPU virtualization at scale (14:30-15:00, Grand Ballroom II + III). China Merchants Bank's reference architecture featuring HAMi won the Cloud Native China 2026 case study award. Booth T-1 in Grand Ballroom I was staffed by maintainers from 10:30 to 19:00.",
+      zh: "HAMi 晋级 CNCF 孵化项目后首次亮相 KubeCon China。全部活动集中在 9 月 8 日：开幕 Keynote「Operating Frontier Intelligence at Scale」（09:12-09:22，Grand Ballroom II + III）、介绍 llm-d 异构加速器上 PD 分离 vLLM 部署的 Keynote（09:59-10:04，Grand Ballroom II + III）、调度驱动动态 MIG 闪电演讲（11:14-11:19，5B + C），以及合合信息千卡规模 GPU 虚拟化生产实践（14:30-15:00，Grand Ballroom II + III）。招商银行采用 HAMi 的参考架构斩获 Cloud Native China 2026 案例大奖。展台 T-1（Grand Ballroom I）10:30 至 19:00 维护者现场值守。",
+    },
+    resources: {
+      communityFlyer: {
+        en: "Community Flyer",
+        zh: "社区宣传册",
+        url: "/resources/events/flyers/community-flyer.pdf",
+      },
+      talkSlides: [
+        {
+          en: "Keynote: Operating Frontier Intelligence at Scale",
+          zh: "Keynote：大规模运行前沿智能",
+          url: "/resources/events/2026-kubecon-china/keynote-operating-frontier-intelligence-at-scale-aniszczyk-zhangxiao-20260908.pdf",
+        },
+        {
+          en: "Keynote: PD Disaggregation vLLM Deployment Using llm-d",
+          zh: "Keynote：基于 Llm-d 的多元加速器 PD 分离 vLLM 部署",
+          url: "/resources/events/2026-kubecon-china/keynote-pd-disaggregation-vllm-llm-d-wangjifei-limengxuan-20260908.pdf",
+        },
+        {
+          en: "Lightning Talk: Dynamic MIG with HAMi",
+          zh: "闪电演讲：用 HAMi 实现动态 MIG",
+          url: "/resources/events/2026-kubecon-china/dynamic-mig-with-hami-lightning-wangjifei-20260908.pdf",
+        },
+        {
+          en: "Session: Intsig GPU Virtualization at Scale",
+          zh: "专场分享：合合信息千卡规模 GPU 虚拟化",
+          url: "/resources/events/2026-kubecon-china/intsig-gpu-virtualization-at-scale-limengxuan-walterduan-20260908.pdf",
+        },
+      ],
+    },
+    cta: {
+      discordUrl: "https://go.dynamia.ai/hami-chat",
+    },
+    externalUrl:
+      "https://www.lfopensource.cn/kubecon-cloudnativecon-openinfra-summit-pytorch-conference-china/",
+    talkUrl:
+      "https://www.lfopensource.cn/kubecon-cloudnativecon-openinfra-summit-pytorch-conference-china/program/schedule/",
+  },
+  {
+    slug: "observability-summit-europe",
+    title: {
+      en: "Vendor-Neutral GPU Observability for Kubernetes",
+      zh: "面向 Kubernetes 的厂商中立 GPU 可观测性",
+    },
+    date: "2026-10-05",
+    startTime: "16:25",
+    endTime: "16:50",
+    timeZone: "CEST",
+    speaker: "Reza Jelveh",
+    location: {
+      en: "Prague Congress Centre, Prague, Czechia",
+      zh: "捷克 布拉格 布拉格会议中心",
+    },
+    address: {
+      addressLocality: "Prague",
+      addressCountry: "CZ",
+    },
+    room: "South Hall 3 B (Floor 3)",
+    description: {
+      en: "GPU observability in Kubernetes is fragmented. Each vendor ships their own metrics stack: NVIDIA DCGM, AMD ROCm SMI. Platform teams running heterogeneous clusters stitch together three different dashboards to answer one question: \"Are my GPUs being used efficiently?\" HAMi (CNCF Incubation) sits at the scheduling layer and sees every GPU operation. That single integration point gives you centralized observability across NVIDIA, AMD, Ascend, and any accelerator with a device plugin. HAMi manages the underlying vendor metrics itself and attributes that data to individual workloads, so you don't need to know the per-vendor exporters and their metrics in detail, while still getting utilization, memory pressure, and allocation efficiency per workload regardless of the underlying hardware. This talk covers why GPU observability is harder than CPU observability (CUDA context model, MIG partitioning, device-plugin opacity), and how HAMi's scheduling-layer instrumentation provides one vendor-neutral view across heterogeneous accelerators.",
+      zh: "Kubernetes 中的 GPU 可观测性是割裂的。每家厂商都自带一套指标栈：NVIDIA DCGM、AMD ROCm SMI。运行异构集群的平台团队需要拼凑三套不同的仪表盘，才能回答同一个问题：「我的 GPU 是否被高效利用？」HAMi（CNCF 孵化项目）位于调度层，能够看到每一次 GPU 操作。这个单一的集成点让你在 NVIDIA、AMD、Ascend 以及任何具备 device plugin 的加速器上获得集中式可观测性。HAMi 会托管底层厂商指标，并将其中相关数据归属到各个工作负载，因此你无需深入了解各家厂商的 exporter 及其指标细节，同样能按工作负载获得利用率、显存压力和分配效率，无论底层硬件是什么。本次演讲将介绍：为什么 GPU 可观测性比 CPU 可观测性更难（CUDA 上下文模型、MIG 分区、device plugin 的不透明性），以及 HAMi 的调度层埋点如何为异构加速器提供统一的厂商中立视图。",
+    },
+    resources: {
+      communityFlyer: {
+        en: "Community Flyer",
+        zh: "社区宣传册",
+        url: "/resources/events/flyers/community-flyer.pdf",
+      },
+      talkSlides: {
+        en: "Talk Slides",
+        zh: "演讲幻灯片",
+        url: "/resources/events/2026-o11y-summit-europe/hami_cross_platform_observability.pdf",
+      },
+    },
+    externalUrl: "https://events.linuxfoundation.org/observability-summit-europe/",
+    talkUrl:
+      "https://events.linuxfoundation.org/observability-summit-europe/program/schedule/?id=1281232",
+  },
+  {
+    slug: "opensource-summit-europe",
+    title: {
+      en: "Designing Permissioned AI Agents That Can Run Offline",
+      zh: "设计可离线运行的权限受控 AI 智能体",
+    },
+    date: "2026-10-08",
+    startTime: "14:40",
+    endTime: "15:20",
+    timeZone: "CEST",
+    speaker: "Reza Jelveh",
+    location: {
+      en: "Prague Congress Centre, Prague, Czechia",
+      zh: "捷克 布拉格 布拉格会议中心",
+    },
+    address: {
+      addressLocality: "Prague",
+      addressCountry: "CZ",
+    },
+    room: "Forum Hall (Floor 2)",
+    description: {
+      en: "AI agents are moving from chat interfaces into workflows that read files, call tools, modify state, and coordinate multiple services. In cloud-hosted designs, this often creates a fragile trust boundary: private data leaves the device, tools are authorized through broad API keys, and the user has limited visibility into what the agent can do. This talk presents an open-source, local-first approach to permissioned AI agents that can run offline on Linux edge or personal infrastructure, built on one assumption: every tool is hostile, so limits must be enforced in the tool, not in the agent. We will break the boundary down into tool invocation, deny-by-default capability scoping, keeping the grant out of the agent's reach, human approval for destructive changes, sandboxing at the process, container, microVM and Kubernetes level, and per-agent GPU slices for local model serving. The session is not about a specific agent framework; it is about the system boundary around agents. Attendees will learn how to separate reasoning from action, how to map tools to least-privilege permissions, how to defend around MCP servers they did not write, and how to keep sensitive context and compute local.",
+      zh: "AI 智能体正在从聊天界面走向真实工作流：读取文件、调用工具、修改状态并协调多个服务。在云托管的设计中，这往往形成脆弱的信任边界：私有数据离开设备，工具通过权限过宽的 API 密钥授权，用户也难以看清智能体到底能做什么。本演讲介绍一种开源、本地优先的权限受控 AI 智能体方案，可在 Linux 边缘设备或个人基础设施上离线运行，其前提只有一个：每个工具都是不可信的，因此限制必须在工具侧强制执行，而不是依赖智能体自觉。我们将把这一边界拆解为：工具调用、默认拒绝的能力范围划定、让授权凭据远离智能体、破坏性变更需人工审批、进程/容器/microVM/Kubernetes 多层沙箱隔离，以及为本地模型推理按智能体分配 GPU 切片。本场分享不针对某个特定智能体框架，而是聚焦智能体周围的系统边界。听众将学到如何把推理与执行分离、如何将工具映射到最小权限、如何防护并非自己编写的 MCP 服务器，以及如何让敏感上下文与算力留在本地。",
+    },
+    resources: {
+      communityFlyer: {
+        en: "Community Flyer",
+        zh: "社区宣传册",
+        url: "/resources/events/flyers/community-flyer.pdf",
+      },
+      talkSlides: {
+        en: "Talk Slides",
+        zh: "演讲幻灯片",
+        url: "/resources/events/2026-o11y-summit-europe/ossummit_europe_agents.pdf",
+      },
+    },
+    externalUrl: "https://events.linuxfoundation.org/open-source-summit-europe/",
+    talkUrl: "https://osselceu2026.sched.com/event/a533a839491960839042f705cbe3acd4",
+  },
+  {
+    slug: "containerdays-singapore",
+    title: {
+      en: "From Zero to Shared GPUs: Hands-on GPU Scheduling in Kubernetes with HAMi",
+      zh: "从零到 GPU 共享：基于 HAMi 的 Kubernetes GPU 调度动手实践",
+    },
+    date: "2026-10-27",
+    startTime: "12:30",
+    endTime: "13:15",
+    timeZone: "SGT",
+    speaker: "Reza Jelveh, Jimmy Song",
+    location: {
+      en: "Suntec Singapore Convention & Exhibition Centre, Singapore",
+      zh: "新加坡 新达城新加坡会展中心",
+    },
+    address: {
+      addressLocality: "Singapore",
+      addressCountry: "SG",
+      streetAddress: "1 Raffles Boulevard, Suntec City, 039593",
+    },
+    room: "Workshop Room",
+    description: {
+      en: "This hands-on workshop at ContainerDays Singapore 2026 is led by Jimmy Song (VP of Open Source Ecosystem) and Reza Jelveh (Global Market & Solution Architecture at Dynamia AI), both HAMi contributors. It takes you from a bare cluster to a working GPU sharing setup. HAMi is a CNCF Incubation project for heterogeneous GPU virtualization in Kubernetes, supporting 10+ GPU/NPU vendors. Attendees set up HAMi on their laptop, with or without a GPU, and trace how the device plugin intercepts GPU requests, allocates vGPU resources, and integrates with the scheduler. We follow the HAMi architecture and GPU virtualization model (project-hami.io/docs/core-concepts/gpu-virtualization), then explore the DRA integration path. You will deploy HAMi, schedule fractional GPU workloads, and understand how scheduler policies like binpack, spread, and topology awareness change allocation behavior, and how third-party schedulers (KAI Scheduler, Volcano) compose with HAMi's isolation layer. Lab guide: github.com/Project-HAMi/hami-workshop. Bring a laptop with Go, kind, and a GitHub account.",
+      zh: "本工作坊由宋净超（Jimmy Song，密瓜智能开源生态 VP）与 Reza Jelveh（密瓜智能 Global Market & Solution Architecture）两位 HAMi 贡献者主讲。ContainerDays 新加坡 2026 动手实践，带你从空集群一路搭建到可用的 GPU 共享环境。HAMi 是 CNCF 孵化项目，为 Kubernetes 提供异构 GPU 虚拟化，支持 10 余家 GPU/NPU 厂商。学员在笔记本上部署 HAMi（有无 GPU 均可），追踪 device plugin 如何拦截 GPU 请求、分配 vGPU 资源并与调度器协同。课程沿 HAMi 架构与 GPU 虚拟化模型展开，随后探索 DRA 集成路径。你将部署 HAMi、调度分数 GPU 工作负载，理解 binpack、spread、拓扑感知等调度策略如何改变分配行为，并了解第三方调度器（KAI Scheduler、Volcano）如何与 HAMi 的隔离层组合。实验手册：github.com/Project-HAMi/hami-workshop。请携带笔记本电脑，预装 Go 与 kind，并备好 GitHub 账号。",
+    },
+    resources: {
+      communityFlyer: {
+        en: "Community Flyer",
+        zh: "社区宣传册",
+        url: "/resources/events/flyers/community-flyer.pdf",
+      },
+      talkSlides: {
+        en: "Workshop Slides",
+        zh: "工作坊讲义",
+        url: "/resources/events/2026-containerdays-singapore/containerdays-singapore-2026-workshop.pdf",
+      },
+    },
+    cta: {
+      discordUrl: "https://go.dynamia.ai/hami-chat",
+    },
+    externalUrl: "https://www.containerdays.io/containerdays-singapore-2026/",
+  },
+  {
+    slug: "containerdays-singapore-10x",
+    title: {
+      en: "10x Your Neocloud's GPU Utilization with HAMi",
+      zh: "用 HAMi 将 Neocloud 的 GPU 利用率提升 10 倍",
+    },
+    date: "2026-10-27",
+    endDate: "2026-10-28",
+    location: {
+      en: "Suntec Singapore Convention & Exhibition Centre, Singapore",
+      zh: "新加坡 新达城新加坡国际会议展览中心",
+    },
+    address: {
+      streetAddress: "1 Raffles Blvd",
+      addressLocality: "Singapore",
+      postalCode: "039593",
+      addressCountry: "SG",
+    },
+    description: {
+      en: "DRA gives Kubernetes a way to request fractional GPUs, but it does not solve the utilization problem by itself - the device still needs virtualization and a scheduler that knows how to share it. Hardware-agnostic GPU virtualization provides that layer: one scheduling layer shares NVIDIA, AMD, Ascend, and domestic NPUs under a single pool - fractional GPUs, mixed vendors, whatever hardware the supply chain delivers. This talk covers how vGPU interception enforces memory and compute limits, how the scheduler allocates heterogeneous devices, how DRA fits (and where it falls short), and production patterns from cloud providers running 10,000+ GPUs. No vendor pitch. A concrete blueprint for turning a GPU box into a GPU cloud.",
+      zh: "DRA 让 Kubernetes 能够申请细粒度 GPU，但它本身并不能解决利用率问题 - 设备仍然需要虚拟化，以及一个懂得如何共享它的调度器。与硬件无关的 GPU 虚拟化提供了这一层：一个调度层将 NVIDIA、AMD、Ascend 以及国产 NPU 纳入同一个资源池 - 细粒度 GPU、混合厂商，供应链给什么硬件就用什么硬件。本次演讲涵盖：vGPU 拦截如何强制执行显存与算力限制、调度器如何分配异构设备、DRA 如何融入其中（以及它在哪些地方力有不逮），以及来自运行 10,000+ GPU 的云厂商的生产实践。没有厂商推销。一份把一台 GPU 服务器变成 GPU 云的落地蓝图。",
+    },
+    resources: {
+      communityFlyer: {
+        en: "Community Flyer",
+        zh: "社区宣传册",
+        url: "/resources/events/flyers/community-flyer.pdf",
+      },
+      talkSlides: {
+        en: "Talk Slides",
+        zh: "演讲幻灯片",
+        url: "/resources/events/2026-containerdays-singapore/containerdays-singapore-2026-10x.pdf",
+      },
+    },
+    externalUrl: "https://www.containerdays.io/containerdays-singapore-2026/",
+  },
+  {
+    slug: "kubecon-na-contribfest",
+    title: {
+      en: "GPU Virtualization: First Setup and Understanding the Device Plugin / DRA",
+      zh: "GPU 虚拟化：从零部署，理解设备插件与 DRA",
+    },
+    date: "2026-11-10",
+    startTime: "16:40",
+    endTime: "18:00",
+    timeZone: "MST",
+    speaker: "Reza Jelveh, Mengxuan Li, Han Shen",
+    location: {
+      en: "Salt Palace Convention Center, Level 2, Room 255 D, Salt Lake City, UT",
+      zh: "美国 盐湖城 Salt Palace 会议中心 2 层 255 D 会议室",
+    },
+    address: {
+      streetAddress: "100 S West Temple",
+      addressLocality: "Salt Lake City",
+      addressRegion: "UT",
+      postalCode: "84101",
+      addressCountry: "US",
+    },
+    banner: "/img/events/2026-kubecon-na/gpu-virtualization-first-setup_jelveh-li-shen.jpg",
+    description: {
+      en: "An 80-minute ContribFest at KubeCon + CloudNativeCon North America 2026. Bring a laptop, no GPU needed: install HAMi on kind with fake GPUs, share cards between Pods, compare binpack and spread, and trace where topology information comes from. Then go deeper on DRA - ResourceSlices, consumable capacity and HAMi-DRA - and leave with a first contribution to HAMi, HAMi-DRA or the HAMi WebUI. Pull the lab images before you arrive.",
+      zh: "KubeCon + CloudNativeCon 北美 2026 的 80 分钟 ContribFest。带上笔记本即可，无需 GPU：在 kind 上用模拟 GPU 安装 HAMi，让多个 Pod 共享显卡，对比 binpack 与 spread 策略，并追踪拓扑信息从何而来。随后深入 DRA - ResourceSlice、可消耗容量与 HAMi-DRA - 并在离场前向 HAMi、HAMi-DRA 或 HAMi WebUI 提交第一份贡献。请在到场前拉取实验镜像。",
+    },
+    resources: {
+      communityFlyer: {
+        en: "Community Flyer",
+        zh: "社区宣传册",
+        url: "/resources/events/flyers/community-flyer.pdf",
+      },
+      talkSlides: {
+        en: "Workshop Slides",
+        zh: "工作坊幻灯片",
+        url: "/resources/events/2026-kubecon-na/kubecon-na-2026-contribfest.pdf",
+      },
+    },
+    externalUrl: "https://events.linuxfoundation.org/kubecon-cloudnativecon-north-america/",
+    talkUrl:
+      "https://events.linuxfoundation.org/kubecon-cloudnativecon-north-america/program/schedule/?id=1294775",
   },
 ];
 

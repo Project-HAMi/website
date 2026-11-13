@@ -11,7 +11,7 @@ lab:
     - maishivamhoo123
   verified: "2026-07-20"
 tags:
-  - simulation
+  - 模拟
   - scheduler-internals
   - topology
 toc_max_heading_level: 2
@@ -203,8 +203,6 @@ NODE_NAME=$(kubectl get nodes -o jsonpath='{.items[0].metadata.name}')
 echo "NODE_NAME=${NODE_NAME}"
 ```
 
----
-
 :::info[后续大部分步骤在两个平台上是一致的]
 
 从这里开始，大多数命令在 macOS 和 Linux 上是一致的。仍有少数步骤存在差异 —— 步骤 2.3 和步骤 3.1 中分别有一条仅 Linux 需要执行的额外 `kind load` 命令 —— 其余部分完全相同，只是示例输出中的节点名不同。
@@ -321,8 +319,8 @@ helm install hami ./charts/hami \
   -n kube-system \
   --set devicePlugin.image.repository=hami \
   --set devicePlugin.image.tag=local \
-  --set scheduler.image.repository=hami \
-  --set scheduler.image.tag=local \
+  --set scheduler.extender.image.repository=hami \
+  --set scheduler.extender.image.tag=local \
   --set devicePlugin.nvidiaDriverRoot=/var/lib/nvml-mock/driver \
   --set scheduler.kubeScheduler.imageTag=${K8S_VERSION} \
   --set scheduler.defaultSchedulerPolicy.gpuSchedulerPolicy=topology-aware

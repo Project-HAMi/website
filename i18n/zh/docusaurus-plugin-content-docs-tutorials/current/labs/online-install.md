@@ -54,8 +54,6 @@ flowchart LR
 
 > 费用提示：`n1-standard-4` + T4 虚拟机约 $0.55/小时。[实验 3](./gpu-partitioning.md) 和[实验 4](./hami-dra.md) 直接复用这套集群，一次开机即可完成全部三个实验。实验结束后请删除虚拟机。
 
----
-
 ## 步骤 1: 创建 GCP 虚拟机
 
 ### 目的
@@ -324,8 +322,6 @@ prometheus-prometheus-node-exporter-xxxxx              1/1     Running   0      
 
 > 如果安装失败，需要先卸载再重装：`helm uninstall -n monitoring prometheus`
 
----
-
 ## 步骤 5: 安装 GPU Operator
 
 ### 目的
@@ -395,8 +391,6 @@ kubectl -n gpu-operator exec -it $(kubectl get pods -n gpu-operator -l app=nvidi
 | N/A   64C    P8             17W /   70W |       1MiB /  15360MiB |      0%      Default |
 +-----------------------------------------------------------------------------------------+
 ```
-
----
 
 ## 步骤 6: 安装 HAMi
 

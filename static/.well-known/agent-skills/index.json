@@ -6,7 +6,7 @@
       "type": "skill-md",
       "description": "Discover, search, and cite HAMi documentation and release resources.",
       "url": "https://project-hami.io/.well-known/agent-skills/hami-docs/SKILL.md",
-      "digest": "sha256:412deb896b3f005e65c4aafeb8c2d37dbb7c188b4100f4bb3020b53905fec7a3"
+      "digest": "sha256:9dd58ddd2d424d7ee8d0f2d1e516c84ea250a3b9b25117ae9ca30f5bb3de6007"
     }
   ]
 }

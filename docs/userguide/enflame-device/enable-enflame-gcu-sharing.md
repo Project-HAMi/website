@@ -25,11 +25,7 @@ Install only `gcushare-device-plugin`. Do not install the `gcushare-scheduler-pl
 
 :::
 
-- Set `devices.enflame.enabled=true` when deploying HAMi
-
-```bash
-helm install hami hami-charts/hami --set devices.enflame.enabled=true -n kube-system
-```
+Follow [Online installation](../../installation/online-installation.md) to deploy HAMi. Keep `devices.enflame.enabled=true` (the default). This registers the vendor resources with the bundled scheduler extender; the vendor plugin or toolkit must be installed separately. See the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md) for `devices.enflame.*`.
 
 :::note
 
@@ -39,7 +35,7 @@ The default resource names are:
 - `enflame.com/gcu-memory` for memory requests (in MiB)
 - `enflame.com/gcu-core` for core requests (as a percentage)
 
-You can customize these names by modifying the `hami-scheduler-device` ConfigMap.
+Customize these names through `devices.enflame.resourceNameDRSGCU`, `resourceNameGCUMemory`, and `resourceNameGCUCore` in Helm values, keeping them consistent with the vendor plugin. Do not manually edit the global ConfigMap; see [Global device configuration](../configure.md#device-config-overrides).
 
 :::
 

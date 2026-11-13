@@ -4,12 +4,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { faLinkedinIn, faXTwitter } from "@fortawesome/free-brands-svg-icons";
 import { useBlogPost } from "@docusaurus/plugin-content-blog/client";
+import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import TagsListInline from "@theme/TagsListInline";
 import ReadMoreLink from "@theme/BlogPostItem/Footer/ReadMoreLink";
+import { toAbsoluteSiteUrl } from "@site/src/utils/url";
 import styles from "./styles.module.css";
 
 function ShareButtons({ permalink, title }) {
-  const url = encodeURIComponent(permalink);
+  const { siteConfig } = useDocusaurusContext();
+  const shareUrl = toAbsoluteSiteUrl(siteConfig.url, permalink);
+  const url = encodeURIComponent(shareUrl);
   const text = encodeURIComponent(title || "");
 
   return (

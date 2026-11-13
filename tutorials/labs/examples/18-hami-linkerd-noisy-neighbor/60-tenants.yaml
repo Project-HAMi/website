@@ -1,0 +1,152 @@
+# two tenants on one card, tenant-b accepts only its own identities
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tenant-a
+  annotations: { linkerd.io/inject: enabled }
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tenant-b
+  annotations: { linkerd.io/inject: enabled }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: model-a-app
+  namespace: tenant-b
+data:
+  app.py: |
+    import os, torch
+    from fastapi import FastAPI
+    app = FastAPI()
+    W = torch.randn(4096, 4096, device="cuda", dtype=torch.float16)
+    @app.get("/healthz")
+    def healthz(): return {"ok": True}
+    @app.get("/infer")
+    def infer():
+        y = (W @ W); torch.cuda.synchronize()
+        return {"tenant": "b", "pod": os.environ.get("HOSTNAME"), "v": float(y[0, 0])}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: model
+  namespace: tenant-b
+spec:
+  selector: { app: tenant-b-model }
+  ports: [{ name: http, port: 8000, targetPort: 8000 }]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: model
+  namespace: tenant-b
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: tenant-b-model }
+  template:
+    metadata:
+      labels: { app: tenant-b-model }
+      annotations:
+        nvidia.com/use-gpuuuid: "GPU-7023a4c2-4128-840d-2b86-ab87d8bf7f47"
+    spec:
+      containers:
+        - name: model
+          image: pytorch/pytorch:2.14.0-cuda12.6-cudnn9-runtime
+          command:
+            [
+              "sh",
+              "-c",
+              "pip install -q --break-system-packages fastapi uvicorn && cd /app && exec uvicorn app:app --host 0.0.0.0 --port 8000",
+            ]
+          ports: [{ containerPort: 8000, name: http }]
+          volumeMounts: [{ name: app, mountPath: /app }]
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+              nvidia.com/gpumem: 2000
+              nvidia.com/gpucores: 10
+          startupProbe:
+            httpGet: { path: /healthz, port: 8000 }
+            periodSeconds: 5
+            failureThreshold: 120
+          readinessProbe:
+            httpGet: { path: /healthz, port: 8000 }
+            periodSeconds: 5
+      volumes:
+        - name: app
+          configMap: { name: model-a-app }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client
+  namespace: tenant-a
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: client }
+  template:
+    metadata:
+      labels: { app: client }
+    spec:
+      containers:
+        - name: curl
+          image: curlimages/curl:8.22.0
+          command: ["sleep", "infinity"]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client
+  namespace: tenant-b
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: client }
+  template:
+    metadata:
+      labels: { app: client }
+    spec:
+      containers:
+        - name: curl
+          image: curlimages/curl:8.22.0
+          command: ["sleep", "infinity"]
+---
+apiVersion: policy.linkerd.io/v1beta3
+kind: Server
+metadata:
+  name: model
+  namespace: tenant-b
+spec:
+  podSelector:
+    matchLabels: { app: tenant-b-model }
+  port: 8000
+  proxyProtocol: HTTP/1
+---
+apiVersion: policy.linkerd.io/v1alpha1
+kind: MeshTLSAuthentication
+metadata:
+  name: tenant-b-only
+  namespace: tenant-b
+spec:
+  identities:
+    - "*.tenant-b.serviceaccount.identity.linkerd.cluster.local"
+---
+apiVersion: policy.linkerd.io/v1alpha1
+kind: AuthorizationPolicy
+metadata:
+  name: model-tenant-b-only
+  namespace: tenant-b
+spec:
+  targetRef:
+    group: policy.linkerd.io
+    kind: Server
+    name: model
+  requiredAuthenticationRefs:
+    - group: policy.linkerd.io
+      kind: MeshTLSAuthentication
+      name: tenant-b-only
