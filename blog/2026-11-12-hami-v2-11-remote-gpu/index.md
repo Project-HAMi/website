@@ -5,10 +5,7 @@ slug: hami-v2-11-remote-gpu
 description: "Deploy HAMi v2.11 Remote GPU, run CUDA Samples and vLLM on a CPU-only Kubernetes node, and verify real inference on a remote Tesla T4."
 authors: [lixd]
 tags: ["HAMi", "GPU", "Kubernetes", { label: "vLLM", permalink: "vllm" }]
-image: /img/blog/hami-v2-11-remote-gpu/cover.jpg
 ---
-
-![HAMi v2.11 Remote GPU: Run CUDA Anywhere](/img/blog/hami-v2-11-remote-gpu/cover.jpg)
 
 HAMi v2.11.0 introduces **Remote GPU access**, allowing CPU-only machines to use GPUs on other machines. CUDA workloads and GPU resources can now run on separate nodes.
 
