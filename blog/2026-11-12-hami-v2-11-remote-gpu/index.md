@@ -1,6 +1,6 @@
 ---
 title: "HAMi v2.11 Remote GPU in Practice: Run CUDA Anywhere"
-date: "2026-10-12"
+date: "2026-11-12"
 slug: hami-v2-11-remote-gpu
 description: "Deploy HAMi v2.11 Remote GPU, run CUDA Samples and vLLM on a CPU-only Kubernetes node, and verify real inference on a remote Tesla T4."
 authors: [lixd]
