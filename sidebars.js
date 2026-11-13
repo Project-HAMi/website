@@ -26,6 +26,8 @@ const vendors = [
       "remote-gpu",
       "specify-device-memory-usage",
       "specify-device-core-usage",
+      "gpu-sharing-benchmarks",
+      "gpu-sharing-reproduction",
       "specify-device-type-to-use",
       "specify-device-uuid-to-use",
       "scheduling-policy",

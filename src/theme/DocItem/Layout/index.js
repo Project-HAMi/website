@@ -35,12 +35,12 @@ function useDocTOC() {
 export default function DocItemLayout({ children }) {
   useImageLightbox();
   const docTOC = useDocTOC();
-  const { metadata } = useDoc();
+  const { metadata, frontMatter } = useDoc();
   return (
     <div className="row">
       <div className={clsx("col", !docTOC.hidden && styles.docItemCol)}>
         <ContentVisibility metadata={metadata} />
-        <DocVersionBanner />
+        {!frontMatter.hide_version_banner && <DocVersionBanner />}
         <div className={styles.docItemContainer}>
           <article>
             <div className={styles.docBreadcrumbsRow}>
