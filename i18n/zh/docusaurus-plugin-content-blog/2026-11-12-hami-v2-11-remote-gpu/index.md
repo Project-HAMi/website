@@ -1,6 +1,6 @@
 ---
 title: "HAMi v2.11 Remote GPU 实战：Run CUDA Anywhere"
-date: "2026-10-12"
+date: "2026-11-12"
 slug: hami-v2-11-remote-gpu
 description: "介绍 HAMi v2.11 Remote GPU 的部署方式，在纯 CPU Kubernetes 节点运行 CUDA Samples 和 vLLM，通过远端 T4 完成真实推理。"
 authors: [lixd]
@@ -25,7 +25,7 @@ Lupine 是一个 `GPU-over-IP` 项目，可以让 CPU-only 机器通过网络使
 - Server 节点拥有 GPU，需要安装 NVIDIA 驱动并运行 Lupine 服务端，负责接收远程 CUDA 调用、执行 GPU 计算并返回结果。
 - Client 节点运行 CUDA 应用，通过加载 Lupine 客户端库，将 CUDA 调用经网络转发给 Server，无需本地 GPU 和 NVIDIA 驱动。
 
-![本地 GPU 与 Remote GPU 的工作原理对比](/img/blog/hami-v2-11-remote-gpu/zh/remote-gpu-principle.jpg)
+![本地 GPU 与 Remote GPU 的工作原理对比](/img/blog/hami-v2-11-remote-gpu/zh/remote-gpu-principle.svg#light-only) ![本地 GPU 与 Remote GPU 的工作原理对比](/img/blog/hami-v2-11-remote-gpu/zh/remote-gpu-principle-dark.svg#dark-only)
 
 应用进程运行在 CPU Client，客户端库将 CUDA 调用通过网络转发给 GPU Server，由服务端驱动访问 GPU 执行计算，再返回调用结果。
 
@@ -35,7 +35,7 @@ Lupine 是一个 `GPU-over-IP` 项目，可以让 CPU-only 机器通过网络使
 
 将这套能力接入 Kubernetes，需要解决几个问题。哪些节点可以提供远程 GPU？一个 Pod 应该使用哪台 Server？应用启动时，客户端库和连接地址如何准备？HAMi 将这些工作接入了资源发现、调度和 Pod 注入流程。
 
-![HAMi Remote GPU 控制面与远程 CUDA 调用架构](/img/blog/hami-v2-11-remote-gpu/zh/remote-gpu-architecture.jpg)
+![HAMi Remote GPU 控制面与远程 CUDA 调用架构](/img/blog/hami-v2-11-remote-gpu/zh/remote-gpu-architecture.svg#light-only) ![HAMi Remote GPU 控制面与远程 CUDA 调用架构](/img/blog/hami-v2-11-remote-gpu/zh/remote-gpu-architecture-dark.svg#dark-only)
 
 ### 2.1 将 GPU 节点注册为 Server
 

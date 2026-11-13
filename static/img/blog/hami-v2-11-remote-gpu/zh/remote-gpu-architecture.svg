@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" role="img" aria-labelledby="title description">
+  <title id="title">HAMi Remote GPU 控制面与远程 CUDA 调用架构</title>
+  <desc id="description">HAMi 发现 GPU Server 并为 Pod 选择 Client 和 Server。init 容器提供客户端库，CPU Client 中的工作负载通过网络访问 Lupine 服务端，由 GPU Server 的驱动与 GPU 执行计算。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 Z" fill="#39c6f4" fill-opacity="0.75"/>
+    </marker>
+    <style>
+      text {
+        fill: #1a3956;
+        font-family: "Source Sans 3", "Noto Sans", "Segoe UI", "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif;
+        font-size: 20px;
+      }
+      .heading {
+        fill: #15324d;
+        font-family: "Space Grotesk", "Avenir Next", "Segoe UI", "PingFang SC", "Noto Sans CJK SC", sans-serif;
+        font-size: 24px;
+        font-weight: 600;
+      }
+      .label { fill: #15324d; font-size: 22px; font-weight: 600; }
+      .muted { fill: #5a748f; font-size: 18px; }
+      .mono { font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace; font-size: 18px; }
+      .panel { fill: #ffffff; stroke: #d5dee8; stroke-width: 1.5; }
+      .node { fill: #ffffff; stroke: #5a748f; stroke-width: 1.5; }
+      .hami { fill: #10d05d; fill-opacity: 0.08; stroke: #10d05d; stroke-width: 2; }
+      .scheduler { fill: #7c8cff; fill-opacity: 0.08; stroke: #7c8cff; stroke-width: 2; }
+      .connector { fill: none; stroke: #39c6f4; stroke-opacity: 0.75; stroke-width: 2.5; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect width="1200" height="800" rx="16" fill="#f5f8fb"/>
+  <!-- The control plane selects the Server and prepares the Pod -->
+  <rect class="panel" x="24" y="24" width="1152" height="210" rx="14"/>
+  <text class="heading" x="48" y="64">控制面</text>
+  <text class="muted" x="48" y="96">选择 GPU Server</text>
+  <text class="muted" x="48" y="124">与 Client 节点</text>
+  <rect class="scheduler" x="390" y="84" width="420" height="100" rx="10"/>
+  <text class="label" x="600" y="126" text-anchor="middle">HAMi 调度器</text>
+  <text class="muted" x="600" y="158" text-anchor="middle">remote-gpu 后端</text>
+
+  <text class="heading" x="24" y="282">数据面</text>
+
+  <!-- CPU-only Client and its injected libraries -->
+  <rect class="panel" x="24" y="312" width="500" height="460" rx="14"/>
+  <text class="heading" x="48" y="352">Client 节点</text>
+  <text class="muted" x="48" y="384">无 GPU / 无 NVIDIA 驱动</text>
+  <rect class="node" x="48" y="412" width="452" height="328" rx="12" stroke-dasharray="9 6"/>
+  <text class="label" x="70" y="448">Pod</text>
+  <text class="mono" x="70" y="478">nvidia.com/remote-gpu: 1</text>
+
+  <rect class="hami" x="76" y="518" width="396" height="76" rx="10"/>
+  <text class="label" x="274" y="550" text-anchor="middle">init 容器</text>
+  <text class="muted" x="274" y="578" text-anchor="middle">Lupine 客户端库 + libvgpu.so</text>
+  <path class="connector" d="M 150 594 V 648"/>
+  <text class="muted" x="176" y="628">提供客户端库</text>
+  <rect class="node" x="76" y="648" width="396" height="68" rx="10"/>
+  <text class="label" x="274" y="677" text-anchor="middle">工作负载容器</text>
+  <text class="muted" x="274" y="703" text-anchor="middle">CUDA / vLLM</text>
+
+  <!-- GPU Server discovery and GPU registration -->
+  <rect class="panel" x="660" y="312" width="516" height="460" rx="14"/>
+  <text class="heading" x="684" y="352">GPU Server 节点</text>
+  <text class="mono" x="684" y="384">operatingmode: remote</text>
+  <rect class="hami" x="908" y="444" width="244" height="100" rx="10"/>
+  <text class="label" x="1030" y="483" text-anchor="middle" style="font-size: 20px">HAMi Device Plugin</text>
+  <text class="muted" x="1030" y="515" text-anchor="middle">节点标签 / GPU 注册</text>
+
+  <rect class="node" x="684" y="570" width="234" height="86" rx="10"/>
+  <text class="label" x="801" y="607" text-anchor="middle">Lupine 服务端</text>
+  <text class="mono" x="801" y="637" text-anchor="middle">TCP 14833</text>
+  <rect class="node" x="756" y="684" width="328" height="64" rx="10"/>
+  <text class="label" x="920" y="724" text-anchor="middle">NVIDIA GPU 与驱动</text>
+  <path class="connector" d="M 801 656 V 668 H 850 V 684"/>
+  <path class="connector" d="M 1030 544 V 668 H 1000 V 684"/>
+
+  <!-- The scheduler discovers a pool and binds the workload -->
+  <path class="connector" d="M 740 184 V 266 H 1100 V 312"/>
+  <text class="muted" x="930" y="245" text-anchor="middle">发现带标签的 Lupine 资源池</text>
+  <path class="connector" d="M 480 184 V 412"/>
+  <text class="muted" x="454" y="255" text-anchor="end">绑定 Pod，注入</text>
+  <text class="mono" x="454" y="284" text-anchor="end">LUPINE_SERVER</text>
+
+  <!-- CUDA calls travel from the application to the remote endpoint -->
+  <path class="connector" d="M 472 682 H 640 V 613 H 684"/>
+  <text class="muted" x="582" y="640" text-anchor="middle">网络</text>
+  <text class="muted" x="582" y="665" text-anchor="middle">CUDA 调用</text>
+</svg>
