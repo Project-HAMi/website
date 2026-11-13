@@ -18,7 +18,7 @@ A pod that asks for no memory or cores gets the whole GPU. A pod that sets only 
 
 :::note
 
-HAMi v2.10.0 has the memory, core, type and UUID features. These need a newer HAMi release and are marked where they appear below: `amd.com/gpumem-percentage`, whole-WGP rounding of core requests on RDNA, the namespace ResourceQuota check, node health from allocatable GPUs, `amd.com/numa-bind`, `amd.com/link-bind`, the `topology-aware` policy for AMD, and `devices.amd.runtimeClassName`.
+HAMi v2.10.0 has the memory, core, type and UUID features. These need HAMi v2.11.0 or later and are marked where they appear below: `amd.com/gpumem-percentage`, whole-WGP rounding of core requests on RDNA, the namespace ResourceQuota check, node health from allocatable GPUs, `amd.com/numa-bind`, `amd.com/link-bind`, the `topology-aware` policy for AMD, and `devices.amd.runtimeClassName`.
 
 :::
 
@@ -36,7 +36,7 @@ HAMi v2.10.0 has the memory, core, type and UUID features. These need a newer HA
 
 ### Deploy
 
-1. Install the HAMi chart as above. It registers the AMD resources with the scheduler (`devices.amd.*` in `values.yaml`). To set a runtime class on every pod that requests an AMD GPU, set `devices.amd.runtimeClassName`; a pod that sets its own `runtimeClassName` keeps it, and a pod without a GPU is left alone (needs a HAMi release newer than v2.10.0, [Project-HAMi/HAMi#3194](https://github.com/Project-HAMi/HAMi/pull/3194)).
+1. Install the HAMi chart as above. It registers the AMD resources with the scheduler (`devices.amd.*` in `values.yaml`). To set a runtime class on every pod that requests an AMD GPU, set `devices.amd.runtimeClassName`; a pod that sets its own `runtimeClassName` keeps it, and a pod without a GPU is left alone (needs HAMi v2.11.0 or later, [Project-HAMi/HAMi#3194](https://github.com/Project-HAMi/HAMi/pull/3194)).
 2. Install [amd-device-plugin](https://github.com/Project-HAMi/amd-device-plugin) on the AMD nodes. It publishes each GPU in the node annotation `hami.io/node-amd-register`, hands out CU slices and memory limits to the pods, and marks a GPU unhealthy when its DRM device cannot be opened or the AMD Device Metrics Exporter reports it unhealthy. From a checkout of the plugin release you want:
 
 ```bash
@@ -95,9 +95,9 @@ More examples:
 
 ### Scheduling behavior
 
-- **Multi-GPU pods.** Set `amd.com/numa-bind: "true"` to keep every GPU on one NUMA node, or `amd.com/link-bind: "true"` to require that all GPUs are linked to each other over XGMI. The `topology-aware` policy picks the group with the most XGMI links without making it a hard requirement. These need a HAMi release newer than v2.10.0. The `mutex` policy, which only uses idle GPUs, is in v2.10.0.
-- **Namespace quota.** The scheduler checks a namespace `ResourceQuota` on `limits.amd.com/gpumem` before it places a pod, including memory that comes from a whole-GPU or percentage request. A pod over the quota stays `Pending` with `ResourceQuotaNotFit`; other namespaces are not affected (needs a HAMi release newer than v2.10.0).
-- **Node health.** While the allocatable `amd.com/gpu` of a node is 0, the scheduler keeps a new pod `Pending`, and the pod runs once the plugin reports GPUs again (needs a HAMi release newer than v2.10.0).
+- **Multi-GPU pods.** Set `amd.com/numa-bind: "true"` to keep every GPU on one NUMA node, or `amd.com/link-bind: "true"` to require that all GPUs are linked to each other over XGMI. The `topology-aware` policy picks the group with the most XGMI links without making it a hard requirement. These need HAMi v2.11.0 or later. The `mutex` policy, which only uses idle GPUs, is in v2.10.0.
+- **Namespace quota.** The scheduler checks a namespace `ResourceQuota` on `limits.amd.com/gpumem` before it places a pod, including memory that comes from a whole-GPU or percentage request. A pod over the quota stays `Pending` with `ResourceQuotaNotFit`; other namespaces are not affected (needs HAMi v2.11.0 or later).
+- **Node health.** While the allocatable `amd.com/gpu` of a node is 0, the scheduler keeps a new pod `Pending`, and the pod runs once the plugin reports GPUs again (needs HAMi v2.11.0 or later).
 
 ### Things to know
 

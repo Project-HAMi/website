@@ -160,7 +160,7 @@ HAMi 没有强制使用的外部数据库。存储主要用于镜像层、日志
 
 采用语义化版本、带标签的发布、发布分支、自动化的镜像/chart/发布说明工作流，并有文档化的人工验证步骤。
 
-- 发布流程文档：https://github.com/Project-HAMi/HAMi/blob/master/.github/release-process.md
+- 发布流程文档：https://github.com/Project-HAMi/HAMi/blob/v2.11.0/.github/release-process.md
 
 ### 安装
 

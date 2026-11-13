@@ -2,7 +2,7 @@
 title: Allocate GPUs on one NUMA node
 ---
 
-Requires a HAMi release newer than v2.10.0 ([Project-HAMi/HAMi#3186](https://github.com/Project-HAMi/HAMi/pull/3186)).
+Requires HAMi v2.11.0 or later ([Project-HAMi/HAMi#3186](https://github.com/Project-HAMi/HAMi/pull/3186)).
 
 To keep every GPU of a multi-GPU pod on one NUMA node, set the annotation `amd.com/numa-bind` to `"true"`. The scheduler reads each GPU's NUMA node from the registration that amd-device-plugin publishes, and keeps the pod `Pending` if no single NUMA node has enough free GPUs. A request for a single GPU is not affected.
 

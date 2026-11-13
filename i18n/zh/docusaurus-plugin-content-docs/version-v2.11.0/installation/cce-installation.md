@@ -65,7 +65,7 @@ ubuntu22-nvidia-driver-installer   1         1         1       1            1   
 
 ## 将 HAMi 镜像复制到 SWR {#copy-the-hami-images}
 
-HAMi Chart 会从 Docker Hub 和 `registry.cn-hangzhou.aliyuncs.com` 拉取镜像，无法访问公网的节点拉取不到。将这三个镜像复制到与集群同地域的容器镜像服务（SWR）中。
+HAMi Chart 会从 Docker Hub 和 `registry.k8s.io` 拉取镜像，无法访问公网的节点拉取不到。将这三个镜像复制到与集群同地域的容器镜像服务（SWR）中。
 
 先[创建组织](https://support.huaweicloud.com/usermanual-swr/swr_01_0014.html)，然后在一台能访问 Docker Hub 和 `registry.k8s.io` 的机器上，按[推送镜像到镜像仓库](https://support.huaweicloud.com/usermanual-swr/swr_01_0011.html)在 SWR 控制台生成登录指令，并将其中的 `docker login` 换成 `skopeo login` 运行。
 
@@ -74,10 +74,10 @@ Chart 会将 `kube-scheduler` 镜像的 tag 设置为集群的 Kubernetes 版本
 复制镜像，将 `<地域>` 替换为地域 ID（例如西南-贵阳一为 `cn-southwest-2`），并将 `v1.36.2` 替换为集群对应的 tag。`--all` 会复制镜像的所有平台：
 
 ```bash
-skopeo copy --all docker://docker.io/projecthami/hami:v2.10.0 \
-  docker://swr.<地域>.myhuaweicloud.com/<组织名称>/hami:v2.10.0
-skopeo copy --all docker://docker.io/liangjw/kube-webhook-certgen:v1.1.1 \
-  docker://swr.<地域>.myhuaweicloud.com/<组织名称>/kube-webhook-certgen:v1.1.1
+skopeo copy --all docker://docker.io/projecthami/hami:v2.11.0 \
+  docker://swr.<地域>.myhuaweicloud.com/<组织名称>/hami:v2.11.0
+skopeo copy --all docker://registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.6.9 \
+  docker://swr.<地域>.myhuaweicloud.com/<组织名称>/kube-webhook-certgen:v1.6.9
 skopeo copy --all docker://registry.k8s.io/kube-scheduler:v1.36.2 \
   docker://swr.<地域>.myhuaweicloud.com/<组织名称>/kube-scheduler:v1.36.2
 ```
@@ -88,6 +88,7 @@ skopeo copy --all docker://registry.k8s.io/kube-scheduler:v1.36.2 \
 
 ```yaml
 global:
+  imageTag: v2.11.0
   imagePullSecrets:
     - default-secret
 scheduler:
@@ -103,6 +104,7 @@ scheduler:
     imageNew:
       registry: swr.<地域>.myhuaweicloud.com
       repository: <组织名称>/kube-webhook-certgen
+      tag: v1.6.9
 devices:
   nvidia:
     runtimeClassName: nvidia
@@ -124,7 +126,7 @@ devicePlugin:
 按[通过 Helm 在线安装](./online-installation.md)部署，并在安装命令中传入 values 文件：
 
 ```bash
-helm install hami hami-charts/hami -n kube-system --version 2.10.0 -f hami-cce-values.yaml
+helm install hami hami-charts/hami -n kube-system --version 2.11.0 -f hami-cce-values.yaml
 ```
 
 `hami-device-plugin` 和 `hami-scheduler` 运行后，确认 RuntimeClass 已创建，并且 HAMi 调度器已持有选主租约：

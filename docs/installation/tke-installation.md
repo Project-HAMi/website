@@ -5,7 +5,7 @@ sidebar_label: HAMi on TKE
 
 This guide covers the TKE-specific configuration for installing HAMi on NVIDIA GPU nodes in [Tencent Kubernetes Engine (TKE)](https://cloud.tencent.com/product/tke). For everything else, follow [Prerequisites](./prerequisites.md) and [Online Installation from Helm](./online-installation.md).
 
-The steps were verified in the following environment:
+This guide uses the following environment:
 
 | Component         | Version                                         |
 | ----------------- | ----------------------------------------------- |
@@ -14,7 +14,7 @@ The steps were verified in the following environment:
 | Kubernetes        | `v1.34.1-tke.8`                                 |
 | Container runtime | containerd `1.6.9-tke.9`                        |
 | NVIDIA driver     | `580.126.20`, CUDA `13.0.2`, installed by TKE   |
-| HAMi              | `2.10.0`                                        |
+| HAMi              | `2.11.0`                                        |
 
 ## Prepare the GPU node pool
 
@@ -71,27 +71,43 @@ nvidia-device-plugin-daemonset   0         0         0       0            0     
 
 ## Prepare the HAMi values {#prepare-the-hami-values}
 
-TKE nodes have no public IP by default, so unless the VPC provides a NAT gateway they can pull images only from Tencent Cloud internal endpoints. The `docker.io/projecthami/hami` image still pulls normally, because TKE configures `mirror.ccs.tencentyun.com` as the containerd mirror for `docker.io`. The chart's default `kube-scheduler` image, however, comes from `registry.cn-hangzhou.aliyuncs.com`, which such nodes cannot reach, so the `hami-scheduler` Pod fails with an error similar to:
+TKE nodes have no public IP by default, so unless the VPC provides a NAT gateway they can pull images only from Tencent Cloud internal endpoints. The `docker.io/projecthami/hami` image still pulls normally, because TKE configures `mirror.ccs.tencentyun.com` as the containerd mirror for `docker.io`. The chart's default kube-scheduler and certgen images, however, come from `registry.k8s.io`, which such nodes cannot reach.
+
+When the kube-scheduler image pull fails, the `hami-scheduler` Pod reports an error similar to:
 
 ```text
 Failed to pull image "registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:v1.34.1": ... dial tcp 120.55.105.209:443: i/o timeout
 ```
 
-Use TKE's `ccr.ccs.tencentyun.com/tkeimages/hyperkube` image instead. It contains the `kube-scheduler` binary, and its tags match TKE's Kubernetes versions. Find the version in the `VERSION` column:
+If the certgen image pull fails during installation, inspect the `hami-admission-create` Job and its Pod. Helm waits for this pre-install Job to complete, so the `hami-scheduler` Pod may not exist yet.
+
+For kube-scheduler, use TKE's `ccr.ccs.tencentyun.com/tkeimages/hyperkube` image instead. It contains the `kube-scheduler` binary, and its tags match TKE's Kubernetes versions. Find the version in the `VERSION` column:
 
 ```bash
 kubectl get nodes
 ```
 
-Save the following as `hami-tke-values.yaml`, replacing the tag with your cluster version:
+Save the following as `hami-tke-values.yaml`, replacing the kube-scheduler tag with your cluster version and the registry and repository path placeholders:
 
 ```yaml
+global:
+  imageTag: v2.11.0
 scheduler:
   kubeScheduler:
     image:
       registry: ccr.ccs.tencentyun.com
       repository: tkeimages/hyperkube
       tag: v1.34.1-tke.8
+  patch:
+    imageNew:
+      # Before installation, run on a machine with access to both registries:
+      # skopeo login <internal-registry>
+      # skopeo copy --all docker://registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.6.9 docker://<internal-registry>/<image-namespace>/kube-webhook-certgen:v1.6.9
+      registry: <internal-registry>
+      repository: <image-namespace>/kube-webhook-certgen
+      tag: v1.6.9
+      # If pull credentials are required, use an existing image pull Secret in kube-system:
+      # pullSecrets: [<image-pull-secret>]
 devicePlugin:
   nvidiaDriverRoot: /
 ```
@@ -101,7 +117,7 @@ devicePlugin:
 Follow [Online Installation from Helm](./online-installation.md) and add the values file to the installation command:
 
 ```bash
-helm install hami hami-charts/hami -n kube-system -f hami-tke-values.yaml
+helm install hami hami-charts/hami -n kube-system --version 2.11.0 -f hami-tke-values.yaml
 ```
 
 After `hami-device-plugin` and `hami-scheduler` are running, confirm that HAMi registered the GPU. With the default `devices.nvidia.deviceSplitCount` of 10, a single T4 is reported as 10 `nvidia.com/gpu` resources:

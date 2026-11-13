@@ -13,7 +13,7 @@ NUMA alignment closes that gap in two parts:
 - The device plugin advertises each vGPU replica's NUMA node (`enableNumaTopology`), so the Topology Manager can restrict an allocation to NUMA-local replicas.
 - When that restriction excludes the scheduler's original pick, the device plugin asks the scheduler to **refit** the allocation onto one of kubelet's allowed GPUs. The scheduler re-runs its normal policy fit, updates both allocation annotations, and moves the reservation, so runtime, annotations, and accounting agree.
 
-Requires a HAMi release newer than v2.10.0 (the NUMA refit, [Project-HAMi/HAMi#2731](https://github.com/Project-HAMi/HAMi/pull/2731)). hami-core mode only; MIG-mode nodes are excluded.
+Requires HAMi v2.11.0 or later (the NUMA refit, [Project-HAMi/HAMi#2731](https://github.com/Project-HAMi/HAMi/pull/2731)). hami-core mode only; MIG-mode nodes are excluded.
 
 ## Node prerequisites
 

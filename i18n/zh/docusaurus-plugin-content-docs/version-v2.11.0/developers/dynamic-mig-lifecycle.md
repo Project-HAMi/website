@@ -50,4 +50,4 @@ CDI 规范属于 MIG 实例，而不属于 Pod：
 
 ## 验证
 
-状态机、重启恢复、精确复用、placement 压力回收、活跃实例保护、CDI 保留以及 CDI 清理重试，都可以通过 mock 的 NVML 和 CDI 接口进行测试。发布前，涉及分配的更改还必须按照 HAMi [`CONTRIBUTING.md`](https://github.com/Project-HAMi/HAMi/blob/master/CONTRIBUTING.md) 的要求，在支持 MIG 的 NVIDIA GPU 上验证。
+状态机、重启恢复、精确复用、placement 压力回收、活跃实例保护、CDI 保留以及 CDI 清理重试，都可以通过 mock 的 NVML 和 CDI 接口进行测试。发布前，涉及分配的更改还必须按照 HAMi [`CONTRIBUTING.md`](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/CONTRIBUTING.md) 的要求，在支持 MIG 的 NVIDIA GPU 上验证。

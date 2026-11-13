@@ -19,7 +19,7 @@ HAMi 通过以下资源在 Pod 之间共享 AMD GPU（Radeon 和 Instinct）：
 
 :::note
 
-HAMi v2.10.0 已包含显存、算力、类型和 UUID 相关功能。以下功能需要更新的 HAMi 版本，并在下文相应位置标注：`amd.com/gpumem-percentage`、RDNA 上核心请求按完整 WGP 向上取整、命名空间 ResourceQuota 检查、根据可分配 GPU 判断节点健康、`amd.com/numa-bind`、`amd.com/link-bind`、AMD 的 `topology-aware` 策略，以及 `devices.amd.runtimeClassName`。
+HAMi v2.10.0 已包含显存、算力、类型和 UUID 相关功能。以下功能需要 HAMi v2.11.0 或更高版本，并在下文相应位置标注：`amd.com/gpumem-percentage`、RDNA 上核心请求按完整 WGP 向上取整、命名空间 ResourceQuota 检查、根据可分配 GPU 判断节点健康、`amd.com/numa-bind`、`amd.com/link-bind`、AMD 的 `topology-aware` 策略，以及 `devices.amd.runtimeClassName`。
 
 :::
 
@@ -37,7 +37,7 @@ HAMi v2.10.0 已包含显存、算力、类型和 UUID 相关功能。以下功�
 
 ### 部署
 
-1. 按上面的方式安装 HAMi chart。它会向调度器注册 AMD 资源（`values.yaml` 中的 `devices.amd.*`）。如果要给所有申请 AMD GPU 的 Pod 设置 runtime class，设置 `devices.amd.runtimeClassName`；Pod 自己设置了 `runtimeClassName` 时保持不变，不申请 GPU 的 Pod 不受影响（需要比 v2.10.0 更新的 HAMi 版本，[Project-HAMi/HAMi#3194](https://github.com/Project-HAMi/HAMi/pull/3194)）。
+1. 按上面的方式安装 HAMi chart。它会向调度器注册 AMD 资源（`values.yaml` 中的 `devices.amd.*`）。如果要给所有申请 AMD GPU 的 Pod 设置 runtime class，设置 `devices.amd.runtimeClassName`；Pod 自己设置了 `runtimeClassName` 时保持不变，不申请 GPU 的 Pod 不受影响（需要 HAMi v2.11.0 或更高版本，[Project-HAMi/HAMi#3194](https://github.com/Project-HAMi/HAMi/pull/3194)）。
 2. 在 AMD 节点上安装 [amd-device-plugin](https://github.com/Project-HAMi/amd-device-plugin)。它把每张 GPU 发布到节点注解 `hami.io/node-amd-register`，为 Pod 分配 CU 切片和显存限制；当 DRM 设备无法打开，或 AMD Device Metrics Exporter 报告 GPU 不健康时，将该 GPU 标记为不健康。在所需插件版本的源码目录中执行：
 
 ```bash
@@ -96,9 +96,9 @@ spec:
 
 ### 调度行为
 
-- **多 GPU Pod。** 设置 `amd.com/numa-bind: "true"` 让所有 GPU 位于同一个 NUMA 节点，或设置 `amd.com/link-bind: "true"` 要求所有 GPU 之间两两通过 XGMI 互联。`topology-aware` 策略会选择 XGMI 链路最多的一组，但不是硬性要求。这些功能需要比 v2.10.0 更新的 HAMi 版本。只使用空闲 GPU 的 `mutex` 策略已包含在 v2.10.0 中。
-- **命名空间配额。** 调度器在放置 Pod 之前会检查命名空间 `ResourceQuota` 中的 `limits.amd.com/gpumem`，包括由整卡或百分比请求换算出的显存。超出配额的 Pod 保持 `Pending`，原因为 `ResourceQuotaNotFit`；其他命名空间不受影响（需要比 v2.10.0 更新的 HAMi 版本）。
-- **节点健康。** 节点上可分配的 `amd.com/gpu` 为 0 时，调度器让新 Pod 保持 `Pending`，插件重新上报 GPU 后 Pod 开始运行（需要比 v2.10.0 更新的 HAMi 版本）。
+- **多 GPU Pod。** 设置 `amd.com/numa-bind: "true"` 让所有 GPU 位于同一个 NUMA 节点，或设置 `amd.com/link-bind: "true"` 要求所有 GPU 之间两两通过 XGMI 互联。`topology-aware` 策略会选择 XGMI 链路最多的一组，但不是硬性要求。这些功能需要 HAMi v2.11.0 或更高版本。只使用空闲 GPU 的 `mutex` 策略已包含在 v2.10.0 中。
+- **命名空间配额。** 调度器在放置 Pod 之前会检查命名空间 `ResourceQuota` 中的 `limits.amd.com/gpumem`，包括由整卡或百分比请求换算出的显存。超出配额的 Pod 保持 `Pending`，原因为 `ResourceQuotaNotFit`；其他命名空间不受影响（需要 HAMi v2.11.0 或更高版本）。
+- **节点健康。** 节点上可分配的 `amd.com/gpu` 为 0 时，调度器让新 Pod 保持 `Pending`，插件重新上报 GPU 后 Pod 开始运行（需要 HAMi v2.11.0 或更高版本）。
 
 ### 注意事项
 

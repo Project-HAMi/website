@@ -6,7 +6,7 @@ translated: true
 
 本文介绍在[腾讯云容器服务（TKE）](https://cloud.tencent.com/product/tke)的 NVIDIA GPU 节点上安装 HAMi 所需的 TKE 配置。其他通用步骤见[安装前提条件](./prerequisites.md)和[通过 Helm 在线安装](./online-installation.md)。
 
-以下步骤已在如下环境中验证：
+本文使用以下环境：
 
 | 组件        | 版本                                          |
 | ----------- | --------------------------------------------- |
@@ -15,7 +15,7 @@ translated: true
 | Kubernetes  | `v1.34.1-tke.8`                               |
 | 容器运行时  | containerd `1.6.9-tke.9`                      |
 | NVIDIA 驱动 | `580.126.20`，CUDA `13.0.2`，由 TKE 安装      |
-| HAMi        | `2.10.0`                                      |
+| HAMi        | `2.11.0`                                      |
 
 ## 准备 GPU 节点池
 
@@ -72,27 +72,43 @@ nvidia-device-plugin-daemonset   0         0         0       0            0     
 
 ## 准备 HAMi values 文件 {#prepare-the-hami-values}
 
-TKE 节点默认没有公网 IP，除非 VPC 配置了 NAT 网关，否则只能从腾讯云内网拉取镜像。`docker.io/projecthami/hami` 不受影响，因为 TKE 已将 `mirror.ccs.tencentyun.com` 配置为 containerd 的 `docker.io` 镜像源；但 Chart 默认的 `kube-scheduler` 镜像来自 `registry.cn-hangzhou.aliyuncs.com`，这类节点无法访问该地址，`hami-scheduler` Pod 会报类似以下错误：
+TKE 节点默认没有公网 IP，除非 VPC 配置了 NAT 网关，否则只能从腾讯云内网拉取镜像。`docker.io/projecthami/hami` 不受影响，因为 TKE 已将 `mirror.ccs.tencentyun.com` 配置为 containerd 的 `docker.io` 镜像源；但 Chart 默认的 kube-scheduler 和 certgen 镜像来自 `registry.k8s.io`，这类节点无法访问该地址。
+
+kube-scheduler 镜像拉取失败时，`hami-scheduler` Pod 会报类似以下错误：
 
 ```text
 Failed to pull image "registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:v1.34.1": ... dial tcp 120.55.105.209:443: i/o timeout
 ```
 
-改用 TKE 的 `ccr.ccs.tencentyun.com/tkeimages/hyperkube` 镜像。该镜像包含 `kube-scheduler` 可执行文件，镜像 tag 与 TKE 的 Kubernetes 版本一致。在以下命令输出的 `VERSION` 列中查看集群版本：
+安装时若 certgen 镜像拉取失败，应检查 `hami-admission-create` Job 及其 Pod。Helm 会等待这个安装前 Job 完成，此时 `hami-scheduler` Pod 可能尚未创建。
+
+kube-scheduler 改用 TKE 的 `ccr.ccs.tencentyun.com/tkeimages/hyperkube` 镜像。该镜像包含 `kube-scheduler` 可执行文件，镜像 tag 与 TKE 的 Kubernetes 版本一致。在以下命令输出的 `VERSION` 列中查看集群版本：
 
 ```bash
 kubectl get nodes
 ```
 
-将以下内容保存为 `hami-tke-values.yaml`，并将 tag 替换为集群版本：
+将以下内容保存为 `hami-tke-values.yaml`，将 kube-scheduler 的 tag 替换为集群版本，并替换镜像仓库和路径占位符：
 
 ```yaml
+global:
+  imageTag: v2.11.0
 scheduler:
   kubeScheduler:
     image:
       registry: ccr.ccs.tencentyun.com
       repository: tkeimages/hyperkube
       tag: v1.34.1-tke.8
+  patch:
+    imageNew:
+      # 安装前，在能访问源仓库和目标仓库的机器上执行：
+      # skopeo login <内网镜像仓库>
+      # skopeo copy --all docker://registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.6.9 docker://<内网镜像仓库>/<镜像命名空间>/kube-webhook-certgen:v1.6.9
+      registry: <内网镜像仓库>
+      repository: <镜像命名空间>/kube-webhook-certgen
+      tag: v1.6.9
+      # 需要拉取凭据时，使用 kube-system 中已有的镜像拉取 Secret：
+      # pullSecrets: [<image-pull-secret>]
 devicePlugin:
   nvidiaDriverRoot: /
 ```
@@ -102,7 +118,7 @@ devicePlugin:
 按[通过 Helm 在线安装](./online-installation.md)部署，并在安装命令中传入 values 文件：
 
 ```bash
-helm install hami hami-charts/hami -n kube-system -f hami-tke-values.yaml
+helm install hami hami-charts/hami -n kube-system --version 2.11.0 -f hami-tke-values.yaml
 ```
 
 `hami-device-plugin` 和 `hami-scheduler` 运行后，确认 HAMi 已注册 GPU。`devices.nvidia.deviceSplitCount` 默认为 10，因此一张 T4 会上报 10 个 `nvidia.com/gpu`：

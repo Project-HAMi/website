@@ -9,7 +9,7 @@ Huawei Ascend 设备插件为 HAMi 提供三种 NPU 切片模式：`template`（
 ## 前置条件 {#先决条件}
 
 - 安装 Ascend 驱动和 [ascend-docker-runtime](https://gitcode.com/Ascend/mind-cluster/tree/master/component/ascend-docker-runtime)，并在节点的容器运行时中注册 `ascend` handler。后文创建的 RuntimeClass 会引用此 handler。
-- 使用支持所选模式的 HAMi 调度器和 Ascend 设备插件版本。本页描述 Next 开发版本，所列字段可能尚未包含在已发布的 Chart 或镜像中。
+- 使用 HAMi v2.11.0 和支持所选模式的 Ascend 设备插件版本。
 - 确认节点上能执行 `npu-smi`。插件默认可访问 `/usr/local/Ascend/driver/tools/npu-smi` 和 `/usr/local/sbin/npu-smi`；使用其他路径时，需补充对应的主机路径挂载。
 
 ### template 模式
@@ -64,7 +64,7 @@ devices:
     hamiVnpuMode: template
 ```
 
-设备型号和模板使用 `devices.ascend.configs` 的默认定义。需要调整时，参考 [values 源码](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/values.yaml)保留集群所需的完整型号列表；列表覆盖会整体替换。模板模式不使用 `deviceSplitCount` 计算切片数量。
+设备型号和模板使用 `devices.ascend.configs` 的默认定义。需要调整时，参考 [values 源码](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/values.yaml)保留集群所需的完整型号列表；列表覆盖会整体替换。模板模式不使用 `deviceSplitCount` 计算切片数量。
 
 ### hami-core 配置
 
@@ -99,7 +99,7 @@ ENPU 同样使用 `deviceSplitCount`，有效数量不超过 `100`。每个容�
 
 按[在线安装指南](../../installation/online-installation.md)安装 HAMi，并传入 `--values hami-ascend-values.yaml`。下文以 release `hami` 为例，将命令中的 `<namespace>` 替换为 HAMi 实际所在命名空间。纯 Ascend 集群可额外设置 `devicePlugin.enabled: false` 关闭 NVIDIA 插件；混合 GPU 集群按需保留。
 
-自定义资源名时，需同步修改 `devices.ascend.customresources` 和业务 Pod。完整字段见 [HAMi Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values)。已有部署的配置变更见[升级指南](../../installation/upgrade.md)。
+自定义资源名时，需同步修改 `devices.ascend.customresources` 和业务 Pod。完整字段见 [HAMi Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/README.md#values)。已有部署的配置变更见[升级指南](../../installation/upgrade.md)。
 
 ## 部署 Ascend 设备插件
 

@@ -43,7 +43,7 @@ HAMi 是一个 CNCF Sandbox 项目，为 Kubernetes 带来 GPU 和 AI 加速器�
 | [GitHub Discussions](https://github.com/Project-HAMi/HAMi/discussions) | 提问、想法、设计方案 |
 | [Discord](https://discord.gg/Amhy7XmbNq) | 实时聊天（推荐） |
 | [CNCF Slack #hami-dev](https://cloud-native.slack.com/archives/C07T10BU4R2) | 实时聊天 |
-| [MAINTAINERS](https://github.com/Project-HAMi/HAMi/blob/master/MAINTAINERS.md) | 当前维护者列表 |
+| [MAINTAINERS](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/MAINTAINERS.md) | 当前维护者列表 |
 | [社区会议](https://docs.google.com/document/d/1YC6hco03_oXbF9IOUPJ29VWEddmITIKIfSmBX8JtGBw/edit#heading=h.g61sgp7w0d0c) | 双周 Zoom 会议，周三 16:30 UTC+8。[iCal 订阅](https://webcal.prod.itx.linuxfoundation.org/lfx/lfmd9wcrbnW1NXUzPl) |
 | [Zoom 会议链接](https://zoom-lfx.platform.linuxfoundation.org/meeting/95994137931?password=55b961b5-3e8e-4040-8657-0f2d26511f1d) | 加入双周社区会议 |
 
@@ -376,7 +376,7 @@ HAMi 使用一套明确的贡献者阶梯，责任和权限逐级递增：
 缺陷和功能请求请使用 [HAMi issue 跟踪器](https://github.com/Project-HAMi/HAMi/issues)。提交前请：
 
 - 搜索是否已有涵盖同一问题的 issue。
-- 如果是安全漏洞，请遵循[安全策略](https://github.com/Project-HAMi/HAMi/blob/master/SECURITY.md)，而不是公开提交 issue。
+- 如果是安全漏洞，请遵循[安全策略](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/SECURITY.md)，而不是公开提交 issue。
 
 网站相关问题请使用[网站 issue 跟踪器](https://github.com/Project-HAMi/website/issues)。
 
@@ -395,4 +395,4 @@ HAMi 使用一套明确的贡献者阶梯，责任和权限逐级递增：
 
 ## 许可证
 
-通过为 HAMi 贡献代码，你同意你的贡献将在 [Apache License 2.0](https://github.com/Project-HAMi/HAMi/blob/master/LICENSE) 下授权。
+通过为 HAMi 贡献代码，你同意你的贡献将在 [Apache License 2.0](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/LICENSE) 下授权。

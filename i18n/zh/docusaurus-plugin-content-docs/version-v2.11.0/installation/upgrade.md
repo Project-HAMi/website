@@ -143,7 +143,7 @@ Enflame、Kunlun、Vastai 和 Biren 的标准资源名现在由对应的设备�
 
 包含 NVIDIA 资源字段和 NVIDIA Device Plugin 配置字段：
 
-| v2.10 字段                               | 最新版字段                                    |
+| v2.10 字段                               | v2.11.0 字段                                  |
 | ---------------------------------------- | --------------------------------------------- |
 | `resourceName`                           | `devices.nvidia.resourceCountName`            |
 | `resourceMem`                            | `devices.nvidia.resourceMemoryName`           |
@@ -168,7 +168,7 @@ Enflame、Kunlun、Vastai 和 Biren 的标准资源名现在由对应的设备�
 
 #### Cambricon
 
-| v2.10 字段         | 最新版字段                             |
+| v2.10 字段         | v2.11.0 字段                           |
 | ------------------ | -------------------------------------- |
 | `mluResourceName`  | `devices.cambricon.resourceCountName`  |
 | `mluResourceMem`   | `devices.cambricon.resourceMemoryName` |
@@ -178,7 +178,7 @@ Enflame、Kunlun、Vastai 和 Biren 的标准资源名现在由对应的设备�
 
 [HAMi#2969](https://github.com/Project-HAMi/HAMi/pull/2969) 将 Hygon 设备的 DCU 命名统一改为 HCU，涉及资源名称、配置和注解。建议将 HCU（原 DCU）device plugin 升级到 Hygon 官方提供的最新版本 [k8s-hcu-device-plugin](https://github.com/HYGON-AI/k8s-hcu-device-plugin)。更新信息和配置说明见[启用 Hygon HCU 共享](../userguide/hygon-device/enable-hygon-hcu-sharing.md)。
 
-| v2.10 字段 | v2.10 默认值 | 最新版字段 | 最新版默认值 |
+| v2.10 字段 | v2.10 默认值 | v2.11.0 字段 | v2.11.0 默认值 |
 | --- | --- | --- | --- |
 | `dcuResourceName` | `hygon.com/dcunum` | `devices.hygon.resourceCountName` | `hygon.com/hcunum` |
 | `dcuResourceMem` | `hygon.com/dcumem` | `devices.hygon.resourceMemoryName` | `hygon.com/hcumem` |
@@ -190,7 +190,7 @@ Enflame、Kunlun、Vastai 和 Biren 的标准资源名现在由对应的设备�
 
 #### MetaX
 
-| v2.10 字段               | 最新版字段                          |
+| v2.10 字段               | v2.11.0 字段                        |
 | ------------------------ | ----------------------------------- |
 | `metaxResourceName`      | `devices.metax.resourceVCountName`  |
 | `metaxResourceCore`      | `devices.metax.resourceVCoreName`   |
@@ -201,7 +201,7 @@ Enflame、Kunlun、Vastai 和 Biren 的标准资源名现在由对应的设备�
 
 #### Enflame
 
-| v2.10 字段                     | 最新版字段                              |
+| v2.10 字段                     | v2.11.0 字段                            |
 | ------------------------------ | --------------------------------------- |
 | `enflameResourceNameDRSGCU`    | `devices.enflame.resourceNameDRSGCU`    |
 | `enflameResourceNameGCUMemory` | `devices.enflame.resourceNameGCUMemory` |
@@ -209,7 +209,7 @@ Enflame、Kunlun、Vastai 和 Biren 的标准资源名现在由对应的设备�
 
 #### Kunlunxin
 
-| v2.10 字段                  | 最新版字段                           |
+| v2.10 字段                  | v2.11.0 字段                         |
 | --------------------------- | ------------------------------------ |
 | `kunlunResourceName`        | `devices.kunlun.resourceCountName`   |
 | `kunlunResourceVCountName`  | `devices.kunlun.resourceVCountName`  |
@@ -217,13 +217,13 @@ Enflame、Kunlun、Vastai 和 Biren 的标准资源名现在由对应的设备�
 
 #### Vastai
 
-| v2.10 字段           | 最新版字段                         |
+| v2.10 字段           | v2.11.0 字段                       |
 | -------------------- | ---------------------------------- |
 | `vastaiResourceName` | `devices.vastai.resourceCountName` |
 
 #### Biren
 
-| v2.10 字段          | 最新版字段                        |
+| v2.10 字段          | v2.11.0 字段                      |
 | ------------------- | --------------------------------- |
 | `birenResourceName` | `devices.biren.resourceCountName` |
 

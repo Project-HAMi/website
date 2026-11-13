@@ -64,7 +64,7 @@ The name of the driver installer DaemonSet depends on the node operating system.
 
 ## Copy the HAMi images to SWR {#copy-the-hami-images}
 
-The HAMi chart pulls images from Docker Hub and `registry.cn-hangzhou.aliyuncs.com`, which nodes without public network access cannot reach. Copy the three images to SoftWare Repository for Container (SWR) in the same region as the cluster.
+The HAMi chart pulls images from Docker Hub and `registry.k8s.io`, which nodes without public network access cannot reach. Copy the three images to SoftWare Repository for Container (SWR) in the same region as the cluster.
 
 First [create an organization](https://support.huaweicloud.com/intl/en-us/usermanual-swr/swr_01_0014.html). Then, on a machine that can reach Docker Hub and `registry.k8s.io`, generate a login command in the SWR console as described in [Pushing an Image](https://support.huaweicloud.com/intl/en-us/usermanual-swr/swr_01_0011.html), and run it with `skopeo login` in place of `docker login`.
 
@@ -73,10 +73,10 @@ The chart sets the `kube-scheduler` image tag to the Kubernetes version of the c
 Copy the images, replacing `<region>` with the region ID, for example `cn-southwest-2`, and `v1.36.2` with the tag of your cluster. `--all` copies the image for every platform:
 
 ```bash
-skopeo copy --all docker://docker.io/projecthami/hami:v2.10.0 \
-  docker://swr.<region>.myhuaweicloud.com/<organization>/hami:v2.10.0
-skopeo copy --all docker://docker.io/liangjw/kube-webhook-certgen:v1.1.1 \
-  docker://swr.<region>.myhuaweicloud.com/<organization>/kube-webhook-certgen:v1.1.1
+skopeo copy --all docker://docker.io/projecthami/hami:v2.11.0 \
+  docker://swr.<region>.myhuaweicloud.com/<organization>/hami:v2.11.0
+skopeo copy --all docker://registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.6.9 \
+  docker://swr.<region>.myhuaweicloud.com/<organization>/kube-webhook-certgen:v1.6.9
 skopeo copy --all docker://registry.k8s.io/kube-scheduler:v1.36.2 \
   docker://swr.<region>.myhuaweicloud.com/<organization>/kube-scheduler:v1.36.2
 ```
@@ -87,6 +87,7 @@ Save the following as `hami-cce-values.yaml`, replacing `<region>` and `<organiz
 
 ```yaml
 global:
+  imageTag: v2.11.0
   imagePullSecrets:
     - default-secret
 scheduler:
@@ -102,6 +103,7 @@ scheduler:
     imageNew:
       registry: swr.<region>.myhuaweicloud.com
       repository: <organization>/kube-webhook-certgen
+      tag: v1.6.9
 devices:
   nvidia:
     runtimeClassName: nvidia
@@ -123,7 +125,7 @@ devicePlugin:
 Follow [Online Installation from Helm](./online-installation.md) and add the values file to the installation command:
 
 ```bash
-helm install hami hami-charts/hami -n kube-system --version 2.10.0 -f hami-cce-values.yaml
+helm install hami hami-charts/hami -n kube-system --version 2.11.0 -f hami-cce-values.yaml
 ```
 
 After `hami-device-plugin` and `hami-scheduler` are running, confirm that the RuntimeClass exists and that the HAMi scheduler holds its leader lease:
