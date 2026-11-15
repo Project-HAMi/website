@@ -78,4 +78,4 @@ Status:
 
 The table covers NVIDIA GPUs. For other devices, see [Device supported by HAMi](../userguide/device-supported.md).
 
-It was checked against the source code of HAMi v2.11.0, HAMi-DRA v0.2.3, Volcano v1.16.0 with volcano-vgpu-device-plugin, and KAI Scheduler v0.18.7 with kai-resource-isolator v1.1.0.
+It was checked against the source code of HAMi v2.11.0, HAMi-DRA v0.2.4, Volcano v1.16.0 with volcano-vgpu-device-plugin, and KAI Scheduler v0.19.0 with kai-resource-isolator v1.1.0.

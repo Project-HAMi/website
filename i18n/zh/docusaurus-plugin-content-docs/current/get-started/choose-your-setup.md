@@ -79,4 +79,4 @@ HAMi 有不止一种形态，旁边还有另外两个项目。本页回答大家
 
 本表只覆盖 NVIDIA GPU。其他设备请参见 [HAMi 支持的设备](../userguide/device-supported.md)。
 
-表中内容已对照以下版本的源码核对：HAMi v2.11.0、HAMi-DRA v0.2.3、Volcano v1.16.0 搭配 volcano-vgpu-device-plugin、KAI Scheduler v0.18.7 搭配 kai-resource-isolator v1.1.0。
+表中内容已对照以下版本的源码核对：HAMi v2.11.0、HAMi-DRA v0.2.4、Volcano v1.16.0 搭配 volcano-vgpu-device-plugin、KAI Scheduler v0.19.0 搭配 kai-resource-isolator v1.1.0。

@@ -1,8 +1,9 @@
 // Which NVIDIA GPU features each HAMi setup supports, checked against source code in October 2026
 // and again in November 2026. HAMi follows v2.11.0, with v2.10.0 differences noted.
-// The others follow their latest releases: HAMi-DRA v0.2.3 with k8s-dra-driver v0.1.1, Volcano
-// v1.16.0 with volcano-vgpu-device-plugin ef0cad3, KAI Scheduler v0.18.7 with KAI-resource-isolator
-// v1.1.0. Changes only on their main branches are noted as unreleased.
+// The others follow their latest releases: HAMi-DRA v0.2.4 with k8s-dra-driver v0.1.1 (the
+// version its chart installs), Volcano v1.16.0 with volcano-vgpu-device-plugin ef0cad3, KAI
+// Scheduler v0.19.0 with KAI-resource-isolator v1.1.0. Changes only on their main branches are
+// noted as unreleased.
 // status: "yes" supported, "partial" works with a caveat the reader should know, "no" not supported.
 // use: a string lists identifiers (comma separated, shown as code); an { en, zh } object is prose.
 // use can also be a list of { label, code } when identifiers play different roles.
@@ -123,13 +124,7 @@ export const FEATURES = {
     short: { en: "By percent", zh: "按百分比" },
     page: "userguide/nvidia-device/specify-device-memory-usage",
     hami: { status: "yes", use: "nvidia.com/gpumem-percentage" },
-    dra: {
-      status: "no",
-      note: {
-        en: "v0.2.3 leaves the request on the Pod, which stays Pending with Insufficient nvidia.com/gpumem-percentage. Supported on HAMi-DRA main, not released yet.",
-        zh: "v0.2.3 不转换这个资源，Pod 会因 Insufficient nvidia.com/gpumem-percentage 一直 Pending。HAMi-DRA main 已支持，尚未发版。",
-      },
-    },
+    dra: { status: "yes", use: "nvidia.com/gpumem-percentage", guide: DRA_COMPAT },
     volcano: {
       status: "no",
       note: {
@@ -465,7 +460,11 @@ export const FEATURES = {
     },
     dra: {
       status: "yes",
-      use: endpointMetrics("hami-dra-monitor:8080", "GPUDevice*, vGPUDevice*"),
+      use: endpointMetrics("hami-dra-monitor:8080", "hami_dra_*"),
+      note: {
+        en: "The legacy names GPUDevice* and vGPUDevice* are also exported unless monitor.legacyMetrics is false.",
+        zh: "除非把 monitor.legacyMetrics 设为 false，旧名称 GPUDevice* 和 vGPUDevice* 也会一并导出。",
+      },
     },
     volcano: {
       status: "yes",
