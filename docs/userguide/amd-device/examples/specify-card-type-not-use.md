@@ -2,6 +2,10 @@
 title: Avoid a certain GPU type
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="amdType" />
+
 To keep a pod off GPUs of a certain type, set `amd.com/nouse-gputype` in the pod annotations. It matches when the registered product name contains the text.
 
 ```yaml

@@ -4,6 +4,10 @@ sidebar_label: 独占设备
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="mthWhole" />
+
 要分配整个摩尔线程设备，你只需分配 `mthreads.com/vgpu` 而无需其他字段。你可以为一个容器分配多个 GPU。
 
 ```yaml

@@ -2,6 +2,10 @@
 title: Allocate device core and memory resource
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features={["hygonMem", "hygonCores"]} />
+
 To allocate a certain part of device core resource, you need only to assign the `hygon.com/hcucores` and `hygon.com/hcumem` along with the number of hygon HCUs you requested in the container using `hygon.com/hcunum`
 
 ```yaml

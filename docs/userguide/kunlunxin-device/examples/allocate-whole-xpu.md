@@ -2,6 +2,10 @@
 title: Allocate a whole xpu card
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="kunlunWhole" />
+
 To allocate a whole xpu device, you need to only assign `kunlunxin.com/xpu` without other fields. You can allocate multiple XPUs for a container.
 
 ```yaml

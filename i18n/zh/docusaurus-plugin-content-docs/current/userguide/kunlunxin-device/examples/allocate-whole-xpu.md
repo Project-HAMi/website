@@ -2,6 +2,10 @@
 title: 分配整个 xpu 卡
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="kunlunWhole" />
+
 要分配整个 xpu 设备，你只需要分配 `kunlunxin.com/xpu`，无需其他字段。你可以为容器分配多个 XPU。
 
 ```yaml

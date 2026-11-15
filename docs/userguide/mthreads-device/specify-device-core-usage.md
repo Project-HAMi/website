@@ -3,6 +3,10 @@ title: Allocate device core to container
 sidebar_label: Allocate device core usage
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="mthCores" />
+
 Allocate a part of device core resources by specifying resource `mthreads.com/sgpu-core`. Optional, each unit of `mthreads.com/sgpu-core` equals 1/16 of device cores.
 
 ```yaml

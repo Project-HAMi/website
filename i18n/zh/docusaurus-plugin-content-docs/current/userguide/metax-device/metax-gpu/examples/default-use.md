@@ -3,6 +3,10 @@ title: 分配沐曦设备
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="metaxWhole" />
+
 要分配沐曦设备，你只需分配 `metax-tech.com/gpu`，无需其他字段。
 
 ```yaml

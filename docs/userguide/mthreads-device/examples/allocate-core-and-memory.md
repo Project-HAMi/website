@@ -2,6 +2,10 @@
 title: Allocate device core and memory resource
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features={["mthMem", "mthCores"]} />
+
 To allocate a certain part of device core resource, you need only to assign the `mthreads.com/sgpu-memory` and `mthreads.com/sgpu-core` along with the number of Mthreads GPUs you requested in the container using `mthreads.com/vgpu`.
 
 ```yaml

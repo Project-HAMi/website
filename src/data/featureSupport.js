@@ -10,6 +10,9 @@
 // guide: where this setup documents the feature, { href, label? }; href may be { en, zh } when
 // heading anchors differ by locale. Left out when the page itself covers it or no doc does.
 // page: the HAMi guide for the feature, relative to the docs version root. The matrix links it.
+// Features of other devices live in vendorFeatureSupport.js and are merged in at the end.
+
+import { VENDOR_FEATURES } from "./vendorFeatureSupport";
 
 // Paired identifiers whose roles differ; the card shows each with its role.
 const pickAvoid = (pick, avoid) => [
@@ -522,4 +525,5 @@ export const FEATURES = {
       }),
     },
   },
+  ...VENDOR_FEATURES,
 };

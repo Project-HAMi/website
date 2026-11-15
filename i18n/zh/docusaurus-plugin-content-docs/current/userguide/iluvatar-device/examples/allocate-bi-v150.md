@@ -3,6 +3,10 @@ title: 为容器分配 BI-V150 切片
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="iluvatarShare" />
+
 为容器分配核心和显存资源，只需配置一定大小的 GPU 核心 `iluvatar.ai/BI-V150.vCore`和 GPU 显存资源 `iluvatar.ai/BI-V150.vMem`。
 
 ```yaml

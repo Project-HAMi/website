@@ -3,6 +3,10 @@ title: 分配独占设备
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="metaxSgpuWhole" />
+
 要分配整个沐曦 GPU 设备，你只需为容器申请 `metax-tech.com/sgpu` 资源。
 
 ```yaml

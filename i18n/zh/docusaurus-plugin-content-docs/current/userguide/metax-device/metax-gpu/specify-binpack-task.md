@@ -3,6 +3,10 @@ title: Binpack 调度策略
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="metaxTopology" />
+
 为了在最小化拓扑损失的情况下分配 沐曦设备，你只需将 `metax-tech.com/gpu` 与注释 `hami.io/node-scheduler-policy: "binpack"` 一起分配。
 
 ```yaml

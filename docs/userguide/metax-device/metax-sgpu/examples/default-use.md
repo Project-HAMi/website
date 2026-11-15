@@ -3,6 +3,10 @@ title: Allocate device core and memory resource
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="metaxSgpu" />
+
 To allocate a certain part of device core resource, you need only to assign the `metax-tech.com/vcore` and `metax-tech.com/vmemory` along with the number of MetaX GPUs you requested in the container using `metax-tech.com/sgpu`.
 
 ```yaml

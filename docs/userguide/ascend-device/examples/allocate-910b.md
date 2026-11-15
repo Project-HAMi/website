@@ -2,6 +2,10 @@
 title: Allocate 910B3 slice
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features={["ascendTemplate", "ascendUuid"]} />
+
 To allocate a certain size of device memory, assign `huawei.com/Ascend910B3-memory` alongside `huawei.com/Ascend910B3`.
 
 ```yaml

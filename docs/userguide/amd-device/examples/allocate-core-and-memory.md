@@ -2,6 +2,10 @@
 title: Allocate device core and memory resource
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features={["amdMem", "amdCores"]} />
+
 To allocate part of an AMD GPU, set `amd.com/gpucores` and `amd.com/gpumem` together with the number of GPUs in `amd.com/gpu`.
 
 The example below requests one GPU with 48 GiB device memory and 25% compute units:

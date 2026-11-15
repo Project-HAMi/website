@@ -2,6 +2,10 @@
 title: Assign to certain device type
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="cambType" />
+
 To enable device type specification, you need to add the `--enable-device-type` parameter to the `cambricon-device-plugin`.
 
 When this option is enabled, different MLU types will expose distinct resource names. For example:

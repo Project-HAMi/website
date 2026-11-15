@@ -2,6 +2,10 @@
 title: Enable Enflame GCU Sharing
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="enflameShare" />
+
 ## Introduction
 
 HAMi now supports Enflame **DRS** hard partition scheduling, aligned with Enflame native scheduler behavior.

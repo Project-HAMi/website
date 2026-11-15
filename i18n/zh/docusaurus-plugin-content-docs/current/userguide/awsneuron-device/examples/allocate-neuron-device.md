@@ -2,6 +2,10 @@
 title: 分配 AWS Neuron 设备
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="neuronDevice" />
+
 如需独占分配一个或多个 aws neuron 设备，可通过`aws.amazon.com/neuron`进行资源分配：
 
 ```yaml

@@ -2,6 +2,10 @@
 title: Assign to certain device
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="hygonUuid" />
+
 Sometimes a task may wish to run on a certain HCU, it can fill the `hygon.com/use-gpuuuid` field in pod annotation. HAMi scheduler will try to fit in device with that uuid.
 
 For example, a task with the following annotation will be assigned to the device with uuid `HCU-123456`

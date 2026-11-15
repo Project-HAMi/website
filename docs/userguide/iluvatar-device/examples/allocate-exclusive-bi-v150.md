@@ -2,6 +2,10 @@
 title: Allocate exclusive BI-V150 device
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="iluvatarWhole" />
+
 To allocate multiple BI-V150 devices, you only need to assign `iluvatar.ai/BI-V150-vgpu` with no other fields required.
 
 ```yaml

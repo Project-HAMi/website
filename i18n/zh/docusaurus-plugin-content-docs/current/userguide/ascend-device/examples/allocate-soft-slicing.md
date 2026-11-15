@@ -3,6 +3,10 @@ title: 软切片（hami-vnpu-core）
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="ascendSoft" />
+
 软切片通过运行时拦截（`libvnpu.so`）实现细粒度的 NPU 共享，无需依赖硬件虚拟化模板。使用时，需在 Pod 上添加注解 `huawei.com/vnpu-mode: 'hami-core'`。
 
 :::note

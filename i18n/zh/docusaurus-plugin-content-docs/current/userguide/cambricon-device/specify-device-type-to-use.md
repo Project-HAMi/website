@@ -4,6 +4,10 @@ sidebar_label: 指定设备类型
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="cambType" />
+
 你需要在 `cambricon-device-plugin` 中添加参数 `- --enable-device-type` 以支持设备类型规范。当设置此选项时，不同类型的 MLU 将生成不同的资源名称，例如 `cambricon.com/mlu370.smlu.vcore` 和 `cambricon.com/mlu370.smlu.vmemory`。
 
 ```yaml

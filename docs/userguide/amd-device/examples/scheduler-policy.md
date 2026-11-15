@@ -2,6 +2,10 @@
 title: Choose a GPU scheduling policy
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="amdGpuPolicy" />
+
 Set the annotation `hami.io/gpu-scheduler-policy` on a pod to choose how the scheduler picks GPUs on a node. The default comes from `scheduler.defaultSchedulerPolicy.gpuSchedulerPolicy` in the HAMi chart (`spread`). Several policies can be combined in one comma-separated value, for example `binpack,mutex`.
 
 | Policy | Effect on AMD GPUs |

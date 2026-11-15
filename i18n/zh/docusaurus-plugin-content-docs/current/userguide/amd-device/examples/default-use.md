@@ -3,6 +3,10 @@ title: 分配整张 GPU
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="amdWhole" />
+
 只设置 `amd.com/gpu` 的 Pod 会获得整张 GPU：全部计算单元和全部显存。
 
 ```yaml

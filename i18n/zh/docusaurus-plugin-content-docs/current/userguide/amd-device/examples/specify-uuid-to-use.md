@@ -3,6 +3,10 @@ title: 按 UUID 将任务分配到指定 GPU
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="amdUuid" />
+
 要让 Pod 只运行在指定 GPU 上，在 Pod 注解中设置 `amd.com/use-gpu-uuid`。UUID 可在节点注解 `hami.io/node-amd-register` 中查到。
 
 ```yaml

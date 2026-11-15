@@ -2,6 +2,10 @@
 title: Assign task to a certain GPU type
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="amdType" />
+
 To run a pod only on GPUs of a certain type, set `amd.com/use-gputype` in the pod annotations. It matches when the registered product name contains the text, case-insensitive.
 
 ```yaml

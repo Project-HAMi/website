@@ -3,6 +3,10 @@ title: Allocate exclusive device
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="metaxSgpuWhole" />
+
 To allocate a whole MetaX GPU device, you need to only assign `metax-tech.com/sgpu` without other fields.
 
 ```yaml

@@ -3,6 +3,10 @@ title: 设置 Pod 的队列优先级
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="amdPriority" />
+
 要提高或降低 Pod 计算队列的优先级，在容器中设置环境变量 `AMD_TASK_PRIORITY`。显存 hook 会据此设置 HSA 队列优先级。0 是高优先级类别，数值越大优先级越低，hook 会把该值固定为 Pod spec 中的值，因此进程无法用 `setenv` 修改它。
 
 在 25% 切片内共享一张 GPU 的两个进程，优先级为 0 和 3 时分别得到每秒 144.7 和 72.3 个 kernel，不设置优先级时各约 108.6。

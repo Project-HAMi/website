@@ -2,6 +2,10 @@
 title: Allocate device core usage
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="cambCores" />
+
 To allocate a percentage of device core resources, specify the `cambricon.com/mlu.smlu.vcore` resource.
 
 This field is optional. Each unit of `cambricon.com/mlu.smlu.vcore` represents 1% of the device's compute cores.

@@ -2,6 +2,10 @@
 title: Allocate vxpu device
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="kunlunVxpu" />
+
 To allocate a certain part of device core resource, you need only to assign the `kunlunxin.com/vxpu` along with the `kunlunxin.com/vxpu-memory`
 
 ```yaml

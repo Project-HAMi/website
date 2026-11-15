@@ -4,6 +4,10 @@ sidebar_label: 指定核心
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="cambCores" />
+
 通过指定资源 `cambricon.com/mlu.smlu.vcore` 来分配设备核心资源的百分比。可选项，每个 `cambricon.com/mlu.smlu.vcore` 单位等于设备核心的 1%。
 
 ```yaml

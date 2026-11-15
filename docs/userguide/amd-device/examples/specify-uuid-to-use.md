@@ -2,6 +2,10 @@
 title: Assign task to a certain GPU by UUID
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="amdUuid" />
+
 To run a pod only on certain GPUs, set `amd.com/use-gpu-uuid` in the pod annotations. The UUIDs are listed in the node annotation `hami.io/node-amd-register`.
 
 ```yaml
