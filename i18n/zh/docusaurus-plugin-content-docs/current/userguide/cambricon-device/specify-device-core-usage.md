@@ -19,6 +19,6 @@ resources:
 
 :::note
 
-根据 cambricon-device-plugin 的参数，资源名称可以是 `cambricon.com/mlu370.smlu.vcore` 或其他类型
+根据 cambricon-device-plugin 的参数，资源名称可以是 `cambricon.com/mlu370.smlu.vcore` 或其他类型。需要把 HAMi chart 中的 `devices.cambricon.resourceCoreName` 设置为相同的名称，否则 HAMi 调度器不会读取该请求。
 
 :::

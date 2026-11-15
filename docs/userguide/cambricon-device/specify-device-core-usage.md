@@ -19,6 +19,6 @@ resources:
 
 :::note
 
-Depending on the parameters of cambricon-device-plugin, resource name can be `cambricon.com/mlu370.smlu.vcore` or other types.
+Depending on the parameters of cambricon-device-plugin, resource name can be `cambricon.com/mlu370.smlu.vcore` or other types. Set `devices.cambricon.resourceCoreName` in the HAMi chart to the same name, or the HAMi scheduler does not read the request.
 
 :::
