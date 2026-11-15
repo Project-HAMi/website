@@ -384,6 +384,7 @@ module.exports = {
       },
       items: [
         "contributor/contributing",
+        "contributor/adopters",
         "contributor/contribute-docs",
         "contributor/github-workflow",
         "contributor/governance",
