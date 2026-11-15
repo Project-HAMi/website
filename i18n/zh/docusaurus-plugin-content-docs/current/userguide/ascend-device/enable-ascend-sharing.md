@@ -66,6 +66,8 @@ devices:
 
 设备型号和模板使用 `devices.ascend.configs` 的默认定义。需要调整时，参考 [values 源码](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/values.yaml)保留集群所需的完整型号列表；列表覆盖会整体替换。模板模式不使用 `deviceSplitCount` 计算切片数量。
 
+Ascend950DT 的 9582 整卡配置以及其他 SKU 的参考值见 [Ascend950DT SKU 参考](examples/950dt-sku-reference.md)。
+
 ### hami-core 配置
 
 ```yaml

@@ -96,6 +96,7 @@ const vendors = [
       "allocate-910b",
       "allocate-exclusive",
       "allocate-soft-slicing",
+      "950dt-sku-reference",
     ]),
   ]),
   vendorCategory("Hygon HCU", "hygon", [
