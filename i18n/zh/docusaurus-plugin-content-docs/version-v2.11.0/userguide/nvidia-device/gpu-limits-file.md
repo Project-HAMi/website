@@ -82,13 +82,15 @@ kubectl exec gpu-pod -- env -i /usr/bin/nvidia-smi --query-gpu=memory.total --fo
 
 ### 整个集群
 
-在 Helm values 中设置以下内容，然后执行 `helm upgrade`。device plugin 会自动重启。
+在 Helm values 中设置以下内容，然后执行 `helm upgrade`。如果 `devicePlugin.updateStrategy.type` 为 `RollingUpdate`（默认值），device plugin 会自动重启；如果为 `OnDelete`，请先手动删除旧的 device plugin Pod，再重新创建业务 Pod。
 
 ```yaml
 devices:
   nvidia:
     limitDelivery: env
 ```
+
+如果你用 `device-config.content` 或 `files/device-config.yaml` 替换了整个设备配置，Chart 不会使用这个值。请改为在该配置中设置 `nvidia.limitDelivery: env`。详见[设备 ConfigMap 的生成与生效](../configure.md#device-config-overrides)。
 
 ### 单个节点
 
@@ -113,6 +115,8 @@ devicePlugin:
 ```bash
 kubectl -n <namespace> rollout restart daemonset/hami-device-plugin
 ```
+
+使用 `OnDelete` 时，这条命令不会替换 Pod，请改为手动删除该节点上旧的 device plugin Pod。详见[外部 ConfigMap 与重新加载](../configure.md#configuration-reload)。
 
 ### 单个 Pod
 

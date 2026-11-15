@@ -81,13 +81,15 @@ You can set the mode for the whole cluster, for one node or for one Pod. HAMi us
 
 ### For the whole cluster
 
-Set this in your Helm values and run `helm upgrade`. The device plugin restarts by itself.
+Set this in your Helm values and run `helm upgrade`. If `devicePlugin.updateStrategy.type` is `RollingUpdate` (the default), the device plugin restarts by itself. If it is `OnDelete`, delete the old device plugin Pods yourself before you recreate workload Pods.
 
 ```yaml
 devices:
   nvidia:
     limitDelivery: env
 ```
+
+If you replace the whole device configuration with `device-config.content` or `files/device-config.yaml`, the chart doesn't use this value. Set `nvidia.limitDelivery: env` in that configuration instead. See [Device ConfigMap generation and updates](../configure.md#device-config-overrides).
 
 ### For one node
 
@@ -112,6 +114,8 @@ After `helm upgrade`, restart the device plugin so it reads the new configuratio
 ```bash
 kubectl -n <namespace> rollout restart daemonset/hami-device-plugin
 ```
+
+With `OnDelete`, this command doesn't replace the Pods. Delete the old device plugin Pod on that node instead. See [External ConfigMaps and reloading](../configure.md#configuration-reload).
 
 ### For one Pod
 
