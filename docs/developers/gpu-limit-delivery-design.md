@@ -90,8 +90,9 @@ It carries every variable HAMi-core reads, including the shared cache path (with
 ### Delivery mode
 
 ```yaml
-devicePlugin:
-  limitDelivery: file # default; "env" restores environment-variable delivery
+devices:
+  nvidia:
+    limitDelivery: file # default; "env" restores environment-variable delivery
 ```
 
 | Mode | Device plugin | HAMi-core |

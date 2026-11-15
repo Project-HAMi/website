@@ -81,8 +81,8 @@ HAMi WebUI 默认仅通过本地访问（localhost）提供服务，因此在部
 要检查 HAMi WebUI 日志，请运行以下命令：
 
 ```bash
-kubectl logs --namespace=hami deploy/my-hami-webui -c hami-webui-fe-oss
-kubectl logs --namespace=hami deploy/my-hami-webui -c hami-webui-be-oss
+kubectl logs --namespace=kube-system deploy/my-hami-webui -c hami-webui-fe-oss
+kubectl logs --namespace=kube-system deploy/my-hami-webui -c hami-webui-be-oss
 ```
 
 有关访问 Kubernetes 应用程序日志的更多信息，参阅 [Pods](https://kubernetes.io/docs/reference/kubectl/cheatsheet/#interacting-with-running-pods) 和 [Deployments](https://kubernetes.io/docs/reference/kubectl/cheatsheet/#interacting-with-deployments-and-services)。
@@ -91,19 +91,13 @@ kubectl logs --namespace=hami deploy/my-hami-webui -c hami-webui-be-oss
 
 要卸载 HAMi WebUI 部署，请运行命令：
 
-`helm uninstall <RELEASE-NAME> <NAMESPACE-NAME>`
+`helm uninstall <RELEASE-NAME> -n <NAMESPACE-NAME>`
 
 ```bash
-helm uninstall my-hami-webui -n hami
+helm uninstall my-hami-webui -n kube-system
 ```
 
-这将删除给定命名空间 `hami` 中的所有对象。
-
-如果你想删除命名空间 `hami`，运行命令：
-
-```bash
-kubectl delete namespace hami
-```
+这将删除该 release 创建的所有对象。
 
 ## 相关文档
 

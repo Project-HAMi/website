@@ -52,6 +52,34 @@ RUN go install github.com/NVIDIA/mig-parted/cmd/nvidia-mig-parted@v0.10.0
 go tool pprof --seconds 120 https+insecure://<POD_IP>/debug/pprof/profile
 ```
 
+输出示例：
+
+```bash
+root@hami-pprof-76cfcb66f6-jpjnm:/# go tool pprof --seconds 120 https+insecure://10.42.0.24/debug/pprof/profile
+Fetching profile over HTTP from https+insecure://10.42.0.24/debug/pprof/profile?seconds=120
+Please wait... (2m0s)
+Saved profile in /root/pprof/pprof.scheduler.samples.cpu.002.pb.gz
+File: scheduler
+Type: cpu
+Time: 2025-04-01 07:08:42 UTC
+Duration: 120s, Total samples = 10ms (0.0083%)
+Entering interactive mode (type "help" for commands, "o" for options)
+(pprof) top
+Showing nodes accounting for 10ms, 100% of 10ms total
+Showing top 10 nodes out of 12
+      flat  flat%   sum%        cum   cum%
+      10ms   100%   100%       10ms   100%  sigs.k8s.io/json/internal/golang/encoding/json.unquoteBytes
+         0     0%   100%       10ms   100%  k8s.io/apimachinery/pkg/runtime.Decode (inline)
+         0     0%   100%       10ms   100%  k8s.io/apimachinery/pkg/runtime.WithoutVersionDecoder.Decode
+         0     0%   100%       10ms   100%  k8s.io/apimachinery/pkg/runtime/serializer/json.(*Serializer).Decode
+         0     0%   100%       10ms   100%  k8s.io/apimachinery/pkg/runtime/serializer/json.(*Serializer).unmarshal
+         0     0%   100%       10ms   100%  k8s.io/apimachinery/pkg/watch.(*StreamWatcher).receive
+         0     0%   100%       10ms   100%  k8s.io/client-go/rest/watch.(*Decoder).Decode
+         0     0%   100%       10ms   100%  sigs.k8s.io/json.UnmarshalCaseSensitivePreserveInts (inline)
+         0     0%   100%       10ms   100%  sigs.k8s.io/json/internal/golang/encoding/json.(*decodeState).object
+         0     0%   100%       10ms   100%  sigs.k8s.io/json/internal/golang/encoding/json.(*decodeState).unmarshal
+```
+
 ### 内存性能分析
 
 - **当前活动对象：**

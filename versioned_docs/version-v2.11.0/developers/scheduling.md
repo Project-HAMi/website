@@ -237,4 +237,4 @@ metadata:
     hami.io/gpu-scheduler-policy: "mutex"
 ```
 
-Using the same example, `GPU1` and `GPU2` both already have workloads, so neither is eligible and the pod stays pending until a fully idle card is available. A card allocated to a `mutex` pod can still be selected for other pods afterwards; to keep the card exclusive for the lifetime of the workload, request all of its resources or use it together with `use-gpuuuid` constraints.
+Using the same example, `GPU1` and `GPU2` both already have workloads, so neither is eligible and the pod stays pending until a fully idle card is available. A card allocated to a `mutex` pod can still be selected for other pods afterwards; to keep the card exclusive for the lifetime of the workload, request all of its resources.
