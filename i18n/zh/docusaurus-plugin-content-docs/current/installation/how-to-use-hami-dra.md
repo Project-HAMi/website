@@ -50,6 +50,15 @@ helm install hami-dra hami-dra/hami-dra \
   --set drivers.nvidia.containerDriver=false
 ```
 
+### 升级
+
+以后要升级到最新版本，运行：
+
+```bash
+helm repo update
+helm upgrade hami-dra hami-dra/hami-dra
+```
+
 ### 验证安装
 
 检查所有 Pod 是否正常运行：
