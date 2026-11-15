@@ -91,8 +91,9 @@ HAMI_LIMITS_FORMAT=1
 ### 下发模式
 
 ```yaml
-devicePlugin:
-  limitDelivery: file # 默认值，设为 "env" 恢复为通过环境变量下发
+devices:
+  nvidia:
+    limitDelivery: file # 默认值，设为 "env" 恢复为通过环境变量下发
 ```
 
 | 模式           | Device plugin                      | HAMi-core                  |
