@@ -29,6 +29,10 @@ const ASCEND_DRA = draDoc("ascend-dra.md", {
   zh: "HAMi-DRA 文档：昇腾",
 });
 const VOLCANO_ASCEND = { href: "/docs/installation/how-to-use-volcano-ascend" };
+// Volcano supports Ascend through its vNPU integration, not volcano-vgpu-device-plugin.
+const ASCEND_COMPONENTS = {
+  volcano: { name: "Volcano vNPU", full: { en: "Volcano Ascend vNPU", zh: "Volcano 昇腾 vNPU" } },
+};
 
 const ASCEND_DRIVER_NOTE = {
   en: "Needs ascend-dra-driver, which has no release yet.",
@@ -192,6 +196,7 @@ export const VENDOR_FEATURES = {
   // Huawei Ascend NPU
   ascendWhole: {
     title: { en: "Whole Ascend NPU", zh: "整卡分配昇腾 NPU" },
+    components: ASCEND_COMPONENTS,
     short: WHOLE,
     hami: { status: "yes", use: "huawei.com/<chip>" },
     dra: { status: "yes", use: "huawei.com/<chip>", note: ASCEND_DRIVER_NOTE, guide: ASCEND_DRA },
@@ -200,6 +205,7 @@ export const VENDOR_FEATURES = {
   },
   ascendTemplate: {
     title: { en: "Ascend template slices", zh: "昇腾模板切分" },
+    components: ASCEND_COMPONENTS,
     short: { en: "Template slice", zh: "模板切分" },
     hami: { status: "yes", use: "huawei.com/<chip>-memory" },
     dra: {
@@ -216,6 +222,7 @@ export const VENDOR_FEATURES = {
   },
   ascendSoft: {
     title: { en: "Ascend soft slicing", zh: "昇腾软切分" },
+    components: ASCEND_COMPONENTS,
     short: { en: "Soft slice", zh: "软切分" },
     hami: {
       status: "yes",
@@ -239,6 +246,7 @@ export const VENDOR_FEATURES = {
   },
   ascendUuid: {
     title: { en: "Ascend NPU by UUID", zh: "按 UUID 选择昇腾 NPU" },
+    components: ASCEND_COMPONENTS,
     short: SELECT_UUID,
     hami: {
       status: "yes",

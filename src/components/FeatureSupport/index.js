@@ -57,6 +57,13 @@ function Arrow({ external }) {
   );
 }
 
+// The setup's name for these features: a feature may rename a setup, as Ascend does for Volcano,
+// whose Ascend support is vNPU rather than vGPU.
+export function componentFor(componentKey, features) {
+  const own = features.map((key) => FEATURES[key].components?.[componentKey]).find(Boolean);
+  return own || COMPONENTS[componentKey];
+}
+
 // One status for the tag: the feature's own status, or "mixed" when a page's features differ.
 function summarize(statuses) {
   return statuses.every((s) => s === statuses[0]) ? statuses[0] : "mixed";
@@ -100,7 +107,7 @@ export function useVersionedHref() {
 }
 
 export function Card({ id, componentKey, features, status, t, cardRef, className }) {
-  const component = COMPONENTS[componentKey];
+  const component = componentFor(componentKey, features);
   const versioned = useVersionedHref();
   const cells = features.map((key) => FEATURES[key][componentKey]);
   const notes = cells.map((cell) => (cell.note ? t(cell.note) : ""));
@@ -283,7 +290,7 @@ export default function FeatureSupport({ features }) {
               onClick={() => toggle(componentKey)}
             >
               <Glyph status={status} />
-              {COMPONENTS[componentKey].name}
+              {componentFor(componentKey, keys).name}
               <span className={styles.srOnly}> {t(TEXT.status[status])}</span>
             </button>
             {isOpen && (

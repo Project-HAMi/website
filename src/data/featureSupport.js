@@ -10,6 +10,7 @@
 // short: the label shown beside the identifiers in a card.
 // guide: where this setup documents the feature, { href, label? }; href may be { en, zh } when
 // heading anchors differ by locale. Left out when the page itself covers it or no doc does.
+// components: renames a setup in this feature's tags and cards, { <setup>: { name, full } }.
 // page: the HAMi guide for the feature, relative to the docs version root. The matrix links it.
 // Features of other devices live in vendorFeatureSupport.js and are merged in at the end.
 
