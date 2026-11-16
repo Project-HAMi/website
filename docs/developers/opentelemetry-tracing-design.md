@@ -82,7 +82,7 @@ A pod's history is split across several traces, so every span carries the pod's 
 
 Why this shape:
 
-- Child spans across the whole wait would make one trace as long as the pod is pending, with a span per attempt. A Collector keeps a trace in memory for seconds or minutes before tail sampling it, so such traces could not be sampled by duration.
+- Child spans across the whole wait would make one trace as long as the pod is pending, with a span per attempt. A Collector keeps a trace in memory for seconds or minutes before tail sampling it, so such traces could not be sampled by duration. Trace C usually ends within seconds. Tail sampling it needs all its spans at the same Collector and a `decision_wait` (30 seconds by default) longer than the time from Filter to Allocate.
 - Links for every step would lose the single waterfall of the placement itself, which is the part an operator reads.
 
 ### Trace context on the pod
@@ -113,7 +113,7 @@ The decision is made once per pod, at admission:
 
 - The webhook uses the configured sampler. If kube-apiserver sends a `traceparent` header, the default parent-based sampler follows its decision.
 - The webhook writes the annotation for every pod it handles, sampled (`-01`) or not (`-00`). It writes unsampled ones too, so that Filter can tell "not sampled" from "no webhook": the webhook can be unreachable under `failurePolicy: Ignore`, or not installed.
-- Filter starts a new trace with a link, and the SDK's samplers ignore links. A small HAMi sampler follows the sampled flag of the HAMi link, and falls back to the configured sampler when the pod has no annotation.
+- Filter starts a new trace with a link, and the SDK's samplers ignore links. A small HAMi sampler follows the sampled flag of the HAMi link. When the pod has no annotation, it applies the configured sampling ratio (`OTEL_TRACES_SAMPLER_ARG`) to the pod UID instead of the trace ID, so every Filter attempt of that pod gets the same decision.
 - Bind and Allocate are child spans, so the parent-based sampler follows Filter.
 
 As a result a pod is traced from admission to Allocate, or not at all. With the standard samplers, which ignore links, admission and Filter would each decide on their own: at 1%, only 1 pod in 10,000 would have both traced.
@@ -156,7 +156,7 @@ New modules: `go.opentelemetry.io/otel`, `otel/trace`, `otel/sdk` and `otel/expo
 
 - Traces only CREATE requests for pods that request HAMi devices, the pods the webhook already mutates. UPDATE requests and other pods get no span.
 - Span `admission`. Its parent is the `traceparent` header of the admission request when kube-apiserver tracing is on; otherwise it is a root span.
-- Replaces any `hami.io/traceparent` the pod arrives with, then adds its own to the patch it already returns ([webhook.go:172](https://github.com/Project-HAMi/HAMi/blob/5265e52d7ac0132c4aab5e165940fc0f410c2b89/pkg/scheduler/webhook.go#L172)). It overwrites instead of denying, so a stale trace context never becomes a reason to reject a pod.
+- Removes any `hami.io/traceparent` the pod arrives with, even when tracing is off. When tracing is on, adds its own to the patch it already returns ([webhook.go:172](https://github.com/Project-HAMi/HAMi/blob/5265e52d7ac0132c4aab5e165940fc0f410c2b89/pkg/scheduler/webhook.go#L172)). It removes instead of denying, so a stale trace context never becomes a reason to reject a pod.
 - Attributes: the pod's namespace and name, or the `generateName` prefix when the pod has no name yet. No UID: kube-apiserver sets the UID, and the full name of a `generateName` pod, only after the webhook has run.
 - A denied pod gets a span with status Error and the reason, and no annotation.
 - On UPDATE, `hami.io/traceparent` joins the keys that only HAMi components may change ([webhook.go:196-211](https://github.com/Project-HAMi/HAMi/blob/5265e52d7ac0132c4aab5e165940fc0f410c2b89/pkg/scheduler/webhook.go#L196-L211)). Filter's patch already changes other keys in that list, so the check still runs once per patch.
@@ -214,7 +214,7 @@ The scheduler does not handle SIGTERM today: `start()` returns only when a serve
 | --- | --- |
 | No endpoint, or `OTEL_SDK_DISABLED=true` | no-op tracer, no annotation, nothing exported |
 | Collector down or slow | spans are dropped when the export queue is full; scheduling never waits |
-| Webhook unreachable (`failurePolicy: Ignore`) or not installed | no annotation; Filter starts a trace with the configured sampler and no link |
+| Webhook unreachable (`failurePolicy: Ignore`) or not installed | no annotation; Filter applies the configured ratio to the pod UID and starts a trace with no link |
 | Annotation malformed | ignored, handled as missing |
 | Informer has not seen Filter's patch when Bind runs | Bind uses the in-memory context |
 | Device plugin has tracing off | the trace ends at Bind |
@@ -237,9 +237,9 @@ The scheduler does not handle SIGTERM today: `start()` returns only when a serve
 
 ## Security considerations
 
-- Users cannot forge a context or force sampling: the webhook overwrites the key at CREATE, and only HAMi components may change it on UPDATE.
+- Users cannot forge a context or force sampling: the webhook removes the key at CREATE, even when tracing is off, and only HAMi components may change it on UPDATE. The exception is a CREATE that bypasses the webhook under `failurePolicy: Ignore`, as for HAMi's other scheduler-owned annotations; a preset value then affects only the creator's own pods.
 - The `traceparent` header from kube-apiserver at admission is accepted. A client can only affect pods it is already allowed to create, each pod adds a handful of spans, and the export queue is bounded.
-- Exporter: OTLP over gRPC, with TLS through the standard variables. No Baggage propagator, and no resource detectors that read host files or run commands. OpenTelemetry Go v1.43 or later, which has the fixes for the 2026 advisories.
+- Exporter: OTLP over gRPC, with TLS through the standard variables. No Baggage propagator, and no resource detectors that read host files or run commands. OpenTelemetry Go v1.47.0 or later, which fixes an attribute length limit bypass ([GHSA-q7gw-24fr-5p69](https://github.com/advisories/GHSA-q7gw-24fr-5p69)).
 - Spans hold IDs, names, node and device identifiers, amounts and reasons, never environment values or container arguments. Pod and namespace names can reveal tenant names, so access to the trace backend should be restricted like access to logs.
 
 ## Implementation plan
