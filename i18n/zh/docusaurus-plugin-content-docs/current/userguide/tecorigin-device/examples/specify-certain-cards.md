@@ -60,7 +60,7 @@ kubectl get node <node-name> -o jsonpath='{.metadata.annotations.hami\.io/node-t
 绑定卡片的工作负载如果无法调度，会保持 Pending，分配拒绝原因可能为 `CardTimeSlicingExhausted`、`CardUuidMismatch` 或 `CardInsufficientCore`：
 
 - `CardTimeSlicingExhausted`：节点上某张卡已达到容器数量上限，该卡可能不在允许的UUID列表内。
-- `CardUuidMismatch`：调度器尝试选择的卡片不在允许UUID列表内，或是在 `tecorigin.com/nouse-gpuuid` 排除黑名单中。
+- `CardUuidMismatch`：调度器尝试选择的卡片不在允许UUID列表内，或是在 `tecorigin.com/nouse-gpuuuid` 排除黑名单中。
 - `CardInsufficientCore`：目标卡空闲核不足。
 
 该工作负载不会自动调度到未被允许使用的其他卡片上。
