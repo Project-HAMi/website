@@ -10,7 +10,7 @@ import FeatureSupport from '@site/src/components/FeatureSupport';
 
 要让任务运行在某种型号的 MLU 上，在 Pod 上添加 `cambricon.com/use-mlutype` 注解。要让任务避开某种型号，添加 `cambricon.com/nouse-mlutype` 注解。两个注解都可以填写以逗号分隔的多个值。
 
-HAMi 调度器从节点标签 `Model` 读取 MLU 型号。标签包含注解中的值即为匹配，不区分大小写。如果节点没有 `Model` 标签，或标签中不含 `MLU`，带有这两个注解的 Pod 不会调度到该节点。
+HAMi 调度器从节点标签 `Model` 读取 MLU 型号。标签包含注解中的值即为匹配，不区分大小写。如果节点没有 `Model` 标签，或标签中不含 `MLU`，调度器无法判断该节点的 MLU 型号，带有任一注解的 Pod 都不会调度到该节点，只设置了 `cambricon.com/nouse-mlutype` 的 Pod 也一样。
 
 ```yaml
 apiVersion: v1

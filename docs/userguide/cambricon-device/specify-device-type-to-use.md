@@ -8,7 +8,7 @@ import FeatureSupport from '@site/src/components/FeatureSupport';
 
 To run a task on a certain MLU model, add the `cambricon.com/use-mlutype` annotation to the Pod. To keep a task off a model, add `cambricon.com/nouse-mlutype`. Both take a comma-separated list.
 
-The HAMi scheduler reads the MLU model from the node label `Model`. A value matches when the label contains it, ignoring case. If a node has no `Model` label, or the label does not contain `MLU`, Pods with either annotation are not scheduled to that node.
+The HAMi scheduler reads the MLU model from the node label `Model`. A value matches when the label contains it, ignoring case. If a node has no `Model` label, or the label does not contain `MLU`, the scheduler cannot tell its model, so Pods with either annotation are not scheduled to that node. This includes a Pod that sets only `cambricon.com/nouse-mlutype`.
 
 ```yaml
 apiVersion: v1
