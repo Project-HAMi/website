@@ -17,7 +17,7 @@ sidebar_label: 路线图
 | GPU      | Iluvatar      | 全系列               |    是    |    是    |    否    |
 | DPU      | Teco          | 检查中               |  进行中  |  进行中  |    否    |
 | GPU      | Moore Threads | MTT S4000            |    是    |    是    |    否    |
-| GPU      | Birentech     | Biren166M            |    否    |    否    |    否    |
+| GPU      | Birentech     | Biren166M            |    否    |    否    |    是    |
 | GPU      | MetaX         | MXC500               |    是    |    是    |    否    |
 | XPU      | Kunlunxin     | P800                 |    是    |    是    |    否    |
 | GPU      | Vastai        | VA16                 |    是    |    是    |    否    |
