@@ -4,7 +4,7 @@ description: Architecture, GPU scheduling, allocation, recovery, and cleanup for
 sidebar_label: MPS v3 design
 ---
 
-HAMi uses the NVIDIA Container Toolkit's `apply-cuda-memory-limits` CDI hook for GPU memory limits and MPS v3 for compute sharing. The backend requires driver r620 or later and validates its command interface against a dedicated daemon. See the [user guide](../userguide/nvidia-device/mps-v3.md) for prerequisites and workload examples.
+HAMi uses the NVIDIA Container Toolkit's `apply-cuda-memory-limits` CDI hook for GPU memory limits and MPS v3 for compute sharing. The backend requires driver r620 and validates its command interface against a dedicated daemon. See the [user guide](../userguide/nvidia-device/mps-v3.md) for prerequisites and workload examples.
 
 ## Architecture
 

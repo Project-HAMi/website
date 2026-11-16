@@ -16,7 +16,7 @@ The upstream NVIDIA device plugin's experimental `sharing.mps` uses Legacy MPS t
 
 ## Prepare the node
 
-- Use Linux with cgroup v2, NVIDIA driver **r620 or later**, and NVIDIA Container Toolkit **1.20.1 or later** with the `apply-cuda-memory-limits` hook enabled. Use application images with a CUDA runtime compatible with the installed driver.
+- Use Linux with cgroup v2, NVIDIA driver **r620**, and NVIDIA Container Toolkit **1.20.1 or later** with the `apply-cuda-memory-limits` hook enabled. Use application images with a CUDA runtime compatible with the installed driver.
 - Disable MIG before enrolling the node. Configure a CDI-capable container runtime and UUID device IDs. Set device memory and core scaling to `1` on MPS v3 nodes.
 - Make the driver-matched `nvidia-cuda-mps-control` and its libraries available inside the privileged device plugin, which uses the host PID namespace. Set `devicePlugin.mpsV3.binary` to the path visible inside the plugin. The chart's host `/usr/bin` mount is visible at `/usrbin`. With GPU Operator, locate the binary in the configured driver installation.
 - Verify that the published CDI device for each GPU includes the memory hook and that the hook path is executable on the host. HAMi checks the published spec before registering devices. The Toolkit and driver manage the memory controller. [NVIDIA memory partitioning](https://docs.nvidia.com/deploy/mps/mpsv3-memory-partitioning.html)
@@ -101,12 +101,12 @@ For a `namespace-cap` Pod, add the following annotations and omit `gpucores` if 
 metadata:
   annotations:
     nvidia.com/vgpu-mode: mps-v3
-    nvidia.com/mps-sm-count: "16"
+    hami.io/mps-sm-count: "16"
     hami.io/mps-sm-shareable: "true"
     hami.io/mps-sm-max-chunks: "16"
 ```
 
-- `nvidia.com/mps-sm-count` applies to each GPU of every GPU container in the Pod. An Ampere discrete GPU uses 2 SMs per chunk, so the example reserves eight chunks. Hopper and newer discrete GPUs use 8 SMs per chunk. Integrated GPUs use 2 SMs per chunk. A fixed partition can also use the device's remainder if it yields the exact requested count.
+- `hami.io/mps-sm-count` applies to each GPU of every GPU container in the Pod. An Ampere discrete GPU uses 2 SMs per chunk, so the example reserves eight chunks. Hopper and newer discrete GPUs use 8 SMs per chunk. Integrated GPUs use 2 SMs per chunk. A fixed partition can also use the device's remainder if it yields the exact requested count.
 - `hami.io/mps-sm-shareable` allows the driver to lend the partition's idle SMs while it has no attached clients. Its default is `false`.
 - `hami.io/mps-sm-max-chunks` caps the **total** chunks the partition may use, including its base reservation. The default `0` disables borrowing. A positive integer must be between the base and total chunks on every allocated GPU. Use `unlimited` to let the driver use available capacity without a configured cap.
 - Borrowing or lending requires a base reservation made of whole chunks. The scheduler and quota account for the base reservation as `ceil(requested SMs / total SMs × 100)`. An explicit `gpucores` value must cover this charge. The driver controls how many additional SMs can be used at runtime.
@@ -121,7 +121,7 @@ HAMi binds each partition to the namespace by GPU UUID. The namespace uses an ac
 
 | Symptom | What to check |
 | --- | --- |
-| The node rejects MPS v3 during startup | Check driver r620 or later, cgroup v2, non-MIG GPUs, UUID device IDs, scaling, the MPS control binary, and the published CDI hook. |
+| The node rejects MPS v3 during startup | Check driver r620, cgroup v2, non-MIG GPUs, UUID device IDs, scaling, the MPS control binary, and the published CDI hook. |
 | A Pod cannot find a compatible GPU | Check the Pod and node strategies, available core and memory budget, the SM chunk geometry, and existing GPU sets. |
 | Timeslice setup or readback fails | Check the target GPU and driver with the selected base timeslice. The driver can reject unsupported settings. Each GPU must use `DEFAULT` compute mode for `server-timeslice`. |
 | Cleanup is waiting for clients | Let clients exit. HAMi removes the namespace first, then the partition and the last unused server. |

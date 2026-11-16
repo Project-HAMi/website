@@ -4,7 +4,7 @@ description: 介绍 HAMi MPS v3 后端的架构、GPU 调度、分配、恢复�
 sidebar_label: MPS v3 设计
 ---
 
-HAMi 使用 NVIDIA Container Toolkit 的 `apply-cuda-memory-limits` CDI hook 限制 GPU 显存，并通过 MPS v3 共享算力。后端以 r620 为最低驱动版本，启动时检查专用 daemon 的命令接口。部署和工作负载示例见[用户指南](../userguide/nvidia-device/mps-v3.md)。
+HAMi 使用 NVIDIA Container Toolkit 的 `apply-cuda-memory-limits` CDI hook 限制 GPU 显存，并通过 MPS v3 共享算力。后端仅支持 r620 驱动分支，启动时检查专用 daemon 的命令接口。部署和工作负载示例见[用户指南](../userguide/nvidia-device/mps-v3.md)。
 
 ## 架构
 

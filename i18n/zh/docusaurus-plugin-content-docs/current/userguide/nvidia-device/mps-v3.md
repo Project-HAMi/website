@@ -16,7 +16,7 @@ NVIDIA 上游 device plugin 的实验性 `sharing.mps` 使用旧版 MPS，将 GP
 
 ## 准备节点
 
-- 使用 cgroup v2、**r620 或更新的 NVIDIA 驱动**和 **NVIDIA Container Toolkit 1.20.1 或更新版本**。启用 `apply-cuda-memory-limits` hook。应用镜像应使用与节点驱动兼容的 CUDA 运行时。
+- 使用 cgroup v2、**NVIDIA r620 驱动**和 **NVIDIA Container Toolkit 1.20.1 或更新版本**。启用 `apply-cuda-memory-limits` hook。应用镜像应使用与节点驱动兼容的 CUDA 运行时。
 - 启用后端前先关闭 MIG。使用支持 CDI 的容器运行时，以 UUID 标识 GPU，并将节点的显存和算力缩放系数设为 `1`。
 - 确认特权 device plugin 使用主机 PID 命名空间，并能访问与驱动配套的 `nvidia-cuda-mps-control` 和驱动库。Chart 将主机的 `/usr/bin` 挂到插件容器内的 `/usrbin`。使用 GPU Operator 时，请按驱动的实际安装位置配置二进制路径。
 - 检查已经发布的物理 GPU CDI 设备包含显存 hook，且 hook 路径在主机上可执行。HAMi 在注册设备前会检查该配置。显存控制器由 Toolkit 和驱动管理。[NVIDIA 显存分区文档](https://docs.nvidia.com/deploy/mps/mpsv3-memory-partitioning.html)
@@ -101,12 +101,12 @@ spec:
 metadata:
   annotations:
     nvidia.com/vgpu-mode: mps-v3
-    nvidia.com/mps-sm-count: "16"
+    hami.io/mps-sm-count: "16"
     hami.io/mps-sm-shareable: "true"
     hami.io/mps-sm-max-chunks: "16"
 ```
 
-- `nvidia.com/mps-sm-count` 适用于 Pod 内每个 GPU 容器申请的每张卡。Ampere 独立 GPU 每个 chunk 为 2 SM，因此示例预留 8 个 chunk。Hopper 及更新的独立 GPU 每个 chunk 为 8 SM，集成 GPU 为 2 SM。固定分区也可以使用该设备的余数 SM，前提是能精确组成请求值。
+- `hami.io/mps-sm-count` 适用于 Pod 内每个 GPU 容器申请的每张卡。Ampere 独立 GPU 每个 chunk 为 2 SM，因此示例预留 8 个 chunk。Hopper 及更新的独立 GPU 每个 chunk 为 8 SM，集成 GPU 为 2 SM。固定分区也可以使用该设备的余数 SM，前提是能精确组成请求值。
 - `hami.io/mps-sm-shareable` 允许驱动在分区没有客户端时借出空闲 SM。默认 `false`。
 - `hami.io/mps-sm-max-chunks` 是分区能使用的**总** chunk 数上限，包含基础额度。默认 `0` 表示禁止借入。正整数上限必须在每卡的基础 chunk 数与该卡总 chunk 数之间。`unlimited` 允许驱动使用可借容量。
 - 启用借出或借入时，基础额度必须是整 chunk。调度和配额按 `ceil(基础 SM 数 / GPU 总 SM 数 × 100)` 记账。显式设置的 `gpucores` 必须覆盖该值。运行时实际借用量由驱动决定。
