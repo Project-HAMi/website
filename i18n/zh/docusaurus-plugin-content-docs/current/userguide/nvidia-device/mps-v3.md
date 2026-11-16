@@ -1,9 +1,12 @@
 ---
 title: 使用 MPS v3 共享 NVIDIA GPU
+description: 介绍如何在 HAMi 中配置 MPS v3，并申请显存、算力上限、静态 SM 分区和加权时间片。
 sidebar_label: MPS v3
 ---
 
 `mps-v3` 后端通过 NVIDIA Container Toolkit 的 CDI hook 为每个容器的 cgroup 设置显存上限。CUDA 进程连接分配给容器的 MPS namespace，按节点配置的策略共享算力。GPU 数量、显存和算力继续使用现有的 HAMi 资源名。
+
+HAMi 实现见 [HAMi PR #3443](https://github.com/Project-HAMi/HAMi/pull/3443)。
 
 ## 与 NVIDIA device plugin 的关系
 

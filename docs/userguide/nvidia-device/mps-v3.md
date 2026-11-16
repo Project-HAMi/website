@@ -1,9 +1,12 @@
 ---
 title: Share NVIDIA GPUs with MPS v3
+description: Configure MPS v3 in HAMi and request GPU memory, compute caps, static SM partitions, or weighted timeslices.
 sidebar_label: MPS v3
 ---
 
 The `mps-v3` backend uses the NVIDIA Container Toolkit CDI hook to apply each container's GPU memory limit to its cgroup. CUDA processes connect to their assigned MPS namespace for compute sharing. This backend uses the existing HAMi GPU, memory, and core resources.
+
+The HAMi implementation is tracked in [HAMi PR #3443](https://github.com/Project-HAMi/HAMi/pull/3443).
 
 ## NVIDIA device plugin compatibility
 

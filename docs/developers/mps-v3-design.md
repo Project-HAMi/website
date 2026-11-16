@@ -1,5 +1,6 @@
 ---
 title: NVIDIA MPS v3 backend design
+description: Architecture, GPU scheduling, allocation, recovery, and cleanup for the HAMi MPS v3 backend.
 sidebar_label: MPS v3 design
 ---
 

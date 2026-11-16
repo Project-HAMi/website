@@ -1,5 +1,6 @@
 ---
 title: NVIDIA MPS v3 后端设计
+description: 介绍 HAMi MPS v3 后端的架构、GPU 调度、分配、恢复和回收。
 sidebar_label: MPS v3 设计
 ---
 
