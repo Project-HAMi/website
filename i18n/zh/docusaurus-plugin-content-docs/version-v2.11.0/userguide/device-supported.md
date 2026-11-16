@@ -53,7 +53,7 @@ Teco 接入未包含在 v2.11.0 中，设备型号和能力待验证，进展见
 <!-- prettier-ignore -->
 | 制造商                    | HAMi | HAMi-DRA | Volcano | KAI-scheduler |
 | ------------------------- | ---- | -------- | ------- | ------------- |
-| 英伟达（NVIDIA）          | [分配设备显存](nvidia-device/specify-device-memory-usage.md) · [远程 GPU](nvidia-device/remote-gpu.md) | [动态资源分配](nvidia-device/dynamic-resource-allocation.md) | [使用 Volcano vGPU](volcano-vgpu/nvidia-gpu/how-to-use-volcano-vgpu.md) | [使用 KAI Scheduler](kai-scheduler/how-to-use-kai-scheduler.md) |
+| 英伟达（NVIDIA）          | [分配设备显存](nvidia-device/specify-device-memory-usage.md) · [远程 GPU](nvidia-device/remote-gpu.md) · [GPU 限额文件](nvidia-device/gpu-limits-file.md) | [动态资源分配](nvidia-device/dynamic-resource-allocation.md) | [使用 Volcano vGPU](volcano-vgpu/nvidia-gpu/how-to-use-volcano-vgpu.md) | [使用 KAI Scheduler](kai-scheduler/how-to-use-kai-scheduler.md) |
 | AMD                       | [启用 AMD GPU 共享](amd-device/enable-amd-gpu-sharing.md#部署) | - | - | - |
 | AWS                       | [管理 AWS Neuron 设备](awsneuron-device/enable-awsneuron-managing.md#启用-neuron-共享支持) | - | - | - |
 | 壁仞（Biren）             | [启用壁仞设备共享](biren-device/enable-biren-sharing.md#启用壁仞设备共享) | - | - | - |

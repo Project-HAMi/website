@@ -1,6 +1,7 @@
 ---
 title: 在 SSH 和登录会话中保留 GPU 限额
 sidebar_label: GPU 限额文件
+description: 使用只读的限额文件在 SSH、su、sudo 和 cron 会话中保留 GPU 限额，验证其是否生效，并在需要时切换为环境变量。
 translated: true
 ---
 

@@ -1,6 +1,7 @@
 ---
 title: Keep GPU limits in SSH and login sessions
 sidebar_label: GPU limits file
+description: Keep GPU limits in SSH, su, sudo and cron sessions with a read-only limits file, check that it works, and switch to environment variables if you need to.
 ---
 
 HAMi passes each container's GPU limits to HAMi-core through environment variables. A process started from SSH, `su -`, `sudo` or cron gets a new, empty environment, so it used to run without any GPU limit.
