@@ -12,7 +12,7 @@ description: A100 measurements comparing native two-instance serving, HAMi, and 
 
 ![Fixed-cache Graph and Eager throughput for native single, native pair, HAMi pair with a 50% compute quota, and legacy MPS pair](/img/docs/en/userguide/nvidia-device/gpu-sharing-benchmarks.svg)
 
-Concurrency is 8 per GPU, with 6 GiB cache per instance. Bars show three-trial throughput means; error bars show sample standard deviations. Diamonds use a common measurement period. A and C are different physical GPU pairs. [Figure data (CSV)](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/controlled.csv).
+Concurrency is 8 per GPU, with 6 GiB cache per instance. Bars show three-trial throughput means; error bars show sample standard deviations. Diamonds use a common measurement period. Sets A, B, and C used the same A100 model, OS, driver, and inference software versions listed under [Test conditions](#test-conditions), on different physical GPU pairs. This figure uses sets A and C. [Figure data (CSV)](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/controlled.csv).
 
 ## Inference performance
 
@@ -105,9 +105,9 @@ The static configuration reported 54 SMs per client and distinct partition IDs. 
 
 ## Test conditions
 
-Hardware: 2× A100-SXM4-40GB, Ubuntu 24.04.5, driver 615.71.10. Software: Dynamo 1.6.1, vLLM 0.31.0, AIPerf 0.13.0. Model: Qwen3-4B, BF16, one GPU per instance, 2,048 input tokens and a 256-token output target.
+Sets A, B, and C each used 2× A100-SXM4-40GB GPUs with the same OS, driver, and inference software versions: Ubuntu 24.04.5, NVIDIA driver 615.71.10, Dynamo 1.6.1, vLLM 0.31.0, and AIPerf 0.13.0. Model: Qwen3-4B, BF16, one GPU per instance, 2,048 input tokens and a 256-token output target.
 
-A, B, and C identify different physical GPU pairs of the model above, with the same driver. The tests used the following pairs:
+Each set used a different physical GPU pair. The collection dates and test groups were:
 
 | GPU set | Collection date (UTC, 2026) | Test groups |
 | --- | --- | --- |

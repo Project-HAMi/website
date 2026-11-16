@@ -13,7 +13,7 @@ translated: true
 
 ![固定缓存的 Graph 与 Eager 吞吐对比，包含原生单实例、原生双实例、HAMi 50% 算力双实例和 legacy MPS 双实例](/img/docs/zh/userguide/nvidia-device/gpu-sharing-benchmarks.svg)
 
-每卡并发 8，每实例缓存 6 GiB。柱为三轮吞吐均值，误差线为样本标准差；菱形按统一时间段计算。A、C 为不同物理 GPU 组。[图表数据（CSV）](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/controlled.csv)。
+每卡并发 8，每实例缓存 6 GiB。柱为三轮吞吐均值，误差线为样本标准差；菱形按统一时间段计算。A、B、C 三组使用同型号 A100，操作系统、驱动及推理软件版本一致，具体版本见[测试条件](#测试条件)；各组使用不同的物理 GPU，本图使用 A、C 组结果。[图表数据（CSV）](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/controlled.csv)。
 
 ## 推理性能
 
@@ -106,9 +106,9 @@ HAMi 此处关闭算力限制，显存仍为每实例 20 GiB；MPS 使用 v3。*
 
 ## 测试条件
 
-硬件为 2× A100-SXM4-40GB，Ubuntu 24.04.5、驱动 615.71.10；软件为 Dynamo 1.6.1、vLLM 0.31.0、AIPerf 0.13.0。模型 Qwen3-4B，BF16，每实例使用一张 GPU；输入 2,048 tokens，输出目标 256 tokens。
+A、B、C 三组均使用 2× A100-SXM4-40GB，操作系统、驱动及推理软件版本一致：Ubuntu 24.04.5、NVIDIA 驱动 615.71.10、Dynamo 1.6.1、vLLM 0.31.0、AIPerf 0.13.0。模型 Qwen3-4B，BF16，每实例使用一张 GPU；输入 2,048 tokens，输出目标 256 tokens。
 
-A、B、C 表示不同的物理 GPU 对，型号和驱动均与上文一致。各组对应的测试如下：
+各组使用不同的物理 GPU。采集日期与测试内容如下：
 
 | GPU 组 | 采集日期（UTC，2026 年） | 测试内容 |
 | --- | --- | --- |
