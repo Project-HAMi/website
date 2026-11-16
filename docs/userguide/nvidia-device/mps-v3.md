@@ -145,7 +145,7 @@ HAMi binds each partition to the namespace by GPU UUID. The namespace uses an ac
 
 ## Upgrade, switch strategy, or diagnose a failure
 
-1. Prevent new workloads from landing on the node and drain its MPS v3 workloads. For an upgrade from the earlier backend, let the old manager reclaim its resources before replacing it.
+1. Prevent new workloads from landing on the node and drain its MPS v3 workloads.
 2. Apply the new driver, plugin, or node policy after reclamation. The same drain applies before changing `computeMode`, the base timeslice, the yield level, or the state root.
 3. Confirm that the plugin reports healthy devices and run a workload with the intended strategy before reopening the node to GPU workloads.
 
