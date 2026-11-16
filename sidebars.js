@@ -33,6 +33,7 @@ const vendors = [
       "dynamic-mig-support",
       "dynamic-resource-allocation",
       "using-resourcequota",
+      "gpu-limits-file",
     ]),
     vendorExamples("nvidia-device", [
       "use-exclusive-card",

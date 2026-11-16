@@ -143,6 +143,7 @@
             "userguide/nvidia-device/dynamic-mig-support",
             "userguide/nvidia-device/dynamic-resource-allocation",
             "userguide/nvidia-device/using-resourcequota",
+            "userguide/nvidia-device/gpu-limits-file",
             {
               "type": "category",
               "label": "Examples",
