@@ -3,6 +3,10 @@ title: 分配独占设备
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="ascendWhole" />
+
 要分配整个 Huawei Ascend 设备，只需设置对应的 resourceName（如 `huawei.com/Ascend910B3` 或 `huawei.com/Ascend310P`），不需要指定显存资源。
 
 ```yaml

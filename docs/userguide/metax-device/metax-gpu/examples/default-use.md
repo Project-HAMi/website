@@ -2,6 +2,10 @@
 title: Allocate metax device
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="metaxWhole" />
+
 To allocate metax device, you need to only assign `metax-tech.com/gpu` without other fields.
 
 ```yaml

@@ -2,6 +2,10 @@
 title: Assign task to certain HCU cards
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="hygonUuid" />
+
 To assign a task to certain HCUs, you need only to assign the `hygon.com/use-gpuuuid` in annotations field.
 
 ```yaml

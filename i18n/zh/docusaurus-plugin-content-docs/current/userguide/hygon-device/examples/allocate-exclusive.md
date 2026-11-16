@@ -4,6 +4,10 @@ sidebar_label: 独占设备
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="hygonWhole" />
+
 要分配整个海光 HCU 设备，你只需分配 `hygon.com/hcunum`，无需其他字段。
 
 ```yaml

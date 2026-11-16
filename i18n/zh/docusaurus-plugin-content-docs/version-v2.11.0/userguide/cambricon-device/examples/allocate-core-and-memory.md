@@ -4,7 +4,7 @@ sidebar_label: 分配核心和显存
 translated: true
 ---
 
-要分配设备核心资源的某一部分，你只需在容器中使用 `cambricon.com/vmlu` 指定所需的寒武纪 MLU 数量，并分配 `cambricon.com/mlu370.smlu.vmemory` 和 `cambricon.com/mlu370.smlu.vcore`。
+要分配设备核心资源的某一部分，你只需在容器中使用 `cambricon.com/vmlu` 指定所需的寒武纪 MLU 数量，并分配 `cambricon.com/mlu.smlu.vmemory` 和 `cambricon.com/mlu.smlu.vcore`。
 
 ```yaml
 apiVersion: apps/v1
@@ -31,6 +31,6 @@ spec:
           resources:
             limits:
               cambricon.com/vmlu: "1"
-              cambricon.com/mlu370.smlu.vmemory: "20"
-              cambricon.com/mlu370.smlu.vcore: "10"
+              cambricon.com/mlu.smlu.vmemory: "20"
+              cambricon.com/mlu.smlu.vcore: "10"
 ```

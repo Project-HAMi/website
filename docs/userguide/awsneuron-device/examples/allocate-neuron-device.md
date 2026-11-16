@@ -2,6 +2,10 @@
 title: Allocate AWS Neuron device
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="neuronDevice" />
+
 To allocate one or more AWS Neuron devices exclusively, use `aws.amazon.com/neuron`
 
 ```yaml

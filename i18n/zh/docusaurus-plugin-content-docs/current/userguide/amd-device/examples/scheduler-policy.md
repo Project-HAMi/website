@@ -3,6 +3,10 @@ title: 选择 GPU 调度策略
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="amdGpuPolicy" />
+
 在 Pod 上设置注解 `hami.io/gpu-scheduler-policy`，选择调度器在节点上挑选 GPU 的方式。默认值来自 HAMi chart 中的 `scheduler.defaultSchedulerPolicy.gpuSchedulerPolicy`（`spread`）。多个策略可以用逗号组合在同一个值中，例如 `binpack,mutex`。
 
 | 策略 | 对 AMD GPU 的效果 |

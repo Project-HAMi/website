@@ -2,6 +2,10 @@
 title: Allocate AWS Neuron core
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="neuronCore" />
+
 Request one NeuronCore with `aws.amazon.com/neuroncore`. The number of cores per physical device depends on the node; one core is not always half a device.
 
 ```yaml

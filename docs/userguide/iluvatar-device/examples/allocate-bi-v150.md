@@ -2,6 +2,10 @@
 title: Allocate BI-V150 slice
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="iluvatarShare" />
+
 To allocate core and memory resources for the container, you only need to configure a certain size of GPU core `iluvatar.ai/BI-V150.vCore` and GPU memory resource `iluvatar.ai/BI-V150.vMem`.
 
 ```yaml

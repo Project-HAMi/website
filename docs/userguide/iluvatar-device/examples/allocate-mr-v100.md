@@ -3,6 +3,10 @@ title: Allocate MR-V100 slice
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="iluvatarShare" />
+
 To allocate core and memory resources for the container, you only need to configure a certain size of GPU core `iluvatar.ai/MR-V100.vCore` and GPU memory resource `iluvatar.ai/MR-V100.vMem`.
 
 ```yaml

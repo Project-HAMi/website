@@ -2,6 +2,10 @@
 title: Allocate device core usage
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="cambCores" />
+
 To allocate a percentage of device core resources, specify the `cambricon.com/mlu.smlu.vcore` resource.
 
 This field is optional. Each unit of `cambricon.com/mlu.smlu.vcore` represents 1% of the device's compute cores.
@@ -15,6 +19,6 @@ resources:
 
 :::note
 
-Depending on the parameters of cambricon-device-plugin, resource name can be `cambricon.com/mlu370.smlu.vcore` or other types.
+Depending on the parameters of cambricon-device-plugin, resource name can be `cambricon.com/mlu370.smlu.vcore` or other types. Set `devices.cambricon.resourceCoreName` in the HAMi chart to the same name, or the HAMi scheduler does not read the request.
 
 :::

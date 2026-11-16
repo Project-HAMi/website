@@ -2,6 +2,10 @@
 title: Soft slicing (hami-vnpu-core)
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="ascendSoft" />
+
 Soft slicing uses runtime interception (`libvnpu.so`) to enable fine-grained NPU sharing without requiring hardware virtualization templates. To use it, add the annotation `huawei.com/vnpu-mode: 'hami-core'` to the Pod.
 
 :::note

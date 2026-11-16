@@ -3,6 +3,10 @@ title: 避开指定类型的 GPU
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="amdType" />
+
 要让 Pod 避开某种类型的 GPU，在 Pod 注解中设置 `amd.com/nouse-gputype`。已注册的产品名称包含该文本即匹配。
 
 ```yaml

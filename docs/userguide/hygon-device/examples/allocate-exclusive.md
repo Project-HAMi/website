@@ -2,6 +2,10 @@
 title: Allocate exclusive device
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="hygonWhole" />
+
 To allocate a whole hygon HCU device, you need to only assign `hygon.com/hcunum` without other fields.
 
 ```yaml

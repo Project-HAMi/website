@@ -2,6 +2,10 @@
 title: 分配 AWS Neuron 核心资源
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="neuronCore" />
+
 通过 `aws.amazon.com/neuroncore` 申请一个 NeuronCore。每张物理卡的核心数量取决于节点，一个核心不一定等于半张卡。
 
 ```yaml

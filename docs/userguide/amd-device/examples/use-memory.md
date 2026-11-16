@@ -2,6 +2,10 @@
 title: Allocate device memory
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="amdMem" />
+
 To cap the device memory of a pod, set `amd.com/gpumem` in MiB together with `amd.com/gpu`.
 
 ```yaml

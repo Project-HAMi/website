@@ -3,6 +3,10 @@ title: 按百分比分配设备显存
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="amdMemPercent" />
+
 要按 GPU 显存的比例申请，设置 `amd.com/gpumem-percentage`（0-100）。同时将 `amd.com/gpumem` 设置为大于 0 的整数时，显存申请量以 `amd.com/gpumem` 为准。当 `amd.com/gpumem` 未设置或为 0 时，百分比 0 表示申请整卡显存。
 
 ```yaml

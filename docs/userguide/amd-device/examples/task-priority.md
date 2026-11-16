@@ -2,6 +2,10 @@
 title: Set the queue priority of a pod
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="amdPriority" />
+
 To give the compute queues of a pod a higher or lower priority, set the environment variable `AMD_TASK_PRIORITY` in the container. The memory hook sets the HSA queue priority from it. A value of 0 is the high class and higher values are low, and the hook pins the value to the one in the pod spec, so a process cannot change it with `setenv`.
 
 On a GPU shared by two processes in a 25 percent slice, priorities 0 and 3 gave 144.7 and 72.3 kernels per second, against about 108.6 each without a priority.
