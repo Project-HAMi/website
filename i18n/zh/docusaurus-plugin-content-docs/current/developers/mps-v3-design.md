@@ -90,10 +90,10 @@ flowchart TD
 
 管理器对专用状态目录加独占锁，在 `allocations.json` 记录版本、Pod 与容器身份、GPU 集合、额度、SM 选项、资源名称和准备状态。启动时根据权威节点 Pod 列表和 daemon 状态恢复分配。
 
-排空后，管理器设置并核对 `compute-policy`。`server-timeslice` 节点通过 NVML 逐卡检查 compute mode，仅允许使用 `DEFAULT` 模式的 GPU。实际 GPU 集合在创建工作负载的 server 时验证。如果要恢复为默认 yield，管理器会在无 server 时重启 daemon。存在活跃分配时，管理器只核对既有策略和权重。daemon 级策略需要在没有 server 时变更，server 权重需要在没有客户端时变更。[NVIDIA 加权时间片接口](https://docs.nvidia.com/deploy/mps/620/mpsv3-interface.html#weighted-timeslicing)
+排空后，管理器设置并核对 `compute-policy`。`server-timeslice` 节点通过 NVML 逐卡检查 compute mode，仅允许使用 `DEFAULT` 模式的 GPU。实际 GPU 集合在创建工作负载的 server 时验证。恢复默认 yield 时，运维需先排空节点并重启宿主机 daemon。存在活跃分配时，管理器只核对既有策略和权重。daemon 级策略需要在没有 server 时变更，server 权重需要在没有客户端时变更。[NVIDIA 加权时间片接口](https://docs.nvidia.com/deploy/mps/620/mpsv3-interface.html#weighted-timeslicing)
 
 健康检查和恢复优先使用 `get` 字段回读配置。资源是否存在、静态分区的具体设置通过 r620 CSV inventory 核对。620.70.06 的 `sm-partition list --all` 在状态列前还有一列 contract timeout。未知格式、查询超时或断连会停止当前操作并保留记录。daemon 或全局策略异常影响整节点，单个分配的健康异常仅影响其 GPU。只读健康检查在分配锁外执行。
 
-恢复复用仍与记录一致的资源。遇到仍存活的旧版分配、策略不匹配或 daemon 丢失且仍有活跃分配时，管理器拒绝接管。仅重启管理器时，可以重新连接仍存活的 daemon。整个插件容器重启若同时结束了 daemon，则需要恢复受影响的工作负载。
+恢复复用仍与记录一致的资源。遇到仍存活的旧版分配、策略不匹配或 daemon 丢失且仍有活跃分配时，管理器拒绝接管。仅重启管理器时，可以重新连接仍存活的 daemon。daemon 由宿主机服务托管，插件重启后重新连接。如果宿主机 daemon 退出，则需要恢复受影响的工作负载。
 
 回收依次执行非强制删除 namespace、删除分区、删除无引用 server，再移除 CDI 和状态。r620 会拒绝删除仍有客户端的 namespace，失败记录保留供重试。普通容器重启保留原分配，以便 kubelet 复用 Allocate 响应。

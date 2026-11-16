@@ -26,6 +26,36 @@ stat -fc %T /sys/fs/cgroup
 nvidia-smi --query-gpu=uuid,driver_version,mig.mode.current,mig.mode.pending --format=csv
 ```
 
+## 在宿主机运行 MPS daemon
+
+在启用 MPS v3 的节点上先启动专用 daemon，再启用设备插件。下面是 systemd unit 示例。二进制使用宿主机路径，目录须与 Chart 的 `devicePlugin.mpsV3.root` 一致。
+
+```ini
+[Unit]
+Description=HAMi NVIDIA MPS v3 daemon
+
+[Service]
+Type=simple
+Environment=CUDA_MPS_PIPE_DIRECTORY=/var/run/hami/mps-v3/pipe
+Environment=CUDA_MPS_LOG_DIRECTORY=/var/run/hami/mps-v3/log
+ExecStartPre=/usr/bin/mkdir -p /var/run/hami/mps-v3/pipe /var/run/hami/mps-v3/log
+ExecStart=/usr/bin/nvidia-cuda-mps-control -p 3 -f -m
+
+[Install]
+WantedBy=multi-user.target
+```
+
+保存为 `/etc/systemd/system/hami-mps-v3.service` 后，在节点上执行：
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable --now hami-mps-v3.service
+sudo env CUDA_MPS_PIPE_DIRECTORY=/var/run/hami/mps-v3/pipe \
+  nvidia-cuda-mps-control -p 3 compute-policy get timeslice
+```
+
+设备插件只连接已有 daemon。停止或重启节点服务前，先排空 MPS 工作负载。
+
 ## 配置节点
 
 以下 Helm 配置在 `gpu-node-01` 上启用 `server-timeslice`。按实际节点名称和驱动路径修改。

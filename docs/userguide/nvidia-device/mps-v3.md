@@ -26,6 +26,36 @@ stat -fc %T /sys/fs/cgroup
 nvidia-smi --query-gpu=uuid,driver_version,mig.mode.current,mig.mode.pending --format=csv
 ```
 
+## Run the MPS daemon on the host
+
+Start a dedicated daemon on each MPS v3 node before enabling the device plugin. This example systemd unit uses the host binary path. The directories must match the Chart setting `devicePlugin.mpsV3.root`.
+
+```ini
+[Unit]
+Description=HAMi NVIDIA MPS v3 daemon
+
+[Service]
+Type=simple
+Environment=CUDA_MPS_PIPE_DIRECTORY=/var/run/hami/mps-v3/pipe
+Environment=CUDA_MPS_LOG_DIRECTORY=/var/run/hami/mps-v3/log
+ExecStartPre=/usr/bin/mkdir -p /var/run/hami/mps-v3/pipe /var/run/hami/mps-v3/log
+ExecStart=/usr/bin/nvidia-cuda-mps-control -p 3 -f -m
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Save the unit as `/etc/systemd/system/hami-mps-v3.service` and run the following on the node.
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable --now hami-mps-v3.service
+sudo env CUDA_MPS_PIPE_DIRECTORY=/var/run/hami/mps-v3/pipe \
+  nvidia-cuda-mps-control -p 3 compute-policy get timeslice
+```
+
+The device plugin connects to the running daemon. Drain MPS workloads before stopping or restarting the host service.
+
 ## Configure a node
 
 Select the node and choose its compute strategy in the Helm overrides. This example enables `server-timeslice` on one node.
