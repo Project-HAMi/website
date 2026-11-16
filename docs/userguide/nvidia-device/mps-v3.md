@@ -5,6 +5,12 @@ sidebar_label: MPS v3
 
 The `mps-v3` backend uses the NVIDIA Container Toolkit CDI hook to apply each container's GPU memory limit to its cgroup. CUDA processes connect to their assigned MPS namespace for compute sharing. This backend uses the existing HAMi GPU, memory, and core resources.
 
+## NVIDIA device plugin compatibility
+
+HAMi enables r620 MPS v3 with `operatingmode: mps-v3`. It supports per-container GPU memory limits through CDI and offers namespace caps, static SM partitions with optional borrowing, and weighted server timeslices.
+
+The upstream NVIDIA device plugin's experimental `sharing.mps` uses Legacy MPS to expose equal-sized GPU replicas. That setting is unavailable in HAMi, where the node operating mode for MPS is `mps-v3`. [NVIDIA device plugin MPS documentation](https://github.com/NVIDIA/k8s-device-plugin/blob/v0.20.1/README.md#with-cuda-mps)
+
 ## Prepare the node
 
 - Use Linux with cgroup v2, NVIDIA driver **r620 or later**, and NVIDIA Container Toolkit **1.20.1 or later** with the `apply-cuda-memory-limits` hook enabled. Use application images with a CUDA runtime compatible with the installed driver.

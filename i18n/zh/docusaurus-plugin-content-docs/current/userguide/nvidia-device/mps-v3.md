@@ -5,6 +5,12 @@ sidebar_label: MPS v3
 
 `mps-v3` 后端通过 NVIDIA Container Toolkit 的 CDI hook 为每个容器的 cgroup 设置显存上限。CUDA 进程连接分配给容器的 MPS namespace，按节点配置的策略共享算力。GPU 数量、显存和算力继续使用现有的 HAMi 资源名。
 
+## 与 NVIDIA device plugin 的关系
+
+HAMi 通过 `operatingmode: mps-v3` 启用 r620 MPS v3，用 CDI 设置容器显存上限，并提供 namespace 算力上限、可选借用的静态 SM 分区和 server 加权时间片。
+
+NVIDIA 上游 device plugin 的实验性 `sharing.mps` 使用旧版 MPS，将 GPU 暴露为等额副本。HAMi 不支持该配置，启用 MPS 时使用节点模式 `mps-v3`。[NVIDIA device plugin MPS 文档](https://github.com/NVIDIA/k8s-device-plugin/blob/v0.20.1/README.md#with-cuda-mps)
+
 ## 准备节点
 
 - 使用 cgroup v2、**r620 或更新的 NVIDIA 驱动**和 **NVIDIA Container Toolkit 1.20.1 或更新版本**。启用 `apply-cuda-memory-limits` hook。应用镜像应使用与节点驱动兼容的 CUDA 运行时。
