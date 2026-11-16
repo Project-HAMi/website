@@ -11,7 +11,7 @@ Allocation metrics show what the scheduler has handed out to each GPU and each w
 
 | Setup | Exported by | How to reach it | Granularity |
 | --- | --- | --- | --- |
-| HAMi | `hami-scheduler`, port 9395 | Service port `31993`; a NodePort in v2.10.0, `ClusterIP` on master | GPU, Pod, quota |
+| HAMi | `hami-scheduler`, port 9395 | Service port `31993`; `ClusterIP` by default in v2.11.0 | GPU, Pod, quota |
 | HAMi-DRA | `hami-dra-monitor` Deployment, port 8080 | `ClusterIP` Service on 8080 | GPU, Pod |
 | Volcano vGPU | Volcano scheduler, port 8080 | `ClusterIP` Service `volcano-scheduler-service` on 8080 | GPU, Pod |
 | KAI Scheduler | Queue controller, port 8080 | `ClusterIP` Service `queue-controller` on 8080 | Queue only |
@@ -26,7 +26,7 @@ In v2.10.0 the Service is a NodePort:
 curl <node-ip>:31993/metrics
 ```
 
-In charts built from master it is `ClusterIP`, so port-forward it:
+In v2.11.0 the default is `ClusterIP`, so port-forward it:
 
 ```bash
 kubectl port-forward svc/hami-scheduler 31993:31993 -n kube-system

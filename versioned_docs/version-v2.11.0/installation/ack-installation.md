@@ -83,8 +83,8 @@ To push the images yourself, log in to the instance's public endpoint from a mac
 
 ```bash
 skopeo login --username=<username> registry.cn-<personal-instance-region>.aliyuncs.com
-skopeo copy --all docker://docker.io/projecthami/hami:v2.10.0 \
-  docker://registry.cn-<personal-instance-region>.aliyuncs.com/<namespace>/hami:v2.10.0
+skopeo copy --all docker://docker.io/projecthami/hami:v2.11.0 \
+  docker://registry.cn-<personal-instance-region>.aliyuncs.com/<namespace>/hami:v2.11.0
 skopeo copy --all docker://docker.io/liangjw/kube-webhook-certgen:v1.1.1 \
   docker://registry.cn-<personal-instance-region>.aliyuncs.com/<namespace>/kube-webhook-certgen:v1.1.1
 ```
@@ -165,7 +165,7 @@ devicePlugin:
 Follow [Online Installation from Helm](./online-installation.md) and add the values file to the installation command:
 
 ```bash
-helm install hami hami-charts/hami -n kube-system --version 2.10.0 -f hami-ack-values.yaml
+helm install hami hami-charts/hami -n kube-system --version 2.11.0 -f hami-ack-values.yaml
 ```
 
 After `hami-device-plugin` and `hami-scheduler` are running, confirm that the HAMi scheduler holds its leader lease:

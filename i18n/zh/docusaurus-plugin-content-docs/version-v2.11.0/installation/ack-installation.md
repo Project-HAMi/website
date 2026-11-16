@@ -84,8 +84,8 @@ kubectl label node <node-name> gpu=on
 
 ```bash
 skopeo login --username=<username> registry.cn-<个人版实例所在的地域>.aliyuncs.com
-skopeo copy --all docker://docker.io/projecthami/hami:v2.10.0 \
-  docker://registry.cn-<个人版实例所在的地域>.aliyuncs.com/<namespace>/hami:v2.10.0
+skopeo copy --all docker://docker.io/projecthami/hami:v2.11.0 \
+  docker://registry.cn-<个人版实例所在的地域>.aliyuncs.com/<namespace>/hami:v2.11.0
 skopeo copy --all docker://docker.io/liangjw/kube-webhook-certgen:v1.1.1 \
   docker://registry.cn-<个人版实例所在的地域>.aliyuncs.com/<namespace>/kube-webhook-certgen:v1.1.1
 ```
@@ -166,7 +166,7 @@ devicePlugin:
 按[通过 Helm 在线安装](./online-installation.md)部署，并在安装命令中传入 values 文件：
 
 ```bash
-helm install hami hami-charts/hami -n kube-system --version 2.10.0 -f hami-ack-values.yaml
+helm install hami hami-charts/hami -n kube-system --version 2.11.0 -f hami-ack-values.yaml
 ```
 
 `hami-device-plugin` 和 `hami-scheduler` 运行后，确认 HAMi 调度器已持有选主租约：
