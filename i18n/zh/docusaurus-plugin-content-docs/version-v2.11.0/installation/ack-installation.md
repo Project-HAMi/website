@@ -73,22 +73,28 @@ kubectl label node <node-name> gpu=on
 
 ## 将 HAMi 镜像复制到容器镜像服务 {#copy-the-hami-images}
 
-中国内地地域的节点无法访问 Docker Hub，因此 `hami` 和 `kube-webhook-certgen` 镜像会拉取失败。Chart 默认的 `kube-scheduler` 镜像来自 `registry.cn-hangzhou.aliyuncs.com`，可以正常拉取。
+按下文设置 `global.imageSource: cn` 后，kube-scheduler 和 certgen 会直接从阿里云镜像源拉取，只需将 HAMi 镜像复制到自己的 ACR 实例中。
 
-将这两个 Docker Hub 镜像复制到与集群同地域的阿里云容器镜像服务（ACR）实例中，并将 `hami` 和 `kube-webhook-certgen` 仓库设置为公开，使节点无需凭证即可拉取。可以使用以下任一版本：
+将 HAMi 镜像复制到与集群同地域的阿里云容器镜像服务（ACR）实例中，并将 `hami` 仓库设置为公开，使节点无需凭证即可拉取。可以使用以下任一版本：
 
-- ACR 企业版可以从 Docker Hub 同步镜像。见[创建企业版实例](https://help.aliyun.com/zh/acr/user-guide/create-a-container-registry-enterprise-edition-instance)和[通过制品订阅获取海外源镜像](https://help.aliyun.com/zh/acr/user-guide/subscribe-to-image-tags)。
+- ACR 企业版的实例创建和海外源镜像订阅见[创建企业版实例](https://help.aliyun.com/zh/acr/user-guide/create-a-container-registry-enterprise-edition-instance)和[通过制品订阅获取海外源镜像](https://help.aliyun.com/zh/acr/user-guide/subscribe-to-image-tags)。
 - ACR 个人版需要自行推送镜像。见[使用个人版实例推送拉取镜像](https://help.aliyun.com/zh/acr/user-guide/use-a-container-registry-personal-edition-instance-to-push-and-pull-images)。
 
-自行推送镜像时，在一台能访问 Docker Hub 的机器上登录实例的公网地址，然后复制镜像。`--all` 会复制镜像的所有平台：
+自行推送镜像时，在一台能访问源镜像仓库的机器上登录实例的公网地址，然后按需复制镜像。`--all` 会复制镜像的所有平台。后两条复制命令为可选项；将 `YOUR-KUBERNETES-VERSION` 替换为集群的 Kubernetes 版本，保留 `v` 前缀，不含 ACK 后缀：
 
 ```bash
 skopeo login --username=<username> registry.cn-<个人版实例所在的地域>.aliyuncs.com
 skopeo copy --all docker://docker.io/projecthami/hami:v2.11.0 \
   docker://registry.cn-<个人版实例所在的地域>.aliyuncs.com/<namespace>/hami:v2.11.0
-skopeo copy --all docker://docker.io/liangjw/kube-webhook-certgen:v1.1.1 \
-  docker://registry.cn-<个人版实例所在的地域>.aliyuncs.com/<namespace>/kube-webhook-certgen:v1.1.1
+
+# 可选：将 kube-scheduler 和 certgen 也复制到自己的 ACR
+skopeo copy --all docker://registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:YOUR-KUBERNETES-VERSION \
+  docker://registry.cn-<个人版实例所在的地域>.aliyuncs.com/<namespace>/kube-scheduler:YOUR-KUBERNETES-VERSION
+skopeo copy --all docker://registry.cn-hangzhou.aliyuncs.com/google_containers/kube-webhook-certgen:v1.6.9 \
+  docker://registry.cn-<个人版实例所在的地域>.aliyuncs.com/<namespace>/kube-webhook-certgen:v1.6.9
 ```
+
+如果也复制 kube-scheduler 或 certgen，需将对应的 ACR 仓库设置为公开，并在下文 values 中分别设置 `scheduler.kubeScheduler.image` 或 `scheduler.patch.imageNew` 的 `registry`、`repository` 和 `tag`，与复制后的镜像一致；certgen 的 `tag` 显式设为 `v1.6.9`，覆盖 Chart 默认的摘要。
 
 ## 为 HAMi 调度器授予 DRA 资源访问权限 {#grant-dra-access}
 
@@ -136,20 +142,31 @@ kubectl apply -f hami-scheduler-dra-rbac.yaml
 
 ## 准备 HAMi values 文件 {#prepare-the-hami-values}
 
-将 HAMi 的镜像指向 ACR 中的仓库。使用实例的专有网络（VPC）地址，节点无需 NAT 网关即可访问。需要逐个设置镜像，因为 `global.imageRegistry` 也会修改 `kube-scheduler` 镜像的仓库地址。
+将 HAMi 的镜像指向 ACR 中的仓库。使用实例的专有网络（VPC）地址，节点无需 NAT 网关即可访问。设置 `global.imageSource: cn`，使 kube-scheduler 和 certgen 使用阿里云镜像源。需要逐个设置镜像，因为 `global.imageRegistry` 也会修改 `kube-scheduler` 镜像的仓库地址。
 
 将以下内容保存为 `hami-ack-values.yaml`，并替换 `<个人版实例所在的地域>` 和 `<namespace>`。使用企业版时，将 `registry` 替换为企业版实例的专有网络地址：
 
 ```yaml
+global:
+  imageSource: cn
 scheduler:
+  # 可选：已将 kube-scheduler 复制到 ACR 时，取消下方配置的注释并替换占位符。
+  # kubeScheduler:
+  #   image:
+  #     registry: registry-vpc.cn-<个人版实例所在的地域>.aliyuncs.com
+  #     repository: <namespace>/kube-scheduler
+  #     tag: YOUR-KUBERNETES-VERSION
   extender:
     image:
       registry: registry-vpc.cn-<个人版实例所在的地域>.aliyuncs.com
       repository: <namespace>/hami
-  patch:
-    imageNew:
-      registry: registry-vpc.cn-<个人版实例所在的地域>.aliyuncs.com
-      repository: <namespace>/kube-webhook-certgen
+  # 可选：已将 certgen 复制到 ACR 时，取消下方配置的注释并替换占位符。
+  # patch:
+  #   imageNew:
+  #     registry: registry-vpc.cn-<个人版实例所在的地域>.aliyuncs.com
+  #     repository: <namespace>/kube-webhook-certgen
+  #     # 显式设置 tag，覆盖 Chart 默认的摘要。
+  #     tag: v1.6.9
 devicePlugin:
   nvidiaDriverRoot: /
   image:
