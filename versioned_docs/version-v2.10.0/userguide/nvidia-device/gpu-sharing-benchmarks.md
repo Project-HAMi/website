@@ -20,6 +20,8 @@ Concurrency is 8 per GPU, with 6 GiB cache per instance. Bars show three-trial t
 
 Dynamo ran vLLM, with load from the official [run-sweep.sh](https://github.com/ai-dynamo/dynamo/blob/v1.6.1/examples/gpu-sharing/common/run-sweep.sh). Graph is the default mode; Eager adds `--enforce-eager`. Automatic cache allocation and default prefix caching were used, with one trial per configuration.
 
+At concurrency 2 and 4 per GPU, the prefix-cache read rate was **99.61% for native single and 0% for every paired configuration**. At concurrency 8 it was 49.81% and 0%, respectively. The [standard-test CSV](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fullstack.csv) records the rates at all five loads. Cache reuse differs between the single and paired runs; the fixed-cache comparison below disables prefix caching.
+
 Total concurrency is 2, 4, 8, 16, or 32 per GPU, split equally between paired instances. All configurations use two instances except native single; both HAMi configurations have 20 GiB memory per instance. Throughput is output tokens/s/GPU. **Bold marks the highest value at each load**; parentheses show the difference from the native pair.
 
 #### Graph (default)
@@ -104,6 +106,15 @@ The static configuration reported 54 SMs per client and distinct partition IDs. 
 ## Test conditions
 
 Hardware: 2× A100-SXM4-40GB, Ubuntu 24.04.5, driver 615.71.10. Software: Dynamo 1.6.1, vLLM 0.31.0, AIPerf 0.13.0. Model: Qwen3-4B, BF16, one GPU per instance, 2,048 input tokens and a 256-token output target.
+
+A, B, and C identify different physical GPU pairs of the model above, with the same driver. The tests used the following pairs:
+
+| GPU set | Collection date (UTC, 2026) | Test groups |
+| --- | --- | --- |
+| A | November 2 | Standard test: native single, GPU Fractioning, and HAMi with no compute limit |
+| A | November 3 | Fixed-cache test: native single, native pair, legacy MPS, and HAMi with no compute limit |
+| B | November 4 | Native-pair standard test and all fault tests |
+| C | November 5 | HAMi 50% performance: standard and fixed-cache tests |
 
 | Deployment | Instances per GPU | Memory configuration | Execution configuration |
 | --- | --: | --- | --- |

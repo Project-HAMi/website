@@ -21,6 +21,8 @@ translated: true
 
 通过 Dynamo 运行 vLLM，用官方 [run-sweep.sh](https://github.com/ai-dynamo/dynamo/blob/v1.6.1/examples/gpu-sharing/common/run-sweep.sh) 压测。Graph 为默认模式，Eager 增加 `--enforce-eager`。使用自动缓存和默认前缀缓存，各配置测一轮。
 
+每卡并发 2 和 4 时，前缀缓存读取比例为：**原生单实例 99.61%，所有双实例配置均为 0%**。每卡并发 8 时，两者分别为 49.81% 和 0%。五档并发的完整比例见[常规测试 CSV](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fullstack.csv)。单、双实例测试的缓存复用情况不同；下方固定缓存对照关闭了前缀缓存。
+
 每卡总并发为 2、4、8、16、32，双实例各承担一半。除原生单实例外均为双实例；HAMi 两种配置均为每实例 20 GiB 显存配额。吞吐单位为输出 tokens/s/GPU；**粗体为该档最高值**，括号为相对原生双实例的差异。
 
 #### Graph（默认）
@@ -105,6 +107,15 @@ HAMi 此处关闭算力限制，显存仍为每实例 20 GiB；MPS 使用 v3。*
 ## 测试条件
 
 硬件为 2× A100-SXM4-40GB，Ubuntu 24.04.5、驱动 615.71.10；软件为 Dynamo 1.6.1、vLLM 0.31.0、AIPerf 0.13.0。模型 Qwen3-4B，BF16，每实例使用一张 GPU；输入 2,048 tokens，输出目标 256 tokens。
+
+A、B、C 表示不同的物理 GPU 对，型号和驱动均与上文一致。各组对应的测试如下：
+
+| GPU 组 | 采集日期（UTC，2026 年） | 测试内容 |
+| --- | --- | --- |
+| A | 11 月 2 日 | 常规测试：原生单实例、GPU Fractioning、HAMi 不限算力 |
+| A | 11 月 3 日 | 固定缓存测试：原生单实例、原生双实例、legacy MPS、HAMi 不限算力 |
+| B | 11 月 4 日 | 原生双实例常规测试及全部故障测试 |
+| C | 11 月 5 日 | HAMi 50% 性能测试：常规及固定缓存测试 |
 
 | 部署方式 | 每卡实例数 | 显存配置 | 执行配置 |
 | --- | --: | --- | --- |
