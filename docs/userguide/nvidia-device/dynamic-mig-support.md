@@ -53,7 +53,7 @@ Changing MIG mode can require a GPU reset or node reboot on some hardware and dr
 
 ### 2. Configure the profile allowlist
 
-The [current Chart device configuration](https://github.com/Project-HAMi/HAMi/blob/v2.10.0/charts/hami/templates/scheduler/device-configmap.yaml) uses `migProfileAllowlist`. The v2.10 defaults are:
+The [current Chart device configuration](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/templates/scheduler/device-configmap.yaml) uses `migProfileAllowlist`. The v2.11.0 defaults are:
 
 ```yaml
 nvidia:
@@ -61,19 +61,19 @@ nvidia:
     - models: ["A30"]
       profiles: ["1g.6gb", "2g.12gb", "4g.24gb"]
     - models: ["A100-SXM4-40GB", "A100-40GB-PCIe", "A100-PCIE-40GB"]
-      profiles: ["1g.5gb", "2g.10gb", "3g.20gb", "7g.40gb"]
-    - models: ["A100-SXM4-80GB", "A100-80GB-PCIe", "A100-PCIE-80GB"]
-      profiles: ["1g.10gb", "2g.20gb", "3g.40gb", "7g.79gb"]
-    - models: ["H100-PCIE-80GB", "H100-SXM5-80GB"]
-      profiles: ["1g.10gb", "2g.20gb", "3g.40gb", "7g.80gb"]
-    - models: ["H100-PCIE-94GB", "H100-SXM5-94GB"]
-      profiles: ["1g.12gb", "2g.24gb", "3g.47gb", "7g.94gb"]
+      profiles: ["1g.5gb", "2g.10gb", "3g.20gb", "4g.20gb", "7g.40gb"]
+    - models: ["A100-SXM4-80GB", "A100-80GB-PCIe", "A100-PCIE-80GB", "A100 80GB PCIe"]
+      profiles: ["1g.10gb", "2g.20gb", "3g.40gb", "4g.40gb", "7g.79gb"]
+    - models: ["H100-PCIE-80GB", "H100-SXM5-80GB", "H100 80GB HBM3", "H100 PCIe"]
+      profiles: ["1g.10gb", "2g.20gb", "3g.40gb", "4g.40gb", "7g.80gb"]
+    - models: ["H100-PCIE-94GB", "H100-SXM5-94GB", "H100 NVL"]
+      profiles: ["1g.12gb", "2g.24gb", "3g.47gb", "4g.47gb", "7g.94gb"]
     - models: ["H20", "H100 on GH200"]
-      profiles: ["1g.12gb", "2g.24gb", "3g.48gb", "7g.96gb"]
+      profiles: ["1g.12gb", "2g.24gb", "3g.48gb", "4g.48gb", "7g.96gb"]
     - models: ["H200 NVL", "H200-SXM5"]
-      profiles: ["1g.18gb", "2g.35gb", "3g.71gb", "7g.141gb"]
+      profiles: ["1g.18gb", "2g.35gb", "3g.71gb", "4g.71gb", "7g.141gb"]
     - models: ["B200"]
-      profiles: ["1g.23gb", "2g.45gb", "3g.90gb", "7g.180gb"]
+      profiles: ["1g.23gb", "2g.45gb", "3g.90gb", "4g.90gb", "7g.180gb"]
     - models: ["RTX PRO 6000 Blackwell Server Edition"]
       profiles: ["1g.24gb", "2g.48gb", "4g.96gb"]
 ```
