@@ -68,7 +68,7 @@ GPU 是 Kubernetes 集群里最昂贵的资源，因此大多数团队会选择�
 
 ## 整理这个集群
 
-回到开篇那个两节点集群。要腾空节点 B，我们把它的 4 个 Pod 逐一搬到节点 A 的空隙里，每个 Pod 一次一次性放置。以 Pod `e` 为例：
+回到开篇那个两节点集群。要腾空节点 B 并在节点 A 上腾出整卡，六次一次性放置就够了：Pod `e`、`f`、`g`、`h` 从节点 B 搬到节点 A，`c` 和 `d` 在节点 A 内部重新固定，让 8 个 Pod 归拢到 GPU 0 到 2 上。以 Pod `e` 为例：
 
 ```yaml
 apiVersion: scheduling.hami.placement.com/v1
@@ -86,6 +86,8 @@ spec:
     - gpu-1 # 或 gpu-1/70 表示 GPU 1 的 70%
   evictPod: inference-e-6cd5964877-zdb5z # 需要驱逐并重新放置的 Pod
 ```
+
+关于 `podSelector` 有一点要注意：它决定哪个 Pod 消费这次放置，而“先通过准入的那个匹配 Pod”会消费它。如果命名空间里所有 Pod 都带着 `app: inference` 标签，消费放置的可能就不是 `e`，而是它的某个同门。请加上能区分实例的标签（例如 ReplicaSet 的 `pod-template-hash`），让选择器只命中一个 Pod。
 
 ### `evictPod` 是什么、怎么用
 
@@ -121,7 +123,13 @@ helm install gpu-descheduler ./chart --namespace kube-system --create-namespace
 kubectl get pods -n kube-system -l app=gpu-descheduler-webhook -w
 ```
 
-webhook 还在 8083 端口提供 REST API，用于查看集群 GPU 状态和放置记录，这是决定整理什么的依据：
+webhook 还在 8083 端口提供 REST API，用于查看集群 GPU 状态和放置记录，这是决定整理什么的依据。这个端口没有通过 Service 暴露，需要先把它转发到本机（命令会一直阻塞，请在单独的终端里运行）：
+
+```bash
+kubectl port-forward -n kube-system deploy/gpu-descheduler-webhook 8083:8083
+```
+
+然后查询 API：
 
 ```bash
 # 查看节点、GPU 设备与健康状态
