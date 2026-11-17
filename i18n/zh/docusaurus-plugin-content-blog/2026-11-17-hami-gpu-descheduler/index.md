@@ -37,7 +37,7 @@ GPU 是 Kubernetes 集群里最昂贵的资源，因此大多数团队会选择�
 - **失败重试。** 训练任务每次重启可能调度到不同节点。
 - **混合负载。** 申请 20% 到 40% 显存的推理 Pod 与需要整卡的任务交错分布。
 
-几周之后，集群就会从紧凑布局漂移成散乱布局：总利用率看起来健康，整卡容量却在悄悄消失。
+几周之后，集群就会从紧凑布局漂移成散乱布局：总利用率看起来健康，整卡容量却在悄悄消失。更麻烦的是，被碎片挡住的往往正是最重要的任务：小 Pod 总能塞进缝隙，需要整卡的大模型训练与微调反而最难落位。
 
 ## 手工治理为什么痛苦
 
@@ -53,7 +53,7 @@ GPU 是 Kubernetes 集群里最昂贵的资源，因此大多数团队会选择�
 
 ## HAMi GPU Descheduler
 
-[HAMi GPU Descheduler](https://github.com/Project-HAMi/gpu-descheduler) 是面向 HAMi 虚拟化 Kubernetes 集群的 GPU 碎片整理工具。它通过两个机制归整分散在各节点的 vGPU 工作负载：**Mutating Admission Webhook** 和 **`HamiPodPlacement` CRD**。
+[HAMi GPU Descheduler](https://github.com/Project-HAMi/gpu-descheduler) 是面向 HAMi 虚拟化 Kubernetes 集群的 GPU 碎片整理工具。它通过两个机制归整分散在各节点的 vGPU 工作负载：**Mutating Admission Webhook** 和 **`HamiPodPlacement` CRD**。它扮演的角色与操作系统中的磁盘碎片整理工具一样：把散落的负载归拢到一起，腾出整卡的连续容量。它与 HAMi Scheduler 互补：调度器负责 GPU 资源的虚拟化、调度与隔离，descheduler 负责把已分配的资源摆放得更紧凑。
 
 ![HAMi GPU Descheduler 归整碎片化 vGPU 工作负载的流程](/img/blog/hami-gpu-descheduler/zh/how-it-works.svg#light-only) ![HAMi GPU Descheduler 归整碎片化 vGPU 工作负载的流程](/img/blog/hami-gpu-descheduler/zh/how-it-works-dark.svg#dark-only)
 
@@ -137,7 +137,7 @@ curl -s http://localhost:8083/api/v1/placements
 
 GPU 碎片化是一个随集群动态性增长的可用性与成本问题：容量存在却无法使用，而人工治理脆弱且无据可查。HAMi GPU Descheduler 把碎片整理变成一次声明式的 Kubernetes 操作：驱逐、重建、固定，放置意图以 CRD 表达，由准入 webhook 强制执行。
 
-这一能力源自真实的生产痛点：[易鑫集团](https://www.yxqiche.com/)的工程师在 [HAMi issue #2072](https://github.com/Project-HAMi/HAMi/issues/2072) 中提出需求，完成了 webhook 加 CRD 方案的设计与主要实现，并将代码开源贡献给 HAMi 社区；仓库公开后，维护者和用户持续参与改进。感谢每一位参与其中的社区成员。
+这一能力源自真实的生产痛点：社区用户 [tsingst](https://github.com/tsingst) 在 [HAMi issue #2072](https://github.com/Project-HAMi/HAMi/issues/2072) 中提出了节点内碎片整理的需求；[易鑫集团](https://www.yxqiche.com/)的工程师 hukaihan 与 [vesta-mlp](https://github.com/vesta-mlp) 完成了 webhook 加 CRD 方案的设计与主要实现，并将代码开源贡献给 HAMi 社区；仓库公开后，[spencercjh](https://github.com/spencercjh)、[moezdil](https://github.com/moezdil)、[archlitchi](https://github.com/archlitchi) 等维护者和用户持续参与评审与完善。感谢每一位参与其中的社区成员。在社区的规划里，节点内整理只是第一步，跨节点乃至集群级的碎片整理也在讨论与规划之中。
 
 如果你在动态集群中用 HAMi 共享 GPU，请留意那些申请整卡却 `Pending` 的 Pod，那就是症状。然后试试 descheduler：
 

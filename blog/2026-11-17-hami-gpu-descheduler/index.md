@@ -37,7 +37,7 @@ Fragmentation is not caused by a bug. It is the natural result of a dynamic clus
 - **Retries and failed jobs.** A training job that restarts may land on a different node each time.
 - **Mixed workloads.** Inference Pods requesting 20% to 40% of a GPU interleave with jobs that need whole devices.
 
-Over weeks, the cluster drifts from a compact layout to a scattered one. Total utilization looks healthy in dashboards while whole-GPU capacity quietly disappears.
+Over weeks, the cluster drifts from a compact layout to a scattered one. Total utilization looks healthy in dashboards while whole-GPU capacity quietly disappears. Worse, the workloads fragmentation blocks are often the ones that matter most: small Pods keep slipping into the gaps, while whole-GPU training and fine-tuning jobs are the hardest to place.
 
 ## Why fixing it by hand hurts
 
@@ -53,7 +53,7 @@ What teams need is a way to express "consolidate these workloads onto that node'
 
 ## HAMi GPU Descheduler
 
-[HAMi GPU Descheduler](https://github.com/Project-HAMi/gpu-descheduler) is a GPU defragmentation tool for HAMi-virtualized Kubernetes clusters. It consolidates scattered vGPU workloads across nodes through two mechanisms: a **Mutating Admission Webhook** and the **`HamiPodPlacement` CRD**.
+[HAMi GPU Descheduler](https://github.com/Project-HAMi/gpu-descheduler) is a GPU defragmentation tool for HAMi-virtualized Kubernetes clusters. It consolidates scattered vGPU workloads across nodes through two mechanisms: a **Mutating Admission Webhook** and the **`HamiPodPlacement` CRD**. Its role parallels the disk defragmenter of an operating system: pack scattered workloads together and free contiguous whole-GPU capacity. It complements the HAMi Scheduler, which virtualizes, schedules, and isolates GPU resources, by repacking what has already been allocated.
 
 ![How HAMi GPU Descheduler consolidates fragmented vGPU workloads](/img/blog/hami-gpu-descheduler/en/how-it-works.svg#light-only) ![How HAMi GPU Descheduler consolidates fragmented vGPU workloads](/img/blog/hami-gpu-descheduler/en/how-it-works-dark.svg#dark-only)
 
@@ -137,7 +137,7 @@ The target Pod must use `schedulerName: hami-scheduler` and its labels must matc
 
 GPU fragmentation is an availability and cost problem that grows with cluster dynamism: capacity exists but cannot be used, and manual cleanup is fragile and unrecorded. HAMi GPU Descheduler makes defragmentation a declarative, one-shot Kubernetes operation: evict, recreate, and pin, with placement expressed as a CRD and enforced by an admission webhook.
 
-The capability grew out of a production pain point raised in [HAMi issue #2072](https://github.com/Project-HAMi/HAMi/issues/2072). Engineers from [Yixin Group](https://www.yxqiche.com/), an automotive-finance technology company and a HAMi user in production, proposed the requirement, designed the webhook-plus-CRD approach, and delivered the initial implementation, then open-sourced it to the HAMi community; after the repository went public, maintainers and users continued to harden it. Thanks to everyone who has shaped it.
+The capability grew out of a production pain point: community member [tsingst](https://github.com/tsingst) opened [HAMi issue #2072](https://github.com/Project-HAMi/HAMi/issues/2072) asking for intra-node defragmentation. Engineers from [Yixin Group](https://www.yxqiche.com/), an automotive-finance technology company and a HAMi user in production, designed the webhook-plus-CRD approach, delivered the main implementation, and open-sourced it to the HAMi community; after the repository went public, maintainers and users including [spencercjh](https://github.com/spencercjh), [moezdil](https://github.com/moezdil), and [archlitchi](https://github.com/archlitchi) kept reviewing and improving it. Thanks to everyone who has shaped it. Intra-node consolidation is only the first step: cross-node and cluster-wide defragmentation are under discussion in the community.
 
 If you run HAMi-shared GPUs in a dynamic cluster, watch your whole-GPU `Pending` Pods: they are the symptom. Then try the descheduler:
 
