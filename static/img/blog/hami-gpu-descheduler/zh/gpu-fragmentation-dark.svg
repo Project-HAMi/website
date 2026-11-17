@@ -1,0 +1,210 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="940" viewBox="0 0 1200 940" role="img" aria-labelledby="title description">
+  <title id="title">使用 HAMi GPU Descheduler 进行 GPU 碎片化整理的前后对比</title>
+  <desc id="description">整理前：8 个 Pod 以单碎片形式散落在两个各有 4 张 GPU 的节点上，新 Pod 申请一整张 GPU 却一直 Pending，尽管集群 67% 的显存空闲。整理后：descheduler 驱逐并重新绑定 Pod 到节点 A 的 3 张 GPU，新 Pod 落在第 4 张 GPU 上，节点 B 完全腾空。</desc>
+  <defs>
+    <marker id="bigArrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#10d05d"/>
+    </marker>
+    <style>
+      text {
+        fill: #d8eefb;
+        font-family: "Source Sans 3", "Noto Sans", "Segoe UI", "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif;
+        font-size: 18px;
+      }
+      .heading {
+        fill: #f0f6fd;
+        font-family: "Space Grotesk", "Avenir Next", "Segoe UI", "PingFang SC", "Noto Sans CJK SC", sans-serif;
+        font-size: 24px;
+        font-weight: 600;
+      }
+      .label { fill: #f0f6fd; font-size: 20px; font-weight: 600; }
+      .muted { fill: #9eb6ce; font-size: 16px; }
+      .tiny { fill: #9eb6ce; font-size: 13px; }
+      .panel { fill: #171e27; stroke: #2a3442; stroke-width: 1.5; }
+      .nodebox { fill: #0b0f14; stroke: #9eb6ce; stroke-width: 1.5; }
+      .gpu { fill: #10161d; stroke: #32425a; stroke-width: 1.2; }
+      .bar-free { fill: #1d2836; }
+      .chip text { fill: #ffffff; font-size: 14px; font-weight: 600; text-anchor: middle; }
+      .chip rect { stroke: rgba(255,255,255,0.55); stroke-width: 1; }
+      .pending { fill: none; stroke: #e5484d; stroke-width: 2; stroke-dasharray: 8 6; }
+      .badge-red { fill: #e5484d; }
+      .badge-red-t { fill: #ffffff; font-size: 15px; font-weight: 600; text-anchor: middle; }
+      .badge-green { fill: #10d05d; }
+      .badge-green-t { fill: #ffffff; font-size: 15px; font-weight: 600; text-anchor: middle; }
+      .green { fill: #35e37b; font-size: 17px; font-weight: 600; }
+      .red { fill: #e5484d; font-size: 17px; font-weight: 600; }
+      .arrow-green { fill: none; stroke: #10d05d; stroke-width: 5; marker-end: url(#bigArrow); }
+      .pa { fill: #39c6f4; }
+      .pb { fill: #10d05d; }
+      .pc { fill: #f5a623; }
+      .pd { fill: #9b7bef; }
+      .pe { fill: #2dd4bf; }
+      .pf { fill: #f472b6; }
+      .pg { fill: #7ca8ff; }
+      .ph { fill: #a3e635; }
+      .pn { fill: #6366f1; }
+    </style>
+  </defs>
+  <rect width="1200" height="940" rx="16" fill="#0b0f14"/>
+
+  <!-- ===================== 整理前 ===================== -->
+  <rect class="panel" x="24" y="24" width="1152" height="360" rx="14"/>
+  <text class="heading" x="48" y="64">整理前：GPU 碎片化</text>
+  <text class="muted" x="48" y="92">Pod 不断创建与销毁，每张 GPU 上都残留着碎片</text>
+
+  <!-- 节点 A（整理前） -->
+  <rect class="nodebox" x="48" y="106" width="856" height="130" rx="10"/>
+  <text class="label" x="64" y="130">节点 A</text>
+  <text class="tiny" x="152" y="130">4 张 GPU</text>
+  <!-- GPU 0: pod a 30% -->
+  <rect class="gpu" x="64" y="140" width="198" height="84" rx="8"/>
+  <text class="tiny" x="76" y="162">GPU 0</text>
+  <g class="chip"><rect class="pa" x="74" y="168" width="92" height="26" rx="6"/><text x="120" y="186">a · 30%</text></g>
+  <rect class="bar-free" x="74" y="202" width="178" height="10" rx="3"/>
+  <rect class="pa" x="74" y="202" width="53" height="10" rx="3"/>
+  <!-- GPU 1: pod b 40% -->
+  <rect class="gpu" x="272" y="140" width="198" height="84" rx="8"/>
+  <text class="tiny" x="284" y="162">GPU 1</text>
+  <g class="chip"><rect class="pb" x="282" y="168" width="92" height="26" rx="6"/><text x="328" y="186">b · 40%</text></g>
+  <rect class="bar-free" x="282" y="202" width="178" height="10" rx="3"/>
+  <rect class="pb" x="282" y="202" width="71" height="10" rx="3"/>
+  <!-- GPU 2: pod c 25% -->
+  <rect class="gpu" x="480" y="140" width="198" height="84" rx="8"/>
+  <text class="tiny" x="492" y="162">GPU 2</text>
+  <g class="chip"><rect class="pc" x="490" y="168" width="92" height="26" rx="6"/><text x="536" y="186">c · 25%</text></g>
+  <rect class="bar-free" x="490" y="202" width="178" height="10" rx="3"/>
+  <rect class="pc" x="490" y="202" width="45" height="10" rx="3"/>
+  <!-- GPU 3: pod d 45% -->
+  <rect class="gpu" x="688" y="140" width="198" height="84" rx="8"/>
+  <text class="tiny" x="700" y="162">GPU 3</text>
+  <g class="chip"><rect class="pd" x="698" y="168" width="92" height="26" rx="6"/><text x="744" y="186">d · 45%</text></g>
+  <rect class="bar-free" x="698" y="202" width="178" height="10" rx="3"/>
+  <rect class="pd" x="698" y="202" width="80" height="10" rx="3"/>
+
+  <!-- 节点 B（整理前） -->
+  <rect class="nodebox" x="48" y="248" width="856" height="130" rx="10"/>
+  <text class="label" x="64" y="272">节点 B</text>
+  <text class="tiny" x="152" y="272">4 张 GPU</text>
+  <!-- GPU 0: pod e 35%（稍后迁移） -->
+  <rect class="gpu" x="64" y="282" width="198" height="84" rx="8"/>
+  <text class="tiny" x="76" y="304">GPU 0</text>
+  <g class="chip"><rect class="pe" x="74" y="310" width="92" height="26" rx="6" stroke-dasharray="5 3"/><text x="120" y="328">e · 35%</text></g>
+  <rect class="bar-free" x="74" y="344" width="178" height="10" rx="3"/>
+  <rect class="pe" x="74" y="344" width="62" height="10" rx="3"/>
+  <!-- GPU 1: pod f 20%（稍后迁移） -->
+  <rect class="gpu" x="272" y="282" width="198" height="84" rx="8"/>
+  <text class="tiny" x="284" y="304">GPU 1</text>
+  <g class="chip"><rect class="pf" x="282" y="310" width="92" height="26" rx="6" stroke-dasharray="5 3"/><text x="328" y="328">f · 20%</text></g>
+  <rect class="bar-free" x="282" y="344" width="178" height="10" rx="3"/>
+  <rect class="pf" x="282" y="344" width="36" height="10" rx="3"/>
+  <!-- GPU 2: pod g 40%（稍后迁移） -->
+  <rect class="gpu" x="480" y="282" width="198" height="84" rx="8"/>
+  <text class="tiny" x="492" y="304">GPU 2</text>
+  <g class="chip"><rect class="pg" x="490" y="310" width="92" height="26" rx="6" stroke-dasharray="5 3"/><text x="536" y="328">g · 40%</text></g>
+  <rect class="bar-free" x="490" y="344" width="178" height="10" rx="3"/>
+  <rect class="pg" x="490" y="344" width="71" height="10" rx="3"/>
+  <!-- GPU 3: pod h 30%（稍后迁移） -->
+  <rect class="gpu" x="688" y="282" width="198" height="84" rx="8"/>
+  <text class="tiny" x="700" y="304">GPU 3</text>
+  <g class="chip"><rect class="ph" x="698" y="310" width="92" height="26" rx="6" stroke-dasharray="5 3"/><text x="744" y="328">h · 30%</text></g>
+  <rect class="bar-free" x="698" y="344" width="178" height="10" rx="3"/>
+  <rect class="ph" x="698" y="344" width="53" height="10" rx="3"/>
+
+  <!-- Pending 的新 Pod 卡片 -->
+  <rect class="pending" x="924" y="106" width="252" height="272" rx="14"/>
+  <text class="label" x="1050" y="140" text-anchor="middle">新 Pod</text>
+  <rect x="1010" y="156" width="80" height="44" rx="8" fill="none" stroke="#6366f1" stroke-width="2"/>
+  <text x="1050" y="184" text-anchor="middle" fill="#6366f1" font-size="15" font-weight="600">1 张 GPU</text>
+  <text class="muted" x="1050" y="228" text-anchor="middle">申请一整张 GPU</text>
+  <text class="muted" x="1050" y="250" text-anchor="middle">（单卡 100%）</text>
+  <rect class="badge-red" x="948" y="268" width="204" height="30" rx="15"/>
+  <text class="badge-red-t" x="1050" y="288" text-anchor="middle">Pending · 无法调度</text>
+  <text class="red" x="1050" y="330" text-anchor="middle">集群 67% 显存空闲，</text>
+  <text class="red" x="1050" y="352" text-anchor="middle">却没有一张完整的空卡</text>
+
+  <!-- ===================== 迁移过程 ===================== -->
+  <path class="arrow-green" d="M 500 398 L 500 446"/>
+  <text class="label" x="528" y="418">HAMi GPU Descheduler</text>
+  <text class="muted" x="528" y="442">驱逐 e·f·g·h → 控制器重建 → HamiPodPlacement 将每个 Pod 绑定到节点 A</text>
+
+  <!-- ===================== 整理后 ===================== -->
+  <rect class="panel" x="24" y="470" width="1152" height="446" rx="14"/>
+  <text class="heading" x="48" y="510">整理后：资源归整</text>
+  <text class="muted" x="48" y="538">同样 8 个 Pod 打包进 3 张 GPU；新 Pod 成功启动，节点 B 完全腾空</text>
+
+  <!-- 节点 A（整理后） -->
+  <rect class="nodebox" x="48" y="552" width="856" height="214" rx="10"/>
+  <text class="label" x="64" y="576">节点 A</text>
+  <text class="tiny" x="152" y="576">4 张 GPU</text>
+  <!-- GPU 0: d 45 + a 30 + f 20 = 95 -->
+  <rect class="gpu" x="64" y="590" width="198" height="112" rx="8"/>
+  <text class="tiny" x="76" y="610">GPU 0</text>
+  <g class="chip"><rect class="pd" x="74" y="618" width="88" height="24" rx="6"/><text x="118" y="635">d · 45%</text></g>
+  <g class="chip"><rect class="pa" x="168" y="618" width="88" height="24" rx="6"/><text x="212" y="635">a · 30%</text></g>
+  <g class="chip"><rect class="pf" x="74" y="646" width="88" height="24" rx="6" stroke-dasharray="5 3"/><text x="118" y="663">f · 20%</text></g>
+  <rect class="bar-free" x="74" y="680" width="178" height="10" rx="3"/>
+  <rect class="pd" x="74" y="680" width="80" height="10"/>
+  <rect class="pa" x="154" y="680" width="53" height="10"/>
+  <rect class="pf" x="207" y="680" width="36" height="10"/>
+  <!-- GPU 1: b 40 + c 25 + e 35 = 100 -->
+  <rect class="gpu" x="272" y="590" width="198" height="112" rx="8"/>
+  <text class="tiny" x="284" y="610">GPU 1</text>
+  <g class="chip"><rect class="pb" x="282" y="618" width="88" height="24" rx="6"/><text x="326" y="635">b · 40%</text></g>
+  <g class="chip"><rect class="pc" x="376" y="618" width="88" height="24" rx="6"/><text x="420" y="635">c · 25%</text></g>
+  <g class="chip"><rect class="pe" x="282" y="646" width="88" height="24" rx="6" stroke-dasharray="5 3"/><text x="326" y="663">e · 35%</text></g>
+  <rect class="pb" x="282" y="680" width="178" height="10" rx="3"/>
+  <rect class="pc" x="353" y="680" width="45" height="10"/>
+  <rect class="pe" x="398" y="680" width="62" height="10"/>
+  <!-- GPU 2: g 40 + h 30 = 70 -->
+  <rect class="gpu" x="480" y="590" width="198" height="112" rx="8"/>
+  <text class="tiny" x="492" y="610">GPU 2</text>
+  <g class="chip"><rect class="pg" x="490" y="618" width="88" height="24" rx="6" stroke-dasharray="5 3"/><text x="534" y="635">g · 40%</text></g>
+  <g class="chip"><rect class="ph" x="584" y="618" width="88" height="24" rx="6" stroke-dasharray="5 3"/><text x="628" y="635">h · 30%</text></g>
+  <rect class="bar-free" x="490" y="680" width="178" height="10" rx="3"/>
+  <rect class="pg" x="490" y="680" width="71" height="10"/>
+  <rect class="ph" x="561" y="680" width="53" height="10"/>
+  <!-- GPU 3: 新 Pod 100 -->
+  <rect class="gpu" x="688" y="590" width="198" height="112" rx="8"/>
+  <text class="tiny" x="700" y="610">GPU 3</text>
+  <g class="chip"><rect class="pn" x="698" y="618" width="178" height="24" rx="6"/><text x="787" y="635">新 Pod · 100%</text></g>
+  <text class="green" x="787" y="663" text-anchor="middle">✓ 已调度</text>
+  <rect class="pn" x="698" y="680" width="178" height="10" rx="3"/>
+
+  <!-- 节点 B（整理后）：已腾空 -->
+  <rect class="nodebox" x="48" y="778" width="856" height="122" rx="10"/>
+  <text class="label" x="64" y="802">节点 B</text>
+  <rect class="badge-green" x="148" y="786" width="76" height="24" rx="12"/>
+  <text class="badge-green-t" x="186" y="803" text-anchor="middle">已腾空</text>
+  <rect class="gpu" x="64" y="814" width="198" height="76" rx="8"/>
+  <text class="tiny" x="76" y="836">GPU 0</text>
+  <rect class="bar-free" x="74" y="846" width="178" height="10" rx="3"/>
+  <text class="tiny" x="76" y="876">空闲 100%</text>
+  <rect class="gpu" x="272" y="814" width="198" height="76" rx="8"/>
+  <text class="tiny" x="284" y="836">GPU 1</text>
+  <rect class="bar-free" x="282" y="846" width="178" height="10" rx="3"/>
+  <text class="tiny" x="284" y="876">空闲 100%</text>
+  <rect class="gpu" x="480" y="814" width="198" height="76" rx="8"/>
+  <text class="tiny" x="492" y="836">GPU 2</text>
+  <rect class="bar-free" x="490" y="846" width="178" height="10" rx="3"/>
+  <text class="tiny" x="492" y="876">空闲 100%</text>
+  <rect class="gpu" x="688" y="814" width="198" height="76" rx="8"/>
+  <text class="tiny" x="700" y="836">GPU 3</text>
+  <rect class="bar-free" x="698" y="846" width="178" height="10" rx="3"/>
+  <text class="tiny" x="700" y="876">空闲 100%</text>
+
+  <!-- 结果卡片 -->
+  <rect x="924" y="552" width="252" height="348" rx="14" fill="#171e27" stroke="#10d05d" stroke-width="1.5"/>
+  <text class="label" x="1050" y="584" text-anchor="middle">结果</text>
+  <rect class="badge-green" x="948" y="600" width="204" height="30" rx="15"/>
+  <text class="badge-green-t" x="1050" y="620" text-anchor="middle">新 Pod：Running</text>
+  <text class="muted" x="948" y="656">运行于节点 A / GPU 3</text>
+  <text class="green" x="948" y="700">✓ 释放 4 张完整 GPU</text>
+  <text class="muted" x="948" y="722">节点 B 可缩容节省成本，</text>
+  <text class="muted" x="948" y="744">或承接大模型训练任务</text>
+  <text class="green" x="948" y="786">✓ 显存利用率：</text>
+  <text class="muted" x="948" y="808">33% → 43%</text>
+  <text class="muted" x="948" y="830">（新 Pod 接入后）</text>
+  <text class="muted" x="948" y="852">集群无需扩容</text>
+  <text class="tiny" x="948" y="876">虚线边框 = 被 gpu-descheduler</text>
+  <text class="tiny" x="948" y="894">驱逐后重新绑定的 Pod</text>
+</svg>
