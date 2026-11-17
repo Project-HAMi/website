@@ -7,11 +7,11 @@ sidebar_label: 调度器指标
 
 HAMi 在已配置的调度器指标端点上暴露调度器指标。分配结果类指标只使用有限范围的标签值：
 
-| 指标                                       | 含义                             |
-| ------------------------------------------ | -------------------------------- |
-| `hami_scheduler_allocations_total`         | 过滤阶段记录的成功设备预留次数。 |
-| `hami_scheduler_allocation_failures_total` | 过滤和绑定阶段的分配失败次数。   |
-| `hami_scheduler_bind_rollbacks_total`      | 释放预留的绑定失败次数。         |
+| 指标 | 含义 |
+| --- | --- |
+| `hami_scheduler_allocations_total` | 过滤阶段记录的成功设备预留次数。 |
+| `hami_scheduler_allocation_failures_total` | 过滤和绑定阶段的分配失败次数。 |
+| `hami_scheduler_bind_rollbacks_total` | 释放预留的绑定失败次数。 |
 | `hami_scheduler_is_leader` | 本实例为当前 leader 时为 `1`，否则为 `0`。 |
 | `hami_scheduler_cache_synced` | 内部节点/设备缓存已完全同步时为 `1`，否则为 `0`。 |
 | `hami_scheduler_last_sync_success_timestamp_seconds` | 最近一次成功缓存同步的 Unix 时间戳。仅由 leader 导出，且仅在首次成功之后导出。 |
