@@ -53,7 +53,7 @@ Changing MIG mode can require a GPU reset or node reboot on some hardware and dr
 
 ### 2. Configure the profile allowlist
 
-The [current Chart device configuration](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/templates/scheduler/device-configmap.yaml) uses `migProfileAllowlist`. The v2.11.0 defaults are:
+The [Chart default values](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/values.yaml#L696) define `migProfileAllowlist`. The v2.11.0 defaults are:
 
 ```yaml
 nvidia:

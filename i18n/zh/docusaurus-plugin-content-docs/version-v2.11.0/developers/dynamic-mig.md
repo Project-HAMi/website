@@ -67,7 +67,7 @@ nvidia:
       profiles: ["1g.24gb", "2g.48gb", "4g.96gb"]
 ```
 
-[Chart 的默认配置](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/templates/scheduler/device-configmap.yaml)还包含 A30、A100 80 GB、H100、H20、H200 和 B200 的映射。允许列表决定集群允许什么，并不定义容量或完整的几何配置。
+[Chart 的默认配置](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/values.yaml#L696)还包含 A30、A100 80 GB、H100、H20、H200 和 B200 的映射。允许列表决定集群允许什么，并不定义容量或完整的几何配置。
 
 自定义的 `device-config.content` 值或外部 ConfigMap 会替换 Chart 默认配置。此类配置必须显式使用 `migProfileAllowlist`。旧的 `knownMigGeometries` 字段不会被自动转换。
 

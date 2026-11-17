@@ -77,7 +77,7 @@ TKE 节点默认没有公网 IP，除非 VPC 配置了 NAT 网关，否则只能
 kube-scheduler 镜像拉取失败时，`hami-scheduler` Pod 会报类似以下错误：
 
 ```text
-Failed to pull image "registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:v1.34.1": ... dial tcp 120.55.105.209:443: i/o timeout
+Failed to pull image "registry.k8s.io/kube-scheduler:v1.34.1": ... i/o timeout
 ```
 
 安装时若 certgen 镜像拉取失败，应检查 `hami-admission-create` Job 及其 Pod。Helm 会等待这个安装前 Job 完成，此时 `hami-scheduler` Pod 可能尚未创建。

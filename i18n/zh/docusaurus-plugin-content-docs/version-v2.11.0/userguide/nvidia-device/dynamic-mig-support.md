@@ -54,7 +54,7 @@ devicePlugin:
 
 ### 2. 配置 profile 允许列表
 
-[当前 Chart 的设备配置](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/templates/scheduler/device-configmap.yaml)使用 `migProfileAllowlist`。v2.11.0 的默认值为：
+[Chart 默认值](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/values.yaml#L696)定义了 `migProfileAllowlist`。v2.11.0 的默认值为：
 
 ```yaml
 nvidia:

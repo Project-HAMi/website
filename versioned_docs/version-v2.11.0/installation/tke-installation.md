@@ -76,7 +76,7 @@ TKE nodes have no public IP by default, so unless the VPC provides a NAT gateway
 When the kube-scheduler image pull fails, the `hami-scheduler` Pod reports an error similar to:
 
 ```text
-Failed to pull image "registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:v1.34.1": ... dial tcp 120.55.105.209:443: i/o timeout
+Failed to pull image "registry.k8s.io/kube-scheduler:v1.34.1": ... i/o timeout
 ```
 
 If the certgen image pull fails during installation, inspect the `hami-admission-create` Job and its Pod. Helm waits for this pre-install Job to complete, so the `hami-scheduler` Pod may not exist yet.
