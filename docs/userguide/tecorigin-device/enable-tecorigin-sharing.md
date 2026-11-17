@@ -33,8 +33,6 @@ devices:
     resourceCountName: "tecorigin.com/gpucore"
 ```
 
-`enabled` adds the resource name to the bundled kube-scheduler's extender configuration. `resourceCountName` is the resource the scheduler watches; it must match the name the device plugin advertises and the name workloads request. If you change it, update `devices.tecorigin.customresources` too, so the extender manages every Tecorigin resource name. See the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values) for all `devices.tecorigin.*` fields.
-
 Disable the NVIDIA plugin on a cluster that has no NVIDIA GPUs so it does not wait for nodes:
 
 ```yaml
@@ -130,12 +128,8 @@ Next steps:
 
 2. **Compute isolation is physical.** Each allocated core belongs to one container rather than being time-sliced, so there is no execution rate to throttle. Two containers on one card run on disjoint cores and do not contend for the same core, though they still share the card's memory bandwidth.
 
-3. **Cards with more than 4 cores reject the whole node annotation.** The backend derives the core mask from a 4-bit width. If any card in the annotation reports more than four cores, the parser fails the entire list; the node is not registered and none of its cores are advertised.
+3. **A request is never spread when one card can hold it.** Splitting across cards happens only when the request exceeds the largest card's core count. A node that would have to spread a request that fits a single card elsewhere is skipped, which is reported as `CardInsufficientCore`.
 
-4. **A card takes at most as many containers as it has cores.** On a 4-core card, the fifth container that wants a core of it is refused even when cores are free. Requests that ask for more cores per container, or fewer, are not affected.
+4. **Cores must be an integer.** A fractional or negative `tecorigin.com/gpucore` is rejected as an invalid device request; an explicit `0` means no device. A limit takes precedence over a request when both are set.
 
-5. **A request is never spread when one card can hold it.** Splitting across cards happens only when the request exceeds the largest card's core count. A node that would have to spread a request that fits a single card elsewhere is skipped, which is reported as `CardInsufficientCore`.
-
-6. **Cores must be an integer.** A fractional or negative `tecorigin.com/gpucore` is rejected as an invalid device request; an explicit `0` means no device. A limit takes precedence over a request when both are set.
-
-7. **Memory is not a separate resource.** A Tecorigin card partitions cores and memory in hardware: each core owns a fixed memory slice, so a request for N cores also takes the memory attached to those N cores. There is nothing to request with `tecorigin.com/gpumem` or a percentage name, and a Pod that sets one stays pending. HAMi allocates cores only and never splits memory on its own.
+5. **Memory is not a separate resource.** A Tecorigin card partitions cores and memory in hardware: each core owns a fixed memory slice, so a request for N cores also takes the memory attached to those N cores. There is nothing to request with `tecorigin.com/gpumem` or a percentage name, and a Pod that sets one stays pending. HAMi allocates cores only and never splits memory on its own.

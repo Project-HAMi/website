@@ -73,14 +73,15 @@ spec:
 当两者同时设置时，limit 优先级更高。对于 `tecorigin.com/gpucore` 这类扩展资源，request 和 limit 必须设置为相同的值。
 
 ```yaml
-      resources:
-        limits:
-          tecorigin.com/gpucore: 1
-        requests:
-          tecorigin.com/gpucore: 1
+resources:
+  limits:
+    tecorigin.com/gpucore: 1
+  requests:
+    tecorigin.com/gpucore: 1
 ```
 
 `0` 代表不申请太初元碁核，但仍然会触发 HAMI 准入 webhook 校验。例如：特权容器搭配 `tecorigin.com/gpucore: 0` 有可能被 webhook 拒绝。小数、负数会被判定为非法设备请求。
+
 > 建议：如果不需要太初元碁设备，直接省略该资源字段，不要设置为 `0`。
 
 ## 查看分配结果

@@ -21,9 +21,8 @@ kubectl get node <node-name> -o jsonpath='{.metadata.annotations.hami\.io/node-t
 | `no healthy tecorigin card found on node` | 所有卡都是 `health=false` | 修复硬件后更新注解，使健康检查重新读取 |
 
 注解存在但没有完成注册，同样会导致 Pod 处于 Pending，调度日志里会出现 `node unregistered`。
-> 注意：`node unregistered` 和 `no healthy tecorigin card found on node` 均为 V(5) 级别日志。HAMI Chart 默认日志级别是 `-v=4`，默认情况下看不到这两行日志。你可以将调度器日志级别调整为 `-v=5` 查看，或者直接查看调度拒绝原因。
-注册注解和 `hami.io/node-tecorigin-cores` 会在每次健康检查时做指纹校验，修改任意一项都会重新读取卡列表，不需要重启调度器。
 
+> 注意：`node unregistered` 和 `no healthy tecorigin card found on node` 均为 V(5) 级别日志。HAMI Chart 默认日志级别是 `-v=4`，默认情况下看不到这两行日志。你可以将调度器日志级别调整为 `-v=5` 查看，或者直接查看调度拒绝原因。注册注解和 `hami.io/node-tecorigin-cores` 会在每次健康检查时做指纹校验，修改任意一项都会重新读取卡列表，不需要重启调度器。
 
 ## Pod 一直 Pending
 
@@ -32,7 +31,7 @@ HAMi 会在 Pod 的分配原因中以 `<失败数>/<总数> <Reason>` 的形式�
 | 原因 | 含义 |
 | --- | --- |
 | `CardNotHealth` | 该卡在注册注解中标记为不健康 |
-| `CardTimeSlicingExhausted` | 该卡承载的容器数已达核心数上限，即使仍有空闲核心 |
+| `CardTimeSlicingExhausted` | 该卡承载的容器数已达核心数上限 |
 | `CardUuidMismatch` | `tecorigin.com/use-gpuuuid` 或 `tecorigin.com/nouse-gpuuuid` 排除了该卡 |
 | `CardInsufficientCore` | 空闲核心不足，或满足该请求需要的卡数超过其自身的最小卡数 |
 
@@ -41,20 +40,17 @@ HAMi 会在 Pod 的分配原因中以 `<失败数>/<总数> <Reason>` 的形式�
 ```bash
 kubectl logs -n {Release Namespace} -l app.kubernetes.io/component=hami-scheduler -c vgpu-scheduler-extender --tail=200 | grep "tecorigin fit failed"
 ```
+
 > 注意：如果节点上所有显卡都没有空闲核，调度器会直接返回 `CardInsufficientCore`，不会输出 `tecorigin fit failed` 日志。此时上面这条 grep 命令搜不到结果，需要直接查看显卡分配状态。
 
-
-日志输出 `want`（申请核数）、**候选卡聚合空闲核 `freeCores`**、候选设备数以及 `maxCards`。
-`freeCores` 仅统计通过健康状态、UUID、容器数量、空闲核校验的候选卡之和。
-`maxCards` 代表卡片数量，不是核数：取值为 `ceil(申请核数 / 最大可用候选卡核数)`，也就是该请求最少需要几张卡；任何需要更多卡片的拆分方案都会被拒绝。
+日志输出 `want`（申请核数）、**候选卡聚合空闲核 `freeCores`**、候选设备数以及 `maxCards`。 `freeCores` 仅统计通过健康状态、UUID、容器数量、空闲核校验的候选卡之和。 `maxCards` 代表卡片数量，不是核数：取值为 `ceil(申请核数 / 最大可用候选卡核数)`，也就是该请求最少需要几张卡；任何需要更多卡片的拆分方案都会被拒绝。
 
 排查步骤：先对比 `freeCores` 和 `want`。
+
 - 如果 `freeCores < want`：符合筛选条件的候选卡集合，整体空闲核总量不足。
 - 如果 `freeCores >= want`：再拿 `want` 和单卡最大核数对比：
   - `want ≤ 单卡最大核数`：`maxCards = 1`，失败原因是没有单张候选卡的空闲核足够；
   - `want > 单卡最大核数`：请求需要跨卡分配，若拆分所需卡片数超出最小卡片限制，节点被过滤。
-
-
 
 ## 确认运行中的容器实际获得了什么
 
@@ -65,10 +61,10 @@ kubectl get pod <pod-name> -o jsonpath='{.metadata.annotations.hami\.io/tecorigi
 每个条目为 `<显卡序列号>,<类型>,<显存 MiB>,<核心掩码>`。掩码表示该卡上被分配的核心：
 
 | 掩码 | 4 核卡上的核心 |
-| --- | --- |
-| `1` | 核心 0 |
-| `5` | 核心 0 和 2 |
-| `15` | 全部四个核心 |
+| ---- | -------------- |
+| `1`  | 核心 0         |
+| `5`  | 核心 0 和 2    |
+| `15` | 全部四个核心   |
 
 掩码中出现空缺是正常的：运行时接受任意核心集合，HAMi 直接分配最低的空闲核心，而不会等待连续的一段。
 

@@ -31,12 +31,12 @@ translated: true
 | [Kunlunxin XPU](kunlunxin-device/enable-kunlunxin-vxpu.md) | [VXPU](kunlunxin-device/enable-kunlunxin-vxpu.md#设备粒度分区) | P800-OAM | 稳定 | [按切分规格分配](kunlunxin-device/enable-kunlunxin-vxpu.md#设备粒度分区) | [随切分规格分配](https://github.com/Project-HAMi/HAMi/blob/adf1a43a07cf7e3b697012b80eef3ddd7c919222/pkg/device/kunlun/vdevice.go#L179-L205) | [支持](kunlunxin-device/enable-kunlunxin-vxpu.md#重要说明) |
 | [MetaX GPU](metax-device/metax-sgpu/enable-metax-gpu-sharing.md) | [sGPU](metax-device/metax-sgpu/enable-metax-gpu-sharing.md#运行沐曦任务) | MXC500 | 稳定 | [显存配额](metax-device/metax-sgpu/enable-metax-gpu-sharing.md#运行沐曦任务) | [取决于 QoS](metax-device/metax-sgpu/examples/allocate-qos-policy.md) | [支持](https://developer.metax-tech.com/api/client/document/preview/1411/3rd/12_hami.html#sgpuoption)（[启用 `sgpu-app-class` 时不支持](https://github.com/Project-HAMi/HAMi/blob/adf1a43a07cf7e3b697012b80eef3ddd7c919222/pkg/device/metax/sdevice.go#L89-L105)） |
 | [Mthreads GPU](mthreads-device/enable-mthreads-gpu-sharing.md) | [sGPU](mthreads-device/enable-mthreads-gpu-sharing.md#运行-gpu-任务) | MTT S4000 | 稳定 | [离散显存规格](mthreads-device/enable-mthreads-gpu-sharing.md#运行-gpu-任务) | [核心配额](mthreads-device/enable-mthreads-gpu-sharing.md#运行-gpu-任务) | [不支持](mthreads-device/enable-mthreads-gpu-sharing.md#注意事项) |
-| [Teco GPU（Tecorigin）](https://github.com/Project-HAMi/HAMi/pull/3369) | 核心分配（开发中） | 待确认 | 实验性 | 待验证 | 待验证 | 待验证 |
+| [太初元碁 GPU](tecorigin-device/enable-tecorigin-sharing.md) | [核心分配](tecorigin-device/enable-tecorigin-sharing.md#运行太初元碁任务) | T100 | 实验性 | [硬件切分显存](tecorigin-device/enable-tecorigin-sharing.md#notes-and-limitations) | [核心独占](tecorigin-device/enable-tecorigin-sharing.md#notes-and-limitations) | [支持](tecorigin-device/enable-tecorigin-sharing.md#notes-and-limitations) |
 | [Vastai GPU](vastai/enable-vastai-sharing.md) | [整卡 / Die 切分](vastai/enable-vastai-sharing.md#介绍) | VA16 | 稳定 | [整卡或 Die 分配](vastai/enable-vastai-sharing.md#介绍) | [整卡或 Die 分配](vastai/enable-vastai-sharing.md#介绍) | [支持（Die 分配）](https://github.com/Project-HAMi/vastai-device-plugin/blob/dba981846dbdfcf531f7bd3b5d657075e812c49f/cmd/va-vg-plugin/server.go#L383-L388) |
 
 **稳定**表示已包含在 HAMi 正式发布版本中，本表按 [v2.11.0](https://github.com/Project-HAMi/HAMi/releases/tag/v2.11.0) 核对发布状态。**实验性**（Experimental）表示接入仍在开发或验证中，尚未正式发布。
 
-Teco 接入尚未合并到上述 Next 基线，设备型号和能力待验证，进展见 [HAMi #3369](https://github.com/Project-HAMi/HAMi/pull/3369) 和[文档 PR #979](https://github.com/Project-HAMi/website/pull/979)。
+太初元碁支持已合并到 HAMi 开发分支，并记录在[启用太初元碁 GPU 共享](tecorigin-device/enable-tecorigin-sharing.md)中，但尚未包含在任何已发布的 HAMi 版本中。后端源码见 [HAMi `pkg/device/tecorigin`](https://github.com/Project-HAMi/HAMi/tree/master/pkg/device/tecorigin)。
 
 表中能力的含义：
 
@@ -65,7 +65,7 @@ Teco 接入尚未合并到上述 Next 基线，设备型号和能力待验证，
 | 昆仑芯（Kunlunxin）       | [整卡调度](kunlunxin-device/enable-kunlunxin-schedule.md)、[VXPU 共享](kunlunxin-device/enable-kunlunxin-vxpu.md#启用-xpu-共享支持) | - | - | - |
 | 沐曦（MetaX）             | [启用沐曦 GPU 共享](metax-device/metax-sgpu/enable-metax-gpu-sharing.md#开启复用沐曦设备) | - | - | - |
 | 摩尔线程（Mthreads）      | [启用摩尔线程 GPU 共享](mthreads-device/enable-mthreads-gpu-sharing.md#开启-gpu-复用) | - | - | - |
-| Teco（Tecorigin） | [接入指南（开发中）](https://github.com/Project-HAMi/website/pull/979) | - | - | - |
+| 太初元碁（Tecorigin）    | [启用太初元碁 GPU 共享](tecorigin-device/enable-tecorigin-sharing.md#启用太初元碁支持) | - | - | - |
 | 瀚博（Vastai）            | [启用瀚博设备共享](vastai/enable-vastai-sharing.md#启用瀚博半导体设备共享) | - | - | - |
 
 每份指南都包含该设备的具体搭建步骤、配置说明以及已知限制，部署该设备前请先查阅。

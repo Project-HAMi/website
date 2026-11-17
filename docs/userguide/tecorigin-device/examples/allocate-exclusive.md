@@ -32,9 +32,9 @@ The count must match the cards on the node. On 3-core cards the equivalent reque
 Several whole cards are no different — ask for the sum:
 
 ```yaml
-      resources:
-        limits:
-          tecorigin.com/gpucore: 8 # two whole 4-core cards
+resources:
+  limits:
+    tecorigin.com/gpucore: 8 # two whole 4-core cards
 ```
 
 HAMi spreads that request over as few cards as possible, so it takes two whole cards here and does not fragment a third.

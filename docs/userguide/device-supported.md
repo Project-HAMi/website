@@ -30,12 +30,12 @@ The table below lists device integration status, allocation modes, and multi-car
 | [Kunlunxin XPU](kunlunxin-device/enable-kunlunxin-vxpu.md) | [VXPU](kunlunxin-device/enable-kunlunxin-vxpu.md#device-granularity-partitioning) | P800-OAM | Stable | [Partition size](kunlunxin-device/enable-kunlunxin-vxpu.md#device-granularity-partitioning) | [Determined by partition size](https://github.com/Project-HAMi/HAMi/blob/adf1a43a07cf7e3b697012b80eef3ddd7c919222/pkg/device/kunlun/vdevice.go#L179-L205) | [Yes](kunlunxin-device/enable-kunlunxin-vxpu.md#important-notes) |
 | [MetaX GPU](metax-device/metax-sgpu/enable-metax-gpu-sharing.md) | [sGPU](metax-device/metax-sgpu/enable-metax-gpu-sharing.md#running-metax-jobs) | MXC500 | Stable | [Memory quota](metax-device/metax-sgpu/enable-metax-gpu-sharing.md#running-metax-jobs) | [Depends on QoS](metax-device/metax-sgpu/examples/allocate-qos-policy.md) | [Yes](https://developer.metax-tech.com/api/client/document/preview/1411/3rd/12_hami.html#sgpuoption) ([not supported with `sgpu-app-class`](https://github.com/Project-HAMi/HAMi/blob/adf1a43a07cf7e3b697012b80eef3ddd7c919222/pkg/device/metax/sdevice.go#L89-L105)) |
 | [Mthreads GPU](mthreads-device/enable-mthreads-gpu-sharing.md) | [sGPU](mthreads-device/enable-mthreads-gpu-sharing.md#running-mthreads-jobs) | MTT S4000 | Stable | [Discrete memory sizes](mthreads-device/enable-mthreads-gpu-sharing.md#running-mthreads-jobs) | [Core quota](mthreads-device/enable-mthreads-gpu-sharing.md#running-mthreads-jobs) | [No](mthreads-device/enable-mthreads-gpu-sharing.md#important-notes) |
-| [Teco GPU (Tecorigin)](https://github.com/Project-HAMi/HAMi/pull/3369) | Core allocation (in development) | To be confirmed | Experimental | To be validated | To be validated | To be validated |
+| [Tecorigin GPU](tecorigin-device/enable-tecorigin-sharing.md) | [Core allocation](tecorigin-device/enable-tecorigin-sharing.md#running-tecorigin-jobs) | T100 | Experimental | [Hardware memory partition](tecorigin-device/enable-tecorigin-sharing.md#notes-and-limitations) | [Dedicated cores](tecorigin-device/enable-tecorigin-sharing.md#notes-and-limitations) | [Yes](tecorigin-device/enable-tecorigin-sharing.md#notes-and-limitations) |
 | [Vastai GPU](vastai/enable-vastai-sharing.md) | [Whole card / Die allocation](vastai/enable-vastai-sharing.md#introduction) | VA16 | Stable | [Whole card or Die allocation](vastai/enable-vastai-sharing.md#introduction) | [Whole card or Die allocation](vastai/enable-vastai-sharing.md#introduction) | [Yes (Die allocation)](https://github.com/Project-HAMi/vastai-device-plugin/blob/dba981846dbdfcf531f7bd3b5d657075e812c49f/cmd/va-vg-plugin/server.go#L383-L388) |
 
 **Stable** means included in an official HAMi release. Release status in this table is checked against [v2.11.0](https://github.com/Project-HAMi/HAMi/releases/tag/v2.11.0). **Experimental** means the integration is still in development or validation and has not been officially released.
 
-Teco integration has not been merged into the Next baseline above. Device models and capabilities remain to be validated. Track progress in [HAMi #3369](https://github.com/Project-HAMi/HAMi/pull/3369) and [documentation PR #979](https://github.com/Project-HAMi/website/pull/979).
+Tecorigin support is merged into the HAMi development branch and documented in [Enable Tecorigin GPU sharing](tecorigin-device/enable-tecorigin-sharing.md), but no released HAMi version contains the backend yet. The backend source is [HAMi `pkg/device/tecorigin`](https://github.com/Project-HAMi/HAMi/tree/master/pkg/device/tecorigin).
 
 Capability columns:
 
@@ -64,7 +64,7 @@ The table below links to device and scheduling component integration guides, inc
 | Kunlunxin     | [Whole-device scheduling](kunlunxin-device/enable-kunlunxin-schedule.md) · [VXPU sharing](kunlunxin-device/enable-kunlunxin-vxpu.md#enable-xpu-sharing-support) | - | - | - |
 | MetaX         | [Enable MetaX GPU sharing](metax-device/metax-sgpu/enable-metax-gpu-sharing.md#enabling-gpu-sharing-support) | - | - | - |
 | Mthreads      | [Enable Mthreads GPU sharing](mthreads-device/enable-mthreads-gpu-sharing.md#enabling-gpu-sharing-support) | - | - | - |
-| Teco (Tecorigin) | [Integration guide (in development)](https://github.com/Project-HAMi/website/pull/979) | - | - | - |
+| Tecorigin     | [Enable Tecorigin GPU sharing](tecorigin-device/enable-tecorigin-sharing.md#enabling-tecorigin-support) | - | - | - |
 | Vastai        | [Enable Vastai sharing](vastai/enable-vastai-sharing.md#enabling-vastai-device-sharing) | - | - | - |
 
 Each linked guide covers device-specific setup, configuration notes, and known limitations. Read it before deploying that device.

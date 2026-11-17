@@ -72,14 +72,15 @@ A node is only eligible when the request can be served without spreading beyond 
 When both are set, the limit takes precedence. For extended resources like `tecorigin.com/gpucore`, requests and limits must be set to equal values.
 
 ```yaml
-      resources:
-        limits:
-          tecorigin.com/gpucore: 1
-        requests:
-          tecorigin.com/gpucore: 1
+resources:
+  limits:
+    tecorigin.com/gpucore: 1
+  requests:
+    tecorigin.com/gpucore: 1
 ```
 
 `0` requests no tecorigin cores, but still triggers HAMI admission webhook validation. For example, a privileged container with `tecorigin.com/gpucore: 0` may be rejected. Fractional or negative values are rejected as invalid device requests.
+
 > Recommendation: If you do not need a Tecorigin device, omit this resource entry rather than setting it to `0`.
 
 ## Check the allocation

@@ -33,9 +33,9 @@ spec:
 申请多张整卡只是把核心数相加：
 
 ```yaml
-      resources:
-        limits:
-          tecorigin.com/gpucore: 8 # 两张完整的 4 核卡
+resources:
+  limits:
+    tecorigin.com/gpucore: 8 # 两张完整的 4 核卡
 ```
 
 HAMi 会用尽可能少的卡满足该请求，因此这里正好占用两张整卡，不会把第三张卡切碎。
