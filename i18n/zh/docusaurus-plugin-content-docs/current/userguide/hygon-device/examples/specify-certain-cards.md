@@ -4,6 +4,10 @@ sidebar_label: 指定 HCU
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="hygonUuid" />
+
 要将任务分配给特定的 HCU，只需在注释字段中分配 `hygon.com/use-gpuuuid`
 
 ```yaml

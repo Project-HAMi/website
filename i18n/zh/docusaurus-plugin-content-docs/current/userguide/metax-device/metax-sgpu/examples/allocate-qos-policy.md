@@ -3,6 +3,10 @@ title: 分配特定 Qos Policy 的设备
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="metaxQos" />
+
 用户可以通过 `metax-tech.com/sgpu-qos-policy` 为任务配置 Qos Policy 参数以指定 sGPU 使用的调度策略。具体的 sGPU 调度策略说明参见下表。
 
 | 调度策略      | 描述                                                             |

@@ -3,6 +3,10 @@ title: 为容器分配 Huawei Ascend-310P 切片
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features={["ascendTemplate", "ascendUuid"]} />
+
 要分配一定大小的设备显存，需在 `huawei.com/Ascend310P` 之外同时设置 `huawei.com/Ascend310P-memory`。
 
 ```yaml

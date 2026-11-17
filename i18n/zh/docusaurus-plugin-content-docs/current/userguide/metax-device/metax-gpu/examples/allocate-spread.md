@@ -3,6 +3,10 @@ title: 使用扩展调度策略分配沐曦设备
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="metaxTopology" />
+
 为了以最佳性能分配沐曦设备，你只需将 `metax-tech.com/gpu` 与注释 `hami.io/node-scheduler-policy: "spread"` 一起分配。
 
 ```yaml

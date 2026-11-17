@@ -2,6 +2,10 @@
 title: Allocate exclusive device
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="ascendWhole" />
+
 To allocate a whole Huawei Ascend device, set the corresponding resourceName (e.g. `huawei.com/Ascend910B3` or `huawei.com/Ascend310P`) without specifying a memory resource.
 
 ```yaml

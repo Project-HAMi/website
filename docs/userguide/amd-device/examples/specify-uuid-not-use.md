@@ -2,6 +2,10 @@
 title: Avoid a certain GPU by UUID
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="amdUuid" />
+
 To keep a pod off certain GPUs, set `amd.com/nouse-gpu-uuid` in the pod annotations. The UUIDs are listed in the node annotation `hami.io/node-amd-register`.
 
 ```yaml

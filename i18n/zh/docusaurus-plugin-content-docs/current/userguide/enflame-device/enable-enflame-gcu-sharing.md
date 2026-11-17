@@ -3,6 +3,10 @@ title: 启用燧原 GPU 共享
 sidebar_label: GPU 共享
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="enflameShare" />
+
 ## 简介
 
 HAMi 现已支持燧原 **DRS 硬切分**调度，并对齐燧原原生调度器链路。

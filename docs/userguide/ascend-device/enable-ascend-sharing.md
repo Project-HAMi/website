@@ -64,6 +64,8 @@ devices:
 
 Keep the default device models and templates in `devices.ascend.configs` when they fit the cluster. To customize them, use the [values source](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/values.yaml) and preserve the complete list of required models: list overrides replace the entire list. Template mode does not use `deviceSplitCount` to calculate slice capacity.
 
+See the [Ascend950DT SKU reference](examples/950dt-sku-reference.md) for the validated 9582 whole-card configuration and the reference values for the other SKUs.
+
 ### hami-core configuration
 
 ```yaml

@@ -41,6 +41,9 @@ export default function EventLandingList() {
                     {e.endDate
                       ? formatDateRange(e.date, e.endDate, locale)
                       : formatDate(e.date, locale)}
+                    {e.startTime
+                      ? `, ${e.startTime}${e.endTime ? `-${e.endTime}` : ""}${e.timeZone ? ` ${e.timeZone}` : ""}`
+                      : ""}
                     {e.location ? ` - ${pick(locale, e.location)}` : ""}
                   </p>
                 </Link>

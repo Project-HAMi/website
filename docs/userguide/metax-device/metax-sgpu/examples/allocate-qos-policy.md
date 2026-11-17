@@ -3,6 +3,10 @@ title: Allocate specific QoS policy devices
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="metaxQos" />
+
 Users can configure the QoS policy for tasks using the `metax-tech.com/sgpu-qos-policy` annotation to specify the scheduling policy used by the shared GPU (sGPU). The available sGPU scheduling policies are described in the table below:
 
 | Scheduling Policy | Description |

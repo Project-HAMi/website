@@ -91,7 +91,7 @@ status:
 
 ### 运行 vGPU 作业
 
-可以通过在 resource.limit 中设置 "volcano.sh/vgpu-number"、"volcano.sh/vgpu-cores" 和 "volcano.sh/vgpu-memory" 来请求 vGPU。
+可以通过在 resources.limits 中设置 "volcano.sh/vgpu-number"、"volcano.sh/vgpu-cores" 和 "volcano.sh/vgpu-memory" 来请求 vGPU。
 
 ```shell script
 $ cat <<EOF | kubectl apply -f -

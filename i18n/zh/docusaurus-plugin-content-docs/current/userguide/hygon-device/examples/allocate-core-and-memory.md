@@ -4,6 +4,10 @@ sidebar_label: 分配核心和显存
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features={["hygonMem", "hygonCores"]} />
+
 要分配设备核心资源的某一部分，你只需在容器中使用 `hygon.com/hcunum` 请求的海光 HCU 数量，并分配 `hygon.com/hcucores` 和 `hygon.com/hcumem`。
 
 ```yaml

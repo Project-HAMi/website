@@ -3,6 +3,10 @@ title: 分配多个独占 BI-V150 设备
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="iluvatarWhole" />
+
 要分配多个 BI-V150 设备，你只需分配 `iluvatar.ai/BI-V150-vgpu` ，无需其他字段。
 
 ```yaml

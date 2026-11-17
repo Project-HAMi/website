@@ -2,6 +2,10 @@
 title: Allocate exclusive device
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="mthWhole" />
+
 To allocate a whole Mthreads device, you need to only assign `mthreads.com/vgpu` without other fields. You can allocate multiple GPUs for a container.
 
 ```yaml

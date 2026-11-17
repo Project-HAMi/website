@@ -2,6 +2,10 @@
 title: Allocate exclusive MR-V100 device
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="iluvatarWhole" />
+
 To allocate multiple MR-V100 devices, you only need to assign `iluvatar.ai/MR-V100-vgpu` with no other fields required.
 
 ```yaml

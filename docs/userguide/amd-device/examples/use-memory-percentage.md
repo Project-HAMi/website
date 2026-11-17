@@ -2,6 +2,10 @@
 title: Allocate device memory by percentage
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="amdMemPercent" />
+
 To request device memory as a share of the GPU, set `amd.com/gpumem-percentage` (0-100). If `amd.com/gpumem` is also set to a positive integer, it takes precedence for the memory request. When `amd.com/gpumem` is omitted or 0, a percentage of 0 requests the full GPU memory.
 
 ```yaml

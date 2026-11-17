@@ -225,3 +225,17 @@ score: ((request.slot + used.slot) / allocatable.slot +
    ```
 
 因此，在 `Spread` 策略中我们可以选择 `GPU1`。
+
+#### Mutex
+
+Mutex 让 Pod 独占一张 GPU 卡。只有没有任何负载（`used == 0`）的卡才符合条件，已被使用的卡会以 `ExclusiveDeviceAllocateConflict` 原因被跳过。如果节点上所有卡都已被使用，Pod 无法调度到该节点。
+
+通过注解为单个 Pod 设置：
+
+```yaml
+metadata:
+  annotations:
+    hami.io/gpu-scheduler-policy: "mutex"
+```
+
+在上面的示例中，`GPU1` 和 `GPU2` 都已有负载，因此都不符合条件，Pod 会一直处于 Pending，直到有一张完全空闲的卡。分配给 `mutex` Pod 的卡之后仍可能被其他 Pod 选中。如果要在工作负载的整个生命周期内保持独占，请申请该卡的全部资源。

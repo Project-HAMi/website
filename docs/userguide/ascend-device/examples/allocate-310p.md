@@ -2,6 +2,10 @@
 title: Allocate 310P slice
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features={["ascendTemplate", "ascendUuid"]} />
+
 To allocate a certain size of device memory, assign `huawei.com/Ascend310P-memory` alongside `huawei.com/Ascend310P`.
 
 ```yaml

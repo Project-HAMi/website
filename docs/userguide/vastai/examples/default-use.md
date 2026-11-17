@@ -2,6 +2,10 @@
 title: Allocate Vastai Device
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="vastaiWhole" />
+
 This example shows how to request a single Vastai device in a plain Kubernetes Pod. The Pod runs a long-running container image provided by Vastaitech and requests one `vastaitech.com/va` device through the `resources.limits` section. You can use this as a starting point and adjust the image and resource limits to fit your own workloads.
 
 ```yaml

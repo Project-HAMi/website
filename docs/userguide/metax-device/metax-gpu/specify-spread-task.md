@@ -2,6 +2,10 @@
 title: Spread schedule policy
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="metaxTopology" />
+
 To allocate metax device with best performance, you need to only assign `metax-tech.com/gpu` with annotations `hami.io/node-scheduler-policy: "spread"`.
 
 ```yaml

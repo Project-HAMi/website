@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title description">
+  <title id="title">Local GPU and Remote GPU execution paths</title>
+  <desc id="description">A local application accesses its GPU through the NVIDIA driver. On a CPU Client, Lupine client libraries forward CUDA calls over the network to a GPU Server and return the results.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 Z" fill="#39c6f4" fill-opacity="0.75"/>
+    </marker>
+    <marker id="return-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 Z" fill="#10d05d"/>
+    </marker>
+    <style>
+      text {
+        fill: #1a3956;
+        font-family: "Source Sans 3", "Noto Sans", "Segoe UI", "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif;
+        font-size: 20px;
+      }
+      .heading {
+        fill: #15324d;
+        font-family: "Space Grotesk", "Avenir Next", "Segoe UI", "PingFang SC", "Noto Sans CJK SC", sans-serif;
+        font-size: 24px;
+        font-weight: 600;
+      }
+      .label { fill: #15324d; font-size: 22px; font-weight: 600; }
+      .muted { fill: #5a748f; font-size: 18px; }
+      .panel { fill: #ffffff; stroke: #d5dee8; stroke-width: 1.5; }
+      .node { fill: #ffffff; stroke: #5a748f; stroke-width: 1.5; }
+      .connector { fill: none; stroke: #39c6f4; stroke-opacity: 0.75; stroke-width: 2.5; marker-end: url(#arrow); }
+      .return { fill: none; stroke: #10d05d; stroke-width: 2.5; stroke-dasharray: 7 5; marker-end: url(#return-arrow); }
+      .green { fill: #0a8f3d; font-size: 18px; }
+    </style>
+  </defs>
+  <rect width="1200" height="720" rx="16" fill="#f5f8fb"/>
+  <!-- Local execution on a GPU node -->
+  <rect class="panel" x="24" y="24" width="1152" height="230" rx="14"/>
+  <text class="heading" x="48" y="64">Local GPU</text>
+  <text class="muted" x="48" y="94">GPU node</text>
+
+  <rect class="node" x="64" y="126" width="288" height="90" rx="10"/>
+  <text class="label" x="208" y="164" text-anchor="middle">Application</text>
+  <text class="muted" x="208" y="194" text-anchor="middle">CUDA / vLLM</text>
+  <path class="connector" d="M 352 171 H 520"/>
+  <text class="muted" x="436" y="151" text-anchor="middle">CUDA calls</text>
+
+  <rect class="node" x="520" y="126" width="300" height="90" rx="10"/>
+  <text class="label" x="670" y="179" text-anchor="middle">NVIDIA driver</text>
+  <path class="connector" d="M 820 171 H 1000"/>
+  <rect class="node" x="1000" y="126" width="136" height="90" rx="10"/>
+  <text class="label" x="1068" y="179" text-anchor="middle">GPU</text>
+
+  <!-- Remote execution across the Client and Server nodes -->
+  <rect class="panel" x="24" y="286" width="1152" height="410" rx="14"/>
+  <text class="heading" x="48" y="326">Remote GPU</text>
+
+  <rect class="panel" x="44" y="344" width="328" height="328" rx="12"/>
+  <text class="label" x="64" y="388">CPU Client</text>
+  <text class="muted" x="64" y="418">No GPU / no NVIDIA driver</text>
+  <rect class="node" x="64" y="438" width="288" height="70" rx="10"/>
+  <text class="label" x="208" y="468" text-anchor="middle">Application</text>
+  <text class="muted" x="208" y="494" text-anchor="middle">CUDA / vLLM</text>
+  <path class="connector" d="M 208 508 V 570"/>
+  <text class="muted" x="226" y="548">CUDA calls</text>
+  <rect class="node" x="64" y="570" width="288" height="78" rx="10"/>
+  <text class="label" x="208" y="616" text-anchor="middle">Lupine client libraries</text>
+
+  <rect class="panel" x="640" y="344" width="536" height="328" rx="12"/>
+  <text class="label" x="660" y="388">GPU Server</text>
+  <text class="muted" x="660" y="418">NVIDIA driver installed</text>
+  <rect class="node" x="660" y="570" width="170" height="78" rx="10"/>
+  <text class="label" x="745" y="604" text-anchor="middle">Lupine</text>
+  <text x="745" y="632" text-anchor="middle">Server</text>
+  <path class="connector" d="M 830 609 H 866"/>
+  <rect class="node" x="866" y="570" width="170" height="78" rx="10"/>
+  <text class="label" x="951" y="604" text-anchor="middle">NVIDIA</text>
+  <text x="951" y="632" text-anchor="middle">Driver</text>
+  <path class="connector" d="M 1036 609 H 1072"/>
+  <rect class="node" x="1072" y="570" width="84" height="78" rx="10"/>
+  <text class="label" x="1114" y="617" text-anchor="middle">GPU</text>
+
+  <path class="connector" d="M 352 590 H 660"/>
+  <text class="muted" x="506" y="550" text-anchor="middle">CUDA calls over the network</text>
+  <path class="return" d="M 660 630 H 352"/>
+  <text class="green" x="506" y="679" text-anchor="middle">Results</text>
+</svg>

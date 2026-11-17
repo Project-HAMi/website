@@ -3,6 +3,10 @@ title: 将任务分配到指定类型的 GPU
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="amdType" />
+
 要让 Pod 只运行在某种类型的 GPU 上，在 Pod 注解中设置 `amd.com/use-gputype`。已注册的产品名称包含该文本（不区分大小写）即匹配。
 
 ```yaml

@@ -3,6 +3,10 @@ title: 分配多个独占 MR-V100 设备
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="iluvatarWhole" />
+
 要分配多个 MR-V100 设备，你只需分配 `iluvatar.ai/MR-V100-vgpu` ，无需其他字段。
 
 ```yaml

@@ -2,6 +2,10 @@
 title: Binpack schedule policy
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="metaxTopology" />
+
 To allocate metax device with minimum damage to topology, you need to only assign `metax-tech.com/gpu` with annotations `hami.io/node-scheduler-policy: "binpack"`.
 
 ```yaml

@@ -3,6 +3,10 @@ title: 分配设备核心和显存资源
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features={["amdMem", "amdCores"]} />
+
 若要分配部分 AMD GPU 资源，只需在请求 GPU 数量 `amd.com/gpu` 的同时设置 `amd.com/gpucores` 和 `amd.com/gpumem`。
 
 以下示例请求一张 GPU，并分配 48 GiB 显存和 25% 计算单元：

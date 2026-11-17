@@ -33,6 +33,7 @@ const vendors = [
       "dynamic-mig-support",
       "dynamic-resource-allocation",
       "using-resourcequota",
+      "gpu-limits-file",
     ]),
     vendorExamples("nvidia-device", [
       "use-exclusive-card",
@@ -96,6 +97,7 @@ const vendors = [
       "allocate-910b",
       "allocate-exclusive",
       "allocate-soft-slicing",
+      "950dt-sku-reference",
     ]),
   ]),
   vendorCategory("Hygon HCU", "hygon", [
@@ -332,6 +334,7 @@ module.exports = {
             },
           ],
         },
+        "userguide/hami-gpu-descheduler",
         "troubleshooting/troubleshooting",
         "troubleshooting/paddle-threadlocal-coredump",
         "faq/faq",
@@ -370,6 +373,7 @@ module.exports = {
         "developers/init-container-design",
         "developers/sidecar-container-design",
         "developers/gpu-limit-delivery-design",
+        "developers/opentelemetry-tracing-design",
       ],
     },
     {
@@ -382,6 +386,7 @@ module.exports = {
       },
       items: [
         "contributor/contributing",
+        "contributor/adopters",
         "contributor/contribute-docs",
         "contributor/github-workflow",
         "contributor/governance",

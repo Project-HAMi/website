@@ -22,7 +22,7 @@ HAMi DRA 驱动尚处于快速发展阶段。本实验安装的是已在 Tesla T
 
 :::
 
-在 [实验 3](./gpu-partitioning.md) 中，你使用 HAMi 的扩展资源（`nvidia.com/gpumem`、`nvidia.com/gpucores`）对 GPU 进行了切片。本实验通过**动态资源分配（Dynamic Resource Allocation，DRA）**实现相同的效果，这是在 v1.34 中正式发布（GA）的 Kubernetes 原生设备 API。Pod 不再使用不透明的资源名称，而是通过 `ResourceClaim` 以结构化的、经过 Schema 验证的容量请求来申请设备。
+在 [实验 3](./gpu-partitioning.md) 中，你使用 HAMi 的扩展资源（`nvidia.com/gpumem`、`nvidia.com/gpucores`）对 GPU 进行了切片。本实验通过**动态资源分配**（Dynamic Resource Allocation，DRA）实现相同的效果，这是在 v1.34 中正式发布（GA）的 Kubernetes 原生设备 API。Pod 不再使用不透明的资源名称，而是通过 `ResourceClaim` 以结构化的、经过 Schema 验证的容量请求来申请设备。
 
 ## 为什么 DRA 很重要
 

@@ -2,6 +2,10 @@
 title: Allocate a whole GPU
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="amdWhole" />
+
 A pod that sets only `amd.com/gpu` gets a whole GPU: all its compute units and all its memory.
 
 ```yaml

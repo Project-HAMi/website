@@ -2,6 +2,10 @@
 title: Allocate exclusive device
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="cambWhole" />
+
 To allocate a whole cambricon device, you need to only assign `cambricon.com/vmlu` without other fields.
 
 ```yaml

@@ -4,6 +4,10 @@ sidebar_label: 指定核心
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="cambCores" />
+
 通过指定资源 `cambricon.com/mlu.smlu.vcore` 来分配设备核心资源的百分比。可选项，每个 `cambricon.com/mlu.smlu.vcore` 单位等于设备核心的 1%。
 
 ```yaml
@@ -15,6 +19,6 @@ resources:
 
 :::note
 
-根据 cambricon-device-plugin 的参数，资源名称可以是 `cambricon.com/mlu370.smlu.vcore` 或其他类型
+根据 cambricon-device-plugin 的参数，资源名称可以是 `cambricon.com/mlu370.smlu.vcore` 或其他类型。需要把 HAMi chart 中的 `devices.cambricon.resourceCoreName` 设置为相同的名称，否则 HAMi 调度器不会读取该请求。
 
 :::

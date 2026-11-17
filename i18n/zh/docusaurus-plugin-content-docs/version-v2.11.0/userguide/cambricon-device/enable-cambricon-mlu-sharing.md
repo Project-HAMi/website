@@ -31,6 +31,14 @@ translated: true
 kubectl label node {mlu-node} mlu=on
 ```
 
+- 在每张 MLU 上开启 SMLU 模式
+
+```bash
+cnmon set -c 0 -smlu on
+cnmon set -c 1 -smlu on
+# 对所有设备重复执行
+```
+
 - 从你的设备提供商处获取 cambricon-device-plugin，并配置以下两个参数：
 
 `mode=dynamic-smlu`, `min-dsmlu-unit=256`

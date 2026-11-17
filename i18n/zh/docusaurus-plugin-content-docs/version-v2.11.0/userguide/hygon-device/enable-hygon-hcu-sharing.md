@@ -65,10 +65,10 @@ spec:
 source /opt/hygondriver/env.sh
 ```
 
-随后，使用 hdmcli 指令查看虚拟设备是否已经激活
+随后，使用 hy-smi 指令查看虚拟设备是否已经激活
 
 ```bash
-hy-virtual -show-device-info
+hy-smi virtual -show-device-info
 ```
 
 若输出如下，则代表虚拟设备已经成功激活

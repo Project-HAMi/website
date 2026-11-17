@@ -34,7 +34,7 @@ translated: true
 | [Teco GPU（Tecorigin）](https://github.com/Project-HAMi/HAMi/pull/3369) | 核心分配（开发中） | 待确认 | 实验性 | 待验证 | 待验证 | 待验证 |
 | [Vastai GPU](vastai/enable-vastai-sharing.md) | [整卡 / Die 切分](vastai/enable-vastai-sharing.md#介绍) | VA16 | 稳定 | [整卡或 Die 分配](vastai/enable-vastai-sharing.md#介绍) | [整卡或 Die 分配](vastai/enable-vastai-sharing.md#介绍) | [支持（Die 分配）](https://github.com/Project-HAMi/vastai-device-plugin/blob/dba981846dbdfcf531f7bd3b5d657075e812c49f/cmd/va-vg-plugin/server.go#L383-L388) |
 
-**稳定**表示已包含在 HAMi 正式发布版本中，本表按 [v2.11.0](https://github.com/Project-HAMi/HAMi/releases/tag/v2.11.0) 核对发布状态。**实验性（Experimental）**表示接入仍在开发或验证中，尚未正式发布。
+**稳定**表示已包含在 HAMi 正式发布版本中，本表按 [v2.11.0](https://github.com/Project-HAMi/HAMi/releases/tag/v2.11.0) 核对发布状态。**实验性**（Experimental）表示接入仍在开发或验证中，尚未正式发布。
 
 Teco 接入未包含在 v2.11.0 中，设备型号和能力待验证，进展见 [HAMi #3369](https://github.com/Project-HAMi/HAMi/pull/3369) 和[文档 PR #979](https://github.com/Project-HAMi/website/pull/979)。
 
@@ -53,7 +53,7 @@ Teco 接入未包含在 v2.11.0 中，设备型号和能力待验证，进展见
 <!-- prettier-ignore -->
 | 制造商                    | HAMi | HAMi-DRA | Volcano | KAI-scheduler |
 | ------------------------- | ---- | -------- | ------- | ------------- |
-| 英伟达（NVIDIA）          | [分配设备显存](nvidia-device/specify-device-memory-usage.md) · [远程 GPU](nvidia-device/remote-gpu.md) | [动态资源分配](nvidia-device/dynamic-resource-allocation.md) | [使用 Volcano vGPU](volcano-vgpu/nvidia-gpu/how-to-use-volcano-vgpu.md) | [使用 KAI Scheduler](kai-scheduler/how-to-use-kai-scheduler.md) |
+| 英伟达（NVIDIA）          | [分配设备显存](nvidia-device/specify-device-memory-usage.md) · [远程 GPU](nvidia-device/remote-gpu.md) · [GPU 限额文件](nvidia-device/gpu-limits-file.md) | [动态资源分配](nvidia-device/dynamic-resource-allocation.md) | [使用 Volcano vGPU](volcano-vgpu/nvidia-gpu/how-to-use-volcano-vgpu.md) | [使用 KAI Scheduler](kai-scheduler/how-to-use-kai-scheduler.md) |
 | AMD                       | [启用 AMD GPU 共享](amd-device/enable-amd-gpu-sharing.md#部署) | - | - | - |
 | AWS                       | [管理 AWS Neuron 设备](awsneuron-device/enable-awsneuron-managing.md#启用-neuron-共享支持) | - | - | - |
 | 壁仞（Biren）             | [启用壁仞设备共享](biren-device/enable-biren-sharing.md#启用壁仞设备共享) | - | - | - |

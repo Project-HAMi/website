@@ -435,10 +435,13 @@ const events = [
       zh: "GPU 虚拟化：从零部署，理解设备插件与 DRA",
     },
     date: "2026-11-10",
-    speaker: "Reza Jelveh, Mengxuan Li",
+    startTime: "16:40",
+    endTime: "18:00",
+    timeZone: "MST",
+    speaker: "Reza Jelveh, Mengxuan Li, Han Shen",
     location: {
-      en: "Salt Palace Convention Center, Room 255 D, Salt Lake City, UT",
-      zh: "美国 盐湖城 Salt Palace 会议中心 255 D 会议室",
+      en: "Salt Palace Convention Center, Level 2, Room 255 D, Salt Lake City, UT",
+      zh: "美国 盐湖城 Salt Palace 会议中心 2 层 255 D 会议室",
     },
     address: {
       streetAddress: "100 S West Temple",
@@ -447,6 +450,7 @@ const events = [
       postalCode: "84101",
       addressCountry: "US",
     },
+    banner: "/img/events/2026-kubecon-na/gpu-virtualization-first-setup_jelveh-li-shen.jpg",
     description: {
       en: "An 80-minute ContribFest at KubeCon + CloudNativeCon North America 2026. Bring a laptop, no GPU needed: install HAMi on kind with fake GPUs, share cards between Pods, compare binpack and spread, and trace where topology information comes from. Then go deeper on DRA - ResourceSlices, consumable capacity and HAMi-DRA - and leave with a first contribution to HAMi, HAMi-DRA or the HAMi WebUI. Pull the lab images before you arrive.",
       zh: "KubeCon + CloudNativeCon 北美 2026 的 80 分钟 ContribFest。带上笔记本即可，无需 GPU：在 kind 上用模拟 GPU 安装 HAMi，让多个 Pod 共享显卡，对比 binpack 与 spread 策略，并追踪拓扑信息从何而来。随后深入 DRA - ResourceSlice、可消耗容量与 HAMi-DRA - 并在离场前向 HAMi、HAMi-DRA 或 HAMi WebUI 提交第一份贡献。请在到场前拉取实验镜像。",

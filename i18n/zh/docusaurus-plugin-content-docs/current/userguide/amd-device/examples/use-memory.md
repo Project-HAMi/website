@@ -3,6 +3,10 @@ title: 分配设备显存
 translated: true
 ---
 
+import FeatureSupport from '@site/src/components/FeatureSupport';
+
+<FeatureSupport features="amdMem" />
+
 要限制 Pod 的设备显存，在设置 `amd.com/gpu` 的同时用 `amd.com/gpumem` 指定 MiB 数。
 
 ```yaml
