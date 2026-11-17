@@ -6,7 +6,7 @@ title: Enable Hygon HCU sharing
 
 The community [dcu-vgpu-device-plugin](https://github.com/Project-HAMi/dcu-vgpu-device-plugin) repository is archived and will no longer be updated. HCU users should use the latest versions of HAMi and the [k8s-hcu-device-plugin](https://github.com/HYGON-AI/k8s-hcu-device-plugin) provided by **Hygon**.
 
-The vendor-driven rename from DCU to HCU is a breaking change: the old DCU resource names are no longer supported by default. HAMi follows the vendor's new naming; this incompatibility results from the rename rather than a HAMi scheduling defect.
+The vendor-driven rename from DCU to HCU is a breaking change: the old DCU resource names are no longer supported by default. HAMi follows the vendor's new naming; this incompatibility results from the rename rather than a HAMi scheduling defect. If your device plugin still uses DCU names, set `devices.hygon.resourcePrefix: dcu` when you upgrade (see [Resource prefix](#resource-prefix)).
 
 :::
 
@@ -32,6 +32,20 @@ The vendor-driven rename from DCU to HCU is a breaking change: the old DCU resou
 Install HAMi using [Online installation](../../installation/online-installation.md). The vendor device plugin is installed separately as described below. HAMi-side resource names and device settings are under `devices.hygon.*` in the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md); keep resource names consistent with the plugin.
 
 - Deploy the [k8s-hcu-device-plugin](https://github.com/HYGON-AI/k8s-hcu-device-plugin) provided by Hygon. Follow the deployment instructions in its README.
+
+## Resource prefix
+
+By default, HAMi uses the `hcu` prefix, so workloads request `hygon.com/hcunum`, `hygon.com/hcumem`, and `hygon.com/hcucores`. New clusters can leave this unchanged.
+
+If you are upgrading a cluster whose device plugin still reports DCU names, set the same prefix on HAMi:
+
+```yaml
+devices:
+  hygon:
+    resourcePrefix: dcu
+```
+
+That switches the names to `hygon.com/dcunum`, `hygon.com/dcumem`, and `hygon.com/dcucores`. HAMi and the device plugin must use the same prefix, or Pods will not schedule.
 
 ## Running HCU jobs
 
