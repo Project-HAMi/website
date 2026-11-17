@@ -34,9 +34,17 @@ const vendors = [
       "dynamic-resource-allocation",
       "using-resourcequota",
       "gpu-limits-file",
-      "gpu-sharing-benchmarks",
-      "gpu-sharing-reproduction",
     ]),
+    {
+      type: "category",
+      label: "Performance and fault isolation of sharing methods",
+      key: "nvidia-gpu-sharing",
+      link: {
+        type: "doc",
+        id: "userguide/nvidia-device/gpu-sharing-benchmarks",
+      },
+      items: ["userguide/nvidia-device/gpu-sharing-reproduction"],
+    },
     vendorExamples("nvidia-device", [
       "use-exclusive-card",
       "allocate-device-memory",

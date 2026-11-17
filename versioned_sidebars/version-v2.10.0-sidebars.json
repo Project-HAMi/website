@@ -556,8 +556,16 @@
       "items": [
         "userguide/nvidia-device/specify-device-memory-usage",
         "userguide/nvidia-device/specify-device-core-usage",
-        "userguide/nvidia-device/gpu-sharing-benchmarks",
-        "userguide/nvidia-device/gpu-sharing-reproduction",
+        {
+          "type": "category",
+          "label": "Performance and fault isolation of sharing methods",
+          "key": "nvidia-gpu-sharing",
+          "link": {
+            "type": "doc",
+            "id": "userguide/nvidia-device/gpu-sharing-benchmarks"
+          },
+          "items": ["userguide/nvidia-device/gpu-sharing-reproduction"]
+        },
         "userguide/nvidia-device/specify-device-type-to-use",
         "userguide/nvidia-device/specify-device-uuid-to-use",
         "userguide/nvidia-device/scheduling-policy",
