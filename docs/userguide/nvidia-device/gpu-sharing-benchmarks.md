@@ -160,21 +160,21 @@ The two clients in the static configuration each report 54 streaming multiproces
 
 Hardware: 2× A100-SXM4-40GB. Software: Ubuntu 24.04.5, NVIDIA driver 615.71.10, Dynamo 1.6.1, vLLM 0.31.0, and AIPerf 0.13.0. The model is Qwen3-4B in BF16. Each instance uses one GPU. Input length is 2,048 tokens, and output length is 256 tokens.
 
-Sets A, B, and C are each two A100-SXM4-40GB GPUs, and each letter is a different physical pair. Cards of the same model differ in performance, so a percentage taken across sets includes both that card difference and the sharing-method difference. The set used for each test is below.
+Sets A, B, and C are each two A100-SXM4-40GB GPUs, and each letter is a different physical pair. The same letter is the same pair. Cards of the same model differ in performance, so a percentage taken across sets includes both that card difference and the sharing-method difference. The set and collection date for each test are below.
 
-| Test        | Configuration                                        | GPU set |
-| ----------- | ---------------------------------------------------- | ------- |
-| Fixed cache | Native single                                        | A       |
-| Fixed cache | Native pair                                          | A       |
-| Fixed cache | Legacy MPS                                           | A       |
-| Fixed cache | HAMi unlimited                                       | A       |
-| Fixed cache | HAMi 50%                                             | C       |
-| Standard    | Native single                                        | A       |
-| Standard    | Native pair                                          | B       |
-| Standard    | HAMi 50%                                             | C       |
-| Standard    | HAMi unlimited                                       | A       |
-| Standard    | GPU Fractioning                                      | A       |
-| Fault       | Native, HAMi unlimited, MPS v3 shared, MPS v3 static | B       |
+| Test | Configuration | GPU set | Collection date (UTC) |
+| --- | --- | --- | --- |
+| Fixed cache | Native single | A | 2026-11-03 |
+| Fixed cache | Native pair | A | 2026-11-03 |
+| Fixed cache | Legacy MPS | A | 2026-11-03 |
+| Fixed cache | HAMi unlimited | A | 2026-11-03 |
+| Fixed cache | HAMi 50% | C | 2026-11-05 |
+| Standard | Native single | A | 2026-11-02 |
+| Standard | Native pair | B | 2026-11-04 |
+| Standard | HAMi 50% | C | 2026-11-05 |
+| Standard | HAMi unlimited | A | 2026-11-02 |
+| Standard | GPU Fractioning | A | 2026-11-02 |
+| Fault | Native, HAMi unlimited, MPS v3 shared, MPS v3 static | B | 2026-11-04 |
 
 The standard-test deployment configurations are below. Legacy MPS v2 settings for the fixed-cache tests and MPS v3 settings for the fault tests are in their respective sections.
 
