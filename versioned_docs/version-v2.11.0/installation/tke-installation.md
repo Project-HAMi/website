@@ -90,8 +90,6 @@ kubectl get nodes
 Save the following as `hami-tke-values.yaml`, replacing the kube-scheduler tag with your cluster version and the registry and repository path placeholders:
 
 ```yaml
-global:
-  imageTag: v2.11.0
 scheduler:
   kubeScheduler:
     image:

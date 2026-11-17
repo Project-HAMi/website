@@ -75,6 +75,6 @@ spec:
 
 :::note
 
-查看更多的[用例](https://github.com/Project-HAMi/HAMi/tree/master/examples/mthreads/).
+查看更多的[用例](https://github.com/Project-HAMi/HAMi/tree/v2.11.0/examples/mthreads/).
 
 :::

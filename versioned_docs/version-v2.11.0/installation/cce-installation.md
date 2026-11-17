@@ -87,7 +87,6 @@ Save the following as `hami-cce-values.yaml`, replacing `<region>` and `<organiz
 
 ```yaml
 global:
-  imageTag: v2.11.0
   imagePullSecrets:
     - default-secret
 scheduler:

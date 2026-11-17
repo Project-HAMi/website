@@ -88,7 +88,6 @@ skopeo copy --all docker://registry.k8s.io/kube-scheduler:v1.36.2 \
 
 ```yaml
 global:
-  imageTag: v2.11.0
   imagePullSecrets:
     - default-secret
 scheduler:

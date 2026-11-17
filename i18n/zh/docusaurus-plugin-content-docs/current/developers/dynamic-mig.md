@@ -192,7 +192,7 @@ hami_node_gpu_mig_instance_info{compute_instance_id="0",device_index="0",device_
 
 只有补充了完整运行时身份的预留才会产生该序列。其标签将调度器预留与物理 GPU、placement、MIG UUID、GI ID 和 CI ID 关联起来。`device_uuid` 加上 `gpu_instance_id` 还可以与携带 `UUID` 和 `GPU_I_ID` 的 DCGM 序列关联。
 
-`nodeGPUMigInstance` 是兼容性指标，仅在 `legacyMetrics: true` 时输出；当前 Chart 默认值为 `false`。使用默认 NodePort 服务时，标准的调度器端点为 `<scheduler-ip>:31993/metrics`。
+`nodeGPUMigInstance` 是兼容性指标，仅在 `legacyMetrics: true` 时输出；当前 Chart 默认值为 `false`。默认 Service 类型为 `ClusterIP`，可在集群内通过 `http://<scheduler-service>.<namespace>.svc:31993/metrics` 访问调度器指标。
 
 有用的运维信号包括：
 

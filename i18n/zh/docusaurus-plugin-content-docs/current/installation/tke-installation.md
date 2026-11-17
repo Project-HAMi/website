@@ -91,8 +91,6 @@ kubectl get nodes
 将以下内容保存为 `hami-tke-values.yaml`，将 kube-scheduler 的 tag 替换为集群版本，并替换镜像仓库和路径占位符：
 
 ```yaml
-global:
-  imageTag: v2.11.0
 scheduler:
   kubeScheduler:
     image:

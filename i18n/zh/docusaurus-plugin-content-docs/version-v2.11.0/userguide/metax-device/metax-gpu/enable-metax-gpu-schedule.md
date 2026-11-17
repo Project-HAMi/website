@@ -65,6 +65,6 @@ spec:
 
 :::note
 
-你可以在 [examples 文件夹](https://github.com/Project-HAMi/HAMi/tree/master/examples/metax/gpu)中找到更多示例。
+你可以在 [examples 文件夹](https://github.com/Project-HAMi/HAMi/tree/v2.11.0/examples/metax/gpu)中找到更多示例。
 
 :::

@@ -191,7 +191,7 @@ hami_node_gpu_mig_instance_info{compute_instance_id="0",device_index="0",device_
 
 Only reservations enriched with complete runtime identity produce this series. Its labels join the scheduler reservation to the physical GPU, placement, MIG UUID, GI ID, and CI ID. `device_uuid` plus `gpu_instance_id` can also correlate with DCGM series carrying `UUID` and `GPU_I_ID`.
 
-`nodeGPUMigInstance` is a compatibility metric emitted only when `legacyMetrics: true`; the current Chart default is `false`. The standard scheduler endpoint is `<scheduler-ip>:31993/metrics` with the default NodePort service.
+`nodeGPUMigInstance` is a compatibility metric emitted only when `legacyMetrics: true`; the current Chart default is `false`. With the default `ClusterIP` Service, access scheduler metrics inside the cluster at `http://<scheduler-service>.<namespace>.svc:31993/metrics`.
 
 Useful operational signals include:
 

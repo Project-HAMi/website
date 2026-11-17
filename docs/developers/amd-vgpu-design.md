@@ -120,7 +120,7 @@ The scheduler records this `cuCount` in `hami.io/amd-devices-allocated`. The dev
 - **No `amd-smi` / `rocm-smi` virtualization.** These read sysfs/drm, not HIP, so LD_AUDIT cannot intercept them; in-container tools may report physical resources.
 - **The CU mask is cooperative, not a security boundary.** `HSA_CU_MASK` is an environment variable read by ROCr at initialization, so a process that clears it before ROCr starts regains the full device. Unlike the memory limit, which the LD_AUDIT layer enforces at the HIP API boundary, CU partitioning holds only for workloads that leave the injected environment alone.
 - **Mixed GPU types on one node are untested.** The device plugin registers each GPU's type from its AMD SMI product name, and the node was only run with one GPU model.
-- **WGP-aware CU allocation.** RDNA (GFX10+) devices need WGP pair alignment when building `HSA_CU_MASK` ([setting CUs](https://rocm.docs.amd.com/en/latest/reference/system-optimization/gpu-isolation.html)). The device plugin allocates whole WGPs and rounds a request up (3 CUs become 4), and publishes the pair size as `custominfo.cuPerWGP` so a scheduler that reads it books the same count. The scheduler side needs a HAMi release newer than v2.10.0.
+- **WGP-aware CU allocation.** RDNA (GFX10+) devices need WGP pair alignment when building `HSA_CU_MASK` ([setting CUs](https://rocm.docs.amd.com/en/latest/reference/system-optimization/gpu-isolation.html)). The device plugin allocates whole WGPs and rounds a request up (3 CUs become 4), and publishes the pair size as `custominfo.cuPerWGP` so a scheduler that reads it books the same count. The scheduler side needs HAMi v2.11.0 or later.
 
 ## 7. Multi-GPU validation required
 
