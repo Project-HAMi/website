@@ -193,7 +193,7 @@
   <text class="tiny" x="700" y="876">free 100%</text>
 
   <!-- Result card -->
-  <rect x="924" y="552" width="252" height="348" rx="14" fill="#ffffff" stroke="#10d05d" stroke-width="1.5"/>
+  <rect x="924" y="552" width="252" height="348" rx="14" fill="#171e27" stroke="#10d05d" stroke-width="1.5"/>
   <text class="label" x="1050" y="584" text-anchor="middle">Result</text>
   <rect class="badge-green" x="948" y="600" width="204" height="30" rx="15"/>
   <text class="badge-green-t" x="1050" y="620" text-anchor="middle">New Pod: Running</text>
