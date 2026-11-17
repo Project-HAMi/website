@@ -37,22 +37,23 @@ translated: true
 - 固定缓存的 Graph 测试中，原生单实例为 628.57、原生双实例为 335.51、HAMi 50% 双实例为 335.87（相对原生双实例 +0.11%）、legacy MPS v2 为 449.36 tokens/s/GPU。
 - 常规 Graph 测试的五档并发下，相对原生双实例，HAMi 50% 的吞吐差异为 −0.66%～+2.19%，HAMi 不限算力为 −0.10%～+0.20%；GPU Fractioning 高 25.14%～37.60%。
 - 常规 Eager 测试的五档并发下，HAMi 50% 比原生双实例低 4.46%～7.94%；固定缓存 Eager 中低 2.22%。
-
-![固定缓存与常规测试的 Graph、Eager 吞吐；固定缓存用柱形图展示，常规测试用五档并发折线图展示](/img/docs/zh/userguide/nvidia-device/gpu-sharing-benchmarks.svg)
-
-图中上排为固定缓存测试：每卡总并发 8，每实例 KV 缓存 6 GiB。柱形是三轮吞吐均值，柱尾细线覆盖「均值减一个样本标准差」到「均值加一个样本标准差」：线越长，三轮结果波动越大。三轮均来自同一次部署。
-
-下排为常规测试：自动分配 KV 缓存，每卡总并发为 2、4、8、16、32，各配置测一轮。折线展示各档并发下的吞吐，包含 GPU Fractioning 和 HAMi 不限算力配置。两类测试的吞吐单位均为输出 tokens/s/GPU，越高越好。
-
 - 分别注入 GPU 非法写入、异常指令（trap）和计算中强制结束进程三类故障，每类测试两次。使用原生或 HAMi 配置时，同卡健康进程均保持正确输出；使用 MPS v3 的共享或静态分区配置时，同卡健康进程均受影响。
+
+固定缓存里，原生单实例、原生双实例和 legacy MPS 在 A 组，HAMi 50% 在 C 组。常规测试里，原生双实例在 B 组，HAMi 50% 在 C 组，HAMi 不限算力和 GPU Fractioning 在 A 组。跨组相减的百分比同时包含卡的差别和方案的差别，说明见[测试条件](#测试条件)。
+
+HAMi 2.10 的算力限制加在 kernel launch 上。Eager 关闭 Graph 后，每次 kernel 启动都执行这道检查，再按算力配额和算力限制是否开启决定是否限流。[Graph 回放调用 `cuGraphLaunch`](https://github.com/Project-HAMi/HAMi-core/blob/b216ba1be1b8e21488d1c7370ed3357b3049aad1/src/cuda/graph.c#L267)，该版本将调用直接转发给 CUDA 驱动，由驱动执行已录制的计算 Graph，因此 Graph 回放会绕过上述 HAMi 限流路径。
 
 ## 推理性能
 
-「HAMi 50%」指每实例配置 50% 算力配额和 20 GiB 显存配额。
+「HAMi 50%」指每实例配置 50% 算力配额和 20 GiB 显存配额。同卡两个实例配置的算力配额合计为 100%。
 
 ### 固定缓存对照：每实例 6 GiB
 
 每卡总并发 8，每实例 KV 缓存固定为 6 GiB，关闭前缀缓存；最大模型长度 4096、最大序列数 32。HAMi 每实例算力配额为 50%，MPS 使用 legacy v2；同一次部署测三轮。
+
+![固定缓存测试的 Graph 与 Eager 吞吐。柱形为三轮均值，柱尾细线为一个样本标准差](/img/docs/zh/userguide/nvidia-device/gpu-sharing-benchmarks-fixed-cache.svg)
+
+柱形是三轮吞吐均值，柱尾细线覆盖「均值减一个样本标准差」到「均值加一个样本标准差」：线越长，三轮结果波动越大。吞吐单位为输出 tokens/s/GPU，越高越好。
 
 吞吐为三轮均值 ± 样本标准差，延迟单位为 ms。
 
@@ -91,6 +92,10 @@ translated: true
 每卡并发 2 和 4 时，前缀缓存读取比例为：**原生单实例 99.61%，所有双实例配置均为 0%**。每卡并发 8 时，两者分别为 49.81% 和 0%。五档并发的完整比例见[常规测试 CSV](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fullstack.csv)。因此，单、双实例的差异也包含缓存复用的影响；固定缓存测试已关闭前缀缓存。
 
 每卡总并发为 2、4、8、16、32，除原生单实例外均为双实例；HAMi 两种配置均为每实例 20 GiB 显存配额。吞吐单位为输出 tokens/s/GPU；**粗体为该档最高值**，括号为相对原生双实例的差异。
+
+![常规测试的 Graph 与 Eager 吞吐。每条折线是一种配置，每个点是该配置在某一档并发下的一次测量](/img/docs/zh/userguide/nvidia-device/gpu-sharing-benchmarks-standard.svg)
+
+每条折线是一种配置，每个点是该配置在某一档并发下测得的一轮吞吐，包含 GPU Fractioning 和 HAMi 不限算力。越高越好。
 
 #### Graph（默认）
 
@@ -152,11 +157,25 @@ translated: true
 
 静态配置的两个同卡客户端各报告 54 个流式多处理器（SM），分区 ID 不同。机制说明见 [MPS 故障处理](https://docs.nvidia.com/deploy/mps/latest/when-to-use-mps.html)和[静态分区](https://docs.nvidia.com/deploy/mps/latest/common-tasks.html#using-static-sm-partitioning)。
 
-超额显存测试验证申请被拒绝后的进程表现。
-
 ## 测试条件
 
 硬件为 2× A100-SXM4-40GB。软件版本：Ubuntu 24.04.5、NVIDIA 驱动 615.71.10、Dynamo 1.6.1、vLLM 0.31.0、AIPerf 0.13.0。模型为 Qwen3-4B，BF16，每个实例使用一张 GPU；输入 2,048 tokens，输出 256 tokens。
+
+A、B、C 都是 2 张 A100-SXM4-40GB，各自是不同的一对物理卡。同型号的卡性能会有差别，跨组相减得到的百分比里，同时有卡的差别和方案的差别。各测试所用的组如下。
+
+| 测试     | 配置                                              | GPU 组 |
+| -------- | ------------------------------------------------- | ------ |
+| 固定缓存 | 原生单实例                                        | A      |
+| 固定缓存 | 原生双实例                                        | A      |
+| 固定缓存 | legacy MPS                                        | A      |
+| 固定缓存 | HAMi 不限算力                                     | A      |
+| 固定缓存 | HAMi 50%                                          | C      |
+| 常规测试 | 原生单实例                                        | A      |
+| 常规测试 | 原生双实例                                        | B      |
+| 常规测试 | HAMi 50%                                          | C      |
+| 常规测试 | HAMi 不限算力                                     | A      |
+| 常规测试 | GPU Fractioning                                   | A      |
+| 故障测试 | 原生、HAMi 不限算力、MPS v3 共享、MPS v3 静态分区 | B      |
 
 常规性能测试的部署配置如下。固定缓存的 legacy MPS v2 和故障测试的 MPS v3 配置见对应小节。
 
@@ -176,10 +195,6 @@ translated: true
 
 汇总数据：[常规测试 CSV](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fullstack.csv) · [不限算力参考 CSV](https://raw.githubusercontent.com/Project-HAMi/gpu-sharing-benchmarks/e9b205bb121c50649bb97d7ed5dc4f796a9e523f/results/2026-11-a100-sharing/fullstack-unlimited.csv)。
 
-## TODO：后续工作
+## 结论
 
-后续工作分三个方向：
-
-- [ ] **MPS v3 静态 SM 分区**：补齐启用静态 SM 分区后的性能对照，并在统一条件下扩展现有的故障隔离比较。
-- [ ] **同等条件下的其他模式**：补齐本次没有覆盖的共享模式，硬件、模型和负载与本次保持一致。
-- [ ] **帕累托前沿**：在相同硬件和同类工作负载下，改变同卡工作负载数及显存、算力配额，测量各方案的部署密度与尾延迟，并标出故障时其余工作负载的吞吐和计算结果。若一组配置在所有指标上均优于或等于另一组，且至少一项更优，则剔除后者。剩余点构成帕累托前沿，用于展示 HAMi 在多工作负载共享 GPU 场景中的价值。
+共享方案是否值得推荐，取决于 NVIDIA 容器化 GPU 虚拟化的[帕累托前沿](https://en.wikipedia.org/wiki/Pareto_front)。这条前沿尚未测出，本文不推荐任何方案。
