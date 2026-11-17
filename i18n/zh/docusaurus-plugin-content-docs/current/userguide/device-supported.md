@@ -36,8 +36,6 @@ translated: true
 
 **稳定**表示已包含在 HAMi 正式发布版本中，本表按 [v2.11.0](https://github.com/Project-HAMi/HAMi/releases/tag/v2.11.0) 核对发布状态。**实验性**（Experimental）表示接入仍在开发或验证中，尚未正式发布。
 
-太初元碁支持已合并到 HAMi 开发分支，并记录在[启用太初元碁 GPU 共享](tecorigin-device/enable-tecorigin-sharing.md)中，但尚未包含在任何已发布的 HAMi 版本中。后端源码见 [HAMi `pkg/device/tecorigin`](https://github.com/Project-HAMi/HAMi/tree/master/pkg/device/tecorigin)。
-
 表中能力的含义：
 
 - **显存控制**：容器可申请的显存配额或分区规格。使用模板或固定规格时，显存按规格向上对齐。
@@ -65,7 +63,7 @@ translated: true
 | 昆仑芯（Kunlunxin）       | [整卡调度](kunlunxin-device/enable-kunlunxin-schedule.md)、[VXPU 共享](kunlunxin-device/enable-kunlunxin-vxpu.md#启用-xpu-共享支持) | - | - | - |
 | 沐曦（MetaX）             | [启用沐曦 GPU 共享](metax-device/metax-sgpu/enable-metax-gpu-sharing.md#开启复用沐曦设备) | - | - | - |
 | 摩尔线程（Mthreads）      | [启用摩尔线程 GPU 共享](mthreads-device/enable-mthreads-gpu-sharing.md#开启-gpu-复用) | - | - | - |
-| 太初元碁（Tecorigin）    | [启用太初元碁 GPU 共享](tecorigin-device/enable-tecorigin-sharing.md#启用太初元碁支持) | - | - | - |
+| 太初元碁（Tecorigin）    | [启用太初元碁 GPU 共享](tecorigin-device/enable-tecorigin-sharing.md#启用太初元碁设备支持) | - | - | - |
 | 瀚博（Vastai）            | [启用瀚博设备共享](vastai/enable-vastai-sharing.md#启用瀚博半导体设备共享) | - | - | - |
 
 每份指南都包含该设备的具体搭建步骤、配置说明以及已知限制，部署该设备前请先查阅。

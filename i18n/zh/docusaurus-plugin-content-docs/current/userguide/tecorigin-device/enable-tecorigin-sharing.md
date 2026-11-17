@@ -23,9 +23,9 @@ HAMi 对太初元碁设备提供以下能力：
 - 已部署发布[节点设备注解](#node-device-annotation)中所述注解、并对外通告 `tecorigin.com/gpucore` 资源的太初元碁 device plugin。该插件由厂商提供和运维，HAMi chart 不会安装它。
 - 使用包含太初元碁后端的 HAMi 构建。该后端尚未进入 HAMi 正式发布版本，需要通过包含 `pkg/device/tecorigin` 的构建安装。
 
-## 启用太初元碁支持
+## 启用太初元碁设备支持
 
-请使用包含太初元碁后端的 HAMi 构建，并在 chart 中保持太初元碁配置启用。目前任何已发布的 Chart 都不包含该后端：需从含有 `pkg/device/tecorigin` 的提交构建镜像，并用同一提交下的 `charts/hami` 打包安装，做法见[准备 HAMi Chart](../../installation/offline-installation.md#准备-hami-chart)。并在 chart 中保持太初元碁配置启用：
+按[在线安装指南](../../installation/online-installation.md)安装 HAMi，并在 chart 中保持太初元碁配置启用：
 
 ```yaml
 devices:
@@ -33,8 +33,6 @@ devices:
     enabled: true
     resourceCountName: "tecorigin.com/gpucore"
 ```
-
-`enabled` 会把该资源名加入内置 kube-scheduler 的 extender 配置。`resourceCountName` 是调度器关注的资源名，必须与 device plugin 通告的资源名、以及工作负载申请的资源名一致。若要修改，请同时更新 `devices.tecorigin.customresources`，确保 extender 管理所有太初元碁资源名。全部 `devices.tecorigin.*` 字段见 [Chart values 参考](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values)。
 
 如果集群中没有 NVIDIA GPU，可关闭 NVIDIA 插件，避免它等待节点：
 

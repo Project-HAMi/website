@@ -22,7 +22,7 @@ Memory is not part of the request. A Tecorigin card partitions cores and memory 
 - A Tecorigin device plugin that publishes the node annotations described in [Node device annotation](#node-device-annotation), and advertises `tecorigin.com/gpucore` as a node resource. The plugin is deployed and operated by the vendor; the HAMi chart does not install it.
 - A HAMi build that includes the Tecorigin backend. The backend is not part of a released HAMi version yet, so install it from a build that contains `pkg/device/tecorigin`.
 
-## Enabling Tecorigin support
+## Enabling Tecorigin Device Support
 
 Install HAMi with [Online installation](../../installation/online-installation.md), then keep the Tecorigin settings enabled in the chart:
 

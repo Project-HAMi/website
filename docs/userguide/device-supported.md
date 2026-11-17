@@ -35,8 +35,6 @@ The table below lists device integration status, allocation modes, and multi-car
 
 **Stable** means included in an official HAMi release. Release status in this table is checked against [v2.11.0](https://github.com/Project-HAMi/HAMi/releases/tag/v2.11.0). **Experimental** means the integration is still in development or validation and has not been officially released.
 
-Tecorigin support is merged into the HAMi development branch and documented in [Enable Tecorigin GPU sharing](tecorigin-device/enable-tecorigin-sharing.md), but no released HAMi version contains the backend yet. The backend source is [HAMi `pkg/device/tecorigin`](https://github.com/Project-HAMi/HAMi/tree/master/pkg/device/tecorigin).
-
 Capability columns:
 
 - **Memory control**: The memory quota or partition size that a container can request. Templates and fixed partition sizes round memory allocations up to the corresponding size.
@@ -64,7 +62,7 @@ The table below links to device and scheduling component integration guides, inc
 | Kunlunxin     | [Whole-device scheduling](kunlunxin-device/enable-kunlunxin-schedule.md) · [VXPU sharing](kunlunxin-device/enable-kunlunxin-vxpu.md#enable-xpu-sharing-support) | - | - | - |
 | MetaX         | [Enable MetaX GPU sharing](metax-device/metax-sgpu/enable-metax-gpu-sharing.md#enabling-gpu-sharing-support) | - | - | - |
 | Mthreads      | [Enable Mthreads GPU sharing](mthreads-device/enable-mthreads-gpu-sharing.md#enabling-gpu-sharing-support) | - | - | - |
-| Tecorigin     | [Enable Tecorigin GPU sharing](tecorigin-device/enable-tecorigin-sharing.md#enabling-tecorigin-support) | - | - | - |
+| Tecorigin     | [Enable Tecorigin GPU sharing](tecorigin-device/enable-tecorigin-sharing.md#enabling-tecorigin-device-support) | - | - | - |
 | Vastai        | [Enable Vastai sharing](vastai/enable-vastai-sharing.md#enabling-vastai-device-sharing) | - | - | - |
 
 Each linked guide covers device-specific setup, configuration notes, and known limitations. Read it before deploying that device.
