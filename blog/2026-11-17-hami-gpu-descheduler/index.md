@@ -68,7 +68,7 @@ Because placement is expressed as a CRD, defragmentation becomes just another Ku
 
 ## Defragmenting the cluster
 
-Back to the fragmented two-node cluster from the beginning. To free a whole GPU on Node B, we move its four Pods onto Node A's gaps with four one-shot placements, one per Pod. A placement for Pod `e` looks like this:
+Back to the fragmented two-node cluster from the beginning. Six one-shot placements reach the "after" state in the diagram: Pods `e`, `f`, `g`, and `h` relocate from Node B onto Node A, while `c` and `d` are re-pinned within Node A so the eight Pods pack onto GPUs 0 through 2. A placement for Pod `e` looks like this:
 
 ```yaml
 apiVersion: scheduling.hami.placement.com/v1
@@ -86,6 +86,8 @@ spec:
     - gpu-1 # or gpu-1/70 for 70% of GPU 1
   evictPod: inference-e-6cd5964877-zdb5z # Pod to evict and re-place
 ```
+
+One caution on `podSelector`: it decides which Pod consumes the placement, and the first matching Pod to pass admission takes it. If every Pod in the namespace carries `app: inference`, a sibling could consume the placement meant for `e`. Add a distinguishing label, such as the ReplicaSet's `pod-template-hash`, so exactly one Pod matches.
 
 ### What `evictPod` does
 
@@ -121,7 +123,13 @@ Verify the webhook is running:
 kubectl get pods -n kube-system -l app=gpu-descheduler-webhook -w
 ```
 
-The webhook also exposes a REST API on port 8083 that reports cluster GPU state and placement records, useful for deciding what to consolidate:
+The webhook also exposes a REST API on port 8083 that reports cluster GPU state and placement records, useful for deciding what to consolidate. The port is not exposed through a Service, so forward it to your machine first (the command blocks, so run it in a separate terminal):
+
+```bash
+kubectl port-forward -n kube-system deploy/gpu-descheduler-webhook 8083:8083
+```
+
+Then query the API:
 
 ```bash
 # Nodes, GPU devices, and health status
