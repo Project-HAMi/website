@@ -16,6 +16,9 @@
 "ContainerDays":
   label: "ContainerDays"
   permalink: "/container-days"
+"Descheduler":
+  label: "Descheduler"
+  permalink: "/descheduler"
 "DRA":
   label: "DRA"
   permalink: "/dra"

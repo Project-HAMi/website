@@ -4,7 +4,7 @@ date: "2026-11-12"
 slug: hami-v2-11-remote-gpu
 description: "介绍 HAMi v2.11 Remote GPU 的部署方式，在纯 CPU Kubernetes 节点运行 CUDA Samples 和 vLLM，通过远端 T4 完成真实推理。"
 authors: [lixd]
-tags: ["HAMi", "GPU", "Kubernetes", { label: "vLLM", permalink: "vllm" }]
+tags: ["HAMi", "GPU", "Kubernetes", "vLLM"]
 ---
 
 HAMi v2.11.0 新增了 **Remote GPU（远程 GPU 访问）** 功能，可以让 CPU-only 机器访问其他机器上的 GPU，该功能可以让 CUDA 工作负载与 GPU 资源可以跨节点部署。
