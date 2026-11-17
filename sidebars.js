@@ -26,6 +26,18 @@ const vendors = [
       "remote-gpu",
       "specify-device-memory-usage",
       "specify-device-core-usage",
+    ]),
+    {
+      type: "category",
+      label: "Performance and fault isolation of sharing methods",
+      key: "nvidia-gpu-sharing",
+      link: {
+        type: "doc",
+        id: "userguide/nvidia-device/gpu-sharing-benchmarks",
+      },
+      items: ["userguide/nvidia-device/gpu-sharing-reproduction"],
+    },
+    ...vendorPages("nvidia-device", [
       "specify-device-type-to-use",
       "specify-device-uuid-to-use",
       "scheduling-policy",

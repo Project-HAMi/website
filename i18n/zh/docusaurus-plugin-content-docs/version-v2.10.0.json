@@ -191,6 +191,10 @@
     "message": "NVIDIA GPU",
     "description": "The label for category 'NVIDIA GPU' in sidebar 'docs'"
   },
+  "sidebar.nvidiaDevice.category.nvidia-gpu-sharing": {
+    "message": "共享方案的性能与故障隔离",
+    "description": "The label for category 'Performance and fault isolation of sharing methods' in sidebar 'nvidiaDevice'"
+  },
   "sidebar.docs.category.Contributor Guide.link.generated-index.title": {
     "message": "贡献者指南",
     "description": "The generated-index page title for category 'Contributor Guide' in sidebar 'docs'"
