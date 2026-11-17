@@ -11,6 +11,8 @@ HAMi exposes scheduler metrics on the configured scheduler metrics endpoint. The
 | `hami_scheduler_allocations_total` | Successful device reservations recorded by the filter phase. |
 | `hami_scheduler_allocation_failures_total` | Filter and bind allocation failures. |
 | `hami_scheduler_bind_rollbacks_total` | Bind failures that release a reservation. |
+| `hami_scheduler_is_leader` | `1` if this instance is the current leader, otherwise `0`. |
+| `hami_scheduler_cache_synced` | `1` if the internal node/device cache is fully synced, otherwise `0`. |
 
 The labels are `phase`, `device_type`, and `failure_reason`. They never contain pod, namespace, node, UUID, or request identifiers. `failure_reason` uses this complete, fixed set:
 
@@ -26,3 +28,5 @@ The labels are `phase`, `device_type`, and `failure_reason`. They never contain 
 | `internal`         | Internal usage, scoring, discovery, or cleanup failed.             |
 
 A successful filter reservation uses `failure_reason="none"`; bind failures are reported by the failure and rollback counters.
+
+The two scheduler state gauges above have no labels.

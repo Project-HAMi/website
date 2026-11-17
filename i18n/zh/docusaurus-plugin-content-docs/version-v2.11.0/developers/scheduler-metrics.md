@@ -12,6 +12,8 @@ HAMi 在已配置的调度器指标端点上暴露调度器指标。分配结果
 | `hami_scheduler_allocations_total`         | 过滤阶段记录的成功设备预留次数。 |
 | `hami_scheduler_allocation_failures_total` | 过滤和绑定阶段的分配失败次数。   |
 | `hami_scheduler_bind_rollbacks_total`      | 释放预留的绑定失败次数。         |
+| `hami_scheduler_is_leader` | 本实例为当前 leader 时为 `1`，否则为 `0`。 |
+| `hami_scheduler_cache_synced` | 内部节点/设备缓存已完全同步时为 `1`，否则为 `0`。 |
 
 标签为 `phase`、`device_type` 和 `failure_reason`，不会包含 Pod、命名空间、节点、UUID 或请求标识。`failure_reason` 使用以下完整且固定的取值：
 
@@ -27,3 +29,5 @@ HAMi 在已配置的调度器指标端点上暴露调度器指标。分配结果
 | `internal`         | 内部用量、打分、发现或清理失败。          |
 
 成功的过滤预留使用 `failure_reason="none"`；绑定失败由失败计数器和回滚计数器报告。
+
+上述两个调度器状态 Gauge 无标签。
