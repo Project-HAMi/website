@@ -18,7 +18,7 @@ The upstream NVIDIA device plugin's experimental `sharing.mps` uses Legacy MPS t
 
 - Use Linux with cgroup v2, NVIDIA driver **r620**, and NVIDIA Container Toolkit **1.20.1 or later** with the `apply-cuda-memory-limits` hook enabled. Use application images with a CUDA runtime compatible with the installed driver.
 - Disable MIG before enrolling the node. Configure a CDI-capable container runtime and UUID device IDs. Set device memory and core scaling to `1` on MPS v3 nodes.
-- Make the driver-matched `nvidia-cuda-mps-control` and its libraries available inside the privileged device plugin, which uses the host PID namespace. Set `devicePlugin.mpsV3.binary` to the path visible inside the plugin. The chart's host `/usr/bin` mount is visible at `/usrbin`. With GPU Operator, locate the binary in the configured driver installation.
+- Make the driver-matched `nvidia-cuda-mps-control` and its libraries available inside the privileged device plugin. Set `devicePlugin.mpsV3.binary` to the path visible inside the plugin. The chart's host `/usr/bin` mount is visible at `/usrbin`. With GPU Operator, locate the binary in the configured driver installation.
 - Verify that the published CDI device for each GPU includes the memory hook and that the hook path is executable on the host. HAMi checks the published spec before registering devices. The Toolkit and driver manage the memory controller. [NVIDIA memory partitioning](https://docs.nvidia.com/deploy/mps/mpsv3-memory-partitioning.html)
 
 ```bash
@@ -38,6 +38,7 @@ Description=HAMi NVIDIA MPS v3 daemon
 Type=simple
 Environment=CUDA_MPS_PIPE_DIRECTORY=/var/run/hami/mps-v3/pipe
 Environment=CUDA_MPS_LOG_DIRECTORY=/var/run/hami/mps-v3/log
+ExecStartPre=/usr/bin/test -f /sys/fs/cgroup/cgroup.controllers
 ExecStartPre=/usr/bin/mkdir -p /var/run/hami/mps-v3/pipe /var/run/hami/mps-v3/log
 ExecStart=/usr/bin/nvidia-cuda-mps-control -p 3 -f -m
 
@@ -62,7 +63,6 @@ Select the node and choose its compute strategy in the Helm overrides. This exam
 
 ```yaml
 devicePlugin:
-  hostPID: true
   deviceListStrategy: cdi-cri
   mpsV3:
     enabled: true

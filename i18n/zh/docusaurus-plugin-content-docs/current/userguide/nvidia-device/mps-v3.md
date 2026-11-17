@@ -18,7 +18,7 @@ NVIDIA 上游 device plugin 的实验性 `sharing.mps` 使用旧版 MPS，将 GP
 
 - 使用 cgroup v2、**NVIDIA r620 驱动**和 **NVIDIA Container Toolkit 1.20.1 或更新版本**。启用 `apply-cuda-memory-limits` hook。应用镜像应使用与节点驱动兼容的 CUDA 运行时。
 - 启用后端前先关闭 MIG。使用支持 CDI 的容器运行时，以 UUID 标识 GPU，并将节点的显存和算力缩放系数设为 `1`。
-- 确认特权 device plugin 使用主机 PID 命名空间，并能访问与驱动配套的 `nvidia-cuda-mps-control` 和驱动库。Chart 将主机的 `/usr/bin` 挂到插件容器内的 `/usrbin`。使用 GPU Operator 时，请按驱动的实际安装位置配置二进制路径。
+- 确认特权 device plugin 能访问与驱动配套的 `nvidia-cuda-mps-control` 和驱动库。Chart 将主机的 `/usr/bin` 挂到插件容器内的 `/usrbin`。使用 GPU Operator 时，请按驱动的实际安装位置配置二进制路径。
 - 检查已经发布的物理 GPU CDI 设备包含显存 hook，且 hook 路径在主机上可执行。HAMi 在注册设备前会检查该配置。显存控制器由 Toolkit 和驱动管理。[NVIDIA 显存分区文档](https://docs.nvidia.com/deploy/mps/mpsv3-memory-partitioning.html)
 
 ```bash
@@ -38,6 +38,7 @@ Description=HAMi NVIDIA MPS v3 daemon
 Type=simple
 Environment=CUDA_MPS_PIPE_DIRECTORY=/var/run/hami/mps-v3/pipe
 Environment=CUDA_MPS_LOG_DIRECTORY=/var/run/hami/mps-v3/log
+ExecStartPre=/usr/bin/test -f /sys/fs/cgroup/cgroup.controllers
 ExecStartPre=/usr/bin/mkdir -p /var/run/hami/mps-v3/pipe /var/run/hami/mps-v3/log
 ExecStart=/usr/bin/nvidia-cuda-mps-control -p 3 -f -m
 
@@ -62,7 +63,6 @@ sudo env CUDA_MPS_PIPE_DIRECTORY=/var/run/hami/mps-v3/pipe \
 
 ```yaml
 devicePlugin:
-  hostPID: true
   deviceListStrategy: cdi-cri
   mpsV3:
     enabled: true
