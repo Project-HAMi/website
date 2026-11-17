@@ -143,7 +143,7 @@ Do not decide whether a value needs migration solely because it is `0`, `false`,
 
 This includes NVIDIA resource fields and NVIDIA Device Plugin configuration fields:
 
-| v2.10 Field                              | Latest Field                                  |
+| v2.10 Field                              | v2.11.0 Field                                 |
 | ---------------------------------------- | --------------------------------------------- |
 | `resourceName`                           | `devices.nvidia.resourceCountName`            |
 | `resourceMem`                            | `devices.nvidia.resourceMemoryName`           |
@@ -168,7 +168,7 @@ To preserve the effects of your previous configuration, also review the defaults
 
 #### Cambricon
 
-| v2.10 Field        | Latest Field                           |
+| v2.10 Field        | v2.11.0 Field                          |
 | ------------------ | -------------------------------------- |
 | `mluResourceName`  | `devices.cambricon.resourceCountName`  |
 | `mluResourceMem`   | `devices.cambricon.resourceMemoryName` |
@@ -178,7 +178,7 @@ To preserve the effects of your previous configuration, also review the defaults
 
 [HAMi#2969](https://github.com/Project-HAMi/HAMi/pull/2969) renamed DCU to HCU for Hygon devices across resource names, configuration, and annotations. We recommend upgrading the HCU (formerly DCU) device plugin to the latest official version of [k8s-hcu-device-plugin](https://github.com/HYGON-AI/k8s-hcu-device-plugin) provided by Hygon. For details about the changes and configuration, see [Enable Hygon HCU Sharing](../userguide/hygon-device/enable-hygon-hcu-sharing.md).
 
-| v2.10 Field | v2.10 Default Value | Latest Field | Latest Default Value |
+| v2.10 Field | v2.10 Default Value | v2.11.0 Field | v2.11.0 Default Value |
 | --- | --- | --- | --- |
 | `dcuResourceName` | `hygon.com/dcunum` | `devices.hygon.resourceCountName` | `hygon.com/hcunum` |
 | `dcuResourceMem` | `hygon.com/dcumem` | `devices.hygon.resourceMemoryName` | `hygon.com/hcumem` |
@@ -190,7 +190,7 @@ After removing old fields that match the v2.10 defaults, the Chart uses the new 
 
 #### MetaX
 
-| v2.10 Field              | Latest Field                        |
+| v2.10 Field              | v2.11.0 Field                       |
 | ------------------------ | ----------------------------------- |
 | `metaxResourceName`      | `devices.metax.resourceVCountName`  |
 | `metaxResourceCore`      | `devices.metax.resourceVCoreName`   |
@@ -201,7 +201,7 @@ In v2.10, `metaxsGPUTopologyAware` uses a string and defaults to `"false"`. The 
 
 #### Enflame
 
-| v2.10 Field                    | Latest Field                            |
+| v2.10 Field                    | v2.11.0 Field                           |
 | ------------------------------ | --------------------------------------- |
 | `enflameResourceNameDRSGCU`    | `devices.enflame.resourceNameDRSGCU`    |
 | `enflameResourceNameGCUMemory` | `devices.enflame.resourceNameGCUMemory` |
@@ -209,7 +209,7 @@ In v2.10, `metaxsGPUTopologyAware` uses a string and defaults to `"false"`. The 
 
 #### Kunlunxin
 
-| v2.10 Field                 | Latest Field                         |
+| v2.10 Field                 | v2.11.0 Field                        |
 | --------------------------- | ------------------------------------ |
 | `kunlunResourceName`        | `devices.kunlun.resourceCountName`   |
 | `kunlunResourceVCountName`  | `devices.kunlun.resourceVCountName`  |
@@ -217,13 +217,13 @@ In v2.10, `metaxsGPUTopologyAware` uses a string and defaults to `"false"`. The 
 
 #### Vastai
 
-| v2.10 Field          | Latest Field                       |
+| v2.10 Field          | v2.11.0 Field                      |
 | -------------------- | ---------------------------------- |
 | `vastaiResourceName` | `devices.vastai.resourceCountName` |
 
 #### Biren
 
-| v2.10 Field         | Latest Field                      |
+| v2.10 Field         | v2.11.0 Field                     |
 | ------------------- | --------------------------------- |
 | `birenResourceName` | `devices.biren.resourceCountName` |
 

@@ -12,7 +12,7 @@ import FeatureSupport from '@site/src/components/FeatureSupport';
 
 | 模式 | 由谁暴露 | 访问方式 | 粒度 |
 | --- | --- | --- | --- |
-| HAMi | `hami-scheduler`，端口 9395 | Service 端口 `31993`；v2.10.0 为 NodePort，master 为 `ClusterIP` | 卡、Pod、配额 |
+| HAMi | `hami-scheduler`，端口 9395 | Service 端口 `31993`；v2.11.0 默认为 `ClusterIP` | 卡、Pod、配额 |
 | HAMi-DRA | `hami-dra-monitor` Deployment，端口 8080 | `ClusterIP` Service，端口 8080 | 卡、Pod |
 | Volcano vGPU | Volcano 调度器，端口 8080 | `ClusterIP` Service `volcano-scheduler-service`，端口 8080 | 卡、Pod |
 | KAI Scheduler | 队列控制器，端口 8080 | `ClusterIP` Service `queue-controller`，端口 8080 | 仅队列 |
@@ -27,7 +27,7 @@ v2.10.0 中该 Service 为 NodePort：
 curl {节点 IP}:31993/metrics
 ```
 
-master 分支的 chart 中为 `ClusterIP`，需要端口转发：
+v2.11.0 中默认为 `ClusterIP`，需要端口转发：
 
 ```bash
 kubectl port-forward svc/hami-scheduler 31993:31993 -n kube-system

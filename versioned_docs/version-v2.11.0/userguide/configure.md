@@ -3,7 +3,7 @@ title: Configuration
 sidebar_label: Configuration
 ---
 
-This guide covers common HAMi settings and where to change them. For the complete list of parameters, defaults, and constraints, use the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values). Configuration examples are available in [values.yaml](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/values.yaml).
+This guide covers common HAMi settings and where to change them. For the complete list of parameters, defaults, and constraints, use the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/README.md#values). Configuration examples are available in [values.yaml](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/values.yaml).
 
 | Configuration scope | Where to configure it |
 | --- | --- |
@@ -13,10 +13,10 @@ This guide covers common HAMi settings and where to change them. For the complet
 | [Pod labels and annotations](#pod-configuration) | The workload Pod's `metadata` |
 | [Container environment variables](#container-environment) | The workload container's `env` |
 
-This page describes the Next development version, and the source links above point to the development branch. For a released chart, select the matching documentation version and inspect that chart's defaults:
+This page describes HAMi v2.11.0. Inspect the defaults for this version:
 
 ```bash
-helm show values hami-charts/hami --version <chart-version>
+helm show values hami-charts/hami --version 2.11.0
 ```
 
 Merge the settings you need into `my-values.yaml` and pass it to Helm with `--values my-values.yaml`. Maps support partial overrides; lists are replaced in full. When combining examples, keep only one occurrence of each top-level key. See [Installation](../installation/online-installation.md) for a new deployment and [Upgrade](../installation/upgrade.md) for configuration changes to an existing deployment.
@@ -42,7 +42,7 @@ Multiple replicas require `leaderElect` and enough matching nodes and resources.
 
 `nodeSchedulerPolicy` controls node selection and defaults to `binpack`. `gpuSchedulerPolicy` controls device selection within a node and defaults to `spread`. `binpack` favors consolidation, while `spread` favors distribution. Pod annotations can override these defaults. For other policies and combinations, see [Scheduling policies](./nvidia-device/scheduling-policy.md).
 
-Images, CPU and memory resources, webhook scope, certificates, service ports, and monitoring can usually keep their defaults. When changes are needed, look up `global.*`, `scheduler.*`, and `prometheus.*` in the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values).
+Images, CPU and memory resources, webhook scope, certificates, service ports, and monitoring can usually keep their defaults. When changes are needed, look up `global.*`, `scheduler.*`, and `prometheus.*` in the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/README.md#values).
 
 ### Scheduler profiling {#scheduler-profiling}
 
@@ -105,17 +105,17 @@ Prepare the RuntimeClass and drivers according to [Prerequisites](../installatio
 | `defaultMemory` | `0` | Default memory per GPU, in MiB, when neither absolute nor percentage memory has a positive request. `0` allocates the full GPU memory. |
 | `defaultCores` | `0` | Default core percentage when no core request is specified. `0` reserves no cores. With the webhook enabled, whole-GPU requests that omit memory or request all memory receive a `100` (100%) core request. |
 
-For driver paths, plugin images, monitoring, cache cleanup, and other sharing parameters, consult `devicePlugin.*` and `devices.nvidia.*` in the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values). See [Dynamic MIG support](./nvidia-device/dynamic-mig-support.md) and [NUMA alignment](./nvidia-device/numa-alignment.md) for those configurations.
+For driver paths, plugin images, monitoring, cache cleanup, and other sharing parameters, consult `devicePlugin.*` and `devices.nvidia.*` in the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/README.md#values). See [Dynamic MIG support](./nvidia-device/dynamic-mig-support.md) and [NUMA alignment](./nvidia-device/numa-alignment.md) for those configurations.
 
 #### vGPU cache garbage collection {#vgpu-cache-garbage-collection}
 
 The NVIDIA device plugin automatically removes vGPU caches left by deleted Pods. `devicePlugin.vgpuCache.gracePeriod` defaults to `5m`: a cache directory must be at least this old, measured from its last modification time, before cleanup. Use durations such as `30s`, `5m`, or `1h` when an override is needed.
 
-`0s` removes only the age grace period; deletion still requires confirmation from the API server that the Pod no longer exists. It neither disables cleanup nor guarantees immediate deletion. This setting is independent of the GC scan interval and the monitor's `HAMI_RESYNC_INTERVAL`, which controls Pod cache resync and the grace period for removing stale memory mappings. See the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values) for all constraints.
+`0s` removes only the age grace period; deletion still requires confirmation from the API server that the Pod no longer exists. It neither disables cleanup nor guarantees immediate deletion. This setting is independent of the GC scan interval and the monitor's `HAMI_RESYNC_INTERVAL`, which controls Pod cache resync and the grace period for removing stale memory mappings. See the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/README.md#values) for all constraints.
 
 ### Other vendors
 
-Other vendor plugins generally require a separate deployment. The table below lists their HAMi chart configuration prefixes. Use the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values) for field definitions and the corresponding device guide for the plugin's own images, arguments, and node configuration.
+Other vendor plugins generally require a separate deployment. The table below lists their HAMi chart configuration prefixes. Use the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/README.md#values) for field definitions and the corresponding device guide for the plugin's own images, arguments, and node configuration.
 
 | Vendor and device guide | HAMi chart configuration prefix |
 | --- | --- |
@@ -156,7 +156,7 @@ Manual edits do not update Helm values or trigger the component rollouts associa
 
 :::
 
-To replace the complete file, use `device-config.content` as described in the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values). It does not merge with `devices.*`. Keep resource names consistent, because kube-scheduler's extender resource list is still generated from values.
+To replace the complete file, use `device-config.content` as described in the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/README.md#values). It does not merge with `devices.*`. Keep resource names consistent, because kube-scheduler's extender resource list is still generated from values.
 
 Changing the generated device configuration through Helm updates the scheduler and NVIDIA plugin Pod templates. The default `RollingUpdate` strategy updates plugin Pods automatically; with `OnDelete`, delete the old Pods manually. Separately deployed vendor plugins follow their own update procedures.
 
@@ -171,7 +171,7 @@ NVIDIA node configuration overrides operating modes, sharing parameters, and dev
 
 ### Configure nodes through values
 
-The following is a simplified version of the [node configuration example in values.yaml](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/values.yaml). Replace `gpu-node-1` with the actual node name:
+The following is a simplified version of the [node configuration example in values.yaml](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/values.yaml). Replace `gpu-node-1` with the actual node name:
 
 ```yaml
 devicePlugin:
@@ -196,7 +196,7 @@ This example uses `hami-core` mode and allows up to `20` containers to share eac
 
 `config` replaces the entire `config.json`; include multiple nodes in the same `nodeconfig` list. Matching precedence is: node name (`name`) → label selector (`nodelabelselector`) → `name: "*"` → global configuration. Each entry must specify either a name or a label selector. Multiple entries matching at the same level apply in list order; zero, `false`, and `null` resource values do not clear existing nonzero values or `true`.
 
-For more node fields, label selector examples, and override rules, see `devicePlugin.nodeConfiguration.config` in the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values) and its linked source example.
+For more node fields, label selector examples, and override rules, see `devicePlugin.nodeConfiguration.config` in the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/README.md#values) and its linked source example.
 
 ### External ConfigMaps and reloading {#configuration-reload}
 
@@ -280,4 +280,4 @@ env:
 
 This example assumes the global `devices.nvidia.gpuCorePolicy` remains `default`. If it is set to `force` or `disable`, the webhook injects the same environment variable, so inspect the admitted Pod configuration. Request GPU memory and cores through `resources.limits`; manually changing runtime limits does not update the scheduler's resource accounting.
 
-For global core policies, log levels, whole-GPU hook behavior, and limit delivery, see `devices.nvidia.*` and `devicePlugin.monitor.disableHAMiCoreForWholeGPU` in the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values). When starting processes through SSH, `su -`, or similar tools, keep the default `limitDelivery: file` so processes that do not inherit the container's environment can still read limits from the read-only file.
+For global core policies, log levels, whole-GPU hook behavior, and limit delivery, see `devices.nvidia.*` and `devicePlugin.monitor.disableHAMiCoreForWholeGPU` in the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/README.md#values). When starting processes through SSH, `su -`, or similar tools, keep the default `limitDelivery: file` so processes that do not inherit the container's environment can still read limits from the read-only file.

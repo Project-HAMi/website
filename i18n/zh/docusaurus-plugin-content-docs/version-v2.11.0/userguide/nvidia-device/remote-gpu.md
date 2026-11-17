@@ -68,7 +68,7 @@ kubectl get pods -n kube-system -o wide
 
 ## 运行 CUDA 示例
 
-在 HAMi 源码目录使用 [default_use.yaml](https://github.com/Project-HAMi/HAMi/blob/master/examples/remotegpu/default_use.yaml)：
+在 HAMi 源码目录使用 [default_use.yaml](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/examples/remotegpu/default_use.yaml)：
 
 ```bash
 kubectl apply -f examples/remotegpu/default_use.yaml
@@ -81,7 +81,7 @@ kubectl delete -f examples/remotegpu/default_use.yaml
 
 ## 运行 vLLM 示例
 
-使用 [vllm_deployment.yaml](https://github.com/Project-HAMi/HAMi/blob/master/examples/remotegpu/vllm_deployment.yaml)：
+使用 [vllm_deployment.yaml](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/examples/remotegpu/vllm_deployment.yaml)：
 
 ```bash
 kubectl apply -f examples/remotegpu/vllm_deployment.yaml

@@ -26,7 +26,7 @@ DRS 是类似 NVIDIA MIG / Ascend VNPU 的硬切分方案。
 
 :::
 
-按[在线安装指南](../../installation/online-installation.md)部署 HAMi，保持 `devices.enflame.enabled=true`（默认值）。此配置将厂商资源加入内置调度器 extender，厂商插件或工具包仍需单独安装。完整参数见 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md)中的 `devices.enflame.*`。
+按[在线安装指南](../../installation/online-installation.md)部署 HAMi，保持 `devices.enflame.enabled=true`（默认值）。此配置将厂商资源加入内置调度器 extender，厂商插件或工具包仍需单独安装。完整参数见 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/README.md)中的 `devices.enflame.*`。
 
 > **说明：** 默认资源名称包括：
 >
@@ -97,7 +97,7 @@ spec:
 
 :::note
 
-查看更多的[用例](https://github.com/Project-HAMi/HAMi/tree/master/examples/enflame/)。
+查看更多的[用例](https://github.com/Project-HAMi/HAMi/tree/v2.11.0/examples/enflame/)。
 
 :::
 

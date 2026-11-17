@@ -72,22 +72,28 @@ kubectl label node <node-name> gpu=on
 
 ## Copy the HAMi images to Container Registry {#copy-the-hami-images}
 
-Nodes in Chinese mainland regions cannot reach Docker Hub, so the `hami` and `kube-webhook-certgen` images fail to pull. The chart's default `kube-scheduler` image comes from `registry.cn-hangzhou.aliyuncs.com` and pulls normally.
+Set `global.imageSource: cn` as shown below to pull kube-scheduler and certgen directly from Alibaba Cloud mirrors. Only the HAMi image needs to be copied to your ACR instance.
 
-Copy the two Docker Hub images to an Alibaba Cloud Container Registry (ACR) instance in the same region as the cluster, and make the `hami` and `kube-webhook-certgen` repositories public so that the nodes can pull them without credentials. Use either edition:
+Copy the HAMi image to an Alibaba Cloud Container Registry (ACR) instance in the same region as the cluster, and make the `hami` repository public so that the nodes can pull it without credentials. Use either edition:
 
-- ACR Enterprise Edition can sync the images from Docker Hub. See [Create an ACR Enterprise Edition instance](https://www.alibabacloud.com/help/en/acr/user-guide/create-a-container-registry-enterprise-edition-instance) and [Subscribe to images from overseas sources](https://www.alibabacloud.com/help/en/acr/user-guide/subscribe-to-image-tags).
+- For ACR Enterprise Edition, see [Create an ACR Enterprise Edition instance](https://www.alibabacloud.com/help/en/acr/user-guide/create-a-container-registry-enterprise-edition-instance) and [Subscribe to images from overseas sources](https://www.alibabacloud.com/help/en/acr/user-guide/subscribe-to-image-tags).
 - ACR Personal Edition requires you to push the images yourself. See [Push and pull images by using a Personal Edition instance](https://www.alibabacloud.com/help/en/acr/user-guide/use-a-container-registry-personal-edition-instance-to-push-and-pull-images).
 
-To push the images yourself, log in to the instance's public endpoint from a machine that can reach Docker Hub, and copy the images. `--all` copies the image for every platform:
+To push images yourself, log in to the instance's public endpoint from a machine that can reach the source registries, and copy the images you need. `--all` copies the image for every platform. The last two copy commands are optional; replace `YOUR-KUBERNETES-VERSION` with your cluster's Kubernetes version, including the `v` prefix and excluding the ACK suffix:
 
 ```bash
 skopeo login --username=<username> registry.cn-<personal-instance-region>.aliyuncs.com
-skopeo copy --all docker://docker.io/projecthami/hami:v2.10.0 \
-  docker://registry.cn-<personal-instance-region>.aliyuncs.com/<namespace>/hami:v2.10.0
-skopeo copy --all docker://docker.io/liangjw/kube-webhook-certgen:v1.1.1 \
-  docker://registry.cn-<personal-instance-region>.aliyuncs.com/<namespace>/kube-webhook-certgen:v1.1.1
+skopeo copy --all docker://docker.io/projecthami/hami:v2.11.0 \
+  docker://registry.cn-<personal-instance-region>.aliyuncs.com/<namespace>/hami:v2.11.0
+
+# Optional: also copy kube-scheduler and certgen to your ACR
+skopeo copy --all docker://registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:YOUR-KUBERNETES-VERSION \
+  docker://registry.cn-<personal-instance-region>.aliyuncs.com/<namespace>/kube-scheduler:YOUR-KUBERNETES-VERSION
+skopeo copy --all docker://registry.cn-hangzhou.aliyuncs.com/google_containers/kube-webhook-certgen:v1.6.9 \
+  docker://registry.cn-<personal-instance-region>.aliyuncs.com/<namespace>/kube-webhook-certgen:v1.6.9
 ```
+
+If you also copy kube-scheduler or certgen, make the corresponding ACR repositories public and set `registry`, `repository`, and `tag` under `scheduler.kubeScheduler.image` or `scheduler.patch.imageNew`, respectively, in the values below to match the copied images. Set the certgen `tag` explicitly to `v1.6.9` to override the chart's default digest.
 
 ## Grant the HAMi scheduler access to DRA resources {#grant-dra-access}
 
@@ -135,20 +141,31 @@ The binding refers to the ServiceAccount of a release named `hami`. For another 
 
 ## Prepare the HAMi values {#prepare-the-hami-values}
 
-Point the HAMi images to your ACR repositories. Use the instance's VPC endpoint, which the nodes reach without a NAT gateway. Set each image separately, because `global.imageRegistry` also changes the registry of the `kube-scheduler` image.
+Point the HAMi images to your ACR repositories. Use the instance's VPC endpoint, which the nodes reach without a NAT gateway. Set `global.imageSource: cn` to use Alibaba Cloud mirrors for kube-scheduler and certgen. Set each image separately, because `global.imageRegistry` also changes the registry of the `kube-scheduler` image.
 
 Save the following as `hami-ack-values.yaml`, replacing `<personal-instance-region>` and `<namespace>`. For Enterprise Edition, set `registry` to the VPC endpoint of the Enterprise Edition instance:
 
 ```yaml
+global:
+  imageSource: cn
 scheduler:
+  # Optional: uncomment and replace the placeholders if you copied kube-scheduler to ACR.
+  # kubeScheduler:
+  #   image:
+  #     registry: registry-vpc.cn-<personal-instance-region>.aliyuncs.com
+  #     repository: <namespace>/kube-scheduler
+  #     tag: YOUR-KUBERNETES-VERSION
   extender:
     image:
       registry: registry-vpc.cn-<personal-instance-region>.aliyuncs.com
       repository: <namespace>/hami
-  patch:
-    imageNew:
-      registry: registry-vpc.cn-<personal-instance-region>.aliyuncs.com
-      repository: <namespace>/kube-webhook-certgen
+  # Optional: uncomment and replace the placeholders if you copied certgen to ACR.
+  # patch:
+  #   imageNew:
+  #     registry: registry-vpc.cn-<personal-instance-region>.aliyuncs.com
+  #     repository: <namespace>/kube-webhook-certgen
+  #     # Set the tag explicitly to override the chart's default digest.
+  #     tag: v1.6.9
 devicePlugin:
   nvidiaDriverRoot: /
   image:
@@ -165,7 +182,7 @@ devicePlugin:
 Follow [Online Installation from Helm](./online-installation.md) and add the values file to the installation command:
 
 ```bash
-helm install hami hami-charts/hami -n kube-system --version 2.10.0 -f hami-ack-values.yaml
+helm install hami hami-charts/hami -n kube-system --version 2.11.0 -f hami-ack-values.yaml
 ```
 
 After `hami-device-plugin` and `hami-scheduler` are running, confirm that the HAMi scheduler holds its leader lease:

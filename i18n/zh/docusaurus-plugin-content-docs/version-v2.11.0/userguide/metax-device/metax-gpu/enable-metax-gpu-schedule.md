@@ -40,7 +40,7 @@ translated: true
 
 - 在 metax 节点上部署沐曦 GPU 插件（请咨询你的设备提供商以获取其软件包和文档）
 
-- 按[在线安装指南](../../../installation/online-installation.md)部署 HAMi。HAMi 侧配置使用 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md)中的 `devices.metax.*`，资源名称需与单独部署的厂商插件保持一致。
+- 按[在线安装指南](../../../installation/online-installation.md)部署 HAMi。HAMi 侧配置使用 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/README.md)中的 `devices.metax.*`，资源名称需与单独部署的厂商插件保持一致。
 
 ## 运行 MetaX 作业
 
@@ -65,6 +65,6 @@ spec:
 
 :::note
 
-你可以在 [examples 文件夹](https://github.com/Project-HAMi/HAMi/tree/master/examples/metax/gpu)中找到更多示例。
+你可以在 [examples 文件夹](https://github.com/Project-HAMi/HAMi/tree/v2.11.0/examples/metax/gpu)中找到更多示例。
 
 :::

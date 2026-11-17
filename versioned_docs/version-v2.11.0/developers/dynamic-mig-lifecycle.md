@@ -50,4 +50,4 @@ Legacy non-CDI allocation remains unchanged.
 
 ## Validation
 
-The state machine, restart recovery, exact reuse, placement-pressure reclamation, active-instance protection, CDI retention, and CDI cleanup retry can be tested with mocked NVML and CDI interfaces. Before release, changes affecting allocation must also be validated on a MIG-capable NVIDIA GPU as required by the HAMi [`CONTRIBUTING.md`](https://github.com/Project-HAMi/HAMi/blob/master/CONTRIBUTING.md).
+The state machine, restart recovery, exact reuse, placement-pressure reclamation, active-instance protection, CDI retention, and CDI cleanup retry can be tested with mocked NVML and CDI interfaces. Before release, changes affecting allocation must also be validated on a MIG-capable NVIDIA GPU as required by the HAMi [`CONTRIBUTING.md`](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/CONTRIBUTING.md).

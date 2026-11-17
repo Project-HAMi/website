@@ -6,7 +6,7 @@ title: 离线安装
 
 ## 准备应用镜像
 
-先选择要安装的 Chart 版本（下载方式见[准备 HAMi Chart](#准备-hami-chart)），按该版本的默认配置和实际启用的功能准备应用镜像。以下镜像及覆盖配置面向 Next Chart；安装已发布版本时，请使用对应版本的文档和镜像配置。将所需应用镜像保存为 tar 包，并拷贝到离线环境：
+先选择要安装的 Chart 版本（下载方式见[准备 HAMi Chart](#准备-hami-chart)），按该版本的默认配置和实际启用的功能准备应用镜像。以下镜像及覆盖配置适用于 HAMi Chart 2.11.0。将所需应用镜像保存为 tar 包，并拷贝到离线环境：
 
 - `docker.io/projecthami/hami:{HAMi 版本}`
 - `registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.6.9`

@@ -3,7 +3,7 @@ title: 配置
 sidebar_label: 配置
 ---
 
-本文按配置对象说明 HAMi 的常用配置和修改方式。完整参数、默认值和限制以 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values)为准，配置示例见 [values.yaml](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/values.yaml)。
+本文按配置对象说明 HAMi 的常用配置和修改方式。完整参数、默认值和限制以 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/README.md#values)为准，配置示例见 [values.yaml](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/values.yaml)。
 
 | 配置对象 | 修改位置 |
 | --- | --- |
@@ -13,10 +13,10 @@ sidebar_label: 配置
 | [Pod 的 labels 与 annotations](#pod-configuration) | 业务 Pod 的 `metadata` |
 | [容器环境变量](#container-environment) | 业务容器的 `env` |
 
-本文对应 Next 开发版本，以上源码链接指向开发分支。使用已发布 Chart 时，选择匹配版本的文档，并查看该版本的默认值：
+本文对应 HAMi v2.11.0。查看该版本的默认值：
 
 ```bash
-helm show values hami-charts/hami --version <chart-version>
+helm show values hami-charts/hami --version 2.11.0
 ```
 
 将所需配置合并到 `my-values.yaml`，通过 `--values my-values.yaml` 传入 Helm。映射可以局部覆盖，列表会整体替换；合并示例时，同一顶层键只保留一份。首次部署见[安装指南](../installation/online-installation.md)，已有部署的配置更新见[升级指南](../installation/upgrade.md)。
@@ -42,7 +42,7 @@ scheduler:
 
 `nodeSchedulerPolicy` 控制节点选择，默认 `binpack`；`gpuSchedulerPolicy` 控制节点内的设备选择，默认 `spread`。`binpack` 倾向集中分配，`spread` 倾向分散分配。Pod 注解可以覆盖这些默认值，其他策略及组合方式见[调度策略](./nvidia-device/scheduling-policy.md)。
 
-镜像、CPU 和内存资源、Webhook 范围、证书、服务端口和监控通常可以保留默认配置。需要调整时，在 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values)中查找 `global.*`、`scheduler.*` 和 `prometheus.*`。
+镜像、CPU 和内存资源、Webhook 范围、证书、服务端口和监控通常可以保留默认配置。需要调整时，在 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/README.md#values)中查找 `global.*`、`scheduler.*` 和 `prometheus.*`。
 
 ### 调度器性能分析 {#scheduler-profiling}
 
@@ -105,17 +105,17 @@ RuntimeClass 和驱动需先按[前置条件](../installation/prerequisites.md)�
 | `defaultMemory` | `0` | 未申请正值的绝对显存或显存百分比时，每卡默认分配的显存，单位 MiB；`0` 表示整卡显存。 |
 | `defaultCores` | `0` | 未填写算力请求时的默认算力百分比；`0` 不预留算力。启用 Webhook 时，未指定显存或申请全部显存的整卡请求会将算力请求自动设为 `100`（即 100%）。 |
 
-驱动路径、插件镜像、监控、缓存清理及其他共享参数，按需查阅 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values)中的 `devicePlugin.*` 和 `devices.nvidia.*`。MIG 和 NUMA 配置分别见[动态 MIG 支持](./nvidia-device/dynamic-mig-support.md)与 [NUMA 对齐](./nvidia-device/numa-alignment.md)。
+驱动路径、插件镜像、监控、缓存清理及其他共享参数，按需查阅 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/README.md#values)中的 `devicePlugin.*` 和 `devices.nvidia.*`。MIG 和 NUMA 配置分别见[动态 MIG 支持](./nvidia-device/dynamic-mig-support.md)与 [NUMA 对齐](./nvidia-device/numa-alignment.md)。
 
 #### vGPU 缓存清理 {#vgpu-cache-garbage-collection}
 
 Pod 删除后，NVIDIA 设备插件会自动清理对应的 vGPU 缓存。`devicePlugin.vgpuCache.gracePeriod` 默认为 `5m`，表示从缓存目录最后修改时间起，至少等待多久才允许清理；按需使用 `30s`、`5m`、`1h` 等时长。
 
-`0s` 只取消等待期，删除前仍需向 API Server 确认 Pod 已不存在；它不会关闭清理，也不保证立即删除。此设置独立于 GC 扫描周期和 monitor 的 `HAMI_RESYNC_INTERVAL`，后者用于 Pod 缓存重同步和失效内存映射的清理等待期。完整约束见 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values)。
+`0s` 只取消等待期，删除前仍需向 API Server 确认 Pod 已不存在；它不会关闭清理，也不保证立即删除。此设置独立于 GC 扫描周期和 monitor 的 `HAMI_RESYNC_INTERVAL`，后者用于 Pod 缓存重同步和失效内存映射的清理等待期。完整约束见 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/README.md#values)。
 
 ### 其他厂商
 
-其他厂商插件通常需要独立部署。HAMi Chart 中的配置入口如下，字段含义以 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values)为准；插件自身的镜像、启动参数和节点配置见对应设备指南。
+其他厂商插件通常需要独立部署。HAMi Chart 中的配置入口如下，字段含义以 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/README.md#values)为准；插件自身的镜像、启动参数和节点配置见对应设备指南。
 
 | 厂商与设备指南 | HAMi Chart 配置入口 |
 | --- | --- |
@@ -156,7 +156,7 @@ devices:
 
 :::
 
-如需替换完整文件，可使用 `device-config.content`，具体规则见 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values)。它不与 `devices.*` 合并，且需保持资源名一致，因为 kube-scheduler 的 extender 资源列表仍由 values 生成。
+如需替换完整文件，可使用 `device-config.content`，具体规则见 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/README.md#values)。它不与 `devices.*` 合并，且需保持资源名一致，因为 kube-scheduler 的 extender 资源列表仍由 values 生成。
 
 通过 Helm 修改生成的设备配置会更新调度器和 NVIDIA 插件的 Pod 模板。默认 `RollingUpdate` 自动更新插件 Pod；使用 `OnDelete` 时需手动删除旧 Pod。独立部署的厂商插件按各自流程更新。
 
@@ -171,7 +171,7 @@ NVIDIA 节点配置用于覆盖特定节点的运行模式、共享参数和设�
 
 ### 通过 values 配置节点
 
-以下是 [values.yaml 中节点配置示例](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/values.yaml)的简化版本，将 `gpu-node-1` 换成实际节点名称：
+以下是 [values.yaml 中节点配置示例](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/values.yaml)的简化版本，将 `gpu-node-1` 换成实际节点名称：
 
 ```yaml
 devicePlugin:
@@ -196,7 +196,7 @@ devicePlugin:
 
 `config` 会替换整个 `config.json`，多个节点应放在同一个 `nodeconfig` 列表中。匹配优先级是：节点名 `name` → 标签选择器 `nodelabelselector` → `name: "*"` → 全局配置。每项只能设置名称或标签选择器之一。同一级的多个匹配条目按顺序应用；资源字段的零值、`false`、`null` 不会清除已有非零值或 `true`。
 
-更多节点字段、标签选择器示例和覆盖规则，见 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values)中的 `devicePlugin.nodeConfiguration.config` 及其链接的源码示例。
+更多节点字段、标签选择器示例和覆盖规则，见 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/README.md#values)中的 `devicePlugin.nodeConfiguration.config` 及其链接的源码示例。
 
 ### 外部 ConfigMap 与重新加载 {#configuration-reload}
 
@@ -280,4 +280,4 @@ env:
 
 此示例假设全局 `devices.nvidia.gpuCorePolicy` 保持 `default`；若全局设为 `force` 或 `disable`，Webhook 会注入同名变量，应检查准入后的 Pod 配置。GPU 显存和算力仍通过 `resources.limits` 申请，手工修改运行时限制不会同步调度器的资源记账。
 
-全局算力策略、日志级别、整卡容器的 hook 行为及限制传递方式，见 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md#values)中的 `devices.nvidia.*` 和 `devicePlugin.monitor.disableHAMiCoreForWholeGPU`。通过 SSH、`su -` 等方式启动进程时，保留默认 `limitDelivery: file`，可让未继承容器环境变量的进程仍从只读文件读取限制。
+全局算力策略、日志级别、整卡容器的 hook 行为及限制传递方式，见 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/README.md#values)中的 `devices.nvidia.*` 和 `devicePlugin.monitor.disableHAMiCoreForWholeGPU`。通过 SSH、`su -` 等方式启动进程时，保留默认 `limitDelivery: file`，可让未继承容器环境变量的进程仍从只读文件读取限制。

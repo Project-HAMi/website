@@ -2,7 +2,7 @@
 title: Allocate XGMI-linked GPUs
 ---
 
-Requires a HAMi release newer than v2.10.0 ([Project-HAMi/HAMi#3191](https://github.com/Project-HAMi/HAMi/pull/3191)).
+Requires HAMi v2.11.0 or later ([Project-HAMi/HAMi#3191](https://github.com/Project-HAMi/HAMi/pull/3191)).
 
 To run a multi-GPU pod only on GPUs that are all linked to each other over XGMI, set the annotation `amd.com/link-bind` to `"true"`. amd-device-plugin publishes the XGMI peers of each GPU as `xgmiPeers` in the node registration. The scheduler needs every requested GPU to list every other requested GPU as a peer, and keeps the pod `Pending` when the node has no such group. A request for a single GPU is not affected.
 

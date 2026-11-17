@@ -6,7 +6,7 @@ If your cluster can’t directly access the internet, you can install HAMi offli
 
 ## Prepare application images
 
-First, select the Chart version to install (see [Prepare the HAMi Chart](#prepare-the-hami-chart) for download instructions), then prepare application images according to that version's defaults and the features you enable. The images and overrides below apply to the Next Chart. For a released version, use the matching documentation and image configuration. Save the required application images as tar archives and copy them into the offline environment:
+First, select the Chart version to install (see [Prepare the HAMi Chart](#prepare-the-hami-chart) for download instructions), then prepare application images according to that version's defaults and the features you enable. The images and overrides below apply to HAMi Chart 2.11.0. Save the required application images as tar archives and copy them into the offline environment:
 
 - `docker.io/projecthami/hami:{HAMi version}`
 - `registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.6.9`

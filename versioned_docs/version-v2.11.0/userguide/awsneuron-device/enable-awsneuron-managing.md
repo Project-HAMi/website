@@ -21,7 +21,7 @@ HAMi now integrates with the [Neuron scheduler extension](https://awsdocs-neuron
 
 - Deploy neuron-device-plugin on EC2 neuron nodes according to the AWS document: [Neuron Device Plugin](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/containers/kubernetes-getting-started.html#neuron-device-plugin)
 
-Follow [Online installation](../../installation/online-installation.md) to deploy HAMi. The Neuron device plugin is installed separately. HAMi uses `devices.awsneuron.*` for resource names; if you change them, update `devices.awsneuron.customresources` and keep them consistent with the plugin. See the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md).
+Follow [Online installation](../../installation/online-installation.md) to deploy HAMi. The Neuron device plugin is installed separately. HAMi uses `devices.awsneuron.*` for resource names; if you change them, update `devices.awsneuron.customresources` and keep them consistent with the plugin. See the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/README.md).
 
 ## Device Granularity
 

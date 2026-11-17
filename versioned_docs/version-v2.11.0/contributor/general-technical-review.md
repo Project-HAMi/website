@@ -159,7 +159,7 @@ HAMi has no mandatory external database. Storage use is mainly image layers, log
 
 Semantic versioning, tagged releases, release branches, automated image/chart/release-note workflows, with documented manual verification steps.
 
-- Release process doc: https://github.com/Project-HAMi/HAMi/blob/master/.github/release-process.md
+- Release process doc: https://github.com/Project-HAMi/HAMi/blob/v2.11.0/.github/release-process.md
 
 ### Installation
 

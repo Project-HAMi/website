@@ -25,7 +25,7 @@ Install only `gcushare-device-plugin`. Do not install the `gcushare-scheduler-pl
 
 :::
 
-Follow [Online installation](../../installation/online-installation.md) to deploy HAMi. Keep `devices.enflame.enabled=true` (the default). This registers the vendor resources with the bundled scheduler extender; the vendor plugin or toolkit must be installed separately. See the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md) for `devices.enflame.*`.
+Follow [Online installation](../../installation/online-installation.md) to deploy HAMi. Keep `devices.enflame.enabled=true` (the default). This registers the vendor resources with the bundled scheduler extender; the vendor plugin or toolkit must be installed separately. See the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/README.md) for `devices.enflame.*`.
 
 :::note
 
@@ -96,7 +96,7 @@ spec:
 
 :::tip
 
-More examples are available in the [examples/enflame folder](https://github.com/Project-HAMi/HAMi/tree/master/examples/enflame/).
+More examples are available in the [examples/enflame folder](https://github.com/Project-HAMi/HAMi/tree/v2.11.0/examples/enflame/).
 
 :::
 

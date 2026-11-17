@@ -37,9 +37,9 @@ You can remove `mt-mutating-webhook` and `mt-gpu-scheduler` after installation (
 
 :::
 
-Follow [Online installation](../../installation/online-installation.md) to deploy HAMi. Keep `devices.mthreads.enabled=true` (the default). This registers the vendor resources with the bundled scheduler extender; the vendor plugin or toolkit must be installed separately. See the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md) for `devices.mthreads.*`.
+Follow [Online installation](../../installation/online-installation.md) to deploy HAMi. Keep `devices.mthreads.enabled=true` (the default). This registers the vendor resources with the bundled scheduler extender; the vendor plugin or toolkit must be installed separately. See the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/README.md) for `devices.mthreads.*`.
 
-If you customize resource names, keep `devices.mthreads.customresources` consistent with `resourceCountName`. Set `devices.mthreads.memoryPerCard` only when the cluster needs different per-card memory capacities; use the defaults in the [values source](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/values.yaml).
+If you customize resource names, keep `devices.mthreads.customresources` consistent with `resourceCountName`. Set `devices.mthreads.memoryPerCard` only when the cluster needs different per-card memory capacities; use the defaults in the [values source](https://github.com/Project-HAMi/HAMi/blob/v2.11.0/charts/hami/values.yaml).
 
 ## Running Mthreads jobs
 
@@ -67,6 +67,6 @@ spec:
 
 :::note
 
-Each unit of `mthreads.com/sgpu-memory` represents 512 MiB of device memory. The example requests 32 units, or 16 GiB. For a shared GPU, supported values are `2`, `4`, `8`, `16`, `32`, `64`, and `96`. More examples are available in the [examples/mthreads folder](https://github.com/Project-HAMi/HAMi/tree/master/examples/mthreads/).
+Each unit of `mthreads.com/sgpu-memory` represents 512 MiB of device memory. The example requests 32 units, or 16 GiB. For a shared GPU, supported values are `2`, `4`, `8`, `16`, `32`, `64`, and `96`. More examples are available in the [examples/mthreads folder](https://github.com/Project-HAMi/HAMi/tree/v2.11.0/examples/mthreads/).
 
 :::
