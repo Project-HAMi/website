@@ -11,13 +11,14 @@ HAMi 在已配置的调度器指标端点上暴露调度器指标。
 
 分配结果类指标只使用有限范围的标签值：
 
-| 指标                                       | 含义                     |
-| ------------------------------------------ | ------------------------ |
-| `hami_scheduler_allocations_total`         | 成功的分配步骤次数。     |
-| `hami_scheduler_allocation_failures_total` | 失败的分配步骤次数。     |
-| `hami_scheduler_bind_rollbacks_total`      | 释放预留的绑定失败次数。 |
+| 指标 | 含义 |
+| --- | --- |
+| `hami_scheduler_allocations_total` | 成功的分配步骤次数。 |
+| `hami_scheduler_allocation_failures_total` | 失败的分配步骤次数。 |
+| `hami_scheduler_bind_rollbacks_total` | 释放预留的绑定失败次数。 |
+| `hami_scheduler_allocation_duration_seconds` | 从绑定到设备插件报告分配成功所用的秒数。仅主副本（leader）记录。 |
 
-标签为 `phase`、`device_type` 和 `failure_reason`，不会包含 Pod、命名空间、节点、UUID 或请求标识。
+计数器的标签为 `phase`、`device_type` 和 `failure_reason`。直方图只有 `device_type` 标签，桶的范围为 1 到 300 秒（默认的节点锁超时）。标签不会包含 Pod、命名空间、节点、UUID 或请求标识。
 
 `phase` 表示结果所属的步骤：
 
@@ -50,5 +51,5 @@ HAMi 在已配置的调度器指标端点上暴露调度器指标。
 | 指标 | 含义 |
 | --- | --- |
 | `hami_scheduler_is_leader` | 当前副本是主副本（leader）时为 `1`，否则为 `0`。 |
-| `hami_scheduler_cache_synced` | 当前副本的节点和设备缓存已同步时为 `1`，否则为 `0`。 |
+| `hami_scheduler_cache_synced` | 当前副本的节点和设备缓存完成同步后为 `1`，从副本（follower）上为 `0`。之后同步失败时仍保持 `1`，因此请用下一个指标检查缓存是否最新。 |
 | `hami_scheduler_last_sync_success_timestamp_seconds` | 最近一次缓存同步成功的 Unix 时间。仅主副本在首次同步成功后导出该指标。`time() - hami_scheduler_last_sync_success_timestamp_seconds` 表示缓存距上次成功同步的时长。 |

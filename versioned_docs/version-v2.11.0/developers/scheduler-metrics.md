@@ -26,3 +26,10 @@ The labels are `phase`, `device_type`, and `failure_reason`. They never contain 
 | `internal`         | Internal usage, scoring, discovery, or cleanup failed.             |
 
 A successful filter reservation uses `failure_reason="none"`; bind failures are reported by the failure and rollback counters.
+
+## Scheduler state
+
+| Metric | Meaning |
+| --- | --- |
+| `hami_scheduler_is_leader` | `1` if this replica is the leader, `0` otherwise. |
+| `hami_scheduler_cache_synced` | `1` once this replica has synced its node and device cache, `0` on followers. It stays `1` after later failed syncs. |

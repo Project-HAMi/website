@@ -10,13 +10,14 @@ HAMi exposes scheduler metrics on the configured scheduler metrics endpoint.
 
 The allocation outcome metrics use only bounded label values:
 
-| Metric                                     | Meaning                                   |
-| ------------------------------------------ | ----------------------------------------- |
-| `hami_scheduler_allocations_total`         | Successful allocation steps.              |
-| `hami_scheduler_allocation_failures_total` | Failed allocation steps.                  |
-| `hami_scheduler_bind_rollbacks_total`      | Bind failures that release a reservation. |
+| Metric | Meaning |
+| --- | --- |
+| `hami_scheduler_allocations_total` | Successful allocation steps. |
+| `hami_scheduler_allocation_failures_total` | Failed allocation steps. |
+| `hami_scheduler_bind_rollbacks_total` | Bind failures that release a reservation. |
+| `hami_scheduler_allocation_duration_seconds` | Seconds from bind until the device plugin reports a successful allocation. Only the leader records it. |
 
-The labels are `phase`, `device_type`, and `failure_reason`. They never contain pod, namespace, node, UUID, or request identifiers.
+The counters have the labels `phase`, `device_type`, and `failure_reason`. The histogram has only `device_type`, with buckets from 1 to 300 seconds (the default node lock timeout). The labels never contain pod, namespace, node, UUID, or request identifiers.
 
 `phase` is the step the outcome belongs to:
 
@@ -49,5 +50,5 @@ Successes use `failure_reason="none"`. A bind failure that releases its reservat
 | Metric | Meaning |
 | --- | --- |
 | `hami_scheduler_is_leader` | `1` if this replica is the leader, `0` otherwise. |
-| `hami_scheduler_cache_synced` | `1` if this replica's node and device cache is synced, `0` otherwise. |
+| `hami_scheduler_cache_synced` | `1` once this replica has synced its node and device cache, `0` on followers. It stays `1` after later failed syncs, so use the next metric to check that the cache is fresh. |
 | `hami_scheduler_last_sync_success_timestamp_seconds` | Unix time of the last successful cache sync. Only the leader exports it, after its first successful sync. `time() - hami_scheduler_last_sync_success_timestamp_seconds` is the cache age. |
