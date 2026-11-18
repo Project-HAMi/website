@@ -23,6 +23,8 @@ helm show values hami-charts/hami --version <chart-version>
 
 ## 调度器及配套组件的 Chart 配置 {#scheduler-configuration}
 
+部署前，可参阅[离线验证调度器配置](./validate-scheduler-configuration.md)，检查调度器启动参数和设备 YAML 文件。
+
 调度器的常见调整包括部署位置、副本数和默认调度策略。例如，将两个副本部署到带有 `hami.io/scheduler=true` 标签的节点：
 
 ```yaml
