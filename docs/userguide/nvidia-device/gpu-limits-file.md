@@ -78,7 +78,7 @@ In `env` mode, a process started from SSH, `su -`, `sudo` or cron runs without a
 
 :::
 
-You can set the mode for the whole cluster, for one node or for one Pod. HAMi uses the first one that is set, in this order: the Pod annotation, the node setting, the cluster setting. If none is set, it uses `file`. An unknown value is ignored, and the device plugin logs a warning.
+You can set the mode for the whole cluster, for one node or for one Pod. HAMi uses the first one that is set, in this order: the Pod annotation, the node setting, the cluster setting. If none is set, it uses `file`. An unknown Pod annotation is ignored, and the node or cluster setting applies. An unknown node value replaces the cluster setting, so a Pod on that node without a valid annotation uses `file` even if the cluster is set to `env`. When the device plugin skips an unknown value, it logs a warning.
 
 ### For the whole cluster
 
