@@ -8,6 +8,8 @@ The community [dcu-vgpu-device-plugin](https://github.com/Project-HAMi/dcu-vgpu-
 
 The vendor-driven rename from DCU to HCU is a breaking change: the old DCU resource names are no longer supported by default. HAMi follows the vendor's new naming; this incompatibility results from the rename rather than a HAMi scheduling defect.
 
+In HAMi releases after v2.11.0, you can keep the DCU names with `devices.hygon.resourcePrefix`. See [Keep the DCU resource names](#dcu-resource-names).
+
 :::
 
 ## Introduction
@@ -32,6 +34,18 @@ The vendor-driven rename from DCU to HCU is a breaking change: the old DCU resou
 Install HAMi using [Online installation](../../installation/online-installation.md). The vendor device plugin is installed separately as described below. HAMi-side resource names and device settings are under `devices.hygon.*` in the [Chart values reference](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md); keep resource names consistent with the plugin.
 
 - Deploy the [k8s-hcu-device-plugin](https://github.com/HYGON-AI/k8s-hcu-device-plugin) provided by Hygon. Follow the deployment instructions in its README.
+
+### Keep the DCU resource names {#dcu-resource-names}
+
+In HAMi releases after v2.11.0, `devices.hygon.resourcePrefix` sets the prefix of the Hygon resource names. The default `hcu` gives `hygon.com/hcunum`, `hygon.com/hcumem` and `hygon.com/hcucores`. If your device plugin still reports `hygon.com/dcunum` and the other DCU names, set the prefix to `dcu`:
+
+```yaml
+devices:
+  hygon:
+    resourcePrefix: dcu
+```
+
+The prefix must match the device plugin. It also changes the type annotations to `hygon.com/use-dcutype` and `hygon.com/nouse-dcutype`. A custom name in `resourceCountName`, `resourceMemoryName` or `resourceCoreName` still takes priority.
 
 ## Running HCU jobs
 

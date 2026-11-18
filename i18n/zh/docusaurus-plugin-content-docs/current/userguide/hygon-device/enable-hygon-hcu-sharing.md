@@ -10,6 +10,8 @@ translated: true
 
 厂商将 DCU 更名为 HCU 带来了不兼容变更：默认不再支持旧的 DCU 资源名称。HAMi 跟随厂商采用新的命名，这一不兼容问题源于更名，而非 HAMi 调度故障。
 
+在 v2.11.0 之后的 HAMi 版本中，可以通过 `devices.hygon.resourcePrefix` 保留 DCU 资源名称，参见[保留 DCU 资源名称](#dcu-resource-names)。
+
 :::
 
 ## 简介
@@ -34,6 +36,18 @@ translated: true
 按[在线安装指南](../../installation/online-installation.md)安装 HAMi。厂商设备插件按下文单独部署。HAMi 侧的资源名称和设备参数位于 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md)中的 `devices.hygon.*`，资源名称需与插件保持一致。
 
 - 部署 Hygon 官方提供的 [k8s-hcu-device-plugin](https://github.com/HYGON-AI/k8s-hcu-device-plugin)，部署步骤参见该仓库的 README。
+
+### 保留 DCU 资源名称 {#dcu-resource-names}
+
+在 v2.11.0 之后的 HAMi 版本中，`devices.hygon.resourcePrefix` 用于设置 Hygon 资源名称的前缀。默认值 `hcu` 对应 `hygon.com/hcunum`、`hygon.com/hcumem` 和 `hygon.com/hcucores`。如果设备插件仍上报 `hygon.com/dcunum` 等 DCU 资源名称，请将前缀设为 `dcu`：
+
+```yaml
+devices:
+  hygon:
+    resourcePrefix: dcu
+```
+
+前缀必须与设备插件一致。它同时会将类型注解改为 `hygon.com/use-dcutype` 和 `hygon.com/nouse-dcutype`。在 `resourceCountName`、`resourceMemoryName` 或 `resourceCoreName` 中设置的自定义名称仍然优先。
 
 ## 运行 HCU 任务
 
