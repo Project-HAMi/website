@@ -66,6 +66,48 @@ A workload reserves the entire GPU server. Set the GPU count to the server's phy
 
 :::
 
+## Monitor Remote GPU workloads {#monitor-remote-gpu-workloads}
+
+Remote GPU monitoring is off by default. To enable it, add these settings to the Helm values for your chart-managed Lupine server:
+
+```yaml
+devices:
+  remotegpu:
+    enabled: true
+    server:
+      enabled: true
+    monitor:
+      enabled: true
+```
+
+The chart runs `remoteGPUmonitor` as a sidecar in each Lupine server Pod. The image configured by `devicePlugin.monitor.image` must contain that binary. Use a Lupine server image that exposes `LUPINE_WORKLOAD_ID` as `client_id` in its metrics so HAMi can associate usage with the workload Pod. The sidecar reads Lupine's `/metrics` over loopback on `devices.remotegpu.defaultPort` and serves HAMi metrics on `devices.remotegpu.monitor.port` (31993 by default).
+
+### Scrape with Prometheus
+
+The chart creates a ClusterIP Service named `<chart-fullname>-remote-monitor`. It also creates a ServiceMonitor when `prometheus.enabled` is `true` and the ServiceMonitor CRD is installed before the chart is applied. Configure your Prometheus instance to select that ServiceMonitor. Its `remote-metrics` endpoint scrapes `/metrics` on the Lupine server Pods.
+
+### Check readiness and metrics
+
+Find the monitor Service in the HAMi namespace, then forward its port. Adjust `namespace` and `service` to match your release. Port forwarding checks one server Pod selected by the Service. If you changed the monitor port, replace the second `31993` with the configured Service port.
+
+```bash
+namespace=kube-system
+service=hami-remote-monitor
+kubectl -n "$namespace" get svc -l app.kubernetes.io/component=hami-lupine-server
+kubectl -n "$namespace" port-forward "svc/$service" 31993:31993
+```
+
+In another terminal:
+
+```bash
+curl --fail --show-error --silent --output /dev/null http://127.0.0.1:31993/readyz
+curl --fail --show-error --silent http://127.0.0.1:31993/metrics
+```
+
+`/readyz` returns HTTP 200 once the monitor has synchronized its Kubernetes Pod cache. Check `hami_remote_gpumonitor_collect_success` in the metrics output to verify collection. A value of `0` means collection failed. Check the `remote-gpu-monitor` container logs and confirm that the Lupine server exposes `/metrics` on the configured port.
+
+Look for `hami_vgpu_memory_used_bytes`, `hami_vgpu_memory_limit_bytes`, and `hami_container_device_utilization_ratio` for workloads with attributable samples. Host GPU usage is exposed through `hami_host_gpu_memory_used_bytes` and `hami_host_gpu_utilization_ratio`. The `node` label identifies the GPU server node.
+
 ## Run the CUDA example
 
 From the HAMi source checkout, use [default_use.yaml](https://github.com/Project-HAMi/HAMi/blob/master/examples/remotegpu/default_use.yaml):
