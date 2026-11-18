@@ -88,7 +88,7 @@ export default function BlogPostItemHeader() {
       {!isBlogPostPage && (
         <>
           <BlogPostItemHeaderInfo />
-          <BlogPostItemHeaderAuthors />
+          <BlogPostItemHeaderAuthors className={styles.authors} />
         </>
       )}
     </header>
