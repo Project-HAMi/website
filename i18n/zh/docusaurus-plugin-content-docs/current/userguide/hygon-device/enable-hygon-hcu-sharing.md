@@ -8,7 +8,7 @@ translated: true
 
 社区仓库 [dcu-vgpu-device-plugin](https://github.com/Project-HAMi/dcu-vgpu-device-plugin) 已归档，不再更新。HCU 用户应使用最新版本的 HAMi 和 **Hygon** 官方提供的最新版本 [k8s-hcu-device-plugin](https://github.com/HYGON-AI/k8s-hcu-device-plugin)。
 
-厂商将 DCU 更名为 HCU 带来了不兼容变更：默认不再支持旧的 DCU 资源名称。HAMi 跟随厂商采用新的命名，这一不兼容问题源于更名，而非 HAMi 调度故障。
+厂商将 DCU 更名为 HCU 带来了不兼容变更：默认不再支持旧的 DCU 资源名称。HAMi 跟随厂商采用新的命名，这一不兼容问题源于更名，而非 HAMi 调度故障。如果 device plugin 仍在用 DCU 名称，升级时设置 `devices.hygon.resourcePrefix: dcu`（见[资源前缀](#资源前缀)）。
 
 :::
 
@@ -34,6 +34,22 @@ translated: true
 按[在线安装指南](../../installation/online-installation.md)安装 HAMi。厂商设备插件按下文单独部署。HAMi 侧的资源名称和设备参数位于 [Chart values 参数表](https://github.com/Project-HAMi/HAMi/blob/master/charts/hami/README.md)中的 `devices.hygon.*`，资源名称需与插件保持一致。
 
 - 部署 Hygon 官方提供的 [k8s-hcu-device-plugin](https://github.com/HYGON-AI/k8s-hcu-device-plugin)，部署步骤参见该仓库的 README。
+
+## 资源前缀
+
+默认使用 `hcu` 前缀，工作负载请求的是 `hygon.com/hcunum`、`hygon.com/hcumem`、`hygon.com/hcucores`。新集群不用改。
+
+如果升级时 device plugin 仍在报 DCU 名称，在 HAMi 上设成相同前缀：
+
+```yaml
+devices:
+  hygon:
+    resourcePrefix: dcu
+```
+
+这时资源名变为 `hygon.com/dcunum`、`hygon.com/dcumem`、`hygon.com/dcucores`，型号选择 annotation 变为 `hygon.com/use-dcutype` 和 `hygon.com/nouse-dcutype`。HAMi 和 device plugin 的前缀必须一致，否则 Pod 无法调度。
+
+如果你是用 `device-config.content` 或 `files/device-config.yaml` 自己提供整份设备配置，上面的 `devices.hygon.resourcePrefix` 不会生效，要在那份文件里写前缀或资源名。详见[设备 ConfigMap 的生成与生效](../configure.md#device-config-overrides)。
 
 ## 运行 HCU 任务
 
