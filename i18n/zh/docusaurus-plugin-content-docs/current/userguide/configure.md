@@ -160,6 +160,37 @@ devices:
 
 通过 Helm 修改生成的设备配置会更新调度器和 NVIDIA 插件的 Pod 模板。默认 `RollingUpdate` 自动更新插件 Pod；使用 `OnDelete` 时需手动删除旧 Pod。独立部署的厂商插件按各自流程更新。
 
+### 离线检查配置 {#validate-configuration}
+
+在 v2.11.0 之后的 HAMi 版本中，可以直接用 HAMi 镜像执行调度器启动时的检查。检查不会启动调度器，也不会访问 Kubernetes API。镜像标签请使用你的 HAMi 版本。
+
+检查设备配置文件，例如 Chart 生成的文件，或准备写入 `device-config.content` 的文件：
+
+```bash
+kubectl -n kube-system get configmap hami-scheduler-device \
+  -o jsonpath='{.data.device-config\.yaml}' > device-config.yaml
+docker run --rm -v "$PWD/device-config.yaml:/device-config.yaml:ro" \
+  --entrypoint scheduler projecthami/hami:<tag> \
+  validate device-config /device-config.yaml
+```
+
+检查调度器参数，传入与调度器部署相同的参数：
+
+```bash
+docker run --rm --entrypoint scheduler projecthami/hami:<tag> \
+  validate scheduler-config \
+  --device-plugin-namespace=kube-system \
+  --device-plugin-service-account=hami-device-plugin
+```
+
+检查通过时会输出 `Device configuration "/device-config.yaml" passed startup validation.` 或 `Scheduler options passed offline startup validation.`，并以 `0` 退出。检查失败时会输出原因并以非零状态码退出，例如：
+
+```text
+Error: validate device config "/device-config.yaml": nvidia: defaultCores is a percentage and must be between 0 and 100, got 150
+```
+
+警告（例如 `--extender-bind` 不是回环地址）会被输出，但不会导致检查失败。
+
 ## 节点 ConfigMap 配置 {#node-configuration}
 
 NVIDIA 节点配置用于覆盖特定节点的运行模式、共享参数和设备过滤。它与全局设备配置是两个不同的 ConfigMap：
