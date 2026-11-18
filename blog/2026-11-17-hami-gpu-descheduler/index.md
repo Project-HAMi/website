@@ -3,7 +3,7 @@ title: "Introducing HAMi GPU Descheduler: Automated GPU Defragmentation for Kube
 date: "2026-11-17"
 slug: hami-gpu-descheduler
 description: "GPU fragmentation can leave a cluster 67% idle while new Pods stay Pending. Learn why it happens and how HAMi GPU Descheduler consolidates scattered vGPU workloads to recover contiguous GPU capacity."
-authors: [rootsongjc, louiclille]
+authors: [rootsongjc, yixin_team]
 tags: ["HAMi", "GPU", "Kubernetes", "Descheduler"]
 ---
 
@@ -145,7 +145,7 @@ The target Pod must use `schedulerName: hami-scheduler` and its labels must matc
 
 GPU fragmentation is an availability and cost problem that grows with cluster dynamism: capacity exists but cannot be used, and manual cleanup is fragile and unrecorded. HAMi GPU Descheduler makes defragmentation a declarative, one-shot Kubernetes operation: evict, recreate, and pin, with placement expressed as a CRD and enforced by an admission webhook.
 
-The capability grew out of a production pain point: community member [tsingst](https://github.com/tsingst) opened [HAMi issue #2072](https://github.com/Project-HAMi/HAMi/issues/2072) asking for intra-node defragmentation. Engineers from [Yixin Group](https://www.yxqiche.com/), an automotive-finance technology company and a HAMi user in production, designed the webhook-plus-CRD approach, delivered the main implementation, and open-sourced it to the HAMi community; after the repository went public, maintainers and users including [spencercjh](https://github.com/spencercjh), [moezdil](https://github.com/moezdil), and [archlitchi](https://github.com/archlitchi) kept reviewing and improving it. Thanks to everyone who has shaped it. Intra-node consolidation is only the first step: cross-node and cluster-wide defragmentation are under discussion in the community.
+The capability grew out of a production pain point: [HAMi issue #2072](https://github.com/Project-HAMi/HAMi/issues/2072) asked for intra-node defragmentation. Engineers from the [unified training-and-inference platform team](https://www.yxqiche.com/) at Yixin Group, an automotive-finance technology company and a HAMi user in production, designed the webhook-plus-CRD approach, delivered the main implementation, and open-sourced it to the HAMi community; after the repository went public, community maintainers and users kept reviewing and improving it. Thanks to everyone who has shaped it. Today the consolidation plan is still written by a human: which Pods to pack onto which node remains a manual decision, while the descheduler executes the plan precisely and relocations can already cross nodes. The next step under discussion in the community is to automate that planning: detect fragmentation automatically, generate candidate remediation plans for the user to choose from, and extend the view from single nodes to the whole cluster.
 
 If you run HAMi-shared GPUs in a dynamic cluster, watch for `Pending` Pods whose requests exceed the largest free slice on any device; whole-GPU requests are just the easiest to spot. Then try the descheduler:
 

@@ -3,7 +3,7 @@ title: "HAMi GPU Descheduler：自动整理 Kubernetes 集群的 GPU 碎片"
 date: "2026-11-17"
 slug: hami-gpu-descheduler
 description: "GPU 碎片化会让集群 67% 的显存闲置，新 Pod 却一直 Pending。本文介绍碎片化的成因，以及 HAMi GPU Descheduler 如何归整分散的 vGPU 工作负载、找回连续可用的 GPU 容量。"
-authors: [rootsongjc, louiclille]
+authors: [rootsongjc, yixin_team]
 tags: ["HAMi", "GPU", "Kubernetes", "Descheduler"]
 ---
 
@@ -145,7 +145,7 @@ curl -s http://localhost:8083/api/v1/placements
 
 GPU 碎片化是一个随集群动态性增长的可用性与成本问题：容量存在却无法使用，而人工治理脆弱且无据可查。HAMi GPU Descheduler 把碎片整理变成一次声明式的 Kubernetes 操作：驱逐、重建、固定，放置意图以 CRD 表达，由准入 webhook 强制执行。
 
-这一能力源自真实的生产痛点：社区用户 [tsingst](https://github.com/tsingst) 在 [HAMi issue #2072](https://github.com/Project-HAMi/HAMi/issues/2072) 中提出了节点内碎片整理的需求；[易鑫集团](https://www.yxqiche.com/)的工程师 hukaihan 与 [vesta-mlp](https://github.com/vesta-mlp) 完成了 webhook 加 CRD 方案的设计与主要实现，并将代码开源贡献给 HAMi 社区；仓库公开后，[spencercjh](https://github.com/spencercjh)、[moezdil](https://github.com/moezdil)、[archlitchi](https://github.com/archlitchi) 等维护者和用户持续参与评审与完善。感谢每一位参与其中的社区成员。在社区的规划里，节点内整理只是第一步，跨节点乃至集群级的碎片整理也在讨论与规划之中。
+这一能力源自真实的生产痛点：[HAMi issue #2072](https://github.com/Project-HAMi/HAMi/issues/2072) 提出了节点内碎片整理的需求；[易鑫训推一体平台团队](https://www.yxqiche.com/)完成了 webhook 加 CRD 方案的设计与主要实现，并将代码开源贡献给 HAMi 社区；仓库公开后，社区维护者和用户持续参与评审与完善。感谢每一位参与其中的社区成员。眼下的整理计划仍由人来制定：把哪些 Pod 归拢到哪个节点，靠的是人工判断，descheduler 负责把计划精确落地，搬迁本身已经可以跨节点进行。社区正在讨论的下一步，是让规划也走向自动化：自动发现集群中的碎片，智能化地生成多个候选治理方案，由用户决策执行哪一个，并把整理的视角从单个节点扩展到整个集群。
 
 如果你在动态集群中用 HAMi 共享 GPU，请留意那些申请较大显存份额却一直 `Pending` 的 Pod，整卡申请只是其中最容易看清的情形。然后试试 descheduler：
 
