@@ -152,7 +152,7 @@ helm install nvml-mock oci://ghcr.io/nvidia/k8s-test-infra/chart/nvml-mock \
   --wait
 ```
 
-The chart's default profile is `gb300`: 4 GB300 GPUs per node with 284672 MiB (278 GiB) of memory each, driver version `580.65.06`, and a fake driver root at `/var/lib/nvml-mock/driver`. This driver root path is passed to HAMi in Step 4.
+The chart's default profile is `gb300`: 4 GB300 GPUs per node with 284672 MiB (278 GiB) of memory each, driver version `580.65.06`, and a fake driver root at `/var/lib/nvml-mock/driver`. This driver root path is passed to HAMi in Step 3.
 
 :::tip
 

@@ -149,7 +149,7 @@ helm install nvml-mock oci://ghcr.io/nvidia/k8s-test-infra/chart/nvml-mock \
   --wait
 ```
 
-该 Chart 的默认配置文件是 `gb300`：每节点 4 张 GB300 GPU，每张 284672 MiB（278 GiB）显存，驱动版本 `580.65.06`，虚假驱动根目录位于 `/var/lib/nvml-mock/driver`。这个驱动根路径会在步骤 4 中传给 HAMi。
+该 Chart 的默认配置文件是 `gb300`：每节点 4 张 GB300 GPU，每张 284672 MiB（278 GiB）显存，驱动版本 `580.65.06`，虚假驱动根目录位于 `/var/lib/nvml-mock/driver`。这个驱动根路径会在步骤 3 中传给 HAMi。
 
 :::tip
 
