@@ -2,8 +2,8 @@
 title: "Introducing HAMi GPU Descheduler: Automated GPU Defragmentation for Kubernetes"
 date: "2026-11-17"
 slug: hami-gpu-descheduler
-description: "GPU fragmentation can leave a cluster 67% idle while new Pods stay Pending. Learn why it happens and how HAMi GPU Descheduler consolidates scattered vGPU workloads to recover whole GPUs."
-authors: [rootsongjc]
+description: "GPU fragmentation can leave a cluster 67% idle while new Pods stay Pending. Learn why it happens and how HAMi GPU Descheduler consolidates scattered vGPU workloads to recover contiguous GPU capacity."
+authors: [rootsongjc, louiclille]
 tags: ["HAMi", "GPU", "Kubernetes", "Descheduler"]
 ---
 
@@ -26,7 +26,7 @@ Across the cluster, only 33% of total GPU memory is in use and 67% is free. Now 
 
 ![GPU fragmentation before and after defragmentation](/img/blog/hami-gpu-descheduler/en/gpu-fragmentation.svg#light-only) ![GPU fragmentation before and after defragmentation](/img/blog/hami-gpu-descheduler/en/gpu-fragmentation-dark.svg#dark-only)
 
-This is the same phenomenon as memory or disk fragmentation, with one difference: you cannot `malloc` your way out. A Pod that needs an entire GPU device (for example, a model that does not shard) can only run on a device that is completely free. Slices on different GPUs cannot be combined.
+This is the same phenomenon as memory or disk fragmentation, with one difference: you cannot `malloc` your way out. A Pod that needs an entire GPU device (for example, a model that does not shard) can only run on a device that is completely free, and slices on different GPUs cannot be combined. Nor is fragmentation only a whole-GPU problem: any vGPU request stalls when it exceeds the largest free slice on any single device. A Pod asking for 70% of a GPU cannot land on cards whose free memory is split into 40% and 30% scraps, either. The whole-GPU request is simply the easiest case to spot.
 
 ## Where fragmentation comes from
 
@@ -37,11 +37,11 @@ Fragmentation is not caused by a bug. It is the natural result of a dynamic clus
 - **Retries and failed jobs.** A training job that restarts may land on a different node each time.
 - **Mixed workloads.** Inference Pods requesting 20% to 40% of a GPU interleave with jobs that need whole devices.
 
-Over weeks, the cluster drifts from a compact layout to a scattered one. Total utilization looks healthy in dashboards while whole-GPU capacity quietly disappears. Worse, the workloads fragmentation blocks are often the ones that matter most: small Pods keep slipping into the gaps, while whole-GPU training and fine-tuning jobs are the hardest to place.
+Over weeks, the cluster drifts from a compact layout to a scattered one. Total utilization looks healthy in dashboards while contiguous free capacity quietly disappears. Worse, the workloads fragmentation blocks are often the ones that matter most: small Pods keep slipping into the gaps, while larger requests, such as training and fine-tuning jobs, are the hardest to place.
 
 ## Why fixing it by hand hurts
 
-The manual fix is well known: find the fragments, `kubectl delete pod` the ones you can move, wait for their controllers to recreate them, and hope they land in the right places, possibly pinning them with node selectors. Repeat until a whole GPU is free.
+The manual fix is well known: find the fragments, `kubectl delete pod` the ones you can move, wait for their controllers to recreate them, and hope they land in the right places, possibly pinning them with node selectors. Repeat until some device has a free slice large enough for the waiting Pod.
 
 This works once or twice, but it has real costs:
 
@@ -53,7 +53,7 @@ What teams need is a way to express "consolidate these workloads onto that node'
 
 ## HAMi GPU Descheduler
 
-[HAMi GPU Descheduler](https://github.com/Project-HAMi/gpu-descheduler) is a GPU defragmentation tool for HAMi-virtualized Kubernetes clusters. It consolidates scattered vGPU workloads across nodes through two mechanisms: a **Mutating Admission Webhook** and the **`HamiPodPlacement` CRD**. Its role parallels the disk defragmenter of an operating system: pack scattered workloads together and free contiguous whole-GPU capacity. It complements the HAMi Scheduler, which virtualizes, schedules, and isolates GPU resources, by repacking what has already been allocated.
+[HAMi GPU Descheduler](https://github.com/Project-HAMi/gpu-descheduler) is a GPU defragmentation tool for HAMi-virtualized Kubernetes clusters. It consolidates scattered vGPU workloads across nodes through two mechanisms: a **Mutating Admission Webhook** and the **`HamiPodPlacement` CRD**. Its role parallels the disk defragmenter of an operating system: pack scattered workloads together and restore contiguous free capacity on each device. It complements the HAMi Scheduler, which virtualizes, schedules, and isolates GPU resources, by repacking what has already been allocated.
 
 ![How HAMi GPU Descheduler consolidates fragmented vGPU workloads](/img/blog/hami-gpu-descheduler/en/how-it-works.svg#light-only) ![How HAMi GPU Descheduler consolidates fragmented vGPU workloads](/img/blog/hami-gpu-descheduler/en/how-it-works-dark.svg#dark-only)
 
@@ -87,7 +87,7 @@ spec:
   evictPod: inference-e-6cd5964877-zdb5z # Pod to evict and re-place
 ```
 
-One caution on `podSelector`: it decides which Pod consumes the placement, and the first matching Pod to pass admission takes it. If every Pod in the namespace carries `app: inference`, a sibling could consume the placement meant for `e`. Add a distinguishing label, such as the ReplicaSet's `pod-template-hash`, so exactly one Pod matches.
+One caution on `podSelector`: it decides which Pod consumes the placement, and the first matching Pod to pass admission takes it. If every Pod in the namespace carries `app: inference`, a sibling could consume the placement meant for `e`. Labels such as the ReplicaSet's `pod-template-hash` do not solve this: every replica in the same ReplicaSet carries the same value, so a sibling admitted first can still take the placement. Use a label that only the workload being relocated carries, so the selector matches nothing else, and with multi-replica workloads move one replica at a time while no sibling Pod is being created.
 
 ### What `evictPod` does
 
@@ -147,7 +147,7 @@ GPU fragmentation is an availability and cost problem that grows with cluster dy
 
 The capability grew out of a production pain point: community member [tsingst](https://github.com/tsingst) opened [HAMi issue #2072](https://github.com/Project-HAMi/HAMi/issues/2072) asking for intra-node defragmentation. Engineers from [Yixin Group](https://www.yxqiche.com/), an automotive-finance technology company and a HAMi user in production, designed the webhook-plus-CRD approach, delivered the main implementation, and open-sourced it to the HAMi community; after the repository went public, maintainers and users including [spencercjh](https://github.com/spencercjh), [moezdil](https://github.com/moezdil), and [archlitchi](https://github.com/archlitchi) kept reviewing and improving it. Thanks to everyone who has shaped it. Intra-node consolidation is only the first step: cross-node and cluster-wide defragmentation are under discussion in the community.
 
-If you run HAMi-shared GPUs in a dynamic cluster, watch your whole-GPU `Pending` Pods: they are the symptom. Then try the descheduler:
+If you run HAMi-shared GPUs in a dynamic cluster, watch for `Pending` Pods whose requests exceed the largest free slice on any device; whole-GPU requests are just the easiest to spot. Then try the descheduler:
 
 - **Code and releases:** [github.com/Project-HAMi/gpu-descheduler](https://github.com/Project-HAMi/gpu-descheduler)
 - **User guide:** [Organizing GPU resource fragments with HAMi GPU Descheduler](/docs/next/userguide/hami-gpu-descheduler)
