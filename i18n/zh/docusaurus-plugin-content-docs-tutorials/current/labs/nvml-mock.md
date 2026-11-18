@@ -584,6 +584,6 @@ kind delete cluster --name nvml-mock-test
 
 ## 下一步
 
-- 切换到真实 GPU 集群（参见 [实验 1：在线安装 HAMi](/tutorials/labs/online-install)），用真实 CUDA 工作负载测试显存和算力隔离。
 - 在模拟环境中直接添加 GPU 指标：NVIDIA GPU Operator 的 `dcgm-exporter` 可以读取 nvml-mock 驱动，并将指标送入 Prometheus 和 Grafana（参见 [nvml-mock 可观测性配置](https://github.com/NVIDIA/k8s-test-infra/tree/main/local/observability)）。
 - 安装 Prometheus 和 HAMi WebUI 进行可视化资源跟踪（参见 [实验 2：本地 Fake GPU 安装](/tutorials/labs/local-fake-gpu)）。
+- 切换到真实 GPU 集群（参见 [实验 1：在线安装 HAMi](/tutorials/labs/online-install)），用真实 CUDA 工作负载测试显存和算力隔离。
