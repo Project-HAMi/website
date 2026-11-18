@@ -33,4 +33,4 @@ HAMi 在已配置的调度器指标端点上暴露调度器指标。分配结果
 | 指标 | 含义 |
 | --- | --- |
 | `hami_scheduler_is_leader` | 当前副本是主副本（leader）时为 `1`，否则为 `0`。 |
-| `hami_scheduler_cache_synced` | 当前副本的节点和设备缓存完成同步后为 `1`，从副本（follower）上为 `0`。之后同步失败时仍保持 `1`。失去主副本身份的副本也可能仍为 `1`，因此请结合 `hami_scheduler_is_leader` 一起看。 |
+| `hami_scheduler_cache_synced` | 当前副本的节点和设备缓存完成同步后为 `1`，从副本（follower）上为 `0`。之后同步失败时仍保持 `1`。同步时读不到某个健康节点的设备，这次同步也算完成，因此 `1` 不代表每个节点都已读取。失去主副本身份的副本也可能仍为 `1`，因此请结合 `hami_scheduler_is_leader` 一起看。 |

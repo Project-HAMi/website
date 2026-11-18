@@ -32,4 +32,4 @@ A successful filter reservation uses `failure_reason="none"`; bind failures are 
 | Metric | Meaning |
 | --- | --- |
 | `hami_scheduler_is_leader` | `1` if this replica is the leader, `0` otherwise. |
-| `hami_scheduler_cache_synced` | `1` once this replica has synced its node and device cache, `0` on followers. It stays `1` after later failed syncs. A replica that lost the lead can still show `1`, so read it with `hami_scheduler_is_leader`. |
+| `hami_scheduler_cache_synced` | `1` once this replica has synced its node and device cache, `0` on followers. It stays `1` after later failed syncs. A sync still counts if it can't read a healthy node's devices, so `1` doesn't mean every node was read. A replica that lost the lead can still show `1`, so read it with `hami_scheduler_is_leader`. |
