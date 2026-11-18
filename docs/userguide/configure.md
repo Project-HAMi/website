@@ -23,6 +23,8 @@ Merge the settings you need into `my-values.yaml` and pass it to Helm with `--va
 
 ## Scheduler and supporting components: Chart values {#scheduler-configuration}
 
+See [Validate scheduler configuration offline](./validate-scheduler-configuration.md) to check scheduler flags and device YAML before deployment.
+
 Common scheduler changes include placement, replica count, and default scheduling policies. For example, deploy two replicas on nodes labeled `hami.io/scheduler=true`:
 
 ```yaml

@@ -319,6 +319,7 @@ module.exports = {
       },
       items: [
         "userguide/configure",
+        "userguide/validate-scheduler-configuration",
         "userguide/interactive-manifest-generator",
         {
           type: "category",
