@@ -45,7 +45,7 @@ devices:
     resourcePrefix: dcu
 ```
 
-That switches the names to `hygon.com/dcunum`, `hygon.com/dcumem`, and `hygon.com/dcucores`. HAMi and the device plugin must use the same prefix, or Pods will not schedule.
+That switches the resource names to `hygon.com/dcunum`, `hygon.com/dcumem`, and `hygon.com/dcucores`, and the type-selection annotations to `hygon.com/use-dcutype` and `hygon.com/nouse-dcutype`. HAMi and the device plugin must use the same prefix, or Pods will not schedule.
 
 If you supply the full device configuration yourself with `device-config.content` or `files/device-config.yaml`, `devices.hygon.resourcePrefix` above does not apply. Put the prefix or resource names in that file instead. See [Device ConfigMap generation and updates](../configure.md#device-config-overrides).
 

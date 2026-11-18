@@ -47,7 +47,7 @@ devices:
     resourcePrefix: dcu
 ```
 
-这时资源名变为 `hygon.com/dcunum`、`hygon.com/dcumem`、`hygon.com/dcucores`。HAMi 和 device plugin 的前缀必须一致，否则 Pod 无法调度。
+这时资源名变为 `hygon.com/dcunum`、`hygon.com/dcumem`、`hygon.com/dcucores`，型号选择 annotation 变为 `hygon.com/use-dcutype` 和 `hygon.com/nouse-dcutype`。HAMi 和 device plugin 的前缀必须一致，否则 Pod 无法调度。
 
 如果你是用 `device-config.content` 或 `files/device-config.yaml` 自己提供整份设备配置，上面的 `devices.hygon.resourcePrefix` 不会生效，要在那份文件里写前缀或资源名。详见[设备 ConfigMap 的生成与生效](../configure.md#device-config-overrides)。
 
