@@ -160,6 +160,42 @@ To replace the complete file, use `device-config.content` as described in the [C
 
 Changing the generated device configuration through Helm updates the scheduler and NVIDIA plugin Pod templates. The default `RollingUpdate` strategy updates plugin Pods automatically; with `OnDelete`, delete the old Pods manually. Separately deployed vendor plugins follow their own update procedures.
 
+### Check the configuration offline {#validate-configuration}
+
+In HAMi releases after v2.11.0, the `scheduler` binary can run its startup checks without starting the scheduler or calling the Kubernetes API.
+
+Check a device configuration file, such as the generated one or a file for `device-config.content`:
+
+```bash
+kubectl -n kube-system get configmap hami-scheduler-device \
+  -o jsonpath='{.data.device-config\.yaml}' > device-config.yaml
+scheduler validate device-config device-config.yaml
+```
+
+Check the scheduler options. Pass the same flags as your scheduler deployment:
+
+```bash
+scheduler validate scheduler-config \
+  --device-plugin-namespace=kube-system \
+  --device-plugin-service-account=hami-device-plugin
+```
+
+A passing check prints `Device configuration "device-config.yaml" passed startup validation.` or `Scheduler options passed offline startup validation.` and exits with `0`. A failing check prints the reason and exits with a non-zero code, for example:
+
+```text
+Error: validate device config "device-config.yaml": nvidia: defaultCores is a percentage and must be between 0 and 100, got 150
+```
+
+Warnings, such as an `--extender-bind` address that is not loopback, are printed but do not fail the check.
+
+The `scheduler` binary is in the HAMi image, which is built for amd64:
+
+```bash
+docker run --rm --platform linux/amd64 --entrypoint scheduler \
+  -v "$PWD/device-config.yaml:/device-config.yaml:ro" \
+  projecthami/hami:<tag> validate device-config /device-config.yaml
+```
+
 ## Node ConfigMap configuration {#node-configuration}
 
 NVIDIA node configuration overrides operating modes, sharing parameters, and device filters for specific nodes. It uses a different ConfigMap from the global device configuration:
