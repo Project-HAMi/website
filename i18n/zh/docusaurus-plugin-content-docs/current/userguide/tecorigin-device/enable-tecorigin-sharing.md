@@ -25,7 +25,7 @@ HAMi 对太初元碁设备提供以下能力：
 
 ## 启用太初元碁设备支持
 
-按[在线安装指南](../../installation/online-installation.md)安装 HAMi，并在 chart 中保持太初元碁配置启用：
+请使用包含太初元碁后端的 HAMi 构建，并在 chart 中保持太初元碁配置启用。目前任何已发布的 Chart 都不包含该后端：需从含有 `pkg/device/tecorigin` 的提交构建镜像，并用同一提交下的 `charts/hami` 打包安装，做法见[准备 HAMi Chart](../../installation/offline-installation.md#准备-hami-chart)。并在 chart 中保持太初元碁配置启用：
 
 ```yaml
 devices:
@@ -65,8 +65,8 @@ kubectl get node <node-name> -o yaml | grep hami.io/node-tecorigin-register
 | 字段 | 含义 | 插件侧要求 |
 | --- | --- | --- |
 | `id` | 显卡序列号 | 即 `teco-smi` 输出的字符串。`tecorigin.com/use-gpuuuid` 匹配该值，HAMi 也会在分配注解中原样返回。 |
-| `count` | 该卡核心数 | 必须为 `1`–`4`。HAMi 依据该值推导核心掩码，越界会拒绝该卡。 |
-| `memory` | 显存，单位 **MiB** | 不参与调度。超过 1 TiB 视为误写成字节数并拒绝。 |
+| `count` | 本卡核心数 | 必须为 `1`–`4`。非法的 count 会导致**整个节点注解被拒绝**；HAMi 根据该值生成核心掩码。 |
+| `memory` | 卡显存，单位 **MiB** | 调度逻辑不使用该字段。数值超过 1 TiB 会拒绝整个节点注解，用于防止误填入字节数。 |
 | `devcore` | 核心掩码 | HAMi 会用 `count` 推导的掩码覆盖该值。 |
 | `type` | 设备类型 | HAMi 统一记录为 `Tecorigin`；注解中的值不参与匹配。 |
 | `numa` | NUMA 节点 | 显卡不感知 NUMA 时填 `0`。 |
@@ -80,6 +80,10 @@ kubectl get node <node-name> -o yaml | grep hami.io/node-tecorigin-register
 {"3CP100241200184":[0,1,2,3],"3CP100241200185":[4,5,6,7]}
 ```
 
+HAMi 仅将该核心映射配置拷贝至调度器缓存用于问题排查，调度逻辑并不会读取该配置。HAMi 在每次健康检查时对比相关注解，修改注解后无需重启调度器即可重新加载显卡列表。
+
+`hami.io/node-handshake-tecorigin` 属于旧版握手流程，HAMi 仅负责清理该注解，设备插件无需写入它。
+
 ## 分配注解
 
 Pod 调度完成后，HAMi 把选中的设备写入 `hami.io/tecorigin-devices-to-allocate`（待分配列表，供 device plugin 消费）和 `hami.io/tecorigin-devices-allocated`（HAMi 自身记录）。每个容器的条目格式为：
@@ -87,6 +91,8 @@ Pod 调度完成后，HAMi 把选中的设备写入 `hami.io/tecorigin-devices-t
 ```text
 <显卡序列号>,<类型>,<显存 MiB>,<核心掩码>
 ```
+
+`显存 MiB` 始终为0。
 
 `核心掩码` 是该卡上分配核的十进制位掩码：4核卡分配全部4核时值为 `15`（`0b1111`）。单核分配的掩码取决于选中的本地核序号：核0 → `1`，核1 → `2`，核2 → `4`，核3 → `8`。插件会把掩码展开为全局核编号并设置 `TECO_VISIBLE_DEVICES`。由于掩码是卡本地的，只能依靠可选的核ID映射表手动反向追溯核编号归属哪张卡。
 

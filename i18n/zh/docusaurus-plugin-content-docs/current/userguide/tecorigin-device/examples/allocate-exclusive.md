@@ -49,5 +49,5 @@ kubectl get pod teco-whole-card -o yaml | grep hami.io/tecorigin-devices-allocat
 整张 4 核卡显示掩码 `15`（`0b1111`）：
 
 ```text
-hami.io/tecorigin-devices-allocated: 3CP100241200184,Tecorigin,0,15
+hami.io/tecorigin-devices-allocated: 3CP100241200184,Tecorigin,0,15:;
 ```

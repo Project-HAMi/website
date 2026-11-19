@@ -24,7 +24,7 @@ Memory is not part of the request. A Tecorigin card partitions cores and memory 
 
 ## Enabling Tecorigin Device Support
 
-Install HAMi with [Online installation](../../installation/online-installation.md), then keep the Tecorigin settings enabled in the chart:
+Use a HAMi build that includes the Tecorigin backend. No published Chart currently contains this backend, so you must build the image from a commit that contains `pkg/device/tecorigin` and package/install the Chart from the `charts/hami` directory of that same commit. See [Prepare the HAMi Chart](../../installation/offline-installation.md#prepare-the-hami-chart) for details. Keep the Tecorigin configuration enabled in your chart values:
 
 ```yaml
 devices:
@@ -64,8 +64,8 @@ One segment per card, each terminated by `:`. Every segment must carry all nine 
 | Field | Meaning | Notes for the plugin |
 | --- | --- | --- |
 | `id` | Card serial number | The string `teco-smi` prints. It is what `tecorigin.com/use-gpuuuid` matches and what HAMi reports back in the allocation annotation. |
-| `count` | Cores on this card | Must be `1`–`4`. HAMi derives the core mask from this value and rejects the card otherwise. |
-| `memory` | Card memory in **MiB** | Not used for scheduling. A value above 1 TiB is rejected, which catches a byte count written by mistake. |
+| `count` | Cores on this card | Must be `1`–`4`. A bad count rejects the whole node annotation; HAMI derives the core mask from this value. |
+| `memory` | Card memory in **MiB** | Not used for scheduling. A value above 1 TiB rejects the whole node annotation; this guards against mistakenly supplying a byte count. |
 | `devcore` | Core mask | HAMi overwrites it with the mask derived from `count`. |
 | `type` | Device type | HAMi records `Tecorigin` here; the value in the annotation is not used for matching. |
 | `numa` | NUMA node | `0` when the card is not NUMA-aware. |
@@ -90,6 +90,8 @@ After a Pod is scheduled, HAMi writes the chosen devices to `hami.io/tecorigin-d
 ```text
 <card-serial>,<type>,<memory-MiB>,<core-mask>
 ```
+
+`memory-MiB` is always 0.
 
 `core-mask` is a decimal bitmask of the cores allocated on that card: all four cores on a 4-core card is `15` (`0b1111`). A single-core allocation uses a bit corresponding to its local core index: core 0 → `1`, core 1 → `2`, core 2 → `4`, core 3 → `8`. The plugin expands the mask into global core indexes and sets `TECO_VISIBLE_DEVICES` accordingly. Because the mask is card-local, the optional core-id map is the only way to trace an index back to a card by hand.
 
