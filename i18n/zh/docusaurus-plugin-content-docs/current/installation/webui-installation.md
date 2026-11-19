@@ -44,7 +44,7 @@ HAMi WebUI 默认仅通过本地访问（localhost）提供服务，因此在部
 
    > _**重要**_：您需要将 `externalPrometheus.address` 的值替换为集群内的 Prometheus 地址
 
-   你可以在安装期间根据配置[文档](https://github.com/Project-HAMi/HAMi-WebUI/blob/main/charts/hami-webui/README.md#values)在 [values.yaml](https://github.com/Project-HAMi/HAMi-WebUI/blob/main/charts/hami-webui/values.yaml) 中设置其他字段。
+   你可以在安装期间设置其他字段：先运行 `helm show values hami-webui/hami-webui > hami-webui-values.yaml` 并编辑该文件，再在上方安装命令的 `hami-webui/hami-webui` 后面加上 `--values hami-webui-values.yaml`。
 
 3. 运行以下命令以验证安装：
 
