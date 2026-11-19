@@ -64,7 +64,7 @@ One segment per card, each terminated by `:`. Every segment must carry all nine 
 | Field | Meaning | Notes for the plugin |
 | --- | --- | --- |
 | `id` | Card serial number | The string `teco-smi` prints. It is what `tecorigin.com/use-gpuuuid` matches and what HAMi reports back in the allocation annotation. |
-| `count` | Cores on this card | Must be `1`–`4`. A bad count rejects the whole node annotation; HAMI derives the core mask from this value. |
+| `count` | Cores on this card | Must be `1`–`4`. A bad count rejects the whole node annotation; HAMi derives the core mask from this value. |
 | `memory` | Card memory in **MiB** | Not used for scheduling. A value above 1 TiB rejects the whole node annotation; this guards against mistakenly supplying a byte count. |
 | `devcore` | Core mask | HAMi overwrites it with the mask derived from `count`. |
 | `type` | Device type | HAMi records `Tecorigin` here; the value in the annotation is not used for matching. |

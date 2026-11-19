@@ -80,7 +80,7 @@ resources:
     tecorigin.com/gpucore: 1
 ```
 
-`0` 代表不申请太初元碁核，但仍然会触发 HAMI 准入 webhook 校验。例如：特权容器搭配 `tecorigin.com/gpucore: 0` 有可能被 webhook 拒绝。小数、负数会被判定为非法设备请求。
+`0` 代表不申请太初元碁核，但仍然会触发 HAMi 准入 webhook 校验。例如：特权容器搭配 `tecorigin.com/gpucore: 0` 有可能被 webhook 拒绝。小数、负数会被判定为非法设备请求。
 
 > 建议：如果不需要太初元碁设备，直接省略该资源字段，不要设置为 `0`。
 
