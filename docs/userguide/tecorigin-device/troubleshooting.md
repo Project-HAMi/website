@@ -21,7 +21,7 @@ kubectl get node <node-name> -o jsonpath='{.metadata.annotations.hami\.io/node-t
 
 An annotation that is present but produces no registration also leaves Pods pending with `node unregistered` in the scheduler log.
 
-> Note: Both `node unregistered` and `no healthy tecorigin card found on node` are logged at V(5). The HAMI chart defaults to `-v=4`, so these messages are not visible by default. You can set the scheduler log level to `-v=5` to view them, or inspect the scheduling rejection reason directly. The register annotation and `hami.io/node-tecorigin-cores` are fingerprinted on each health check, so correcting either one re-reads the card list; no scheduler restart is needed.
+> Note: Both `node unregistered` and `no healthy tecorigin card found on node` are logged at V(5). The HAMi chart defaults to `-v=4`, so these messages are not visible by default. You can set the scheduler log level to `-v=5` to view them, or inspect the scheduling rejection reason directly. The register annotation and `hami.io/node-tecorigin-cores` are fingerprinted on each health check, so correcting either one re-reads the card list; no scheduler restart is needed.
 
 ## The Pod stays pending
 

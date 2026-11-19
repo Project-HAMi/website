@@ -79,7 +79,7 @@ resources:
     tecorigin.com/gpucore: 1
 ```
 
-`0` requests no tecorigin cores, but still triggers HAMI admission webhook validation. For example, a privileged container with `tecorigin.com/gpucore: 0` may be rejected. Fractional or negative values are rejected as invalid device requests.
+`0` requests no tecorigin cores, but still triggers HAMi admission webhook validation. For example, a privileged container with `tecorigin.com/gpucore: 0` may be rejected. Fractional or negative values are rejected as invalid device requests.
 
 > Recommendation: If you do not need a Tecorigin device, omit this resource entry rather than setting it to `0`.
 

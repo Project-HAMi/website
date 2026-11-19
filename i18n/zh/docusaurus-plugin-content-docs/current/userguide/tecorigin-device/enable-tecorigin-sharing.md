@@ -25,7 +25,7 @@ HAMi 对太初元碁设备提供以下能力：
 
 ## 启用太初元碁设备支持
 
-请使用包含太初元碁后端的 HAMi 构建，并在 chart 中保持太初元碁配置启用。目前任何已发布的 Chart 都不包含该后端：需从含有 `pkg/device/tecorigin` 的提交构建镜像，并用同一提交下的 `charts/hami` 打包安装，做法见[准备 HAMi Chart](../../installation/offline-installation.md#准备-hami-chart)。并在 chart 中保持太初元碁配置启用：
+请使用包含太初元碁后端的 HAMi 构建。目前任何已发布的 Chart 都不包含该后端：需从含有 `pkg/device/tecorigin` 的提交构建镜像，并用同一提交下的 `charts/hami` 打包安装，做法见[准备 HAMi Chart](../../installation/offline-installation.md#准备-hami-chart)，并在 chart 中保持太初元碁配置启用：
 
 ```yaml
 devices:

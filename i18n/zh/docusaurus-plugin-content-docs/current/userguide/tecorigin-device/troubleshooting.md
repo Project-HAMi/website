@@ -22,7 +22,7 @@ kubectl get node <node-name> -o jsonpath='{.metadata.annotations.hami\.io/node-t
 
 注解存在但没有完成注册，同样会导致 Pod 处于 Pending，调度日志里会出现 `node unregistered`。
 
-> 注意：`node unregistered` 和 `no healthy tecorigin card found on node` 均为 V(5) 级别日志。HAMI Chart 默认日志级别是 `-v=4`，默认情况下看不到这两行日志。你可以将调度器日志级别调整为 `-v=5` 查看，或者直接查看调度拒绝原因。注册注解和 `hami.io/node-tecorigin-cores` 会在每次健康检查时做指纹校验，修改任意一项都会重新读取卡列表，不需要重启调度器。
+> 注意：`node unregistered` 和 `no healthy tecorigin card found on node` 均为 V(5) 级别日志。HAMi Chart 默认日志级别是 `-v=4`，默认情况下看不到这两行日志。你可以将调度器日志级别调整为 `-v=5` 查看，或者直接查看调度拒绝原因。注册注解和 `hami.io/node-tecorigin-cores` 会在每次健康检查时做指纹校验，修改任意一项都会重新读取卡列表，不需要重启调度器。
 
 ## Pod 一直 Pending
 
