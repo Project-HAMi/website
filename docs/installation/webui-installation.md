@@ -7,7 +7,7 @@ This section describes how to deploy and run HAMi WebUI on a Kubernetes cluster 
 
 HAMi WebUI is exposed via localhost only. After deployment, you need to configure your local `~/.kube/config` file to connect to the target cluster and access the WebUI.
 
-The official repository provides the [Helm chart](https://github.com/Project-HAMi/HAMi-WebUI/tree/main/charts/hami-webui) for deploying HAMi WebUI.
+The official repository provides the [Helm chart](https://github.com/Project-HAMi/HAMi-WebUI/tree/v1.3.0/charts/hami-webui) for deploying HAMi WebUI.
 
 If you encounter any issues, please open an issue in the [HAMi-WebUI](https://github.com/Project-HAMi/HAMi-WebUI) repository.
 
@@ -35,6 +35,8 @@ To add the HAMi WebUI Helm repository and install the chart on your machine, fol
    helm repo add hami-webui https://project-hami.github.io/HAMi-WebUI
    ```
 
+   To customize other values before installation, run `helm show values hami-webui/hami-webui > hami-webui-values.yaml`, edit the file, and add `--values hami-webui-values.yaml` after `hami-webui/hami-webui` in the install command below. The `--set` options in that command take precedence over the same keys in the values file. If the release is already installed, use `helm upgrade` to apply changes.
+
 2. Install HAMi WebUI:
 
    ```bash
@@ -46,8 +48,6 @@ To add the HAMi WebUI Helm repository and install the chart on your machine, fol
    Replace `externalPrometheus.address` with the in-cluster Prometheus URL that your environment uses.
 
    :::
-
-   You can set other values during installation: run `helm show values hami-webui/hami-webui > hami-webui-values.yaml`, edit the file, then add `--values hami-webui-values.yaml` after `hami-webui/hami-webui` in the install command above.
 
 3. Verify the installation:
 

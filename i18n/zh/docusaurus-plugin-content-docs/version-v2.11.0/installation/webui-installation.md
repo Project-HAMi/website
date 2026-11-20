@@ -8,7 +8,7 @@ title: 使用 Helm Charts 部署 HAMi WebUI
 
 HAMi WebUI 默认仅通过本地访问（localhost）提供服务，因此在部署完成后，需要通过配置本地 `~/.kube/config` 文件以连接目标集群并访问 WebUI。
 
-官方仓库提供了用于部署 HAMi WebUI 的 [Helm Chart](https://github.com/Project-HAMi/HAMi-WebUI/tree/main/charts/hami-webui)。
+官方仓库提供了用于部署 HAMi WebUI 的 [Helm Chart](https://github.com/Project-HAMi/HAMi-WebUI/tree/v1.3.0/charts/hami-webui)。
 
 如在使用过程中遇到问题，可在 [HAMi-WebUI](https://github.com/Project-HAMi/HAMi-WebUI) 仓库提交 Issue 进行反馈。
 
@@ -36,6 +36,8 @@ HAMi WebUI 默认仅通过本地访问（localhost）提供服务，因此在部
    helm repo add hami-webui https://project-hami.github.io/HAMi-WebUI
    ```
 
+   如需在安装前自定义其他字段，请运行 `helm show values hami-webui/hami-webui > hami-webui-values.yaml` 并编辑该文件，再在下方安装命令的 `hami-webui/hami-webui` 后面加上 `--values hami-webui-values.yaml`。该命令中的 `--set` 会覆盖配置文件中的同名字段。如果已经安装了该 release，请使用 `helm upgrade` 更新配置。
+
 2. 使用以下命令部署 HAMi WebUI：
 
    ```bash
@@ -43,8 +45,6 @@ HAMi WebUI 默认仅通过本地访问（localhost）提供服务，因此在部
    ```
 
    > _**重要**_：您需要将 `externalPrometheus.address` 的值替换为集群内的 Prometheus 地址
-
-   你可以在安装期间设置其他字段：先运行 `helm show values hami-webui/hami-webui > hami-webui-values.yaml` 并编辑该文件，再在上方安装命令的 `hami-webui/hami-webui` 后面加上 `--values hami-webui-values.yaml`。
 
 3. 运行以下命令以验证安装：
 
