@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import re
 from pathlib import Path
 from urllib.parse import urlsplit
 from xml.etree import ElementTree
@@ -9,6 +10,7 @@ from xml.etree import ElementTree
 BUILD = Path(__file__).resolve().parents[1] / "build"
 SITE_URL = "https://project-hami.io"
 SEARCH_PATHS = {"/search", "/zh/search"}
+JSON_LD_SCRIPT = re.compile(r'<script\b[^>]*\btype="application/ld\+json"[^>]*>(.*?)</script>', re.S)
 
 
 def check_skill():
@@ -23,7 +25,7 @@ def check_skill():
     raise SystemExit(f"Missing or incorrect hami-docs entry in index.json: expected {url} with {digest}")
 
 
-def check_search_pages():
+def check_sitemaps():
     robots = (BUILD / "robots.txt").read_text(encoding="utf-8")
     lines = robots.splitlines()
     groups = [block.splitlines() for block in robots.split("\n\n") if block.startswith("User-agent:")]
@@ -43,9 +45,28 @@ def check_search_pages():
             raise SystemExit(f"No URLs found in {sitemap}")
         if paths & SEARCH_PATHS:
             raise SystemExit(f"Search page listed in {sitemap}: {', '.join(sorted(paths & SEARCH_PATHS))}")
+        about = f"/{locale}about"
+        if not (BUILD / locale / "about.html").is_file() or about not in paths:
+            raise SystemExit(f"Missing generated About page or sitemap entry for {about}")
+
+
+def check_about_schema():
+    for locale, language in (("", "en"), ("zh/", "zh-CN")):
+        about = f"/{locale}about"
+        html = (BUILD / locale / "about.html").read_text(encoding="utf-8")
+        schemas = [json.loads(script) for script in JSON_LD_SCRIPT.findall(html)]
+        about_pages = [schema for schema in schemas if schema.get("@type") == "AboutPage"]
+        if len(about_pages) != 1:
+            raise SystemExit(f"Expected one AboutPage schema on {about}")
+        page = about_pages[0]
+        if urlsplit(page["url"]).path != about or page.get("inLanguage") != language:
+            raise SystemExit(f"Incorrect AboutPage URL or language on {about}")
+        if page.get("about") != {"@id": f"{SITE_URL}/#organization"}:
+            raise SystemExit(f"AboutPage does not reference the HAMi organization on {about}")
 
 
 if __name__ == "__main__":
     check_skill()
-    check_search_pages()
-    print("Agent Skills, robots.txt, and both localized sitemaps passed.")
+    check_sitemaps()
+    check_about_schema()
+    print("Agent Skills, robots.txt, localized sitemaps, and AboutPage schema passed.")

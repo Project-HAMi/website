@@ -77,6 +77,7 @@ const config = {
   },
   customFields: {
     defaultOgImage: "/img/hami-graph-color.png",
+    projectUrl,
   },
   markdown: {
     mermaid: true,
@@ -457,6 +458,27 @@ const config = {
             {
               label: "X",
               href: "https://x.com/HAMiProject",
+            },
+          ],
+        },
+        {
+          title: "Project",
+          items: [
+            {
+              label: "About HAMi",
+              to: "/about",
+            },
+            {
+              label: "Privacy Policy",
+              href: "https://lfprojects.org/policies/privacy-policy/",
+            },
+            {
+              label: "Terms of Use",
+              href: "https://lfprojects.org/policies/terms-of-use/",
+            },
+            {
+              label: "Trademark Policy",
+              href: "https://lfprojects.org/policies/trademark-policy/",
             },
           ],
         },
