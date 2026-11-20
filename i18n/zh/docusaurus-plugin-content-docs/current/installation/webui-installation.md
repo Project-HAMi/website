@@ -36,7 +36,7 @@ HAMi WebUI 默认仅通过本地访问（localhost）提供服务，因此在部
    helm repo add hami-webui https://project-hami.github.io/HAMi-WebUI
    ```
 
-   如需在安装前自定义其他字段，请运行 `helm show values hami-webui/hami-webui > hami-webui-values.yaml` 并编辑该文件，再在下方安装命令的 `hami-webui/hami-webui` 后面加上 `--values hami-webui-values.yaml`。该命令中的 `--set` 会覆盖配置文件中的同名字段。如果已经安装了该 release，请使用 `helm upgrade` 更新配置。
+   如需在安装前自定义其他字段，请运行 `helm show values hami-webui/hami-webui > hami-webui-values.yaml` 并编辑该文件，再在下方安装命令的 `hami-webui/hami-webui` 后面加上 `--values hami-webui-values.yaml`。该命令中的 `--set` 会覆盖配置文件中的同名字段。
 
 2. 使用以下命令部署 HAMi WebUI：
 

@@ -35,7 +35,7 @@ To add the HAMi WebUI Helm repository and install the chart on your machine, fol
    helm repo add hami-webui https://project-hami.github.io/HAMi-WebUI
    ```
 
-   To customize other values before installation, run `helm show values hami-webui/hami-webui > hami-webui-values.yaml`, edit the file, and add `--values hami-webui-values.yaml` after `hami-webui/hami-webui` in the install command below. The `--set` options in that command take precedence over the same keys in the values file. If the release is already installed, use `helm upgrade` to apply changes.
+   To customize other values before installation, run `helm show values hami-webui/hami-webui > hami-webui-values.yaml`, edit the file, and add `--values hami-webui-values.yaml` after `hami-webui/hami-webui` in the install command below. The `--set` options in that command take precedence over the same keys in the values file.
 
 2. Install HAMi WebUI:
 
