@@ -108,7 +108,8 @@ export default function AboutPage() {
                       >
                         CNCF 行为准则
                       </a>
-                      。你可以通过<Link to="/community">社区页面</Link>加入讨论、会议和贡献。
+                      。可在<Link to="/community">社区页面</Link>
+                      了解如何参与讨论、参加会议和为项目作贡献。
                     </>
                   ) : (
                     <>
@@ -122,8 +123,8 @@ export default function AboutPage() {
                       >
                         CNCF Code of Conduct
                       </a>
-                      . Visit the <Link to="/community">community page</Link> to join discussions,
-                      meetings, and contributions.
+                      . Visit the <Link to="/community">community page</Link> to learn how to join
+                      discussions, attend meetings, and contribute.
                     </>
                   )}
                 </p>
