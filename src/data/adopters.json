@@ -447,5 +447,11 @@
     "logo": "/img/adopters/zyt.png",
     "logoZh": "/img/adopters/zyt-zh.svg",
     "website": "https://www.zyt.com/"
+  },
+  {
+    "name": "Cloudeka",
+    "nameZh": "Cloudeka",
+    "logo": "/img/adopters/cloudeka.svg",
+    "website": "https://www.cloudeka.id/"
   }
 ]
