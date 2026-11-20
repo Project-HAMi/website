@@ -51,7 +51,7 @@ def check_sitemaps():
 
 
 def check_about_schema():
-    for locale, language in (("", "en"), ("zh/", "zh-CN")):
+    for locale, language in (("", "en"), ("zh/", "zh")):
         about = f"/{locale}about"
         html = (BUILD / locale / "about.html").read_text(encoding="utf-8")
         schemas = [json.loads(script) for script in JSON_LD_SCRIPT.findall(html)]

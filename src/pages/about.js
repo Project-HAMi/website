@@ -32,7 +32,7 @@ export default function AboutPage() {
     url: pageUrl,
     name: title,
     description,
-    inLanguage: isZh ? "zh-CN" : i18n.currentLocale,
+    inLanguage: i18n.localeConfigs[i18n.currentLocale].htmlLang,
     isPartOf: { "@id": `${projectUrl}/#website` },
     about: organization,
     publisher: organization,
