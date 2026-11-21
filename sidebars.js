@@ -394,6 +394,7 @@ module.exports = {
         "developers/sidecar-container-design",
         "developers/gpu-limit-delivery-design",
         "developers/opentelemetry-tracing-design",
+        "developers/hami-opencost-cost-attribution",
       ],
     },
     {
