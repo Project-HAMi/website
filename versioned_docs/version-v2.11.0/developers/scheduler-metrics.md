@@ -12,7 +12,7 @@ HAMi exposes scheduler metrics on the configured scheduler metrics endpoint. The
 | `hami_scheduler_allocation_failures_total` | Filter and bind allocation failures. |
 | `hami_scheduler_bind_rollbacks_total` | Bind failures that release a reservation. |
 
-The labels are `phase`, `device_type`, and `failure_reason`. They never contain pod, namespace, node, UUID, or request identifiers. `failure_reason` uses this complete, fixed set:
+The labels are `phase`, `device_type`, and `failure_reason`. They never contain pod, namespace, node, UUID, or request identifiers. All metrics on this page also have `zone="vGPU"`. `failure_reason` uses this complete, fixed set:
 
 | Value              | Meaning                                                            |
 | ------------------ | ------------------------------------------------------------------ |
@@ -26,3 +26,10 @@ The labels are `phase`, `device_type`, and `failure_reason`. They never contain 
 | `internal`         | Internal usage, scoring, discovery, or cleanup failed.             |
 
 A successful filter reservation uses `failure_reason="none"`; bind failures are reported by the failure and rollback counters.
+
+## Scheduler state
+
+| Metric | Meaning |
+| --- | --- |
+| `hami_scheduler_is_leader` | `1` if this replica is the leader, `0` otherwise. |
+| `hami_scheduler_cache_synced` | `1` once this replica has synced its node and device cache, `0` on followers. It stays `1` after later failed syncs. A sync still counts if it can't read a healthy node's devices, so `1` doesn't mean every node was read. A replica that lost the lead can still show `1`, so read it with `hami_scheduler_is_leader`. |

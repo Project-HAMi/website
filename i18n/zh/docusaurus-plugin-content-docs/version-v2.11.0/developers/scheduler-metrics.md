@@ -13,7 +13,7 @@ HAMi 在已配置的调度器指标端点上暴露调度器指标。分配结果
 | `hami_scheduler_allocation_failures_total` | 过滤和绑定阶段的分配失败次数。   |
 | `hami_scheduler_bind_rollbacks_total`      | 释放预留的绑定失败次数。         |
 
-标签为 `phase`、`device_type` 和 `failure_reason`，不会包含 Pod、命名空间、节点、UUID 或请求标识。`failure_reason` 使用以下完整且固定的取值：
+标签为 `phase`、`device_type` 和 `failure_reason`，不会包含 Pod、命名空间、节点、UUID 或请求标识。本页所有指标还带有 `zone="vGPU"` 标签。`failure_reason` 使用以下完整且固定的取值：
 
 | 取值               | 含义                                      |
 | ------------------ | ----------------------------------------- |
@@ -27,3 +27,10 @@ HAMi 在已配置的调度器指标端点上暴露调度器指标。分配结果
 | `internal`         | 内部用量、打分、发现或清理失败。          |
 
 成功的过滤预留使用 `failure_reason="none"`；绑定失败由失败计数器和回滚计数器报告。
+
+## 调度器状态
+
+| 指标 | 含义 |
+| --- | --- |
+| `hami_scheduler_is_leader` | 当前副本是主副本（leader）时为 `1`，否则为 `0`。 |
+| `hami_scheduler_cache_synced` | 当前副本的节点和设备缓存完成同步后为 `1`，从副本（follower）上为 `0`。之后同步失败时仍保持 `1`。同步时读不到某个健康节点的设备，这次同步也算完成，因此 `1` 不代表每个节点都已读取。失去主副本身份的副本也可能仍为 `1`，因此请结合 `hami_scheduler_is_leader` 一起看。 |
