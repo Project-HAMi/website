@@ -47,7 +47,7 @@ The labels are `phase`, `device_type`, and `failure_reason`. They never contain 
 | `internal` | Internal usage, scoring, discovery, or cleanup failed. |
 | `conflict` | A refit annotation update was rejected because the pod changed after the scheduler read it. |
 | `device_plugin` | The device plugin reported the allocation as failed. |
-| `timeout` | The device plugin did not answer within the node lock timeout (default 5m). |
+| `timeout` | The device plugin did not answer within the node lock timeout (default 5m). A later success is left out of the success count and the allocation duration. |
 
 ## Allocation duration
 
