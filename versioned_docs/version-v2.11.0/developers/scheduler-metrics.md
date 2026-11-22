@@ -4,7 +4,18 @@ title: Scheduler Metrics
 sidebar_label: Scheduler Metrics
 ---
 
-HAMi exposes scheduler metrics on the configured scheduler metrics endpoint. The allocation outcome metrics use only bounded label values:
+HAMi exposes scheduler metrics on the configured scheduler metrics endpoint.
+
+## Scheduler state
+
+| Metric | Meaning |
+| --- | --- |
+| `hami_scheduler_is_leader` | Whether this scheduler instance is the leader. |
+| `hami_scheduler_cache_synced` | Whether the scheduler leader instance has synced its node/device cache. |
+
+## Allocation outcomes
+
+The allocation outcome metrics use only bounded label values:
 
 | Metric | Meaning |
 | --- | --- |
