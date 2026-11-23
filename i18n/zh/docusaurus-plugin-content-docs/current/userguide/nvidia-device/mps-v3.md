@@ -17,9 +17,9 @@ NVIDIA 上游 device plugin 的实验性 `sharing.mps` 使用旧版 MPS，将 GP
 ## 准备节点
 
 - 使用 cgroup v2、**NVIDIA r620 驱动**和 **NVIDIA Container Toolkit 1.20.1 或更新版本**。启用 `apply-cuda-memory-limits` hook。应用镜像应使用与节点驱动兼容的 CUDA 运行时。
-- 启用后端前先关闭 MIG。使用支持 CDI 的容器运行时，以 UUID 标识 GPU，并将节点的显存和算力缩放系数设为 `1`。
-- 确认特权 device plugin 能访问与驱动配套的 `nvidia-cuda-mps-control` 和驱动库。Chart 将主机的 `/usr/bin` 挂到插件容器内的 `/usrbin`。使用 GPU Operator 时，请按驱动的实际安装位置配置二进制路径。
-- 检查已经发布的物理 GPU CDI 设备包含显存 hook，且 hook 路径在主机上可执行。HAMi 在注册设备前会检查该配置。显存控制器由 Toolkit 和驱动管理。[NVIDIA 显存分区文档](https://docs.nvidia.com/deploy/mps/mpsv3-memory-partitioning.html)
+- 使用支持 CDI 的容器运行时。
+- 确认 device plugin 能访问与驱动配套的 `nvidia-cuda-mps-control` 和驱动库。将 `devicePlugin.mpsV3.binary` 设为 device plugin 容器内可访问的二进制路径。
+- 静态 SM 分区的 CLI 输出以 **620.70.06** 为已验证基线。若日志报 SM 分区列表格式不符，请核对驱动和控制工具版本。
 
 ```bash
 stat -fc %T /sys/fs/cgroup
@@ -28,7 +28,17 @@ nvidia-smi --query-gpu=uuid,driver_version,mig.mode.current,mig.mode.pending --f
 
 ## 在宿主机运行 MPS daemon
 
-在启用 MPS v3 的节点上先启动专用 daemon，再启用设备插件。下面是 systemd unit 示例。二进制使用宿主机路径，目录须与 Chart 的 `devicePlugin.mpsV3.root` 一致。
+在启用 MPS v3 的节点上先启动专用 daemon，再启用设备插件。下面是 systemd unit 示例。二进制使用宿主机路径。daemon 的 `CUDA_MPS_PIPE_DIRECTORY` 必须设为 `<root>/pipe`，其中 `<root>` 是 `devicePlugin.mpsV3.root` 的值。
+
+将以下内容保存为 `/etc/nvidia-mps/hami-mps-v3.toml`。daemon 关闭主 socket 的 UID 自动建 server 功能。HAMi 通过各容器专属的 namespace socket 路由。 [NVIDIA v3 配置文件](https://docs.nvidia.com/deploy/mps/620/mpsv3-configuration-file.html)
+
+```toml
+schema_version = "1.0"
+
+[features.context-share]
+enabled = true
+default_socket = "off"
+```
 
 ```ini
 [Unit]
@@ -40,7 +50,7 @@ Environment=CUDA_MPS_PIPE_DIRECTORY=/var/run/hami/mps-v3/pipe
 Environment=CUDA_MPS_LOG_DIRECTORY=/var/run/hami/mps-v3/log
 ExecStartPre=/usr/bin/test -f /sys/fs/cgroup/cgroup.controllers
 ExecStartPre=/usr/bin/mkdir -p /var/run/hami/mps-v3/pipe /var/run/hami/mps-v3/log
-ExecStart=/usr/bin/nvidia-cuda-mps-control -p 3 -f -m
+ExecStart=/usr/bin/nvidia-cuda-mps-control -p 3 -f -m -a /etc/nvidia-mps/hami-mps-v3.toml
 
 [Install]
 WantedBy=multi-user.target
@@ -90,11 +100,13 @@ devicePlugin:
 
 ## 申请算力和显存
 
-在 Pod 上设置 `nvidia.com/vgpu-mode: mps-v3`。用 `hami.io/mps-compute-mode` 选择节点的算力策略，缺省值为 `namespace-cap`。两种策略均按每卡 100 单位核算配额，解析得到的 `gpucores` 为 0 时按 100 记账。按[显存申请规则](./specify-device-memory-usage.md)使用 `nvidia.com/gpumem` 或 `nvidia.com/gpumem-percentage`。Toolkit 将最终分配的 MiB 数同时用于显存请求和硬上限。
+在 Pod 上设置 `nvidia.com/vgpu-mode: mps-v3`。Pod 的 `hami.io/mps-compute-mode` 必须匹配节点的 `mpsv3.computeMode`。省略该注解时，Pod 使用 `namespace-cap`。两种策略均按每卡 100 单位核算配额，解析得到的 `gpucores` 为 0 时按 100 记账。按[显存申请规则](./specify-device-memory-usage.md)使用 `nvidia.com/gpumem` 或 `nvidia.com/gpumem-percentage`。Toolkit 将最终分配的 MiB 数同时用于显存请求和硬上限。 [NVIDIA r620 显存分区](https://docs.nvidia.com/deploy/mps/620/mpsv3-memory-partitioning.html)
+
+显式选择 MPS v3 的 GPU 容器应由 HAMi 设置 `CUDA_MPS_*` 和 `NVIDIA_GPU_MEMORY_*`。在 Pod 的 `env` 中声明这些变量会被拒绝。
 
 | 策略 | `nvidia.com/gpucores: 25` 的含义 |
 | --- | --- |
-| `namespace-cap` | namespace 的活跃线程百分比上限为 25，硬件可以对可用算力取整。 |
+| `namespace-cap` | 已接入该 namespace 的 CUDA client context 受 25% 的活跃线程上限约束，这个值按 context 生效。 |
 | `server-timeslice` | 容器专属 server 的时间片长度为 daemon 基础时间片的 25%。实际 GPU 时间和吞吐取决于各 server 有多少任务就绪。 |
 
 以下 Pod 申请 4 GiB 显存和基础时间片长度的 25%。
@@ -123,9 +135,11 @@ spec:
 
 `server-timeslice` 的 `mpsv3.timeslice` 支持 `default`（设备默认值）、`short`（10 ms）、`medium`（20 ms）和 `long`（50 ms）。可选的 `mpsv3.timesliceYieldLevel` 接受 `1` 或 `2`。当计算后的时间片低于设备支持的最小值时，驱动会拒绝设置。[NVIDIA 加权时间片接口](https://docs.nvidia.com/deploy/mps/620/mpsv3-interface.html#weighted-timeslicing)
 
+GPU compute mode 由节点管理员设置。`server-timeslice` 要求 `DEFAULT`。`namespace-cap` 建议使用 `EXCLUSIVE_PROCESS`。MPS server 持卡期间，`EXCLUSIVE_PROCESS` 可阻止其他进程直接创建独立 CUDA context 绕开 MPS 算力限制。 [NVIDIA GPU Compute Modes](https://docs.nvidia.com/deploy/mps/620/when-to-use-mps.html#gpu-compute-modes)
+
 ## 申请静态 SM 和可选借用
 
-在 `namespace-cap` Pod 上添加以下注解。仅通过 SM 数申请算力时，可省略 `gpucores`。
+静态 SM 分区要求 NVIDIA Ampere 或更新架构的 GPU。在 `namespace-cap` Pod 上添加以下注解。仅通过 SM 数申请算力时，可省略 `gpucores`。
 
 ```yaml
 metadata:
@@ -145,17 +159,19 @@ HAMi 按 GPU UUID 将分区绑定到 namespace，并将 namespace 的活跃线�
 
 ## 升级、切换策略和排查
 
-1. 阻止新任务进入节点，并排空其 MPS v3 工作负载。
+1. 阻止新任务进入节点，并排空其 MPS 工作负载。
 2. 确认资源已回收，再变更驱动、插件或节点策略。修改 `computeMode`、基础时间片、yield 或状态目录也需要排空。
 3. 确认插件上报健康，运行符合新策略的验证任务，再恢复节点调度。
 
 | 现象 | 检查项 |
 | --- | --- |
 | MPS v3 节点启动失败 | 检查 r620 驱动、cgroup v2、非 MIG GPU、UUID 设备 ID、缩放系数、MPS 工具和已发布的 CDI hook。 |
-| Pod 无法匹配 GPU | 检查 Pod 与节点策略、算力和显存余量、SM chunk 和现有 GPU 集合。 |
+| 设备插件无法连接宿主机 MPS daemon | 确认宿主机服务正在以 v3 协议运行，且 pipe 目录为 `<root>/pipe`。在宿主机运行上文的 `compute-policy get timeslice` 命令验证连通性。 |
+| Pod 无法匹配 GPU（例如 `CardMPSV3Incompatible`） | 检查 Pod 与节点策略、算力和显存余量、SM chunk 和现有 GPU 集合。 |
 | 时间片设置或回读失败 | 检查目标 GPU、驱动和基础时间片。`server-timeslice` 要求 GPU 使用 `DEFAULT` compute mode。 |
+| 创建 server 时 compute policy 不匹配 | daemon 没有 server 时，HAMi 会重新设置并回读。已有 server 时，先排空。将已设置的 yield 恢复到 `unset` 还需重启 daemon，并省略启动配置中的 yield。 |
 | 资源回收等待客户端 | 等待 CUDA 客户端退出。HAMi 依次删除 namespace、分区和最后一个无引用的 server。 |
-| daemon 丢失且仍有存活分配 | 排查 daemon 后通过 Kubernetes 重建受影响的工作负载。在 Pod 存活期间保留分配状态。 |
+| daemon 重启时仍有存活分配 | 若某项分配的 server、namespace 或分区缺失，HAMi 会将该分配的 GPU 标记为不健康。排查 daemon 后通过 Kubernetes 重建受影响的工作负载。在 Pod 存活期间保留分配状态。 |
 
 容器仅在 `/run/hami-mps` 看到自己的 namespace socket 目录。算力设置对通过该 socket 接入的 CUDA 进程生效。MPS 不提供显存带宽或 MIG 级别的故障隔离。普通容器重启保留原分配。若仍有存活工作负载，管理器恢复依赖原 daemon 及其资源。
 
