@@ -87,7 +87,7 @@ brew install kind kubectl helm git go
 
 ```bash
 kind version                     # 0.20+
-kubectl version --client # 1.31+
+kubectl version --client         # 1.31+
 helm version                     # 3.x
 go version                       # 1.21+
 ```
@@ -124,7 +124,7 @@ echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.bashrc && source ~/.bashrc
 
 ```bash
 kind version                     # 0.20+
-kubectl version --client # 1.31+
+kubectl version --client         # 1.31+
 helm version                     # 3.x
 go version                       # 1.21+
 ```
