@@ -85,7 +85,7 @@ brew install kind kubectl helm
 
 ```bash
 kind version                     # 0.20+
-kubectl version --client --short # 1.31+
+kubectl version --client         # 1.31+
 helm version                     # 3.x
 ```
 
@@ -115,7 +115,7 @@ curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
 ```bash
 kind version                     # 0.20+
-kubectl version --client --short # 1.31+
+kubectl version --client         # 1.31+
 helm version                     # 3.x
 ```
 

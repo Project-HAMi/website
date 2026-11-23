@@ -86,7 +86,7 @@ Verify versions:
 
 ```bash
 kind version                     # 0.20+
-kubectl version --client --short # 1.31+
+kubectl version --client         # 1.31+
 helm version                     # 3.x
 ```
 
@@ -117,7 +117,7 @@ Verify versions:
 
 ```bash
 kind version                     # 0.20+
-kubectl version --client --short # 1.31+
+kubectl version --client         # 1.31+
 helm version                     # 3.x
 ```
 
