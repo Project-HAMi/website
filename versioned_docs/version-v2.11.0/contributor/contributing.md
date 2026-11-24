@@ -298,7 +298,9 @@ When reviewing others' PRs:
 
 ## AI Usage
 
-AI tools may be used to assist with writing code, documentation, or commit messages. Two hard rules apply:
+AI tools may be used to assist with writing code or commit messages. Documentation on this website is different: a person writes every sentence, see [Writing Style](contribute-docs.md#writing-style).
+
+Two hard rules apply:
 
 **If you use any kind of AI assistance, disclose it in the PR description, along with how much was used (docs only vs. code generation).** A one-line disclosure is enough, for example "This PR was written primarily with Claude Code" or "I used ChatGPT to understand the codebase, but the change was authored manually." This is separate from the rule below: even a PR you wrote yourself, with AI only used to check grammar, benefits from a short note so reviewers can calibrate.
 

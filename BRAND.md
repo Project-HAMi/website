@@ -2,6 +2,13 @@
 
 Visual rules for diagrams, slides and graphics that feature HAMi. Values come from the website tokens in [`src/css/custom.css`](src/css/custom.css) and the official [CNCF artwork](https://github.com/cncf/artwork/tree/main/projects/hami).
 
+## Rules
+
+These rules are required for every PR to this repository.
+
+- Use only the colors and fonts on this page. Black is allowed only as a translucent shadow, for example `rgba(0, 0, 0, 0.2)`. The Content Rules check reads the colors and fonts from this file, so a new one must be added here first, in its own PR.
+- No AI-generated images, diagrams, icons or illustrations anywhere on the site.
+
 ## Colors
 
 | Token                 | Hex       | Use                                         |
@@ -68,4 +75,4 @@ For hand-written SVG:
 
 - Use the colors above, the same font stacks, and the diagram panel tokens in `custom.css` (`--hami-diagram-*`). Light: heading `#15324d`, body `#1a3956`, muted `#5a748f`, connectors `#39c6f4` at low opacity. Dark: heading `#f0f6fd`, body `#d8eefb`, muted `#9eb6ce`, connectors `#39c6f4` at low opacity.
 - The site defaults to dark, so check a new SVG in both themes. A light-only SVG shows as a white card on the dark site.
-- No animated or decorative imagery, and no AI-generated raster images. Keep diagrams as editable source (mermaid, SVG or draw.io).
+- No animated or decorative imagery. Keep diagrams as editable source (mermaid, SVG or draw.io).

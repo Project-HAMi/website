@@ -2,6 +2,12 @@
 
 This file provides guidance to AI coding agents when working with code in this repository.
 
+## Content Rules (Read First)
+
+- Do not write or rewrite text on the site: docs, tutorials, blog posts or translations. A person writes every sentence, see [Writing Style](docs/contributor/contribute-docs.md#writing-style). You may change code, config, links, front matter and formatting, and you may point out which text needs to change.
+- Do not create images. Colors and fonts in CSS, SVG and mermaid follow [BRAND.md](BRAND.md).
+- Run `npm run check:content` before committing.
+
 ## Project Overview
 
 This is the HAMi documentation website built with [Docusaurus 3](https://docusaurus.io/). HAMi is an open-source GPU virtualization solution for heterogeneous AI computing. The site serves as the primary documentation portal and official website.
