@@ -11,6 +11,7 @@ import {
   brandFonts,
   brandPalette,
   classifyLines,
+  exemptLines,
   findAiImageMarkers,
   findOffBrandColors,
   findOffBrandFonts,
@@ -19,6 +20,7 @@ import {
   hasEmoji,
   missingDeclarations,
   paragraphs,
+  unquoteGitPath,
 } from "../scripts/check-content-rules.mjs";
 
 const repoRoot = fileURLToPath(new URL("..", import.meta.url));
@@ -72,6 +74,21 @@ describe("content rules: line classification", () => {
     assert.equal(kinds[13].allowed, false, "a marker inside inline code does not count");
   });
 
+  it("ignores off/on markers shown inside a code fence", () => {
+    const kinds = classifyLines(["```md", "<!-- content-rules: off -->", "```", "Seamless"]);
+    assert.equal(kinds[3].allowed, false);
+  });
+
+  it("honours off/on blocks in CSS and SVG", () => {
+    const lines = ["/* content-rules: off */", "color: #123456;", "/* content-rules: on */", "x"];
+    assert.deepEqual(exemptLines(lines), [true, true, true, false]);
+  });
+
+  it("decodes quoted git paths", () => {
+    assert.equal(unquoteGitPath('"b/docs/caf\\303\\251.md"'), "b/docs/caf\u00e9.md");
+    assert.equal(unquoteGitPath("b/docs/plain.md"), "b/docs/plain.md");
+  });
+
   it("builds long prose paragraphs only", () => {
     const long =
       "HAMi shares one GPU between pods by limiting memory and compute per container. ".repeat(2);
@@ -103,10 +120,20 @@ describe("content rules: brand", () => {
       "rgb(0, 0, 0)",
     ]);
     assert.deepEqual(findOffBrandColors("[link](#abc-section) &#x2014;", palette), []);
+    assert.deepEqual(findOffBrandColors(`color: red; fill="black"`, palette), ["red", "black"]);
+    assert.deepEqual(
+      findOffBrandColors("background: white; fill: none; stroke: currentColor", palette),
+      [],
+    );
+    assert.deepEqual(findOffBrandColors("border: 1px solid var(--hami-border)", palette), []);
   });
 
   it("checks fonts in CSS, SVG and JS", () => {
     assert.deepEqual(findOffBrandFonts("font-family: var(--hami-font-body);", fonts), []);
+    assert.deepEqual(
+      findOffBrandFonts("font-family: var(--hami-font-body, sans-serif);", fonts),
+      [],
+    );
     assert.deepEqual(
       findOffBrandFonts(`font-family: "Space Grotesk", "Comic Sans MS", sans-serif;`, fonts),
       [`"Comic Sans MS"`],

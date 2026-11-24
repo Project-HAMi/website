@@ -209,7 +209,7 @@ The Content Rules check runs on every PR. It looks only at the lines the PR adds
 
 <!-- content-rules: on -->
 
-A check cannot prove who wrote a sentence, so reviewers still read every change. If a flagged line is correct, for example a quote, put `<!-- content-rules: allow -->` on that line or the line above, and say why in the PR. For a longer block, wrap it in `<!-- content-rules: off -->` and `<!-- content-rules: on -->`.
+A check cannot prove who wrote a sentence, so reviewers still read every change. If a flagged line is correct, for example a quote, put `<!-- content-rules: allow -->` on that line or the line above, and say why in the PR. For a longer block, wrap it in `<!-- content-rules: off -->` and `<!-- content-rules: on -->`. The check accepts a new exception only after a maintainer adds the `content-rules-exception` label to the PR.
 
 Run the check locally before pushing:
 

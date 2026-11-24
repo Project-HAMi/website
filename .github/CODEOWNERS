@@ -1,0 +1,13 @@
+# Changes to the content rules and the check that enforces them need a review
+# from an owner. See docs/contributor/contribute-docs.md#writing-style and BRAND.md.
+
+/BRAND.md                                   @archlitchi @wawa0210 @moezdil
+/AGENTS.md                                  @archlitchi @wawa0210 @moezdil
+/CONTRIBUTING.md                            @archlitchi @wawa0210 @moezdil
+/.github/                                   @archlitchi @wawa0210 @moezdil
+/scripts/check-content-rules.mjs            @archlitchi @wawa0210 @moezdil
+/test/content-rules.test.mjs                @archlitchi @wawa0210 @moezdil
+/docs/contributor/contribute-docs.md        @archlitchi @wawa0210 @moezdil
+/docs/contributor/contributing.md           @archlitchi @wawa0210 @moezdil
+/i18n/zh/docusaurus-plugin-content-docs/current/contributor/contribute-docs.md  @archlitchi @wawa0210 @moezdil
+/i18n/zh/docusaurus-plugin-content-docs/current/contributor/contributing.md     @archlitchi @wawa0210 @moezdil
