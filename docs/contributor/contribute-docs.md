@@ -204,6 +204,7 @@ The Content Rules check runs on every PR. It looks only at the lines the PR adds
 - The PR description must have the three content declarations from the PR template checked.
 - English pages must not use the words listed under "Avoid marketing language", "It's worth noting", "Please note" or em-dashes. No page may contain emoji.
 - An English paragraph in `docs/` or `tutorials/` must not already exist on another page.
+- Chinese pages under `i18n/zh/` must use Simplified Chinese, never Traditional characters.
 - CSS, SVG, JavaScript and mermaid must use only the colors and fonts listed in the brand guide.
 - New images must not carry metadata that marks them as AI-generated.
 

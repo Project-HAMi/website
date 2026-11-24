@@ -16,6 +16,7 @@ import {
   findOffBrandColors,
   findOffBrandFonts,
   findPhrases,
+  findTraditional,
   hasEmDash,
   hasEmoji,
   missingDeclarations,
@@ -37,6 +38,11 @@ describe("content rules: prose", () => {
   it("ignores inline code and link targets", () => {
     assert.deepEqual(findPhrases("Set `robust: true` in values.yaml"), []);
     assert.deepEqual(findPhrases("See [the guide](https://example.com/seamless)"), []);
+  });
+
+  it("flags Traditional Chinese characters only", () => {
+    assert.deepEqual(findTraditional("这个调度器设置为默认"), []);
+    assert.deepEqual(findTraditional("這個調度器設定為預設"), ["這", "個", "調", "設", "為"]);
   });
 
   it("flags em-dashes and emoji outside inline code", () => {
