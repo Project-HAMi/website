@@ -2,7 +2,7 @@
 title: SLIs and SLOs
 ---
 
-HAMi provides reference Prometheus recording rules for service level indicators (SLIs), which cover only what HAMi controls and use only HAMi metrics. HAMi does not install the rules or set service level objectives (SLOs). Choose the SLOs for the cluster after watching the SLIs.
+HAMi provides reference Prometheus recording rules for service level indicators (SLIs), which cover only what HAMi controls and use only HAMi metrics. HAMi does not install the rules. To set service level objectives (SLOs), see [Set SLOs](#set-slos).
 
 :::info Recording rules
 
@@ -18,58 +18,28 @@ HAMi provides reference Prometheus recording rules for service level indicators 
 | HAMi | v2.12.0 or later |
 | Prometheus | Scrapes the scheduler and vGPU monitor metrics endpoints, and the remote GPU monitor endpoint when remote GPUs are used (see [Monitor remote GPU workloads](../nvidia-device/remote-gpu.md#monitor-remote-gpu-workloads)) |
 
+The rules assume that Prometheus stores the metrics of a single cluster.
+
 ## SLIs
 
 Each SLI is the proportion of good events out of all events. The SLIs cover three parts of HAMi: the scheduler state, device allocation, and the devices.
 
-| SLI | Definition | Series |
-| --- | --- | --- |
-| [Availability](#availability) | The proportion of time when a scheduler leader has synced its node/device cache | `hami_scheduler_state:availability7d` |
-| [Freshness](#freshness) | The proportion of time when the node/device cache of the scheduler leader is fresh (synced less than 60 seconds ago by default) | `hami_scheduler_state:freshness7d` |
-| [Reliability](#reliability) | The proportion of device allocation attempts that succeed | `hami_scheduler_allocation:reliability7d` |
-| [Latency](#latency) | The proportion of successful device allocations that finish within 10 seconds by default | `hami_scheduler_allocation:latency7d` |
-| [Correctness](#correctness) (NVIDIA only) | The proportion of vGPU containers whose Pod's GPU memory limits fit the GPU memory allocated to the Pod | `hami_vgpu_memory_limit:correctness7d` |
-| [Completeness](#completeness) (NVIDIA only) | The proportion of GPUs that both the scheduler and their GPU monitor (the vGPU monitor or the remote GPU monitor) see | `hami_gpu:completeness7d` |
+| SLI                                         | Series                                    |
+| ------------------------------------------- | ----------------------------------------- |
+| [Availability](#availability)               | `hami_scheduler_state:availability7d`     |
+| [Freshness](#freshness)                     | `hami_scheduler_state:freshness7d`        |
+| [Reliability](#reliability)                 | `hami_scheduler_allocation:reliability7d` |
+| [Latency](#latency)                         | `hami_scheduler_allocation:latency7d`     |
+| [Correctness](#correctness) (NVIDIA only)   | `hami_vgpu_memory_limit:correctness7d`    |
+| [Completeness](#completeness) (NVIDIA only) | `hami_gpu:completeness7d`                 |
 
 ## Add the rules
 
-### Prometheus Operator
-
-If Prometheus Operator is installed, enable the ServiceMonitors included in the HAMi Helm chart:
-
-```bash
-helm upgrade --install hami hami-charts/hami \
-  --namespace kube-system \
-  --values my-values.yaml \
-  --set prometheus.enabled=true
-```
-
-`my-values.yaml` holds the custom Helm chart values of the current installation, so that future upgrades keep them.
-
-Use `hami-slis.yaml`, which is in the Prometheus Operator format. [Tune the rules](#tune-the-rules), then apply it:
-
-```bash
-kubectl apply -n monitoring -f hami-slis.yaml
-```
-
-Verify that the Prometheus `ruleSelector` and rule namespace selector match this PrometheusRule.
-
-### Prometheus without the Operator
-
-Use `hami-slis.rules.yaml`, which is in the rule file format that Prometheus reads. [Tune the rules](#tune-the-rules), then add the file to `rule_files` in the Prometheus configuration:
-
-```yaml
-rule_files:
-  - /etc/prometheus/rules/hami-slis.rules.yaml
-```
-
-If the scrape configs of the scheduler, the vGPU monitor, and the remote GPU monitor add their own `namespace`, `pod`, or `node` labels, set `honor_labels: true`, as the ServiceMonitors in the HAMi Helm chart do. Otherwise Prometheus renames these labels of the metrics, for example `pod` to `exported_pod`, and [Correctness](#correctness) and [Completeness](#completeness) match the wrong Pods and nodes.
+Add `hami-slis.yaml` (Prometheus Operator) or `hami-slis.rules.yaml` using the same steps as [Add the rules](alerting-and-runbooks.md#add-the-rules).
 
 [Completeness](#completeness) needs the vGPU monitor metrics while the device plugin Pod is not ready, so scrape the Pod IPs, not through the Service.
 
 ## Tune the rules
-
-The thresholds are starting values. HAMi supports many backends, scheduling policies, and workload patterns, so one set of values does not fit every cluster.
 
 Both `hami-slis.yaml` and `hami-slis.rules.yaml` contain two rule groups:
 
@@ -94,8 +64,32 @@ Some setups need changes to specific SLIs:
   - Change only the number in `le=~"10(\\.0)?"`. Prometheus 2 stores this bucket as `le="10"` and Prometheus 3 as `le="10.0"`. The `(\\.0)?` part matches both.
   - `hami.io/bind-time` keeps only whole seconds, so a measured duration can be up to 1 second longer than the real one. This matters most for the 1-second and 2-second thresholds.
 - Freshness: Set the threshold in `:hami_scheduler_sync_fresh:bool`. The scheduler syncs its node/device cache every 15 seconds. Keep the threshold well above that.
-- Completeness: To exclude GPUs that should not count, such as devices in `filterdevices`, add `{device_uuid!~"(.+/)?(<uuid-1>|<uuid-2>)"}` to each metric in `:hami_gpus_seen_by_both:count` and `:hami_gpus_seen_by_either:count`. The `(.+/)?` part also matches remote GPUs, which the scheduler reports as `<server>/<uuid>`.
+- Completeness: To exclude GPUs that should not count, such as devices in `filterdevices`, add the matcher `device_uuid!~"(.+/)?(<uuid-1>|<uuid-2>)"` inside the braces of each metric in `:hami_gpus_seen_by_both:count` and `:hami_gpus_seen_by_either:count`, for example `hami_gpu_memory_limit_bytes{device_type=~"NVIDIA.*", device_uuid!~"…"}`. The `(.+/)?` part also matches remote GPUs, which the scheduler reports as `<server>/<uuid>`.
 - Window: To use a window other than 7 days, change `[7d]` in the `hami-slis-7d` group, and keep the Prometheus data for at least that long.
+
+## Set SLOs
+
+An SLO is a target for an SLI over its window, for example, "Availability is at least 99.5% over 7 days". HAMi does not ship targets because the right values depend on the cluster.
+
+Before setting SLOs, set up scraping (see [Add the rules](#add-the-rules)) and the Completeness exclusions in [Tune the rules](#tune-the-rules). Otherwise, scrape gaps and filtered devices can affect the SLIs.
+
+To choose SLO targets:
+
+- Watch the SLIs for at least four 7-day windows. Keep at least 28 days of data. Use the lowest value seen during normal operation, rounded down, as the first target. Do not use 100%.
+- Set Reliability and Latency targets for each device type. If a device type has few allocations, one failed allocation can significantly affect Reliability, and one slow allocation can significantly affect Latency. Consider a longer window (see **Window** in [Tune the rules](#tune-the-rules)) or a lower target.
+- Review the targets every month at first, then every quarter.
+
+An SLO target also defines an error budget. For example:
+
+- **99.5% Availability over 7 days** allows about 50 minutes without a synced scheduler leader.
+- **99% Reliability with 1,000 allocation attempts per week** allows 10 counted failures.
+
+To see how much Availability error budget is left:
+
+```promql
+# 1: budget unused, 0: budget used up, below 0: SLO missed
+1 - (1 - hami_scheduler_state:availability7d) / (1 - 0.995)
+```
 
 ## SLI details
 
@@ -104,11 +98,6 @@ Some setups need changes to specific SLIs:
 #### Definition
 
 The proportion of time when HAMi has a scheduler leader that has synced its node/device cache and is ready to schedule Pods that request devices. Measured by `hami_scheduler_cache_synced`.
-
-#### User stories
-
-- As a user of HAMi, I want my Pods that request devices to be scheduled at any time.
-- As a cluster administrator, I want to know how long HAMi could not schedule Pods that request devices, for example during a leader failover or an upgrade.
 
 #### Notes
 
@@ -122,11 +111,6 @@ The proportion of time when HAMi has a scheduler leader that has synced its node
 
 The proportion of time when the node/device cache of the scheduler leader is fresh. The cache is fresh when its last successful sync happened less than 60 seconds ago by default (see [Tune the rules](#tune-the-rules)). Measured by `hami_scheduler_last_sync_success_timestamp_seconds`.
 
-#### User stories
-
-- As a user of HAMi, I want the scheduler to place my Pods based on the current devices and their health, not on old device information.
-- As a cluster administrator, I want to know when the scheduler stops syncing its node/device cache.
-
 #### Notes
 
 - Time without a scheduler leader, before the first sync of a new leader, or when Prometheus cannot scrape the leader counts as bad, because no fresh cache can be seen.
@@ -136,11 +120,6 @@ The proportion of time when the node/device cache of the scheduler leader is fre
 #### Definition
 
 The proportion of device allocation attempts that succeed. An attempt succeeds when the device plugin allocates the devices, and can fail in the `filter`, `bind`, or `allocate` phase. Some failure reasons are not counted (see [Notes](#reliability-notes)). Measured by `hami_scheduler_allocations_total` and `hami_scheduler_allocation_failures_total`.
-
-#### User stories
-
-- As a user of HAMi, I want my Pods that request devices to get them, so that they do not stay `Pending` or fail because of HAMi.
-- As a cluster administrator, I want to know how often HAMi fails to allocate devices for each device type.
 
 #### Notes {#reliability-notes}
 
@@ -158,30 +137,21 @@ The proportion of device allocation attempts that succeed. An attempt succeeds w
 
 The proportion of successful device allocations that finish within 10 seconds by default (see [Tune the rules](#tune-the-rules)). Timing starts when HAMi starts binding the Pod to a node and ends when the scheduler sees that the device plugin has allocated the devices. Measured by `hami_scheduler_allocation_duration_seconds`.
 
-#### User stories
-
-- As a user of HAMi, I want my Pods to get their devices soon after they are bound to a node.
-- As a cluster administrator, I want to know how often devices take too long to be allocated after HAMi starts binding the Pod.
-
 #### Notes
 
 - Only allocations that succeed before a timeout are counted.
-- The SLI is split by device type, because each device type has its own device plugin.
 
 ### Correctness (NVIDIA only) {#correctness}
 
 #### Definition
 
-The proportion of vGPU containers whose Pod's total GPU memory limits on each GPU do not exceed the GPU memory HAMi allocated to that Pod on that GPU. Measured by `hami_vgpu_memory_limit_bytes` and `hami_vgpu_memory_allocated_bytes`.
-
-#### User stories
-
-- As a user of HAMi, I want other Pods on a shared GPU to stay within the memory allocated to them, so that they cannot use the memory allocated to my Pod.
-- As a cluster administrator, I want to know if the memory limits in containers exceed what HAMi allocated.
+The proportion of container GPU memory limits (one for each container on each GPU) for which the Pod's total limits on that GPU do not exceed the GPU memory HAMi allocated to the Pod on that GPU. Measured by `hami_vgpu_memory_limit_bytes` and `hami_vgpu_memory_allocated_bytes`.
 
 #### Notes
 
-- Remote GPUs are not counted, because the remote GPU monitor reports their memory limits from the HAMi allocation in the `hami.io/remote-gpu-devices-allocated` annotation, not from the limits applied on the Lupine server, so they can never exceed it.
+- Remote GPUs are not counted. The remote GPU monitor reports their memory limits from the HAMi allocation in the `hami.io/remote-gpu-devices-allocated` annotation, not from the limits applied on the Lupine server, so they can never exceed it.
+- MIG containers are not counted, because the vGPU monitor reports them with their MIG UUID, which never matches the GPU UUID of the allocation.
+- After a Pod's init containers finish, the limits on the GPUs they used count as bad, because the vGPU monitor still reports the init containers' limits while HAMi reduces the Pod's allocation.
 - Time when Prometheus cannot scrape the scheduler leader is not counted, because the GPU memory allocated to each Pod is unknown.
 
 ### Completeness (NVIDIA only) {#completeness}
@@ -189,11 +159,6 @@ The proportion of vGPU containers whose Pod's total GPU memory limits on each GP
 #### Definition
 
 The proportion of GPUs that both the HAMi scheduler and their GPU monitor (the vGPU monitor or the remote GPU monitor) see. At each rule evaluation, the total includes every GPU that either one sees, on nodes where Prometheus scrapes a vGPU monitor or a remote GPU monitor. Measured by `hami_gpu_memory_limit_bytes` and `hami_remote_gpu_memory_limit_bytes` on the scheduler side, and `hami_host_gpu_memory_used_bytes` on the monitor side.
-
-#### User stories
-
-- As a user of HAMi, I want every GPU on the nodes to be available to my Pods, unless it is excluded on purpose.
-- As a cluster administrator, I want to know when the scheduler and the GPU monitors disagree about which GPUs exist, for example after the device plugin fails.
 
 #### Notes
 

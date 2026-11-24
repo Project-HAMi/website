@@ -27,9 +27,9 @@ groups:
         expr: |
           (
             count(
-              hami_vgpu_memory_limit_bytes
+              hami_vgpu_memory_limit_bytes{device_uuid!~"MIG-.*"}
                 and on (namespace, pod, device_uuid) (
-                  sum by (namespace, pod, device_uuid) (hami_vgpu_memory_limit_bytes)
+                  sum by (namespace, pod, device_uuid) (hami_vgpu_memory_limit_bytes{device_uuid!~"MIG-.*"})
                     <= sum by (namespace, pod, device_uuid) (hami_vgpu_memory_allocated_bytes)
                 )
             )
@@ -39,9 +39,9 @@ groups:
       - record: :hami_vgpu_memory_limits:count
         expr: |
           count(
-            hami_vgpu_memory_limit_bytes
-              unless on (namespace, pod, device_uuid)
-                label_replace(hami_vgpu_memory_allocated_bytes{device_uuid=~".+/.+"}, "device_uuid", "$1", "device_uuid", ".+/(.+)")
+            hami_vgpu_memory_limit_bytes{device_uuid!~"MIG-.*"}
+              unless on (device_uuid)
+                label_replace(hami_remote_gpu_memory_limit_bytes, "device_uuid", "$1", "device_uuid", ".+/(.+)")
           )
           and on () (max(hami_scheduler_is_leader) == 1)
       - record: :hami_gpus_seen_by_both:count
@@ -49,7 +49,7 @@ groups:
           (
             count(
               group by (device_uuid) (
-                hami_gpu_memory_limit_bytes
+                hami_gpu_memory_limit_bytes{device_type=~"NVIDIA.*"}
                   or label_replace(hami_remote_gpu_memory_limit_bytes, "device_uuid", "$1", "device_uuid", ".+/(.+)")
               )
                 and group by (device_uuid) (
@@ -64,7 +64,7 @@ groups:
         expr: |
           count(
             group by (device_uuid) (
-              (hami_gpu_memory_limit_bytes or hami_host_gpu_memory_used_bytes)
+              (hami_gpu_memory_limit_bytes{device_type=~"NVIDIA.*"} or hami_host_gpu_memory_used_bytes)
                 and on (node) group by (node) (hami_vgpumonitor_collect_success)
             )
             or group by (device_uuid) (
