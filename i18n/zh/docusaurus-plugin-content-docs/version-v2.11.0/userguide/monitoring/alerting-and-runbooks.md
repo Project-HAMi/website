@@ -65,6 +65,8 @@ rule_files:
   - /etc/prometheus/rules/hami-alerts-v2.11.0.rules.yaml
 ```
 
+如果 scheduler 和 vGPU monitor 的采集配置会添加自己的 `namespace` 或 `node` 标签，请像 HAMi Helm Chart 中的 ServiceMonitor 一样设置 `honor_labels: true`。否则 Prometheus 会重命名指标中的这些标签，例如把 `node` 重命名为 `exported_node`，规则会匹配到错误的命名空间和节点。
+
 [`HAMiNodeDevicesNotRegistered`](#haminodedevicesnotregistered) 需要在 device plugin Pod 未就绪时仍能获取 vGPU monitor 指标，因此请按 Pod IP 采集，不要通过 Service 采集。
 
 无论使用哪种方式，都请在 Prometheus UI 中打开 **Alerts**，确认已列出 HAMi 告警（位于 `hami` 组中）。

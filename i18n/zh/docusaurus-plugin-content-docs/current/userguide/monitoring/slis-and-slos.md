@@ -165,4 +165,4 @@ HAMi 调度器和对应 GPU monitor（vGPU monitor 或 remote GPU monitor）都�
 #### 说明
 
 - `filterdevices` 中的设备不会注册到 HAMi（参见[配置](../configure.md#node-configuration)），因此调度器看不到它们。在从规则中排除之前，这些设备都计为不良。参见[调整规则](#tune-the-rules)。
-- Prometheus 无法采集调度器 leader 的时间，以及 Prometheus 无法采集 GPU monitor 的节点上的 GPU，都不计入，因为无法得知调度器或 monitor 看到了什么。
+- 没有已同步的调度器 leader 或 Prometheus 无法采集 leader 的时间，以及 Prometheus 无法采集 GPU monitor 的节点上的 GPU，都不计入，因为无法得知调度器或 monitor 看到了什么。

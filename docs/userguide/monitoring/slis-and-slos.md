@@ -163,4 +163,4 @@ The proportion of GPUs that both the HAMi scheduler and their GPU monitor (the v
 #### Notes
 
 - Devices in `filterdevices` are not registered with HAMi (see [Configuration](../configure.md#node-configuration)), so the scheduler does not see them. They count as bad until they are excluded from the rules. See [Tune the rules](#tune-the-rules).
-- Time when Prometheus cannot scrape the scheduler leader, and GPUs on nodes where Prometheus cannot scrape the GPU monitor, are not counted, because what the scheduler or the monitor sees is unknown.
+- Time without a synced scheduler leader or when Prometheus cannot scrape the leader, and GPUs on nodes where Prometheus cannot scrape the GPU monitor, are not counted, because what the scheduler or the monitor sees is unknown.

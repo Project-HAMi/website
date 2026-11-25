@@ -59,7 +59,7 @@ groups:
             )
             or vector(0)
           )
-          and on () (max(hami_scheduler_is_leader) == 1)
+          and on () (max(hami_scheduler_cache_synced) == 1)
       - record: :hami_gpus_seen_by_either:count
         expr: |
           count(
@@ -75,7 +75,7 @@ groups:
                 and on (node) group by (node) (hami_remote_gpumonitor_collect_success)
             )
           )
-          and on () (max(hami_scheduler_is_leader) == 1)
+          and on () (max(hami_scheduler_cache_synced) == 1)
   - name: hami-slis-7d
     interval: 3m
     rules:
