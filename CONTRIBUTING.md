@@ -105,8 +105,11 @@ Every pull request automatically runs:
 | **Unit Tests**   | `npm run test` - Node's built-in test runner              |
 | **Build**        | `npm run build` - Full site build with link validation    |
 | **Broken Links** | Internal link check against the built site                |
+| **Content**      | `npm run check:content` - Writing Style and brand rules   |
 
 A weekly scheduled run also validates the `master` branch health.
+
+The content rules are described in [Writing Style](https://project-hami.io/docs/next/contributor/contribute-docs#writing-style) and [BRAND.md](BRAND.md).
 
 ## Project Structure
 

@@ -158,11 +158,24 @@ Use descriptive alt text. Do not link to external images - host them in the repo
 
 ## Writing Style
 
-The following rules apply to all documentation on this site.
+These rules apply to every page on this site: docs, tutorials, blog posts and translations. A PR that breaks them is not merged.
+
+**Written by a person:**
+
+- A person writes every sentence. Do not paste text from an AI tool, and do not fill in an AI-generated outline or template.
+- No AI-generated images, diagrams or illustrations. Colors, fonts and diagrams follow the [brand guide](https://github.com/Project-HAMi/website/blob/master/BRAND.md).
+
+**One place for each fact:**
+
+- Each piece of information lives on one page only. Other pages link to it instead of repeating it.
+- This site is where HAMi is documented. Do not add explanations to READMEs or docs in other repositories. Add them here and link to them.
+- Explain each technology on its own, for example HAMi and DRA, or Kai and Volcano. Do not blend two of them into one explanation.
+
+<!-- content-rules: off -->
 
 **Language and tone:**
 
-- Short, direct sentences
+- Simple words and short, direct sentences
 - Active voice
 - Casual but professional - write like a developer explaining something to another developer
 - No filler words: "simply", "just", "Note that", "It's worth noting", "Please note"
@@ -182,6 +195,28 @@ The following rules apply to all documentation on this site.
 - Do not use: "innovative", "seamless", "robust", "powerful", "cutting-edge", "state-of-the-art"
 - Do not use: "streamline", "leverage", "intuitive", "comprehensive"
 - Do not use: "In conclusion,", "In summary,", "To summarize,"
+- Do not use: "delve", "dive into", "unleash", "empower", "game-changer", "in today's", "ever-evolving", "whether you're", "look no further", "key takeaways"
+
+### How the Rules Are Checked
+
+The Content Rules check runs on every PR. It looks only at the lines the PR adds and skips code blocks:
+
+- The PR description must have the three content declarations from the PR template checked.
+- English pages must not use the words listed under "Avoid marketing language", "It's worth noting", "Please note" or em-dashes. No page may contain emoji.
+- An English paragraph in `docs/` or `tutorials/` must not already exist on another page.
+- Chinese pages under `i18n/zh/` must use Simplified Chinese, never Traditional characters.
+- CSS, SVG, JavaScript and mermaid must use only the colors and fonts listed in the brand guide.
+- New images must not carry metadata that marks them as AI-generated.
+
+<!-- content-rules: on -->
+
+A check cannot prove who wrote a sentence, so reviewers still read every change. If a flagged line is correct, for example a quote, put `<!-- content-rules: allow -->` on that line or the line above, and say why in the PR. For a longer block, wrap it in `<!-- content-rules: off -->` and `<!-- content-rules: on -->`. The check accepts a new exception only after a maintainer adds the `content-rules-exception` label to the PR.
+
+Run the check locally before pushing:
+
+```bash
+npm run check:content
+```
 
 ## Versioning
 

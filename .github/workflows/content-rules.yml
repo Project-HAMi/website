@@ -1,0 +1,52 @@
+name: Content Rules
+
+# Enforces the Writing Style rules in docs/contributor/contribute-docs.md and
+# the visual rules in BRAND.md on the lines each pull request adds.
+#
+# pull_request_target runs this workflow and the check script from master, so a
+# pull request cannot weaken the check by editing them. The pull request is
+# checked out into pr/ as data only: nothing from it is installed or executed.
+# `edited` re-runs the check when the PR description (the declarations) changes,
+# `labeled`/`unlabeled` when a maintainer adds the content-rules-exception label.
+on:
+  pull_request_target:
+    branches: [master]
+    types: [opened, edited, synchronize, reopened, labeled, unlabeled]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: content-rules-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  content-rules:
+    name: Content Rules
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the trusted check from master
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            scripts/check-content-rules.mjs
+          sparse-checkout-cone-mode: false
+
+      - name: Check out the pull request as data
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+          # The merge commit and its first parent (the current master).
+          ref: refs/pull/${{ github.event.pull_request.number }}/merge
+          fetch-depth: 2
+          lfs: true
+          path: pr
+
+      - name: Setup Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 20
+
+      - name: Check content rules
+        run: node scripts/check-content-rules.mjs --root pr --base HEAD^1
