@@ -42,7 +42,7 @@ describe("content rules: prose", () => {
 
   it("flags Traditional Chinese characters only", () => {
     assert.deepEqual(findTraditional("这个调度器设置为默认"), []);
-    assert.deepEqual(findTraditional("這個調度器設定為預設"), ["這", "個", "調", "設", "為"]);
+    assert.deepEqual(findTraditional("這個調度器設定為預設"), ["這", "個", "調", "設", "為", "預"]);
   });
 
   it("flags em-dashes and emoji outside inline code", () => {
