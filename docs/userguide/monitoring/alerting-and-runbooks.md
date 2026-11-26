@@ -62,7 +62,7 @@ rule_files:
   - /etc/prometheus/rules/hami-alerts.rules.yaml
 ```
 
-If the scrape configs of the scheduler, the vGPU monitor, and the remote GPU monitor add their own `namespace`, `pod`, or `node` labels, set `honor_labels: true`, as the ServiceMonitors in the HAMi Helm chart do. Otherwise Prometheus renames these labels of the metrics, for example `pod` to `exported_pod`, and the rules match the wrong namespaces, Pods, and nodes.
+If the scrape configs of the scheduler, the vGPU monitor, and the remote GPU monitor add their own `namespace`, `pod`, or `node` labels, set `honor_labels: true`, as the ServiceMonitors in the HAMi Helm chart do. Otherwise Prometheus renames these labels of the metrics, for example `pod` to `exported_pod`. Then the rules match the wrong namespaces, Pods, and nodes.
 
 [`HAMiNodeDevicesNotRegistered`](#haminodedevicesnotregistered) needs the vGPU monitor metrics while the device plugin Pod is not ready, so scrape the Pod IPs, not through the Service.
 

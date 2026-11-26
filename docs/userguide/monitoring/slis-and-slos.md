@@ -53,7 +53,7 @@ Some setups need changes to specific SLIs:
   - Change only the number in `le=~"10(\\.0)?"`. Prometheus 2 stores this bucket as `le="10"` and Prometheus 3 as `le="10.0"`. The `(\\.0)?` part matches both.
   - `hami.io/bind-time` keeps only whole seconds, so a measured duration can be up to 1 second longer than the real one. This matters most for the 1-second and 2-second thresholds.
 - Freshness: Set the threshold in `:hami_scheduler_sync_fresh:bool`. The scheduler syncs its node/device cache every 15 seconds. Keep the threshold well above that.
-- Completeness: To exclude GPUs that should not count, such as devices in `filterdevices`, add the matcher `device_uuid!~"(.+/)?(<uuid-1>|<uuid-2>)"` inside the braces of each metric in `:hami_gpus_seen_by_both:count` and `:hami_gpus_seen_by_either:count`, for example `hami_gpu_memory_limit_bytes{device_type=~"NVIDIA.*", device_uuid!~"…"}`. The `(.+/)?` part also matches remote GPUs, which the scheduler reports as `<server>/<uuid>`.
+- Completeness: To exclude GPUs that should not count, such as devices in `filterdevices`, add the matcher `device_uuid!~"(.+/)?(<uuid-1>|<uuid-2>)"` to each metric in `:hami_gpus_seen_by_both:count` and `:hami_gpus_seen_by_either:count`. For example, change `hami_gpu_memory_limit_bytes{device_type=~"NVIDIA.*"}` to `hami_gpu_memory_limit_bytes{device_type=~"NVIDIA.*", device_uuid!~"…"}`. The `(.+/)?` part also matches remote GPUs, which the scheduler reports as `<server>/<uuid>`.
 - Window: To use a window other than 7 days, change `[7d]` in the `hami-slis-7d` group, and keep the Prometheus data for at least that long.
 
 ## Set SLOs
@@ -102,7 +102,7 @@ The proportion of time when the node/device cache of the scheduler leader is fre
 
 #### Notes
 
-- Time without a scheduler leader, before the first sync of a new leader, or when Prometheus cannot scrape the leader counts as bad, because no fresh cache can be seen.
+- Time without a scheduler leader, before the first sync of a new leader, or when Prometheus cannot scrape the leader counts as bad. In these cases, no fresh cache can be seen.
 
 ### Reliability
 
@@ -134,13 +134,13 @@ The proportion of successful device allocations that finish within 10 seconds by
 
 #### Definition
 
-The proportion of container GPU memory limits (one for each container on each GPU) for which the Pod's total limits on that GPU do not exceed the GPU memory HAMi allocated to the Pod on that GPU. Measured by `hami_vgpu_memory_limit_bytes` and `hami_vgpu_memory_allocated_bytes`.
+The proportion of container GPU memory limits (one for each container on each GPU) that are good. A limit is good when the Pod's total limits on that GPU do not exceed the GPU memory HAMi allocated to the Pod on that GPU. Measured by `hami_vgpu_memory_limit_bytes` and `hami_vgpu_memory_allocated_bytes`.
 
 #### Notes
 
-- Remote GPUs are not counted. The remote GPU monitor reports their memory limits from the HAMi allocation in the `hami.io/remote-gpu-devices-allocated` annotation, not from the limits applied on the Lupine server, so they can never exceed it.
+- Remote GPUs are not counted. The remote GPU monitor reports their memory limits from the HAMi allocation in the `hami.io/remote-gpu-devices-allocated` annotation, so they can never exceed it. The monitor does not report the limits applied on the Lupine server.
 - MIG containers are not counted, because the vGPU monitor reports them with their MIG UUID, which never matches the GPU UUID of the allocation.
-- After a Pod's init containers finish, the limits on the GPUs they used count as bad, because the vGPU monitor still reports the init containers' limits while HAMi reduces the Pod's allocation.
+- After a Pod's init containers finish, the limits on the GPUs they used count as bad. The vGPU monitor still reports the init containers' limits, but HAMi reduces the Pod's allocation.
 - Time when Prometheus cannot scrape the scheduler leader is not counted, because the GPU memory allocated to each Pod is unknown.
 
 ### Completeness (NVIDIA only) {#completeness}
@@ -152,4 +152,4 @@ The proportion of GPUs that both the HAMi scheduler and their GPU monitor (the v
 #### Notes
 
 - Devices in `filterdevices` are not registered with HAMi (see [Configuration](../configure.md#node-configuration)), so the scheduler does not see them. They count as bad until they are excluded from the rules. See [Tune the rules](#tune-the-rules).
-- Time without a synced scheduler leader or when Prometheus cannot scrape the leader, and GPUs on nodes where Prometheus cannot scrape the GPU monitor, are not counted, because what the scheduler or the monitor sees is unknown.
+- Time without a synced scheduler leader or when Prometheus cannot scrape the leader is not counted, because what the scheduler sees is unknown. GPUs on nodes where Prometheus cannot scrape the GPU monitor are not counted, because what the monitor sees is unknown.
