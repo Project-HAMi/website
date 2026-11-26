@@ -32,7 +32,7 @@ HAMi 提供 Prometheus 告警规则参考示例，并为每条告警提供运行
 | [`HAMiSchedulerDown`](#hamischedulerdown) | Prometheus 连续 15 分钟未看到任何 HAMi 调度器报告自己是 leader | `critical` |
 | [`HAMiNodeDevicesNotRegistered`](#haminodedevicesnotregistered) | 节点上的 vGPU monitor 运行正常，但调度器连续 15 分钟没有该节点的设备 | `warning` |
 
-## 添加规则 {#add-the-rules}
+## 添加规则
 
 ### Prometheus Operator
 
@@ -55,7 +55,7 @@ kubectl apply -n monitoring -f hami-alerts.yaml
 
 确认 Prometheus 的 `ruleSelector` 和规则 namespace selector 能够匹配该 PrometheusRule。
 
-### 不使用 Prometheus Operator {#prometheus-without-the-operator}
+### 不使用 Prometheus Operator
 
 使用 `hami-alerts.rules.yaml`，该文件采用 Prometheus 可读取的规则文件格式。先[调整规则](#tune-the-rules)，然后将其添加到 Prometheus 配置的 `rule_files` 中：
 
@@ -63,8 +63,6 @@ kubectl apply -n monitoring -f hami-alerts.yaml
 rule_files:
   - /etc/prometheus/rules/hami-alerts.rules.yaml
 ```
-
-如果 scheduler、vGPU monitor 和 remote GPU monitor 的采集配置会添加自己的 `namespace`、`pod` 或 `node` 标签，请像 HAMi Helm Chart 中的 ServiceMonitor 一样设置 `honor_labels: true`。否则 Prometheus 会重命名指标中的这些标签，例如把 `pod` 重命名为 `exported_pod`，规则会匹配到错误的命名空间、Pod 和节点。
 
 [`HAMiNodeDevicesNotRegistered`](#haminodedevicesnotregistered) 需要在 device plugin Pod 未就绪时仍能获取 vGPU monitor 指标，因此请按 Pod IP 采集，不要通过 Service 采集。
 
