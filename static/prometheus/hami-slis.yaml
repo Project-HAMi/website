@@ -1,0 +1,119 @@
+# Reference recording rules for the HAMi SLIs, for Prometheus Operator. Tune the rules for your cluster before you use them.
+# Guide: https://project-hami.io/docs/next/userguide/monitoring/slis-and-slos
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: hami-slis
+spec:
+  groups:
+    - name: hami-slis
+      rules:
+        - record: :hami_scheduler_cache_synced:max
+          expr: max(hami_scheduler_cache_synced) or vector(0)
+        - record: :hami_scheduler_sync_fresh:bool
+          expr: |
+            (
+              min(
+                timestamp(hami_scheduler_last_sync_success_timestamp_seconds)
+                  - hami_scheduler_last_sync_success_timestamp_seconds
+              ) < bool 60
+            )
+            or vector(0)
+        - record: device_type_phase:hami_scheduler_allocations_total:increase1h
+          expr: |
+            sum by (device_type, phase) (increase(hami_scheduler_allocations_total[1h]))
+        - record: device_type_phase_failure_reason:hami_scheduler_allocation_failures_total:increase1h
+          expr: |
+            sum by (device_type, phase, failure_reason) (increase(hami_scheduler_allocation_failures_total[1h]))
+        - record: device_type_le:hami_scheduler_allocation_duration_seconds_bucket:increase1h
+          expr: |
+            sum by (device_type, le) (increase(hami_scheduler_allocation_duration_seconds_bucket[1h]))
+        - record: :hami_vgpu_memory_limits_within_allocation:count
+          expr: |
+            (
+              count(
+                hami_vgpu_memory_limit_bytes{device_uuid!~"MIG-.*"}
+                  and on (namespace, pod, device_uuid) (
+                    sum by (namespace, pod, device_uuid) (hami_vgpu_memory_limit_bytes{device_uuid!~"MIG-.*"})
+                      <= sum by (namespace, pod, device_uuid) (hami_vgpu_memory_allocated_bytes)
+                  )
+              )
+              or vector(0)
+            )
+            and on () (max(hami_scheduler_is_leader) == 1)
+        - record: :hami_vgpu_memory_limits:count
+          expr: |
+            count(
+              hami_vgpu_memory_limit_bytes{device_uuid!~"MIG-.*"}
+                unless on (device_uuid)
+                  label_replace(hami_remote_gpu_memory_limit_bytes, "device_uuid", "$1", "device_uuid", ".+/(.+)")
+            )
+            and on () (max(hami_scheduler_is_leader) == 1)
+        - record: :hami_gpus_seen_by_both:count
+          expr: |
+            (
+              count(
+                group by (device_uuid) (
+                  hami_gpu_memory_limit_bytes{device_type=~"NVIDIA.*"}
+                    or label_replace(hami_remote_gpu_memory_limit_bytes, "device_uuid", "$1", "device_uuid", ".+/(.+)")
+                )
+                  and group by (device_uuid) (
+                    hami_host_gpu_memory_used_bytes
+                      and on (node) group by (node) (hami_vgpumonitor_collect_success or hami_remote_gpumonitor_collect_success)
+                  )
+              )
+              or vector(0)
+            )
+            and on () (max(hami_scheduler_cache_synced) == 1)
+        - record: :hami_gpus_seen_by_either:count
+          expr: |
+            count(
+              group by (device_uuid) (
+                (hami_gpu_memory_limit_bytes{device_type=~"NVIDIA.*"} or hami_host_gpu_memory_used_bytes)
+                  and on (node) group by (node) (hami_vgpumonitor_collect_success)
+              )
+              or group by (device_uuid) (
+                (
+                  label_replace(label_replace(hami_remote_gpu_memory_limit_bytes, "node", "$1", "device_uuid", "(.+)/.+"), "device_uuid", "$1", "device_uuid", ".+/(.+)")
+                    or hami_host_gpu_memory_used_bytes
+                )
+                  and on (node) group by (node) (hami_remote_gpumonitor_collect_success)
+              )
+            )
+            and on () (max(hami_scheduler_cache_synced) == 1)
+    - name: hami-slis-7d
+      interval: 3m
+      rules:
+        - record: hami_scheduler_state:availability7d
+          expr: |
+            avg_over_time(:hami_scheduler_cache_synced:max[7d])
+        - record: hami_scheduler_state:freshness7d
+          expr: |
+            avg_over_time(:hami_scheduler_sync_fresh:bool[7d])
+        - record: hami_scheduler_allocation:reliability7d
+          expr: |
+            sum by (device_type) (
+              sum_over_time(device_type_phase:hami_scheduler_allocations_total:increase1h{phase="allocate"}[7d])
+                or 0 * sum_over_time(device_type_phase_failure_reason:hami_scheduler_allocation_failures_total:increase1h{phase=~"filter|bind|allocate", failure_reason!~"no_fit|lock|lookup|identity"}[7d])
+            )
+            /
+            sum by (device_type) (
+              sum_over_time(device_type_phase:hami_scheduler_allocations_total:increase1h{phase="allocate"}[7d])
+                or sum_over_time(device_type_phase_failure_reason:hami_scheduler_allocation_failures_total:increase1h{phase=~"filter|bind|allocate", failure_reason!~"no_fit|lock|lookup|identity"}[7d])
+            )
+        - record: hami_scheduler_allocation:latency7d
+          # threshold: allocations that succeed within 10 seconds
+          expr: |
+            sum by (device_type) (sum_over_time(device_type_le:hami_scheduler_allocation_duration_seconds_bucket:increase1h{le=~"10(\\.0)?"}[7d]))
+            /
+            sum by (device_type) (sum_over_time(device_type_le:hami_scheduler_allocation_duration_seconds_bucket:increase1h{le="+Inf"}[7d]))
+        - record: hami_vgpu_memory_limit:correctness7d
+          expr: |
+            sum_over_time(:hami_vgpu_memory_limits_within_allocation:count[7d])
+            /
+            sum_over_time(:hami_vgpu_memory_limits:count[7d])
+        - record: hami_gpu:completeness7d
+          expr: |
+            sum_over_time(:hami_gpus_seen_by_both:count[7d])
+            /
+            sum_over_time(:hami_gpus_seen_by_either:count[7d])
