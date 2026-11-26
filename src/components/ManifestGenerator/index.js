@@ -55,15 +55,18 @@ export default function ManifestGenerator() {
               setDeviceType("");
               setDeviceUuid("");
               const isPct = VENDORS[newVendor].memUnit === "%";
-              setMemMode(isPct ? "percentage" : "value");
-              if (VENDORS[newVendor].memUnit !== VENDORS[vendor].memUnit) {
+              const newMemMode = isPct ? "percentage" : "value";
+              setMemMode(newMemMode);
+              if (
+                VENDORS[newVendor].memUnit !== VENDORS[vendor].memUnit ||
+                memMode !== newMemMode
+              ) {
                 setMemValue(VENDORS[newVendor].defaultMem);
               } else if (isPct && memValue > 100) {
                 setMemValue(100);
               }
-              if (!VENDORS[newVendor].coreKey) {
-                setCoreMode("none");
-              }
+              setCoreMode("none");
+              setCoreValue(newVendor === "MTHREADS" ? 8 : 50);
             }}
             className={styles.select}
           >
