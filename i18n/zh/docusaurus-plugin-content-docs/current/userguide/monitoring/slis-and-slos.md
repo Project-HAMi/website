@@ -39,7 +39,7 @@ HAMi 为服务等级指标（SLI）提供 Prometheus 记录规则参考示例，
 
 按照与告警规则相同的步骤添加 `hami-slis.yaml`（Prometheus Operator）或 `hami-slis.rules.yaml`，参见[添加规则](alerting-and-runbooks.md#add-the-rules)。
 
-[完整性](#completeness)需要在 device plugin Pod 未就绪时仍能获取 vGPU monitor 指标，因此请按 Pod IP 采集，不要通过 Service 采集。
+[完整性](#completeness)需要按 Pod IP 采集。参见[不使用 Prometheus Operator](alerting-and-runbooks.md#prometheus-without-the-operator)。
 
 ## 调整规则 {#tune-the-rules}
 
@@ -47,17 +47,6 @@ HAMi 为服务等级指标（SLI）提供 Prometheus 记录规则参考示例，
 
 - `hami-slis` 在每次规则评估时记录调度器状态、分配次数等数值。
 - `hami-slis-7d` 使用这些记录的数值计算最近 7 天的 SLI，每 3 分钟运行一次。
-
-例如，延迟的 10 秒阈值定义在 `hami-slis-7d` 的这条规则中：
-
-```yaml
-- record: hami_scheduler_allocation:latency7d
-  # threshold: allocations that succeed within 10 seconds
-  expr: |
-    sum by (device_type) (sum_over_time(device_type_le:hami_scheduler_allocation_duration_seconds_bucket:increase1h{le=~"10(\\.0)?"}[7d]))
-    /
-    sum by (device_type) (sum_over_time(device_type_le:hami_scheduler_allocation_duration_seconds_bucket:increase1h{le="+Inf"}[7d]))
-```
 
 部分场景需要调整特定 SLI：
 

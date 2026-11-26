@@ -55,7 +55,7 @@ kubectl apply -n monitoring -f hami-alerts.yaml
 
 确认 Prometheus 的 `ruleSelector` 和规则 namespace selector 能够匹配该 PrometheusRule。
 
-### 不使用 Prometheus Operator
+### 不使用 Prometheus Operator {#prometheus-without-the-operator}
 
 使用 `hami-alerts.rules.yaml`，该文件采用 Prometheus 可读取的规则文件格式。先[调整规则](#tune-the-rules)，然后将其添加到 Prometheus 配置的 `rule_files` 中：
 

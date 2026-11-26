@@ -37,7 +37,7 @@ Each SLI is the proportion of good events out of all events. The SLIs cover thre
 
 Add `hami-slis.yaml` (Prometheus Operator) or `hami-slis.rules.yaml` using the same steps as [Add the rules](alerting-and-runbooks.md#add-the-rules).
 
-[Completeness](#completeness) needs the vGPU monitor metrics while the device plugin Pod is not ready, so scrape the Pod IPs, not through the Service.
+[Completeness](#completeness) needs the Pod IP scraping. See [Prometheus without the Operator](alerting-and-runbooks.md#prometheus-without-the-operator).
 
 ## Tune the rules
 
@@ -45,17 +45,6 @@ Both `hami-slis.yaml` and `hami-slis.rules.yaml` contain two rule groups:
 
 - `hami-slis` records values such as scheduler states and allocation counts at each rule evaluation.
 - `hami-slis-7d` uses these recorded values to calculate SLIs over the last 7 days. It runs every 3 minutes.
-
-For example, the 10-second Latency threshold is defined in this rule in `hami-slis-7d`:
-
-```yaml
-- record: hami_scheduler_allocation:latency7d
-  # threshold: allocations that succeed within 10 seconds
-  expr: |
-    sum by (device_type) (sum_over_time(device_type_le:hami_scheduler_allocation_duration_seconds_bucket:increase1h{le=~"10(\\.0)?"}[7d]))
-    /
-    sum by (device_type) (sum_over_time(device_type_le:hami_scheduler_allocation_duration_seconds_bucket:increase1h{le="+Inf"}[7d]))
-```
 
 Some setups need changes to specific SLIs:
 
