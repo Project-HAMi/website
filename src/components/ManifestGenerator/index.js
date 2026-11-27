@@ -3,6 +3,7 @@ import CodeBlock from "@theme/CodeBlock";
 import Translate, { translate } from "@docusaurus/Translate";
 import clsx from "clsx";
 import { generatePodManifest } from "@site/src/utils/manifest";
+import { clampCoreValue, switchManifestVendor } from "@site/src/utils/manifest-vendor-state";
 import { VENDORS } from "@site/src/utils/manifest-vendors";
 import styles from "./styles.module.css";
 
@@ -50,15 +51,17 @@ export default function ManifestGenerator() {
             id="deviceVendor"
             value={vendor}
             onChange={(e) => {
-              const newVendor = e.target.value;
-              setVendor(newVendor);
-              setDeviceType("");
-              setDeviceUuid("");
-              const isPct = VENDORS[newVendor].memUnit === "%";
-              setMemMode(isPct ? "percentage" : "value");
-              setMemValue(VENDORS[newVendor].defaultMem);
-              setCoreMode("none");
-              setCoreValue(VENDORS[newVendor].defaultCore ?? 50);
+              const next = switchManifestVendor(
+                { vendor, memMode, memValue, coreMode, coreValue, deviceType, deviceUuid },
+                e.target.value,
+              );
+              setVendor(next.vendor);
+              setMemMode(next.memMode);
+              setMemValue(next.memValue);
+              setCoreMode(next.coreMode);
+              setCoreValue(next.coreValue);
+              setDeviceType(next.deviceType);
+              setDeviceUuid(next.deviceUuid);
             }}
             className={styles.select}
           >
@@ -183,11 +186,7 @@ export default function ManifestGenerator() {
                   min="0"
                   max={vInfo.maxCore ?? 100}
                   value={coreValue}
-                  onChange={(e) => {
-                    let val = Math.max(0, parseInt(e.target.value) || 0);
-                    val = Math.min(val, vInfo.maxCore ?? 100);
-                    setCoreValue(val);
-                  }}
+                  onChange={(e) => setCoreValue(clampCoreValue(vendor, e.target.value))}
                   className={styles.input}
                 />
               </div>
