@@ -55,18 +55,10 @@ export default function ManifestGenerator() {
               setDeviceType("");
               setDeviceUuid("");
               const isPct = VENDORS[newVendor].memUnit === "%";
-              const newMemMode = isPct ? "percentage" : "value";
-              setMemMode(newMemMode);
-              if (
-                VENDORS[newVendor].memUnit !== VENDORS[vendor].memUnit ||
-                memMode !== newMemMode
-              ) {
-                setMemValue(VENDORS[newVendor].defaultMem);
-              } else if (isPct && memValue > 100) {
-                setMemValue(100);
-              }
+              setMemMode(isPct ? "percentage" : "value");
+              setMemValue(VENDORS[newVendor].defaultMem);
               setCoreMode("none");
-              setCoreValue(newVendor === "MTHREADS" ? 8 : 50);
+              setCoreValue(VENDORS[newVendor].defaultCore ?? 50);
             }}
             className={styles.select}
           >
@@ -189,11 +181,11 @@ export default function ManifestGenerator() {
                   id="coreValue"
                   type="number"
                   min="0"
-                  max="100"
+                  max={vInfo.maxCore ?? 100}
                   value={coreValue}
                   onChange={(e) => {
                     let val = Math.max(0, parseInt(e.target.value) || 0);
-                    val = Math.min(val, 100);
+                    val = Math.min(val, vInfo.maxCore ?? 100);
                     setCoreValue(val);
                   }}
                   className={styles.input}
