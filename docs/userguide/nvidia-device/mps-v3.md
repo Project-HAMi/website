@@ -6,7 +6,7 @@ sidebar_label: MPS v3
 
 The `mps-v3` backend uses the NVIDIA Container Toolkit CDI hook to apply each container's GPU memory limit to its cgroup. CUDA processes connect to their assigned MPS namespace for compute sharing. This backend uses the existing HAMi GPU, memory, and core resources.
 
-The HAMi implementation is tracked in [HAMi PR #3443](https://github.com/Project-HAMi/HAMi/pull/3443).
+MPS v3 is available on the HAMi `master` branch and is pending a tagged release.
 
 ## NVIDIA device plugin compatibility
 
@@ -28,7 +28,7 @@ nvidia-smi --query-gpu=uuid,driver_version,mig.mode.current,mig.mode.pending --f
 
 ## Run the MPS daemon on the host
 
-Start a dedicated daemon on each MPS v3 node before enabling the device plugin. This example systemd unit uses the host binary path. Set the daemon’s `CUDA_MPS_PIPE_DIRECTORY` to exactly `<root>/pipe`, where `<root>` is the value of `devicePlugin.mpsV3.root`.
+Start a dedicated daemon on each MPS v3 node before enabling the device plugin. This example systemd unit uses the host binary path. Set the daemon’s `CUDA_MPS_PIPE_DIRECTORY` to exactly `<root>/pipe`, where `<root>` is the value of `devicePlugin.mpsV3.root`. Use an absolute root path of at most 34 bytes so the full namespace socket path fits.
 
 Save the following as `/etc/nvidia-mps/hami-mps-v3.toml`. This disables automatic UID server creation on the daemon’s main socket. HAMi routes workloads through their dedicated namespace sockets. [NVIDIA v3 configuration file](https://docs.nvidia.com/deploy/mps/620/mpsv3-configuration-file.html)
 
@@ -96,7 +96,7 @@ devicePlugin:
       }
 ```
 
-To select the default `namespace-cap` strategy, omit the `mpsv3` object or use `{"computeMode":"namespace-cap"}`. Each selected `mpsv3` object replaces the previous one. Enable `mpsV3.enabled` to mount the node-local state and pipe directories. Choose `cdi-cri` when the kubelet and CRI support CDI devices, or `cdi-annotations` when the runtime consumes CDI annotations. Use only CDI strategies on these nodes.
+To select the default `namespace-cap` strategy, omit the `mpsv3` object or use `{"computeMode":"namespace-cap"}`. Each selected `mpsv3` object replaces the previous one. Enable `mpsV3.enabled` to mount the node-local state and pipe directories. Choose `cdi-cri` when the kubelet and CRI support CDI devices, or `cdi-annotations` when the runtime consumes CDI annotations. Only use CDI strategies when enabling MPS v3. Both `devicePlugin.deviceListStrategy` and `devicePlugin.mpsV3` apply to the whole NVIDIA device plugin DaemonSet in this Helm release. Node-specific settings belong in `nodeConfiguration`.
 
 ## Request compute and memory
 
@@ -165,12 +165,12 @@ HAMi binds each partition to the namespace by GPU UUID. The namespace uses an ac
 
 | Symptom | What to check |
 | --- | --- |
-| The node rejects MPS v3 during startup | Check driver r620, cgroup v2, non-MIG GPUs, UUID device IDs, scaling, the MPS control binary, and the published CDI hook. |
+| The node rejects MPS v3 during startup | Check driver r620, non-MIG GPUs, UUID device IDs, scaling, the MPS control binary, and the published CDI hook. Check for unowned MPS servers in the dedicated daemon. |
 | The device plugin cannot connect to the host MPS daemon | Check that the host service is running in protocol v3 and uses exactly `<root>/pipe`. From the host, run the `compute-policy get timeslice` command shown above to verify the connection. |
 | A Pod cannot find a compatible GPU, for example `CardMPSV3Incompatible` | Check the Pod and node strategies, available core and memory budget, the SM chunk geometry, and existing GPU sets. |
 | Timeslice setup or readback fails | Check the target GPU and driver with the selected base timeslice. The driver can reject unsupported settings. Each GPU must use `DEFAULT` compute mode for `server-timeslice`. |
 | Compute policy mismatch when creating a server | HAMi reapplies and verifies the policy when the daemon has no servers. If servers exist, drain first. To return an explicit yield level to `unset`, restart the drained daemon with yield omitted from its startup settings. |
-| Cleanup is waiting for clients | Let clients exit. HAMi removes the namespace first, then the partition and the last unused server. |
+| Cleanup is waiting for clients | Let the clients exit. HAMi reports the affected GPUs as unhealthy while cleanup is pending. |
 | The daemon restarted with live allocations | If an allocation’s server, namespace, or partition is missing, HAMi marks its GPUs unhealthy. Investigate the daemon and recreate affected workloads through Kubernetes. Preserve the allocation state while the Pods are live. |
 
 Each container receives a read-only mount of its namespace socket directory at `/run/hami-mps`. Compute settings apply to CUDA processes that attach through that socket. The MPS policies do not isolate memory bandwidth or provide MIG-style fault containment. Container restarts retain their allocations. Manager recovery requires the daemon and its resources to be available for live workloads.

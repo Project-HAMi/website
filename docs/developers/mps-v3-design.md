@@ -9,6 +9,7 @@ HAMi uses the NVIDIA Container Toolkit's `apply-cuda-memory-limits` CDI hook for
 ## Architecture
 
 ```mermaid
+%% title: MPS v3 backend architecture
 flowchart TB
     subgraph HAMi["HAMi internals"]
         direction LR
@@ -29,12 +30,8 @@ flowchart TB
     A --> R
     G --> R
     D -.->|CDI device ID| R
-    style HAMi fill:#eaf2ff,stroke:#4073ad,color:#172e4a
-    style External fill:#e8f5ee,stroke:#3f805d,color:#183c2a
-    classDef internal fill:#f7faff,stroke:#4073ad,color:#172e4a
-    classDef external fill:#f5fcf7,stroke:#3f805d,color:#183c2a
-    class S,D,M,ST,A internal
-    class N,G,R,W external
+    class S,D,M,ST,G,A accent
+    class N,R,W info
 ```
 
 The scheduler matches the node strategy and accounts for each GPU. The device plugin reads allocation annotations, and the MPS manager checks resource ownership and records allocation intent and completion on the node. HAMi generates the allocation CDI with a read-only socket mount and environment variables for routing and memory. The container runtime applies its mount and environment edits, and the CUDA client connects to the NVIDIA MPS namespace through the mounted socket. The device plugin uses NVIDIA Container Toolkit libraries to generate and publish the physical GPU CDI. The runtime invokes the memory hook specified in that CDI.
@@ -57,6 +54,7 @@ Static partition accounting uses the base SM count. Before creating static parti
 ### Allocation flow
 
 ```mermaid
+%% title: MPS v3 allocation flow
 flowchart TD
     V["Validate request"] --> CP["Check policy for new server"]
     CP --> I["Record intent"]
@@ -75,6 +73,10 @@ flowchart TD
     CN -.-> X
     Q -.-> X
     P -.-> X
+    class V,CP,I,B accent
+    class T,C,TN,CN,Q,P run
+    class A ok
+    class X bad
 ```
 
 1. Resolve the GPU set and check the allocation's strategy, memory, and compute settings. Check that any server to be reused has recorded ownership.
@@ -99,12 +101,12 @@ The plugin checks the daemon compute policy at startup and again before creating
 
 In `namespace-cap`, the active-thread percentage limits attached CUDA client contexts, while scheduling accounts for the container. The plugin uses NVML to warn when the GPU is outside `EXCLUSIVE_PROCESS`. Exclusive mode blocks independent CUDA contexts while the MPS server holds the GPU. The plugin admits only `DEFAULT` GPUs for `server-timeslice`, whose weights apply to MPS servers. The node administrator sets GPU compute mode.
 
-The reconciler attempts a pass every five seconds. A single read checks daemon liveness, with three consecutive failures marking MPS GPUs unhealthy. An individual allocation health failure affects only its GPUs. Device registration reads an immutable snapshot of successfully persisted allocations, so it can report GPU ownership while an allocation or cleanup command is in progress. Persisted intents and failed cleanups retain ownership in that snapshot.
+The reconciler attempts a pass every five seconds. A single read checks daemon liveness, with three consecutive failures marking MPS GPUs unhealthy. A failed allocation health check or pending cleanup marks only the GPUs in that allocation unhealthy. Device registration reads an immutable snapshot of successfully persisted allocations, so it can report GPU ownership while an allocation or cleanup command is in progress. Persisted intents and failed cleanups retain ownership in that snapshot.
 
 Configuration checks use individual `get` fields where possible. Resource presence and static partition attributes still use r620 CSV inventories. The parser expects the 620.70.06 `sm-partition list --all` layout with the contract timeout column before status. An unknown layout fails the affected operation and preserves existing records.
 
 At plugin startup, HAMi disables automatic UID server creation on the daemon’s main socket. An external daemon restart restores its startup settings. Configure `default_socket = "off"` in the daemon TOML so this v2 compatibility route stays disabled across daemon restarts. [NVIDIA v3 configuration file](https://docs.nvidia.com/deploy/mps/620/mpsv3-configuration-file.html)
 
-Recovery reuses valid resources for live Pods. An unknown state version, an incompatible compute strategy, or an unavailable daemon blocks startup. Missing or inconsistent resources for an individual allocation make its GPUs unhealthy and retain the allocation record. When the daemon survives, a manager restart can reconnect and validate the existing allocation. The host service owns the daemon lifecycle. If the host daemon restarts and an existing allocation loses its server, namespace, or SM partition, the next allocation health check marks the GPUs in that allocation unhealthy. Recover the affected workloads through Kubernetes.
+Recovery reuses valid resources for live Pods. An unknown state version, an incompatible compute strategy, an unreachable daemon, or an unowned MPS server blocks startup. Missing or inconsistent resources for an individual allocation make its GPUs unhealthy and retain the allocation record. When the daemon survives, a manager restart can reconnect and validate the existing allocation. The host service owns the daemon lifecycle. If the host daemon restarts and an existing allocation loses its server, namespace, or SM partition, the next allocation health check marks the GPUs in that allocation unhealthy. Recover the affected workloads through Kubernetes.
 
 The manager uses cached Pod state to identify cleanup candidates and confirms absence or termination with the API server before reclaiming a prepared allocation. It persists cleanup intent before deleting resources and clears the prepared flag once the namespace is gone. Reclamation deletes the namespace without force, deletes its partitions, deletes the server once it has no remaining allocations, then removes the allocation's CDI entry and state. r620 refuses namespace deletion while clients are attached. Failed cleanup retains its record for retry. Normal container restarts keep their allocation because kubelet can reuse its Allocate response.

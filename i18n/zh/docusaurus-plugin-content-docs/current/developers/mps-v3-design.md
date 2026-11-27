@@ -1,7 +1,7 @@
 ---
-title: NVIDIA MPS v3 后端设计
-description: 介绍 HAMi MPS v3 后端的架构、GPU 调度、分配、恢复和回收。
-sidebar_label: MPS v3 设计
+title: NVIDIA MPS v3 backend design
+description: Architecture, GPU scheduling, allocation, recovery, and cleanup for the HAMi MPS v3 backend.
+sidebar_label: MPS v3 design
 ---
 
 HAMi 使用 NVIDIA Container Toolkit 的 `apply-cuda-memory-limits` CDI hook 限制 GPU 显存，并通过 MPS v3 共享算力。目前后端仅支持 r620 驱动分支。部署和工作负载示例见[用户指南](../userguide/nvidia-device/mps-v3.md)。
@@ -9,6 +9,7 @@ HAMi 使用 NVIDIA Container Toolkit 的 `apply-cuda-memory-limits` CDI hook 限
 ## 架构
 
 ```mermaid
+%% title: MPS v3 后端架构
 flowchart TB
     subgraph HAMi["HAMi 内部"]
         direction LR
@@ -29,12 +30,8 @@ flowchart TB
     A --> R
     G --> R
     D -.->|CDI device ID| R
-    style HAMi fill:#eaf2ff,stroke:#4073ad,color:#172e4a
-    style External fill:#e8f5ee,stroke:#3f805d,color:#183c2a
-    classDef internal fill:#f7faff,stroke:#4073ad,color:#172e4a
-    classDef external fill:#f5fcf7,stroke:#3f805d,color:#183c2a
-    class S,D,M,ST,A internal
-    class N,G,R,W external
+    class S,D,M,ST,G,A accent
+    class N,R,W info
 ```
 
 调度器匹配节点策略并核算每卡额度。设备插件读取分配注解，由 MPS 管理器验证资源归属，并在节点上记录分配意图和完成状态。HAMi 生成每次分配的专属 CDI，提供只读 socket 挂载、路由和显存环境变量。容器运行时应用其中的挂载和环境变量，CUDA 客户端通过挂载的 socket 连接 NVIDIA MPS namespace。设备插件调用 NVIDIA Container Toolkit 的库生成并发布物理 GPU CDI。该配置包含显存 hook，由容器运行时调用。
@@ -57,6 +54,7 @@ flowchart TB
 ### 分配流程
 
 ```mermaid
+%% title: MPS v3 分配流程
 flowchart TD
     V["校验请求"] --> CP["新建 server 前核对策略"]
     CP --> I["记录意图"]
@@ -75,6 +73,10 @@ flowchart TD
     CN -.-> X
     Q -.-> X
     P -.-> X
+    class V,CP,I,B accent
+    class T,C,TN,CN,Q,P run
+    class A ok
+    class X bad
 ```
 
 1. 校验 GPU 集合、策略、显存和算力设置。复用 server 前验证其归属。
@@ -99,12 +101,12 @@ flowchart TD
 
 `namespace-cap` 的活跃线程百分比限制已接入 namespace 的 CUDA client context，调度器按容器记账。对未设置 `EXCLUSIVE_PROCESS` 的 GPU，插件通过 NVML 发现后只告警。MPS server 持卡期间，`EXCLUSIVE_PROCESS` 可阻止其他进程直接创建独立 CUDA context。`server-timeslice` 只接纳使用 `DEFAULT` 的 GPU，时间片权重作用于 MPS server。计算模式由节点管理员设置。
 
-后台对账每 5 秒尝试执行一轮。它用一次只读查询检查 daemon 连通性，连续三次查询失败会将 MPS GPU 标记为不健康。单个分配的健康检查失败只影响该分配的 GPU。设备上报读取最近一次成功落盘的只读快照，无需等待分配或清理中的 MPS CLI 调用。分配意图和清理失败的记录继续保留 GPU 归属。
+后台对账每 5 秒尝试执行一轮。它用一次只读查询检查 daemon 连通性，连续三次查询失败会将 MPS GPU 标记为不健康。单个分配的健康检查失败或回收未完成时，只会将该分配涉及的 GPU 标为不健康。设备上报读取最近一次成功落盘的只读快照，无需等待分配或清理中的 MPS CLI 调用。分配意图和清理失败的记录继续保留 GPU 归属。
 
 配置检查优先使用 `get` 字段。资源是否存在和静态分区属性仍通过 r620 CSV 查询。静态分区解析按 620.70.06 的 `sm-partition list --all` 输出校验，要求状态列前有 contract timeout 列。未知格式会使受影响的操作报错并保留已有记录。
 
 HAMi 在插件启动时关闭 daemon 主 socket 的 UID 自动建 server 功能。外部 daemon 重启后会恢复其启动配置。部署时应通过 daemon 的 TOML 文件设置 `default_socket = "off"`，以便每次启动都禁用这条 v2 兼容路由。 [NVIDIA v3 配置文件](https://docs.nvidia.com/deploy/mps/620/mpsv3-configuration-file.html)
 
-恢复复用仍与记录一致的资源。遇到未知的状态版本、策略不匹配或 daemon 无法连接时，管理器拒绝启动。单个分配的资源缺失或配置不一致时，保留分配记录并将对应 GPU 标记为不健康。仅重启管理器时，可以重新连接仍存活的 daemon。daemon 由宿主机服务托管，插件重启后重新连接。如果宿主机 daemon 重启，导致已有分配的 server、namespace 或 SM 分区丢失，下一次分配健康检查会将该分配的 GPU 标记为不健康。通过 Kubernetes 恢复受影响的工作负载。
+恢复复用仍与记录一致的资源。遇到未知的状态版本、策略不匹配、daemon 无法连接或已有不归 HAMi 管理的 server 时，管理器拒绝启动。单个分配的资源缺失或配置不一致时，保留分配记录并将对应 GPU 标记为不健康。仅重启管理器时，可以重新连接仍存活的 daemon。daemon 由宿主机服务托管，插件重启后重新连接。如果宿主机 daemon 重启，导致已有分配的 server、namespace 或 SM 分区丢失，下一次分配健康检查会将该分配的 GPU 标记为不健康。通过 Kubernetes 恢复受影响的工作负载。
 
 管理器用 Pod 缓存筛选待回收分配，并在回收已准备好的分配前通过 API Server 确认 Pod 已终止或不存在。管理器先持久化清理意图，确认 namespace 已删除后再清除准备完成标志。回收依次执行非强制删除 namespace、删除分区、删除无引用 server，再移除 CDI 和状态。r620 会拒绝删除仍有客户端的 namespace，失败记录保留供重试。普通容器重启保留原分配，以便 kubelet 复用 Allocate 响应。
