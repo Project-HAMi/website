@@ -3,6 +3,11 @@ import CodeBlock from "@theme/CodeBlock";
 import Translate, { translate } from "@docusaurus/Translate";
 import clsx from "clsx";
 import { generatePodManifest } from "@site/src/utils/manifest";
+import {
+  clampCoreValue,
+  getMaxCore,
+  switchManifestVendor,
+} from "@site/src/utils/manifest-vendor-state";
 import { VENDORS } from "@site/src/utils/manifest-vendors";
 import styles from "./styles.module.css";
 
@@ -50,20 +55,17 @@ export default function ManifestGenerator() {
             id="deviceVendor"
             value={vendor}
             onChange={(e) => {
-              const newVendor = e.target.value;
-              setVendor(newVendor);
-              setDeviceType("");
-              setDeviceUuid("");
-              const isPct = VENDORS[newVendor].memUnit === "%";
-              setMemMode(isPct ? "percentage" : "value");
-              if (VENDORS[newVendor].memUnit !== VENDORS[vendor].memUnit) {
-                setMemValue(VENDORS[newVendor].defaultMem);
-              } else if (isPct && memValue > 100) {
-                setMemValue(100);
-              }
-              if (!VENDORS[newVendor].coreKey) {
-                setCoreMode("none");
-              }
+              const next = switchManifestVendor(
+                { vendor, memMode, memValue, coreMode, coreValue, deviceType, deviceUuid },
+                e.target.value,
+              );
+              setVendor(next.vendor);
+              setMemMode(next.memMode);
+              setMemValue(next.memValue);
+              setCoreMode(next.coreMode);
+              setCoreValue(next.coreValue);
+              setDeviceType(next.deviceType);
+              setDeviceUuid(next.deviceUuid);
             }}
             className={styles.select}
           >
@@ -186,13 +188,9 @@ export default function ManifestGenerator() {
                   id="coreValue"
                   type="number"
                   min="0"
-                  max="100"
+                  max={getMaxCore(vendor)}
                   value={coreValue}
-                  onChange={(e) => {
-                    let val = Math.max(0, parseInt(e.target.value) || 0);
-                    val = Math.min(val, 100);
-                    setCoreValue(val);
-                  }}
+                  onChange={(e) => setCoreValue(clampCoreValue(vendor, e.target.value))}
                   className={styles.input}
                 />
               </div>

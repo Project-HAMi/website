@@ -118,6 +118,8 @@ export const VENDORS = {
     uuidKey: "mthreads.ai/use-gpuuuid",
     memUnit: "512 MiB units",
     defaultMem: 8,
+    defaultCore: 8,
+    maxCore: 16,
   },
   METAX_GPU: {
     name: "MetaX GPU (topology-aware)",
