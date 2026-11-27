@@ -15,7 +15,10 @@ export function switchManifestVendor(state, vendor) {
   };
 }
 
+export function getMaxCore(vendor) {
+  return VENDORS[vendor].maxCore ?? 100;
+}
+
 export function clampCoreValue(vendor, value) {
-  const max = VENDORS[vendor].maxCore ?? 100;
-  return Math.min(Math.max(0, parseInt(value, 10) || 0), max);
+  return Math.min(Math.max(0, parseInt(value, 10) || 0), getMaxCore(vendor));
 }

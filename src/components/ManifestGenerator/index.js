@@ -3,7 +3,11 @@ import CodeBlock from "@theme/CodeBlock";
 import Translate, { translate } from "@docusaurus/Translate";
 import clsx from "clsx";
 import { generatePodManifest } from "@site/src/utils/manifest";
-import { clampCoreValue, switchManifestVendor } from "@site/src/utils/manifest-vendor-state";
+import {
+  clampCoreValue,
+  getMaxCore,
+  switchManifestVendor,
+} from "@site/src/utils/manifest-vendor-state";
 import { VENDORS } from "@site/src/utils/manifest-vendors";
 import styles from "./styles.module.css";
 
@@ -184,7 +188,7 @@ export default function ManifestGenerator() {
                   id="coreValue"
                   type="number"
                   min="0"
-                  max={vInfo.maxCore ?? 100}
+                  max={getMaxCore(vendor)}
                   value={coreValue}
                   onChange={(e) => setCoreValue(clampCoreValue(vendor, e.target.value))}
                   className={styles.input}
